@@ -13,98 +13,104 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
-import AaaCertAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/aaa-cert-aaa-proxy.png'
-import AaaCertAaaDiagram               from '../assets/images/network-wizard-diagrams/aaa-cert-aaa.png'
-import AaaCertDiagram                  from '../assets/images/network-wizard-diagrams/aaa-cert.png'
-import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
-import AaaDiagram                      from '../assets/images/network-wizard-diagrams/aaa.png'
-import ClickThroughAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/click-through-aaa-proxy.png'
-import ClickThroughAaaDiagram          from '../assets/images/network-wizard-diagrams/click-through-aaa.png'
-import ClickThroughOweAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/click-through-owe-aaa-proxy.png'
-import ClickThroughOweAaaDiagram       from '../assets/images/network-wizard-diagrams/click-through-owe-aaa.png'
-import ClickThroughOweDiagram          from '../assets/images/network-wizard-diagrams/click-through-owe.png'
-import ClickThroughPskAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/click-through-psk-aaa-proxy.png'
-import ClickThroughPskAaaDiagram       from '../assets/images/network-wizard-diagrams/click-through-psk-aaa.png'
-import ClickThroughPskDiagram          from '../assets/images/network-wizard-diagrams/click-through-psk.png'
-import ClickThroughDiagram             from '../assets/images/network-wizard-diagrams/click-through.png'
-import CloudpathWithOweDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-owe.png'
-import CloudpathProxyWithOweDiagram    from '../assets/images/network-wizard-diagrams/cloudpath-proxy-owe.png'
-import CloudpathProxyWithPskDiagram    from '../assets/images/network-wizard-diagrams/cloudpath-proxy-psk.png'
-import CloudpathProxyDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
-import CloudpathWithPskDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
-import CloudpathDiagram                from '../assets/images/network-wizard-diagrams/cloudpath.png'
-import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
-import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
-import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
-import DpskAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/dpsk-aaa-proxy.png'
-import DpskAaaDiagram                  from '../assets/images/network-wizard-diagrams/dpsk-aaa.png'
-import DpskCloudpathProxyDiagram       from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-proxy.png'
-import DpskCloudpathDiagram            from '../assets/images/network-wizard-diagrams/dpsk-cloudpath.png'
-import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
-import GuestPassAaaProxyDiagram        from '../assets/images/network-wizard-diagrams/guest-pass-aaa-proxy.png'
-import GuestPassAaaDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-aaa.png'
-import GuestPassOweAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa-proxy.png'
-import GuestPassOweAaaDiagram          from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa.png'
-import GuestPassOweDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
-import GuestPassPskAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa-proxy.png'
-import GuestPassPskAaaDiagram          from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa.png'
-import GuestPassPskDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
-import GuestPassDiagram                from '../assets/images/network-wizard-diagrams/guest-pass.png'
-import HostApprovalAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/host-approval-aaa-proxy.png'
-import HostApprovalAaaDiagram          from '../assets/images/network-wizard-diagrams/host-approval-aaa.png'
-import HostApprovalOweAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/host-approval-owe-aaa-proxy.png'
-import HostApprovalOweAaaDiagram       from '../assets/images/network-wizard-diagrams/host-approval-owe-aaa.png'
-import HostApprovalOweDiagram          from '../assets/images/network-wizard-diagrams/host-approval-owe.png'
-import HostApprovalPskAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/host-approval-psk-aaa-proxy.png'
-import HostApprovalPskAaaDiagram       from '../assets/images/network-wizard-diagrams/host-approval-psk-aaa.png'
-import HostApprovalPskDiagram          from '../assets/images/network-wizard-diagrams/host-approval-psk.png'
-import HostApprovalDiagram             from '../assets/images/network-wizard-diagrams/host-approval.png'
-import Hotspot20Diagram                from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
-import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
-import OpenAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/open-aaa-proxy.png'
-import OpenAaaDiagram                  from '../assets/images/network-wizard-diagrams/open-aaa.png'
-import OpenMacregAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/open-macreg-aaa-proxy.png'
-import OpenMacregAaaDiagram            from '../assets/images/network-wizard-diagrams/open-macreg-aaa.png'
-import OpenMacregDiagram               from '../assets/images/network-wizard-diagrams/open-macreg.png'
-import OpenOweAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/open-owe-aaa-proxy.png'
-import OpenOweAaaDiagram               from '../assets/images/network-wizard-diagrams/open-owe-aaa.png'
-import OpenOweMacregAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa-proxy.png'
-import OpenOweMacregAaaDiagram         from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa.png'
-import OpenOweMacregDiagram            from '../assets/images/network-wizard-diagrams/open-owe-macreg.png'
-import OpenOweDiagram                  from '../assets/images/network-wizard-diagrams/open-owe.png'
-import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
-import PskMacAuthProxyDiagram          from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
-import PskMacAuthDiagram               from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
-import PskDiagram                      from '../assets/images/network-wizard-diagrams/psk.png'
-import SAMLWithOweDiagram              from '../assets/images/network-wizard-diagrams/saml-owe.png'
-import SAMLWithPskDiagram              from '../assets/images/network-wizard-diagrams/saml-psk.png'
-import SAMLDiagram                     from '../assets/images/network-wizard-diagrams/saml.png'
-import SelfSignInAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/self-sign-in-aaa-proxy.png'
-import SelfSignInAaaDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-aaa.png'
-import SelfSignInOweAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa-proxy.png'
-import SelfSignInOweAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa.png'
-import SelfSignInOweDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
-import SelfSignInPskAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa-proxy.png'
-import SelfSignInPskAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa.png'
-import SelfSignInPskDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
-import SelfSignInDiagram               from '../assets/images/network-wizard-diagrams/self-sign-in.png'
-import WISPrWithAlwaysAcceptOweDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-owe.png'
-import WISPrWithAlwaysAcceptPskDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-psk.png'
-import WISPrWithAlwaysAcceptDiagram    from '../assets/images/network-wizard-diagrams/wispr-always-accept.png'
-import WISPrWithOweDiagram             from '../assets/images/network-wizard-diagrams/wispr-owe.png'
-import WISPrWithPskDiagram             from '../assets/images/network-wizard-diagrams/wispr-psk.png'
-import WISPrDiagram                    from '../assets/images/network-wizard-diagrams/wispr.png'
-import WorkflowAcctOffNoneDiagram      from '../assets/images/network-wizard-diagrams/workflow-acctoff-none.png'
-import WorkflowAcctOffOweDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctoff-owe.png'
-import WorkflowAcctOffPskDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctoff-psk.png'
-import WorkflowAcctOnNoneDiagram       from '../assets/images/network-wizard-diagrams/workflow-accton-none.png'
-import WorkflowAcctOnOweDiagram        from '../assets/images/network-wizard-diagrams/workflow-accton-owe.png'
-import WorkflowAcctOnPskDiagram        from '../assets/images/network-wizard-diagrams/workflow-accton-psk.png'
-import WorkflowAcctProxyNoneDiagram    from '../assets/images/network-wizard-diagrams/workflow-acctproxy-none.png'
-import WorkflowAcctProxyOweDiagram     from '../assets/images/network-wizard-diagrams/workflow-acctproxy-owe.png'
-import WorkflowAcctProxyPskDiagram     from '../assets/images/network-wizard-diagrams/workflow-acctproxy-psk.png'
-import NetworkFormContext              from '../NetworkFormContext'
-import { Diagram }                     from '../styledComponents'
+import AaaCertAaaProxyDiagram            from '../assets/images/network-wizard-diagrams/aaa-cert-aaa-proxy.png'
+import AaaCertAaaDiagram                 from '../assets/images/network-wizard-diagrams/aaa-cert-aaa.png'
+import AaaCertDiagram                    from '../assets/images/network-wizard-diagrams/aaa-cert.png'
+import AaaProxyDiagram                   from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
+import AaaDiagram                        from '../assets/images/network-wizard-diagrams/aaa.png'
+import ClickThroughAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/click-through-aaa-proxy.png'
+import ClickThroughAaaDiagram            from '../assets/images/network-wizard-diagrams/click-through-aaa.png'
+import ClickThroughOweAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/click-through-owe-aaa-proxy.png'
+import ClickThroughOweAaaDiagram         from '../assets/images/network-wizard-diagrams/click-through-owe-aaa.png'
+import ClickThroughOweDiagram            from '../assets/images/network-wizard-diagrams/click-through-owe.png'
+import ClickThroughPskAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/click-through-psk-aaa-proxy.png'
+import ClickThroughPskAaaDiagram         from '../assets/images/network-wizard-diagrams/click-through-psk-aaa.png'
+import ClickThroughPskDiagram            from '../assets/images/network-wizard-diagrams/click-through-psk.png'
+import ClickThroughDiagram               from '../assets/images/network-wizard-diagrams/click-through.png'
+import CloudpathWithOweDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-owe.png'
+import CloudpathProxyWithOweDiagram      from '../assets/images/network-wizard-diagrams/cloudpath-proxy-owe.png'
+import CloudpathProxyWithPskDiagram      from '../assets/images/network-wizard-diagrams/cloudpath-proxy-psk.png'
+import CloudpathProxyDiagram             from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
+import CloudpathWithPskDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
+import CloudpathDiagram                  from '../assets/images/network-wizard-diagrams/cloudpath.png'
+import DirectoryServerAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/directory-server-aaa-proxy.png'
+import DirectoryServerAaaDiagram         from '../assets/images/network-wizard-diagrams/directory-server-aaa.png'
+import DirectoryServerOweAaaProxyDiagram from '../assets/images/network-wizard-diagrams/directory-server-owe-aaa-proxy.png'
+import DirectoryServerOweAaaDiagram      from '../assets/images/network-wizard-diagrams/directory-server-owe-aaa.png'
+import DirectoryServerOweDiagram         from '../assets/images/network-wizard-diagrams/directory-server-owe.png'
+import DirectoryServerPskAaaProxyDiagram from '../assets/images/network-wizard-diagrams/directory-server-psk-aaa-proxy.png'
+import DirectoryServerPskAaaDiagram      from '../assets/images/network-wizard-diagrams/directory-server-psk-aaa.png'
+import DirectoryServerPskDiagram         from '../assets/images/network-wizard-diagrams/directory-server-psk.png'
+import DirectoryServerDiagram            from '../assets/images/network-wizard-diagrams/directory-server.png'
+import DpskAaaProxyDiagram               from '../assets/images/network-wizard-diagrams/dpsk-aaa-proxy.png'
+import DpskAaaDiagram                    from '../assets/images/network-wizard-diagrams/dpsk-aaa.png'
+import DpskCloudpathProxyDiagram         from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-proxy.png'
+import DpskCloudpathDiagram              from '../assets/images/network-wizard-diagrams/dpsk-cloudpath.png'
+import DpskDiagram                       from '../assets/images/network-wizard-diagrams/dpsk.png'
+import GuestPassAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/guest-pass-aaa-proxy.png'
+import GuestPassAaaDiagram               from '../assets/images/network-wizard-diagrams/guest-pass-aaa.png'
+import GuestPassOweAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa-proxy.png'
+import GuestPassOweAaaDiagram            from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa.png'
+import GuestPassOweDiagram               from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
+import GuestPassPskAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa-proxy.png'
+import GuestPassPskAaaDiagram            from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa.png'
+import GuestPassPskDiagram               from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
+import GuestPassDiagram                  from '../assets/images/network-wizard-diagrams/guest-pass.png'
+import HostApprovalAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/host-approval-aaa-proxy.png'
+import HostApprovalAaaDiagram            from '../assets/images/network-wizard-diagrams/host-approval-aaa.png'
+import HostApprovalOweAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/host-approval-owe-aaa-proxy.png'
+import HostApprovalOweAaaDiagram         from '../assets/images/network-wizard-diagrams/host-approval-owe-aaa.png'
+import HostApprovalOweDiagram            from '../assets/images/network-wizard-diagrams/host-approval-owe.png'
+import HostApprovalPskAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/host-approval-psk-aaa-proxy.png'
+import HostApprovalPskAaaDiagram         from '../assets/images/network-wizard-diagrams/host-approval-psk-aaa.png'
+import HostApprovalPskDiagram            from '../assets/images/network-wizard-diagrams/host-approval-psk.png'
+import HostApprovalDiagram               from '../assets/images/network-wizard-diagrams/host-approval.png'
+import Hotspot20Diagram                  from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
+import DefaultDiagram                    from '../assets/images/network-wizard-diagrams/none.png'
+import OpenAaaProxyDiagram               from '../assets/images/network-wizard-diagrams/open-aaa-proxy.png'
+import OpenAaaDiagram                    from '../assets/images/network-wizard-diagrams/open-aaa.png'
+import OpenMacregAaaProxyDiagram         from '../assets/images/network-wizard-diagrams/open-macreg-aaa-proxy.png'
+import OpenMacregAaaDiagram              from '../assets/images/network-wizard-diagrams/open-macreg-aaa.png'
+import OpenMacregDiagram                 from '../assets/images/network-wizard-diagrams/open-macreg.png'
+import OpenOweAaaProxyDiagram            from '../assets/images/network-wizard-diagrams/open-owe-aaa-proxy.png'
+import OpenOweAaaDiagram                 from '../assets/images/network-wizard-diagrams/open-owe-aaa.png'
+import OpenOweMacregAaaProxyDiagram      from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa-proxy.png'
+import OpenOweMacregAaaDiagram           from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa.png'
+import OpenOweMacregDiagram              from '../assets/images/network-wizard-diagrams/open-owe-macreg.png'
+import OpenOweDiagram                    from '../assets/images/network-wizard-diagrams/open-owe.png'
+import OpenDiagram                       from '../assets/images/network-wizard-diagrams/open.png'
+import PskMacAuthProxyDiagram            from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
+import PskMacAuthDiagram                 from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
+import PskDiagram                        from '../assets/images/network-wizard-diagrams/psk.png'
+import SAMLWithOweDiagram                from '../assets/images/network-wizard-diagrams/saml-owe.png'
+import SAMLWithPskDiagram                from '../assets/images/network-wizard-diagrams/saml-psk.png'
+import SAMLDiagram                       from '../assets/images/network-wizard-diagrams/saml.png'
+import SelfSignInAaaProxyDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-aaa-proxy.png'
+import SelfSignInAaaDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in-aaa.png'
+import SelfSignInOweAaaProxyDiagram      from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa-proxy.png'
+import SelfSignInOweAaaDiagram           from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa.png'
+import SelfSignInOweDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
+import SelfSignInPskAaaProxyDiagram      from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa-proxy.png'
+import SelfSignInPskAaaDiagram           from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa.png'
+import SelfSignInPskDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
+import SelfSignInDiagram                 from '../assets/images/network-wizard-diagrams/self-sign-in.png'
+import WISPrWithAlwaysAcceptOweDiagram   from '../assets/images/network-wizard-diagrams/wispr-always-accept-owe.png'
+import WISPrWithAlwaysAcceptPskDiagram   from '../assets/images/network-wizard-diagrams/wispr-always-accept-psk.png'
+import WISPrWithAlwaysAcceptDiagram      from '../assets/images/network-wizard-diagrams/wispr-always-accept.png'
+import WISPrWithOweDiagram               from '../assets/images/network-wizard-diagrams/wispr-owe.png'
+import WISPrWithPskDiagram               from '../assets/images/network-wizard-diagrams/wispr-psk.png'
+import WISPrDiagram                      from '../assets/images/network-wizard-diagrams/wispr.png'
+import WorkflowAcctOffNoneDiagram        from '../assets/images/network-wizard-diagrams/workflow-acctoff-none.png'
+import WorkflowAcctOffOweDiagram         from '../assets/images/network-wizard-diagrams/workflow-acctoff-owe.png'
+import WorkflowAcctOffPskDiagram         from '../assets/images/network-wizard-diagrams/workflow-acctoff-psk.png'
+import WorkflowAcctOnNoneDiagram         from '../assets/images/network-wizard-diagrams/workflow-accton-none.png'
+import WorkflowAcctOnOweDiagram          from '../assets/images/network-wizard-diagrams/workflow-accton-owe.png'
+import WorkflowAcctOnPskDiagram          from '../assets/images/network-wizard-diagrams/workflow-accton-psk.png'
+import WorkflowAcctProxyNoneDiagram      from '../assets/images/network-wizard-diagrams/workflow-acctproxy-none.png'
+import WorkflowAcctProxyOweDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctproxy-owe.png'
+import WorkflowAcctProxyPskDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctproxy-psk.png'
+import NetworkFormContext                from '../NetworkFormContext'
+import { Diagram }                       from '../styledComponents'
 
 
 interface DiagramProps {
@@ -309,8 +315,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
       (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
       (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram)),
-    [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
-      : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram),
+    [GuestNetworkTypeEnum.Directory]: getDirectoryServerDiagram(props),
     [GuestNetworkTypeEnum.SAML]: wisprWithOwe ? SAMLWithOweDiagram
       : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram),
     [GuestNetworkTypeEnum.Workflow]: getWorkflowDiagram(wisprWithPsk, wisprWithOwe, props)
@@ -391,6 +396,23 @@ const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
     Diagram: GuestPassDiagram,
     AaaProxyDiagram: GuestPassAaaProxyDiagram,
     AaaDiagram: GuestPassAaaDiagram
+  },
+
+  // --- DirectoryServer ---
+  DirectoryServerOWE: {
+    Diagram: DirectoryServerOweDiagram,
+    AaaProxyDiagram: DirectoryServerOweAaaProxyDiagram,
+    AaaDiagram: DirectoryServerOweAaaDiagram
+  },
+  DirectoryServerPSK: {
+    Diagram: DirectoryServerPskDiagram,
+    AaaProxyDiagram: DirectoryServerPskAaaProxyDiagram,
+    AaaDiagram: DirectoryServerPskAaaDiagram
+  },
+  DirectoryServer: {
+    Diagram: DirectoryServerDiagram,
+    AaaProxyDiagram: DirectoryServerAaaProxyDiagram,
+    AaaDiagram: DirectoryServerAaaDiagram
   }
 }
 
@@ -424,6 +446,7 @@ const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
 const getHostApprovalDiagram = createCaptivePortalDiagramGenerator('HostApproval')
 const getGuestPassDiagram = createCaptivePortalDiagramGenerator('GuestPass')
 const getClickThroughDiagram = createCaptivePortalDiagramGenerator('ClickThrough')
+const getDirectoryServerDiagram = createCaptivePortalDiagramGenerator('DirectoryServer')
 
 
 

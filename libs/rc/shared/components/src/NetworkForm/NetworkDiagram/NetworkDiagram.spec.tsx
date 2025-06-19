@@ -975,6 +975,89 @@ describe('NetworkDiagram', () => {
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('GuestPassOweAaaProxy')
     })
+
+
+    it('should render Captive portal (Directory Server) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Directory
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'NONE'}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DirectoryServer')
+    })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Directory Server with PSK) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Directory
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'PSK'}
+              enableAccountingService={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DirectoryServerPskAaa')
+    })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Directory Server with OWE) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Directory
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'OWE'}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DirectoryServerOweAaaProxy')
+    })
+
     it('should render Captive portal (WISPr) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.WISPr
       const { asFragment } = render(
