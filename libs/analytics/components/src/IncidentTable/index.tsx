@@ -16,9 +16,9 @@ import {
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip, Button, Table } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { Loader, TableProps, Drawer, Tooltip, Button, Table, Filter } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                  from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   EyeOpenOutlined,
@@ -177,6 +177,10 @@ export const getIncidentsMutedStatus = (incidents: IncidentRowData[]) => {
   return firstIncidentIsMuted
     ? IncidentVisibility.Muted
     : IncidentVisibility.Unmuted
+}
+
+const defaultSelectedFilters: Filter = {
+  isMuted: ['false']
 }
 
 export function IncidentTable ({ filters }: {
@@ -407,6 +411,7 @@ export function IncidentTable ({ filters }: {
       style={{ height: 'auto' }}
     >
       <Table<IncidentTableRow>
+        selectedFilters={defaultSelectedFilters}
         settingsId='incident-table'
         type='tall'
         dataSource={queryResults.data}
