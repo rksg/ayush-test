@@ -8,9 +8,9 @@ import { getUserProfile, isCoreTier }                                           
 
 import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
+import { useIsEdgeFeatureReady }                 from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
-import { useMdnsProxyStateMap }                  from '../service'
+import { useDhcpStateMap, useMdnsProxyStateMap } from '../service'
 
 import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
 import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
@@ -37,20 +37,18 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+  const dhcpStateMap = useDhcpStateMap()
   const mdnsProxyStateMap = useMdnsProxyStateMap()
 
   // Policy features
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
-  const isEdgeEnabled = useIsEdgeReady()
+  const supportLbs = isLbsFeatureTierAllowed && !isCore
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
@@ -233,8 +231,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeEnabled
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: PolicyType.VLAN_POOL,
@@ -260,20 +257,28 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.DHCP,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.NETWORK_SERVICES
-      },
-      {
-        type: ServiceType.DPSK,
-        sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        disabled: !dhcpStateMap[ServiceType.DHCP]
       },
       {
         type: ServiceType.EDGE_DHCP,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
+        disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+      },
+      {
+        type: ServiceType.DHCP_CONSOLIDATION,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
+      },
+      {
+        type: ServiceType.DPSK,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.WIFI],
+        category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
       },
       {
         type: ServiceType.EDGE_FIREWALL,

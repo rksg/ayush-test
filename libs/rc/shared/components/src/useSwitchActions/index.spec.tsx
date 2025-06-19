@@ -4,6 +4,7 @@ import '@testing-library/jest-dom'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  SwitchRbacUrlsInfo,
   SwitchStatusEnum,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -79,6 +80,10 @@ describe('Test useSwitchActions', () => {
       ),
       rest.post(
         SwitchUrlsInfo.retryFirmwareUpdate.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.retryFirmwareUpdate.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
@@ -224,6 +229,44 @@ describe('Test useSwitchActions', () => {
     })
 
     await waitFor(async () => expect(callback).toBeCalled())
+  })
+
+  it('doRetryFirmwareUpdateV1002', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { doRetryFirmwareUpdateV1002 } = result.current
+    const callback = jest.fn()
+    act(() => {
+      doRetryFirmwareUpdateV1002({
+        switchId: 'switch-id', tenantId: tenantId, venueId: 'venue-id' }, callback)
+    })
+
+    await waitFor(async () => expect(callback).toBeCalled())
+  })
+
+  it('doRetryFirmwareUpdateV1002 - should handle error from API', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchRbacUrlsInfo.retryFirmwareUpdate.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({ requestId: '123' }))
+      )
+    )
+    const spyConsole = jest.spyOn(console, 'log')
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { doRetryFirmwareUpdateV1002 } = result.current
+    const callback = jest.fn()
+    act(() => {
+      doRetryFirmwareUpdateV1002({
+        switchId: 'switch-id', tenantId: tenantId, venueId: 'venue-id' }, callback)
+    })
+    await waitFor(() => { expect(spyConsole).toBeCalled() })
   })
 })
 

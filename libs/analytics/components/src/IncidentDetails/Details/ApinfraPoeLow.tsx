@@ -12,41 +12,30 @@ import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpa
 import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [Attributes.ApImpactCount, ...commonAttributes()]
+const networkImpactCharts: NetworkImpactProps['charts'] = [{
+  chart: NetworkImpactChartTypes.APModelByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apInfra',
+  dimension: 'apModels'
+}, {
+  chart: NetworkImpactChartTypes.APFwVersionByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apInfra',
+  dimension: 'apFwVersions'
+}]
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.ApPoeImpactChart
+]
+const buffer = {
+  front: { value: 6, unit: 'hours' as unitOfTime.Base },
+  back: { value: 6, unit: 'hours' as unitOfTime.Base }
+}
 
 export const ApinfraPoeLow = (incident: Incident) => {
-  const attributeList = [
-    Attributes.ApImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime
-  ]
-
-  const networkImpactCharts: NetworkImpactProps['charts'] = [{
-    chart: NetworkImpactChartTypes.APModelByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apInfra',
-    dimension: 'apModels'
-  }, {
-    chart: NetworkImpactChartTypes.APFwVersionByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apInfra',
-    dimension: 'apFwVersions'
-  }]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.ApPoeImpactChart
-  ]
-
-  const buffer = {
-    front: { value: 6, unit: 'hours' as unitOfTime.Base },
-    back: { value: 6, unit: 'hours' as unitOfTime.Base }
-  }
-
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

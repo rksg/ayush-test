@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
@@ -14,7 +14,6 @@ import {
   transformAdvancedDpskExpirationText,
   TableResult,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
@@ -27,10 +26,8 @@ export function DpskSummaryForm (props: {
   const intl = useIntl()
   const $t = intl.$t
 
-  const { isTemplate } = useConfigTemplate()
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
@@ -82,18 +79,33 @@ export function DpskSummaryForm (props: {
           />
         </>
       }
-      {summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed && <Form.Item
-        label={$t({ defaultMessage: 'Use RADIUS Server:' })}
-        children={
-          (summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication) &&
-          summaryData.authRadius
-            ? $t({ defaultMessage: 'Yes' })
-            : $t({ defaultMessage: 'No' })
-        }
-      />}
-      {supportRadsec && summaryData.isCloudpathEnabled &&
-         (summaryData.authRadius && !summaryData.wlan?.macRegistrationListId) &&
-       <AaaSummary summaryData={summaryData} />
+      {!isSupportNetworkRadiusAccounting &&
+        summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Use RADIUS Server:' })}
+          children={
+            summaryData.isCloudpathEnabled &&
+            summaryData.authRadius
+              ? $t({ defaultMessage: 'Yes' })
+              : $t({ defaultMessage: 'No' })
+          }
+        />
+      }
+      {!isSupportNetworkRadiusAccounting &&
+        summaryData.isCloudpathEnabled &&
+         summaryData.authRadius &&
+       <AaaSummary
+         summaryData={summaryData}
+       />
+      }
+      {isSupportNetworkRadiusAccounting &&
+        <AaaSummary
+          summaryData={summaryData}
+          isDisplayAuth={
+            (summaryData.isCloudpathEnabled &&
+            !!summaryData.authRadius)
+          }
+        />
       }
     </>
   )

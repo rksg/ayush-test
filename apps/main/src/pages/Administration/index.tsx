@@ -15,7 +15,8 @@ import {
   AdminRbacUrlsInfo,
   LicenseUrlsInfo,
   hasAdministratorTab,
-  MigrationUrlsInfo
+  MigrationUrlsInfo,
+  TenantType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
 import { getUserProfile, hasAllowedOperations, isCoreTier, useUserProfileContext } from '@acx-ui/user'
@@ -27,6 +28,7 @@ import FWVersionMgmt                                                            
 import LocalRadiusServer                                                                    from './LocalRadiusServer'
 import Notifications                                                                        from './Notifications'
 import OnpremMigration                                                                      from './OnpremMigration'
+import PendingAssets                                                                        from './PendingAssets'
 import Privacy                                                                              from './Privacy'
 import Subscriptions                                                                        from './Subscriptions'
 import { AdminsTabTitleWithCount, NotificationTabTitleWithCount, WebhookTabTitleWithCount } from './TabTitleWithCount'
@@ -36,6 +38,7 @@ import R1Webhooks                                                               
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
+  const { tenantType } = useUserProfileContext()
 
   const isCore = isCoreTier(accountTier)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
@@ -44,7 +47,9 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
+  const showPrivacyTab = !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
 
   return [
     ...(
@@ -73,7 +78,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           component: <Administrators />
         }]
       : []),
-    ...(isMspAppMonitoringEnabled && !isCore &&
+    ...(showPrivacyTab && isMspAppMonitoringEnabled && !isCore &&
       hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
       ? [
         {
@@ -96,6 +101,11 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
         title: $t({ defaultMessage: 'Subscriptions' }),
         component: <Subscriptions />
       }]: []),
+    ...(isDeviceProvisionMgmtEnabled?[{
+      key: 'pendingAssets',
+      title: $t({ defaultMessage: 'Pending Assets' }),
+      component: <PendingAssets />
+    }]:[]),
     {
       key: 'fwVersionMgmt',
       title: $t({ defaultMessage: 'Version Management' }),

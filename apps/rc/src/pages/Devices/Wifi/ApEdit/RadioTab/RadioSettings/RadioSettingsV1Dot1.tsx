@@ -342,7 +342,8 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       tenantId,
       serialNumber: serialNumber ? serialNumber : '',
       venueId: venueData ? venueData.id : ''
-    }
+    },
+    enableRbac: true
   })
 
   useEffect(() => {
