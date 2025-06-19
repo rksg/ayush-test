@@ -12,7 +12,6 @@ import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData }
 
 import { VenueDevicesTab } from '.'
 
-
 const filterData = () => apCompatibilitiesFilterData
 const apCompatibilitiesData = () => venueApCompatibilitiesData
 
@@ -39,9 +38,10 @@ jest.mock('@acx-ui/reports/components', () => ({
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   ApTable: () => <div data-testid={'ApTable'} />,
-  EdgesTable: () => <div data-testid={'EdgesTable'} />,
-  ApCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
-  ApGeneralCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
+  ApCompatibilityDrawer: (props: { visible: boolean }) =>
+    props.visible && <div data-testid={'ap-compatibility-drawer'} />,
+  ApGeneralCompatibilityDrawer: (props: { visible: boolean }) =>
+    props.visible && <div data-testid={'enhanced-ap-compatibility-drawer'} />,
   retrievedCompatibilitiesOptions: () => {
     mockedretrievedOptions()
     return {
@@ -51,6 +51,10 @@ jest.mock('@acx-ui/rc/components', () => ({
     }
   },
   useIsEdgeReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('./VenueEdge', () => ({
+  VenueEdge: () => <div data-testid='VenueEdge' id='acx-edge-device' />
 }))
 
 const meshData = {
@@ -167,26 +171,23 @@ describe('VenueWifi', () => {
     expect(await screen.findByRole('row', { name: /AP-981604906462/i })).toBeVisible()
   })
 
-  it('should render Ap Compatibilities Note correctly', async () => {
+  it('should render Ap Compatibilities alert correctly', async () => {
     render(<Provider><VenueDevicesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
 
     expect(await screen.findByTestId('ApTable')).toBeVisible()
     expect(mockedretrievedOptions).toBeCalled()
-    expect(await screen.findByTestId('ap-compatibility-alert-note')).toBeVisible()
-    await waitFor(async () => {
-      expect(
-        await screen.findByText(/1 access points are not compatible with certain Wi-Fi features./i)
-      ).toBeVisible()
-    })
-    const openButton = await screen.findByTestId('ap-compatibility-alert-note-open')
+    // eslint-disable-next-line max-len
+    const alert = await screen.findByText(/1 access point is not compatible with certain Wi-Fi features./i)
+    await waitFor(async () => expect(alert).toBeVisible())
+    const openButton = await screen.findByRole('button', { name: /See details/i })
     expect(openButton).toBeVisible()
     await userEvent.click(openButton)
-    expect(await screen.findByTestId('ap-compatibility-drawer')).toBeVisible()
+    expect(await screen.findByTestId('enhanced-ap-compatibility-drawer')).toBeVisible()
     await userEvent.click(screen.getByRole('img', { name: 'close' }))
     expect(mockSetSessionStorage).toBeCalled()
-    expect(screen.queryByTestId('ap-compatibility-alert-note')).not.toBeInTheDocument()
+    expect(alert).not.toBeInTheDocument()
   })
 })
 

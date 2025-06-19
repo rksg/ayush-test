@@ -131,7 +131,7 @@ describe('ServiceCatalog', () => {
           || ff === Features.EDGES_TOGGLE)
     })
 
-    it('should render Edge SD-LAN with feature flag ON', async () => {
+    it('should render Edge SD-LAN', async () => {
       render(<Provider>
         <ServiceCatalog />
       </Provider>, {
@@ -227,6 +227,8 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.PIN)
+
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
   })
 
@@ -256,7 +258,7 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(2)
+      expect(toolTips.length).toBe(1)
       toolTips.forEach(t => expect(t).toBeVisible())
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
