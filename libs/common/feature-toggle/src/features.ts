@@ -44,7 +44,6 @@ export enum Features {
   EDGES_SD_LAN_PHASE2_TOGGLE = 'acx-ui-edges-sdlan-phase2-toggle',
   EDGES_SD_LAN_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle',
   EDGES_SD_LAN_HA_TOGGLE = 'edge-sdlan-ha-toggle',
-  EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
