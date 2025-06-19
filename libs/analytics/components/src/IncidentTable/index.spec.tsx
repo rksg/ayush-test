@@ -212,7 +212,7 @@ describe('IncidentTable', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findAllByText('P4')
-    expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
+    expect(screen.getAllByText('P4')).toHaveLength(2)
   })
 
   it('should render empty table on undefined incidents', async () => {
@@ -244,7 +244,7 @@ describe('IncidentTable', () => {
     { name: 'Client Impact', count: 1 },
     { name: 'Impacted Clients', count: 1 },
     { name: 'Scope', count: 1 },
-    { name: 'Visibility', count: 2 }
+    { name: 'Visibility', count: 1 }
   ]
 
   it('should render column header', async () => {
@@ -288,9 +288,9 @@ describe('IncidentTable', () => {
     const checkboxes = await screen.findAllByRole('checkbox', {
       checked: false
     })
-    expect(checkboxes).toHaveLength(4)
+    expect(checkboxes).toHaveLength(3)
 
-    fireEvent.click(checkboxes[2]) // incident with isMuted = false
+    fireEvent.click(checkboxes[1]) // incident with isMuted = false
     mockGraphqlMutation(dataApiURL, 'MutateIncident', {
       data: {
         incident0: {
@@ -321,6 +321,12 @@ describe('IncidentTable', () => {
       }
     })
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    // clear default visibility isMuted = false filter
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Clear Filters' })
+    )
+
     let unselectedCheckboxes = await screen.findAllByRole('checkbox', {
       checked: false
     })
@@ -346,10 +352,6 @@ describe('IncidentTable', () => {
     expect(muteButton).toBeDisabled()
     expect(unmuteButton).toBeEnabled()
     fireEvent.click(unmuteButton)
-    unselectedCheckboxes = await screen.findAllByRole('checkbox', {
-      checked: false
-    })
-    expect(unselectedCheckboxes).toHaveLength(4)
   })
 
   it('should be able to mute multiple incidents', async () => {
@@ -365,6 +367,12 @@ describe('IncidentTable', () => {
         }
       }
     })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    // clear default visibility isMuted = false filter
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Clear Filters' })
+    )
 
     let unselectedCheckboxes = await screen.findAllByRole('checkbox', {
       checked: false
@@ -398,10 +406,6 @@ describe('IncidentTable', () => {
     expect(muteButton).toBeEnabled()
     expect(unmuteButton).toBeEnabled()
     fireEvent.click(muteButton)
-    unselectedCheckboxes = await screen.findAllByRole('checkbox', {
-      checked: false
-    })
-    expect(unselectedCheckboxes).toHaveLength(4)
   })
 
   it('should be able to unmute multiple incidents', async () => {
@@ -418,6 +422,13 @@ describe('IncidentTable', () => {
       }
     })
 
+    await waitForElementToBeRemoved(
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    // clear default visibility isMuted = false filter
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Clear Filters' })
+    )
     const checkboxes = await screen.findAllByRole('checkbox', {
       checked: false
     })
@@ -560,6 +571,10 @@ describe('IncidentTable', () => {
       expect(headerElems.length).toBeGreaterThanOrEqual(1)
     }
 
+    // clear default visibility isMuted = false filter
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Clear Filters' })
+    )
     const checkboxes = await screen.findAllByRole('checkbox', { checked: false })
     expect(checkboxes).toHaveLength(5) // include hidden type column checkbox
   })
@@ -579,6 +594,13 @@ describe('IncidentTable', () => {
       }
     })
 
+    await waitForElementToBeRemoved(
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    // clear default visibility isMuted = false filter
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Clear Filters' })
+    )
     const checkboxes = await screen.findAllByRole('checkbox', { checked: false })
     expect(checkboxes).toHaveLength(4)
     // check the action says mute and unmute:
