@@ -265,6 +265,7 @@ export enum Features {
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
+  WIFI_POE_OUT_MODE_SETTING_TOGGLE = 'wifi-poe-out-mode-setting-toggle',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
   DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',

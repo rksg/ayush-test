@@ -2,7 +2,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { isEqual, clone, cloneDeep, isObject }           from 'lodash'
+import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import {
@@ -16,7 +16,6 @@ import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData,
   useSoftGreProfileLimitedSelection,
   useIpsecProfileLimitedSelection
 }
@@ -63,7 +62,7 @@ import {
   SoftGreDuplicationChangeState,
   Voter,
   mergeLanPortSettings,
-  IpsecOptionChangeState
+  IpsecOptionChangeState,
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -237,10 +236,11 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     duplicationChangeDispatch: duplicationChangeDispatch })
 
   const form = Form.useFormInstance()
-  const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
+  const [apModel, apPoeMode, apPoeOut, apPoeOutMode, lanPorts] = [
     useWatch('model'),
     useWatch('poeMode'),
     useWatch('poeOut'),
+    useWatch('poeOutMode'),
     useWatch('lan')
   ]
 
@@ -254,7 +254,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   }, [setReadyToScroll, venueLanPorts?.data])
 
   useEffect(() => {
-    const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
+    const { model, lan, poeOut, poeOutMode, poeMode } = form?.getFieldsValue()
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -263,8 +263,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             ...item,
             lanPorts: lan,
             ...(poeMode && { poeMode: poeMode }),
-            ...(poeOut && isObject(poeOut) &&
-                 { poeOut: Object.values(poeOut).some(item => item === true) })
+            ...(poeOut && { poeOut: poeOut }),
+            ...(poeOutMode && { poeOutMode: poeOutMode })
           } : item
       }) as VenueLanPorts[]
 
@@ -285,7 +285,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
       customGuiChangedRef.current = false
     }
-  }, [apPoeMode, lanPoeOut, lanPorts])
+  }, [apPoeMode, apPoeOut, apPoeOutMode, lanPorts])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -298,7 +298,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
-    const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
     const selectedModel = cloneDeep(selected)
     if(selectedModel && !selectedModel.isSettingsLoaded) {
@@ -323,7 +322,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
     form?.setFieldsValue({
       ...selectedModelWithDefault,
-      poeOut: poeOutFormData,
+      poeOutMode: lanPortData?.find(item => item.model === value)?.poeOutMode ?? modelCaps?.defaultPoeOutMode,
       lan: selectedModelWithDefault?.lanPorts
     })
   }
@@ -642,7 +641,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
         },
         payload: {
           poeMode: venueLanPorts.poeMode,
-          poeOut: venueLanPorts.poeOut
+          poeOut: venueLanPorts.poeOut,
+          poeOutMode: venueLanPorts.poeOutMode
         }
       }).unwrap()
     }
@@ -667,7 +667,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     setSelectedModel(defaultLanPortsData as VenueLanPorts)
     form?.setFieldsValue({
       ...defaultLanPortsData,
-      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPortsData?.poeOut),
+      // poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPortsData?.poeOut),
       lan: defaultLanPortsData?.lanPorts
     })
     let records = clone(resetModels)

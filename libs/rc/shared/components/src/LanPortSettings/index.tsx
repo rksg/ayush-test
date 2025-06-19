@@ -173,7 +173,7 @@ export function LanPortSettings (props: {
   }, [currentEthernetPortData])
 
   return (<>
-    {selectedPortCaps?.isPoeOutPort && <Form.Item
+    {/* {selectedPortCaps?.isPoeOutPort && <Form.Item
       name={['poeOut', index]}
       label={$t({ defaultMessage: 'Enable PoE Out' })}
       valuePropName='checked'
@@ -181,7 +181,7 @@ export function LanPortSettings (props: {
         disabled={readOnly}
         onChange={() => onChangedByCustom('poeOut')}
       />}
-    />}
+    />} */}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>

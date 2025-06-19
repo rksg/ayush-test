@@ -2,9 +2,9 @@ import { Form, Select, Switch } from 'antd'
 import { replace }              from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { CapabilitiesApModel, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
+import { Tooltip }                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { CapabilitiesApModel, PoeOutModeEnum, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
 
 export function LanPortPoeSettings (props: {
   selectedModel: VenueLanPorts | WifiApSetting,
@@ -14,6 +14,7 @@ export function LanPortPoeSettings (props: {
   disabled?: boolean
 }) {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
+  const isPoeOutModeEnabled = useIsSplitOn(Features.WIFI_POE_OUT_MODE_SETTING_TOGGLE)
   const { $t } = useIntl()
   const {
     selectedModel,
@@ -31,6 +32,28 @@ export function LanPortPoeSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
+  const { useWatch } = Form
+  const [apPoeOut, apPoeOutMode] =[
+    useWatch('poeOut'),
+    useWatch('poeOutMode')
+  ]
+
+  const poeOutModeDescriptions: Record<string, React.ReactNode> = {
+    [PoeOutModeEnum._802_3af]:
+      $t({ defaultMessage: '{lan1} and {lan2} support 802.3af PoE out (15.4 W).' }, {
+        lan1: <span style={{ color: '#000' }}>LAN 1</span>,
+        lan2: <span style={{ color: '#000' }}>LAN 2</span>
+      }),
+    [PoeOutModeEnum._802_3at]:
+      $t({ defaultMessage: '{lan1} supports 802.3at PoE out (30 W).' }, {
+        lan1: <span style={{ color: '#000' }}>LAN 1</span>
+      })
+  }
+
+  const poeOutModeLabels: Record<string, string> = {
+    [PoeOutModeEnum._802_3af]: '802.3af (15.4 W)',
+    [PoeOutModeEnum._802_3at]: '802.3at (30 W)'
+  }
 
   return (<>
     { (selectedModelCaps?.canSupportPoeMode) &&
@@ -54,12 +77,36 @@ export function LanPortPoeSettings (props: {
     /> }
     { selectedModelCaps?.canSupportPoeOut &&
     <Form.Item
-      hidden={true}
       name='poeOut'
+      label={$t({ defaultMessage: 'Enable PoE Out' })}
       valuePropName='checked'
       initialValue={selectedModel?.poeOut}
-      children={<Switch />}
+      children={<Switch
+        disabled={disabled || useVenueSettings}
+        onChange={() => onChangedByCustom('poeOut')}
+      />}
     />}
+    { isPoeOutModeEnabled && selectedModelCaps?.canSupportPoeOutMode &&
+    <Form.Item
+      label={$t({ defaultMessage: 'PoE Out Mode' })}
+      name='poeOutMode'
+      initialValue={selectedModel?.poeOutMode || '802.3af'}
+      hidden={!apPoeOut}
+      extra={
+        <span style={{ fontSize: 10 }}>
+          {poeOutModeDescriptions[apPoeOutMode] || 'Please select a PoE Out mode.'}
+        </span>
+      }
+      children={
+        <Select
+          data-testid='poeOutModeSelect'
+          onChange={() => onChangedByCustom('poeOutMode')}
+          options={selectedModelCaps?.poeOutModeCapabilities?.map(p => ({
+            label: poeOutModeLabels[p], value: p })) ?? []}
+        />
+      }
+    />
+    }
   </>)
 }
 
