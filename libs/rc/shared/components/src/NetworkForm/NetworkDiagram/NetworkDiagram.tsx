@@ -82,9 +82,15 @@ import OpenDiagram                       from '../assets/images/network-wizard-d
 import PskMacAuthProxyDiagram            from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
 import PskMacAuthDiagram                 from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
 import PskDiagram                        from '../assets/images/network-wizard-diagrams/psk.png'
-import SAMLWithOweDiagram                from '../assets/images/network-wizard-diagrams/saml-owe.png'
-import SAMLWithPskDiagram                from '../assets/images/network-wizard-diagrams/saml-psk.png'
-import SAMLDiagram                       from '../assets/images/network-wizard-diagrams/saml.png'
+import SamlAaaProxyDiagram               from '../assets/images/network-wizard-diagrams/saml-aaa-proxy.png'
+import SamlAaaDiagram                    from '../assets/images/network-wizard-diagrams/saml-aaa.png'
+import SamlOweAaaProxyDiagram            from '../assets/images/network-wizard-diagrams/saml-owe-aaa-proxy.png'
+import SamlOweAaaDiagram                 from '../assets/images/network-wizard-diagrams/saml-owe-aaa.png'
+import SamlOweDiagram                    from '../assets/images/network-wizard-diagrams/saml-owe.png'
+import SamlPskAaaProxyDiagram            from '../assets/images/network-wizard-diagrams/saml-psk-aaa-proxy.png'
+import SamlPskAaaDiagram                 from '../assets/images/network-wizard-diagrams/saml-psk-aaa.png'
+import SamlPskDiagram                    from '../assets/images/network-wizard-diagrams/saml-psk.png'
+import SamlDiagram                       from '../assets/images/network-wizard-diagrams/saml.png'
 import SelfSignInAaaProxyDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-aaa-proxy.png'
 import SelfSignInAaaDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in-aaa.png'
 import SelfSignInOweAaaProxyDiagram      from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa-proxy.png'
@@ -316,8 +322,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
       (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram)),
     [GuestNetworkTypeEnum.Directory]: getDirectoryServerDiagram(props),
-    [GuestNetworkTypeEnum.SAML]: wisprWithOwe ? SAMLWithOweDiagram
-      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram),
+    [GuestNetworkTypeEnum.SAML]: getSamlDiagram(props),
     [GuestNetworkTypeEnum.Workflow]: getWorkflowDiagram(wisprWithPsk, wisprWithOwe, props)
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
@@ -413,6 +418,23 @@ const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
     Diagram: DirectoryServerDiagram,
     AaaProxyDiagram: DirectoryServerAaaProxyDiagram,
     AaaDiagram: DirectoryServerAaaDiagram
+  },
+
+  // --- Saml ---
+  SamlOWE: {
+    Diagram: SamlOweDiagram,
+    AaaProxyDiagram: SamlOweAaaProxyDiagram,
+    AaaDiagram: SamlOweAaaDiagram
+  },
+  SamlPSK: {
+    Diagram: SamlPskDiagram,
+    AaaProxyDiagram: SamlPskAaaProxyDiagram,
+    AaaDiagram: SamlPskAaaDiagram
+  },
+  Saml: {
+    Diagram: SamlDiagram,
+    AaaProxyDiagram: SamlAaaProxyDiagram,
+    AaaDiagram: SamlAaaDiagram
   }
 }
 
@@ -447,6 +469,7 @@ const getHostApprovalDiagram = createCaptivePortalDiagramGenerator('HostApproval
 const getGuestPassDiagram = createCaptivePortalDiagramGenerator('GuestPass')
 const getClickThroughDiagram = createCaptivePortalDiagramGenerator('ClickThrough')
 const getDirectoryServerDiagram = createCaptivePortalDiagramGenerator('DirectoryServer')
+const getSamlDiagram = createCaptivePortalDiagramGenerator('Saml')
 
 
 
