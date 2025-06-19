@@ -30,9 +30,7 @@ import ClickThroughDiagram               from '../assets/images/network-wizard-d
 import CloudpathWithOweDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-owe.png'
 import CloudpathProxyWithOweDiagram      from '../assets/images/network-wizard-diagrams/cloudpath-proxy-owe.png'
 import CloudpathProxyWithPskDiagram      from '../assets/images/network-wizard-diagrams/cloudpath-proxy-psk.png'
-import CloudpathProxyDiagram             from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
 import CloudpathWithPskDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
-import CloudpathDiagram                  from '../assets/images/network-wizard-diagrams/cloudpath.png'
 import DirectoryServerAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/directory-server-aaa-proxy.png'
 import DirectoryServerAaaDiagram         from '../assets/images/network-wizard-diagrams/directory-server-aaa.png'
 import DirectoryServerOweAaaProxyDiagram from '../assets/images/network-wizard-diagrams/directory-server-owe-aaa-proxy.png'
@@ -272,23 +270,6 @@ function getAAADiagram (props: AaaDiagramProps) {
   return getCommonAAADiagram(props)
 }
 
-function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
-  props: AaaDiagramProps) {
-  let useProxy = props.enableAuthProxy
-  if (props.showButtons) {
-    const enableAuthProxyService = !!(props.enableAuthProxy && props.enableAaaAuthBtn)
-    const enableAccProxyService = !!(props.enableAccountingProxy && !props.enableAaaAuthBtn)
-    useProxy = enableAuthProxyService || enableAccProxyService
-  }
-  if (useProxy) {
-    return wisprWithPsk ? CloudpathProxyWithPskDiagram :
-      (wisprWithOwe ? CloudpathProxyWithOweDiagram : CloudpathProxyDiagram)
-  } else {
-    return wisprWithPsk ? CloudpathWithPskDiagram :
-      (wisprWithOwe ? CloudpathWithOweDiagram : CloudpathDiagram)
-  }
-}
-
 function getWorkflowDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
   let useProxy = props.enableAccountingProxy
@@ -319,7 +300,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.SelfSignIn]: getSelfSignInDiagram(props),
     [GuestNetworkTypeEnum.HostApproval]: getHostApprovalDiagram(props),
     [GuestNetworkTypeEnum.GuestPass]: getGuestPassDiagram(props),
-    [GuestNetworkTypeEnum.Cloudpath]: getCloudpathDiagram(wisprWithPsk, wisprWithOwe, props),
+    [GuestNetworkTypeEnum.Cloudpath]: getCloudpathDiagram(props),
     [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept ?
       (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
@@ -331,7 +312,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
 interface CaptivePortalDiagramSet {
-  Diagram: string;
+  Diagram?: string;
   AaaProxyDiagram: string;
   AaaDiagram: string;
 }
@@ -438,11 +419,26 @@ const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
     Diagram: SamlDiagram,
     AaaProxyDiagram: SamlAaaProxyDiagram,
     AaaDiagram: SamlAaaDiagram
+  },
+
+  // --- Cloudpath ---
+  CloudpathOWE: {
+    AaaProxyDiagram: CloudpathProxyWithOweDiagram,
+    AaaDiagram: CloudpathWithOweDiagram
+  },
+  CloudpathPSK: {
+    AaaProxyDiagram: CloudpathProxyWithPskDiagram,
+    AaaDiagram: CloudpathWithPskDiagram
+  },
+  Cloudpath: {
+    AaaProxyDiagram: OpenAaaProxyDiagram,
+    AaaDiagram: OpenAaaDiagram
   }
 }
 
 function createCaptivePortalDiagramGenerator (
-  prefix: keyof typeof captivePortalDiagramMapping): (props: CaptivePortalDiagramProps) => string {
+  prefix: keyof typeof captivePortalDiagramMapping):
+    (props: CaptivePortalDiagramProps) => string | undefined {
   return (props: CaptivePortalDiagramProps) => {
     const securityTypeKey: 'OWE' | 'PSK' | '' =
       props.networkSecurity === 'OWE' || props.networkSecurity === 'PSK' ?
@@ -452,19 +448,21 @@ function createCaptivePortalDiagramGenerator (
     const diagrams = captivePortalDiagramMapping[key]
 
     return getCommonCaptivePortalDiagram(
-      props, diagrams.Diagram, diagrams.AaaProxyDiagram, diagrams.AaaDiagram
+      props, diagrams.AaaProxyDiagram, diagrams.AaaDiagram, diagrams.Diagram
     )
   }
 }
 
 function getCommonCaptivePortalDiagram (
-  props: NetworkDiagramProps,
-  nonAaaDiagram:string,
+  props: CaptivePortalDiagramProps,
   aaaProxyDiagram:string,
-  aaaNonProxyDiagram:string
+  aaaNonProxyDiagram:string,
+  nonAaaDiagram?:string
 ) {
-  return (props.enableAccountingService)?
-    getAAADiagramByParams(props, aaaProxyDiagram, aaaNonProxyDiagram) : nonAaaDiagram
+
+  return (
+    props.networkPortalType === GuestNetworkTypeEnum.Cloudpath || props.enableAccountingService
+  )? getAAADiagramByParams(props, aaaProxyDiagram, aaaNonProxyDiagram) : nonAaaDiagram
 }
 
 const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
@@ -473,8 +471,7 @@ const getGuestPassDiagram = createCaptivePortalDiagramGenerator('GuestPass')
 const getClickThroughDiagram = createCaptivePortalDiagramGenerator('ClickThrough')
 const getDirectoryServerDiagram = createCaptivePortalDiagramGenerator('DirectoryServer')
 const getSamlDiagram = createCaptivePortalDiagramGenerator('Saml')
-
-
+const getCloudpathDiagram = createCaptivePortalDiagramGenerator('Cloudpath')
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()

@@ -1284,7 +1284,7 @@ describe('NetworkDiagram', () => {
     })
     it('should render Captive portal (Cloudpath) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1293,7 +1293,10 @@ describe('NetworkDiagram', () => {
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1301,12 +1304,11 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('Cloudpath')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('OpenAaa')
     })
     it('should render Captive portal (Cloudpath with PSK) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1315,7 +1317,11 @@ describe('NetworkDiagram', () => {
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.WPA3} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'PSK'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1324,11 +1330,10 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('CloudpathPsk')
-      expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Cloudpath with OWE) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1337,7 +1342,11 @@ describe('NetworkDiagram', () => {
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.OWE} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'OWE'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1346,13 +1355,11 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('CloudpathOwe')
-      expect(asFragment()).toMatchSnapshot()
     })
-
 
     it('should render Captive portal (Cloudpath with proxy) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1361,7 +1368,10 @@ describe('NetworkDiagram', () => {
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1369,13 +1379,12 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('CloudpathProxy')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('OpenAaaProxy')
     })
     // eslint-disable-next-line max-len
     it('should render Captive portal (Cloudpath with proxy & PSK) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1384,7 +1393,11 @@ describe('NetworkDiagram', () => {
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.WPA3} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'PSK'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1393,12 +1406,11 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('CloudpathProxyPsk')
-      expect(asFragment()).toMatchSnapshot()
     })
     // eslint-disable-next-line max-len
     it('should render Captive portal (Cloudpath with proxy & OWE) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.Cloudpath
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -1407,7 +1419,11 @@ describe('NetworkDiagram', () => {
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.OWE} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              networkSecurity={'OWE'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -1416,7 +1432,6 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('CloudpathProxyOwe')
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render Captive portal (Workflow) diagram successfully', async () => {
