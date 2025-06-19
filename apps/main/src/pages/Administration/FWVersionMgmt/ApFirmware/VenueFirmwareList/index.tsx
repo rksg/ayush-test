@@ -60,7 +60,6 @@ import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
 import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
 import { DowngradeDialog }         from './DowngradeDialog'
 import { RevertDialog }            from './RevertDialog'
-import { UpdateNowDialog }         from './UpdateNowDialog'
 import { useApEolFirmware }        from './useApEolFirmware'
 
 function useColumns () {
@@ -489,7 +488,7 @@ const VenueFirmwareTable = () => {
           onClick: () => setPreferencesModelVisible(true)
         }])}
       />
-      {updateModelVisible && <UpdateNowDialogSwitcher
+      {updateModelVisible && <AdvancedUpdateNowDialog
         data={venues}
         availableVersions={upgradeVersions}
         onCancel={handleUpdateModalCancel}
@@ -526,33 +525,6 @@ function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
 
 export function VenueFirmwareList () {
   return <VenueFirmwareTable />
-}
-
-interface UpdateNowDialogSwitcherProps {
-  onCancel: () => void,
-  onSubmit: (data: UpdateNowRequest[]) => void,
-  data?: FirmwareVenue[],
-  availableVersions?: FirmwareVersion[]
-}
-
-function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
-  const isEolApPhase2Enabled = useIsSplitOn(Features.EOL_AP_2022_12_PHASE_2_TOGGLE)
-  const { getAvailableEolApFirmwareGroups } = useApEolFirmware()
-  // eslint-disable-next-line max-len
-  const eolApFirmwareGroups = getAvailableEolApFirmwareGroups(props.data).filter(eolGroup => eolGroup.isUpgradable)
-
-  const eolApFirmware = eolApFirmwareGroups.length > 0
-    ? {
-      eol: true,
-      eolName: eolApFirmwareGroups[0].name,
-      latestEolVersion: eolApFirmwareGroups[0].latestEolVersion,
-      eolModels: eolApFirmwareGroups[0].apModels
-    }
-    : {}
-
-  return isEolApPhase2Enabled
-    ? <AdvancedUpdateNowDialog {...props} />
-    : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
 }
 
 interface RevertDialogSwitcherProps {

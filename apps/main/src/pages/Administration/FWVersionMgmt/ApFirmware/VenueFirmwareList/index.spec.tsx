@@ -107,8 +107,7 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
-    within(confirmDialog).getByText('Active Device')
-    const updateVenueButton = within(confirmDialog).getByText('Run Update')
+    const updateVenueButton = within(confirmDialog).getByText('Update Firmware')
     await userEvent.click(updateVenueButton)
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
@@ -133,14 +132,13 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(updateButton)
 
     const updateNowDialog = await screen.findByRole('dialog')
-    await userEvent.click(within(updateNowDialog).getByText('Run Update'))
+    await userEvent.click(within(updateNowDialog).getByText('Update Firmware'))
     await waitFor(() => expect(updateNowDialog).not.toBeVisible())
   })
 
   it('should update selected row with advanced dialog', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EOL_AP_2022_12_PHASE_2_TOGGLE
-        || featureFlag !== Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
+      return featureFlag !== Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
     })
 
     const updateNowFn = jest.fn()
@@ -234,10 +232,6 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should show a message in the Update Now dialog when AP Models is empty', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EOL_AP_2022_12_PHASE_2_TOGGLE
-    })
-
     render(
       <Provider>
         <VenueFirmwareList />
@@ -267,8 +261,7 @@ describe('Firmware Venues Table', () => {
 
   it('should show the correct AP Models/Families when the corresponding FF is on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EOL_AP_2022_12_PHASE_2_TOGGLE
-        || featureFlag === Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
+      return featureFlag === Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
     })
 
     render(
