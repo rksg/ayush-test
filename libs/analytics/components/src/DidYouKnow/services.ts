@@ -21,7 +21,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     customFacts: build.query<
       ReturnType<typeof getFactsData>,
-      (PathFilter | DashboardFilter) & { requestedList: string[], weekRange: boolean }
+      (PathFilter | DashboardFilter) & { requestedList: string[] }
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
@@ -55,9 +55,9 @@ export const api = dataApi.injectEndpoints({
           transformResponse: (response: Response<DidYouKnowData[]>) =>
             getFactsData(response.network.hierarchyNode.facts)
         }),
-    customAvailableFacts: build.query<
+    availableFacts: build.query<
       string[][],
-      (PathFilter | DashboardFilter) & { weekRange: boolean }
+      (PathFilter | DashboardFilter)
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
@@ -90,7 +90,7 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useCustomFactsQuery, useCustomAvailableFactsQuery } = api
+export const { useCustomFactsQuery, useAvailableFactsQuery } = api
 
 export function useFactsQuery (
   factsSets: string[][] | undefined,
@@ -102,13 +102,9 @@ export function useFactsQuery (
     factsSets[offset].every(key => loaded.includes(key)))
 
   return useCustomFactsQuery(
-    { ...filters, requestedList: factsSets?.[offset] ?? [], weekRange: true },
+    { ...filters, requestedList: factsSets?.[offset] ?? [] },
     { skip: hasData || _.isEmpty(factsSets) }
   )
-}
-
-export function useAvailableFactsQuery (filters: PathFilter | DashboardFilter) {
-  return useCustomAvailableFactsQuery({ ...filters, weekRange: true })
 }
 
 const getFilterVariables = (payload: (PathFilter | DashboardFilter)) => {
