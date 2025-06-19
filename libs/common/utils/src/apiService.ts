@@ -5,7 +5,7 @@ import { generatePath, Params }                                                 
 import { get }                          from '@acx-ui/config'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
-import { getSiteType, getTenantId, isRecSite }          from './getTenantId'
+import { getTenantId, isRecSite }            from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
 export interface ApiInfo {
