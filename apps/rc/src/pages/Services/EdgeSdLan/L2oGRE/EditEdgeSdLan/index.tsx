@@ -1,4 +1,5 @@
 import { Form }    from 'antd'
+import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                                from '@acx-ui/components'
@@ -60,7 +61,7 @@ export const EditEdgeSdLan = () => {
 
   const handleFinish = async (formData: EdgeSdLanFormType) => {
     try {
-      const payload = transformToApiData(formData)
+      const payload = omit(transformToApiData(formData), 'id')
 
       await new Promise(async (resolve, reject) => {
         await updateEdgeSdLan(
