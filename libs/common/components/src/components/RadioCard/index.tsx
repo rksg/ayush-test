@@ -31,6 +31,7 @@ export type RadioCardProps = RadioProps & {
   onClick?: () => void
   isBetaFeature?: boolean
   helpIcon?: React.ReactNode
+  disabledTooltip?: React.ReactNode
 }
 
 export const categoryMapping = {
@@ -56,9 +57,8 @@ const categoryIconMapping = {
 
 export function RadioCard ({
   type = 'default', title, description, value, categories = [], categoryDisplayMode = 'text',
-  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, ...rest
+  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, disabledTooltip, ...rest
 }: RadioCardProps) {
-  const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
       { isBetaFeature ? getTitleWithIndicator(title as string) : title }
@@ -66,14 +66,14 @@ export function RadioCard ({
     </Title>
     <Description>{description}</Description>
     <CategoryViewer categories={categories} categoryDisplayMode={categoryDisplayMode} />
-    {(type === 'button' && buttonText) &&
-      <Button
-        {...buttonProps}
-        onClick={onClick}
-        size='small'
-        type='primary'
-      >{$t(buttonText)}</Button>}
-    {type === 'radio' && <Radio value={value} {...rest}/>}
+    <ActionButton
+      type={type}
+      buttonText={buttonText}
+      buttonProps={buttonProps}
+      onClick={onClick}
+      tooltip={disabledTooltip}
+    />
+    {type === 'radio' && <RadioButton value={value} tooltip={disabledTooltip} {...rest} />}
   </Card>
 }
 
@@ -98,6 +98,37 @@ function CategoryViewer (
     </CategoryIcon>
   })}
   </CategoryWrapper>
+}
+
+// eslint-disable-next-line max-len
+type ActionButtonProps = Pick<RadioCardProps, 'type' | 'buttonText' | 'buttonProps' | 'onClick'> & { tooltip?: React.ReactNode }
+function ActionButton (props: ActionButtonProps) {
+  const { type, buttonText, buttonProps, onClick, tooltip } = props
+  const { $t } = useIntl()
+
+  if (type !== 'button' || !buttonText) return null
+
+  const button = <Button
+    {...buttonProps}
+    onClick={onClick}
+    size='small'
+    type='primary'
+  >{$t(buttonText)}</Button>
+
+  return tooltip
+    ? <Tooltip title={tooltip} ><span>{button}</span></Tooltip>
+    : button
+}
+
+type RadioButtonProps = RadioProps & Pick<RadioCardProps, 'value'> & { tooltip?: React.ReactNode }
+function RadioButton (props: RadioButtonProps) {
+  const { value, tooltip, ...rest } = props
+
+  const radio = <Radio value={value} {...rest}/>
+
+  return tooltip
+    ? <Tooltip title={tooltip}><span>{radio}</span></Tooltip>
+    : radio
 }
 
 RadioCard.Radio = Radio

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }                                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus, WIFICALLING_LIMIT_NUMBER } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader, Tooltip }                                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                              from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, getWifiCallingLimitReachedMessage, SimpleListTooltip, useEnforcedStatus, WIFICALLING_LIMIT_NUMBER } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
@@ -145,6 +145,7 @@ export default function WifiCallingTable () {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const hasReachedLimit = (tableQuery.data?.totalCount ?? 0) >= WIFICALLING_LIMIT_NUMBER
 
   return (
     <>
@@ -162,13 +163,15 @@ export default function WifiCallingTable () {
             rbacOpsIds={getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
-            <Button
-              disabled={tableQuery.data?.totalCount
-                ? tableQuery.data?.totalCount >= WIFICALLING_LIMIT_NUMBER
-                : false}
-              type='primary'>
-              {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
-            </Button>
+            {hasReachedLimit
+              ? <Tooltip title={getWifiCallingLimitReachedMessage()}><span>
+                <Button disabled={true} type='primary'>
+                  {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
+                </Button>
+              </span></Tooltip>
+              : <Button type='primary'>
+                {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
+              </Button>}
           </TenantLink>
         ])}
       />

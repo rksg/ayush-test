@@ -99,3 +99,6 @@ export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, Message
   [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
   [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }
+
+// eslint-disable-next-line max-len
+export const profileLimitReachedMessage = defineMessage({ defaultMessage: 'You have reached the limit of {maxCount} profiles' })

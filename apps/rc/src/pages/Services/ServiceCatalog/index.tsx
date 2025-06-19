@@ -34,6 +34,7 @@ export interface ServiceCardItem {
     helpIcon?: React.ReactNode
     isBetaFeature?: boolean
     readonly?: boolean
+    isLimitReached?: boolean
   }[]
 }
 
@@ -156,7 +157,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WIFI_CALLING,
           categories: [RadioCardCategory.WIFI],
-          readonly: isWifiCallingLimitReached
+          isLimitReached: isWifiCallingLimitReached
         }
       ]
     },
@@ -218,6 +219,7 @@ export default function ServiceCatalog () {
                     type={'button'}
                     helpIcon={item.helpIcon}
                     isBetaFeature={item.isBetaFeature}
+                    isLimitReached={item.isLimitReached}
                   />
                 </GridCol>
             })}
