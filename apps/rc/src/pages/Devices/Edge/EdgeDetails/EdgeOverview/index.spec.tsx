@@ -236,33 +236,6 @@ describe('Edge Detail Overview', () => {
       .toHaveAttribute('aria-selected', 'true')
   })
 
-  it('should hide monitor tab when EDGE_STATS_TOGGLE disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <EdgeDetailsDataContext.Provider
-          value={{
-            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            currentCluster: mockEdgeCluster,
-            isEdgeStatusLoading: false,
-            isClusterLoading: false
-          }}
-        >
-          <EdgeOverview />
-        </EdgeDetailsDataContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(await screen.findByTestId('rc-EdgeInfoWidget')).toBeVisible()
-
-    // ports tab should be default active
-    expect(await screen.findByRole('tab', { name: 'Ports' }))
-      .toHaveAttribute('aria-selected', 'true')
-    expect(screen.queryByRole('tab', { name: 'Monitor' })).toBeNull()
-  })
-
   it('should show lags tab correctly', async () => {
     render(
       <Provider>

@@ -50,8 +50,6 @@ describe('AddEdge', () => {
   }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
@@ -131,7 +129,7 @@ describe('AddEdge', () => {
   })
 
   it('should add edge with cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -159,7 +157,7 @@ describe('AddEdge', () => {
   })
 
   it('should add edge without cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -208,7 +206,7 @@ describe('AddEdge api fail', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
 
     mockServer.use(
       rest.post(
