@@ -17,7 +17,6 @@ export interface CardProps extends Pick<AntCardProps, 'children' | 'className' |
     actionName: string
     onActionClick: () => void
   }
-  extra?: React.ReactNode
 }
 
 function Card ({
@@ -69,7 +68,6 @@ function Card ({
               <UI.LinkButton type='link' onClick={props.action.onActionClick}>
                 {props.action.actionName}
               </UI.LinkButton> : null}
-            {props.extra ? props.extra : null}
           </Space>
         }
       >

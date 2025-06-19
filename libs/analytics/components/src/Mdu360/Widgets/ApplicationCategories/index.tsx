@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -6,17 +6,14 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   DonutChart,
   ContentSwitcher,
-  Card,
   Loader,
   NoData,
-  ContentSwitcherProps
+  ContentSwitcherProps,
+  HistoricalCard
 } from '@acx-ui/components'
 import { formats } from '@acx-ui/formatter'
 
-import {
-  ApplicationCategoriesData,
-  useTopNApplicationCategoriesQuery
-} from './services'
+import { useTopNApplicationCategoriesQuery } from './services'
 
 export interface ApplicationCategoriesFilters {
   startDate: string;
@@ -29,9 +26,6 @@ export const ApplicationCategories = ({
   filters: ApplicationCategoriesFilters;
 }) => {
   const { $t } = useIntl()
-  const [selectedTab, setSelectedTab] =
-    useState<keyof ApplicationCategoriesData>('clientCount')
-
   const { startDate: start, endDate: end } = filters
   const queryResults = useTopNApplicationCategoriesQuery({
     // TODO: replace this with the path when provided by ResidentExperienceTab
@@ -41,47 +35,16 @@ export const ApplicationCategories = ({
     n: 10
   })
   const results = queryResults?.data
-  const chartData = results?.[selectedTab]
-  const title = $t({ defaultMessage: 'Top 10 Application Categories' })
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
     () => [
       {
         label: $t({ defaultMessage: 'Client Count' }),
         value: 'clientCount',
-        children: null
-      },
-      {
-        label: $t({ defaultMessage: 'Data Usage' }),
-        value: 'dataUsage',
-        children: null
-      }
-    ],
-    [$t]
-  )
-
-  return (
-    <Loader states={[queryResults]}>
-      <Card
-        title={title}
-        extra={
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            value={selectedTab}
-            onChange={(value) =>
-              setSelectedTab(value as keyof ApplicationCategoriesData)
-            }
-            size='small'
-            align='center'
-            style={{ padding: 0 }}
-            noPadding
-          />
-        }
-      >
-        {chartData?.length ? (
+        children: results?.clientCount.length ? (
           <AutoSizer>
             {({ height, width }) => (
               <DonutChart
-                data={chartData}
+                data={results.clientCount}
                 style={{ width, height }}
                 legend='name-bold-value'
                 size='medium'
@@ -89,17 +52,60 @@ export const ApplicationCategories = ({
                 showTotal
                 showValue
                 showLabel
-                {...(selectedTab === 'dataUsage' && {
-                  dataFormatter: (value) =>
-                    formats.bytesFormat(value as number)
-                })}
               />
             )}
           </AutoSizer>
         ) : (
           <NoData />
-        )}
-      </Card>
+        )
+      },
+      {
+        label: $t({ defaultMessage: 'Data Usage' }),
+        value: 'dataUsage',
+        children: results?.dataUsage.length ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <DonutChart
+                data={results.dataUsage}
+                style={{ width, height }}
+                legend='name-bold-value'
+                size='medium'
+                showLegend
+                showTotal
+                showValue
+                showLabel
+                dataFormatter={(value) =>
+                  formats.bytesFormat(value as number)}
+              />
+            )}
+          </AutoSizer>
+        ) : (
+          <NoData />
+        )
+      }
+    ],
+    [$t, results?.clientCount, results?.dataUsage]
+  )
+
+  return (
+    <Loader states={[]}>
+      <HistoricalCard
+        title={$t({ defaultMessage: 'Top 10 Application Categories' })}
+      >
+        <AutoSizer>
+          {({ height, width }) => (
+            <div
+              style={{ display: 'block', height, width, marginTop: '-38px' }}
+            >
+              <ContentSwitcher
+                tabDetails={tabDetails}
+                align='right'
+                size='small'
+              />
+            </div>
+          )}
+        </AutoSizer>
+      </HistoricalCard>
     </Loader>
   )
 }
