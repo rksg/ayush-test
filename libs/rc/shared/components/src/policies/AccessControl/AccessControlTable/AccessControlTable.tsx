@@ -33,7 +33,10 @@ export function AccessControlTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      noDetails: true
+    },
     enableRbac
   })
 

@@ -218,6 +218,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    batchCreateSwitchVenueSchedulesV1001: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          FirmwareRbacUrlsInfo.createSwitchVenueSchedules, requests, fetchWithBQ, v1_1Header
+        )
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -313,60 +321,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getSwitchVenueVersionList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const headers = v1Header
-        // eslint-disable-next-line max-len
-        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
-        let typeString = ''
-        if (queryString?.filters?.type && queryString.filters.type.join(',') === 'Release') {
-          typeString = 'RECOMMENDED'
-        }
-        // eslint-disable-next-line max-len
-        if (queryString?.filters?.type && queryString.filters.type.join(',') === 'Beta') {
-          typeString = 'BETA'
-        }
-        if (enableRbac) {
-          const request =
-            createHttpRequest(FirmwareRbacUrlsInfo.getSwitchVenueVersionList, params, headers)
-          return {
-            ...request,
-            body: JSON.stringify({
-              // eslint-disable-next-line max-len
-              firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
-              searchFilter: queryString?.searchString ?? ''
-            })
-          }
-        } else {
-          const request = createHttpRequest(FirmwareUrlsInfo.getSwitchVenueVersionList, params)
-          return {
-            ...request,
-            body: {
-              firmwareType: typeString,
-              // eslint-disable-next-line max-len
-              firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
-              search: queryString?.searchString ?? '',
-              updateAvailable: ''
-            }
-          }
-        }
-      },
-      transformResponse (result: {
-        upgradeVenueViewList?: FirmwareSwitchVenue[]
-      } | FirmwareSwitchVenue[]) {
-        const data = Array.isArray(result) ? result : result.upgradeVenueViewList ?? []
-        const totalCount = data.length
-
-        return {
-          data,
-          page: 1,
-          totalCount
-        } as TableResult<FirmwareSwitchVenue>
-      },
-      keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     getSwitchAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -388,17 +342,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? v1Header : {}
-        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
-        const req = createHttpRequest(switchUrls.getSwitchCurrentVersions, params, headers)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
-    }),
     getSwitchCurrentVersionsV1001: build.query<CurrentVersionsV1002, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -409,7 +352,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitcDefaultVersions: build.query<CurrentVersions, RequestPayload>({
+    getSwitchDefaultVersions: build.query<CurrentVersions, RequestPayload>({
       query: ({ params, enableRbac, customHeaders }) => {
         const headers = enableRbac ? v1Header : {}
         const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
@@ -848,6 +791,7 @@ export const {
   useUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesV1001Mutation,
+  useBatchCreateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchLatestFirmwareListQuery,
   useLazyGetSwitchLatestFirmwareListQuery,
   useGetSwitchLatestFirmwareListV1001Query,
@@ -857,15 +801,12 @@ export const {
   useGetSwitchDefaultFirmwareListV1001Query,
   useLazyGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchFirmwareVersionIdListQuery,
-  useGetSwitchVenueVersionListQuery,
-  useLazyGetSwitchVenueVersionListQuery,
   useGetSwitchVenueVersionListV1001Query,
   useLazyGetSwitchVenueVersionListV1001Query,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchAvailableFirmwareListV1001Query,
-  useGetSwitchCurrentVersionsQuery,
   useGetSwitchCurrentVersionsV1001Query,
-  useGetSwitcDefaultVersionsQuery,
+  useGetSwitchDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
   useUpdateSwitchFirmwarePredownloadMutation,
   useGetAvailableEdgeFirmwareVersionsQuery,

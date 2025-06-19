@@ -33,6 +33,9 @@ const deviceOnboardingActions: ActionType[] = [
 const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT
 ]
+const authenticationActions: ActionType[] = [
+  ActionType.SAML_AUTH
+]
 
 export default function ActionsLibrary (props: ActionLibraryProps) {
   const { $t } = useIntl()
@@ -44,6 +47,8 @@ export default function ActionsLibrary (props: ActionLibraryProps) {
 
 
   const isCertActionEnabled = useIsSplitOn(Features.WORKFLOW_CERTIFICATE_TEMPLATE_ACTION)
+  const isSamlActionEnabled = useIsSplitOn(Features.WORKFLOW_SAML_AUTH_ACTION)
+
   const dynamicDeviceOnboardingActions = useMemo(() => {
     const actions = [...deviceOnboardingActions]
 
@@ -95,7 +100,7 @@ export default function ActionsLibrary (props: ActionLibraryProps) {
         { isLoading: false, isFetching: isDefLoading }
       ]}
     >
-      <UI.Collapse defaultActiveKey={[1, 2, 3]} ghost={true}>
+      <UI.Collapse defaultActiveKey={[1, 2, 3, 4]} ghost={true}>
         <Panel header={$t({ defaultMessage: 'User Interaction' })} key={1}>
           <GridRow>
             {starterActions.map(actionType =>
@@ -122,6 +127,21 @@ export default function ActionsLibrary (props: ActionLibraryProps) {
             )}
           </GridRow>
         </Panel>
+        { isSamlActionEnabled &&
+          <Panel header={$t({ defaultMessage: 'Authentication' })} key={4}>
+            <GridRow>
+              {authenticationActions.map(actionType =>
+                <GridCol key={actionType.toString()} col={{ span: 12 }}>
+                  <ActionCard
+                    actionType={actionType}
+                    handleClick={onClick}
+                    disabled={isDenied(actionType)}
+                  />
+                </GridCol>
+              )}
+            </GridRow>
+          </Panel>
+        }
         <Panel header={$t({ defaultMessage: 'Operational' })} key={3}>
           <GridRow>
             {resultActions.map(actionType =>

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                         from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier }                                                                                    from '@acx-ui/user'
@@ -24,7 +24,6 @@ export function VenueServicesTab () {
   const { isTemplate } = useConfigTemplate()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isEdgeEnabled = useIsEdgeReady() && !isTemplate
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE) && !isTemplate
@@ -48,7 +47,7 @@ export function VenueServicesTab () {
       filters: { venueId: [venueId] }
     } },
     {
-      skip: !!!venueId || !isEdgeEnabled,
+      skip: !!!venueId || isTemplate,
       selectFromResult: ({ data, isLoading }) => ({
         edgeData: data?.data[0],
         isEdgeLoading: isLoading,

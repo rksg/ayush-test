@@ -102,7 +102,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const updateFn = jest.fn()
 
     mockServer.use(
-      rest.put(
+      rest.patch(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           updateFn(req.body)
@@ -273,7 +273,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const downgradeFn = jest.fn()
 
     mockServer.use(
-      rest.put(
+      rest.patch(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           downgradeFn(req.body)

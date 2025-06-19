@@ -70,19 +70,4 @@ describe('SubscriptionTabHeader', () => {
     expect(await screen.findByText(/2\s+\/\s+130/i)).toBeVisible()
     expect(mockedTierReq).not.toBeCalled()
   })
-
-  it('should filter edge data when edge FF is not denabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <SubscriptionsTabHeader />
-      </Provider>, {
-        route: { params }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(2)
-    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
-  })
 })
