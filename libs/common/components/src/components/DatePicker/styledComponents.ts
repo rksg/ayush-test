@@ -145,11 +145,19 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-left-padding: ${props => props.showLabel ? '0' : '25px'};
 
   > .ant-picker {
+     ${props => props.showLabel && `
+      &:hover{
+        border-color: var(--acx-neutrals-70);
+      }
+    `}
     &:not(.ant-picker-focused) {
       transition: width 1ms linear 500ms;
       .ant-picker-input > input {
         color: ${props => props.showLabel ? 'var(--acx-neutrals-50)' : 'var(--acx-primary-black)'};
       }
+      ${props => props.filterLabel && !props.showLabel && `
+        border-color: var(--acx-neutrals-70);
+      `}
     }
     ${props => props.selectionType !== DateRange.custom && !props.isCalendarOpen
     ? `
