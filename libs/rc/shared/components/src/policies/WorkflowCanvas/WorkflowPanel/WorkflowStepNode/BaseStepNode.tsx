@@ -108,14 +108,14 @@ export default function BaseStepNode (props: NodeProps
       customContent: {
         action: 'DELETE',
         entityName: selectedKey === 'deleteStepDescendants' ?
-          $t({ defaultMessage: 'Action and Children' })
-          : $t({ defaultMessage: 'Action' }),
+          $t({ defaultMessage: 'Step and Children' })
+          : $t({ defaultMessage: 'Step' }),
         entityValue: $t(ActionTypeTitle[props.type as ActionType])
-          ?? $t({ defaultMessage: 'Action' })
+          ?? $t({ defaultMessage: 'Step' })
       },
       content: selectedKey === 'deleteStepDescendants' ?
-        $t({ defaultMessage: 'Do you want to delete this action with all of its child actions?' })
-        : $t({ defaultMessage: 'Do you want to delete this action?' }),
+        $t({ defaultMessage: 'Do you want to delete this step with all of its child steps?' })
+        : $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
         selectedKey === 'deleteStepDescendants' ?
           deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId,
@@ -157,7 +157,7 @@ export default function BaseStepNode (props: NodeProps
           />
         </Tooltip>
       }
-      <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
+      <Tooltip title={$t({ defaultMessage: 'Delete this step' })}>
         {workflowValidationEnhancementFFToggle ?
           <Popover
             zIndex={1000}
@@ -167,9 +167,9 @@ export default function BaseStepNode (props: NodeProps
                 selectable={false}
                 onClick={(e) => onDeleteStepClick(e.key)}
                 items={[
-                  { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Action Only' }) },
+                  { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Step Only' }) },
                   props.data?.isEnd ? null : { key: 'deleteStepDescendants',
-                    label: $t({ defaultMessage: 'Delete Action and Children' }) }
+                    label: $t({ defaultMessage: 'Delete Step and Children' }) }
                 ]}
               />}
             trigger={'hover'}
