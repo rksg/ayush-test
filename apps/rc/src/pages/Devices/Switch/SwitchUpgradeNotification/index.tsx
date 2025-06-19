@@ -43,11 +43,8 @@ export function SwitchUpgradeNotification (props: {
     type,
     validateModel,
     stackUnitsMinLimitaion,
-    venueFirmware,
-    venueAboveTenFirmware,
     venueFirmwareV1002,
     switchModel } = props
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const upgradeDescription = {
     stack: [{
       // normal
@@ -127,26 +124,16 @@ export function SwitchUpgradeNotification (props: {
   const getVenueFirmware = function () {
     if (!switchModel) return ''
 
-    if (isSwitchFirmwareV1002Enabled) {
-      const model = checkSwitchModelGroup(validateModel[0])
-      return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
-    } else {
-      return (switchModel.includes('8200') || switchModel.includes('8100') ? venueAboveTenFirmware : venueFirmware)
-    }
+    const model = checkSwitchModelGroup(validateModel[0])
+    return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
   }
 
   const getVenueCategory = function () {
     if (!switchModel) return ''
 
-    if (isSwitchFirmwareV1002Enabled) {
-      const model = checkSwitchModelGroup(validateModel[0])
+    const model = checkSwitchModelGroup(validateModel[0])
 
-      return SwitchModelGroupDisplayText[model]
-    } else {
-      if (switchModel.includes('8200')) return '8200'
-      if (switchModel.includes('8100')) return '8100'
-      return '7000'
-    }
+    return SwitchModelGroupDisplayText[model]
 
   }
 
