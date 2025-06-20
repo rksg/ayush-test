@@ -832,13 +832,65 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
       kpis: [
         // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
         //'switchReachability',
-        'switchMulticastIpv4Utilization',
-        'switchMulticastIpv6Utilization',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',
         'switchPoeUtilization'
       ]
+    }
+  }
+  if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchInterfaceAnomalies')
+    kpis.performance.kpis.push('switchStormControl')
+    kpis.connection.kpis.push('switchDhcp')
+  }
+  return kpis
+}
+
+export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
+  const kpis = {
+    overview: {
+      kpis: [
+        'switchUplinkPortUtilization'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability'
+      ]
+    },
+    connection: {
+      kpis: [
+        'switchAuthentication'
+      ]
+    },
+    performance: {
+      kpis: [
+        'switchPortUtilization',
+        'switchUplinkPortUtilization'
+      ]
+    },
+    infrastructure: {
+      kpis: {
+        System: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ],
+        Table: [
+          'switchMulticastIpv4Utilization',
+          'switchMulticastIpv6Utilization'
+        ]
+      }
+
+      // [
+      //   // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+      //   //'switchReachability',
+      //   'switchMulticastIpv4Utilization',
+      //   'switchMulticastIpv6Utilization',
+      //   'switchMemoryUtilization',
+      //   'switchCpuUtilization',
+      //   'switchesTemperature',
+      //   'switchPoeUtilization'
+      // ]
     }
   }
   if (is10010eKPIsEnabled) {

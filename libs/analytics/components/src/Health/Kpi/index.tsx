@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
+import { isArray }  from 'lodash'
 import moment       from 'moment-timezone'
 import { useIntl }  from 'react-intl'
 
@@ -14,10 +15,10 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
+import { GridCol, GridRow, Loader, Button, Tabs } from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { SwitchScopes, WifiScopes }               from '@acx-ui/types'
 import {
   aiOpsApis,
   hasCrossVenuesPermission,
@@ -97,7 +98,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
 
 export function KpiSection (props: {
   isSwitch?: boolean
-  kpis: string[]
+  kpis: string[] | { [subTab:string]:string[] }
   thresholds: KpiThresholdType
   mutationAllowed: boolean
   filters : AnalyticsFilter
@@ -107,6 +108,8 @@ export function KpiSection (props: {
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
   const { $t } = useIntl()
+  const kpiList = isArray(kpis) ? kpis: Object.values(kpis)[1]
+
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -118,7 +121,7 @@ export function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
-  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+  useEffect(() => { setLoadMore(kpiList?.length > 1) }, [kpiList])
 
   const hasUpdateKpiPermission = hasCrossVenuesPermission() && hasPermission({
     permission: 'WRITE_HEALTH',
@@ -126,71 +129,84 @@ export function KpiSection (props: {
     rbacOpsIds: [aiOpsApis.updateHealthKpiThreshold]
   })
 
-  const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
-  return (
-    <>
-      {displayKpis.map((kpi) => (
-        <GridRow key={kpi+defaultZoom} $divider>
-          <GridCol col={{ span: 16 }}>
-            <GridRow style={{ height: '160px' }}>
-              <GridCol col={{ span: 5 }}>
-                <HealthPill
-                  filters={filters}
-                  kpi={kpi}
-                  timeWindow={timeWindow as [string, string]}
-                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                />
-              </GridCol>
-              <GridCol col={{ span: 19 }}>
-                <KpiTimeseries
-                  filters={filters}
-                  kpi={kpi as unknown as keyof typeof kpiConfig}
-                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                  chartRef={connectChart}
-                  setTimeWindow={setTimeWindow}
-                  {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
-                />
-              </GridCol>
-            </GridRow>
+  const displayKpis = loadMore ? kpiList.slice(0, 1) : kpiList
+  const showKpi = (kpi:string) => (
+    <GridRow key={kpi+defaultZoom} $divider>
+      <GridCol col={{ span: 16 }}>
+        <GridRow style={{ height: '160px' }}>
+          <GridCol col={{ span: 5 }}>
+            <HealthPill
+              filters={filters}
+              kpi={kpi}
+              timeWindow={timeWindow as [string, string]}
+              threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+            />
           </GridCol>
-          <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
-            {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
-              <Histogram
-                filters={{
-                  ...filters,
-                  startDate: timeWindow[0] as string,
-                  endDate: timeWindow[1] as string
-                }
-                }
-                kpi={kpi as keyof typeof kpiConfig}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                setKpiThreshold={setKpiThreshold}
-                thresholds={kpiThreshold}
-                mutationAllowed={props.mutationAllowed}
-                isNetwork={!filters.filter.networkNodes}
-                disabled={!hasUpdateKpiPermission}
-              />
-            ) : (
-              <BarChart
-                filters={filters}
-                kpi={kpi}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-              />
-            )}
+          <GridCol col={{ span: 19 }}>
+            <KpiTimeseries
+              filters={filters}
+              kpi={kpi as unknown as keyof typeof kpiConfig}
+              threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+              chartRef={connectChart}
+              setTimeWindow={setTimeWindow}
+              {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
+            />
           </GridCol>
         </GridRow>
-      ))}
-      { loadMore &&
-      <GridRow style={{ height: '80px' }}>
-        <GridCol col={{ span: 24 }}>
-          <Button
-            type='default'
-            onClick={() => setLoadMore(false)}
-            style={{ maxWidth: 150, margin: '0 auto' }}
-          >{$t({ defaultMessage: 'View more' })}</Button>
-        </GridCol>
-      </GridRow>
-      }
+      </GridCol>
+      <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
+        {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
+          <Histogram
+            filters={{
+              ...filters,
+              startDate: timeWindow[0] as string,
+              endDate: timeWindow[1] as string
+            }
+            }
+            kpi={kpi as keyof typeof kpiConfig}
+            threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+            setKpiThreshold={setKpiThreshold}
+            thresholds={kpiThreshold}
+            mutationAllowed={props.mutationAllowed}
+            isNetwork={!filters.filter.networkNodes}
+            disabled={!hasUpdateKpiPermission}
+          />
+        ) : (
+          <BarChart
+            filters={filters}
+            kpi={kpi}
+            threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+          />
+        )}
+      </GridCol>
+    </GridRow>
+  )
+  const LoadMoreElem = <GridRow style={{ height: '80px' }}>
+    <GridCol col={{ span: 24 }}>
+      <Button
+        type='default'
+        onClick={() => setLoadMore(false)}
+        style={{ maxWidth: 150, margin: '0 auto' }}
+      >{$t({ defaultMessage: 'View more' })}</Button>
+    </GridCol>
+  </GridRow>
+  return (
+    <>
+      {!isArray(kpis) && <Tabs type='third'>
+        {
+          Object.keys(kpis).map((key,index)=>{
+            const subTabKpis = Object.values(kpis)[index]
+            const kpisToShow = loadMore ? subTabKpis.slice(0,1) : subTabKpis
+            return <Tabs.TabPane tab={key} key={`${key}`}>{
+              kpisToShow.map(showKpi)
+            }
+            {loadMore && LoadMoreElem}
+            </Tabs.TabPane>
+          })
+        }
+      </Tabs>}
+      {isArray(kpis) && displayKpis.map(showKpi)}
+      {(isArray(kpis) && loadMore) && LoadMoreElem }
     </>
   )
 }
