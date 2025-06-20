@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Checkbox, Form, Typography } from 'antd'
 import { defineMessage, useIntl }     from 'react-intl'
@@ -27,12 +27,14 @@ type IntentSubscriptions = {
   [AiFeatures.EquiFlex]?: boolean
   [AiFeatures.EcoFlex]?: boolean
 }
+
 const iconMap = {
   [AiFeatures.RRM]: <AIDrivenRRM />,
   [AiFeatures.AIOps]: <AIOperation />,
   [AiFeatures.EquiFlex]: <EquiFlex />,
   [AiFeatures.EcoFlex]: <EcoFlexAI />
 }
+
 const subscribedIntents = defineMessage({ defaultMessage: 'Subscribed Intents' })
 const unsubscribedIntents = defineMessage({ defaultMessage: 'Unsubscribed Intents' })
 export const prepareNotificationPreferences = (
@@ -55,30 +57,25 @@ const defaultIntentSubscriptions: IntentSubscriptions = {
 }
 
 const professionalTierIntents = [AiFeatures.EcoFlex]
-const intents = [AiFeatures.RRM, AiFeatures.AIOps, AiFeatures.EquiFlex, AiFeatures.EcoFlex]
 
-const getUserAccessibleIntents = () => {
+const isIntentFeatureDisabled = (feature: AiFeatures): boolean => {
   const isRai = get('IS_MLISA_SA')
 
-  return intents.filter(
-    (feature) =>
-      isRai ||
-      isProfessionalTier(getR1UserProfile().accountTier) ||
-      !professionalTierIntents.includes(feature)
+  return !(
+    isRai ||
+    isProfessionalTier(getR1UserProfile().accountTier) ||
+    !professionalTierIntents.includes(feature)
   )
 }
 
 export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
   const dbConfig = JSON.parse(tenantSettings) as IntentSubscriptions
-  const userAccessibleIntents = getUserAccessibleIntents()
-  const merged = {
-    ...defaultIntentSubscriptions,
-    ...dbConfig
-  }
+  const merged = { ...defaultIntentSubscriptions, ...dbConfig }
   const enabledKeys = (Object.keys(merged) as (keyof typeof merged)[])
-    .filter((key) => merged[key] && userAccessibleIntents.includes(key))
+    .filter((key) => merged[key])
   return enabledKeys
 }
+
 export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
   const dbConfig = {} as IntentSubscriptions
   (Object.values(AiFeatures) as string[]).forEach((key) => {
@@ -86,6 +83,7 @@ export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
   })
   return JSON.stringify(dbConfig)
 }
+
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateTenantSettingsMutation()
@@ -95,14 +93,11 @@ export function Settings ({ settings }: { settings: string }) {
   const [visible, setVisible] = useState(false)
   const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
   const [form] = Form.useForm()
-  const aiFeatures = useMemo(
-    () =>
-      getUserAccessibleIntents().map((feature) => ({
-        name: $t(aiFeaturesLabel[feature]),
-        key: feature
-      })),
-    [$t]
-  )
+  const aiFeatures = Object.entries(aiFeaturesLabel).map(([key, value]) => ({
+    name: $t(value),
+    key,
+    disabled: isIntentFeatureDisabled(key as AiFeatures)
+  }))
 
   useEffect(() => {
     setTargetKeys(getEnabledIntentSubscriptions(settings))
@@ -211,6 +206,7 @@ export function Settings ({ settings }: { settings: string }) {
           <br/>
           <Form.Item>
             <Transfer
+              shouldNotIncludeDisabledInCount
               listStyle={{
                 width: 245,
                 height: 200
@@ -297,6 +293,7 @@ const IntentSummaryBlock = (props: IntentSummaryProps) => {
     </div>
   </div>)
 }
+
 function AboutIntentsDrawer () {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -323,9 +320,12 @@ function AboutIntentsDrawer () {
       destroyOnClose
       data-testid='about-intents'
     >
-      {getUserAccessibleIntents().map((key) => (
-        <IntentSummaryBlock key={key} {...intentSummaryConfig[key]} />
-      ))}
+      {
+        Object.entries(intentSummaryConfig).map(
+          ([key, value]: [string, IntentSummaryProps]) =>
+            <IntentSummaryBlock key={key} {...value} />
+        )
+      }
     </Drawer>
   </Button>
 }

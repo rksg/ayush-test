@@ -7,12 +7,12 @@ import {
   preferencesApi,
   useUpdateTenantSettingsMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/analytics/utils'
-import { get }                                                   from '@acx-ui/config'
-import { notificationApiURL, Provider, store }                   from '@acx-ui/store'
-import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
-import { getUserProfile as getR1UserProfile, setUserProfile }    from '@acx-ui/user'
-import { AccountTier, CatchErrorDetails }                        from '@acx-ui/utils'
+import { getUserProfile as getRaiUserProfile, UserProfile }              from '@acx-ui/analytics/utils'
+import { get }                                                           from '@acx-ui/config'
+import { notificationApiURL, Provider, store }                           from '@acx-ui/store'
+import { render, screen, mockServer, waitFor, mockRestApiQuery, within } from '@acx-ui/test-utils'
+import { getUserProfile as getR1UserProfile, setUserProfile }            from '@acx-ui/user'
+import { AccountTier, CatchErrorDetails }                                from '@acx-ui/utils'
 
 import { AiFeatures }                                                                                            from './config'
 import { Settings, convertToIntentSubscriptions, getEnabledIntentSubscriptions, prepareNotificationPreferences } from './Settings'
@@ -281,7 +281,10 @@ describe('IntentAI Settings', () => {
       expect(intentSubscriptions).toBeVisible()
       await userEvent.click(intentSubscriptions)
       expect(await screen.findByText('Available Intents')).toBeVisible()
-      expect(await screen.findByText('Energy Saving')).toBeVisible()
+      const energySavingText = await screen.findByText('Energy Saving')
+      // eslint-disable-next-line testing-library/no-node-access
+      const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+      expect(disabledItem).not.toBeInTheDocument()
     })
 
     it('should show all intents for R1 when user is professional tier (AccountTier.PLATINUM)',
@@ -308,7 +311,10 @@ describe('IntentAI Settings', () => {
         expect(intentSubscriptions).toBeVisible()
         await userEvent.click(intentSubscriptions)
         expect(await screen.findByText('Available Intents')).toBeVisible()
-        expect(await screen.findByText('Energy Saving')).toBeVisible()
+        const energySavingText = await screen.findByText('Energy Saving')
+        // eslint-disable-next-line testing-library/no-node-access
+        const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+        expect(disabledItem).not.toBeInTheDocument()
       })
 
     it.each([
@@ -332,12 +338,16 @@ describe('IntentAI Settings', () => {
         route: { params: { tenantId: 'tenant-id' } }
       })
       const intentSubscriptions = await screen.findByText(
-        'Intent Subscriptions (3)'
+        'Intent Subscriptions (4)'
       )
       expect(intentSubscriptions).toBeVisible()
       await userEvent.click(intentSubscriptions)
-      expect(await screen.findByText('Available Intents')).toBeVisible()
-      expect(screen.queryByText('Energy Saving')).not.toBeInTheDocument()
+
+      const energySavingText = await screen.findByText('Energy Saving')
+      // eslint-disable-next-line testing-library/no-node-access
+      const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+      expect(disabledItem).toBeInTheDocument()
+      expect(disabledItem).toContainElement(energySavingText)
     })
   })
 })
