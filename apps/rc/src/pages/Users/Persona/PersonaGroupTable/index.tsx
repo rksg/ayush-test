@@ -32,10 +32,10 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission }                          from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }             from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier } from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }    from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -69,6 +69,8 @@ function useColumns (
   certTemplateMap: Map<string, string>
 ) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
@@ -90,6 +92,7 @@ function useColumns (
   )
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
     payload: propertyConfigDefaultPayload }, {
+    skip: isCore,
     selectFromResult: ({ data, isLoading }) => {
       return {
         isVenueOptionsLoading: isLoading,
@@ -135,7 +138,7 @@ function useColumns (
       dataIndex: 'propertyId',
       sorter: true,
       filterMultiple: false,
-      filterable: isVenueOptionsLoading ? [] : venueOptions,
+      filterable: !isCore && (isVenueOptionsLoading ? [] : venueOptions),
       render: (_, row) =>
         <VenueLink
           name={venuesMap.get(row?.propertyId ?? '')}

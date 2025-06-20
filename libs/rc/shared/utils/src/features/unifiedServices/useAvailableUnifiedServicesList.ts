@@ -8,7 +8,7 @@ import { getUserProfile, isCoreTier }                                           
 
 import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
+import { useIsEdgeFeatureReady }                 from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 import { useDhcpStateMap, useMdnsProxyStateMap } from '../service'
 
@@ -36,7 +36,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -49,8 +48,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
-  const isEdgeEnabled = useIsEdgeReady()
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  // eslint-disable-next-line max-len
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING) && propertyManagementEnabled
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
@@ -232,8 +231,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeEnabled
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: PolicyType.VLAN_POOL,
@@ -287,7 +285,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-        disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+        disabled: !isEdgeFirewallHaReady
       },
       {
         type: ServiceType.EDGE_OLT,

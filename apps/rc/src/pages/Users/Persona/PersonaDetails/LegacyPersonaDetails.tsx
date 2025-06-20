@@ -33,7 +33,7 @@ import {
   useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup, PersonaUrls, useTableQuery } from '@acx-ui/rc/utils'
-import { hasAllowedOperations }                                         from '@acx-ui/user'
+import { getUserProfile, hasAllowedOperations, isCoreTier }             from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                                     from '@acx-ui/utils'
 
 
@@ -45,7 +45,11 @@ export const IdentityDeviceContext = createContext({} as {
 
 function LegacyPersonaDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { tenantId, personaGroupId, personaId } = useParams()
@@ -99,7 +103,7 @@ function LegacyPersonaDetails () {
         }
       }
     },
-    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits || isCore }
   )
 
   useEffect(() => {
