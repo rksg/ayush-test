@@ -107,7 +107,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [editLag, setEditLag] = useState([] as Lag[])
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
-  const [isQueryPoE, setIsQueryPoE] = useState(true)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
 
@@ -146,8 +145,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     useLazyGetApNeighborsQuery :
     useLazyGetApLldpNeighborsQuery
   const [ getApNeighbors,
-    { data: apNeighborsData } ] = apNeighborQuery()
-  const { handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
+    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = apNeighborQuery()
+  const { isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({
     params: { tenantId: routeParams.tenantId },
@@ -237,12 +236,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }, [currentAP])
 
-  useEffect(() => {
-    if (apNeighborsData) {
-      setIsQueryPoE(false)
-    }
-  }, [apNeighborsData])
-
   const onClose = () => {
     setVisible(false)
   }
@@ -273,6 +266,11 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   ) as ApLldpNeighbor
   const poeClass = currentAPNeighbor?.lldpClass
   const allocatedPower = currentAPNeighbor?.lldpPSEAllocPowerVal
+  let initSocket = true
+  if (isDetecting) {
+    initSocket = false
+  }
+  const isLoadingPoE = (initSocket || isDetecting || isLoadingApNeighbors) && !apNeighborsData
 
   const getPoePortSpeed = (): string | undefined => {
     const poePortId = apCapabilities?.lanPorts
@@ -512,7 +510,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     label={$t({ defaultMessage: 'PoE Class' })}
                     children={
                       <Loader
-                        states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
+                        states={[{ isLoading: isLoadingPoE, isFetching: isLoadingPoE }]}
                         style={{ display: 'inline-block', marginLeft: '7px' }}
                         fallback={<SuspenseBoundary.DefaultFallback size='small' />}
                         children={
@@ -526,7 +524,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     label={$t({ defaultMessage: 'Allocated Power' })}
                     children={
                       <Loader
-                        states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
+                        states={[{ isLoading: isLoadingPoE, isFetching: isLoadingPoE }]}
                         style={{ display: 'inline-block', marginLeft: '7px' }}
                         fallback={<SuspenseBoundary.DefaultFallback size='small' />}
                         children={
