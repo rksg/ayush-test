@@ -48,7 +48,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
@@ -215,9 +214,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
       return { label: key, value: key }
     })
     const filterModels = (modelsData: { label: string; value: string }[]) => {
-      if (!isSupport8200AV && index === 'ICX8200') {
-        return modelsData.filter(model => !isRodanAvSubModel(model.value))
-      }
       if (!isSupport8100X && index === 'ICX8100') {
         return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
       }

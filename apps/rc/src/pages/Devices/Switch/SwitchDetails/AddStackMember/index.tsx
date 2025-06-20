@@ -126,7 +126,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
@@ -157,7 +156,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
             { validator: (_, value) => {
               const switchModelParams: SwitchModelParams = {
                 serialNumber: value,
-                isSupport8200AV: isSupport8200AV,
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,

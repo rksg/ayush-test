@@ -36,7 +36,6 @@ export function CliStepModels () {
   const { $t } = useIntl()
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport8100Or8100X = isSupport8100 || isSupport8100X
@@ -56,15 +55,11 @@ export function CliStepModels () {
   const [appliedModels, setAppliedModels] = useState([] as string[])
 
   const getAllFamilyModel = (
-    isSupport8200AV: boolean,
     isSupport8100: boolean,
     isSupport8100X: boolean,
     isSupport7550Zippy: boolean) => {
     const filteredModels = (model: string) => {
       switch (model) {
-        case 'ICX8200-24PV':
-        case 'ICX8200-C08PFV':
-          return isSupport8200AV
         case 'ICX8100-24':
         case 'ICX8100-24P':
         case 'ICX8100-48':
@@ -92,7 +87,7 @@ export function CliStepModels () {
       .filter(family => family.models.length > 0)
   }
 
-  const allFamilyModels = getAllFamilyModel(isSupport8200AV, isSupport8100,
+  const allFamilyModels = getAllFamilyModel(true, isSupport8100,
     isSupport8100X, isSupport7550Zippy)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 

@@ -717,7 +717,6 @@ export const isL3FunctionSupported = (switchType: string | undefined) => {
 // }
 
 export interface SupportModels {
-  isSupport8200AV: boolean,
   isSupport8100: boolean,
   isSupport8100X: boolean,
   isSupport7550Zippy: boolean
@@ -725,9 +724,10 @@ export interface SupportModels {
 
 export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   let pattern = SWITCH_SERIAL_BASE
-  if (supportModels.isSupport8200AV) {
-    pattern += '|' + SWITCH_SERIAL_8200AV
-  }
+
+  //isSupport8200AV always be true
+  pattern += '|' + SWITCH_SERIAL_8200AV
+
   if (supportModels.isSupport8100) {
     pattern += '|' + SWITCH_SERIAL_8100
   }

@@ -36,7 +36,6 @@ export function SelectModelStep () {
   const [ familyCheckboxes, setFamilyCheckboxes ] = useState<ModelBoolMap>({})
   const [ indeterminateMap, setIndeterminateMap ] = useState<ModelBoolMap>({})
 
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
@@ -120,11 +119,6 @@ export function SelectModelStep () {
     for (const family in ICX_MODELS_MODULES) {
       initState(family)
       for (const model in ICX_MODELS_MODULES[family as keyof typeof ICX_MODELS_MODULES]) {
-        if (!isSupport8200AV && family === 'ICX8200') {
-          if (isRodanAvSubModel(model)) {
-            continue
-          }
-        }
         if (!isSupport8100X && family === 'ICX8100') {
           if (isBabyRodanXSubModel(model)) {
             continue
