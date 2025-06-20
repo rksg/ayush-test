@@ -5,10 +5,8 @@ import { Space }                      from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { Button, cssStr }                     from '@acx-ui/components'
-import { Features }                           from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 import {
   CheckMarkCircleSolidIcon,
   WarningTriangleSolidIcon,
@@ -28,29 +26,9 @@ export type ApCompatibilityFeatureProps = {
 export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
   const { $t } = useIntl()
   const { count, deviceStatus, onClick } = props
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
-  if (!isEdgeCompatibilityEnabled) {
-    if (count === undefined) {
-      return (<><UnknownIcon/> {$t(messageMapping.unknown)}</>)
-    } else if (count === 0) {
-      return (<><CheckMarkCircleSolidIcon/> {$t(messageMapping.fullyCompatible)}</>)
-    } else {
-      return <>
-        <WarningTriangleSolidIcon/>
-        <Button
-          type='link'
-          style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-          onClick={onClick}>
-          {$t(messageMapping.partiallyIncompatible)}
-        </Button>
-      </>
-    }
-  }
 
   const checkResult = getCompatibilityMessage(deviceStatus, count)
   const isPartialCompatible = !!count && (deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
-
 
   return <Space size='small'>
     {isPartialCompatible
