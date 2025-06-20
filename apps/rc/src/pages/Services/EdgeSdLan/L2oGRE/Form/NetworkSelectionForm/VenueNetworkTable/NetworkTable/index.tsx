@@ -10,7 +10,7 @@ import { useIntl }             from 'react-intl'
 
 import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
 import { transToOptions }                                                     from '@acx-ui/edge/components'
-import { AddNetworkModal, useGetSoftGreScopeVenueMap }                        from '@acx-ui/rc/components'
+import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
 import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
@@ -83,6 +83,7 @@ export interface ActivatedNetworksTableProps {
   onTunnelProfileChange?: (data: Network, tunnelProfileId: string) => void
   isUpdating?: boolean
   pinNetworkIds?: string[]
+  softGreNetworkIds?: string[]
   validationFormRef?: FormInstance
 }
 
@@ -97,6 +98,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onTunnelProfileChange,
     isUpdating,
     pinNetworkIds,
+    softGreNetworkIds,
     validationFormRef
   } = props
 
@@ -196,9 +198,6 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onTunnelProfileChange?.(row, value)
   }
 
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
-  const softGreNetworkIds = (softGreVenueMap?.[venueId] ?? []).flatMap(sg => sg.networkIds)
-
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
     tooltip: $t({ defaultMessage:
@@ -269,7 +268,8 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onActivateChange,
     disabled,
     dsaeOnboardNetworkIds,
-    pinNetworkIds
+    pinNetworkIds,
+    softGreNetworkIds
   ])
 
   const actions: TableProps<Network>['actions'] = [{

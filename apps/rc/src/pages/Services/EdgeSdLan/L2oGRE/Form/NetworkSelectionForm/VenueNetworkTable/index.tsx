@@ -39,7 +39,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans, allPins } = useEdgeSdLanContext()
+  const { allSdLans, allPins, allSoftGreVenueMap } = useEdgeSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
@@ -167,6 +167,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         venueName={availableVenues.find(item => item.id === networkDrawerVenueId)?.name}
         activatedNetworks={formRef.getFieldValue('activatedNetworks')}
         pinNetworkIds={pinNetworkIds}
+        softGreNetworkIds={(allSoftGreVenueMap?.[networkDrawerVenueId!] ?? [])
+          .flatMap(sg => sg.networkIds)}
       />}
     </>
   )
