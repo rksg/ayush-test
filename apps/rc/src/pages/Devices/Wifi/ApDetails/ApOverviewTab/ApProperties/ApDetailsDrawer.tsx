@@ -5,9 +5,9 @@ import { Button, Divider, Tooltip } from 'antd'
 import { capitalize, includes }     from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
-import { get }                                 from '@acx-ui/config'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
+import { get }                                                           from '@acx-ui/config'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   defaultSwitchPayload,
   EditPortDrawer,
@@ -26,9 +26,10 @@ import {
   useLazySwitchPortlistQuery,
   useLazyGetLagListQuery,
   useGetApOperationalQuery,
-  useGetFlexAuthenticationProfilesQuery
+  useGetFlexAuthenticationProfilesQuery,
+  useLazyGetApNeighborsQuery,
+  useLazyGetApLldpNeighborsQuery
 } from '@acx-ui/rc/services'
-import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -106,6 +107,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [editLag, setEditLag] = useState([] as Lag[])
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [isQueryPoE, setIsQueryPoE] = useState(true)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
 
@@ -143,7 +145,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const apNeighborQuery = isUseRbacApi ?
     useLazyGetApNeighborsQuery :
     useLazyGetApLldpNeighborsQuery
-  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
+  const [ getApNeighbors,
+    { data: apNeighborsData } ] = apNeighborQuery()
   const { handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({
@@ -234,6 +237,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }, [currentAP])
 
+  useEffect(() => {
+    if (apNeighborsData) {
+      setIsQueryPoE(false)
+    }
+  }, [apNeighborsData])
+
   const onClose = () => {
     setVisible(false)
   }
@@ -259,7 +268,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return null
   }
 
-  const currentAPNeighbor = getApNeighborsStates.data?.neighbors?.find(
+  const currentAPNeighbor = apNeighborsData?.neighbors?.find(
     (n: ApLldpNeighbor | ApRfNeighbor) => 'lldpPowerType' in n && n.lldpPowerType != null
   ) as ApLldpNeighbor
   const poeClass = currentAPNeighbor?.lldpClass
@@ -501,10 +510,26 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     children={getPoePortSpeed()} />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'PoE Class' })}
-                    children={getPoeClassDesc(poeClass)} />
+                    style={{ display: 'block' }}
+                    children={
+                      <Loader
+                        states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
+                        style={{ display: 'inline-block' }}
+                        fallback={<SuspenseBoundary.DefaultFallback size='small' />}
+                        children={getPoeClassDesc(poeClass)}
+                      />
+                    } />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'Allocated Power' })}
-                    children={getAllocPowerVal(allocatedPower)} />
+                    style={{ display: 'block' }}
+                    children={
+                      <Loader
+                        states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
+                        style={{ display: 'inline-block' }}
+                        fallback={<SuspenseBoundary.DefaultFallback size='small' />}
+                        children={getAllocPowerVal(allocatedPower)}
+                      />
+                    } />
                 </>
               )}
           </Descriptions>
