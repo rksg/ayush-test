@@ -9,8 +9,6 @@ import { Card, DonutChart, Loader, qualitativeColorSet } from '@acx-ui/component
 import { formatter }                                     from '@acx-ui/formatter'
 import { getIntl }                                       from '@acx-ui/utils'
 
-import { useIncidentToggles } from '../../useIncidentToggles'
-
 import {
   NetworkImpactChart,
   networkImpactChartConfigs,
@@ -70,9 +68,8 @@ export const transformData = (
 
 export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }) => {
   const { $t } = useIntl()
-  const toggles = useIncidentToggles()
 
-  const queryResults = useNetworkImpactChartsQuery({ charts, incident, toggles })
+  const queryResults = useNetworkImpactChartsQuery({ charts, incident })
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'Network Impact' })} type='no-border'>
       <Row>

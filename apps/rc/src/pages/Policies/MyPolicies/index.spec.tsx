@@ -287,7 +287,7 @@ describe('MyPolicies', () => {
 
   it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+      [Features.EDGE_QOS_TOGGLE].includes(ff as Features))
     jest.mocked(useIsBetaEnabled).mockReturnValue(true)
 
     mockServer.use(

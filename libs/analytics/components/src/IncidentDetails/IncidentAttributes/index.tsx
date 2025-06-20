@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { TooltipPlacement } from 'antd/es/tooltip'
 import moment               from 'moment-timezone'
@@ -28,7 +28,8 @@ export enum Attributes {
   EventStartTime,
   EventEndTime,
   DataStartTime,
-  DataEndTime
+  DataEndTime,
+  Visibility
 }
 
 export const durationOf = (start: string, end: string) =>
@@ -45,13 +46,13 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
   incident: Incident
   visibleFields: Attributes[]
 }) => {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Client Impact Count' }),
+        label: $t({ defaultMessage: 'Client Impact Count' }),
         children: impactValues('client', incident).clientImpactDescription,
         ...((incident.impactedClientCount! > 0 && incident.clientCount! > 0 )
           ? { onClick: () => onOpen('client') } : {})
@@ -60,7 +61,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.ApImpactCount]: {
       key: 'apImpactCount',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'AP Impact Count' }),
+        label: $t({ defaultMessage: 'AP Impact Count' }),
         children: impactValues('ap', incident).apImpactDescription,
         ...((incident.impactedApCount! > 0 && incident.apCount! > 0 )
           ? { onClick: () => onOpen('ap') } : {})
@@ -70,20 +71,20 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       key: 'incidentCategory',
       getValue: (incident: Incident) => ({
         label: 'Incident Category',
-        children: intl.$t(incident.category)
+        children: $t(incident.category)
       })
     },
     [Attributes.IncidentSubCategory]: {
       key: 'incidentSubCategory',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Incident Sub-Category' }),
-        children: intl.$t(incident.subCategory)
+        label: $t({ defaultMessage: 'Incident Sub-Category' }),
+        children: $t(incident.subCategory)
       })
     },
     [Attributes.Type]: {
       key: 'type',
       getValue: (incident: Incident) => ({
-        label: intl.$t({
+        label: $t({
           defaultMessage: 'Type',
           description: 'Path node type'
         }),
@@ -93,7 +94,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.Scope]: {
       key: 'scope',
       getValue: () => ({
-        label: intl.$t({
+        label: $t({
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
@@ -105,7 +106,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.Duration]: {
       key: 'duration',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Duration' }),
+        label: $t({ defaultMessage: 'Duration' }),
         children: formatter('durationFormat')(durationOf(
           incident.startTime,
           incident.endTime
@@ -115,29 +116,38 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.EventStartTime]: {
       key: 'eventStartTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Event Start Time' }),
+        label: $t({ defaultMessage: 'Event Start Time' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(incident.startTime)
       })
     },
     [Attributes.EventEndTime]: {
       key: 'eventEndTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Event End Time' }),
+        label: $t({ defaultMessage: 'Event End Time' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(incident.endTime)
       })
     },
     [Attributes.DataStartTime]: {
       key: 'dataStartTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Data Start Time' }),
+        label: $t({ defaultMessage: 'Data Start Time' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(incident.impactedStart)
       })
     },
     [Attributes.DataEndTime]: {
       key: 'dataEndTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Data End Time' }),
+        label: $t({ defaultMessage: 'Data End Time' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(incident.impactedEnd)
+      })
+    },
+    [Attributes.Visibility]: {
+      key: 'isMuted',
+      getValue: ({ isMuted }: Incident) => ({
+        label: $t({ defaultMessage: 'Visibility' }),
+        children: isMuted
+          ? $t({ defaultMessage: 'Muted' })
+          : $t({ defaultMessage: 'Unmuted' })
       })
     }
   }

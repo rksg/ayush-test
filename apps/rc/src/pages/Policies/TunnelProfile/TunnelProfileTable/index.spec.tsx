@@ -269,8 +269,7 @@ describe('TunnelProfileList', () => {
 
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGES_SD_LAN_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE
           || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
       mockServer.use(
         rest.post(

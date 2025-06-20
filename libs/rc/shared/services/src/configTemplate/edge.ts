@@ -13,3 +13,7 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     })
   })
 })
+
+export const {
+  useActivateSdLanNetworkTemplateMutation
+} = EdgeConfigTemplateApi
