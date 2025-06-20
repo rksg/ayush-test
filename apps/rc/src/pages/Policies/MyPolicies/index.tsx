@@ -34,7 +34,6 @@ import {
   useAccessControlsCountQuery
 } from '@acx-ui/rc/services'
 import {
-  AddProfileButton,
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
@@ -52,6 +51,8 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
+
+import { AddProfileButton } from '../../Services/UnifiedServices/MyServices'
 
 const defaultPayload = {
   fields: ['id']

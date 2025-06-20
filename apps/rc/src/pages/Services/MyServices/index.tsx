@@ -20,7 +20,6 @@ import {
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AddProfileButton,
   getSelectServiceRoutePath,
   hasSomeServicesPermission,
   isServiceCardEnabled,
@@ -33,6 +32,7 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 import { ServiceCard }                                                         from '../ServiceCard'
+import { AddProfileButton }                                                    from '../UnifiedServices/MyServices'
 import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
 
 const defaultPayload = {

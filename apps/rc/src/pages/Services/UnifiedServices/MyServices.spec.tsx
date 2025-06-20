@@ -1,7 +1,9 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { hasSomeServicesPermission, ServiceOperation } from '@acx-ui/rc/utils'
+import { render, screen }                              from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }              from '@acx-ui/user'
 
 import { mockedUnifiedServicesListWithTotalCount } from './__tests__/fixtures'
-import { MyServices }                              from './MyServices'
+import { AddProfileButton, MyServices }            from './MyServices'
 
 const mockUseUnifiedServiceListWithTotalCount = jest.fn()
 jest.mock('./useUnifiedServiceListWithTotalCount', () => ({
@@ -78,5 +80,69 @@ describe('<MyServices />', () => {
 
 
     expect(skeletonLoadingElements.length).toBe(4)
+  })
+})
+
+describe('AddProfileButton', () => {
+  it('renders the link when permission is allowed and operation check is enabled', () => {
+    setUserProfile({
+      ...getUserProfile(),
+      allowedOperations: ['POST:/wifiCallingServiceProfiles'],
+      rbacOpsApiEnabled: true
+    })
+
+    render(
+      <AddProfileButton
+        hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
+        linkText={'Add Service'}
+        targetPath={'/add-service'}
+      />,{
+        route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+      }
+    )
+
+    expect(screen.getByText('Add Service')).toBeInTheDocument()
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
+  })
+
+  it('returns null when no permission and operation check is enabled', () => {
+    setUserProfile({
+      ...getUserProfile(),
+      allowedOperations: [],
+      rbacOpsApiEnabled: true
+    })
+
+    render(
+      <AddProfileButton
+        hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
+        linkText={'Add Service'}
+        targetPath={'/add-service'}
+      />,{
+        route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+      }
+    )
+
+    expect(screen.queryByText('Add Service')).toBeNull()
+  })
+
+  it('renders the link when operation check is disabled', () => {
+    setUserProfile({
+      ...getUserProfile(),
+      allowedOperations: [],
+      rbacOpsApiEnabled: false
+    })
+
+    render(
+      <AddProfileButton
+        hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
+        linkText={'Add Service'}
+        targetPath={'/add-service'}
+      />,{
+        route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+      }
+    )
+
+    expect(screen.getByText('Add Service')).toBeInTheDocument()
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
   })
 })
