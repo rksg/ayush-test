@@ -12,7 +12,7 @@ export type TrafficByRadioData = {
   userTraffic_24: number[]
 }
 
-interface Payload {
+export interface Payload {
   path: NetworkPath
   startDate: string,
   endDate: string
