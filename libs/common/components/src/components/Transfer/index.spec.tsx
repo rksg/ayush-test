@@ -115,10 +115,10 @@ describe('Transfer', () => {
     expect(await screen.findByText('0 selected')).toBeVisible()
   })
 
-  it('should render correct available counts with "shouldNotIncludeDisabledInCount"', async () => {
+  it('should render correct available counts with "excludeDisabledInCount"', async () => {
     render(<IntlProvider locale='en'>
       <Transfer
-        shouldNotIncludeDisabledInCount
+        excludeDisabledInCount
         listStyle={{ width: 250, height: 300 }}
         showSearch
         showSelectAll={false}
@@ -139,10 +139,10 @@ describe('Transfer', () => {
     expect(await screen.findByText('0 selected')).toBeVisible()
   })
 
-  it('should render correct selected counts with "shouldNotIncludeDisabledInCount"', async () => {
+  it('should render correct selected counts with "excludeDisabledInCount"', async () => {
     render(<IntlProvider locale='en'>
       <Transfer
-        shouldNotIncludeDisabledInCount
+        excludeDisabledInCount
         listStyle={{ width: 250, height: 300 }}
         showSearch
         showSelectAll={false}

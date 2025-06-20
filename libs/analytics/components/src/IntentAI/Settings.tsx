@@ -206,7 +206,7 @@ export function Settings ({ settings }: { settings: string }) {
           <br/>
           <Form.Item>
             <Transfer
-              shouldNotIncludeDisabledInCount
+              excludeDisabledInCount
               listStyle={{
                 width: 245,
                 height: 200

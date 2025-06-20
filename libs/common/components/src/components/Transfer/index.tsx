@@ -7,7 +7,7 @@ import { renderTransferTable } from './renderTypes'
 import * as UI                 from './styledComponents'
 
 type BaseTransferProps = AntTransferProps<TransferItem> & {
-  shouldNotIncludeDisabledInCount?: boolean
+  excludeDisabledInCount?: boolean
 }
 
 export type TransferProps =
@@ -27,7 +27,7 @@ export function Transfer (props: TransferProps) {
   )
 
   const getTotalCountAvailable = (totalCount: number): number => {
-    if (props.shouldNotIncludeDisabledInCount) {
+    if (props.excludeDisabledInCount) {
       const targetKeys = new Set(props.targetKeys ?? [])
       const availableItems = props.dataSource.filter(
         ({ key, disabled }) => !disabled && key && !targetKeys.has(key)
@@ -38,7 +38,7 @@ export function Transfer (props: TransferProps) {
   }
 
   const getTotalCountSelected = (totalCount: number): number => {
-    if (props.shouldNotIncludeDisabledInCount) {
+    if (props.excludeDisabledInCount) {
       const selectedItemsWithoutDisabled = (props.targetKeys ?? []).filter(
         (targetKey) => !disabledDataSourceItemKeysSet.has(targetKey)
       )
