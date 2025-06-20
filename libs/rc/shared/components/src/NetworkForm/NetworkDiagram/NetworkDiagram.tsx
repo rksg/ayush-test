@@ -193,18 +193,17 @@ function getOpenDiagram (props: OpenDiagramProps) {
     OpenMacregAaaDiagram
   }
 
-
-  if (props.enableMACAuth) {
-    if (props.isMacRegistrationList) {
-      return (props.enableAccountingService) ?
-        getAAADiagramByParams(
-          props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
-        ) : diagramSet.OpenMacregDiagram
-    }
-    return getAAADiagramByParams(props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram)
+  if (props.enableMACAuth && props.isMacRegistrationList) {
+    return (props.enableAccountingService) ?
+      getAAADiagramByParams(
+        props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
+      ) : diagramSet.OpenMacregDiagram
   }
 
-  return diagramSet.OpenDiagram
+  return (props.enableAccountingService) ?
+    getAAADiagramByParams(
+      props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram
+    ) : diagramSet.OpenDiagram
 }
 
 function getAAADiagramByParams (
