@@ -87,7 +87,7 @@ export function CliStepModels () {
       .filter(family => family.models.length > 0)
   }
 
-  const allFamilyModels = getAllFamilyModel(true, isSupport8100,
+  const allFamilyModels = getAllFamilyModel( isSupport8100,
     isSupport8100X, isSupport7550Zippy)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
