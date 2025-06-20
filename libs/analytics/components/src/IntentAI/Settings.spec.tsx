@@ -7,12 +7,12 @@ import {
   preferencesApi,
   useUpdateTenantSettingsMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile as getRaiUserProfile, UserProfile }              from '@acx-ui/analytics/utils'
-import { get }                                                           from '@acx-ui/config'
-import { notificationApiURL, Provider, store }                           from '@acx-ui/store'
-import { render, screen, mockServer, waitFor, mockRestApiQuery, within } from '@acx-ui/test-utils'
-import { getUserProfile as getR1UserProfile, setUserProfile }            from '@acx-ui/user'
-import { AccountTier, CatchErrorDetails }                                from '@acx-ui/utils'
+import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/analytics/utils'
+import { get }                                                   from '@acx-ui/config'
+import { notificationApiURL, Provider, store }                   from '@acx-ui/store'
+import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
+import { getUserProfile as getR1UserProfile, setUserProfile }    from '@acx-ui/user'
+import { AccountTier, CatchErrorDetails }                        from '@acx-ui/utils'
 
 import { AiFeatures }                                                                                            from './config'
 import { Settings, convertToIntentSubscriptions, getEnabledIntentSubscriptions, prepareNotificationPreferences } from './Settings'
