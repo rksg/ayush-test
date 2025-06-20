@@ -10,7 +10,8 @@ import {
   Client,
   ClientStatistic,
   DpskUrls,
-  SwitchRbacUrlsInfo
+  SwitchRbacUrlsInfo,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
 import {
@@ -107,7 +108,7 @@ describe('ClientOverviewTab root', () => {
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
@@ -263,7 +264,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
@@ -339,7 +340,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
 
@@ -370,7 +371,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null
@@ -523,7 +524,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
         render(<Provider>
@@ -555,7 +556,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null

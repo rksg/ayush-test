@@ -307,7 +307,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   const getTimeFormat = (data: number) =>
     formatter(DateFormatEnum.DateTimeFormat)(data * 1000)
 
-  const { 
+  const {
     disconnectTime, sessionDuration,
     enableLinkToAp, serialNumber, apName,
     enableLinkToVenue, venueId, venueName,
@@ -541,20 +541,4 @@ function getGuestsPayload ({ clientMac }: Client) {
 
 function getClientUsername (client?: Client): string | undefined {
   return client?.userName || client?.username
-}
-
-function getAuthStatus (client?: Client) {
-  const { $t } = getIntl()
-  const statusInt = parseInt(client?.status ?? '', 10)
-  if (isNaN(statusInt)) return '--'
-
-  let statusText = '--'
-  if (statusInt === 1) {
-    statusText = $t({ defaultMessage: 'Authorized' })
-  } else if (statusInt === 0) {
-    statusText = $t({ defaultMessage: 'Unauthorized' })
-  } else if (statusInt === -1) {
-    statusText = $t({ defaultMessage: 'N/A' })
-  }
-  return statusText
 }

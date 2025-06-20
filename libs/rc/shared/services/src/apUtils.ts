@@ -17,7 +17,6 @@ import {
   Capabilities,
   CapabilitiesApModel,
   CommonRbacUrlsInfo,
-  CommonUrlsInfo,
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,

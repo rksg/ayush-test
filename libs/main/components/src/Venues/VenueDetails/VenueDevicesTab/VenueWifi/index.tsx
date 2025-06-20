@@ -22,7 +22,6 @@ import {
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
-  useGetVenueSettingsQuery,
   useGetApCompatibilitiesVenueQuery,
   useGetVenueMeshQuery,
   useGetVenueApCompatibilitiesQuery

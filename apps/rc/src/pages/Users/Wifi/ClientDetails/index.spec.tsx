@@ -1,10 +1,15 @@
 import userEvent         from '@testing-library/user-event'
 import { graphql, rest } from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { apApi, clientApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { store, Provider, dataApiURL }                  from '@acx-ui/store'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { apApi, clientApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ClientUrlsInfo,
+  WifiUrlsInfo,
+  CommonRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { store, Provider, dataApiURL } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -93,7 +98,7 @@ describe('ClientDetails', () => {
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList ))),
