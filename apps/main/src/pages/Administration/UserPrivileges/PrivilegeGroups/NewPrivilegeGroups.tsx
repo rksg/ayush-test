@@ -118,6 +118,7 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         title: $t({ defaultMessage: 'Name' }),
         key: 'name',
         dataIndex: 'name',
+        searchable: true,
         defaultSortOrder: 'ascend',
         sorter: { compare: sortProp('name', defaultSort) },
         render: (_, row) => {
