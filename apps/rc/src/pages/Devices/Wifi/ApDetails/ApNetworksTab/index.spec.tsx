@@ -92,7 +92,7 @@ describe('Networks Table', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+        ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
     it('should render table', async () => {

@@ -118,7 +118,7 @@ export const PendingAp = () => {
       filterable: true,
       filterKey: 'status',
       filterValueArray: true,
-      fitlerCustomOptions: [{ key: 'Ready', label: 'Ready' }, { key: 'Ignored', label: 'Ignored' }]
+      filterCustomOptions: [{ key: 'Ready', label: 'Ready' }, { key: 'Ignored', label: 'Ignored' }]
     }
   ]
 

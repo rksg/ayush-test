@@ -11,50 +11,41 @@ import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpa
 import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [Attributes.ApImpactCount, ...commonAttributes()]
+const networkImpactCharts: NetworkImpactProps['charts'] = [{
+  chart: NetworkImpactChartTypes.APModelByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apDowntime',
+  dimension: 'apModel'
+}, {
+  chart: NetworkImpactChartTypes.APFwVersionByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apDowntime',
+  dimension: 'apFwVersion'
+}, {
+  chart: NetworkImpactChartTypes.EventTypeByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apDowntime',
+  dimension: 'eventType'
+}, {
+  chart: NetworkImpactChartTypes.ReasonByAP,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'apDowntime',
+  dimension: 'reason'
+}]
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.ApDisconnectionCountChart,
+  TimeSeriesChartTypes.DowntimeEventTypeDistributionChart
+]
+const buffer = {
+  front: { value: 6, unit: 'hours' as unitOfTime.Base },
+  back: { value: 6, unit: 'hours' as unitOfTime.Base }
+}
 
 export const ApservDowntimeHigh = (incident: Incident) => {
-  const attributeList = [
-    Attributes.ApImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime
-  ]
-
-  const networkImpactCharts: NetworkImpactProps['charts'] = [{
-    chart: NetworkImpactChartTypes.APModelByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apDowntime',
-    dimension: 'apModel'
-  }, {
-    chart: NetworkImpactChartTypes.APFwVersionByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apDowntime',
-    dimension: 'apFwVersion'
-  }, {
-    chart: NetworkImpactChartTypes.EventTypeByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apDowntime',
-    dimension: 'eventType'
-  }, {
-    chart: NetworkImpactChartTypes.ReasonByAP,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'apDowntime',
-    dimension: 'reason'
-  }]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.ApDisconnectionCountChart,
-    TimeSeriesChartTypes.DowntimeEventTypeDistributionChart
-  ]
-  const buffer = {
-    front: { value: 6, unit: 'hours' as unitOfTime.Base },
-    back: { value: 6, unit: 'hours' as unitOfTime.Base }
-  }
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

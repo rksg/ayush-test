@@ -998,7 +998,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should not navigate to create Edge DHCP page', async () => {
-      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
@@ -1059,8 +1059,7 @@ describe('RcRoutes: Devices', () => {
       const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
       beforeEach(() => {
-        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE)
+        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
       })
       afterEach(() => {
         jest.mocked(mockUseIsEdgeFeatureReady).mockReset()
@@ -1094,8 +1093,7 @@ describe('RcRoutes: Devices', () => {
       describe('Enhance Edge PIN service', () => {
         beforeEach(() => {
           jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-            || ff === Features.EDGE_PIN_ENHANCE_TOGGLE
-            || ff === Features.EDGES_TOGGLE)
+            || ff === Features.EDGE_PIN_ENHANCE_TOGGLE)
         })
 
         test('should navigate to Edge enhanced PIN detail page', async () => {
