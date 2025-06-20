@@ -108,7 +108,7 @@ export const mockKpiData = {
         enabled: 10,
         disabled: 40,
         excluded: 40,
-        projectedPowerSaving: 15.1,
+        powerSaving: 15.1,
         powerConsumption: 48,
         maxApPower: 20,
         minApPowerStandard: 80,
@@ -122,7 +122,7 @@ export const mockKpiData = {
         enabled: 20,
         disabled: 30,
         excluded: 40,
-        projectedPowerSaving: 30.2,
+        powerSaving: 30.2,
         powerConsumption: 50
       }
     }
@@ -213,7 +213,7 @@ export const mockedKpiData = {
   data: {
     timestamp: '2025-04-01T00:00:00Z',
     data: {
-      projectedPowerSaving: 15.1,
+      powerSaving: 15.1,
       enabled: 80,
       disabled: 10,
       excluded: 20,
@@ -228,7 +228,7 @@ export const mockedKpiData = {
   compareData: {
     timestamp: '2025-03-01T00:00:00Z',
     data: {
-      projectedPowerSaving: 30.2,
+      powerSaving: 30.2,
       enabled: 10,
       disabled: 70,
       excluded: 30,

@@ -114,7 +114,7 @@ describe('EcoFlex common utils', () => {
     describe('BenefitsConfig', () => {
       it('should return correct valueAccessor', () => {
         expect(BenefitsConfig).toHaveLength(1)
-        expect(getConfigValueAccessor(BenefitsConfig, 'projectedPowerSaving')(
+        expect(getConfigValueAccessor(BenefitsConfig, 'powerSaving')(
           mockedKpiData.data.data, mockedKpiData.compareData.data)
         ).toEqual({
           value: 15.1,
