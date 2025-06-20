@@ -514,9 +514,13 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     children={
                       <Loader
                         states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
-                        style={{ display: 'inline-block' }}
+                        style={{ display: 'inline-block', marginLeft: '7px' }}
                         fallback={<SuspenseBoundary.DefaultFallback size='small' />}
-                        children={getPoeClassDesc(poeClass)}
+                        children={
+                          <div style={{ marginLeft: '-7px' }}>
+                            {getPoeClassDesc(poeClass)}
+                          </div>
+                        }
                       />
                     } />
                   <Descriptions.Item
@@ -525,9 +529,13 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     children={
                       <Loader
                         states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
-                        style={{ display: 'inline-block' }}
+                        style={{ display: 'inline-block', marginLeft: '7px' }}
                         fallback={<SuspenseBoundary.DefaultFallback size='small' />}
-                        children={getAllocPowerVal(allocatedPower)}
+                        children={
+                          <div style={{ marginLeft: '-7px' }}>
+                            {getAllocPowerVal(allocatedPower)}
+                          </div>
+                        }
                       />
                     } />
                 </>
