@@ -441,13 +441,7 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
     case NetworkTypeEnum.OPEN:
       return !!saveData.wlan?.macAddressAuthentication
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return [
-        GuestNetworkTypeEnum.Cloudpath,
-        GuestNetworkTypeEnum.Workflow,
-        GuestNetworkTypeEnum.SelfSignIn
-      ].includes(
-        saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
-      )
+      return saveData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
   }
 
   return false
