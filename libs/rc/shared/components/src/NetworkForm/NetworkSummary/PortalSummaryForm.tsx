@@ -132,7 +132,9 @@ export function PortalSummaryForm (props: {
           enableAcctProxy={summaryData.enableAccountingProxy}
           enableAuthProxy={summaryData.enableAuthProxy}/>
       }
-      {summaryData.guestPortal?.guestNetworkType!==GuestNetworkTypeEnum.Cloudpath&&
+      {
+        summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
+        summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow &&
       <Form.Item
         label={$t({ defaultMessage: 'Redirect URL:' })}
         children={summaryData.guestPortal?.redirectUrl ||

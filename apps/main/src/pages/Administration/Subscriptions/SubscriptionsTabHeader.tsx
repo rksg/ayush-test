@@ -5,8 +5,8 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -53,7 +53,6 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionsTabHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsEdgeReady()
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   // skip MSP data
@@ -81,8 +80,7 @@ export const SubscriptionsTabHeader = () => {
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.filter(data =>
-              (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
-               data.value !== EntitlementDeviceType.ANALYTICS
+              data.value !== EntitlementDeviceType.ANALYTICS
             )
               .map((item) => {
                 const summary = summaryData[item.value]

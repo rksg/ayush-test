@@ -422,7 +422,7 @@ describe('VenueNetworksTab', () => {
 
   describe('Edge and SD-LAN P2 FF is on', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -482,7 +482,7 @@ describe('VenueNetworksTab', () => {
     const targetNetworkId = targetNetworkInfo.networkId
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{
