@@ -35,12 +35,17 @@ export function ClientOverviewTab () {
     filter: {},
     ...dateFilter
   }), [dateFilter])
+
   const { clientId } = useParams()
+  const clientMac = clientId?.toUpperCase()
+
   const { accountTier } = getUserProfile()
   const [searchParams] = useSearchParams()
   const isCore = isCoreTier(accountTier)
   const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const clientStats = useClientStatisticsQuery({ ...filters, clientMac: clientId!.toUpperCase() })
+
+  // connect client
   const clientInfo = useGetClientsQuery({
     payload: {
       filters: {
@@ -54,7 +59,6 @@ export function ClientOverviewTab () {
     params: { clientId }
   }, { skip: clientStatus !== ClientStatusEnum.HISTORICAL })
   const historicalClientDetails = clientResult?.data?.data || {} as Client
-
 
 
   return <GridRow>
@@ -74,34 +78,25 @@ export function ClientOverviewTab () {
         </GridCol>
         {!isCore && <>
           <GridCol col={{ span: 8 }} style={{ height: '292px' }}>
-            <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='donut' />
+            <TopApplications filters={{ ...filters, mac: clientMac }} type='donut' />
           </GridCol>
           <GridCol col={{ span: 16 }} style={{ height: '292px' }}>
-            <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='line' />
+            <TopApplications filters={{ ...filters, mac: clientMac }} type='line' />
           </GridCol>
         </>}
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
-          <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
+          <TrafficByUsage filters={{ ...filters, mac: clientMac }} />
         </GridCol>
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
-          <TrafficByBand filters={{ ...filters, mac: clientId?.toUpperCase() }} />
+          <TrafficByBand filters={{ ...filters, mac: clientMac }} />
         </GridCol>
       </GridRow>
     </GridCol>
     <GridCol col={{ span: 6 }}>
-      {
-        (clientStatus === ClientStatusEnum.CONNECTED) ?
-          <RbacClientProperties
-            clientStatus={clientStatus}
-            clientInfo={connectClientInfo}
-          />
-          :
-          <ClientProperties
-            clientStatus={clientStatus}
-            clientDetails={historicalClientDetails}
-          />
+      {(clientStatus === ClientStatusEnum.CONNECTED)
+        ? <RbacClientProperties clientDetails={connectClientInfo} />
+        : <ClientProperties clientDetails={historicalClientDetails} />
       }
-
     </GridCol>
   </GridRow>
 }

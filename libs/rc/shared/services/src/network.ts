@@ -464,6 +464,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    // It needs to keep the non-RBAC API for the RUCKUS AI Onboarding Assistant
     getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
       async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -2188,6 +2189,7 @@ export const {
   useDeactivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
+  useLazyGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,

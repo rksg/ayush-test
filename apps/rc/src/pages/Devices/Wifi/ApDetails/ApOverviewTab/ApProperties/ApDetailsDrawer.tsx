@@ -125,7 +125,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     modelName: currentAP?.model,
     enableRbac: isUseRbacApi })
 
-  const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
+  const { data: venueData } = useGetVenueQuery({ params }, { skip: !params.venueId })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {

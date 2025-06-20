@@ -680,105 +680,96 @@ export const transformRbacApList = (rbacApList: TableResult<NewAPModel>): TableR
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type fetchWithBQType<ResultType> = (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
 
-const fetchApList = async ({ params, payload, enableRbac }: RequestPayload, fetchWithBQ: fetchWithBQType<unknown>) => {
+const fetchApList = async ({ payload }: RequestPayload, fetchWithBQ: fetchWithBQType<unknown>) => {
   try {
     const typedPayload = payload as Record<string, unknown>
-    if (enableRbac) {
-      const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-      const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, customHeaders)
 
-      const newPayload = getNewApViewmodelPayloadFromOld(typedPayload)
-      const apListQuery = await fetchWithBQ({ ...apsReq, body: JSON.stringify(newPayload) })
-      const apListData = apListQuery.data as TableResult<NewAPModel>
+    const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+    const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, customHeaders)
 
-      // fetch venue name
-      const venueIds = uniq(apListData.data.map(item => item.venueId).filter(item => item))
-      if (venueIds.length && isPayloadHasField(newPayload, 'venueName')) {
-        const venueListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonRbacUrlsInfo.getVenuesList),
-          body: {
-            fields: ['name', 'id'],
-            pageSize: 10000,
-            filters: { id: venueIds }
-          }
-        })
-        const venueList = venueListQuery.data as TableResult<Venue>
-        aggregateVenueInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, venueList)
-      }
+    const newPayload = getNewApViewmodelPayloadFromOld(typedPayload)
+    const apListQuery = await fetchWithBQ({ ...apsReq, body: JSON.stringify(newPayload) })
+    const apListData = apListQuery.data as TableResult<NewAPModel>
 
-      const apGroupIds = uniq(apListData.data.map(item => item.apGroupId).filter(item => item))
-      if (apGroupIds.length && isPayloadHasField(newPayload, 'apGroupName')) {
-        const apGroupsListQuery = await fetchWithBQ({
-          ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, customHeaders),
-          body: JSON.stringify({
-            fields: ['name', 'id'],
-            pageSize: 10000,
-            filters: { id: apGroupIds }
-          })
-        })
-        const apGroupList = apGroupsListQuery.data as TableResult<NewApGroupViewModelResponseType>
-        aggregateApGroupInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apGroupList as TableResult<ApGroup>)
-      }
-
-      if (isPayloadHasField(newPayload, 'deviceModelType')) {
-        const wifiCapabilitiesQuery = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, customHeaders))
-        const capabilitiesList = wifiCapabilitiesQuery.data as Capabilities
-        aggregateApDeviceModelTypeInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, capabilitiesList)
-      }
-
-      if (isPayloadHasField(newPayload, 'xPercent') || isPayloadHasField(newPayload, 'yPercent')) {
-        await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
-      }
-
-      if (apListData && apListData.data.length > 0) {
-        const apMacSwitchMap = new Map<string, SwitchInformation>()
-        const unqueClientApMacs: Set<string> = new Set()
-        apListData.data.forEach((item) => {
-          const { macAddress } = item
-          if (macAddress) {
-            unqueClientApMacs.add(macAddress)
-          }
-        })
-        const switchClientMacs: string[] = Array.from(unqueClientApMacs)
-        const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-        const switchClientPayload = {
-          fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber', 'switchPort'],
-          page: 1,
+    // fetch venue name
+    const venueIds = uniq(apListData.data.map(item => item.venueId).filter(item => item))
+    if (venueIds.length && isPayloadHasField(newPayload, 'venueName')) {
+      const venueListQuery = await fetchWithBQ({
+        ...createHttpRequest(CommonRbacUrlsInfo.getVenuesList),
+        body: {
+          fields: ['name', 'id'],
           pageSize: 10000,
-          filters: { clientMac: switchClientMacs }
+          filters: { id: venueIds }
         }
-        const switchClistInfo = {
-          ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
-          body: JSON.stringify(switchClientPayload)
-        }
-        const switchClientsQuery = await fetchWithBQ(switchClistInfo)
-        const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
-
-        switchClients?.data?.forEach((switchInfo) => {
-          const { clientMac, switchId, switchName, switchSerialNumber, switchPort } = switchInfo
-          apMacSwitchMap.set(clientMac, {
-            id: switchId,
-            name: switchName,
-            serialNumber: switchSerialNumber,
-            port: switchPort
-          })
-        })
-
-        aggregateSwitchInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apMacSwitchMap)
-      }
-
-      const rbacApList = transformRbacApList(transformApListFromNewModel(apListData as TableResult<NewAPModelExtended, ApExtraParams>))
-      return { data: rbacApList as TableResult<APExtended, ApExtraParams> }
-    } else {
-      const hasGroupBy = typedPayload?.groupBy
-      const fields = hasGroupBy ? typedPayload.groupByFields : typedPayload.fields
-      const apsReq = hasGroupBy
-        ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
-        : createHttpRequest(CommonUrlsInfo.getApsList, params)
-
-      const apListQuery = await fetchWithBQ({ ...apsReq, body: { ...typedPayload, fields } })
-      return { data: apListQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams> }
+      })
+      const venueList = venueListQuery.data as TableResult<Venue>
+      aggregateVenueInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, venueList)
     }
+
+    const apGroupIds = uniq(apListData.data.map(item => item.apGroupId).filter(item => item))
+    if (apGroupIds.length && isPayloadHasField(newPayload, 'apGroupName')) {
+      const apGroupsListQuery = await fetchWithBQ({
+        ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, customHeaders),
+        body: JSON.stringify({
+          fields: ['name', 'id'],
+          pageSize: 10000,
+          filters: { id: apGroupIds }
+        })
+      })
+      const apGroupList = apGroupsListQuery.data as TableResult<NewApGroupViewModelResponseType>
+      aggregateApGroupInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apGroupList as TableResult<ApGroup>)
+    }
+
+    if (isPayloadHasField(newPayload, 'deviceModelType')) {
+      const wifiCapabilitiesQuery = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, customHeaders))
+      const capabilitiesList = wifiCapabilitiesQuery.data as Capabilities
+      aggregateApDeviceModelTypeInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, capabilitiesList)
+    }
+
+    if (isPayloadHasField(newPayload, 'xPercent') || isPayloadHasField(newPayload, 'yPercent')) {
+      await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
+    }
+
+    if (apListData && apListData.data.length > 0) {
+      const apMacSwitchMap = new Map<string, SwitchInformation>()
+      const unqueClientApMacs: Set<string> = new Set()
+      apListData.data.forEach((item) => {
+        const { macAddress } = item
+        if (macAddress) {
+          unqueClientApMacs.add(macAddress)
+        }
+      })
+      const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+      const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+      const switchClientPayload = {
+        fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber', 'switchPort'],
+        page: 1,
+        pageSize: 10000,
+        filters: { clientMac: switchClientMacs }
+      }
+      const switchClistInfo = {
+        ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+        body: JSON.stringify(switchClientPayload)
+      }
+      const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+      const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+      switchClients?.data?.forEach((switchInfo) => {
+        const { clientMac, switchId, switchName, switchSerialNumber, switchPort } = switchInfo
+        apMacSwitchMap.set(clientMac, {
+          id: switchId,
+          name: switchName,
+          serialNumber: switchSerialNumber,
+          port: switchPort
+        })
+      })
+
+      aggregateSwitchInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apMacSwitchMap)
+    }
+
+    const rbacApList = transformRbacApList(transformApListFromNewModel(apListData as TableResult<NewAPModelExtended, ApExtraParams>))
+    return { data: rbacApList as TableResult<APExtended, ApExtraParams> }
+
   } catch (error) {
     return { error: error as FetchBaseQueryError }
   }

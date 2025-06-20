@@ -10,12 +10,14 @@ import {
   RangePicker,
   getDefaultEarliestStart
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { isEqualCaptivePortal }   from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { isEqualCaptivePortal }    from '@acx-ui/rc/components'
 import {
   useDisconnectClientMutation,
   useRevokeClientMutation,
-  useGetClientsQuery } from '@acx-ui/rc/services'
+  useGetClientsQuery,
+  useGetHistoryClientDetailQuery
+} from '@acx-ui/rc/services'
 import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -61,18 +63,24 @@ function ClientDetailPageHeader () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const [searchParams] = useSearchParams()
   const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-  const isHisToricalClient = (status === ClientStatusEnum.HISTORICAL)
+  const isHistoricalClient = (status === ClientStatusEnum.HISTORICAL)
 
   // Connection Client
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: isHisToricalClient })?.data?.data[0]
+  } }, { skip: isHistoricalClient })?.data?.data[0]
+
+  // historical client
+  const histClientInfo = useGetHistoryClientDetailQuery({
+    params: { clientId }
+  }, { skip: !isHistoricalClient })?.data?.data
 
 
-  /* eslint-disable max-len */
-  const { hostname, macAddress, venueInformation, apInformation, networkInformation } = clientInfo || {}
+  const hostname = (!isHistoricalClient)? clientInfo?.hostname : histClientInfo?.hostname
+  // The below var only using for menu action (connect client)
+  const { macAddress, venueInformation, apInformation, networkInformation } = clientInfo || {}
   const venueId = venueInformation?.id
   const apSerialNumber = apInformation?.serialNumber
   const networkType = networkInformation?.type
@@ -180,7 +188,7 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        (!isHisToricalClient && showMenu) &&
+        (!isHistoricalClient && showMenu) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>
