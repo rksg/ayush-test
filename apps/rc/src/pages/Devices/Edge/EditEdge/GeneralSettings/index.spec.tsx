@@ -19,7 +19,7 @@ import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataPro
 import GeneralSettings from './index'
 
 const { mockVenueOptions } = VenueFixtures
-const { mockEdgeData } = EdgeGeneralFixtures
+const { mockEdgeData, mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
 
@@ -55,7 +55,11 @@ describe('EditEdge - GeneralSettings', () => {
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      )
     )
   })
 
@@ -164,7 +168,11 @@ describe('EditEdge general settings api fail', () => {
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      )
     )
   })
 
