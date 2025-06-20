@@ -6,6 +6,8 @@ export type TimeStampRange = [TimeStamp, TimeStamp]
 
 export type TimelineStatus = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL'
 
+export type RadioBand = '6' | '5' | '2.4'
+
 export interface StatusIconProps { status: TimelineStatus, description?: string }
 
 export enum RolesEnum {
