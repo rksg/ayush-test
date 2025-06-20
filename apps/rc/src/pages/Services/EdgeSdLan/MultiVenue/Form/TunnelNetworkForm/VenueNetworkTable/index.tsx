@@ -6,7 +6,6 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
 import { transformSdLanScopedVenueMap }                           from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
@@ -38,8 +37,6 @@ export interface VenueNetworksTableProps {
 }
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
@@ -92,12 +89,10 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     fixed: 'left',
     sorter: { compare: sortProp('name', defaultSort) },
     render: (_, row) => {
-      return isEdgeCompatibilityEnabled
-        ? <Space align='center'>
-          {row.name}
-          <CompatibilityCheck venueId={row.id} venueName={row.name} />
-        </Space>
-        : row.name
+      return <Space align='center'>
+        {row.name}
+        <CompatibilityCheck venueId={row.id} venueName={row.name} />
+      </Space>
     }
   }, {
     title: $t({ defaultMessage: 'Address' }),

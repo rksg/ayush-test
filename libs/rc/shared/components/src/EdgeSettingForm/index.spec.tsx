@@ -364,7 +364,7 @@ describe('EdgeSettingForm', () => {
 
   function mockHaAaEnabled () {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
-      feature === Features.EDGE_HA_AA_TOGGLE || feature === Features.EDGE_HA_TOGGLE)
+      feature === Features.EDGE_HA_AA_TOGGLE)
   }
 
   function renderEdgeSettingForm (formRef: FormInstance) {

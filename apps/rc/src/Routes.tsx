@@ -688,7 +688,6 @@ const edgeTnmRoutes = () => {
 }
 
 function ServiceRoutes () {
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -976,10 +975,10 @@ function ServiceRoutes () {
         }
       />
 
-      {(isEdgeHaReady && isEdgeDhcpHaReady)
+      {isEdgeDhcpHaReady
         && edgeDhcpRoutes()}
 
-      {(isEdgeHaReady && isEdgeFirewallHaReady)
+      {isEdgeFirewallHaReady
         && edgeFirewallRoutes()}
 
 

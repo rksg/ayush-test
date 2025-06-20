@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
+import { getUserProfile, isCoreTier }            from '@acx-ui/user'
 import { ApWiredClientTable }                    from '@acx-ui/wifi/components'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
@@ -26,13 +27,15 @@ export function VenueClientsTab () {
   const navigate = useNavigate()
   const { venueId, activeSubTab, categoryTab } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { propertyConfig } = useGetQueriablePropertyConfigsQuery(
     { payload: { ...venueOptionsDefaultPayload, filters: { venueId } } },
     {
-      skip: !isCloudpathBetaEnabled,
+      skip: !isCloudpathBetaEnabled || isCore,
       selectFromResult: ({ data }) => {
         return {
           propertyConfig: data?.data[0]

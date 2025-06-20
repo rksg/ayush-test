@@ -11,15 +11,11 @@ import {
   useShutdownEdgeMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum,
-  useIsEdgeReady as useIsEdgeReadyFromUtils,
   useIsEdgeFeatureReady as useIsEdgeFeatureReadyFromUtils
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-export const useIsEdgeReady = () => {
-  return useIsEdgeReadyFromUtils()
-}
 
 export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   return useIsEdgeFeatureReadyFromUtils(featureFlagKey)

@@ -3,15 +3,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { ServiceType }           from '../../constants'
 import { useIsEdgeFeatureReady } from '../edge'
 
-function useIsEdgeDhcpEnabled () {
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
-  return isEdgeHaReady && isEdgeDhcpHaReady
-}
-
 function useIsDhcpConsolidationEnabled (): boolean {
   const isMdnsProxyConsolidationEnabled = useIsSplitOn(Features.DHCP_CONSOLIDATION)
-  const isEdgeDhcpEnabled = useIsEdgeDhcpEnabled()
+  const isEdgeDhcpEnabled = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
 
   return isMdnsProxyConsolidationEnabled && isEdgeDhcpEnabled
 }
@@ -22,7 +16,7 @@ interface DhcpStateMap {
   [ServiceType.DHCP_CONSOLIDATION]: boolean
 }
 export function useDhcpStateMap (): DhcpStateMap {
-  const isEdgeDhcpEnabled = useIsEdgeDhcpEnabled()
+  const isEdgeDhcpEnabled = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isConsolidationEnabled = useIsDhcpConsolidationEnabled()
 
   return {
