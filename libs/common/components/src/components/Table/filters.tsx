@@ -10,8 +10,8 @@ import _             from 'lodash'
 import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
-import type { Filter }                                                    from '@acx-ui/common/types'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import type { Filter }                                                    from '@acx-ui/types'
 import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
