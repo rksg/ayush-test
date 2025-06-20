@@ -510,7 +510,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     children={getPoePortSpeed()} />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'PoE Class' })}
-                    style={{ display: 'block' }}
                     children={
                       <Loader
                         states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
@@ -525,7 +524,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     } />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'Allocated Power' })}
-                    style={{ display: 'block' }}
                     children={
                       <Loader
                         states={[{ isLoading: isQueryPoE, isFetching: isQueryPoE }]}
