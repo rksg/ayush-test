@@ -998,7 +998,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should not navigate to create Edge DHCP page', async () => {
-      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),

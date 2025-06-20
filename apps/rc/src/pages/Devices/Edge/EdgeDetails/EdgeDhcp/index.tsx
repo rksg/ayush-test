@@ -28,7 +28,6 @@ export const EdgeDhcp = () => {
   const { activeSubTab, serialNumber } = useParams()
   const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const { isLeaseTimeInfinite } = useGetDhcpStatsQuery(
     {
@@ -40,7 +39,7 @@ export const EdgeDhcp = () => {
       }
     },
     {
-      skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: !isEdgeDhcpHaReady,
       selectFromResult: ({ data }) => ({
         isLeaseTimeInfinite: data?.data[0]?.leaseTime === 'Infinite'
       })
@@ -82,7 +81,7 @@ export const EdgeDhcp = () => {
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   },{
-    skip: !isEdgeHaReady || !isEdgeDhcpHaReady
+    skip: !isEdgeDhcpHaReady
   })
 
   const tabs = {

@@ -43,8 +43,6 @@ const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const isEdgeSubInterfaceCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
-  // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const {
     currentTab,
@@ -184,12 +182,12 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addSubInterfaces)],
       onClick: () => openDrawer()
     },
-    ...(isEdgeSubInterfaceCSVEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Import from file' }),
       scopeKey: [EdgeScopes.CREATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV)],
       onClick: () => setImportModalvisible(true)
-    }]:[])
+    }
   ]
 
   const openDrawer = (data?: SubInterface) => {
@@ -245,19 +243,18 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             }}
             rowKey='id'
           />
-          { isEdgeSubInterfaceCSVEnabled &&
-              <ImportFileDrawer
-                type={ImportFileDrawerType.EdgeSubInterface}
-                title={$t({ defaultMessage: 'Import from file' })}
-                maxSize={CsvSize['5MB']}
-                acceptType={['csv']}
-                templateLink={importTemplateLink}
-                visible={importModalvisible}
-                isLoading={(uploadResult as UploadResultType).isLoading}
-                importError={(uploadResult as UploadResultType).error}
-                importRequest={importSubInterfaces}
-                onClose={() => setImportModalvisible(false)}
-              />}
+          <ImportFileDrawer
+            type={ImportFileDrawerType.EdgeSubInterface}
+            title={$t({ defaultMessage: 'Import from file' })}
+            maxSize={CsvSize['5MB']}
+            acceptType={['csv']}
+            templateLink={importTemplateLink}
+            visible={importModalvisible}
+            isLoading={(uploadResult as UploadResultType).isLoading}
+            importError={(uploadResult as UploadResultType).error}
+            importRequest={importSubInterfaces}
+            onClose={() => setImportModalvisible(false)}
+          />
         </Col>
       </Row>
     </>
