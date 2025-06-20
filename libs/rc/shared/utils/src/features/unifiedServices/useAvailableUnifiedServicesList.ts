@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { MessageDescriptor } from 'react-intl'
 
-import { RadioCardCategory }                                                        from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { RadioCardCategory }                                                        from '@acx-ui/types'
 import { getUserProfile, isCoreTier }                                               from '@acx-ui/user'
 
 import { ServiceType }                           from '../../constants'

@@ -1,6 +1,6 @@
 import { defineMessage } from 'react-intl'
 
-import { RadioCardCategory } from '@acx-ui/components'
+import { RadioCardCategory } from '@acx-ui/types'
 import { getIntl }           from '@acx-ui/utils'
 
 import { generatePolicyListBreadcrumb, generateServiceListBreadcrumb, getPolicyRoutePath, getServiceRoutePath, policyTypeLabelMapping, serviceTypeDescMapping, serviceTypeLabelMapping } from '..'

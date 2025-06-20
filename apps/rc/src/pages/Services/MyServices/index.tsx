@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { GridCol, GridRow, PageHeader, RadioCardCategory }                          from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader }                                             from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
 import {
@@ -29,6 +29,7 @@ import {
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
+import { RadioCardCategory }          from '@acx-ui/types'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 import { ServiceCard }                                                         from '../ServiceCard'
