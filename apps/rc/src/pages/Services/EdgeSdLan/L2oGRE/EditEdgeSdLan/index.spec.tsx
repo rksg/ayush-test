@@ -128,7 +128,8 @@ describe('Edit SD-LAN service', () => {
           networkId: network.networkId,
           venueId: 'venue_00002',
           tunnelProfileId: network.tunnelProfileId
-        }))
+        })),
+        activeNetworkTemplate: undefined
       })
     })
     await waitFor(() => {

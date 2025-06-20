@@ -36,8 +36,6 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
-import { useIsEdgeReady } from '../useEdgeActions'
-
 import * as UI from './styledComponents'
 
 export  { seriesMappingAP } from './helper'
@@ -54,19 +52,17 @@ export function DevicesWidget (props: {
   const onArrowClick = useNavigateToPath('/devices/')
   const { isCustomRole } = useUserProfileContext()
 
-  const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
   const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
 
-  // `2` refers to the AP and Switch
+  // `3` refers to the AP, Switch and Edge
   const numDonut = [
-    isEdgeEnabled,
     showRwgUI && rwgHasPermission,
     showIotControllerUI
-  ].filter(Boolean).length + 2
+  ].filter(Boolean).length + 3
 
   const { venueId } = useParams()
 
@@ -102,14 +98,13 @@ export function DevicesWidget (props: {
                 title={$t({ defaultMessage: 'Switch' })}
                 data={props.switchData}/>
             </UI.NavigationContainer>
-            { isEdgeEnabled && (
-              <UI.NavigationContainer onClick={clickSmartEdgeHandler}>
-                <DonutChart
-                  key='smartEdge-donutChart'
-                  style={{ width: width/numDonut, height }}
-                  title={$t({ defaultMessage: 'RUCKUS Edge' })}
-                  data={props.edgeData}/>
-              </UI.NavigationContainer>)}
+            <UI.NavigationContainer onClick={clickSmartEdgeHandler}>
+              <DonutChart
+                key='smartEdge-donutChart'
+                style={{ width: width/numDonut, height }}
+                title={$t({ defaultMessage: 'RUCKUS Edge' })}
+                data={props.edgeData}/>
+            </UI.NavigationContainer>
             { showRwgUI && rwgHasPermission && (
               <UI.NavigationContainer onClick={clickRwgHandler}>
                 <DonutChart
@@ -150,7 +145,6 @@ export function DevicesWidgetv2 (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
   const { isCustomRole } = useUserProfileContext()
-  const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
@@ -171,10 +165,9 @@ export function DevicesWidgetv2 (props: {
   } = props
 
   const numRow = [
-    isEdgeEnabled,
     showRwgUI && rwgHasPermission,
     showIotControllerUI
-  ].filter(Boolean).length + 2
+  ].filter(Boolean).length + 3
 
 
   return (
@@ -262,51 +255,49 @@ export function DevicesWidgetv2 (props: {
                 }
               </GridCol>
             </GridRow>
-            { isEdgeEnabled &&
-              <GridRow align={'middle'}>
-                <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
-                  { edgeTotalCount > 0
-                    ? $t({ defaultMessage: 'RUCKUS Edges' })
-                    : $t({ defaultMessage: 'No RUCKUS Edges' }) }
-                </GridCol>
-                <GridCol col={{ span: edgeTotalCount ? 15 : 12 }}>
-                  { edgeTotalCount > 0
-                    ? <Space>
-                      <StackedBarChart
-                        key='edge-stackedBarChart'
-                        animation={false}
-                        style={{
-                          height: height/2 - (10 * (numRow - 1)),
-                          width: width/2 - 15
-                        }}
-                        data={edgeStackedData}
-                        showLabels={false}
-                        showTotal={false}
-                        total={edgeTotalCount}
-                        barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink key='edge-tenantLink' to={'/devices/edge'}>
-                        {edgeTotalCount}
-                      </TenantLink>
-                    </Space>
-                    : <UI.LinkContainer
-                      key='edge-linkContainer'
-                      style={{ height: (height/2) - (10 * (numRow - 1)) }}>
-                      {filterByAccess([<TenantLink
-                        scopeKey={[EdgeScopes.CREATE]}
-                        rbacOpsIds={[
-                          [
-                            getOpsApi(EdgeUrlsInfo.addEdge),
-                            getOpsApi(EdgeUrlsInfo.addEdgeCluster)
-                          ]
-                        ]}
-                        to={'/devices/edge/add'}>
-                        {$t({ defaultMessage: 'Add RUCKUS Edge' })}
-                      </TenantLink>])}
-                    </UI.LinkContainer>
-                  }
-                </GridCol>
-              </GridRow>
-            }
+            <GridRow align={'middle'}>
+              <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
+                { edgeTotalCount > 0
+                  ? $t({ defaultMessage: 'RUCKUS Edges' })
+                  : $t({ defaultMessage: 'No RUCKUS Edges' }) }
+              </GridCol>
+              <GridCol col={{ span: edgeTotalCount ? 15 : 12 }}>
+                { edgeTotalCount > 0
+                  ? <Space>
+                    <StackedBarChart
+                      key='edge-stackedBarChart'
+                      animation={false}
+                      style={{
+                        height: height/2 - (10 * (numRow - 1)),
+                        width: width/2 - 15
+                      }}
+                      data={edgeStackedData}
+                      showLabels={false}
+                      showTotal={false}
+                      total={edgeTotalCount}
+                      barColors={getDeviceConnectionStatusColorsv2()} />
+                    <TenantLink key='edge-tenantLink' to={'/devices/edge'}>
+                      {edgeTotalCount}
+                    </TenantLink>
+                  </Space>
+                  : <UI.LinkContainer
+                    key='edge-linkContainer'
+                    style={{ height: (height/2) - (10 * (numRow - 1)) }}>
+                    {filterByAccess([<TenantLink
+                      scopeKey={[EdgeScopes.CREATE]}
+                      rbacOpsIds={[
+                        [
+                          getOpsApi(EdgeUrlsInfo.addEdge),
+                          getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+                        ]
+                      ]}
+                      to={'/devices/edge/add'}>
+                      {$t({ defaultMessage: 'Add RUCKUS Edge' })}
+                    </TenantLink>])}
+                  </UI.LinkContainer>
+                }
+              </GridCol>
+            </GridRow>
             {
               showRwgUI && rwgHasPermission && <GridRow align={'middle'}>
                 <GridCol col={{ span: rwgTotalCount ? 9 : 12 }}>

@@ -12,7 +12,6 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                                                                             from '@acx-ui/feature-toggle'
 import { CountAndNamesTooltip, EdgeTableCompatibilityWarningTooltip, EdgeServiceStatusLight, useEdgeSdLansCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
@@ -64,8 +63,6 @@ const clusterOptionsDefaultPayload = {
 }
 
 export const EdgeSdLanTable = () => {
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -104,7 +101,7 @@ export const EdgeSdLanTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const skipFetchCompatibilities = !isEdgeCompatibilityEnabled || currentServiceIds.length === 0
+  const skipFetchCompatibilities = currentServiceIds.length === 0
   // eslint-disable-next-line max-len
   const sdLanCompatibilityData = useEdgeSdLansCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
@@ -169,11 +166,11 @@ export const EdgeSdLanTable = () => {
           >
             {row.name}
           </TenantLink>
-          {isEdgeCompatibilityEnabled && <EdgeTableCompatibilityWarningTooltip
+          <EdgeTableCompatibilityWarningTooltip
             serviceId={serviceId!}
             featureName={IncompatibilityFeatures.SD_LAN}
             compatibility={sdLanCompatibilityData.compatibilities}
-          />}
+          />
         </Space>
         )
       }

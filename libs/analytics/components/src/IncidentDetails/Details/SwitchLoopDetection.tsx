@@ -2,27 +2,19 @@ import type { Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
-import { ImpactedSwitchesByParamDonut }   from '../Charts/ImpactedSwitchesDonut/byParam'
-import { ImpactedVlanTable  }             from '../Charts/ImpactedSwitchLoopDetection'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { FixedAutoSizer }               from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchesDonut }        from '../Charts/ImpactedSwitchesDonut'
+import { ImpactedSwitchesByParamDonut } from '../Charts/ImpactedSwitchesDonut/byParam'
+import { ImpactedVlanTable  }           from '../Charts/ImpactedSwitchLoopDetection'
+import { IncidentAttributes }           from '../IncidentAttributes'
+import { Insights }                     from '../Insights'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = commonAttributes()
 
 export const SwitchLoopDetection = (incident: Incident) => {
-
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime
-  ]
-
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE)
