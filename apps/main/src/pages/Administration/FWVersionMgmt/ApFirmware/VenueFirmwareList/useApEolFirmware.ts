@@ -2,7 +2,6 @@
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MaxABFVersionEntity,
   compactEolApFirmwares,
@@ -41,8 +40,6 @@ export type UpgradableApModelsAndFamilies = {
 
 export function useApEolFirmware () {
   const intl = getIntl()
-  // eslint-disable-next-line max-len
-  const isBranchLevelSupportedModelsEnabled = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
 
   const { releasedABFList, latestEolVersionByABFs } = useGetAvailableABFListQuery({}, {
     refetchOnMountOrArgChange: false,
@@ -58,7 +55,6 @@ export function useApEolFirmware () {
     }
   })
   const { modelToFamilyMap, apModelFamilyDisplayNames } = useGetApModelFamiliesQuery({}, {
-    skip: !isBranchLevelSupportedModelsEnabled,
     refetchOnMountOrArgChange: false,
     selectFromResult: ({ data }) => ({
       // eslint-disable-next-line max-len
@@ -158,10 +154,6 @@ export function useApEolFirmware () {
 
   // eslint-disable-next-line max-len
   const findUpgradableApModelsAndFamilies = (targetVersions: string[], selectedRows: FirmwareVenue[]): UpgradableApModelsAndFamilies => {
-    if (!isBranchLevelSupportedModelsEnabled) {
-      return extractUpgradableApModelsAndFamilies(selectedRows)
-    }
-
     if (!releasedABFList || !modelToFamilyMap || targetVersions.length === 0) return {}
 
     const sortedTargetVersions = targetVersions.sort((v1, v2) => -compareVersions(v1, v2)) // Sort versions from high to low
@@ -246,41 +238,4 @@ function getGreaterABFVersionList (abfVersionList: ABFVersion[], abfName: string
   return abfVersionList.filter(abfVersion => {
     return abfVersion.abf === abfName && compareVersions(abfVersion.id, eolVersion) > 0
   })
-}
-
-const eolABFSupportedApFamilyLabels: { [abfName: string]: string[] } = {
-  'active': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_7]],
-  'ABF2-3R': [
-    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6],
-    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6E],
-    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_2]
-  ],
-  'eol-ap-2022-12': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_1]]
-}
-// eslint-disable-next-line max-len
-function extractUpgradableApModelsAndFamilies (selectedRows: FirmwareVenue[]): UpgradableApModelsAndFamilies {
-  const activeABFApModels = getActiveApModels(selectedRows)
-  const eolApFirmwares = compactEolApFirmwares(selectedRows)
-  const upgradableApModelAndFamilies: UpgradableApModelsAndFamilies = {}
-
-  if (activeABFApModels.length > 0) {
-    upgradableApModelAndFamilies['active'] = {
-      familyNames: eolABFSupportedApFamilyLabels['active'],
-      apModels: activeABFApModels
-    }
-  }
-
-  eolApFirmwares.forEach((eolApFirmware: EolApFirmware) => {
-    const existingData = upgradableApModelAndFamilies[eolApFirmware.name]
-    if (existingData) {
-      existingData.apModels = [...new Set([...existingData.apModels, ...eolApFirmware.apModels])]
-    } else {
-      upgradableApModelAndFamilies[eolApFirmware.name] = {
-        familyNames: eolABFSupportedApFamilyLabels[eolApFirmware.name] ?? [],
-        apModels: eolApFirmware.apModels
-      }
-    }
-  })
-
-  return upgradableApModelAndFamilies
 }

@@ -132,7 +132,6 @@ interface ApCompatibilityDetailTableProps {
 }
 
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
-  const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
   const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
 
   const { $t } = useIntl()
@@ -141,7 +140,6 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   const { model, firmwareVersion='' } = apInfo ?? {}
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
-    skip: !isSupportedFwModels,
     refetchOnMountOrArgChange: false
   })
 

@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -136,84 +136,6 @@ describe('Firmware Venues Table', () => {
     await waitFor(() => expect(updateNowDialog).not.toBeVisible())
   })
 
-  it('should update selected row with advanced dialog', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag !== Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
-    })
-
-    const updateNowFn = jest.fn()
-    mockServer.use(
-      rest.patch(
-        FirmwareUrlsInfo.updateNow.url,
-        (req, res, ctx) => {
-          updateNowFn(req.body)
-          return res(ctx.json({ ...successResponse }))
-        }
-      )
-    )
-
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const rows = await screen.findAllByRole('row')
-    expect(within(rows[4]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
-    await userEvent.click(within(rows[4]).getByRole('checkbox'))
-
-    expect(within(rows[1]).getByRole('cell', { name: /Ben-Venue-US/i })).toBeVisible()
-    await userEvent.click(within(rows[1]).getByRole('checkbox'))
-
-    await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
-    const updateNowDialog = await screen.findByRole('dialog')
-
-    // Verify that the active ABF's AP models displayed are accurate
-    expect(await within(updateNowDialog)
-      .findByText(/available firmware for Wi-Fi 7 AP \(r610\)/i)).toBeVisible()
-
-    // Verify that the message displayed is accurate when there is no available firmware can be updated,
-    // it's ABF: "eol-ap-2022-12" in "My-Venue" with AP model "R550"
-    expect(
-      await screen.findByText('There are one or more legacy devices in selected venues (R550).')
-    ).toBeVisible()
-
-    await userEvent.click(await screen.findByRole('button', { name: /Update Firmware/ }))
-
-    // Verify that the payload of Update Firmware is accurate
-    const targetActiveAbfVersion = availableABFList.filter(item => item.abf === 'active')[0]
-    await waitFor(() => {
-      expect(updateNowFn).toHaveBeenCalledWith([{
-        firmwareCategoryId: 'active',
-        firmwareVersion: targetActiveAbfVersion.id,
-        venueIds: [
-          '02b81f0e31e34921be5cf47e6dce1f3f', // The venue ID of My-Venue
-          '8ee8acc996734a5dbe43777b72469857' // The venue ID of Ben-Venue-US
-        ]
-      }, {
-        // The legacy ABF should also be updated to the latest version by default, ACX-44461
-        firmwareCategoryId: 'ABF2-3R',
-        firmwareVersion: '6.2.3.103.200',
-        venueIds: [
-          '02b81f0e31e34921be5cf47e6dce1f3f',
-          '8ee8acc996734a5dbe43777b72469857'
-        ]
-      }, {
-        firmwareCategoryId: 'eol-ap-2021-05',
-        firmwareVersion: '6.1.0.10.453',
-        venueIds: [
-          '02b81f0e31e34921be5cf47e6dce1f3f',
-          '8ee8acc996734a5dbe43777b72469857'
-        ]
-      }])
-    })
-
-    await waitFor(() => expect(updateNowDialog).not.toBeVisible())
-  })
-
   it('should render Legacy AP Firmware column', async () => {
     render(
       <Provider>
@@ -260,10 +182,6 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should show the correct AP Models/Families when the corresponding FF is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE
-    })
-
     render(
       <Provider>
         <VenueFirmwareList />
