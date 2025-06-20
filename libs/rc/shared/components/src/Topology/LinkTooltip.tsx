@@ -145,8 +145,10 @@ onClose: () => void
       width: '348px',
       minHeight: '350px',
       zIndex: 9999,
-      top: tooltipPosition.y - 100,
-      left: tooltipPosition.x + 15
+      top: tooltipPosition?.y && typeof tooltipPosition?.y === 'number'
+        ? tooltipPosition.y - 100 : 0,
+      left: tooltipPosition?.x && typeof tooltipPosition?.x === 'number'
+        ? tooltipPosition.x + 15 : 0
     }}>
     <Card>
       <Card.Title>

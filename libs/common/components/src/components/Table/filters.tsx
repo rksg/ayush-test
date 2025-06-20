@@ -75,13 +75,29 @@ export function getFilteredData <RecordType> (
   filterValues: Filter,
   activeFilters: TableColumn<RecordType, 'text'>[],
   searchables: TableColumn<RecordType, 'text'>[],
-  searchValue: string
+  searchValue: string,
+  /**
+   * In a nested table, when columns in this array is used to filter parent rows, and
+   * parent row does not match, all children rows will be filtered out as well
+   * When column is not in array, default behavior is to show parent regardless of whether it matches
+   * when at least 1 child matches
+   */
+  columnsToFilterChildrenRowBasedOnParentRow?: (keyof RecordType)[]
 ): RecordType[] | undefined {
-  const isRowMatching = (row: RecordType): Boolean => {
+  const isRowMatching = (row: RecordType, isParentRowNotMatching?: boolean): boolean => {
     for (const column of activeFilters) {
       const key = (column.filterKey || column.dataIndex) as keyof RecordType
+      if (
+        columnsToFilterChildrenRowBasedOnParentRow?.includes(key) &&
+        isParentRowNotMatching
+      ) {
+        return false
+      }
+
       const filteredValue = filterValues[key as keyof Filter]!
-      if (!filteredValue.includes(_.get(row, key) as unknown as string)) {
+      const value = _.get(row, key) as unknown as string
+      const valueStr = value.toString()
+      if (!filteredValue.includes(valueStr)) {
         return false
       }
     }
@@ -100,10 +116,13 @@ export function getFilteredData <RecordType> (
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
   ) => {
-    const children = hasChildrenColumn(row) ? row.children?.filter(isRowMatching) : undefined
+    const isParentRowMatching = isRowMatching(row)
+    const children = hasChildrenColumn(row)
+      ? row.children?.filter((childRow) => isRowMatching(childRow, !isParentRowMatching))
+      : undefined
     if (children?.length) {
       rows.push({ ...row, children })
-    } else if (isRowMatching(row)) {
+    } else if (isParentRowMatching) {
       rows.push({ ...row, children: undefined })
     }
     return rows
@@ -156,7 +175,8 @@ export function renderFilter <RecordType> (
   enableApiFilter: boolean,
   width: number,
   settingsId?: string,
-  filterPersistence?: boolean
+  filterPersistence?: boolean,
+  optionLabelProp?: string
 ) {
   const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
     return <Checkbox
@@ -220,6 +240,7 @@ export function renderFilter <RecordType> (
   }
 
   return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
+    optionLabelProp={optionLabelProp}
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
@@ -254,15 +275,20 @@ export function renderFilter <RecordType> (
     showArrow
     allowClear
     style={{ width }}
-    options={column.fitlerCustomOptions}
+    options={column.filterCustomOptions}
   >
-    {!Array.isArray(column.fitlerCustomOptions) && options?.map((option, index) =>
+    {!Array.isArray(column.filterCustomOptions) && options?.map((option, index) =>
       <Select.Option
         value={option.key}
         key={`key-${index}-${option.key}`}
         data-testid={`option-${option.key}`}
         title={option.value}
-        children={option.label ?? option.value}
+        children={
+          optionLabelProp === 'label'
+            ? option.value
+            : option.label ?? option.value
+        }
+        label={option.label ?? option.value}
       />
     )}
   </UI.FilterSelect>

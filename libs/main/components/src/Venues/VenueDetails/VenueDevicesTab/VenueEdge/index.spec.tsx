@@ -54,7 +54,7 @@ describe('VenueEdge', () => {
 
   it('should render edge compatibility warning correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
+      [Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
 
     render(<Provider><VenueEdge /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
@@ -74,7 +74,7 @@ describe('VenueEdge', () => {
 
   it('should render edge compatibility warning correctly - V1_1', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
+      [Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
         Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
 
     render(<Provider><VenueEdge /></Provider>, {

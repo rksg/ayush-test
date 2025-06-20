@@ -81,7 +81,7 @@ describe('BaseStepNode', () => {
         }
       ),
       rest.delete(
-        WorkflowUrls.deleteWorkflowStepDescendants.url,
+        WorkflowUrls.deleteWorkflowStepDescendants.url.split('?')[0],
         (_, res, ctx) => {
           spyDeleteStepChildrenFn()
           return res(ctx.json({}))

@@ -11,11 +11,18 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'DELETE:/venues/{id}/switchFirmwares/schedules',
     newApi: true
   },
-  updateSwitchVenueSchedules: {
+  createSwitchVenueSchedules: {
     method: 'post',
     url: '/venues/:venueId/switchFirmwares/schedules',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/schedule',
     opsApi: 'POST:/venues/{id}/switchFirmwares/schedules',
+    newApi: true
+  },
+  updateSwitchVenueSchedules: {
+    method: 'put',
+    url: '/venues/:venueId/switchFirmwares/schedules',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/schedule',
+    opsApi: 'PUT:/venues/{id}/switchFirmwares/schedules',
     newApi: true
   },
   getSwitchLatestFirmwareList: {
