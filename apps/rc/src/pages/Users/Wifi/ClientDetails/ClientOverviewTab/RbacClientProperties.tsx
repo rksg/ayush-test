@@ -4,7 +4,7 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }           from '@acx-ui/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions, cssStr }   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
 import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui/rc/components'
@@ -465,7 +465,7 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'RSSI' })}
         </Tooltip>}
         children={<Space style={{
-          color: getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color
+          color: cssStr(getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color)
         }}>
           <Tooltip
             placement='bottom'
