@@ -40,10 +40,10 @@ export function ImpactedVlanTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const vlanText = response.data!.length === 1 ? 'VLAN' : 'VLANs'
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Loop-Detection-${vlanText}-${incident.id}-${timestamp}.csv`
+      `Loop-Detection-${vlanText}-${timestamp}.csv`
     )
   }
 

@@ -87,10 +87,10 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Congestion-Impacted-${portText}-${incident.id}-${timestamp}.csv`
+      `Congestion-Impacted-${portText}-${timestamp}.csv`
     )
   }
 

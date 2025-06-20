@@ -35,10 +35,10 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const switchText = data.length === 1 ? 'Switch' : 'Switches'
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `TCP-SYN-DDoS-Impacted-${switchText}-${incident.id}-${timestamp}.csv`
+      `TCP-SYN-DDoS-Impacted-${switchText}-${timestamp}.csv`
     )
   }
 

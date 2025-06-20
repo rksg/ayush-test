@@ -105,10 +105,10 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const switchText = response.data!.length === 1 ? 'Switch' : 'Switches'
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Uplink-Congestion-Impacted-${switchText}-${incident.id}-${timestamp}.csv`
+      `Uplink-Congestion-Impacted-${switchText}-${timestamp}.csv`
     )
   }
 

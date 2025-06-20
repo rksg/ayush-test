@@ -431,7 +431,7 @@ describe('ImpactedSwitchPortFlap', () => {
 
       expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
-        expect.stringContaining(`Port-Flap-Impacted-Ports-${fakeIncident1.id}`)
+        expect.stringContaining('Port-Flap-Impacted-Ports')
       )
 
       // Verify CSV content
@@ -486,7 +486,7 @@ describe('ImpactedSwitchPortFlap', () => {
 
       expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
-        expect.stringContaining(`Port-Flap-Impacted-Ports-${fakeIncident1.id}`)
+        expect.stringContaining('Port-Flap-Impacted-Ports')
       )
     })
 

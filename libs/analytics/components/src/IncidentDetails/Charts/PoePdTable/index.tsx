@@ -74,12 +74,12 @@ export function PoePdTable (props: ChartProps) {
     ].join('\n')
 
     const switchText = queryResults.data!.length === 1 ? 'Switch' : 'Switches'
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `PoE-Impacted-${switchText}-${props.incident.id}-${timestamp}.csv`
+      `PoE-Impacted-${switchText}-${timestamp}.csv`
     )
-  }, [columnHeaders, queryResults.data, props.incident.id])
+  }, [columnHeaders, queryResults.data])
 
   return (
     <Loader states={[queryResults]}>

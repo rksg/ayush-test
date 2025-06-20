@@ -106,11 +106,11 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
       ...csvData.map(row => Object.values(row).map(value => `"${value}"`).join(','))
     ].join('\n')
 
-    const timestamp = moment().format('YYYYMMDDHHmmss')
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
     const switchText = response.data.length === 1 ? 'Switch' : 'Switches'
     handleBlobDownloadFile(new Blob([csvContent],
       { type: 'text/csv;charset=utf-8;' }),
-    `VLAN-Mismatch-Impacted-${switchText}-${id}-${timestamp}.csv`)
+    `VLAN-Mismatch-Impacted-${switchText}-${timestamp}.csv`)
   }
 
   return <Loader states={[response]}>
