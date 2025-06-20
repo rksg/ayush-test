@@ -108,7 +108,6 @@ export function LanPorts (props: ApEditItemProps) {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
-  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
   const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
@@ -624,7 +623,6 @@ export function LanPorts (props: ApEditItemProps) {
                           setSelectedPortCaps={setSelectedPortCaps}
                           selectedModelCaps={selectedModelCaps}
                           isDhcpEnabled={isDhcpEnabled}
-                          isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
                           venueId={venueId}

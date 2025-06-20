@@ -66,7 +66,6 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   const { $t } = useIntl()
   const { isEdit, isFetching } = props
 
-  const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeHaAaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
   // cannot use useIsEdgeFeatureReady(EDGE_PIN_ENHANCE_TOGGLE), it is tied to Platinum tier
   const isEdgePinEnhanceEnabled = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
@@ -107,7 +106,6 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
-      skip: !isEdgeHaEnabled,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterList: data?.data,
@@ -192,38 +190,36 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
             />
           </Form.Item>
         </Col>
-
-        {isEdgeHaEnabled &&
-          <Col span={23}>
-            <Form.Item
-              name='clusterId'
-              label={$t({ defaultMessage: 'Cluster' })}
-              extra={isEdgeHaAaEnabled ?
-                $t({
-                  // eslint-disable-next-line max-len
-                  defaultMessage: 'If no cluster is chosen, it automatically sets up an {haMode} HA mode cluster using RUCKUS Edge’s name by default. HA mode defaults are based on the <venueSingular></venueSingular>\'s firmware version.'
-                }, {
-                  haMode: isAaSupportedByVenue(venueId) ?
-                    <b>{$t({ defaultMessage: 'active-active' })}</b> :
-                    <b>{$t({ defaultMessage: 'active-standby' })}</b>
-                }) :
+        <Col span={23}>
+          <Form.Item
+            name='clusterId'
+            label={$t({ defaultMessage: 'Cluster' })}
+            extra={isEdgeHaAaEnabled ?
+              $t({
                 // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using RUCKUS Edge’s name by default.' })
-              }
-            >
-              <Select options={[
-                {
-                  label: $t({ defaultMessage: 'Select...' }),
-                  value: ''
-                },
-                ...((clusterOptions ? clusterOptions : []).filter(cluster =>
-                  !venueId || cluster.venueId === venueId))
-              ]}
-              disabled={isEdit}
-              onChange={isEdgePinEnhanceEnabled ? onClusterChange : undefined}
-              />
-            </Form.Item>
-          </Col>}
+                defaultMessage: 'If no cluster is chosen, it automatically sets up an {haMode} HA mode cluster using RUCKUS Edge’s name by default. HA mode defaults are based on the <venueSingular></venueSingular>\'s firmware version.'
+              }, {
+                haMode: isAaSupportedByVenue(venueId) ?
+                  <b>{$t({ defaultMessage: 'active-active' })}</b> :
+                  <b>{$t({ defaultMessage: 'active-standby' })}</b>
+              }) :
+            // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using RUCKUS Edge’s name by default.' })
+            }
+          >
+            <Select options={[
+              {
+                label: $t({ defaultMessage: 'Select...' }),
+                value: ''
+              },
+              ...((clusterOptions ? clusterOptions : []).filter(cluster =>
+                !venueId || cluster.venueId === venueId))
+            ]}
+            disabled={isEdit}
+            onChange={isEdgePinEnhanceEnabled ? onClusterChange : undefined}
+            />
+          </Form.Item>
+        </Col>
 
         {isEdgePinEnhanceEnabled &&
         <Row style={{ marginTop: 8, paddingLeft: '4.5px' }}>

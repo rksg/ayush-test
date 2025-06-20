@@ -143,7 +143,7 @@ describe('Venue Edge SD-LAN Service', () => {
     beforeEach(() => {
       // mock SDLAN HA(i,e p2) enabled
       // eslint-disable-next-line max-len
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
     it('should display P2 data', async () => {

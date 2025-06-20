@@ -54,9 +54,9 @@ jest.mock('@acx-ui/main/components', () => {
   }
 })
 jest.mock('@acx-ui/rc/components', () => ({
+  withTemplateFeatureGuard: () => () => <div data-testid='with-template-feature-guard' />,
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
   useUpdateGoogleMapRegion: () => { return { update: jest.fn() }},
-  useIsEdgeReady: jest.fn().mockReturnValue(false),
   SpaceWrapper: () => <div data-testid='space-wrapper' />
 }))
 jest.mock('@acx-ui/user', () => ({

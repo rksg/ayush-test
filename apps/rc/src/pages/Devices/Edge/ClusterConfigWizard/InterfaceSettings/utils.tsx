@@ -647,20 +647,17 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
   return result
 }
 
-// get physical port & LAG data from form instance
-export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
-  ports: Record<EdgeSerialNumber, EdgePort[]>,
-  lags: Record<EdgeSerialNumber, EdgeLag[]>
-} => {
-  const nodesPortData = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
-  const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+export const getAllPhysicalInterfaceData = (
+  portSettings: InterfaceSettingsFormType['portSettings'],
+  lagSettings: InterfaceSettingsFormType['lagSettings']
+): { ports: Record<EdgeSerialNumber, EdgePort[]>, lags: Record<EdgeSerialNumber, EdgeLag[]> } => {
 
-  const allPortsData = reduce(nodesPortData, (result, values, key) => {
+  const allPortsData = reduce(portSettings, (result, values, key) => {
     result[key] = flatten(Object.values(values))
     return result
   }, {} as Record<EdgeSerialNumber, EdgePort[]>)
 
-  const allLagsData = reduce(nodesLagData, (result, values) => {
+  const allLagsData = reduce(lagSettings, (result, values) => {
     result[values.serialNumber] = values.lags
     return result
   }, {} as Record<EdgeSerialNumber, EdgeLag[]>)
@@ -669,6 +666,17 @@ export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
     ports: allPortsData,
     lags: allLagsData
   }
+}
+
+// get physical port & LAG data from form instance
+export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
+  ports: Record<EdgeSerialNumber, EdgePort[]>,
+  lags: Record<EdgeSerialNumber, EdgeLag[]>
+} => {
+  const nodesPortData = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
+  const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+
+  return getAllPhysicalInterfaceData(nodesPortData, nodesLagData)
 }
 
 export const DualWanStepTitle = (props: {

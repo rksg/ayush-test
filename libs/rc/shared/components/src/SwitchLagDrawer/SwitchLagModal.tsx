@@ -94,7 +94,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
 
   const urlParams = useParams()
@@ -149,7 +148,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
   const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
-  const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
   const [forceUpPort, setForceUpPort] = useState<string>('')
@@ -187,7 +185,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
-      setHasSwitchProfile(!!switchProfile?.length)
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
     }
 
@@ -462,7 +459,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     }
 
     if(isSwitchLagForceUpEnabled){
-      setForceUpPort(ports.includes(forceUpPort) ? forceUpPort : '')
+      setForceUpPort(ports?.includes(forceUpPort) ? forceUpPort : '')
     }
 
     form.getFieldValue('ports')
@@ -522,7 +519,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     if(isSwitchLagForceUpEnabled){
       const targetPorts: string[] = []
       targetSelectedKeys.forEach(item => {
-        if(ports.includes(item)){
+        if(ports?.includes(item)){
           form.setFieldValue('forceUp', item === forceUpPort)
           targetPorts.push(item)
         }
@@ -682,22 +679,21 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                         </Typography.Text>
                         <Form.Item
                           noStyle
+                          name='forceUp'
                           valuePropName='checked'
                           children={<Tooltip
                             title={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC ?
                               $t(EditPortMessages.ONLY_ONE_PORT_CAN_BE_FORCE_UP) : ''}>
-                            <Form.Item
-                              noStyle
-                              name='forceUp'
-                              valuePropName='checked'><Switch
-                                disabled={(forceUpPort !== '' &&
+                            <Switch
+                              defaultChecked={forceUpPort !== ''}
+                              checked={forceUpPort === selectedPorts[0]}
+                              disabled={(forceUpPort !== '' &&
                                   forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC}
-                                style={{ display: 'flex' }}
-                                onChange={(value) => value ?
-                                  setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
-                            </Form.Item>
+                              style={{ display: 'flex' }}
+                              onChange={(value) => value ?
+                                setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
                           </Tooltip>}
                         /></>
                     }
@@ -801,9 +797,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             venueVlans={venueVlans}
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
-            vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
             cliApplied={cliApplied}
-            hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
             switchIds={switchId ? [switchId] : []}
             venueId={switchDetailHeader?.venueId}
@@ -813,8 +807,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 switchVlans,
                 setSwitchVlans,
                 venueVlans,
-                setVenueVlans,
-                isSwitchLevelVlanEnabled
+                setVenueVlans
               )
             }
             switchFirmwares={switchDetailHeader?.firmware ? [switchDetailHeader.firmware] : []}
