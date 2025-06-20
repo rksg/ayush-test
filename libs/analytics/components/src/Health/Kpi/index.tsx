@@ -15,10 +15,10 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button, Tabs } from '@acx-ui/components'
-import { get }                                    from '@acx-ui/config'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { SwitchScopes, WifiScopes }               from '@acx-ui/types'
+import { GridCol, GridRow, Loader, Button, ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
+import { get }                                                                     from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { SwitchScopes, WifiScopes }                                                from '@acx-ui/types'
 import {
   aiOpsApis,
   hasCrossVenuesPermission,
@@ -108,7 +108,7 @@ export function KpiSection (props: {
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMoreState, setLoadMoreState ] = useState<{ [key: string]: boolean }>({})
   const { $t } = useIntl()
-  const kpiList = useMemo(() => isArray(kpis) ? kpis : Object.values(kpis)[1], [kpis])
+  const kpiList = useMemo(() => isArray(kpis) ? kpis : Object.values(kpis)[0], [kpis])
 
   const connectChart = useMemo(() => (chart: ReactECharts | null) => {
     if (chart) {
@@ -216,19 +216,30 @@ export function KpiSection (props: {
 
   return (
     <>
-      {!isArray(kpis) && <Tabs type='third'>
-        {
-          Object.keys(kpis).map((key)=>{
-            const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
-            const kpisToShow = loadMoreState[key] ? subTabKpis.slice(0,1) : subTabKpis
-            return <Tabs.TabPane tab={key} key={`${key}`}>{
-              kpisToShow.map(RenderKpi)
-            }
-            {loadMoreState[key] && LoadMoreButton(key)}
-            </Tabs.TabPane>
-          })
-        }
-      </Tabs>}
+      {!isArray(kpis) && (() => {
+        const tabDetails: ContentSwitcherProps['tabDetails'] = Object.keys(kpis).map((key) => {
+          const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
+          const kpisToShow = loadMoreState[key] ? subTabKpis.slice(0, 1) : subTabKpis
+          return {
+            label: key,
+            value: key,
+            children: (
+              <div style={{ marginTop: '16px' }}>
+                {kpisToShow.map(RenderKpi)}
+                {loadMoreState[key] && LoadMoreButton(key)}
+              </div>
+            )
+          }
+        })
+
+        return (
+          <ContentSwitcher
+            tabDetails={tabDetails}
+            size='small'
+            align='center'
+          />
+        )
+      })()}
       {isArray(kpis) && (loadMoreState['default'] ? kpiList.slice(0, 1) : kpiList).map(RenderKpi)}
       {(isArray(kpis) && loadMoreState['default']) && LoadMoreButton('default') }
     </>
