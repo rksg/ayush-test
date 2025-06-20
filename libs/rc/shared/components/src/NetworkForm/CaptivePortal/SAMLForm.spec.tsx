@@ -12,7 +12,8 @@ import {
   SamlIdpProfileUrls,
   CertificateUrls,
   NetworkSaveData,
-  AccessControlUrls
+  AccessControlUrls,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -454,10 +455,43 @@ describe('CaptiveNetworkForm - SAML', () => {
     expect(await screen.findByText('SAML-A7')).toBeInTheDocument()
   })
 
+  it('should accounting service displayed when FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+    )
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SAMLForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>
+    )
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
+  })
+
   describe('RedirectUrlInput functionality', () => {
     // Mock data for testing
     const mockNetworkWithRedirectUrl: NetworkSaveData = {
-      type: 'guest',
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
       guestPortal: {
         redirectUrl: 'http://example.com',
         guestNetworkType: GuestNetworkTypeEnum.SAML
