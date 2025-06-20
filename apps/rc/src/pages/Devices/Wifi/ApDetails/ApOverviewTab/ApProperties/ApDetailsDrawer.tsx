@@ -85,7 +85,6 @@ const useGetApPassword = (currentAP: ApViewModel) => {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -162,7 +161,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const apPassword = useGetApPassword(currentAP)
 
   const fetchSwitchDetails = async () => {
-    if (!portLinkEnabled || !hasPermission({
+    if (!hasPermission({
       scopes: [SwitchScopes.UPDATE],
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
     })) {
