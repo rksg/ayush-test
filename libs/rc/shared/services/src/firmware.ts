@@ -578,17 +578,13 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        if (enableRbac) {
-          return {
-            ...createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params),
-            body: JSON.stringify({
-              fields: ['nextApFirmwareSchedules'],
-              page: 1, pageSize: 10000
-            })
-          }
-        } else {
-          return createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params),
+          body: JSON.stringify({
+            fields: ['nextApFirmwareSchedules'],
+            page: 1, pageSize: 10000
+          })
         }
       },
       // eslint-disable-next-line max-len

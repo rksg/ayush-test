@@ -196,12 +196,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
-  getScheduledFirmware: {
-    method: 'get',
-    url: '/apFirmwares?status=scheduled',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
-    newApi: true
-  },
   getVenueApModelFirmwareList: {
     method: 'post',
     url: '/venues/query',

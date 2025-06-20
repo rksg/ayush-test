@@ -69,7 +69,7 @@ export function CloudMessageBanner () {
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params, enableRbac: true }).unwrap()
+    return await getCloudScheduleVersion({ params }).unwrap()
       .then(cloudScheduleVersion => {
         if (!cloudScheduleVersion) return
 
