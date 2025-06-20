@@ -4,7 +4,6 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                              from '@acx-ui/feature-toggle'
 import { EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, ToolTipTableStyle, TrafficClassSettingsTable, useEdgeHqosCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
@@ -33,7 +32,6 @@ const EdgeHqosBandwidthTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const getQosViewDataPayload = {
     fields: [
@@ -113,11 +111,11 @@ const EdgeHqosBandwidthTable = () => {
               })}>
               {row.name}
             </TenantLink>
-            {isEdgeCompatibilityEnabled && <EdgeTableCompatibilityWarningTooltip
+            <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
               featureName={IncompatibilityFeatures.HQOS}
               compatibility={hqosCompatibilityData.compatibilities}
-            />}
+            />
           </Space>
         )
       }
