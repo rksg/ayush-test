@@ -1,7 +1,5 @@
 import { rest } from 'msw'
 
-import { Features }                                          from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import {
@@ -47,20 +45,7 @@ describe('EdgeList', () => {
     )
   })
 
-  it('should create EdgeList successfully', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
-    render(
-      <Provider>
-        <EdgeList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge' }
-      })
-    const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(5)
-  })
-
   it('should show edge cluster table when HA FF is on', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
     render(
       <Provider>
         <EdgeList />

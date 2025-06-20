@@ -18,13 +18,6 @@ const mockedResetApi = jest.fn()
 
 describe('Edge enabled evaluation', () => {
   describe('useIsEdgeFeatureReady', () => {
-    it('should return true', async () => {
-      jest.mocked(useIsSplitOn)
-        .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
-      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE))
-      expect(result.current).toBe(true)
-    })
-
     it('should return false when target flag not ON', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
       const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE))
