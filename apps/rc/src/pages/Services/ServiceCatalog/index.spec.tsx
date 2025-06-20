@@ -96,9 +96,9 @@ describe('ServiceCatalog', () => {
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
   })
 
-  it('should not render edge-firewall service with the HA-FF OFF', async () => {
+  it('should not render edge-firewall service with the FIREWALL-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
 
     render(
       <ServiceCatalog />, {
@@ -109,11 +109,10 @@ describe('ServiceCatalog', () => {
     expect(screen.queryByText('Firewall')).toBeNull()
   })
 
-  it('should not render edge-dhcp service with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+  it('should not render edge-dhcp service with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-        || (ff !== Features.EDGE_DHCP_HA_TOGGLE
-          && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE))
+      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE
+          && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
     render(<Provider>
       <ServiceCatalog />
@@ -160,8 +159,7 @@ describe('ServiceCatalog', () => {
   describe('Edge DHCP', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
       jest.mocked(useDhcpStateMap).mockReturnValue({
         [ServiceType.DHCP]: true,
