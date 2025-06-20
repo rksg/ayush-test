@@ -6,7 +6,6 @@ import { FirmwareCategory,
   FirmwareRbacUrlsInfo,
   FirmwareSwitchV1002,
   FirmwareSwitchVenueV1002,
-  FirmwareUrlsInfo,
   FirmwareVersion,
   SwitchFirmwareFixtures,
   SwitchFirmwareVersion1002,
@@ -18,14 +17,11 @@ import { availableVersionsV1002, defaultVersionsV1002, mockSwitchVenue, mockVenu
 
 import { useSwitchFirmwareUtils } from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/rc/services', () => ({
   useGetSwitchDefaultVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
-  }),
-  useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   })
 }))
 
@@ -35,8 +31,8 @@ describe('Test useSwitchFirmwareUtils', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
       rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       )
     )
   })
@@ -94,7 +90,6 @@ describe('Test useSwitchFirmwareUtils', () => {
       getSwitchNextScheduleTplTooltip(mockVenue))
     expect(result).toEqual({ current: '9.0.10h_cd2, 10.0.10a_cd3' })
   })
-
   it('getSwitchScheduleTpl', async () => {
     const utils = renderHook(() => useSwitchFirmwareUtils(), {
       wrapper: ({ children }) => <Provider children={children} />

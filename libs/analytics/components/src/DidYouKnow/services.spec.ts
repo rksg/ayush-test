@@ -78,7 +78,7 @@ describe('availableFacts', () => {
       data: expectedAvailableFactsResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.customAvailableFacts.initiate(pathFilter)
+      api.endpoints.availableFacts.initiate(pathFilter)
     )
     const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 1)
     expect(status).toBe('fulfilled')
@@ -90,7 +90,7 @@ describe('availableFacts', () => {
       data: expectedAvailableFactsResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.customAvailableFacts.initiate(dashboardFilter)
+      api.endpoints.availableFacts.initiate(dashboardFilter)
     )
     const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 1)
     expect(status).toBe('fulfilled')
@@ -102,7 +102,7 @@ describe('availableFacts', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.customAvailableFacts.initiate(pathFilter)
+      api.endpoints.availableFacts.initiate(pathFilter)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

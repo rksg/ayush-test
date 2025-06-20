@@ -2,7 +2,6 @@ import { Card, Col, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                  from '@acx-ui/feature-toggle'
 import { TrafficClassSettingsTable, ToolTipTableStyle }                                                                            from '@acx-ui/rc/components'
 import { useGetEdgeHqosProfileViewDataListQuery }                                                                                  from '@acx-ui/rc/services'
 import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyAllowedOperation, getPolicyDetailsLink, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
@@ -18,7 +17,6 @@ import { EdgeClusterTable }   from './EdgeClusterTable'
 const EdgeHqosBandwidthDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { qosViewData, isLoading } = useGetEdgeHqosProfileViewDataListQuery(
     { payload: {
@@ -83,7 +81,7 @@ const EdgeHqosBandwidthDetail = () => {
       }
     ]}>
       {
-        (isEdgeCompatibilityEnabled && !!params.policyId) &&
+        !!params.policyId &&
           <Row>
             <Col span={24}>
               <CompatibilityCheck policyId={params.policyId} />

@@ -5,38 +5,28 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
 import { SwitchDetail,
   ImpactedSwitchPortFlapTable }     from '../Charts/ImpactedSwitchPortFlap/index'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { IncidentAttributes }   from '../IncidentAttributes'
+import { Insights }             from '../Insights'
+import { TimeSeries }           from '../TimeSeries'
+import { TimeSeriesChartTypes } from '../TimeSeries/config'
 
+import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
+const attributeList = commonAttributes()
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.SwitchImpactedPortsCount
+]
+
 export const SwitchPortFlap = (incident: Incident) => {
-
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime
-  ]
-
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_FLAP_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE)
   ].some(Boolean)
 
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchImpactedPortsCount
-  ]
-
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
-
   const buffer = getTimeseriesBuffer(start, end)
 
   return isEnabled ? <>

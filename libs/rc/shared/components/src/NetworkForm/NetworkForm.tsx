@@ -326,7 +326,8 @@ export function NetworkForm (props:{
 
       const isDeleteAuthRadiusCase =
         (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
-        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true)
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
+        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
 
       if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
@@ -719,10 +720,7 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow
-    ){
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -730,7 +728,7 @@ export function NetworkForm (props:{
       delete data.authRadiusId
     }
 
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    updateSaveData({ ...data, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
