@@ -22,7 +22,6 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
   const isEdgePingTraceRouteReady = useIsEdgeFeatureReady(Features.EDGES_PING_TRACEROUTE_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
 
   const { hasDhcpService = false } = useGetDhcpStatsQuery({
@@ -53,7 +52,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   })
 
   const showTroubleshooting = isEdgePingTraceRouteReady && props.isOperational && hasPermission({ scopes: [EdgeScopes.UPDATE] })
-  const showDhcp = isEdgeHaReady && isEdgeDhcpHaReady && hasDhcpService &&
+  const showDhcp = isEdgeDhcpHaReady && hasDhcpService &&
     ((currentCluster?.smartEdges.length ?? 0) > 1 ? currentEdge?.haStatus === NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE : true)
 
   return (
