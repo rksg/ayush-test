@@ -37,6 +37,7 @@ mockedOverlapSdLans[0].tunneledGuestWlans?.forEach(wlan => {
 const edgeMvSdlanContextValues = {
   allSdLans: mockedMvSdLanDataList,
   allPins: [],
+  allSoftGreVenueMap: {},
   availableTunnelProfiles: []
 } as EdgeSdLanContextType
 
@@ -155,8 +156,13 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should filter venues which has been tied with other SDLAN on add mode', async () => {
-    render(<MockedTargetComponent ctxValues={{ allSdLans: mockedOverlapSdLans, allPins: [], availableTunnelProfiles: [] }} />,
-      { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent ctxValues={{
+      allSdLans: mockedOverlapSdLans,
+      allPins: [],
+      allSoftGreVenueMap: {},
+      availableTunnelProfiles: []
+    }} />,
+    { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
     expect(screen.queryByRole('row', { name: /Mocked-Venue-2/i })).toBeNull()
@@ -182,7 +188,11 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: mockedOverlapSdLansForEdit , allPins: [], availableTunnelProfiles: [] }}
+      ctxValues={{
+        allSdLans: mockedOverlapSdLansForEdit,
+        allPins: [],
+        allSoftGreVenueMap: {},
+        availableTunnelProfiles: [] }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
@@ -195,8 +205,13 @@ describe('Tunneled Venue Networks Table', () => {
 
   it('should filter venues which has been tied with PIN on add mode', async () => {
     mockPinListForMutullyExclusive.data[0].venueId = targetVenue.id
-    render(<MockedTargetComponent ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]], availableTunnelProfiles: [] }} />,
-      { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent ctxValues={{
+      allSdLans: [],
+      allPins: [mockPinListForMutullyExclusive.data[0]],
+      allSoftGreVenueMap: {},
+      availableTunnelProfiles: []
+    }} />,
+    { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
     expect(screen.queryByRole('row', { name: /Mocked-Venue-2/i })).toBeNull()
@@ -218,7 +233,12 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]], availableTunnelProfiles: [] }}
+      ctxValues={{
+        allSdLans: [],
+        allPins: [mockPinListForMutullyExclusive.data[0]],
+        allSoftGreVenueMap: {},
+        availableTunnelProfiles: []
+      }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
