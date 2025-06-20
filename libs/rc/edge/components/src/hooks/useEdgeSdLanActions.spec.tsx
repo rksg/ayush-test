@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { pick }                from 'lodash'
+import { cloneDeep, pick }     from 'lodash'
 import { rest }                from 'msw'
 
 import { CommonErrorsResult, EdgeSdLanServiceProfile, EdgeSdLanUrls } from '@acx-ui/rc/utils'
@@ -82,6 +82,8 @@ describe('useEdgeSdLanActions', () => {
   })
 
   describe('createEdgeSdLan', () => {
+    const isMsp = false
+
     it('should successfully create SD-LAN and activate networks', async () => {
       const mockCallback = jest.fn()
       const { result } = renderHook(() => useEdgeSdLanActions(), {
@@ -90,7 +92,7 @@ describe('useEdgeSdLanActions', () => {
       await result.current.createEdgeSdLan({
         payload: mockPayload,
         callback: mockCallback
-      })
+      }, isMsp)
 
       expect(mockAddReq).toHaveBeenCalledWith(pick(mockPayload, ['name', 'tunnelProfileId']))
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
@@ -137,7 +139,7 @@ describe('useEdgeSdLanActions', () => {
       await result.current.createEdgeSdLan({
         payload: mockPayload,
         callback: mockCallback
-      })
+      }, isMsp)
 
       expect(mockAddReq).toHaveBeenCalledWith(pick(mockPayload, ['name', 'tunnelProfileId']))
       await waitFor(() => expect(mockActivateNetworkReq).toBeCalledTimes(2))
@@ -146,9 +148,51 @@ describe('useEdgeSdLanActions', () => {
         data: mockError
       }))
     })
+
+    describe('associate WLAN template', () => {
+      const isMsp = true
+      const mockPayloadWithTemplates = cloneDeep(mockPayload)
+      mockPayloadWithTemplates.activeNetworkTemplate = [{
+        venueId: 'venue-t-1',
+        networkId: 'network-t-1',
+        tunnelProfileId: 'tunnel-t-1'
+      }]
+
+      // eslint-disable-next-line max-len
+      it('should call activate with network template IDs', async () => {
+        const mockCallback = jest.fn()
+        const { result } = renderHook(() => useEdgeSdLanActions(), {
+          wrapper: ({ children }) => <Provider>{children}</Provider>
+        })
+        await result.current.createEdgeSdLan({
+          payload: mockPayloadWithTemplates,
+          callback: mockCallback
+        }, isMsp)
+
+        expect(mockAddReq).toHaveBeenCalledWith(pick(mockPayload, ['name', 'tunnelProfileId']))
+        await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
+        expect(mockActivateNetworkReq).toBeCalledTimes(3)
+        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-1',
+          wifiNetworkId: 'network-1',
+          serviceId: mockServiceId
+        }, { forwardingTunnelProfileId: 'tunnel-1' })
+        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-1',
+          wifiNetworkId: 'network-2',
+          serviceId: mockServiceId
+        }, {})
+        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-t-1',
+          wifiNetworkId: 'network-t-1',
+          serviceId: mockServiceId
+        }, { forwardingTunnelProfileId: 'tunnel-t-1', isTemplate: true })
+      })
+    })
   })
 
   describe('updateEdgeSdLan', () => {
+    const isMsp = false
     const mockOriginData: EdgeSdLanServiceProfile = {
       id: mockServiceId,
       name: 'Original SD-LAN',
@@ -184,7 +228,7 @@ describe('useEdgeSdLanActions', () => {
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: mockPayload,
         callback: mockCallback
-      })
+      }, isMsp)
 
       // eslint-disable-next-line max-len
       expect(mockUpdateReq).toHaveBeenCalledWith({ serviceId: mockServiceId }, pick(mockPayload, ['name']))
@@ -231,7 +275,8 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: mockPayload,
-        callback: mockCallback
+        callback: mockCallback,
+        isMsp
       })
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
@@ -253,11 +298,67 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: sameNamePayload,
-        callback: mockCallback
+        callback: mockCallback,
+        isMsp
       })
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
       expect(mockUpdateReq).not.toHaveBeenCalled()
+    })
+
+    describe('associate WLAN template', () => {
+      const isMsp = true
+      const mockOriginDataWithTemplates = cloneDeep(mockOriginData)
+      mockOriginDataWithTemplates.activeNetworkTemplate = [{
+        venueId: 'venue-t-1',
+        networkId: 'network-t-1',
+        tunnelProfileId: 'tunnel-t-1'
+      }]
+      const mockPayloadWithTemplates = cloneDeep(mockPayload)
+      mockPayloadWithTemplates.activeNetworkTemplate = [{
+        venueId: 'venue-t-2',
+        networkId: 'network-t-2',
+        tunnelProfileId: 'tunnel-t-2'
+      }]
+
+      // eslint-disable-next-line max-len
+      it('should call deactivate and activate when network template IDs are the different', async () => {
+        const mockCallback = jest.fn()
+        const { result } = renderHook(() => useEdgeSdLanActions(), {
+          wrapper: ({ children }) => <Provider>{children}</Provider>
+        })
+
+        await result.current.updateEdgeSdLan(mockOriginDataWithTemplates, {
+          payload: mockPayloadWithTemplates,
+          callback: mockCallback
+        }, isMsp)
+
+        // eslint-disable-next-line max-len
+        expect(mockUpdateReq).toHaveBeenCalledWith({ serviceId: mockServiceId }, pick(mockPayload, ['name']))
+        expect(mockCallback).toBeCalledTimes(1)
+        expect(mockDeactivateNetworkReq).toBeCalledTimes(2)
+        expect(mockDeactivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-1',
+          wifiNetworkId: 'network-1',
+          serviceId: mockServiceId
+        })
+        expect(mockDeactivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-t-1',
+          wifiNetworkId: 'network-t-1',
+          serviceId: mockServiceId
+        })
+        expect(mockActivateNetworkReq).toBeCalledTimes(2)
+        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-1',
+          wifiNetworkId: 'network-2',
+          serviceId: mockServiceId
+        }, { forwardingTunnelProfileId: 'tunnel-2' })
+        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+          venueId: 'venue-t-2',
+          wifiNetworkId: 'network-t-2',
+          serviceId: mockServiceId
+        }, { forwardingTunnelProfileId: 'tunnel-t-2', isTemplate: true })
+      })
     })
   })
 
