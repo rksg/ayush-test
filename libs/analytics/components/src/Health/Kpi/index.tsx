@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useMemo } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -103,34 +103,46 @@ export function KpiSection (props: {
   mutationAllowed: boolean
   filters : AnalyticsFilter
 }) {
-  const { kpis, filters, thresholds, isSwitch } = props
+  const { isSwitch, kpis, thresholds, mutationAllowed, filters } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
-  const [ loadMore, setLoadMore ] = useState<boolean>(true)
+  const [ loadMoreState, setLoadMoreState ] = useState<{ [key: string]: boolean }>({})
   const { $t } = useIntl()
-  const kpiList = isArray(kpis) ? kpis: Object.values(kpis)[1]
+  const kpiList = useMemo(() => isArray(kpis) ? kpis : Object.values(kpis)[1], [kpis])
 
-  const connectChart = (chart: ReactECharts | null) => {
+  const connectChart = useMemo(() => (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'timeSeriesGroup'
     }
-  }
-  const defaultZoom = (
+  }, [])
+
+  const defaultZoom = useMemo(() => (
     moment(filters.startDate).isSame(timeWindow[0]) &&
     moment(filters.endDate).isSame(timeWindow[1])
-  )
-  useEffect(() => { connect('timeSeriesGroup') }, [])
-  useEffect(() => { setLoadMore(kpiList?.length > 1) }, [kpiList])
+  ), [filters, timeWindow])
 
-  const hasUpdateKpiPermission = hasCrossVenuesPermission() && hasPermission({
+  useEffect(() => { connect('timeSeriesGroup') }, [connectChart])
+  useEffect(() => {
+    if (isArray(kpis)) {
+      setLoadMoreState({ default: kpis.length > 1 })
+    } else {
+      const initialLoadMoreState = Object.keys(kpis).reduce((acc, key) => {
+        const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
+        acc[key] = subTabKpis.length > 1
+        return acc
+      }, {} as { [key: string]: boolean })
+      setLoadMoreState(initialLoadMoreState)
+    }
+  }, [kpis])
+
+  const hasUpdateKpiPermission = useMemo(() => hasCrossVenuesPermission() && hasPermission({
     permission: 'WRITE_HEALTH',
     scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE],
     rbacOpsIds: [aiOpsApis.updateHealthKpiThreshold]
-  })
+  }), [isSwitch])
 
-  const displayKpis = loadMore ? kpiList.slice(0, 1) : kpiList
-  const showKpi = (kpi:string) => (
+  const RenderKpi = useMemo(() => (kpi:string) => (
     <GridRow key={kpi+defaultZoom} $divider>
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '160px' }}>
@@ -161,13 +173,12 @@ export function KpiSection (props: {
               ...filters,
               startDate: timeWindow[0] as string,
               endDate: timeWindow[1] as string
-            }
-            }
+            }}
             kpi={kpi as keyof typeof kpiConfig}
             threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
             setKpiThreshold={setKpiThreshold}
             thresholds={kpiThreshold}
-            mutationAllowed={props.mutationAllowed}
+            mutationAllowed={mutationAllowed}
             isNetwork={!filters.filter.networkNodes}
             disabled={!hasUpdateKpiPermission}
           />
@@ -180,33 +191,46 @@ export function KpiSection (props: {
         )}
       </GridCol>
     </GridRow>
-  )
-  const LoadMoreElem = <GridRow style={{ height: '80px' }}>
-    <GridCol col={{ span: 24 }}>
-      <Button
-        type='default'
-        onClick={() => setLoadMore(false)}
-        style={{ maxWidth: 150, margin: '0 auto' }}
-      >{$t({ defaultMessage: 'View more' })}</Button>
-    </GridCol>
-  </GridRow>
+  ), [
+    defaultZoom,
+    filters,
+    hasUpdateKpiPermission,
+    kpiThreshold,
+    mutationAllowed,
+    timeWindow,
+    connectChart,
+    setTimeWindow
+  ])
+
+  const LoadMoreButton = useMemo(() => (subTab: string) => (
+    <GridRow style={{ height: '80px' }}>
+      <GridCol col={{ span: 24 }}>
+        <Button
+          type='default'
+          onClick={() => setLoadMoreState(prevState => ({ ...prevState, [subTab]: false }))}
+          style={{ maxWidth: 150, margin: '0 auto' }}
+        >{$t({ defaultMessage: 'View more' })}</Button>
+      </GridCol>
+    </GridRow>
+  ), [$t])
+
   return (
     <>
       {!isArray(kpis) && <Tabs type='third'>
         {
-          Object.keys(kpis).map((key,index)=>{
-            const subTabKpis = Object.values(kpis)[index]
-            const kpisToShow = loadMore ? subTabKpis.slice(0,1) : subTabKpis
+          Object.keys(kpis).map((key)=>{
+            const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
+            const kpisToShow = loadMoreState[key] ? subTabKpis.slice(0,1) : subTabKpis
             return <Tabs.TabPane tab={key} key={`${key}`}>{
-              kpisToShow.map(showKpi)
+              kpisToShow.map(RenderKpi)
             }
-            {loadMore && LoadMoreElem}
+            {loadMoreState[key] && LoadMoreButton(key)}
             </Tabs.TabPane>
           })
         }
       </Tabs>}
-      {isArray(kpis) && displayKpis.map(showKpi)}
-      {(isArray(kpis) && loadMore) && LoadMoreElem }
+      {isArray(kpis) && (loadMoreState['default'] ? kpiList.slice(0, 1) : kpiList).map(RenderKpi)}
+      {(isArray(kpis) && loadMoreState['default']) && LoadMoreButton('default') }
     </>
   )
 }
