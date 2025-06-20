@@ -11,7 +11,7 @@ import { v4 as uuidv4 }                            from 'uuid'
 
 import { BarChartData }                                                                                                    from '@acx-ui/analytics/utils'
 import { BarChart, cssNumber, cssStr, DonutChart, Loader, NoDataIcon, showToast, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                       from '@acx-ui/formatter'
+import { DateFormatEnum, formatter, intlFormats }                                                                          from '@acx-ui/formatter'
 import { useGetWidgetQuery }                                                                                               from '@acx-ui/rc/services'
 import { WidgetListData }                                                                                                  from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                                                                   from '@acx-ui/utils'
@@ -286,6 +286,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         style={{ width: width-5, height: height-heightDiff }}
         size={'medium'}
         data={chartData?.chartOption || []}
+        dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
         animation={true}
         showTotal
       />
