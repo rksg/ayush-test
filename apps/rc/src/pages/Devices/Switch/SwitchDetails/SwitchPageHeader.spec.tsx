@@ -5,7 +5,6 @@ import { rest }  from 'msw'
 
 import { firmwareApi, switchApi } from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo,
   Switch,
   SwitchStatusEnum,
   SwitchUrlsInfo,
@@ -17,7 +16,6 @@ import { render, screen, mockServer, waitFor } from '@acx-ui/test-utils'
 import { SwitchScopes, UseQueryResult }        from '@acx-ui/types'
 import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
-import { switchFirmwareVenue } from '../__tests__/fixtures'
 
 import { jwtToken, switchDetailsContextData } from './__tests__/fixtures'
 import SwitchPageHeader                       from './SwitchPageHeader'
@@ -118,9 +116,6 @@ describe('SwitchPageHeader', () => {
           mockReboot()
           return res(ctx.json({}))
         }),
-      rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.delete(
         SwitchUrlsInfo.deleteSwitches.url,
         (_, res, ctx) => {

@@ -38,16 +38,14 @@ import {
 } from './styledComponents'
 
 export function useSwitchFirmwareUtils () {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const switchVersions = useGetSwitchDefaultVersionsQuery({
-    enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
-    customHeaders: isSwitchFirmwareV1002Enabled ? {
+    enableRbac: true,
+    customHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1.1+json',
       'Accept': 'application/vnd.ruckus.v1.1+json'
-    } : {}
+    }
   }, {
     refetchOnMountOrArgChange: false
   })

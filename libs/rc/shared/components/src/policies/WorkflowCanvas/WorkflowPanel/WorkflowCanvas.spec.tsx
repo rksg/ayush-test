@@ -32,7 +32,7 @@ describe('Workflow Canvas', () => {
 
     await verifyStepNodesAreReady()
 
-    expect(screen.queryByRole('button', { name: /zoom in/i })).not.toBeInTheDocument()  // Check the <Controls />
+    expect(screen.getByRole('button', { name: /zoom in/i })).toBeInTheDocument()  // Check the <Controls />
     expect(screen.queryByText(/Active Workflow Design/i)).not.toBeInTheDocument() // Check the <Panel />
   })
 
@@ -66,7 +66,7 @@ describe('Workflow Canvas', () => {
 
     await verifyStepNodesAreReady()
 
-    expect(screen.queryByRole('button', { name: /zoom in/i })).not.toBeInTheDocument()  // Check the <Controls />
+    expect(screen.getByRole('button', { name: /zoom in/i })).toBeInTheDocument()  // Check the <Controls />
     expect(screen.getByText(/Active Workflow Design/i)).toBeInTheDocument() // Check the <Panel />
   })
 })
