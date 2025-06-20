@@ -19,13 +19,12 @@ import { AAAForm, AAAPolicyDetail,
   EditEthernetPortProfile,
   EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
-import { CONFIG_TEMPLATE_LIST_PATH, ConfigTemplateType, getConfigTemplatePath, getPolicyRoutePath, getServiceRoutePath, PolicyOperation, PolicyType, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate }                                                                                                                                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                                                                                                                                              from '@acx-ui/types'
-import { AuthRoute }                                                                                                                                                                 from '@acx-ui/user'
+import { CONFIG_TEMPLATE_LIST_PATH, ConfigTemplateType, getConfigTemplatePath, getPolicyRoutePath, getServiceRoutePath, LayoutWithConfigTemplateContext, PolicyOperation, PolicyType, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate }                                                                                                                                                                          from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                                                                                                                                               from '@acx-ui/types'
+import { AuthRoute }                                                                                                                                                                                                  from '@acx-ui/user'
 
 import { ConfigTemplatePage }                  from '../pages/ConfigTemplates'
-import { LayoutWithRecConfigTemplateContext }  from '../pages/Layout/LayoutWithRecConfigTemplateContext'
 import { VenueDetails, VenuesForm, VenueEdit } from '../pages/Venues'
 
 export default function ConfigTemplatesRoutes () {
@@ -33,7 +32,7 @@ export default function ConfigTemplatesRoutes () {
 
   return rootRoutes(
     <Route path=':tenantId/t/'>
-      <Route path={getConfigTemplatePath()} element={<LayoutWithRecConfigTemplateContext />}>
+      <Route path={getConfigTemplatePath()} element={<LayoutWithConfigTemplateContext />}>
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} />}
         />

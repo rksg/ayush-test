@@ -22,6 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { LinkProps, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RbacOpsIds, ScopeKeys }                                   from '@acx-ui/types'
+import { isRecSite }                                               from '@acx-ui/utils'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
@@ -37,13 +38,12 @@ interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {
 }
 export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
   const { to, attachCurrentPathToState = true, state = {}, ...rest } = props
-  const { templateContext } = useConfigTemplate()
   const location = useLocation()
   // eslint-disable-next-line max-len
   const currentPathState: LocationExtended['state'] | {} = attachCurrentPathToState ? { from: location } : {}
   const toPath = getConfigTemplatePath(to)
   const finalState = { ...state, ...currentPathState }
-  const tenantType = templateContext === 'MSP' ? 'v' : 't'
+  const tenantType = isRecSite() ? 't' : 'v'
 
   return (
     <TenantLink to={toPath} state={finalState} tenantType={tenantType} {...rest}>

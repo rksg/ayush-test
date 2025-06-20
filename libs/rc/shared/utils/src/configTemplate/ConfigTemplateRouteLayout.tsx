@@ -1,9 +1,10 @@
 import { useRef } from 'react'
 
-import { ConfigTemplateContext, SaveEnforcementConfigFnType } from '@acx-ui/rc/utils'
-import { Outlet }                                             from '@acx-ui/react-router-dom'
+import { Outlet } from '@acx-ui/react-router-dom'
 
-export function LayoutWithRecConfigTemplateContext () {
+import { ConfigTemplateContext, SaveEnforcementConfigFnType } from './ConfigTemplateContext'
+
+export function LayoutWithConfigTemplateContext () {
   const saveEnforcementConfigFnRef = useRef<SaveEnforcementConfigFnType>()
 
   const setSaveEnforcementConfigFn = (fn: SaveEnforcementConfigFnType) => {
@@ -19,7 +20,6 @@ export function LayoutWithRecConfigTemplateContext () {
   return <ConfigTemplateContext.Provider
     value={{
       isTemplate: true,
-      templateContext: 'REC',
       setSaveEnforcementConfigFn,
       saveEnforcementConfig
     }}>

@@ -33,12 +33,12 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
  * @returns The breadcrumb for the policy list page.
  */
 export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link?: string }[] {
-  const { isTemplate, templateContext } = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return isTemplate
-    ? generateConfigTemplateBreadcrumb(templateContext)
+    ? generateConfigTemplateBreadcrumb()
     : generatePolicyListBreadcrumb(type, isNewServiceCatalogEnabled, from)
 }
 

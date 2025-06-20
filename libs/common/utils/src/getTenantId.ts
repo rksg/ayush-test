@@ -24,10 +24,13 @@ export function useTenantId () {
   }
 }
 
-function getSiteType (): 'REC' | 'MSP' {
+function getSiteType (): 'REC' | 'MSP' | 'UNKNOWN' {
   const [, marker] = window.location.pathname.split('/').filter(Boolean)
 
-  return marker === 'v' ? 'MSP' : 'REC'
+  if (marker === 'v') return 'MSP'
+  if (marker === 't') return 'REC'
+
+  return 'UNKNOWN'
 }
 
 export function isRecSite (): boolean {

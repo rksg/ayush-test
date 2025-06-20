@@ -53,9 +53,9 @@ function NetworkPageHeader ({
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
-    const { isTemplate, templateContext } = useConfigTemplate()
+    const { isTemplate } = useConfigTemplate()
     if (isTemplate) {
-      return generateConfigTemplateBreadcrumb(templateContext)
+      return generateConfigTemplateBreadcrumb()
     }
 
     return [

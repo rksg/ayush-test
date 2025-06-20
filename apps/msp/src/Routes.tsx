@@ -32,6 +32,7 @@ import {
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   ConfigTemplateType,
+  LayoutWithConfigTemplateContext,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -47,20 +48,20 @@ import { SwitchScopes }                                                         
 import { AuthRoute }                                                             from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
-import HspContext, { HspActionTypes }              from './HspContext'
-import { hspReducer }                              from './HspReducer'
-import { ConfigTemplatePage }                      from './pages/ConfigTemplates'
-import { DeviceInventory }                         from './pages/DeviceInventory'
-import { Integrators }                             from './pages/Integrators'
-import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
-import Mdu360                                      from './pages/Mdu360'
-import { MspCustomers }                            from './pages/MspCustomers'
-import { MspRecCustomers }                         from './pages/MspRecCustomers'
-import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
-import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
-import { Subscriptions }                           from './pages/Subscriptions'
-import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
-import { VarCustomers }                            from './pages/VarCustomers'
+import HspContext, { HspActionTypes } from './HspContext'
+import { hspReducer }                 from './HspReducer'
+import { ConfigTemplatePage }         from './pages/ConfigTemplates'
+import { DeviceInventory }            from './pages/DeviceInventory'
+import { Integrators }                from './pages/Integrators'
+import Layout                         from './pages/Layout'
+import Mdu360                         from './pages/Mdu360'
+import { MspCustomers }               from './pages/MspCustomers'
+import { MspRecCustomers }            from './pages/MspRecCustomers'
+import { AddRecCustomer }             from './pages/MspRecCustomers/AddRecCustomer'
+import { NewDeviceInventory }         from './pages/NewDeviceInventory'
+import { Subscriptions }              from './pages/Subscriptions'
+import { AssignMspLicense }           from './pages/Subscriptions/AssignMspLicense'
+import { VarCustomers }               from './pages/VarCustomers'
 
 export function Init () {
   const {

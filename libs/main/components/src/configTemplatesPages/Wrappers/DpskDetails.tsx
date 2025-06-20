@@ -1,18 +1,17 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader }                                                                                             from '@acx-ui/components'
-import { DpskOverview, ServiceConfigTemplateDetailsLink }                                                                 from '@acx-ui/rc/components'
-import { useGetDpskTemplateQuery }                                                                                        from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, generateConfigTemplateBreadcrumb, getServiceAllowedOperation, useConfigTemplate } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                                 from '@acx-ui/user'
+import { Button, PageHeader }                                                                          from '@acx-ui/components'
+import { DpskOverview, ServiceConfigTemplateDetailsLink }                                              from '@acx-ui/rc/components'
+import { useGetDpskTemplateQuery }                                                                     from '@acx-ui/rc/services'
+import { ServiceOperation, ServiceType, generateConfigTemplateBreadcrumb, getServiceAllowedOperation } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                              from '@acx-ui/user'
 
 export default function DpskDetails () {
   const { $t } = useIntl()
   const { tenantId, serviceId } = useParams()
   const { data: dpskDetail } = useGetDpskTemplateQuery({ params: { tenantId, serviceId } })
-  const { templateContext } = useConfigTemplate()
-  const breadcrumb = generateConfigTemplateBreadcrumb(templateContext)
+  const breadcrumb = generateConfigTemplateBreadcrumb()
 
   return (
     <>
