@@ -5,8 +5,11 @@ import { NetworkPath } from '@acx-ui/utils'
 
 interface HierarchyNodeData {
   topNApplicationByClient: {
-    applicationTraffic: number
     clientCount: number
+    name: string
+  }[]
+  topNApplicationByTraffic: {
+    applicationTraffic: number
     name: string
   }[]
 }
@@ -20,7 +23,7 @@ export interface Payload {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    topNApplication: build.query<HierarchyNodeData, Payload>({
+    topNApplications: build.query<HierarchyNodeData, Payload>({
       query: (payload) => ({
         document: gql`
           query Network(
@@ -32,8 +35,11 @@ export const api = dataApi.injectEndpoints({
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
                 topNApplicationByClient(n: $n) {
-                  applicationTraffic
                   clientCount
+                  name
+                }
+                topNApplicationByTraffic(n: $n) {
+                  applicationTraffic
                   name
                 }
               }
@@ -48,4 +54,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useTopNApplicationQuery } = api
+export const { useTopNApplicationsQuery } = api

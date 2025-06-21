@@ -7,11 +7,6 @@ export const ContentSwitcherWrapper = styled.div`
   margin-bottom: 16px;
 `
 
-export const ColumnWrapper = styled(GridCol)`
-  padding-left: 150px;
-  padding-right: 150px;
-`
-
 export const LeftColumnWrapper = styled(GridCol)`
   padding-left: 30px;
   padding-right: 30px;
@@ -32,4 +27,10 @@ export const ColumnHeaderWrapper = styled.div`
 export const ColumnItemWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+`
+
+export const ColumnItemIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `

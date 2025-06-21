@@ -7,8 +7,8 @@ import { formats }                                        from '@acx-ui/formatte
 
 import * as UI from '../styledComponents'
 
-import { useTopNApplicationQuery } from './services'
-import { IconList }                from './utils'
+import { useTopNApplicationsQuery } from './services'
+import { IconList }                 from './utils'
 
 interface TopApplicationsFilters {
   startDate: string;
@@ -17,11 +17,11 @@ interface TopApplicationsFilters {
 
 export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
-  const [selectedTab, setSelectedTab] = useState<'clientCount' | 'applicationTraffic'>('clientCount')
-
+  const [selectedTab, setSelectedTab] = useState<
+    'clientCount' | 'applicationTraffic'
+  >('clientCount')
   const { startDate: start, endDate: end } = filters
-  const queryResults = useTopNApplicationQuery({
+  const queryResults = useTopNApplicationsQuery({
     path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
     start,
     end,
@@ -35,12 +35,15 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
 
   const results = queryResults?.data
 
-  const data = results?.topNApplicationByClient
-    .map(item => ({
+  const data = selectedTab === 'clientCount'
+    ? results?.topNApplicationByClient?.map((item) => ({
       name: item.name,
-      value: item[selectedTab]
-    }))
-    .sort((a, b) => b.value - a.value) || []
+      value: item.clientCount
+    })) || []
+    : results?.topNApplicationByTraffic?.map((item) => ({
+      name: item.name,
+      value: item.applicationTraffic
+    })) || []
 
   const mid = Math.ceil(data.length / 2)
   const leftColumn = data.slice(0, mid)
@@ -54,16 +57,21 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
 
   const renderColumn = (items: typeof data) => (
     <UI.ColumnHeaderWrapper>
-      {items.map(({ name, value }) => (
-        <UI.ColumnItemWrapper key={name}>
-          <div>
-            {IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
-              IconList.find(icon => icon.name === 'chrome')?.icon}
-            <span>{name}</span>
-          </div>
-          <span><b>{formatValue(value)}</b></span>
-        </UI.ColumnItemWrapper>
-      ))}
+      {items.map(({ name, value }) => {
+        const icon =
+          IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
+          IconList.find(icon => icon.name === 'chrome')?.icon
+
+        return (
+          <UI.ColumnItemWrapper key={name}>
+            <UI.ColumnItemIconWrapper>
+              {icon}
+              <span>{name}</span>
+            </UI.ColumnItemIconWrapper>
+            <span><b>{formatValue(value)}</b></span>
+          </UI.ColumnItemWrapper>
+        )
+      })}
     </UI.ColumnHeaderWrapper>
   )
 
