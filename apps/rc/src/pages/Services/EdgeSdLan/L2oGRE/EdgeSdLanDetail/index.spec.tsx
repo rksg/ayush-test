@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { EdgeCompatibilityFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
@@ -33,8 +32,13 @@ describe('Edge SD-LAN Detail', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
-      )
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))),
+      rest.post(
+        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getSdLanApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
     )
   })
 
@@ -85,17 +89,6 @@ describe('Edge SD-LAN Detail', () => {
   })
 
   it('should have compatible warning', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
-      rest.post(
-        EdgeUrlsInfo.getSdLanApCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
-    )
-
     render(
       <Provider>
         <EdgeSdLanDetail />
