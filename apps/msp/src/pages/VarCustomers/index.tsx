@@ -32,10 +32,10 @@ import {
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, TenantLink, useParams }                 from '@acx-ui/react-router-dom'
-import { RolesEnum }                                   from '@acx-ui/types'
-import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi, isDelegationMode, noDataDisplay }  from '@acx-ui/utils'
+import { Link, TenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                             from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi, isDelegationMode, noDataDisplay }            from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -86,6 +86,9 @@ export function VarCustomers () {
   // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
   // backend will fix this later
   const isAdmin = isRbacPhase3ToggleEnabled
+    ? hasRoles(adminRoles)
+    : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const showPendingInvitations = isRbacPhase3ToggleEnabled
     ? hasAllowedOperations([
       getOpsApi(MspRbacUrlsInfo.acceptRejectInvitation)])
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
@@ -349,7 +352,7 @@ export function VarCustomers () {
         }
       />
       <div>
-        {!userProfile?.support && isAdmin && <InvitationList />}
+        {!userProfile?.support && showPendingInvitations && <InvitationList />}
         <VarCustomerTable />
       </div>
     </>
