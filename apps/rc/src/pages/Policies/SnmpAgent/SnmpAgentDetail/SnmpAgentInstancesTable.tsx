@@ -106,16 +106,21 @@ export default function SnmpAgentInstancesTable () {
           type='third'
         >
           <Tabs.TabPane key='venue'
-            tab={<RadioLable style={{ width: '36px' }}>
+            tab={<RadioLable
+              style={{ width: '36px' }}
+              data-testid='venue-tab'>
               {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</RadioLable>}/>
           <Tabs.TabPane key='ap'
-            tab={<RadioLable style={{ width: '36px' }}>
+            tab={<RadioLable
+              style={{ width: '36px' }}
+              data-testid='ap-tab'>
               {$t({ defaultMessage: 'AP' })}</RadioLable>}/>
         </Tabs>
         <div style={{
           display: currentTab === 'venue' ? 'block' : 'none'
         }}>
           <Table
+            data-testid='venue-table'
             columns={columnsForVenueTable}
             pagination={tableQueryForVenueActivation.pagination}
             onChange={isUseRbacApi? undefined : tableQueryForVenueActivation.handleTableChange}
@@ -128,6 +133,7 @@ export default function SnmpAgentInstancesTable () {
           display: currentTab === 'ap' ? 'block' : 'none'
         }}>
           <Table
+            data-testid='ap-table'
             columns={columnsForApTable}
             pagination={tableQueryForApActivation.pagination}
             onChange={isUseRbacApi? undefined : tableQueryForApActivation.handleTableChange}
