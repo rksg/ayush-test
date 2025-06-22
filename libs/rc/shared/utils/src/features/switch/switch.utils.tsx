@@ -921,16 +921,6 @@ export const is7550Zippy = (model: string) => {
   return model === 'ICX7550-24XZP'
 }
 
-export const isRodanAvSubModel = (model: string) => {
-  switch(model) {
-    case '24PV':
-    case 'C08PFV':
-      return true
-    default:
-      return false
-  }
-}
-
 export const isBabyRodanXSubModel = (model: string) => {
   switch(model) {
     case '24-X':
