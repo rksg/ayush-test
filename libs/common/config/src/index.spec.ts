@@ -5,9 +5,29 @@ import { mockServer } from '@acx-ui/test-utils'
 describe('common config', () => {
   const env = { GOOGLE_MAPS: 'some-key' }
 
+  let originalLocation: Location
+  let originalFetch: typeof global.fetch
+
+  beforeAll(() => {
+    originalLocation = window.location
+    originalFetch = global.fetch
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { href: 'initial' }
+    })
+  })
+
+  afterAll(() => {
+    window.location = originalLocation as string & Location
+    global.fetch = originalFetch
+  })
+
   beforeEach(() => {
     jest.resetModules()
     mockServer.resetHandlers()
+    window.location.href = 'initial'
+    global.fetch = originalFetch
     mockServer.use(
       rest.get(`${document.baseURI}globalValues.json`, (_, res, ctx) => res(ctx.json(env)))
     )
@@ -56,5 +76,29 @@ describe('common config', () => {
     expect(config.get('IS_MLISA_SA')).toBe('')
     expect(config.get('IS_MLISA_SA')).toBeFalsy()
     process.env = originalEnv
+  })
+
+  it('redirects if the fetch response explicitly sets redirected and url', async () => {
+    const redirectUrl = 'http://manual-redirect-test.com/new/path'
+    sessionStorage.clear()
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve({}),
+        redirected: true,
+        url: redirectUrl
+      } as Response)
+    )
+
+    const config = require('.')
+    await config.initialize()
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${document.baseURI}globalValues.json`,
+      expect.any(Object)
+    )
+
+    expect(window.location.href).toBe(redirectUrl)
   })
 })

@@ -210,27 +210,6 @@ describe('Venue service tab', () => {
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(11)
       })
 
-      it('when only HA OFF, should not render EdgeDhcp and EdgeFirewall', async () => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE && ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
-
-        render(
-          <Provider>
-            <VenueServicesTab />
-          </Provider>, {
-            route: { params }
-          })
-
-        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
-        expect(mockedGetEdgeDhcpFn).not.toBeCalled()
-        await screen.findByTestId(/rc-tabpane-SD-LAN/)
-        expect( screen.getAllByTestId(/rc-tabpane-/).length).toBe(7)
-        // tab: DHCP - SmartEdge
-        expect(screen.queryByTestId(/rc-tabpane-SmartEdge/)).toBeNull()
-        expect(screen.queryByTestId(/rc-tabpane-Firewall/)).toBeNull()
-      })
-
       it('when HA ON and DHCP_HA OFF, should not render EdgeDhcp', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE && ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
 

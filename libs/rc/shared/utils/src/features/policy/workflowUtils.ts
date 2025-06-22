@@ -165,6 +165,7 @@ export const composeNext = (
   edges: Edge[],
   currentX: number,
   currentY: number,
+  zIndex: number,
   isStart?: boolean
 ) => {
   const SPACE_OF_NODES = 110
@@ -188,6 +189,7 @@ export const composeNext = (
     type: nodeType,
     position: { x: currentX, y: currentY },
     draggable: false,
+    zIndex: parentId ? zIndex + 2 : undefined,
     data: {
       ...step,
       isStart,
@@ -208,12 +210,12 @@ export const composeNext = (
       target: nextStepId,
       type: ConnectionLineType.Step,
       style: { stroke: 'var(--acx-primary-black)' },
-      zIndex: parentId ? 1000 : undefined, // if in subflow set edges to same level as nodes
+      zIndex: parentId ? zIndex + 1 : undefined, // if in subflow set edges to same level as nodes
       deletable: false
     })
 
     composeNext(mode, nextStepId, stepMap, parentId, nodes, edges,
-      currentX, nextY, type === StepType.Start)
+      currentX, nextY, zIndex, type === StepType.Start)
   }
 }
 
@@ -221,7 +223,8 @@ function addParentNode (firstStepId: string,
   stepMap: Map<string, WorkflowStep>,
   nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
   currentX: number,
-  currentY: number
+  currentY: number,
+  zIndex: number
 ) {
 
   // create parent node
@@ -249,6 +252,7 @@ function addParentNode (firstStepId: string,
     id: parentNodeId,
     type: 'DISCONNECTED_BRANCH',
     position: { x: currentX, y: currentY },
+    zIndex: zIndex,
     style: {
       width: '260px',
       height: height + 40
@@ -279,7 +283,9 @@ export function toReactFlowData (
   const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
-  firstSteps?.forEach((firstStep) => {
+  let zIndex = 1005 // incrementing by 5 for each 'firstStep' gives us 200 detached branches which should be fine
+
+  firstSteps?.forEach((firstStep) => { // increment zIndex start by five for each of these with parent = 0, edges = 1, nodes = 2
 
     let isDisconnectedBranch = firstStep.statusReasons
       && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
@@ -291,7 +297,7 @@ export function toReactFlowData (
     if(isDisconnectedBranch) {
 
       parentNodeId = addParentNode(firstStep.id, stepMap,
-        nodes, START_X, START_Y)
+        nodes, START_X, START_Y, zIndex)
 
       // Child nodes are positioned relative to the parent, so these are set to (20,20)
       startX = 20
@@ -302,9 +308,10 @@ export function toReactFlowData (
     }
 
     composeNext(mode, firstStep.id, stepMap, parentNodeId, nodes, edges,
-      startX, startY, firstStep.type === StepType.Start)
+      startX, startY, zIndex, firstStep.type === StepType.Start)
 
     START_X += 250
+    zIndex += 5
   })
 
   return { nodes, edges }

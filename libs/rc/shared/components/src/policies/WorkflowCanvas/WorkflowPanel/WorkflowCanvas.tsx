@@ -1,6 +1,6 @@
 import 'reactflow/dist/style.css' // Very important css must be imported!
 
-import { ReactElement, useCallback, useEffect, useRef } from 'react'
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import ReactFlow, {
@@ -71,11 +71,20 @@ export default function WorkflowCanvas (props: WorkflowProps) {
   const { $t } = useIntl()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [currentSelectedId, setCurrentSelectedId] = useState('')
 
   const [attachSteps] = useAttachStepBeneathStepMutation()
 
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
+  const nodeMap = useMemo(() => {
+    const nodeMap = new Map<string, Node>()
+    if(nodes && nodes.length > 0) {
+      nodes.forEach(n => {nodeMap.set(n.id, n)})
+    }
+    return nodeMap
+  }, [nodes])
 
   const fitFirstView = () => {
     if (!initialNodes) return
@@ -119,9 +128,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
 
   const onNodeDragStop = useCallback((event:React.MouseEvent, node:Node) => {
-    const nodeMap = new Map<string, Node>()
-    nodes.forEach(n => {nodeMap.set(n.id, n)})
-
     // get intersecting nodes of the dragged node
     const currentBranchBounds = getNodesBounds([node])
     const allIntersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
@@ -224,20 +230,44 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
   }, [nodes])
 
-  const onNodeDragStart = useCallback((event:React.MouseEvent, node:Node) => {
-    const nodeMap = new Map<string, Node>()
-    nodes.forEach(n => {nodeMap.set(n.id, n)})
+  const onSelectionChange = useCallback((params: { nodes: Node[]; edges: Edge[] }) => {
 
-    if(node.type !== 'DISCONNECTED_BRANCH') {
-      // this shouldn't be possible
+    const selectedNode = params.nodes.length > 0 ? params.nodes[0] : undefined
+
+    let parentNodeId = undefined
+    if(selectedNode?.parentNode) {
+      parentNodeId = selectedNode.parentNode
+    } else if(selectedNode?.type === 'DISCONNECTED_BRANCH') {
+      parentNodeId = selectedNode.id
+    }
+
+    // prevent uneccessary updates
+    if(!selectedNode || selectedNode?.id === currentSelectedId
+      || (parentNodeId && parentNodeId === currentSelectedId)) {
       return
     }
 
-    const branchStartNodeId = node.id.split('parent')[0]
+    setCurrentSelectedId(parentNodeId ?? (selectedNode?.id ?? ''))
+
+    let nodeIdSet = new Set()
+
+    let branchStartNodeId = undefined
+    if(parentNodeId) {
+      branchStartNodeId = parentNodeId.split('parent')[0]
+      nodeIdSet.add(parentNodeId)
+    } else {
+      branchStartNodeId = selectedNode.id
+      // find all previous nodes
+      let nonDetachedCurrentNodeId = selectedNode.id
+      while(nonDetachedCurrentNodeId) {
+        nodeIdSet.add(nonDetachedCurrentNodeId)
+        nonDetachedCurrentNodeId = nodeMap.get(nonDetachedCurrentNodeId)?.data?.priorStepId
+      }
+    }
 
     // get all node ids in the branch
     let currentNode = nodeMap.get(branchStartNodeId)
-    let nodeIdSet = new Set()
+    // nodeIdSet.add(parentNodeId)
     while(currentNode) {
       if(currentNode.data.type === StepType.End) {
         currentNode = undefined
@@ -248,21 +278,36 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       }
     }
 
-    // NOTE: this is based on reactflow defaults, all nodes are set to 1000 initially and
-    // are raised to 2000 when dragged. When created we are manually setting the edges within
-    // subflows to 1000 to match the nodes so that this will work.
-    // Also, reactflow seems to only update these levels on drag start, so we are following suit
-    edges.forEach(e => {
-      if(nodeIdSet.has(e.source)) {
-        e.zIndex = 2000
+    // update nodes
+    const updatedNodes:Node[] = []
+    nodes.forEach(n => {
+      if(nodeIdSet.has(n.id)) {
+        updatedNodes.push(
+          { ...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex : n.zIndex + 1000) : 1000 })
       } else {
-        e.zIndex = e.zIndex ? 1000 : undefined
+        updatedNodes.push(
+          { ...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex - 1000 : n.zIndex) : undefined })
       }
     })
 
-    reactFlowInstance.setEdges(edges)
+    // update edges
+    const updatedEdges:Edge[] = []
+    edges.forEach(e => {
+      if(nodeIdSet.has(e.source)) {
+        updatedEdges.push(
+          { ...e, zIndex: e.zIndex ? (e.zIndex > 2000 ? e.zIndex : e.zIndex + 1000) : 1000 })
+      } else {
+        updatedEdges.push(
+          { ...e, zIndex: e.zIndex ? (e.zIndex > 2000 ? e.zIndex - 1000 : e.zIndex) : undefined })
+      }
+    })
+
+    setNodes(updatedNodes)
+    setEdges(updatedEdges)
 
   }, [nodes, edges])
+
+
 
   useEffect(() => {
     if (props.initialNodes) {
@@ -287,25 +332,30 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
       onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
       nodesConnectable={false}
-      onNodeDragStart={onNodeDragStart}
       minZoom={0.1}
+      elevateNodesOnSelect={false}
+      elevateEdgesOnSelect={false}
+      onSelectionChange={onSelectionChange}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
       proOptions={{ hideAttribution: true }}
     >
-      { isDesignMode &&
-        <>
-          <Controls
-            fitViewOptions={{ maxZoom: 1 }}
-            position={'bottom-right'}
-          />
+
+      <>
+        <Controls
+          fitViewOptions={{ maxZoom: 1 }}
+          position={'bottom-right'}
+          showInteractive={false}
+        />
+        { isDesignMode &&
           <Background
             color='#ccc'
             variant={BackgroundVariant.Dots}
           />
-        </>
-      }
+
+        }
+      </>
 
       { mode === WorkflowPanelMode.Default &&
         <Panel position={'top-left'} style={{ fontWeight: 600 }}>

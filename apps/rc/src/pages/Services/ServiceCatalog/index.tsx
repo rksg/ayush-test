@@ -47,11 +47,9 @@ export default function ServiceCatalog () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
   const dhcpStateMap = useDhcpStateMap()
@@ -98,13 +96,11 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.EDGE],
-          helpIcon: isEdgeCompatibilityEnabled
-            ? <ApCompatibilityToolTip
-              title={''}
-              showDetailButton
-              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
-            />
-            : undefined,
+          helpIcon: <ApCompatibilityToolTip
+            title={''}
+            showDetailButton
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
+          />,
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         },
         {
@@ -120,7 +116,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeFirewallHaReady
         }
       ]
     },
@@ -225,13 +221,13 @@ export default function ServiceCatalog () {
           </GridRow>
         </UI.CategoryContainer>
       })}
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+      <EdgeCompatibilityDrawer
         visible={!!edgeCompatibilityFeature}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeCompatibilityFeature}
         onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
+      />
     </>
   )
 }

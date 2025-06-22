@@ -2,8 +2,7 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { edgeApi, edgeSdLanApi }  from '@acx-ui/rc/services'
+import { edgeApi, edgeSdLanApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   CountAndNames,
@@ -112,7 +111,13 @@ describe('Multi-venue SD-LAN Table', () => {
           mockedDeleteReq()
           return res(ctx.status(202))
         }
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getSdLanApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
     )
   })
 
@@ -283,8 +288,6 @@ describe('Multi-venue SD-LAN Table', () => {
   })
 
   it('should have compatible warning', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     const mockedData = cloneDeep(mockedMvSdLanDataList.slice(0, 1))
     mockedData[0].id = mockEdgeSdLanCompatibilities!.compatibilities![0].serviceId
     mockedData[0].name = 'compatible test'
@@ -292,13 +295,7 @@ describe('Multi-venue SD-LAN Table', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedData }))),
-      rest.post(
-        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
-      rest.post(
-        EdgeUrlsInfo.getSdLanApCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
+        (_, res, ctx) => res(ctx.json({ data: mockedData })))
     )
 
     render(
