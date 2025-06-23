@@ -324,8 +324,12 @@ export function NetworkForm (props:{
         delete updateSate.accountingRadius
       }
 
-      // Only when isCloudpathEnabled exists and value is false then delete radius data
-      if (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) {
+      const isDeleteAuthRadiusCase =
+        (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
+        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
+
+      if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
@@ -716,10 +720,7 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow
-    ){
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -727,7 +728,7 @@ export function NetworkForm (props:{
       delete data.authRadiusId
     }
 
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    updateSaveData({ ...data, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
@@ -999,7 +1000,7 @@ export function NetworkForm (props:{
       beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
       beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId, cloneMode))
       }
       beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))

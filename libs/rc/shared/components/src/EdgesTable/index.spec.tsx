@@ -23,8 +23,8 @@ import { EdgesTable } from '.'
 // eslint-disable-next-line max-len
 const mockEdgeCompatibilitiesVenue = cloneDeep(EdgeCompatibilityFixtures.mockEdgeCompatibilitiesVenue)
 // mockEdgeList.data[4] is operational
-mockEdgeCompatibilitiesVenue.compatibilities[0].id = mockEdgeList.data[4].serialNumber
-mockEdgeCompatibilitiesVenue.compatibilities[1].id = mockEdgeList.data[1].serialNumber
+mockEdgeCompatibilitiesVenue.compatibilities![0].id = mockEdgeList.data[4].serialNumber
+mockEdgeCompatibilitiesVenue.compatibilities![1].id = mockEdgeList.data[1].serialNumber
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -365,9 +365,6 @@ describe('Edge Table', () => {
   })
 
   it('should show incopatible warning', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      [Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
-
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,

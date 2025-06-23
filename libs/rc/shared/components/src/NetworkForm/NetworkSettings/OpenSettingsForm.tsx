@@ -8,11 +8,12 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
+  NetworkTypeEnum,
   useConfigTemplate,
   WifiNetworkMessages,
   WlanSecurityEnum
@@ -31,32 +32,27 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../styledComponents'
 
-import { CloudpathServerForm }      from './CloudpathServerForm'
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
+import { RadiusSettings }           from './SharedComponent/RadiusSettings/RadiusSettings'
 
 const { useWatch } = Form
 
 export function OpenSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
-
-  // TODO: Remove deprecated codes below when RadSec feature is delivery
-  useEffect(()=>{
-    if(!supportRadsec && (editMode || cloneMode) && data){
-      setFieldsValue()
-    }
-  }, [supportRadsec, data])
+  const enableOwe = useWatch('enableOwe', form)
+  const enableMACAuth = useWatch(['wlan', 'macAddressAuthentication'], form)
+  const isMacRegistrationList = useWatch(['wlan', 'isMacRegistrationList'], form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+  const enableAuthProxy = useWatch('enableAuthProxy', form)
 
   useEffect(()=>{
-    if(supportRadsec && (editMode || cloneMode) && data){
+    if((editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [supportRadsec, data?.id])
+  }, [data?.id])
 
   const setFieldsValue = () => {
     data && form.setFieldsValue({
@@ -72,7 +68,10 @@ export function OpenSettingsForm () {
       authRadius: data.authRadius,
       accountingRadius: data.accountingRadius,
       accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
-      authRadiusId: data.authRadiusId||data.authRadius?.id
+      authRadiusId: data.authRadiusId||data.authRadius?.id,
+      // eslint-disable-next-line max-len
+      enableOwe: [WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(data.wlan?.wlanSecurity!),
+      enableOweTransition: data.wlan?.wlanSecurity === WlanSecurityEnum.OWETransition
     })
   }
 
@@ -82,7 +81,15 @@ export function OpenSettingsForm () {
         <SettingsForm />
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram />
+        <NetworkDiagram
+          type={NetworkTypeEnum.OPEN}
+          enableOwe={enableOwe}
+          enableMACAuth={enableMACAuth}
+          isMacRegistrationList={isMacRegistrationList}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+          enableAuthProxy={enableAuthProxy}
+        />
       </Col>
     </Row>
     {!(editMode) && !(isRuckusAiMode) && <Row>
@@ -109,62 +116,18 @@ function SettingsForm () {
     useWatch('enableOweTransition')
   ]
   const { networkId } = useParams()
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   // eslint-disable-next-line max-len
   const isOpenNetworkIntegrateIdentityGroupEnable = useIsSplitOn(Features.WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
-  const onMacAuthChange = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          macAddressAuthentication: checked
-        }
-      }
-    })
-  }
-
-  const onMacAuthTypeChange = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          isMacRegistrationList: checked
-        }
-      }
-    })
-  }
-
-  const onOweChange = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      wlan: {
-        ...data?.wlan,
-        wlanSecurity: checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open
-      }
-    })
-  }
-
-  const onOweTransitionChange = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      wlan: {
-        ...data?.wlan,
-        wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
-      }
-    })
-  }
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   useEffect(()=> {
     if (enableOwe === true && enableOweTransition === false) {
@@ -173,33 +136,7 @@ function SettingsForm () {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
-  }, [enableOwe,enableOweTransition])
-
-  useEffect(()=>{
-    if (data && 'enableOwe' in data) {
-      delete data['enableOwe']
-    }
-    if (data && 'enableOweTransition' in data) {
-      delete data['enableOweTransition']
-    }
-    // TODO: Remove deprecated codes below when RadSec feature is delivery
-    if (!supportRadsec) {
-      form.setFieldsValue(data)
-    }
-    if(data?.wlan?.wlanSecurity){
-      form.setFieldValue('enableOwe',
-        (data.wlan.wlanSecurity === WlanSecurityEnum.OWE ||
-        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition) ? true : false)
-      form.setFieldValue('enableOweTransition',
-        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition ? true : false)
-    }
-  },[data])
-
-  useEffect(()=>{
-    if (supportRadsec) {
-      form.setFieldsValue(data)
-    }
-  },[data?.id, data?.wlan?.wlanSecurity])
+  }, [enableOwe, enableOweTransition])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
@@ -227,7 +164,7 @@ function SettingsForm () {
               name='enableOwe'
               initialValue={false}
               valuePropName='checked'
-              children={<Switch onChange={onOweChange} />}
+              children={<Switch />}
             />
           </UI.FieldLabel>
           {enableOwe &&
@@ -243,7 +180,7 @@ function SettingsForm () {
             <Form.Item name='enableOweTransition'
               initialValue={false}
               valuePropName='checked'
-              children={<Switch onChange={onOweTransitionChange} />}
+              children={<Switch />}
             />
           </UI.FieldLabel>}
           <UI.FieldLabel width={labelWidth}>
@@ -273,7 +210,6 @@ function SettingsForm () {
               valuePropName='checked'
               children={<Switch
                 data-testid='mac-auth-switch'
-                onChange={onMacAuthChange}
                 disabled={editMode}
               />}
             />
@@ -284,9 +220,7 @@ function SettingsForm () {
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!isMacRegistrationList}
           >
-            <Radio.Group
-              disabled={editMode}
-              onChange={e => onMacAuthTypeChange(e.target.value)}>
+            <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
                 <Radio value={true}
                   disabled={!isCloudpathBetaEnabled}
@@ -310,10 +244,18 @@ function SettingsForm () {
               initialValue={MacAuthMacFormatEnum.UpperDash}
               children={<Select children={macAuthOptions} />}
             />
-            <CloudpathServerForm />
+            <RadiusSettings
+              isDisplayAccounting={!isSupportNetworkRadiusAccounting}
+            />
           </>}
-
         </>}
+        {isSupportNetworkRadiusAccounting &&
+          <div>
+            <RadiusSettings
+              isDisplayAuth={false}
+            />
+          </div>
+        }
         {(isOpenNetworkIntegrateIdentityGroupEnable &&
           !isMacRegistrationList &&
             (isTemplate ? isIdentityGroupTemplateEnabled : true) ) &&
