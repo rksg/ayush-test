@@ -1,26 +1,26 @@
-import { Typography, Row, Col }      from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Col, Row, Typography }      from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }                                     from '@acx-ui/msp/services'
-import { MSPUtils }                                                    from '@acx-ui/msp/utils'
-import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                     from '@acx-ui/msp/services'
+import { MSPUtils }                                    from '@acx-ui/msp/utils'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
-  EntitlementSummary,
   EntitlementDeviceTypes,
+  EntitlementSummary,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
 import { useParams }                                         from '@acx-ui/react-router-dom'
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
-import { getJwtTokenPayload, isDelegationMode, AccountTier } from '@acx-ui/utils'
+import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 
 enum SubscriptionTierType {
@@ -64,7 +64,6 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsEdgeReady()
   const isDelegationTierApi = isDelegationMode()
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
@@ -118,9 +117,7 @@ export const SubscriptionHeader = () => {
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.filter(data =>
-              (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
-               data.value !== EntitlementDeviceType.ANALYTICS
-            )
+              data.value !== EntitlementDeviceType.ANALYTICS)
               .map((item) => {
                 const summary = summaryData[item.value]
                 if (isvSmartEdgeEnabled) {

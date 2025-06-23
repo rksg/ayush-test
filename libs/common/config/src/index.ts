@@ -60,6 +60,9 @@ export async function initialize () {
   const response = await fetch(envConfigUrl, { headers: {
     ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` })
   } })
+  if (response.redirected && response.url) {
+    window.location.href = response.url
+  }
   if (response.status !== 200) throw new CommonConfigGetError()
 
   const jsonValue = await response.json()

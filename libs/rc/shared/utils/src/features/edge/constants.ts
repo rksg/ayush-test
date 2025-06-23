@@ -6,3 +6,5 @@ export const MAX_EDGE_AB_NODES_COUNT = 2 // Max 2 Active-standby nodes
 export const MAX_EDGE_DUAL_WAN_PORT = 2
 
 export const MAX_EDGE_NAT_POOL_TOTAL_SIZE = 128
+
+export const EDGE_DELEGATION_WLAN_ID_START = 60001
