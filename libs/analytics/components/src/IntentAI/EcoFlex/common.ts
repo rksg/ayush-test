@@ -80,7 +80,7 @@ export const MetricsConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.enabled && current.disabled ? current.enabled + current.disabled : undefined,
+      value: (current.enabled ?? 0) + (current.disabled ?? 0),
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
@@ -135,8 +135,8 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
-      value: current.enabled && current.disabled ? current.enabled + current.disabled : undefined,
-      previous: previous.enabled && previous.disabled ? previous.enabled + previous.disabled : undefined,
+      value: (current.enabled ?? 0) + (current.disabled ?? 0),
+      previous: (previous.enabled ?? 0) + (previous.disabled ?? 0),
       total: current.apTotalCount,
       isPill: true
     }),
