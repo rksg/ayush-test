@@ -73,7 +73,10 @@ describe('EditTunnelProfile', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.json({
+          totalCount: 1,
+          data: [{ id: 'testSDLAN-id', name: 'testSDLAN' }]
+        }))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,

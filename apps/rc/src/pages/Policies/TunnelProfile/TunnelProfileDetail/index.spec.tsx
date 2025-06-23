@@ -203,7 +203,8 @@ describe('TunnelProfileDetail', () => {
   describe('when L2GRE is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
+        // eslint-disable-next-line max-len
+        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE))
       jest.mocked(useIsTierAllowed)
         .mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
     })

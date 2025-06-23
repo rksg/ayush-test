@@ -36,7 +36,7 @@ const mockUseLocationValue = {
 }
 const mockedSdLanDataList = {
   totalCount: 1,
-  data: [{ id: 'testSDLAN' }]
+  data: [{ id: 'testSDLAN-id', name: 'testSDLAN' }]
 }
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -93,7 +93,7 @@ describe('TunnelProfileList', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json(mockedSdLanDataList))
       )
     )
   })
