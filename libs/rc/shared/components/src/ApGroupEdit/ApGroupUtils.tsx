@@ -272,10 +272,14 @@ export const mergeRadioData = (data: ApGroupRadioCustomization, apGroupData: ApG
           ? radioParamsDual5G?.radioParamsLower5G
           : apGroupRadioParamsDual5G?.radioParamsLower5G
         ),
+        useVenueSettings: apGroupRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings
+      },
+      radioParamsUpper5G: {
         ...(apGroupRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings || apGroupRadioParamsDual5G?.radioParamsUpper5G === undefined
           ? radioParamsDual5G?.radioParamsUpper5G
           : apGroupRadioParamsDual5G?.radioParamsUpper5G
-        )
+        ),
+        useVenueSettings: apGroupRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings
       }
     }
   } as ApGroupRadioCustomization

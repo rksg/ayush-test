@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   Col,
-  Divider,
   Form,
   Radio,
   RadioChangeEvent,
@@ -419,7 +418,9 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       })
     }
 
-    if (!isLoadingVenueData && venueSavedChannelsData && apGroupRadioData && formRef?.current && supportRadioChannels) {
+    if (!isLoadingVenueData && venueSavedChannelsData
+      && !isLoadingVenueData && apGroupRadioData
+      && formRef?.current && supportRadioChannels) {
       const correctedData = correctApiRadioChannelData(venueSavedChannelsData)
       const correctedApGroupData = correctApiRadioChannelData(apGroupRadioData)
       const mergedData = mergeRadioData(correctedData, correctedApGroupData)
@@ -515,14 +516,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     setIsDual5gMode(isDual5GEnabled)
     formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
     onTabChange('Normal24GHz')
-  }
-
-  const onLower5gTypeChange = (e: RadioChangeEvent) => {
-    setIsLower5gInherit(e.target.value)
-  }
-
-  const onUpper5gTypeChange = (e: RadioChangeEvent) => {
-    setIsUpper5gInherit(e.target.value)
   }
 
   const update5gData = (formData: ApGroupRadioCustomization) => {
@@ -1023,7 +1016,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData || isLoadingApGroupData)),
+      isLoading: isLoadingVenueData || isLoadingApGroupData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData)),
       isFetching: isUpdatingApGroupRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy
@@ -1191,29 +1184,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
                   currentTab === 'Lower5GHz' ? 'block' : 'none'
               }}>
-                <Row gutter={20}>
-                  <Col span={8}>
-                    <Form.Item
-                      label={$t({ defaultMessage: '5GHz settings:' })}
-                      name={['radioParamsDual5G', 'inheritParamsLower5G']}
-                    >
-                      <Radio.Group defaultValue={true} onChange={onLower5gTypeChange}>
-                        <Radio value={true}>
-                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
-                        </Radio>
-
-                        <Radio value={false}>
-                          {$t({ defaultMessage: 'Custom Settings' })}
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <Divider style={{ marginTop: '5px' }}/>
-                  </Col>
-                </Row>
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableLower5g}
                   testId='apgroup-radio-l5g-tab'
@@ -1232,29 +1202,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
                   currentTab === 'Upper5GHz' ? 'block' : 'none'
               }}>
-                <Row gutter={20}>
-                  <Col span={8}>
-                    <Form.Item
-                      label={$t({ defaultMessage: '5GHz settings:' })}
-                      name={['radioParamsDual5G', 'inheritParamsUpper5G']}
-                    >
-                      <Radio.Group onChange={onUpper5gTypeChange}>
-                        <Radio value={true}>
-                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
-                        </Radio>
-
-                        <Radio value={false}>
-                          {$t({ defaultMessage: 'Custom Settings' })}
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <Divider style={{ marginTop: '5px' }}/>
-                  </Col>
-                </Row>
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableUpper5g}
                   testId='apgroup-radio-u5g-tab'
