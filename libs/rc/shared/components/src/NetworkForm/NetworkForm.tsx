@@ -719,10 +719,7 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow
-    ){
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -730,7 +727,7 @@ export function NetworkForm (props:{
       delete data.authRadiusId
     }
 
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    updateSaveData({ ...data, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 

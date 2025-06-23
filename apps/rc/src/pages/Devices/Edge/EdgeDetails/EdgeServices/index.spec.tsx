@@ -100,7 +100,7 @@ describe('Edge Detail Services Tab', () => {
   })
 
   it('when HA OFF and click DHCP service, should not render DHCP service detail drawer', async () => {
-    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     const user = userEvent.setup()
     render(

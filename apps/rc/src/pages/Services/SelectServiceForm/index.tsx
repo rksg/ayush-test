@@ -38,7 +38,6 @@ export default function SelectServiceForm () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -85,7 +84,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady
+          disabled: !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
@@ -103,7 +102,7 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeFirewallHaReady
         }
       ]
     },
@@ -151,7 +150,7 @@ export default function SelectServiceForm () {
           {
             type: ServiceType.WEBAUTH_SWITCH,
             categories: [RadioCardCategory.EDGE],
-            disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
+            disabled: !isEdgePinHaReady || !networkSegmentationSwitchEnabled
           }
         ]),
         ...(isCore ? [] : [{

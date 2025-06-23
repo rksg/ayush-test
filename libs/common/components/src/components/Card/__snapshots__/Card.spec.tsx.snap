@@ -35,6 +35,7 @@ exports[`Card component should render card with grey background 1`] = `
 
 .c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c0 .ant-card-head-wrapper {
@@ -148,6 +149,7 @@ exports[`Card component should render card with no border 1`] = `
 
 .c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c0 .ant-card-head-wrapper {

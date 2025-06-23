@@ -201,8 +201,7 @@ describe('EditTunnelProfile', () => {
       mockedReqPin.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_TOGGLE ||
-          flag === Features.EDGE_PIN_HA_TOGGLE) return true
+        if (flag === Features.EDGE_PIN_HA_TOGGLE) return true
         return false
       })
 
@@ -275,7 +274,7 @@ describe('EditTunnelProfile', () => {
         return false
       })
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_TOGGLE ||
+        if (
           flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
           flag === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE) return true
         return false
@@ -358,8 +357,7 @@ describe('EditTunnelProfile', () => {
       mockedReqPin.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_TOGGLE ||
-          flag === Features.EDGE_PIN_HA_TOGGLE ||
+        if (flag === Features.EDGE_PIN_HA_TOGGLE ||
           flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
           flag === Features.EDGE_L2OGRE_TOGGLE
         ) return true

@@ -12,7 +12,8 @@ import {
   EdgeMvSdLanExtended,
   EdgeMvSdLanViewData,
   EdgeMvSdLanNetworks,
-  EdgeMvSdLanResponseType
+  EdgeMvSdLanResponseType,
+  isEdgeWlanTemplate
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -49,6 +50,16 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
          }
        },
        providesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
+       transformResponse: (result: TableResult<EdgeMvSdLanViewData>) => {
+         result.data.forEach(d => {
+           d.tunneledWlanTemplates = d.tunneledWlans
+             ?.filter(w => isEdgeWlanTemplate(w.wlanId))
+
+           d.tunneledWlans = d.tunneledWlans
+             ?.filter(w => !isEdgeWlanTemplate(w.wlanId))
+         })
+         return result
+       },
        async onCacheEntryAdded (requestArgs, api) {
          await onSocketActivityChanged(requestArgs, api, (msg) => {
            onActivityMessageReceived(msg, [

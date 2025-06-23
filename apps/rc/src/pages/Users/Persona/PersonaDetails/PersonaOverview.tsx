@@ -28,7 +28,7 @@ import {
 } from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }                                                                  from '@acx-ui/user'
+import { getUserProfile, hasAllowedOperations, isCoreTier }                                      from '@acx-ui/user'
 import { getOpsApi, ignoreErrorModal, noDataDisplay }                                            from '@acx-ui/utils'
 
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
@@ -47,8 +47,10 @@ export function PersonaOverview (props:
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
   const { personaData, personaGroupData } = props
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
-  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
@@ -99,7 +101,7 @@ export function PersonaOverview (props:
         }
       }
     },
-    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits || isCore }
   )
 
   const { data: unitData } = useGetPropertyUnitByIdQuery({
@@ -110,7 +112,8 @@ export function PersonaOverview (props:
   },
   {
     skip: !personaGroupData?.propertyId ||
-        (!personaData?.identityId && !identities?.data?.data[0]?.unitId)
+        (!personaData?.identityId && !identities?.data?.data[0]?.unitId) ||
+      isCore
   }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(

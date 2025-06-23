@@ -6,7 +6,8 @@ import { IncompatibilityFeatures, ServiceType, useMdnsProxyStateMap, useDhcpStat
 import { Provider }                                                                    from '@acx-ui/store'
 import {
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import ServiceCatalog from '.'
@@ -95,9 +96,9 @@ describe('ServiceCatalog', () => {
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
   })
 
-  it('should not render edge-firewall service with the HA-FF OFF', async () => {
+  it('should not render edge-firewall service with the FIREWALL-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
 
     render(
       <ServiceCatalog />, {
@@ -108,11 +109,9 @@ describe('ServiceCatalog', () => {
     expect(screen.queryByText('Firewall')).toBeNull()
   })
 
-  it('should not render edge-dhcp service with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+  it('should not render edge-dhcp service with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-        || (ff !== Features.EDGE_DHCP_HA_TOGGLE
-          && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE))
+      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<Provider>
       <ServiceCatalog />
@@ -124,13 +123,7 @@ describe('ServiceCatalog', () => {
   })
 
   describe('Edge SD-LAN', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-    })
-
-    it('should render Edge SD-LAN with feature flag ON', async () => {
+    it('should render Edge SD-LAN', async () => {
       render(<Provider>
         <ServiceCatalog />
       </Provider>, {
@@ -153,16 +146,13 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.SD_LAN)
+
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
   })
 
   describe('Edge DHCP', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
       jest.mocked(useDhcpStateMap).mockReturnValue({
         [ServiceType.DHCP]: true,
         [ServiceType.EDGE_DHCP]: true,
@@ -200,9 +190,7 @@ describe('ServiceCatalog', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
     })
 
     it('should render Edge PIN with feature flag ON', async () => {
@@ -228,6 +216,8 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.PIN)
+
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
   })
 
@@ -238,10 +228,6 @@ describe('ServiceCatalog', () => {
         [ServiceType.EDGE_MDNS_PROXY]: true,
         [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
       })
-
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge mDNS with feature flag ON', async () => {
@@ -266,7 +252,8 @@ describe('ServiceCatalog', () => {
       await userEvent.click(toolTips[1])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
-      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY)
+      await waitFor(() =>
+        expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY))
     })
 
     it('should show BetaIndicator when Edge mDNS is beta feature', async () => {

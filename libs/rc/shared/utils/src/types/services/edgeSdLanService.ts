@@ -161,6 +161,7 @@ export interface EdgeMvSdLanViewData {
   tunneledGuestWlans?: EdgeSdLanTunneledWlan[]
   edgeClusterTunnelInfo?: EdgeSdLanDcTunnelInfo[]
   guestEdgeClusterTunnelInfo?: EdgeSdLanDmzTunnelInfo[]
+  tunneledWlanTemplates?: EdgeSdLanTunneledWlan[] // GUI used
 }
 
 export type EdgeMvSdLanFormNetwork = {
@@ -198,6 +199,11 @@ export interface EdgeSdLanServiceProfile {
   name: string
   tunnelProfileId: string
   activeNetwork: {
+    venueId: string
+    networkId: string
+    tunnelProfileId?: string
+  }[],
+  activeNetworkTemplate?: {
     venueId: string
     networkId: string
     tunnelProfileId?: string

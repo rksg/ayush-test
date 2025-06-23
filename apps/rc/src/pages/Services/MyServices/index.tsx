@@ -47,7 +47,6 @@ export default function MyServices () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -144,9 +143,9 @@ export default function MyServices () {
       totalCount: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeHaReady || !isEdgeFirewallHaReady
+        skip: !isEdgeFirewallHaReady
       }).data?.totalCount,
-      disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+      disabled: !isEdgeFirewallHaReady
     },
     {
       type: ServiceType.DPSK,
