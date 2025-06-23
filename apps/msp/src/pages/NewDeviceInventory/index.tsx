@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 
 import { SortOrder }                         from 'antd/lib/table/interface'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
@@ -15,7 +15,8 @@ import {
   useCustomerNamesFilterListQuery,
   useDeviceInventoryListQuery,
   useDeviceModelFilterListQuery,
-  useExportDeviceInventoryMutation, useGetDeviceFirmwareListQuery,
+  useExportDeviceInventoryMutation,
+  useGetDeviceFirmwareListQuery,
   useVenueNamesFilterListQuery
 } from '@acx-ui/msp/services'
 import {
@@ -93,32 +94,42 @@ const transformSwitchStatus = ({ $t }: IntlShape, switchStatus: SwitchStatusEnum
   }
 }
 
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'deviceType',
-    'venueName',
-    'serialNumber',
-    'switchMac',
-    'name',
-    'tenantId',
-    'apMac',
-    'model',
-    'customerName',
-    'deviceStatus',
-    'apFirmware',
-    'switchFirmware'
-  ],
-  searchTargetFields: ['apMac', 'switchMac', 'serialNumber', 'apFirmware', 'switchFirmware'],
-  filters: {},
-  groupFilters: [] as { field: string, value: string }[][]
-}
-
 export function NewDeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isMspDeviceInventoryFirmwareDisplayEnabled = useIsSplitOn(Features.MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE)
+
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'deviceType',
+      'venueName',
+      'serialNumber',
+      'switchMac',
+      'name',
+      'tenantId',
+      'apMac',
+      'model',
+      'customerName',
+      'deviceStatus',
+      ...(isMspDeviceInventoryFirmwareDisplayEnabled
+        ? ['apFirmware', 'switchFirmware']
+        : []
+      )
+    ],
+    searchTargetFields: [
+      'apMac', 'switchMac', 'serialNumber',
+      ...(isMspDeviceInventoryFirmwareDisplayEnabled
+        ? ['apFirmware', 'switchFirmware']
+        : []
+      )
+    ],
+    filters: {},
+    groupFilters: [] as { field: string, value: string }[][]
+  }
 
   const {
     state
@@ -160,7 +171,9 @@ export function NewDeviceInventory () {
   const { data: venueNameList } = useVenueNamesFilterListQuery(filterQueryParams)
   const { data: deviceModelList } = useDeviceModelFilterListQuery(filterQueryParams)
   // eslint-disable-next-line max-len
-  const { data: firmwareList } = useGetDeviceFirmwareListQuery({ params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) } })
+  const { data: firmwareList } = useGetDeviceFirmwareListQuery({
+    params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) }
+  }, { skip: !isMspDeviceInventoryFirmwareDisplayEnabled })
 
   const ExportInventory = () => {
     const csvPayload = { ...defaultPayload, pageSize: 10000 }
@@ -212,15 +225,15 @@ export function NewDeviceInventory () {
       sorter: true,
       key: 'name'
     },
-    {
+    ...(isMspDeviceInventoryFirmwareDisplayEnabled ? [{
       title: $t({ defaultMessage: 'Current Firmware' }),
       dataIndex: 'apFirmware',
       key: 'apFirmware',
       filterable: (firmwareList || [])?.map(firmware => ({ key: firmware, value: firmware })),
-      render: function (_, row) {
+      render: function (_: ReactNode, row: EcDeviceInventory) {
         return transformFirmwareString(row)
       }
-    },
+    }]: []),
     {
       title: $t({ defaultMessage: 'Customer Name' }),
       dataIndex: 'customerName',
@@ -309,7 +322,10 @@ export function NewDeviceInventory () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           actions={actions}
-          onFilterChange={onFilterChange}
+          onFilterChange={isMspDeviceInventoryFirmwareDisplayEnabled
+            ? onFilterChange
+            : tableQuery.handleFilterChange
+          }
           rowKey='serialNumber'
         />
       </Loader>
