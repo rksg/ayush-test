@@ -1,10 +1,8 @@
-import { Typography } from 'antd'
-import TextArea       from 'antd/lib/input/TextArea'
-import { useIntl }    from 'react-intl'
-import styled         from 'styled-components'
+import { Input, Space, Typography } from 'antd'
+import { useIntl }                  from 'react-intl'
+import styled                       from 'styled-components'
 
-import { Drawer }       from '@acx-ui/components'
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { Drawer } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
@@ -38,17 +36,13 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
       destroyOnClose
       width={336}
     >
-      <SpaceWrapper
-        full
-        direction='vertical'
-        justifycontent='flex-start'
-      >
+      <Space direction='vertical' style={{ width: '100%' }}>
         <Typography.Text>
           { $t({ defaultMessage: 'These codes can be used to access your account if you have ' +
-      'trouble receiving the security code on phone. Make sure you copy them and store them ' +
-      'in a safe place.' }) }
+        'trouble receiving the security code on phone. Make sure you copy them and store them ' +
+        'in a safe place.' }) }
         </Typography.Text>
-        <TextArea
+        <Input.TextArea
           value={linebreakRecoveryCode}
           style={{
             fontSize: '12px',
@@ -60,16 +54,15 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
           autoSize={false}
           readOnly={true}
         />
-        <SpaceWrapper full justifycontent='flex-end'>
-          <Typography.Link
-            onClick={handleClickCopyCodes}
-            copyable={{
-              text: linebreakRecoveryCode
-            }}>
-            {$t({ defaultMessage: 'Copy Codes' })}
-          </Typography.Link>
-        </SpaceWrapper>
-      </SpaceWrapper>
+        <Typography.Link
+          style={{ float: 'right' }}
+          onClick={handleClickCopyCodes}
+          copyable={{
+            text: linebreakRecoveryCode
+          }}>
+          {$t({ defaultMessage: 'Copy Codes' })}
+        </Typography.Link>
+      </Space>
     </Drawer>
   )
 })`${UI.RecoveryCodesDrawerStyle}`
