@@ -37,32 +37,33 @@ export interface IotSerialNumberResult {
   serialNumber: string
 }
 
+export interface SerialNumberExistsResult {
+  requestId: string
+  serialNumber: string
+  existed: boolean
+}
+
 export interface IotControllerDashboard {
-  summary?: {
-    aps?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    rcapLicenseUtilization?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    associatedVenues?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    activePluginsByRadio?: ActivePluginsByRadio[]
+  requestId?: string
+  apStatus?: {
+    onlineAp: number
+    offlineAp: number
+    totalAp: number
+  },
+  pluginsByRadioStatus?: {
+    totalRadioCount: number
+    radioPlugins: ActivePluginsByRadio[]
   }
+}
+
+export enum ApStatusEnum {
+  ONLINE = 'onlineAp',
+  OFFLINE = 'offlineAp'
 }
 
 export type ActivePluginsByRadio = {
   name: string
+  displayName: string
   count: number
 }
 

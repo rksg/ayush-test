@@ -14,7 +14,7 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/msp',
   coverageThreshold: {
     global: {
-      statements: 94,
+      statements: 95,
       branches: 89,
       functions: 90,
       lines: 95

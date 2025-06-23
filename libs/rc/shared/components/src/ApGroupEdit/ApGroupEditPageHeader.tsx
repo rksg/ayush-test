@@ -21,7 +21,7 @@ const defaultVenuePayload = {
 
 export function ApGroupEditPageHeader () {
   const { $t } = useIntl()
-  const { isEditMode, isApGroupTableFlag, isRbacEnabled, venueId } = useContext(ApGroupEditContext)
+  const { isEditMode, isRbacEnabled, venueId } = useContext(ApGroupEditContext)
   // eslint-disable-next-line max-len
   const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
   const [venueName, setVenueName] = useState<string>('')
@@ -64,7 +64,7 @@ export function ApGroupEditPageHeader () {
         : titleWithVenue
       }
       breadcrumb={breadcrumb}
-      footer={(isEditMode && isApGroupTableFlag) ? <ApGroupEditTabs/> : null}
+      footer={(isEditMode) ? <ApGroupEditTabs/> : null}
     />
   )
 }

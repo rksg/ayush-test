@@ -94,12 +94,12 @@ export function PskSummaryForm (props: {
 
           {$t({ defaultMessage: 'Authentication Service' })}
           <AaaServer serverType={AaaServerTypeEnum.AUTHENTICATION} summaryData={summaryData} />
-          {summaryData.enableAccountingService &&
-            <>{$t({ defaultMessage: 'Accounting Service' })}
-              <AaaServer serverType={AaaServerTypeEnum.ACCOUNTING} summaryData={summaryData} />
-            </>
-          }
         </React.Fragment>
+      }
+      {summaryData.enableAccountingService &&
+        <>{$t({ defaultMessage: 'Accounting Service' })}
+          <AaaServer serverType={AaaServerTypeEnum.ACCOUNTING} summaryData={summaryData} />
+        </>
       }
       {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
       <Form.Item

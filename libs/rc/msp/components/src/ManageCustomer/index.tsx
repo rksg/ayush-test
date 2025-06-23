@@ -55,9 +55,11 @@ import {
   MspIntegratorDelegated,
   AssignActionEnum,
   MspEcTierEnum,
-  MspEcTierPayload
+  MspEcTierPayload,
+  defaultAddress,
+  addressParser
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                   from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, usePlacesAutocomplete }                                   from '@acx-ui/rc/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   Address,
@@ -76,9 +78,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                       from '@acx-ui/types'
-import { useUserProfileContext }                                           from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { getUserProfile, isCoreTier, useUserProfileContext }                            from '@acx-ui/user'
+import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -87,12 +89,6 @@ import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 import { StartSubscriptionModal }    from '../StartSubscriptionModal'
 import * as UI                       from '../styledComponents'
-
-interface AddressComponent {
-  long_name?: string;
-  short_name?: string;
-  types?: Array<string>;
-}
 
 interface EcFormData {
     name: string,
@@ -117,71 +113,10 @@ enum ServiceType {
   PAID = 'PAID'
 }
 
-export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
-  // array reverse applied since search should be done from general to specific, google provides from vice-versa
-  const reversedAddrComponents = addressComponents.reverse()
-  /** Step 1. Looking for locality / sublocality_level_X / postal_town */
-  let cityComponent = reversedAddrComponents.find(el => {
-    return el.types?.includes('locality')
-      || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
-      || el.types?.includes('postal_town')
-  })
-  /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
-   * administrative_area_level_1 excluded from search since considered as `political state`
-   */
-  if (!cityComponent) {
-    cityComponent = reversedAddrComponents.find(el => {
-      return el.types?.includes('neighborhood')
-        || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
-    })
-  }
-  const stateComponent = addressComponents
-    .find(el => el.types?.includes('administrative_area_level_1'))
-  // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
-  if (!cityComponent && !stateComponent) {
-    cityComponent = { long_name: country }
-  }
-  return {
-    city: cityComponent? cityComponent.long_name: '',
-    state: stateComponent ? stateComponent.long_name : null
-  }
-}
-
-export const addressParser = async (place: google.maps.places.PlaceResult) => {
-  const address: Address = {}
-  address.addressLine = place.formatted_address
-  const countryObj = place?.address_components?.find(
-    el => el.types.includes('country')
-  )
-  const country = countryObj?.long_name ?? ''
-  address.country = country
-  if (place && place.address_components) {
-    const cityObj = retrieveCityState(
-      place.address_components,
-      country
-    )
-    if (cityObj) {
-      address.city = cityObj.state
-        ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
-    }
-  }
-  return { address }
-}
-
-const defaultAddress: Address = {
-  addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-  city: 'Sunnyvale, California',
-  country: 'United States',
-  latitude: 37.4112751,
-  longitude: -122.0191908,
-  timezone: 'America/Los_Angeles'
-}
-
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
@@ -192,13 +127,14 @@ export function ManageCustomer () {
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
-  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormLegacyInstance<EcFormData>>()
   const { action, status, tenantId, mspEcTenantId } = useParams()
+  const { accountTier } = getUserProfile()
 
   const [isTrialMode, setTrialMode] = useState(false)
   const [isTrialActive, setTrialActive] = useState(false)
@@ -245,6 +181,10 @@ export function ManageCustomer () {
 
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
   const isMDU = acx_account_vertical === AccountVertical.MDU
+
+  const isCore = mspServiceTierFFtoggle &&
+    (originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
@@ -367,7 +307,7 @@ export function ManageCustomer () {
           apswLicense: apswLic,
           apswTrialLicense: apswTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional,
+          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -450,6 +390,11 @@ export function ManageCustomer () {
       setInstaller(assignedInstaller)
     }
   }, [techPartners])
+
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
+    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+  }
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -962,7 +907,7 @@ export function ManageCustomer () {
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>
-          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features. 
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features.
           Downgrade from Professional to Essentials may also result in data loss.` })}</p>
           <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
         </>
@@ -991,7 +936,7 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={isMDU ? MspEcTierEnum.Core
+      initialValue={(mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
         : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
@@ -1002,10 +947,10 @@ export function ManageCustomer () {
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
                 return (
-                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
                   (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!isMDU && value !== MspEcTierEnum.Core) &&
-                  (!isMDU && !isHospitality &&
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
                   (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
                 ) &&
                 <Radio
@@ -1534,10 +1479,10 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
-          {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: 'RUCKUS Edge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
-          </UI.FieldLabel2>}
+          </UI.FieldLabel2>
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{isvSmartEdgeEnabled
@@ -1804,11 +1749,11 @@ export function ManageCustomer () {
           >
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
-          {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          <Form.Item style={{ marginTop: '-22px' }}
             label={intl.$t({ defaultMessage: 'RUCKUS Edge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>
-          </Form.Item>}
+          </Form.Item>
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item

@@ -8,13 +8,14 @@ import { Button, ColumnType, Table, TableProps } from '@acx-ui/components'
 import {
   EdgeWanLinkHealthDetailsDrawer,
   EdgeWanLinkHealthStatusLight,
-  getDisplayWanRole
+  getDisplayWanRole,
+  getWanLinkStatusString
 } from '@acx-ui/edge/components'
 import { Features }       from '@acx-ui/feature-toggle'
 import { formatter }      from '@acx-ui/formatter'
 import {
   defaultSort,
-  EdgeLagStatus, EdgeMultiWanConfigStats, EdgePortStatus, EdgeStatus,
+  EdgeLagStatus, EdgeMultiWanConfigStats, EdgePortStatus, EdgePortTypeEnum, EdgeStatus,
   EdgeWanLinkHealthStatusEnum,
   getEdgePortDisplayName, getEdgePortIpModeString,
   sortProp,
@@ -81,6 +82,8 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       sorter: false,
       show: false,
       render: (_, row) => {
+        if (row.type !== EdgePortTypeEnum.WAN) return ''
+
         // eslint-disable-next-line max-len
         const result = transformDisplayOnOff(row.multiWan?.linkHealthMonitorEnabled ?? false)
 
@@ -101,7 +104,11 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       dataIndex: ['multiWan', 'wanLinkStatus'],
       sorter: { compare: sortProp('multiWan.wanLinkStatus', defaultSort) },
       render: (_, row) => {
-        return row.multiWan?.wanLinkStatus
+        if (row.type !== EdgePortTypeEnum.WAN) return ''
+
+        const isLinkHealthEnabled = row.multiWan?.linkHealthMonitorEnabled ?? false
+
+        return row.multiWan?.wanLinkStatus && isLinkHealthEnabled
           ? <EdgeWanLinkHealthStatusLight
             status={row.multiWan?.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
             // eslint-disable-next-line max-len
@@ -117,6 +124,8 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       show: false,
       sorter: { compare: sortProp('multiWan.wanPortRole', defaultSort) },
       render: (_, row) => {
+        if (row.type !== EdgePortTypeEnum.WAN) return ''
+
         return getDisplayWanRole(row.multiWan?.priority ?? 0)
       }
     },
@@ -124,7 +133,12 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       title: $t({ defaultMessage: 'WAN Status' }),
       key: 'wanPortStatus',
       dataIndex: ['multiWan', 'wanPortStatus'],
-      sorter: { compare: sortProp('multiWan.wanPortStatus', defaultSort) }
+      sorter: { compare: sortProp('multiWan.wanPortStatus', defaultSort) },
+      render: (_, row) => {
+        if (row.type !== EdgePortTypeEnum.WAN) return ''
+
+        return getWanLinkStatusString(row.multiWan?.wanPortStatus)
+      }
     }
   ]
 

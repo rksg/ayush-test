@@ -17,6 +17,7 @@ export const SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL = '([0-9A-Z]{2})(0[1-9
 
 export const SwitchPortViewModelQueryFields = [
   'adminStatus',
+  'authDefaultVlan',
   'broadcastIn',
   'broadcastOut',
   'cloudPort',
@@ -24,10 +25,13 @@ export const SwitchPortViewModelQueryFields = [
   'crcErr',
   'deviceStatus',
   'egressAclName',
+  'errorDisableStatus',
   'id',
   'inDiscard',
   'ingressAclName',
   'inErr',
+  'isPoeScheduleEnabled',
+  'isPoeSupported',
   'lagId',
   'lagName',
   'mediaType',
@@ -38,6 +42,7 @@ export const SwitchPortViewModelQueryFields = [
   'neighborName',
   'opticsType',
   'outErr',
+  'poeCapability',
   'poeEnabled',
   'poeTotal',
   'poeType',
@@ -48,9 +53,13 @@ export const SwitchPortViewModelQueryFields = [
   'portSpeed',
   'signalIn',
   'signalOut',
+  'stackingNeighborPort',
   'status',
+  'stickyMacAclAllowCount',
+  'stickyMacAclAllowList',
   'switchId',
   'switchMac',
+  'switchMacAcl',
   'switchModel',
   'switchName',
   'switchPortProfileName',
@@ -72,7 +81,8 @@ export const SwitchPortViewModelQueryFields = [
   'stickyMacAclAllowList',
   'stickyMacAclAllowCount',
   'switchMacAcl',
-  'stackingNeighborPort'
+  'stackingNeighborPort',
+  'lagForceUpPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -554,6 +564,11 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
   stackingNeighborPort?: string
+  lagForceUpPort?: boolean
+  poeCapability?: boolean
+  isPoeScheduleEnabled?: string
+  isPoeSupported?: string
+  poeScheduler?: PoeSchedulerType
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -958,6 +973,7 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+  forceUpPort?: string
 }
 
 export interface AclStandardRule {
@@ -1157,4 +1173,16 @@ export interface MacAcl {
 	switchId?: string,
   customized?: boolean,
   sharedWithPolicyAndProfile?: boolean
+}
+
+interface PoeSchedulerType {
+  id?: string
+  type?: string
+  sun?: string
+  mon?: string
+  tue?: string
+  wed?: string
+  thu?: string
+  fri?: string
+  sat?: string
 }

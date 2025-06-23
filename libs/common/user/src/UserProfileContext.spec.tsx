@@ -118,6 +118,25 @@ const mockAllowedOperations = {
     }
   ]
 }
+
+export const fakeTenantDetails = {
+  id: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: ['825910','333815','825720','919107','836842'] },
+  preferences: { global: { mapRegion: 'UA' } },
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: 'MSP'
+}
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -146,11 +165,24 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(UserUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(fakedVenueList))),
-      rest.get(UserRbacUrlsInfo.getAccountTier.url.split('?')[0],
-        (_req, res, ctx) => res(ctx.json({ acx_account_tier: 'Gold' }))
-      ),
       rest.get(UserRbacUrlsInfo.getAllowedOperations.url,
         (_req, res, ctx) => res(ctx.json(mockAllowedOperations))
+      ),
+      rest.get(UserRbacUrlsInfo.getEarlyAccess.url.split('?')[0],
+        (_req, res, ctx) => {
+          if (_req.url.searchParams.has('accountTier')) {
+            return res(ctx.json({ acx_account_tier: 'Gold' }))
+          } else if (_req.url.searchParams.has('earlyAccess')) {
+            return res(ctx.json({
+              betaStatus: false,
+              alphaStatus: false
+            }))
+          }
+        }
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
   })
@@ -222,8 +254,8 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile beta enabled case', async () => {
-    services.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
-      return { data: { enabled: 'true' } }
+    services.useGetEarlyAccessQuery = jest.fn().mockImplementation(() => {
+      return { data: { betaStatus: true, alphaStatus: true } }
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {

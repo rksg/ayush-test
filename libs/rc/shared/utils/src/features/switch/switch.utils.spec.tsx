@@ -3,36 +3,30 @@ import '@testing-library/jest-dom'
 
 import { Input } from 'antd'
 
-import { DeviceConnectionStatus }                                                         from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
-import { MacAclRule }                                                                     from '../../types/switch'
+import { DeviceConnectionStatus }                           from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient } from '../../types'
+import { MacAclRule }                                       from '../../types/switch'
 
 import { macAclRulesParser } from './switch.utils'
 
 import {
-  getSwitchModel,
-  getSwitchName,
   isStrictOperationalSwitch,
   transformSwitchStatus,
   getSwitchStatusString,
-  getPoeUsage,
   getStackMemberStatus,
   getClientIpAddr,
   getAdminPassword,
   transformSwitchUnitStatus,
-  isRouter,
-  isEmpty,
   getSwitchPortLabel,
   sortPortFunction,
-  isSameModelFamily,
   convertInputToUppercase,
-  isL3FunctionSupported,
   isFirmwareVersionAbove10,
   isFirmwareSupportAdminPassword,
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  isFirmwareVersionAbove10020bCd2,
   vlanPortsParser,
   getFamilyAndModel,
   createSwitchSerialPattern,
@@ -59,39 +53,9 @@ const switchRow ={
 }
 
 describe('switch.utils', () => {
-  describe('Test getSwitchModel function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchModel('FJN4312T00C')).toBe('ICX7150-48ZP')
-      expect(getSwitchModel('EZC4312T00C')).toBe('ICX7650-48ZP')
-      expect(getSwitchModel('')).toBe('Unknown')
-    })
-    it('should check model family correctly', async () => {
-      expect(isSameModelFamily('', '')).toBe(true)
-      expect(isSameModelFamily('xxxx', '----')).toBe(true)
-      expect(isSameModelFamily('FEK3230S0DA', 'FEK3230S3DA')).toBe(true)
-      expect(isSameModelFamily('FJN3226U73C', 'FNC3333R015')).toBe(false)
-    })
-  })
-
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
-    })
-  })
-
-  describe('Test isRouter function', () => {
-    it('should render correctly', async () => {
-      expect(isRouter(SWITCH_TYPE.ROUTER)).toBeTruthy()
-    })
-  })
-
-  describe('Test isEmpty function', () => {
-    it('should render correctly', async () => {
-      expect(isEmpty(null)).toBeTruthy()
-      expect(isEmpty(undefined)).toBeTruthy()
-      expect(isEmpty('undefined')).toBeTruthy()
-      expect(isEmpty('')).toBeTruthy()
-      expect(isEmpty(1)).toBeFalsy()
     })
   })
 
@@ -227,12 +191,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test getSwitchName function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchName(switchRow)).toBe('FMF2249Q0JT')
-    })
-  })
-
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
       expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
@@ -247,31 +205,6 @@ describe('switch.utils', () => {
         operationalWarning: true
       }
       expect(getSwitchStatusString(data)).toBe('Synchronizing')
-    })
-  })
-
-  describe('Test getPoeUsage function', () => {
-    it('should render correctly', async () => {
-      const switchDetail_1 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT'
-      }
-      const switchDetail_2 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT',
-        poeTotal: 2000,
-        poeUtilization: 1000
-      }
-      expect(getPoeUsage(switchDetail_1 as SwitchViewModel)).toStrictEqual({
-        used: 0,
-        total: 0,
-        percentage: '0%'
-      })
-      expect(getPoeUsage(switchDetail_2 as unknown as SwitchViewModel)).toStrictEqual({
-        used: 1,
-        total: 2,
-        percentage: '50%'
-      })
     })
   })
 
@@ -451,27 +384,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test isL3FunctionSupported function', () => {
-    it('returns false for undefined switchType', () => {
-      const result = isL3FunctionSupported(undefined)
-      expect(result).toBe(false)
-    })
-
-    it('returns false for empty string switchType', () => {
-      const result = isL3FunctionSupported('')
-      expect(result).toBe(false)
-    })
-
-    it('returns true for ROUTER switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.ROUTER)
-      expect(result).toBe(true)
-    })
-
-    it('returns treu for SWITCH switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.SWITCH)
-      expect(result).toBe(false)
-    })
-  })
 })
 
 describe('Test isFirmwareVersionAbove10010f function', () => {
@@ -535,6 +447,24 @@ describe('Test isFirmwareVersionAbove10010gCd1Or10020bCd1 function', () => {
 
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_cd1')).toBe(true)
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_cd1')).toBe(true)
+  })
+})
+
+describe('Test isFirmwareVersionAbove10020bCd2 function', () => {
+  it('should render correctly', async () => {
+    expect(isFirmwareVersionAbove10020bCd2('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('SPR10020a_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_cd1_rc11')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_cd2')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10010g')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10010g_rc50')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('SPR10020b_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10020bCd2('TNR10020b_b205')).toBe(false)
+
+    expect(isFirmwareVersionAbove10020bCd2('TNR10020b_cd2')).toBe(true)
   })
 })
 

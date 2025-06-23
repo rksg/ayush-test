@@ -17,7 +17,7 @@ import { Features, useIsSplitOn }                         from '@acx-ui/feature-
 import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
 import { useGetMspEcProfileQuery, useGetMspProfileQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                                       from '@acx-ui/msp/utils'
-import { SpaceWrapper, useIsEdgeReady }                   from '@acx-ui/rc/components'
+import { SpaceWrapper }                                   from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -98,7 +98,6 @@ export const entitlementRefreshPayload = {
 export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
@@ -134,10 +133,7 @@ export const SubscriptionTable = () => {
         key: 'deviceType',
         filterMultiple: false,
         filterValueNullable: true,
-        filterable: licenseTypeOpts.filter(o =>
-          (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
-          || o.key !== EntitlementDeviceType.EDGE
-        ),
+        filterable: licenseTypeOpts,
         sorter: { compare: sortProp('deviceType', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
@@ -290,7 +286,7 @@ export const SubscriptionTable = () => {
       ...response,
       status: GetStatus(response?.effectiveDate, response?.expirationDate)
     }
-  }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+  })
 
   const checkSubscriptionStatus = function () {
     return (queryResults?.error as FetchBaseQueryError)?.status === 417

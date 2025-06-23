@@ -155,8 +155,12 @@ describe('CaptiveNetworkForm-Directory', () => {
     await waitFor(() => expect(directoryServerAPI).toBeCalled())
     const server = screen.getByTestId('directory-server-select')
     expect(server).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('combobox'))
+    const comboboxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboboxes[0])
     expect(await screen.findByRole('option', { name: /ldap-profile1/ })).toBeInTheDocument()
+
+    const profileDetailLink = screen.getByRole('button', { name: 'Profile Detail' })
+    await userEvent.click(profileDetailLink)
   })
   it('should render and interact with Identity Group in create mode', async () => {
     // Arrange: Setup ref and context for create mode
@@ -381,5 +385,38 @@ describe('CaptiveNetworkForm-Directory', () => {
     // Check if the redirectCheckbox is not checked
     const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
     expect(checkbox).not.toBeChecked()
+  })
+
+  it('should render with Accounting service successfully when FF enabled', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+    )
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <DirectoryServerForm
+                  directoryServerDataRef={directoryServerDataRef}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+    await waitFor(() => expect(directoryServerAPI).toBeCalled())
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
   })
 })

@@ -4,15 +4,24 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                                                                    from '@acx-ui/components'
-import { EdgeLagTable, NodesTabs, TypeForm }                                                                     from '@acx-ui/rc/components'
-import { EdgeLag, EdgePortTypeEnum, SubInterface, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                            from '@acx-ui/types'
+import { useStepFormContext }                from '@acx-ui/components'
+import { Features }                          from '@acx-ui/feature-toggle'
+import { EdgeLagTable, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import {
+  EdgeLag, EdgePortTypeEnum, SubInterface,
+  edgePhysicalPortInitialConfigs,
+  validateEdgeAllPortsEmptyLag,
+  natPoolRangeClusterLevelValidator,
+  useIsEdgeFeatureReady,
+  getMergedLagTableDataFromLagForm
+} from '@acx-ui/rc/utils'
+import { EdgeScopes } from '@acx-ui/types'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 import * as UI                                                            from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
+import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
@@ -49,8 +58,11 @@ interface LagSettingViewProps {
 
 const LagSettingView = (props: LagSettingViewProps) => {
   const { value, onChange } = props
+  const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
+
   const { clusterInfo, isSupportAccessPort } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
+
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
   const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
@@ -196,6 +208,22 @@ const LagSettingView = (props: LagSettingViewProps) => {
               isClusterWizard
               clusterInfo={clusterInfo!}
               isSupportAccessPort={isSupportAccessPort}
+              formFieldsProps={{
+                natStartIp: {
+                  rules: isMultiNatIpEnabled
+                    ? [{ validator: (_, currentData: EdgeLag) => {
+                      // eslint-disable-next-line max-len
+                      const { ports: allPortsData, lags: allLagsData } = getAllPhysicalInterfaceFormData(form)
+
+                      // eslint-disable-next-line max-len
+                      const mergedData = getMergedLagTableDataFromLagForm(allLagsData[serialNumber], currentData as EdgeLag)
+                      allLagsData[serialNumber] = mergedData
+
+                      // eslint-disable-next-line max-len
+                      return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
+                    } }] : []
+                }
+              }}
             />
           </>
         }

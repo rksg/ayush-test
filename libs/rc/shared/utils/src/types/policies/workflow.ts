@@ -15,6 +15,12 @@ export interface Workflow {
   statusReasons?: StatusReason[]
 }
 
+export interface WorkflowAssignment {
+  assignmentResourceType: string
+  assignmentResourceId: string
+  links: { rel: string, href: string }[]
+}
+
 export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED' | 'VALIDATE'
 
 export interface PublishDetail {
@@ -82,13 +88,17 @@ interface StepState {
   mode?: WorkflowPanelMode
 }
 
+export type ValidationStatus = 'VALID' | 'INVALID' | 'UNDEFINED'
+
 interface BaseStep extends StepState {
   id: string,
   type?: StepType,
   actionType?: ActionType,
   actionDefinitionId?: string,
   priorStepId?: string,
-  splitOptionId?: string
+  splitOptionId?: string,
+  status?: ValidationStatus,
+  statusReasons?: StepStatusReason[]
 }
 
 interface Step extends BaseStep {
@@ -124,7 +134,18 @@ export interface WorkflowActionDefinition {
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
 
-enum StatusCodes {
+export enum StepStatusCodes {
+    InvalidAction = 'invalid.action',
+    MultipleOnboardingSteps = 'multiple.onboarding.steps',
+    DisconnectedStep = 'disconnected.step'
+}
+
+export interface StepStatusReason {
+  statusCode: StepStatusCodes,
+  statusReason: string
+}
+
+enum WorkflowStatusCodes {
   IncorrectOnboarding = 'incorrect.onboarding.count',
   MissingRequiredCount = 'missing.required.count',
   DisconnctedSteps = 'disconnected.steps',
@@ -132,6 +153,6 @@ enum StatusCodes {
 }
 
 export interface StatusReason {
-  statusCode: StatusCodes,
+  statusCode: WorkflowStatusCodes,
   statusReason: string
 }

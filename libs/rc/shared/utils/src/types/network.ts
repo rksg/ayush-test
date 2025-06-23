@@ -171,6 +171,7 @@ export interface NetworkSaveData extends EnforceableFields {
   totalDownlinkLimited? : boolean
   accessControlProfileEnable?: boolean
   enableOwe?: boolean
+  enableOweTransition?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
   hotspot20Settings?: NetworkHotspot20Settings

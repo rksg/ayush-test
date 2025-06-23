@@ -17,7 +17,8 @@ import {
   type RaiPermission,
   type RaiPermissions,
   CustomRoleType,
-  FeatureAPIResults
+  FeatureAPIResults,
+  TenantType
 } from './types'
 
 type Permission = {
@@ -29,15 +30,18 @@ type Profile = {
   allowedOperations: string []
   accountTier?: string
   betaEnabled?: boolean
+  isAlphaUser?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
+  isCustomPrivilegeGroup?: boolean,
   hasAllVenues?: boolean,
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
-  betaFeaturesList?: FeatureAPIResults[]
+  betaFeaturesList?: FeatureAPIResults[],
+  tenantType?: TenantType
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -67,10 +71,12 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.allowedOperations = profile.allowedOperations
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
+  userProfile.isAlphaUser = profile.isAlphaUser
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
   userProfile.isCustomRole = profile.isCustomRole
+  userProfile.isCustomPrivilegeGroup = profile.isCustomPrivilegeGroup
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
   userProfile.venuesList = profile?.venuesList

@@ -10,11 +10,13 @@ import {
   checkVlanDiffFromTargetVlan
 } from '@acx-ui/rc/components'
 import {
+  isL3FunctionSupported
+} from '@acx-ui/rc/switch/utils'
+import {
   FlexAuthMessages,
   FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
-  isL3FunctionSupported,
   isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
@@ -310,7 +312,7 @@ export function SwitchStackSetting (props: {
         isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f && <>
           <Space size={8} style={{ display: 'flex', margin: '40px 0 30px' }}>
             <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
-              {$t({ defaultMessage: 'Authentication' })}
+              {$t({ defaultMessage: 'Port Authentication' })}
             </Typography.Text>
             <Form.Item
               noStyle

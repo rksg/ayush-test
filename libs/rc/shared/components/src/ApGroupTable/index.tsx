@@ -326,6 +326,7 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewM
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'name',
       sorter: true,
+      defaultSortOrder: 'ascend',
       fixed: 'left',
       searchable: searchable,
       render: (_, row: ApGroupViewModel, __, highlightFn) => (

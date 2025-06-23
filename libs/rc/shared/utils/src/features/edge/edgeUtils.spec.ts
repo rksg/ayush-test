@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
-import _ from 'lodash'
+import _, { cloneDeep } from 'lodash'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeLag, EdgePortWithStatus, EdgeSubInterface }                           from '../../types'
+import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
+import { mockedEdgeLagList }                      from './__tests__/fixtures/lag'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootShutdownForStatus,
@@ -14,10 +15,13 @@ import {
   genExpireTimeString,
   getEdgeAppCurrentVersions,
   getEdgeModelDisplayText,
+  getEdgeNatPools,
   getEdgeServiceHealth,
   getIpWithBitMask,
+  getMergedLagTableDataFromLagForm,
   getSuggestedIpRange,
   isAllPortsLagMember,
+  isEdgeMatchedRequiredFirmware,
   isInterfaceInVRRPSetting,
   optionSorter
 } from './edgeUtils'
@@ -478,5 +482,111 @@ describe('getEdgeAppCurrentVersions', () => {
       clusterAppVersionInfo: null
     }
     expect(getEdgeAppCurrentVersions(data)).toBe('NA')
+  })
+})
+
+
+describe('getEdgeNatPools', () => {
+  const natPort1 = cloneDeep(mockEdgePortConfig.ports[0])
+  natPort1.natEnabled = true
+  natPort1.natPools = [{ startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.10' }]
+  const natPort2 = cloneDeep(mockEdgePortConfig.ports[1])
+  natPort2.portType = EdgePortTypeEnum.WAN
+  natPort2.natEnabled = true
+  natPort2.natPools = [{ startIpAddress: '2.2.2.1', endIpAddress: '2.2.2.10' }]
+
+  const natLag1 = cloneDeep(mockedEdgeLagList.content[0])
+  natLag1.lagMembers = [{ portId: natPort2.id, portEnabled: true }]
+  natLag1.natPools = [{ startIpAddress: '3.3.3.1', endIpAddress: '3.3.3.10' }]
+
+  it('should return an empty array when no lag data is provided', () => {
+    const portsData: EdgePort[] = [natPort1, natPort2]
+
+    const result = getEdgeNatPools(portsData, undefined)
+    expect(result).toEqual([
+      { startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.10' },
+      { startIpAddress: '2.2.2.1', endIpAddress: '2.2.2.10' }
+    ])
+  })
+  it('should filter out LAG member ports', () => {
+    const portsData: EdgePort[] = [natPort1, natPort2]
+    const lagData: EdgeLag[] = [natLag1]
+    const result = getEdgeNatPools(portsData, lagData)
+    expect(result).toEqual([
+      { startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.10' },
+      { startIpAddress: '3.3.3.1', endIpAddress: '3.3.3.10' }
+    ])
+  })
+
+  it('should filter out nat pools with missing start or end IP address', () => {
+    const invalidNatPoolPort = cloneDeep(natPort2)
+    invalidNatPoolPort.natPools = [{ startIpAddress: '2.2.2.1' }]
+    const portsData: EdgePort[] = [natPort1, invalidNatPoolPort]
+
+    const result = getEdgeNatPools(portsData, undefined)
+    expect(result).toEqual([
+      { startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.10' }
+    ])
+  })
+  it('should handle invalid input (null or undefined lag data)', () => {
+    expect(() => getEdgeNatPools([], undefined)).not.toThrow()
+    expect(getEdgeNatPools([], undefined)).toEqual([])
+
+    expect(() => getEdgeNatPools([], null)).not.toThrow()
+    expect(getEdgeNatPools([], null)).toEqual([])
+
+    expect(() => getEdgeNatPools([], [])).not.toThrow()
+    expect(getEdgeNatPools([], [])).toEqual([])
+  })
+})
+
+describe('getMergedLagTableDataFromLagForm', () => {
+  const mockLagList = cloneDeep(mockedEdgeLagList.content)
+
+  it('should update lag data with changed data', () => {
+    const changedLag = cloneDeep(mockLagList[0])
+    changedLag.natEnabled = false
+    changedLag.lagMembers = changedLag.lagMembers.slice(0, 1)
+
+    const expected = [changedLag, ...mockLagList.slice(1)]
+    expect(getMergedLagTableDataFromLagForm(mockLagList, changedLag)).toEqual(expected)
+  })
+
+  it('should merges with new create(non-existent) lag data', () => {
+    const changedLag = { id: 3, name: 'newLag' }
+    const expected = [...mockLagList, { id: 3, name: 'newLag' }]
+    expect(getMergedLagTableDataFromLagForm(mockLagList, changedLag)).toEqual(expected)
+  })
+
+  it('should handle undefined existing lag data', () => {
+    const changedLag = { id: 1, name: 'newLag' }
+    const expected = [{ id: 1, name: 'newLag' }]
+    expect(getMergedLagTableDataFromLagForm(undefined, changedLag)).toEqual(expected)
+  })
+})
+
+describe('isEdgeMatchedRequiredFirmware', () => {
+  it('returns false with empty edge list', () => {
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', [])).toBe(false)
+  })
+
+  it('returns true with single edge in list, required firmware is met', () => {
+    const edgeList = [{ firmwareVersion: '1.0.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(true)
+  })
+
+  it('returns true with multiple edges in list, required firmware is met', () => {
+    const edgeList = [{ firmwareVersion: '1.0.0' }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(true)
+  })
+
+  it('returns false with multiple edges in list, required firmware is not met', () => {
+    const edgeList = [{ firmwareVersion: '0.9.0' }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(false)
+  })
+
+  it('returns false with edge list containing null or undefined firmware versions', () => {
+    const edgeList = [{ firmwareVersion: null }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(false)
   })
 })

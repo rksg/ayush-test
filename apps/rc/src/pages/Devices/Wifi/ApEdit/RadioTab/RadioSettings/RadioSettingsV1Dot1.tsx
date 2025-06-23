@@ -342,12 +342,16 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       tenantId,
       serialNumber: serialNumber ? serialNumber : '',
       venueId: venueData ? venueData.id : ''
-    }
+    },
+    enableRbac: true
   })
 
   useEffect(() => {
     if (apGroupInfo?.data && apDetails) {
-      setApGroupData(apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)[0].name)
+      const filteredApGroup = apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)
+      if (filteredApGroup.length > 0) {
+        setApGroupData(filteredApGroup[0].name)
+      }
     }
   }, [apGroupInfo, apDetails])
 

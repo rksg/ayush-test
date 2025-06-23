@@ -66,7 +66,7 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
-  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType
+  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType && context !== 'apGroup'
 
   const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']
@@ -393,7 +393,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('changeInterval')}
         />
       </Form.Item>
-      {context === 'venue' &&
+      {(context === 'venue' || context === 'apGroup') &&
         <Space>
           <Form.Item
             label={$t({ defaultMessage: 'Run background scan every:' })}

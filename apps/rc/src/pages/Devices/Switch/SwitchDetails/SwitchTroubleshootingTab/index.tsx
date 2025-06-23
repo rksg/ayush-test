@@ -3,10 +3,11 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Tabs }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { isRouter, isFirmwareVersionAbove10010f } from '@acx-ui/rc/utils'
-import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { Tabs }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { isRouter }                     from '@acx-ui/rc/switch/utils'
+import { isFirmwareVersionAbove10010f } from '@acx-ui/rc/utils'
+import { useTenantLink }                from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
@@ -25,7 +26,6 @@ export function SwitchTroubleshootingTab () {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
-  const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
   const isCableTestEnabled = useIsSplitOn(Features.SWITCH_CABLE_TEST)
 
   const onTabChange = (tab: string) => {
@@ -64,7 +64,6 @@ export function SwitchTroubleshootingTab () {
       }
       {
         isFirmwareVersionAbove10010f(switchDetailsContextData.switchDetailHeader?.firmware)
-          && isSwitchCliEnabled
           && <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
             <SwitchMacAddressForm />
           </TabPane>
