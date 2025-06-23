@@ -99,7 +99,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterableWidth?: number
 
-  fitlerCustomOptions?: OptionType[]
+  filterCustomOptions?: OptionType[]
   /**
    * Set the key for Coordinated filters that have a hierarchical dependency
    * the relevant filter will be reset by key when changing the value
