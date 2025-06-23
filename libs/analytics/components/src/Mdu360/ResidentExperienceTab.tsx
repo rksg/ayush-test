@@ -1,8 +1,7 @@
 import { GridRow , GridCol } from '@acx-ui/components'
 
 import { TrafficByRadio } from './Widgets/TrafficByRadio'
-
-import { WifiClient } from './Widgets/WifiClient'
+import { WifiClient }     from './Widgets/WifiClient'
 
 import type { Mdu360TabPros } from '.'
 

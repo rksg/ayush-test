@@ -47,6 +47,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
 
 .c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c0 .ant-card-head-wrapper {
@@ -765,6 +766,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
 
 .c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c0 .ant-card-head-wrapper {
