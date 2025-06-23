@@ -1,102 +1,21 @@
 /* eslint-disable max-len */
-import _                 from 'lodash'
-import { defineMessage } from 'react-intl'
+import _ from 'lodash'
 
-import { cssStr }      from '@acx-ui/components'
+import { cssStr }            from '@acx-ui/components'
 import {
   ChartData,
   Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum,
   EdgeStatusSeverityEnum,
-  VenueMarkerOptions } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+  VenueMarkerOptions,
+  getAPStatusDisplayName,
+  getEdgeStatusDisplayName
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 export const DASHBOARD_GMAP_FILTER_KEY = 'dashboard-gmap-filter'
-
-const apStatusMap = {
-  [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention',
-    description: 'Translation string - Requires Attention'
-  }),
-  [ApVenueStatusEnum.TRANSIENT_ISSUE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue',
-    description: 'Translation string - Transient Issue'
-  }),
-  [ApVenueStatusEnum.IN_SETUP_PHASE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase',
-    description: 'Translation string - In Setup Phase'
-  }),
-  [ApVenueStatusEnum.OPERATIONAL]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational',
-    description: 'Translation string - Operational'
-  }),
-  [ApVenueStatusEnum.OFFLINE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline',
-    description: 'Translation string - Offline'
-  }),
-  [ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase & Offline',
-    description: 'Translation string - In Setup Phase & Offline'
-  })
-}
-
-export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: boolean = true) => {
-  const { $t } = getIntl()
-  return $t(apStatusMap[label], { showSeverity })
-}
-
-const switchStatusMap = {
-  [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
-  [SwitchStatusEnum.DISCONNECTED]: defineMessage({ defaultMessage: 'Alerting' }),
-  [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]: defineMessage({ defaultMessage: 'In Setup Phase' }),
-  [SwitchStatusEnum.INITIALIZING]: defineMessage({ defaultMessage: 'In Setup Phase' }),
-  [SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED]: defineMessage({ defaultMessage: 'In Setup Phase' }),
-  [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_START]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH]: defineMessage({ defaultMessage: 'Requires Attention' }),
-  [SwitchStatusEnum.FIRMWARE_UPD_FAIL]: defineMessage({ defaultMessage: 'Alerting' }),
-  default: defineMessage({ defaultMessage: 'In Setup Phase' })
-}
-
-export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
-  const { $t } = getIntl()
-  return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
-}
-
-const edgeStatusMap = {
-  [EdgeStatusSeverityEnum.REQUIRES_ATTENTION]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention',
-    description: 'Translation string - Requires Attention'
-  }),
-  [EdgeStatusSeverityEnum.TRANSIENT_ISSUE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue',
-    description: 'Translation string - Transient Issue'
-  }),
-  [EdgeStatusSeverityEnum.IN_SETUP_PHASE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase',
-    description: 'Translation string - In Setup Phase'
-  }),
-  [EdgeStatusSeverityEnum.OPERATIONAL]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational',
-    description: 'Translation string - Operational'
-  }),
-  [EdgeStatusSeverityEnum.OFFLINE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline',
-    description: 'Translation string - Offline'
-  })
-}
-
-export const getEdgeStatusDisplayName = (label: EdgeStatusSeverityEnum, showSeverity: boolean = true) => {
-  const { $t } = getIntl()
-  return $t(edgeStatusMap[label], { showSeverity })
-}
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
