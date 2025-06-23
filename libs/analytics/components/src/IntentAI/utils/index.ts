@@ -25,8 +25,6 @@ export const getDefaultTime = () => {
     datetime3AM : datetime3AM.add(1, 'd')
 }
 
-
-
 export type TransitionIntentMetadata = {
   scheduledAt?: string
   applyScheduledAt?: string
@@ -59,10 +57,14 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
     case Actions.One_Click_Optimize:
       return !rows.some(row => row.displayStatus !== DisplayStates.new)
     case Actions.Optimize:
-      return rows.length === 1 &&
-        [DisplayStates.new, DisplayStates.scheduled,
-          DisplayStates.scheduledOneClick,DisplayStates.applyScheduled,
-          DisplayStates.active].includes(rows[0].displayStatus)
+      return rows.length === 1 && [
+        DisplayStates.new,
+        DisplayStates.scheduled,
+        DisplayStates.scheduledOneClick,
+        DisplayStates.applyScheduled,
+        DisplayStates.naVerified,
+        DisplayStates.active
+      ].includes(rows[0].displayStatus)
 
     case Actions.Revert:
       return !rows.some(row =>
