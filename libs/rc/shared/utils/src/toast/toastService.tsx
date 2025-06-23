@@ -85,15 +85,20 @@ const routeToPage = (link: string, queryParams: QueryParams) => {
 }
 
 const showDetails = (tx: Transaction, intl: IntlShape) => {
+  const defaultDescription = intl.$t({
+    defaultMessage: 'The following information was reported for the error you encountered'
+  })
+  const errorDetails = JSON.parse((tx?.error) as string)
+  const description = errorDetails.errors?.[0].suggestion || errorDetails.errors?.[0].reason
+
   showActionModal({
     type: 'error',
     title: intl.$t({ defaultMessage: 'Technical Details' }),
-    content: intl.$t({
-      defaultMessage: 'The following information was reported for the error you encountered'
-    }),
+    content: getEnabledActivityErrorImproved() && description ?
+      <span>{description}</span> : defaultDescription,
     customContent: {
       action: 'SHOW_ERRORS',
-      errorDetails: JSON.parse((tx?.error) as string)
+      errorDetails
     },
     isUsingLegacyErrorModal: !getEnabledActivityErrorImproved()
   })
