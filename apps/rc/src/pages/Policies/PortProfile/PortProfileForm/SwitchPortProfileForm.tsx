@@ -15,9 +15,11 @@ import {
   useSwitchPortProfilesDetailQuery
 } from '@acx-ui/rc/services'
 import {
+  getDefaultPortSpeedOption
+} from '@acx-ui/rc/switch/utils'
+import {
   checkObjectNotExists,
   checkTaggedVlan,
-  getDefaultPortSpeedOption,
   getPolicyListRoutePath,
   LldpTlvMatchingType,
   LldpTlvs,
