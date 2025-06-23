@@ -19,11 +19,6 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgeServices } from '.'
 
-jest.mock('./ServiceDetailDrawer/SdLanDetailsP2', () => ({
-  ...jest.requireActual('./ServiceDetailDrawer/SdLanDetailsP2'),
-  SdLanDetailsP2: () => <div data-testid='rc-SdLanDetailsP2'/>
-}))
-
 const mockUseIsEdgeFeatureReady = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({

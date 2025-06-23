@@ -212,7 +212,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
           route: { params }
         })
       expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
-      expect(screen.queryByText('Tunnel Profile (AP-Cluster)')).toBeNull()
+      expect(screen.queryByText('Tunnel Profile (AP-Cluster)')).toBeVisible()
     })
 
     it('should render DMZ scenario detail successfully', async () => {

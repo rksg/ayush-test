@@ -73,7 +73,6 @@ describe('ServiceCatalog', () => {
     expect(await screen.findByText('mDNS Proxy')).toBeVisible()
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
-    expect(screen.queryByText('SD-LAN')).toBeNull()
     expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
     expect(screen.queryByText('Thirdparty Network Management')).toBeNull()
   })
@@ -188,7 +187,7 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
@@ -223,7 +222,7 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
@@ -262,9 +261,9 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
-      await userEvent.click(toolTips[0])
+      await userEvent.click(toolTips[1])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY)

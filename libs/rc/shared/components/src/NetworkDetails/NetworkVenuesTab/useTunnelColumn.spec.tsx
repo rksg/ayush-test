@@ -319,26 +319,4 @@ describe('VenueNetworksTab - PIN enabled', () => {
       }))
     })
   })
-
-  describe('when FFs are off', () => {
-    it('should return empty array', async () => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-      const { result } = renderHook(() => useTunnelColumn({
-        network: {
-          id: 'mock-networkId',
-          type: NetworkTypeEnum.PSK
-        },
-        sdLanScopedNetworkVenues: {
-          sdLansVenueMap: {},
-          networkVenueIds: [],
-          guestNetworkVenueIds: []
-        },
-        setTunnelModalState: jest.fn()
-      }), { wrapper: Provider })
-
-      expect(result.current.length).toBe(0)
-    })
-  })
 })

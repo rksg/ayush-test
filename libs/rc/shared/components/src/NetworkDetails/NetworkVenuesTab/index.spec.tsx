@@ -11,6 +11,7 @@ import {
   AccessControlUrls,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  EdgeSdLanUrls,
   SoftGreUrls,
   VlanPoolRbacUrls,
   WifiNetworkFixtures,
@@ -199,6 +200,10 @@ describe.skip('NetworkVenuesTab', () => {
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockNetworkViewModelData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

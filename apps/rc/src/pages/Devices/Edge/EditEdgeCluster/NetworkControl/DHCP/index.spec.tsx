@@ -61,6 +61,14 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
           mockedDeactivateDhcpApi(req.url.pathname)
           return res(ctx.status(202))
         }
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

@@ -54,7 +54,6 @@ import { VenueNetworksTab } from './index'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
-// isMapEnabled = false && SD-LAN not enabled
 const disabledFFs = [
   Features.G_MAP,
   Features.WIFI_RBAC_API,
@@ -62,7 +61,8 @@ const disabledFFs = [
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE,
-  Features.EDGE_PIN_ENHANCE_TOGGLE
+  Features.EDGE_PIN_ENHANCE_TOGGLE,
+  Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -172,7 +172,10 @@ describe('VenueNetworksTab', () => {
         VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
-
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
       // rbac API
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
@@ -454,7 +457,6 @@ describe('VenueNetworksTab', () => {
 
     it('should correctly display tunnel column when SD-LAN is running on it', async () => {
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
-
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -494,7 +496,6 @@ describe('VenueNetworksTab', () => {
         scopedGuestNetworkIds: []
       }
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedData)
-
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
