@@ -31,11 +31,13 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import {
+  getSwitchModel,
+  isOperationalSwitch
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
   Switch,
-  getSwitchModel,
   SwitchViewModel,
   IGMP_SNOOPING_TYPE,
   Vlan,
