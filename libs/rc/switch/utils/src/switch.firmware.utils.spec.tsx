@@ -1,11 +1,17 @@
 import {
+  checkVersionAtLeast10010b,
+  checkVersionAtLeast10010c,
+  checkVersionAtLeast09010h,
   compareSwitchVersion,
+  convertSwitchVersionFormat,
+  getStackUnitsMinLimitationV1002,
+  getSwitchModelGroup,
   isVerGEVer,
   invalidVersionFor82Av,
   invalidVersionFor81X,
-  invalidVersionFor75Zippy
+  invalidVersionFor75Zippy,
+  versionAbove10020a
 } from './switch.firmware.utils'
-
 
 describe('switch.firmware.utils', () => {
   it('should compare switch versions', () => {
@@ -48,7 +54,6 @@ describe('switch.firmware.utils', () => {
     expect(compareSwitchVersion('SPR09010j_cd1.bin', '09010h_cd1_b2')).toBe(1)
   })
 
-
   it('should check version', () => {
     expect(isVerGEVer('SPR09010f_b28.bin', '09010f_b401', true)).toBe(false)
     expect(isVerGEVer('TNR09010f.bin', '09010f_b19', true)).toBe(true)
@@ -88,6 +93,7 @@ describe('switch.firmware.utils', () => {
   })
 
   it('should check unsupported versions of ICX8200AV switch', () => {
+    expect(invalidVersionFor82Av('')).toBe(false)
     expect(invalidVersionFor82Av('09010h_cd1_rc80')).toBe(true)
     expect(invalidVersionFor82Av('10010b_b36')).toBe(true)
     expect(invalidVersionFor82Av('10020a_cd1_rc22')).toBe(true)
@@ -100,6 +106,7 @@ describe('switch.firmware.utils', () => {
   })
 
   it('should check unsupported versions of ICX8100X switch', () => {
+    expect(invalidVersionFor81X('')).toBe(false)
     expect(invalidVersionFor81X('09010h_cd1_rc80')).toBe(true)
     expect(invalidVersionFor81X('10010b_b36')).toBe(true)
     expect(invalidVersionFor81X('10010f_cd2')).toBe(true)
@@ -113,6 +120,7 @@ describe('switch.firmware.utils', () => {
   })
 
   it('should check unsupported versions of ICX7550 Zippy switch', () => {
+    expect(invalidVersionFor75Zippy('')).toBe(false)
     expect(invalidVersionFor75Zippy('09010h_cd1_rc80')).toBe(true)
     expect(invalidVersionFor75Zippy('10010b_b36')).toBe(true)
     expect(invalidVersionFor75Zippy('10010f_cd2')).toBe(true)
@@ -123,4 +131,56 @@ describe('switch.firmware.utils', () => {
     expect(invalidVersionFor75Zippy('10020b_cd1_rc11')).toBe(false)
     expect(invalidVersionFor75Zippy('10020c_cd2_rc11')).toBe(false)
   })
+
+  it('should check that the firmware version is at least 9010h', () => {
+    expect(checkVersionAtLeast09010h('10010b_b37')).toBe(true)
+    expect(checkVersionAtLeast09010h('09010h_cd2_b4')).toBe(true)
+    expect(checkVersionAtLeast09010h('09010f_b401')).toBe(false)
+  })
+
+  it('should check that the firmware version is at least 10020a', () => {
+    expect(versionAbove10020a('10020a_cd1_rc22')).toBe(true)
+    expect(versionAbove10020a('10010b_b37')).toBe(false)
+  })
+
+  it('should check that the firmware version is at least 10010b', () => {
+    expect(checkVersionAtLeast10010b('10010f_cd2')).toBe(true)
+    expect(checkVersionAtLeast10010b('10010b_b37')).toBe(true)
+    expect(checkVersionAtLeast10010b('10010a_b3')).toBe(false)
+  })
+
+  it('should check that the firmware version is at least 10010c', () => {
+    expect(checkVersionAtLeast10010c('10010f_cd2')).toBe(true)
+    expect(checkVersionAtLeast10010c('10010c_cd3_rc36')).toBe(true)
+    expect(checkVersionAtLeast10010c('10010b_b37')).toBe(false)
+    expect(checkVersionAtLeast10010c('10010a_b3')).toBe(false)
+  })
+
+  it('should get the minimum limitation of stack units correctly', () => {
+    expect(getStackUnitsMinLimitationV1002('ICX7150-C12P', '09010h_cd2_b4')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-C12P', '09010f_b401')).toBe(2)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', '10010b_b37')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', '10010a_b3')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7550-48', '10010f_cd2')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX7650-48ZP', '10010a_b3')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX7850-48FS', '09010f_b401')).toBe(4)
+  })
+
+  it('should convert switch version format correctly', () => {
+    expect(convertSwitchVersionFormat('09010h_cd2')).toBe('9.0.10h_cd2')
+    expect(convertSwitchVersionFormat('10020a_cd1')).toBe('10.0.20a_cd1')
+    expect(convertSwitchVersionFormat('10010f_cd2')).toBe('10.0.10f_cd2')
+    expect(convertSwitchVersionFormat('100_10f_cd2')).toBe('100_10f_cd2')
+  })
+
+  it('should get switch model group correctly', () => {
+    expect(getSwitchModelGroup('ICX7150-C12P')).toBe('ICX71')
+    expect(getSwitchModelGroup('ICX7450-32P')).toBe('ICX7X')
+    expect(getSwitchModelGroup('ICX7550-48')).toBe('ICX7X')
+    expect(getSwitchModelGroup('ICX7650-48ZP')).toBe('ICX7X')
+    expect(getSwitchModelGroup('ICX8100-48-X')).toBe('ICX81')
+    expect(getSwitchModelGroup('ICX8200-24P')).toBe('ICX82')
+  })
+
 })
+
