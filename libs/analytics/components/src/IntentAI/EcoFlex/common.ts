@@ -114,7 +114,7 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
   key: 'powerSaving',
   label: defineMessage({ defaultMessage: 'Projected power saving' }),
   format: formatter('percentFormatRound'),
-  deltaSign: '-',
+  deltaSign: '+',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({

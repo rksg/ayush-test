@@ -73,12 +73,12 @@ describe('EcoFlex common utils', () => {
       expect(result[0]).toMatchObject({
         key: BenefitsConfig[0].key,
         label: BenefitsConfig[0].label,
-        value: '15.1',
-        values: { value: '15.1' },
+        value: '30.2',
+        values: { value: '30.2' },
         valueMessage: BenefitsConfig[0].valueMessage,
         valueSuffixMessage: BenefitsConfig[0].valueSuffixMessage,
         valueSuffixClass: BenefitsConfig[0].valueSuffixClass,
-        pillValue: { value: '-50%', trend: TrendTypeEnum.Positive },
+        pillValue: { value: '+100%', trend: TrendTypeEnum.Positive },
         tooltip: BenefitsConfig[0].tooltip
       })
     })
@@ -117,8 +117,8 @@ describe('EcoFlex common utils', () => {
         expect(getConfigValueAccessor(BenefitsConfig, 'powerSaving')(
           mockedKpiData.data.data, mockedKpiData.compareData.data)
         ).toEqual({
-          value: 15.1,
-          previous: 30.2,
+          value: 30.2,
+          previous: 15.1,
           isPill: true
         })
       })

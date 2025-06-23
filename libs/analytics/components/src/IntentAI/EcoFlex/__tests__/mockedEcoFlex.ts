@@ -213,7 +213,7 @@ export const mockedKpiData = {
   data: {
     timestamp: '2025-04-01T00:00:00Z',
     data: {
-      powerSaving: 15.1,
+      powerSaving: 30.2,
       enabled: 80,
       disabled: 10,
       excluded: 20,
@@ -228,7 +228,7 @@ export const mockedKpiData = {
   compareData: {
     timestamp: '2025-03-01T00:00:00Z',
     data: {
-      powerSaving: 30.2,
+      powerSaving: 15.1,
       enabled: 10,
       disabled: 70,
       excluded: 30,
