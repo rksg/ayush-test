@@ -242,8 +242,6 @@ describe('TunnelProfileList', () => {
           (req, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
         )
       )
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
     })
 
     it('should display Network Segment Type column', async () => {

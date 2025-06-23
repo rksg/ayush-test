@@ -13,8 +13,7 @@ import TunnelProfileDetail from '.'
 
 const {
   mockedTunnelProfileViewData,
-  mockedDefaultTunnelProfileViewData,
-  mockedDefaultVlanVxlanTunnelProfileViewData
+  mockedDefaultTunnelProfileViewData
 } = EdgeTunnelProfileFixtures
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 
@@ -94,83 +93,11 @@ describe('TunnelProfileDetail', () => {
     await checkNetworkTable()
   })
 
-  describe('when SD-LAN ready, Keep Alive not ready', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE))
-    })
-
-    it('should display tunnel type', async () => {
-      render(
-        <Provider>
-          <TunnelProfileDetail />
-        </Provider>, {
-          route: { params, path: detailPath }
-        })
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-      await screen.findByText('Tunnel Type')
-      await screen.findByText('VxLAN')
-      await checkNetworkTable()
-      expect(screen.queryByText('Network Segment Type')).not.toBeInTheDocument()
-    })
-
-    it('should display VxLAN as default tunnel type', async () => {
-      const mockedDataWithoutType = {
-        ...mockedTunnelProfileViewData
-      }
-      mockedDataWithoutType.data[0].name = 'tunnelProfile2'
-      mockedDataWithoutType.data[0].type = ''
-
-      mockServer.use(
-        rest.post(
-          TunnelProfileUrls.getTunnelProfileViewDataList.url,
-          (_, res, ctx) => res(ctx.json(mockedDataWithoutType))
-        ))
-
-      render(
-        <Provider>
-          <TunnelProfileDetail />
-        </Provider>, {
-          route: { params, path: detailPath }
-        })
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-      await screen.findByText('tunnelProfile2')
-      await screen.findByText('Tunnel Type')
-      await screen.findByText('VxLAN')
-      await checkNetworkTable()
-    })
-
-    it('Should disable Configure button in VLAN_VXLAN Default Tunnel Profile', async () => {
-      mockServer.use(
-        rest.post(
-          TunnelProfileUrls.getTunnelProfileViewDataList.url,
-          (_, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
-        )
-      )
-      render(
-        <Provider>
-          <TunnelProfileDetail />
-        </Provider>, {
-          route: { params, path: detailPath }
-        })
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-      await screen.findByText('Default tunnel profile (SD-LAN)')
-      await screen.findByText('VLAN-VxLAN')
-      expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
-      await checkNetworkTable()
-    })
-  })
-
   describe('when SD-LAN and Keep Alive ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE))
     })
 
     it('should display network segment type and keep alive related columns', async () => {
