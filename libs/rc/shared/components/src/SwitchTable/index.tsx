@@ -29,10 +29,13 @@ import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
 import {
+  getSwitchName,
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
+import {
   getSwitchStatusString,
   SwitchRow,
   transformSwitchStatus,
-  getSwitchName,
   DeviceConnectionStatus,
   getStackMemberStatus,
   usePollingTableQuery,
@@ -45,7 +48,6 @@ import {
   FILTER,
   SEARCH,
   GROUPBY,
-  getSwitchModel,
   getAdminPassword,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo

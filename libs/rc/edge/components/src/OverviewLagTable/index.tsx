@@ -11,7 +11,7 @@ import {
   Table, TableProps,
   ColumnType
 }                                       from '@acx-ui/components'
-import { Features }  from '@acx-ui/feature-toggle'
+import { Features }       from '@acx-ui/feature-toggle'
 import {
   EdgeLagMemberStatus, EdgeLagStatus,
   EdgeLagTimeoutEnum,
@@ -22,12 +22,12 @@ import {
   EdgeStatus,
   EdgeWanLinkHealthStatusEnum,
   EdgeMultiWanConfigStats,
-  EdgePortTypeEnum
+  EdgePortTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady }                     from '../hooks/useIsEdgeFeatureReady'
 import { getDisplayWanRole, getWanLinkStatusString } from '../utils/dualWanUtils'
 import { EdgeWanLinkHealthDetailsDrawer }            from '../WanLinkHealthDetails'
 import { EdgeWanLinkHealthStatusLight }              from '../WanLinkHealthStatusLight'

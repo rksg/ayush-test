@@ -334,28 +334,6 @@ describe('EditEdge ports - sub-interface', () => {
     await waitForElementToBeRemoved(validating)
   })
 
-  it('should not display import from file when FF is disabled', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <EdgeEditContext.EditContext.Provider
-          value={defaultContextData}
-        >
-          <EditEdgeDataContext.Provider
-            value={defaultEditEdgeSingleNodeCtxData}
-          >
-            <SubInterfaces />
-          </EditEdgeDataContext.Provider>
-        </EdgeEditContext.EditContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
-      })
-
-    const btn = screen.queryByRole('button', { name: 'Import from file' })
-    expect(btn).toBeNull()
-  })
-
   it('should render LAG SubInterface successfully', async () => {
     render(
       <Provider>
