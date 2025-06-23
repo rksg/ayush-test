@@ -192,8 +192,7 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady,
-  useIsEdgeReady
+  useIsEdgeFeatureReady
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,

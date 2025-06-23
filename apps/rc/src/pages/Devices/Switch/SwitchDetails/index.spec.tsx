@@ -5,7 +5,6 @@ import { get }              from '@acx-ui/config'
 import { apApi, switchApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
-  FirmwareUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -153,9 +152,7 @@ describe('SwitchDetails', () => {
       rest.post(SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(configBackupsList))),
       rest.get(SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json({ upgradeVenueViewList: [] })))
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult)))
     )
   })
 
