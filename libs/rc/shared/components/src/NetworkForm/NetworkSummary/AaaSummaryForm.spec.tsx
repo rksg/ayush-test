@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { render, screen }                                                   from '@acx-ui/test-utils'
@@ -72,6 +73,7 @@ describe('AaaSummaryForm', () => {
     expect(await screen.findByText('Primary Server')).toBeVisible()
   })
   it('should render AAA summary with accounting enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockSummary.enableAccountingService = true
     mockSummary.enableAuthProxy = false
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
