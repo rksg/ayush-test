@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import { gql } from 'graphql-request'
+
 import {
   fakeIncident,
   IncidentCode,
@@ -13,7 +15,7 @@ import {
   NetworkPath
 } from '@acx-ui/utils'
 
-import { api, transformData } from './services'
+import { api, createToggleMuteMutation, transformData } from './services'
 
 describe('IncidentTable: services', () => {
   const props: AnalyticsFilter = {
@@ -231,6 +233,77 @@ describe('IncidentTable: services', () => {
   describe('transformData', () => {
     it('test data transformation', () => {
       expect(transformData(sampleIncident)).toMatchObject(sampleIncidentWithTableFields)
+    })
+  })
+
+  describe('createToggleMuteMutation', () => {
+    const incidents = [
+      {
+        id: '1',
+        code: 'auth-failure',
+        priority: 'P1',
+        mute: true
+      },
+      {
+        id: '2',
+        code: 'auth-failure',
+        priority: 'P2',
+        mute: false
+      }
+    ]
+    it('should return the correct mutation', () => {
+      expect(createToggleMuteMutation(incidents)).toEqual({
+        document:
+          gql`
+    mutation MutateIncident(
+      
+      $incident0_id: String!,
+      $incident0_mute: Boolean!,
+      $incident0_code: String!,
+      $incident0_priority: String!
+    
+      $incident1_id: String!,
+      $incident1_mute: Boolean!,
+      $incident1_code: String!,
+      $incident1_priority: String!
+    
+    ) {
+      
+      incident0: toggleMute(
+        id: $incident0_id,
+        mute: $incident0_mute,
+        code: $incident0_code,
+        priority: $incident0_priority
+      ) {
+        success
+        errorMsg
+        errorCode
+      }
+    
+      incident1: toggleMute(
+        id: $incident1_id,
+        mute: $incident1_mute,
+        code: $incident1_code,
+        priority: $incident1_priority
+      ) {
+        success
+        errorMsg
+        errorCode
+      }
+    
+    }
+  `,
+        variables: {
+          incident0_id: incidents[0].id,
+          incident0_code: incidents[0].code,
+          incident0_priority: incidents[0].priority,
+          incident0_mute: incidents[0].mute,
+          incident1_id: incidents[1].id,
+          incident1_code: incidents[1].code,
+          incident1_priority: incidents[1].priority,
+          incident1_mute: incidents[1].mute
+        }
+      })
     })
   })
 })

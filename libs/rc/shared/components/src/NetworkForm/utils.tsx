@@ -97,8 +97,6 @@ import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
 import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                   from '../useEdgeActions'
-
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -205,13 +203,12 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const isEdgeEnabled = useIsEdgeReady()
 
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
       { payload: {
         filters: { networkIds: [data?.id] }
       } },
-      { skip: !isEdgeEnabled || !data }
+      { skip: !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
@@ -338,7 +335,7 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -349,6 +346,9 @@ export function useRadiusServer () {
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
+
+      // Clone case don't need to deactivate
+      if (!newRadiusId && !!cloneMode) return
 
       const isRadiusIdChanged = isRadiusKeyChanged(radiusKey, saveData, radiusServerConfigurations)
       const isDifferentNetwork = saveData.id !== networkId
@@ -378,11 +378,11 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
-    await updateProfile(saveData, networkId)
+    await updateProfile(saveData, networkId, cloneMode)
   }
 
   return {
@@ -436,15 +436,11 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
-      return true
-    case NetworkTypeEnum.OPEN:
-      return !!saveData.wlan?.macAuthMacFormat
     case NetworkTypeEnum.AAA:
-      return !saveData.useCertificateTemplate
+    case NetworkTypeEnum.OPEN:
+      return true
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
-        saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
-      )
+      return saveData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
   }
 
   return false

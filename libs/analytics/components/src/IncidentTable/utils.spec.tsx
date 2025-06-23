@@ -5,12 +5,10 @@ import { fakeIncident, Incident } from '@acx-ui/analytics/utils'
 import { Provider }               from '@acx-ui/store'
 import { render, screen }         from '@acx-ui/test-utils'
 
-import { incidentTests } from './__tests__/fixtures'
 import {
   GetIncidentBySeverity,
   IncidentTableComponentProps,
-  ShortIncidentDescription,
-  filterMutedIncidents
+  ShortIncidentDescription
 } from './utils'
 
 describe('IncidentTable: utils', () => {
@@ -103,30 +101,6 @@ describe('IncidentTable: utils', () => {
       const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
-    })
-  })
-
-  describe('filterMutedIncidents', () => {
-    it('should filter child & parent muted incidents', () => {
-      const sampleIncidents = incidentTests.map(incident => ({
-        ...incident,
-        children: incident.relatedIncidents
-      }))
-      const unmutedIncidents = sampleIncidents
-        .filter(incident => !incident.isMuted)
-        .map(datum => ({
-          ...datum,
-          // eslint-disable-next-line testing-library/no-node-access
-          children: datum.children?.filter(child => !child.isMuted)
-        }))
-
-      const filteredIncidents = filterMutedIncidents(sampleIncidents)
-      expect(filteredIncidents).toHaveLength(unmutedIncidents.length)
-    })
-
-    it('should return empty table on undefined', () => {
-      const undefinedTest = filterMutedIncidents()
-      expect(undefinedTest).toMatchObject([])
     })
   })
 })

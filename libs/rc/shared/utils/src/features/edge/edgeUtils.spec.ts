@@ -2,7 +2,7 @@
 import _, { cloneDeep } from 'lodash'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeSubInterface }                 from '../../types'
+import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockedEdgeLagList }                      from './__tests__/fixtures/lag'
@@ -21,6 +21,7 @@ import {
   getMergedLagTableDataFromLagForm,
   getSuggestedIpRange,
   isAllPortsLagMember,
+  isEdgeMatchedRequiredFirmware,
   isInterfaceInVRRPSetting,
   optionSorter
 } from './edgeUtils'
@@ -561,5 +562,31 @@ describe('getMergedLagTableDataFromLagForm', () => {
     const changedLag = { id: 1, name: 'newLag' }
     const expected = [{ id: 1, name: 'newLag' }]
     expect(getMergedLagTableDataFromLagForm(undefined, changedLag)).toEqual(expected)
+  })
+})
+
+describe('isEdgeMatchedRequiredFirmware', () => {
+  it('returns false with empty edge list', () => {
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', [])).toBe(false)
+  })
+
+  it('returns true with single edge in list, required firmware is met', () => {
+    const edgeList = [{ firmwareVersion: '1.0.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(true)
+  })
+
+  it('returns true with multiple edges in list, required firmware is met', () => {
+    const edgeList = [{ firmwareVersion: '1.0.0' }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(true)
+  })
+
+  it('returns false with multiple edges in list, required firmware is not met', () => {
+    const edgeList = [{ firmwareVersion: '0.9.0' }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(false)
+  })
+
+  it('returns false with edge list containing null or undefined firmware versions', () => {
+    const edgeList = [{ firmwareVersion: null }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
+    expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(false)
   })
 })

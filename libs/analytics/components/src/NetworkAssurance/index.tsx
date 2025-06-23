@@ -38,7 +38,6 @@ const useTabs = () : Tab[] => {
   const location = useLocation()
   const basePath = useTenantLink('/analytics')
 
-  const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -98,7 +97,7 @@ const useTabs = () : Tab[] => {
   if (hasRaiPermission('READ_SERVICE_VALIDATION')) {
     tabs.push(useServiceGuardTab)
   }
-  if (hasRaiPermission('READ_CONFIG_CHANGE') && (get('IS_MLISA_SA') || configChangeEnable)) {
+  if (hasRaiPermission('READ_CONFIG_CHANGE')) {
     tabs.push(useConfigChangeTab)
   }
   if (hasRaiPermission('READ_VIDEO_CALL_QOE') && !get('IS_MLISA_SA')) {

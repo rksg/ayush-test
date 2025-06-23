@@ -69,6 +69,7 @@ export const Wrapper = styled.div<WrapperProps>`
       // icon
       .ant-space-item:last-child {
         line-height: 0;
+        z-index: 1;
       }
     }
   }
