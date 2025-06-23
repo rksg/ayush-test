@@ -472,6 +472,11 @@ export const getIotControllerDonutChartData =
   return chartData
 }
 
+type Status = {
+  name: string;
+  value: number;
+}
+
 export const getIotControllerStackedBarChartData =
 (iotControllers: IotControllerStatus[]): { chartData: ChartData[], stackedColors: string[] } => {
   let map = new Map(iotControllers?.map(({ status }) =>
@@ -482,18 +487,40 @@ export const getIotControllerStackedBarChartData =
     }
   }
 
-  const result = Array.from(map.values())
-
+  const order = ['ONLINE', 'OFFLINE', 'UNKNOWN']
+  let finalResult: Status[] = []
   let colors: string[] = []
+  order.forEach(status => {
+    if (!map.has(status as IotControllerStatusEnum)) {
+      return
+    }
+    /*
+    We need to add weightage to maintain the color order on stackbar chart
+    */
+    let s = (map.get(status as IotControllerStatusEnum) as Status)
+    let finalStatus
+    switch(status){
+      case IotControllerStatusEnum.ONLINE:
+        finalStatus = { name: `<2>${s.name}`, value: s.value }
+        break
+      case IotControllerStatusEnum.OFFLINE:
+        finalStatus = { name: `<1>${s.name}`, value: s.value }
+        break
+      case IotControllerStatusEnum.UNKNOWN:
+        finalStatus = { name: `<0>${s.name}`, value: s.value }
+        break
+      default:
+        finalStatus = { name: `<3>${s.name}`, value: s.value }
+    }
 
-  Array.from(map.keys()).map(status => {
-    colors.push(cssStr(getIotControllerStatus(status).color))
+    finalResult.push(finalStatus)
+    colors.push(cssStr(getIotControllerStatus(status as IotControllerStatusEnum).color))
   })
 
   return {
     chartData: [{
       category: '',
-      series: result
+      series: finalResult
     }],
     stackedColors: colors
   }
