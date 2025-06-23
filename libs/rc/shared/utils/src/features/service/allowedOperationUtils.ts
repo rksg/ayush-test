@@ -13,10 +13,10 @@ const getAllowedOperation = <T extends SvcPcyAllowedType, O extends SvcPcyAllowe
   { map, type, oper, isTemplate = false }:
   { map: AllowedOperationMap<T, O>, type: T, oper: O, isTemplate?: boolean }
 ) => {
-  return applyTemplateIfNeeded(map[type]?.[oper], isTemplate)
+  return convertToTemplateAllowedOperationIfNeeded(map[type]?.[oper], isTemplate)
 }
 
-export const applyTemplateIfNeeded = (
+export const convertToTemplateAllowedOperationIfNeeded = (
   allowedOperation: RbacOpsIds | undefined, isTemplate: boolean
 ): RbacOpsIds | undefined => {
   if (!isTemplate) return allowedOperation
