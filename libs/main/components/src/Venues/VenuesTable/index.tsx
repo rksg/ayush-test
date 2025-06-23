@@ -19,9 +19,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  getAPStatusDisplayName,
-  useEnforcedStatus,
-  useIsEdgeFeatureReady
+  useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useDeleteVenueMutation,
@@ -35,8 +33,10 @@ import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
   ConfigTemplateType,
+  getAPStatusDisplayName,
   PropertyUrlsInfo,
   TableQuery,
+  useIsEdgeFeatureReady,
   usePollingTableQuery,
   Venue,
   WifiRbacUrlsInfo

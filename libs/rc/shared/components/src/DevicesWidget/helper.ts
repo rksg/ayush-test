@@ -15,14 +15,11 @@ import {
   IotControllerStatus,
   RWGStatusEnum,
   getRwgStatus,
-  RWGRow
-} from '@acx-ui/rc/utils'
-
-import {
+  RWGRow,
+  getSwitchStatusDisplayName,
   getAPStatusDisplayName,
-  getEdgeStatusDisplayName,
-  getSwitchStatusDisplayName
-} from '../MapWidget/VenuesMap/helper'
+  getEdgeStatusDisplayName
+} from '@acx-ui/rc/utils'
 
 function sortByName (a: { name: string },b: { name: string }) {
   const x = a.name.toLowerCase()
