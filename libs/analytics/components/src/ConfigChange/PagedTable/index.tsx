@@ -15,7 +15,6 @@ import {
   Table as CommonTable,
   ConfigChange,
   getConfigChangeEntityTypeMapping,
-  Filter,
   Tooltip
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams } from '@acx-ui/components'
@@ -23,6 +22,7 @@ import { get }                          from '@acx-ui/config'
 import { Features, useAnySplitsOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { TenantLink }                   from '@acx-ui/react-router-dom'
+import { Filter }                       from '@acx-ui/types'
 import { hasPermission }                from '@acx-ui/user'
 import { noDataDisplay }                from '@acx-ui/utils'
 
