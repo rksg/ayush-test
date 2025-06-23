@@ -17,9 +17,11 @@ import {
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
+import {
   Switch,
   SwitchTable,
-  getSwitchModel,
   checkVersionAtLeast09010h,
   SwitchViewModel,
   convertInputToUppercase
