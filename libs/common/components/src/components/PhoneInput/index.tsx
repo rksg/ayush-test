@@ -1,12 +1,10 @@
 import { useEffect, useRef } from 'react'
 
 import { Form, Input, InputRef } from 'antd'
-import 'intl-tel-input/build/css/intlTelInput.css'
-import './intl.css'
 import 'intl-tel-input/build/js/utils'
 import intlTelInput              from 'intl-tel-input'
 
-interface PhoneInputProps {
+export interface PhoneInputProps {
   name: string | string[]
   callback?: (value: string) => void
   onTop: boolean,
@@ -25,7 +23,6 @@ export function PhoneInput ({ callback, name, onTop, defaultCountryCode }: Phone
         autoPlaceholder: 'aggressive',
         placeholderNumberType: 'MOBILE',
         preferredCountries: ['us'],
-        utilsScript: 'intl-tel-input/js/utils',
         dropdownContainer: onTop ? document.body : undefined
       })
 
@@ -41,7 +38,11 @@ export function PhoneInput ({ callback, name, onTop, defaultCountryCode }: Phone
       } else {
         defaultCountryCode && iti.setCountry(defaultCountryCode)
       }
+      return () => {
+        iti && iti.destroy()
+      }
     }
+    return
   }, [name])
 
   return (
@@ -51,4 +52,3 @@ export function PhoneInput ({ callback, name, onTop, defaultCountryCode }: Phone
   )
 }
 
-export default PhoneInput

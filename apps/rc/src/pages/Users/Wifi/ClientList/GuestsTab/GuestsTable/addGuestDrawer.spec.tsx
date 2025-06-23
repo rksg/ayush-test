@@ -60,7 +60,8 @@ async function selectAllowedNetwork (optionName: string) {
 
 const mockedAddGuestReq = jest.fn()
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
 }))
 
