@@ -3,10 +3,11 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Tabs }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { isRouter, isFirmwareVersionAbove10010f } from '@acx-ui/rc/utils'
-import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { Tabs }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { isRouter }                     from '@acx-ui/rc/switch/utils'
+import { isFirmwareVersionAbove10010f } from '@acx-ui/rc/utils'
+import { useTenantLink }                from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 

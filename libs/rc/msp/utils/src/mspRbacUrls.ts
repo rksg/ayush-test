@@ -358,11 +358,6 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   method: 'post',
   //   url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
   // },
-  // getRecommandFirmwareUpgrade: {
-  //   method: 'get',
-  //   url: '/apFirmwares?status=default',
-  //   newApi: true
-  // },
   getFirmwareUpgradeByApModel: {
     method: 'get',
     url: '/apModelFirmwares?status=greenfieldFirmware',

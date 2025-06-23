@@ -15,10 +15,12 @@ import {
   useStackMemberListQuery
 } from '@acx-ui/rc/services'
 import {
+  isRouter
+} from '@acx-ui/rc/switch/utils'
+import {
   NetworkDevice,
   NetworkDeviceType,
   SwitchViewModel,
-  isRouter,
   SWITCH_TYPE,
   StackMember,
   isFirmwareVersionAbove10020b,

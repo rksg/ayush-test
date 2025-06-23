@@ -42,9 +42,6 @@ export default function AAATable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
   const settingsId = 'policies-aaa-table'
-  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
-    ? 1024
-    : AAA_LIMIT_NUMBER
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.RADIUS)
@@ -127,7 +124,7 @@ export default function AAATable () {
           >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
-                ? tableQuery.data?.totalCount >= radiusMaxiumnNumber
+                ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
                 : false} >{$t({ defaultMessage: 'Add RADIUS Server' })}</Button>
           </TenantLink>
         ])}
