@@ -87,7 +87,11 @@ jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API
 
 jest.mock('@acx-ui/rc/components', () => ({
   ConnectionMeteringForm: () => <div data-testid='ConnectionMeteringForm' />,
-  ConnectionMeteringFormMode: {},
+  ConnectionMeteringFormMode: {}
+}))
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: ({ name, callback }: {
     name: string,
     callback?: (value: string) => void

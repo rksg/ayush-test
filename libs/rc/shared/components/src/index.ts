@@ -179,7 +179,6 @@ export {
 } from './ConnectionMeteringForm'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
-export { PhoneInput } from './PhoneInput'
 export { PersonalIdentityNetworkServiceInfo } from './PersonalIdentityNetworkServiceInfo'
 export { PersonalIdentityNetworkDetailTableGroup } from './PersonalIdentityNetworkDetailTableGroup'
 export { AccessSwitchTable } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'

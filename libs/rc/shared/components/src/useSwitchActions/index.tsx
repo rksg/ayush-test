@@ -13,8 +13,10 @@ import {
   useRetryFirmwareUpdateV1001Mutation
 } from '@acx-ui/rc/services'
 import {
+  getSwitchName
+} from '@acx-ui/rc/switch/utils'
+import {
   DeviceRequestAction,
-  getSwitchName,
   SwitchRow,
   SwitchStatusEnum,
   SwitchViewModel

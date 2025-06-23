@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { defaultAddress }     from '@acx-ui/msp/utils'
 import {
   useUploadZdConfigMutation,
   useAddZdMigrationMutation
@@ -23,11 +24,11 @@ import { CatchErrorResponse }         from '@acx-ui/utils'
 
 import MigrationContext , { mainReducer } from '../MigrationContext'
 
-import { MigrationSettingForm, defaultAddress } from './MigrationSettingForm'
-import SummaryForm                              from './SummaryForm'
-import UploadForm                               from './UploadForm'
-import ValidationForm                           from './ValidationForm'
-import ValidationStatus                         from './ValidationStatus'
+import { MigrationSettingForm } from './MigrationSettingForm'
+import SummaryForm              from './SummaryForm'
+import UploadForm               from './UploadForm'
+import ValidationForm           from './ValidationForm'
+import ValidationStatus         from './ValidationStatus'
 
 
 const MigrationForm = () => {

@@ -17,8 +17,7 @@ export const OpenSummaryForm = (props: OpenSummaryFormProps) => {
   const isDisplayAuth = (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
     !summaryData.wlan?.macRegistrationListId)
 
-  const isDisplayAccounting = (isSupportNetworkRadiusAccounting)?
-    summaryData.wlan?.macAddressAuthentication : isDisplayAuth
+  const isDisplayAccounting = (isSupportNetworkRadiusAccounting)? true : isDisplayAuth
 
   return (
     <AaaSummary

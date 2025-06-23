@@ -27,7 +27,6 @@ import { hasRoles }                                 from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
-  const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -77,7 +76,7 @@ export default function AnalyticsRoutes () {
         </Route>
       }
 
-      {canUseAnltAdv && isConfigChangeEnabled &&
+      {canUseAnltAdv &&
         <Route path='analytics/configChange'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>

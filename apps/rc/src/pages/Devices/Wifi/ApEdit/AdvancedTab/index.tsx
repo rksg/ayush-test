@@ -62,7 +62,6 @@ export function AdvancedTab () {
 
   const { apCapabilities } = useContext(ApDataContext)
 
-  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const isApModelSupportUsb = apCapabilities?.usbPowerEnable
 
@@ -110,7 +109,7 @@ export function AdvancedTab () {
       )
 
     }] : []),
-    ...(supportApMgmtVlan? [{
+    {
       title: apMgmtVlanTitle,
       key: 'apMgmtVlan',
       content: (
@@ -122,7 +121,7 @@ export function AdvancedTab () {
         </>
       )
 
-    }] : [])
+    }
   ]
 
   const resetEditContextData = () => {
