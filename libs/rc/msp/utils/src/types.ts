@@ -142,6 +142,8 @@ export interface EcDeviceInventory {
   model: string;
   customerName: string;
   deviceStatus: string;
+  apFirmware: string;
+  switchFirmware: string;
 }
 
 export enum DateSelectionEnum {

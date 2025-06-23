@@ -227,6 +227,15 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getDeviceFirmwareList: build.query<string[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getDeviceFirmwareList, params)
+        return {
+          ...req
+        }
+      }
+    }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
@@ -1212,6 +1221,7 @@ export const {
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
   useDeviceInventoryListQuery,
+  useGetDeviceFirmwareListQuery,
   useIntegratorDeviceInventoryListQuery,
   useMspAdminListQuery,
   useMspEntitlementListQuery,

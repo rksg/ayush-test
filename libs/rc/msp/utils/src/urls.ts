@@ -27,6 +27,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
     newApi: true
   },
+  getDeviceFirmwareList: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/firmwares/filters/query',
+    opsApi: 'POST:/msps/:tenantId/ecInventories/firmwares/filters/query',
+    newApi: true
+  },
   getIntegratorDeviceInventory: {
     method: 'post',
     url: '/msps/:mspTenantId/ecInventories/query',

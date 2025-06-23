@@ -156,6 +156,15 @@ const deviceModelFilterList = {
   ]
 }
 
+const deviceFirmwaresFilterList = {
+  data: [
+    '9.0.10j_cd',
+    '9.0.12j_cd',
+    '6.2.4.103.500',
+    '6.2.4.103.501'
+  ]
+}
+
 const venueNameFilterList = {
   data: [
     'My-Venue',
@@ -268,6 +277,10 @@ describe('Device Inventory Table', () => {
       rest.post(
         MspUrlsInfo.getdeviceModelsFilter.url,
         (req, res, ctx) => res(ctx.json(deviceModelFilterList))
+      ),
+      rest.post(
+        MspUrlsInfo.getDeviceFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(deviceFirmwaresFilterList))
       )
     )
     global.URL.createObjectURL = jest.fn()
