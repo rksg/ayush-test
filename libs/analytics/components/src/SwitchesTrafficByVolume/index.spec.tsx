@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }             from '@acx-ui/test-utils'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
@@ -75,7 +74,6 @@ describe('SwitchesTrafficByVolumeWidget', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render ports selector', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })

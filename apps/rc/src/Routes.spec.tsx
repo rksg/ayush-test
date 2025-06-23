@@ -12,7 +12,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   getServiceCatalogRoutePath,
-  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
+  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath,
+  useDhcpStateMap, useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -99,6 +100,14 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => ()
   return <div data-testid='MdnsProxyDetail' />
 })
 
+jest.mock('./pages/Services/MdnsProxyConsolidation', () => () => {
+  return <div data-testid='MdnsProxyConsolidation' />
+})
+
+jest.mock('./pages/Services/MdnsProxyConsolidation/create', () => () => {
+  return <div data-testid='CreateMdnsProxyService' />
+})
+
 jest.mock('./pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable', () => () => {
   return <div data-testid='WifiCallingTable' />
 })
@@ -157,6 +166,14 @@ jest.mock('./pages/Services/DHCP/Edge/DHCPDetail', () => () => {
 
 jest.mock('./pages/Services/DHCP/Edge/EditDHCP', () => () => {
   return <div data-testid='EdgeEditDhcp' />
+})
+
+jest.mock('./pages/Services/DHCPConsolidation', () => () => {
+  return <div data-testid='DHCPConsolidation' />
+})
+
+jest.mock('./pages/Services/DHCPConsolidation/create', () => () => {
+  return <div data-testid='CreateDHCPService' />
 })
 
 jest.mock('./pages/Users/Switch/ClientList', () => () => {
@@ -225,10 +242,6 @@ jest.mock('./pages/Users/Persona', () => () => {
 
 jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
   return <div data-testid='PersonaDetails' />
-})
-
-jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
-  return <div data-testid='PersonaGroupDetails' />
 })
 
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
@@ -326,7 +339,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ConnectionMeteringFormMode: {},
   useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
   IdentityForm: () => <div data-testid='IdentityForm' />,
-  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />
+  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />,
+  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {
@@ -436,10 +450,26 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
   return <div data-testid='ClusterDetails' />
 })
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: jest.fn(),
+  useMdnsProxyStateMap: jest.fn()
+}))
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+    jest.mocked(useDhcpStateMap).mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+    jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
   })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -761,6 +791,35 @@ describe('RcRoutes: Devices', () => {
       expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
     })
 
+    describe('should navigate to mDNS Proxy Consolidation page', () => {
+      beforeEach(() => {
+        jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+          [ServiceType.MDNS_PROXY]: false,
+          [ServiceType.EDGE_MDNS_PROXY]: false,
+          [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+        })
+      })
+      test('should navigate to mDNS Proxy Consolidation page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.LIST }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MdnsProxyConsolidation')).toBeVisible()
+      })
+
+      test('should navigate to mDNS Proxy Consolidation create page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.CREATE }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('CreateMdnsProxyService')).toBeVisible()
+      })
+    })
+
     test('should navigate to create DPSK page', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
@@ -856,6 +915,35 @@ describe('RcRoutes: Devices', () => {
       expect(screen.getByTestId('DHCPDetail')).toBeVisible()
     })
 
+    describe('should navigate to DHCP Consolidation page', () => {
+      beforeEach(() => {
+        jest.mocked(useDhcpStateMap).mockReturnValue({
+          [ServiceType.DHCP]: false,
+          [ServiceType.EDGE_DHCP]: false,
+          [ServiceType.DHCP_CONSOLIDATION]: true
+        })
+      })
+      test('should navigate to DHCP Consolidation page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.LIST }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('DHCPConsolidation')).toBeVisible()
+      })
+
+      test('should navigate to DHCP Consolidation create page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.CREATE }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('CreateDHCPService')).toBeVisible()
+      })
+    })
+
     test('should navigate to create Portal page', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
@@ -910,7 +998,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should not navigate to create Edge DHCP page', async () => {
-      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
@@ -971,8 +1059,7 @@ describe('RcRoutes: Devices', () => {
       const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
       beforeEach(() => {
-        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE)
+        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
       })
       afterEach(() => {
         jest.mocked(mockUseIsEdgeFeatureReady).mockReset()
@@ -1006,8 +1093,7 @@ describe('RcRoutes: Devices', () => {
       describe('Enhance Edge PIN service', () => {
         beforeEach(() => {
           jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-            || ff === Features.EDGE_PIN_ENHANCE_TOGGLE
-            || ff === Features.EDGES_TOGGLE)
+            || ff === Features.EDGE_PIN_ENHANCE_TOGGLE)
         })
 
         test('should navigate to Edge enhanced PIN detail page', async () => {

@@ -12,7 +12,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   EdgeClusterSettingForm: () => <div data-testid='edge-cluster-setting-form' />
 }))
 const mockedPostApi = jest.fn()

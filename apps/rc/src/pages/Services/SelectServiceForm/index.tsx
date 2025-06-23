@@ -16,12 +16,15 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   isServiceCardEnabled,
-  isServiceCardSetEnabled
+  isServiceCardSetEnabled,
+  useDhcpStateMap,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
-import { ServiceCard } from '../ServiceCard'
+import { ServiceCard }     from '../ServiceCard'
+import { ServiceCardItem } from '../ServiceCatalog'
 
 import * as UI from './styledComponents'
 
@@ -37,14 +40,13 @@ export default function SelectServiceForm () {
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
+  const dhcpStateMap = useDhcpStateMap()
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -58,15 +60,24 @@ export default function SelectServiceForm () {
     })
   }
 
-  const set = [
+  const set: Array<ServiceCardItem> = [
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
-        { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.DHCP,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !dhcpStateMap[ServiceType.DHCP]
+        },
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
+          disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+        },
+        {
+          type: ServiceType.DHCP_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
         },
         {
           type: ServiceType.DPSK,
@@ -74,12 +85,12 @@ export default function SelectServiceForm () {
         },
         {
           type: ServiceType.PIN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         },
         {
@@ -94,19 +105,28 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeFirewallHaReady
         }
       ]
     },
     {
       title: $t({ defaultMessage: 'Application' }),
       items: [
-        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.MDNS_PROXY,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
+        },
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady,
+          disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
           isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+        },
+        {
+          type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,
@@ -133,7 +153,7 @@ export default function SelectServiceForm () {
           {
             type: ServiceType.WEBAUTH_SWITCH,
             categories: [RadioCardCategory.EDGE],
-            disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
+            disabled: !isEdgePinHaReady || !networkSegmentationSwitchEnabled
           }
         ]),
         ...(isCore ? [] : [{

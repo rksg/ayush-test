@@ -3,35 +3,26 @@ import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchDDoSTable }        from '../Charts/ImpactedSwitchDDoS'
-import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { FixedAutoSizer }          from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
+import { ImpactedSwitchesDonut }   from '../Charts/ImpactedSwitchesDonut'
+import { IncidentAttributes }      from '../IncidentAttributes'
+import { Insights }                from '../Insights'
+import { TimeSeries }              from '../TimeSeries'
+import { TimeSeriesChartTypes }    from '../TimeSeries/config'
 
+import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
+const attributeList = commonAttributes()
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.SwitchImpactedPortsCount
+]
+
 export const SwitchTcpSynDDoS = (incident: Incident) => {
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime
-  ]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchImpactedPortsCount
-  ]
-
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
-
   const buffer = getTimeseriesBuffer(start, end)
 
   const isEnabled = [

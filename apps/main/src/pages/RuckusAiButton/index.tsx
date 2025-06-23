@@ -9,7 +9,6 @@ import { DogAndPerson, OnboardingAssistantDog }                          from '@
 import { RuckusAiDog }                                                   from '@acx-ui/icons-new'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                    from '@acx-ui/react-router-dom'
 
 import AICanvasModal from '../AICanvas'
 
@@ -31,8 +30,7 @@ export enum RuckusAiStepsEnum {
 export default function RuckusAiButton () {
   const { $t } = useIntl()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList || isCanvasQ2Enabled
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
 
   const [basicFormRef] = Form.useForm()
 
@@ -259,19 +257,12 @@ export default function RuckusAiButton () {
     setSelectedType('')
   }
 
-  const canvasLink = useTenantLink('/canvas')
-  const navigate = useNavigate()
-
   const startOnboardingAssistant = () => {
     setStep(RuckusAiStepsEnum.VERTICAL)
   }
 
   const goChatCanvas = () => {
-    if(isCanvasQ2Enabled){
-      setIsModalOpen(true)
-    }else{
-      navigate(canvasLink)
-    }
+    setIsModalOpen(true)
     setVisible(false)
   }
 

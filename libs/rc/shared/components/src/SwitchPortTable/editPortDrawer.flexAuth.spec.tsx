@@ -4,10 +4,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { switchApi }                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { switchApi }                                                                from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow, allMultipleEditableFields } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,19 +21,16 @@ import {
   defaultVlan,
   flexAuthList,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue
 } from './__tests__/fixtures'
 import {
-  EditPortDrawer,
-  allMultipleEditableFields
+  EditPortDrawer
 } from './editPortDrawer'
 
 const params = {
@@ -120,9 +117,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -152,9 +146,6 @@ describe('EditPortDrawer', () => {
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
-      ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -190,9 +181,6 @@ describe('EditPortDrawer', () => {
         ),
         rest.get(SwitchRbacUrlsInfo.getAclUnion.url,
           (_, res, ctx) => res(ctx.json(aclUnion))
-        ),
-        rest.get(SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
-          (_, res, ctx) => res(ctx.json(switchVlanUnion))
         ),
         rest.post(SwitchRbacUrlsInfo.getSwitchRoutedList.url,
           (_, res, ctx) => res(ctx.json(switchRoutedList))
@@ -240,7 +228,7 @@ describe('EditPortDrawer', () => {
         await screen.findByText('Port level override')
         expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
         expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-        expect(screen.queryByText('Authentication')).toBeNull()
+        expect(screen.queryByText('Port Authentication')).toBeNull()
       })
     })
 
@@ -281,7 +269,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
         })
 
@@ -312,7 +300,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(screen.queryByText('Authentication')).toBeNull()
+          expect(screen.queryByText('Port Authentication')).toBeNull()
         })
 
         it('should render correctly when the auth profile is applied', async () => {
@@ -354,7 +342,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -395,7 +383,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -448,7 +436,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -485,7 +473,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
           await userEvent.click(await screen.findByTestId('flex-enable-switch'))
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -541,7 +529,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -601,7 +589,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -643,7 +631,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -692,7 +680,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
         })
       })
@@ -705,6 +693,14 @@ describe('EditPortDrawer', () => {
           id: '58:fb:96:0e:82:8a',
           firmware: 'SPR10010f_b467'
         }] as SwitchRow[]
+
+        beforeEach(() => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan))
+            )
+          )
+        })
 
         it('should render correctly when either of the selected ports is uplink port', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
@@ -727,9 +723,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -753,7 +746,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -778,9 +771,6 @@ describe('EditPortDrawer', () => {
               }, {
                 ...portSetting[2]
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -806,7 +796,7 @@ describe('EditPortDrawer', () => {
 
           const flexAuthOverrideCheckbox
             = await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(flexAuthOverrideCheckbox).toBeVisible()
           expect(flexAuthOverrideCheckbox).toBeDisabled()
           expect(screen.queryAllByText(/Multiple values/)).toHaveLength(17)
@@ -833,9 +823,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -865,7 +852,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           // expect(screen.queryAllByText(/Multiple values/)).toHaveLength(16)
 
           await userEvent.click(
@@ -895,9 +882,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -921,7 +905,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
 
@@ -955,9 +939,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -981,7 +962,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1053,9 +1034,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1079,7 +1057,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1122,9 +1100,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1148,7 +1123,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1209,9 +1184,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1235,7 +1207,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
@@ -1277,9 +1249,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1303,7 +1272,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
@@ -1338,9 +1307,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1364,7 +1330,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1427,9 +1393,6 @@ describe('EditPortDrawer', () => {
                 authTimeoutAction: 'critical_vlan',
                 criticalVlan: 5
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1453,7 +1416,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -1511,9 +1474,6 @@ describe('EditPortDrawer', () => {
                 authDefaultVlan: 8,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1537,7 +1497,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -1580,9 +1540,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1606,7 +1563,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1652,9 +1609,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1678,7 +1632,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(screen.queryByTestId('flex-enable-switch')).toBeNull() //Multiple Values
 
           await userEvent.click(
@@ -1723,9 +1677,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1749,7 +1700,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1804,9 +1755,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1830,7 +1778,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1891,9 +1839,6 @@ describe('EditPortDrawer', () => {
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1917,7 +1862,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -2004,9 +1949,6 @@ describe('EditPortDrawer', () => {
                 criticalVlan: 7,
                 guestVlan: 7
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2030,7 +1972,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2115,9 +2057,6 @@ describe('EditPortDrawer', () => {
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2141,7 +2080,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2191,9 +2130,6 @@ describe('EditPortDrawer', () => {
                 criticalVlan: 7,
                 guestVlan: 7
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2217,7 +2153,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2263,9 +2199,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 3
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2289,7 +2222,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(screen.queryByTestId('flex-enable-switch')).toBeNull()
 
           await userEvent.click(

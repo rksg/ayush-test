@@ -70,13 +70,12 @@ import { RequestPayload, WifiScopes, RolesEnum }                             fro
 import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
-import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
-import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
-import { useApActions }                                                       from '../useApActions'
-import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
-import { VenueSelector }                                                      from '../VenueSelector'
+import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
+import { seriesMappingAP }                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }               from '../ImportFileDrawer'
+import { useApActions }                                                  from '../useApActions'
+import { VenueSelector }                                                 from '../VenueSelector'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -134,13 +133,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ tableData, setTableData ] = useState([] as (NewAPModelExtended|NewAPExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
-  const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
@@ -510,17 +505,16 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         return acc
       }, [] as TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'])
     },
-    ...(apUptimeFlag ? [
-      {
-        key: 'uptime',
-        title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'uptime',
-        sorter: true,
-        render: (data: ReactNode, row: NewAPModelExtended) => {
-          const uptime = row?.uptime
-          return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
-        }
-      }] : []),
+    {
+      key: 'uptime',
+      title: $t({ defaultMessage: 'Up Time' }),
+      dataIndex: 'uptime',
+      sorter: true,
+      render: (data: ReactNode, row: NewAPModelExtended) => {
+        const uptime = row?.uptime
+        return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+      }
+    },
     {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
@@ -564,7 +558,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         )
       }
     },
-    ...(secureBootFlag && enableAP70 ? [
+    ...(enableAP70 ? [
       {
         key: 'supportSecureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
@@ -576,18 +570,18 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           return (secureBootEnabled ? <CheckMark /> : null)
         }
       }] : []),
-    ...(apMgmtVlanFlag ? [
-      {
-        key: 'networkStatus.managementTrafficVlan',
-        title: $t({ defaultMessage: 'Management VLAN' }),
-        dataIndex: 'networkStatus.managementTrafficVlan',
-        show: false,
-        sorter: false,
-        render: (data: ReactNode, row: NewAPModelExtended) => {
-          const mgmtVlanId = row.networkStatus?.managementTrafficVlan
-          return (mgmtVlanId ? mgmtVlanId : null)
-        }
-      }] : []),
+
+    {
+      key: 'networkStatus.managementTrafficVlan',
+      title: $t({ defaultMessage: 'Management VLAN' }),
+      dataIndex: 'networkStatus.managementTrafficVlan',
+      show: false,
+      sorter: false,
+      render: (data: ReactNode, row: NewAPModelExtended) => {
+        const mgmtVlanId = row.networkStatus?.managementTrafficVlan
+        return (mgmtVlanId ? mgmtVlanId : null)
+      }
+    },
     ...(AFC_Featureflag ? [{
       key: 'afcStatus',
       title: $t({ defaultMessage: 'AFC Status' }),
@@ -752,7 +746,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const importTemplateLink = 'assets/templates/new_aps_import_template_with_gps.csv'
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<NewAPModelExtended>(tableQuery as TableQuery<NewAPModelExtended, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
     setIsImportResultLoading(false)
@@ -856,13 +849,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }]) : []}
           searchableWidth={260}
           filterableWidth={150}
-          iconButton={exportDevice ? {
+          iconButton={{
             icon: <DownloadOutlined />,
             disabled,
             onClick: exportCsv,
             tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-          } : undefined
-          }
+          }}
         />
         <ImportFileDrawer
           type={ImportFileDrawerType.AP}
@@ -906,17 +898,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
             />
           </div>
         </ImportFileDrawer>
-        {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
-          visible={compatibilitiesDrawerVisible}
-          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-          venueId={params.venueId}
-          networkId={params.networkId}
-          apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
-          apName={selectedApInfo?.name}
-          isMultiple
-          onClose={() => setCompatibilitiesDrawerVisible(false)}
-        />}
-        {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+        <EnhancedApCompatibilityDrawer
           visible={compatibilitiesDrawerVisible}
           isMultiple
           type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
@@ -924,7 +906,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           networkId={params.networkId}
           apInfo={selectedApInfo}
           onClose={() => setCompatibilitiesDrawerVisible(false)}
-        />}
+        />
       </GroupRowWrapper>
     </Loader>
   )

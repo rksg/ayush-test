@@ -218,7 +218,7 @@ export function SwitchClientDetails () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Clients' }) },
           { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Clients List' }), link: breadcrumbLink }
+          { text: $t({ defaultMessage: 'Switch Clients List' }), link: breadcrumbLink }
         ]}
         extra={
           <Button

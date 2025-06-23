@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
 import { Button, Form, Input, Space } from 'antd'
+import { useWatch }                   from 'antd/lib/form/Form'
 import { useIntl }                    from 'react-intl'
 
 import { Drawer, GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
@@ -20,6 +21,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { IdentityGroup }           from '../NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup'
+import { AccountingServiceInput }  from '../SharedComponent'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
@@ -57,7 +59,13 @@ export const SAMLForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
-  const selectedSamlIdpProfilesId = Form.useWatch('samlIdpProfilesId', form)
+  const selectedSamlIdpProfilesId = useWatch('samlIdpProfilesId', form)
+  const networkSecurity = useWatch('networkSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   useEffect(() => {
     const setFormFields = (idp: SamlIdpProfileViewData | undefined) => {
@@ -86,6 +94,21 @@ export const SAMLForm = () => {
       setCreatedSamlIdpId(undefined)
     }
   }, [idpViewDataList])
+
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldsValue({ ...data })
+    }
+  }, [data?.id])
+
+  useEffect(() => {
+    const samlIdpProfilesName = samlIdpOptions.find((option) => {
+      return option.value === selectedSamlIdpProfilesId
+    })?.label
+    if (samlIdpProfilesName) {
+      form.setFieldValue('samlIdpProfilesName', samlIdpProfilesName)
+    }
+  }, [selectedSamlIdpProfilesId])
 
   return (
     <>
@@ -144,12 +167,20 @@ export const SAMLForm = () => {
             enableDefaultWalledGarden={false}
             required={isSamlSsoEnabled}
           />
+          {isSupportNetworkRadiusAccounting &&
+          <AccountingServiceInput
+            isProxyModeConfigurable={true}
+          />
+          }
         </GridCol>
         <GridCol col={{ span: 14 }}>
           <NetworkDiagram
             type={NetworkTypeEnum.CAPTIVEPORTAL}
             networkPortalType={GuestNetworkTypeEnum.SAML}
             wlanSecurity={data?.wlan?.wlanSecurity}
+            networkSecurity={networkSecurity}
+            enableAccountingService={enableAccountingService}
+            enableAccountingProxy={enableAccountingProxy}
           />
         </GridCol>
       </GridRow>

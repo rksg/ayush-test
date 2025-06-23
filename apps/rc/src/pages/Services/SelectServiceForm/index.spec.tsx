@@ -44,6 +44,14 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+const mockedUseDhcpStateMap = jest.fn()
+const mockedUseMdnsProxyStateMap = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
+  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
+}))
+
 describe('Select Service Form', () => {
 
   jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -55,6 +63,17 @@ describe('Select Service Form', () => {
 
   beforeEach(() => {
     mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
   })
 
   it('should navigate to the correct service page', async () => {
@@ -106,11 +125,10 @@ describe('Select Service Form', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
   })
 
-  it('should not render edge-dhcp with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+  it('should not render edge-dhcp with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-              || ff !== Features.EDGE_DHCP_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -119,11 +137,10 @@ describe('Select Service Form', () => {
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
 
-  it('should not render edge-pin with the HA-FF ON and pin-HA-FF OFF', async () => {
+  it('should not render edge-pin with the pin-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-              || ff !== Features.EDGE_PIN_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_PIN_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -147,10 +164,13 @@ describe('Select Service Form', () => {
   })
 
   it('should display Edge mDNS service when its FF ON', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
-              || ff === Features.EDGES_TOGGLE)
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: true,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
     jest.mocked(useIsBetaEnabled).mockReturnValue(true)
+
     render(<SelectServiceForm />, {
       route: { params, path }
     })
@@ -161,8 +181,7 @@ describe('Select Service Form', () => {
 
   it('should display Edge TNM service when its FF ON', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE
-        || ff === Features.EDGES_TOGGLE)
+      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
     render(<SelectServiceForm />, {
       route: { params, path }
     })
@@ -203,5 +222,31 @@ describe('Select Service Form', () => {
 
       expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
     })
+  })
+
+  it('should render DHCP Consolidation corredectly when FF is ON', async () => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: false,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: true
+    })
+
+    render(<SelectServiceForm />, { route: { params, path } })
+    expect(screen.queryByText(/DHCP for Wi-Fi/i)).toBeNull()
+    expect(screen.queryByText(/DHCP for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('DHCP')).toBeInTheDocument()
+  })
+
+  it('should render mDNS Proxy Consolidation corredectly when FF is ON', async () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: false,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+    })
+
+    render(<SelectServiceForm />, { route: { params, path } })
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('mDNS Proxy')).toBeInTheDocument()
   })
 })

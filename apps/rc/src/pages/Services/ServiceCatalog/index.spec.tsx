@@ -1,12 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
-import { IncompatibilityFeatures }                                                  from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
+import { IncompatibilityFeatures, ServiceType, useMdnsProxyStateMap, useDhcpStateMap } from '@acx-ui/rc/utils'
+import { Provider }                                                                    from '@acx-ui/store'
 import {
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import ServiceCatalog from '.'
@@ -33,6 +34,12 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: jest.fn().mockReturnValue({}),
+  useMdnsProxyStateMap: jest.fn().mockReturnValue({})
+}))
+
 describe('ServiceCatalog', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -42,6 +49,17 @@ describe('ServiceCatalog', () => {
 
   beforeEach(() => {
     mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+
+    jest.mocked(useDhcpStateMap).mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+    jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
   })
 
   it('should render service catalog', async () => {
@@ -79,9 +97,9 @@ describe('ServiceCatalog', () => {
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
   })
 
-  it('should not render edge-firewall service with the HA-FF OFF', async () => {
+  it('should not render edge-firewall service with the FIREWALL-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
 
     render(
       <ServiceCatalog />, {
@@ -92,11 +110,9 @@ describe('ServiceCatalog', () => {
     expect(screen.queryByText('Firewall')).toBeNull()
   })
 
-  it('should not render edge-dhcp service with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+  it('should not render edge-dhcp service with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-        || (ff !== Features.EDGE_DHCP_HA_TOGGLE
-          && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE))
+      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<Provider>
       <ServiceCatalog />
@@ -110,12 +126,10 @@ describe('ServiceCatalog', () => {
   describe('Edge SD-LAN', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
-    it('should render Edge SD-LAN with feature flag ON', async () => {
+    it('should render Edge SD-LAN', async () => {
       render(<Provider>
         <ServiceCatalog />
       </Provider>, {
@@ -138,16 +152,18 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.SD_LAN)
+
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
   })
 
   describe('Edge DHCP', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_DHCP_HA_TOGGLE
-          || ff === Features.EDGE_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+      jest.mocked(useDhcpStateMap).mockReturnValue({
+        [ServiceType.DHCP]: true,
+        [ServiceType.EDGE_DHCP]: true,
+        [ServiceType.DHCP_CONSOLIDATION]: false
+      })
     })
 
     it('should render Edge DHCP with feature flag ON', async () => {
@@ -180,9 +196,7 @@ describe('ServiceCatalog', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
     })
 
     it('should render Edge PIN with feature flag ON', async () => {
@@ -208,15 +222,18 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.PIN)
+
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
   })
 
   describe('Edge mDNS', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
-          || ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+      jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+        [ServiceType.MDNS_PROXY]: true,
+        [ServiceType.EDGE_MDNS_PROXY]: true,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+      })
     })
 
     it('should render Edge mDNS with feature flag ON', async () => {
@@ -241,7 +258,8 @@ describe('ServiceCatalog', () => {
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
-      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY)
+      await waitFor(() =>
+        expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY))
     })
 
     it('should show BetaIndicator when Edge mDNS is beta feature', async () => {
@@ -282,6 +300,61 @@ describe('ServiceCatalog', () => {
       })
 
       expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
+  })
+
+  it('should render DHCP Consolidation corredectly when FF is ON', async () => {
+    jest.mocked(useDhcpStateMap).mockReturnValue({
+      [ServiceType.DHCP]: false,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: true
+    })
+
+    render(
+      <Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/DHCP for Wi-Fi/i)).toBeNull()
+    expect(screen.queryByText(/DHCP for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('DHCP')).toBeInTheDocument()
+  })
+
+  describe('mDNS Proxy Consolidation', () => {
+    it('should enable mDNS Proxy Consolidation', () => {
+      jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+        [ServiceType.MDNS_PROXY]: false,
+        [ServiceType.EDGE_MDNS_PROXY]: false,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+      })
+
+      render(<Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      })
+
+      expect(screen.queryAllByText('mDNS Proxy').length).toBe(1)
+      expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
+    })
+    it('should disable mDNS Proxy Consolidation', () => {
+      jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+        [ServiceType.MDNS_PROXY]: true,
+        [ServiceType.EDGE_MDNS_PROXY]: true,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+      })
+
+      render(<Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      })
+
+      expect(screen.queryAllByText('mDNS Proxy').length).toBe(1)
+      expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
     })
   })
 })

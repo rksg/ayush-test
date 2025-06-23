@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { Features }                                                                      from '@acx-ui/feature-toggle'
 import { edgeApi }                                                                       from '@acx-ui/rc/services'
 import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                               from '@acx-ui/store'
@@ -24,6 +24,16 @@ jest.mock('./ServiceDetailDrawer/SdLanDetailsP2', () => ({
   SdLanDetailsP2: () => <div data-testid='rc-SdLanDetailsP2'/>
 }))
 
+const mockUseIsEdgeFeatureReady = jest.fn()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  EdgeServiceStatusLight: () => <div data-testid={'rc-EdgeServiceStatusLight'} />,
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
+  useEdgeDhcpActions: () => ({
+    restartEdgeDhcp: jest.fn()
+  })
+}))
+
 const { mockEdgeData: currentEdge, mockEdgeServiceList, mockEdgeList } = EdgeGeneralFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 
@@ -32,7 +42,7 @@ describe('Edge Detail Services Tab', () => {
     { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockUseIsEdgeFeatureReady.mockReturnValue(true)
     store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
@@ -95,7 +105,7 @@ describe('Edge Detail Services Tab', () => {
   })
 
   it('when HA OFF and click DHCP service, should not render DHCP service detail drawer', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     const user = userEvent.setup()
     render(
@@ -244,7 +254,7 @@ describe('Edge Detail Services Tab', () => {
   })
 
   it('when DHCP_HA OFF, should disable restart button', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>

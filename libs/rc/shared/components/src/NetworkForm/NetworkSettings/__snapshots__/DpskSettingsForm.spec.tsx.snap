@@ -405,7 +405,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
               class="c2"
             >
               <img
-                src="None"
+                src="Dpsk"
               />
             </div>
           </div>

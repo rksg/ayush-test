@@ -16,9 +16,12 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import LanPortProfileDetailsDrawer, { LanPortDetailState } from '../LanPortProfileDetailDrawer'
+import { LanPortProfileDetailsDrawer } from '../LanPortProfileDetailDrawer'
 
 import * as UI from './styledComponents'
+
+import type { LanPortDetailState } from '../LanPortProfileDetailDrawer'
+
 
 export const defaultApWiredClientPayload = {
   searchString: '',

@@ -26,7 +26,6 @@ const setEditContextDataFn = jest.fn()
 const venueId = oneApGroupList.data[0].venueId
 const defaultApGroupCxtdata = {
   isEditMode: true,
-  isApGroupTableFlag: true,
   isRbacEnabled: false,
   venueId,
   setEditContextData: setEditContextDataFn

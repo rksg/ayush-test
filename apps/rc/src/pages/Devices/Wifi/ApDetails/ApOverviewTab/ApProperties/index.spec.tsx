@@ -10,10 +10,12 @@ import {
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  AFCStatus,
+  AFCPowerMode
 } from '@acx-ui/rc/utils'
-import { Provider, store  }                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store  }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
 
@@ -427,10 +429,10 @@ describe('ApProperties', () => {
     fireEvent.click(screen.getByText('More'))
     expect(await screen.findByText('PoE Port Speed')).toBeVisible()
     expect(await screen.findByText('PoE Class')).toBeVisible()
-    expect(await screen.findByText('Power Consumption')).toBeVisible()
+    expect(await screen.findByText('Allocated Power')).toBeVisible()
     expect(await screen.findByText('25.55 W')).toBeVisible()
     expect(await screen.findByText('Class 4 (802.3at 30 W)')).toBeVisible()
-    expect(await screen.findByText('1000Mbps')).toBeVisible()
+    expect(await screen.findByText('1000 Mbps')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
     expect(screen.queryByText('PoE Port Speed')).not.toBeInTheDocument()
@@ -533,5 +535,53 @@ describe('ApProperties', () => {
     const port = await screen.findByTestId('portButton')
     expect(port).toBeVisible()
     await userEvent.click(port)
+  })
+
+  it('should render AFC correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    const testAP = {
+      ...currentAP,
+      model: 'R760',
+      apRadioDeploy: '2-5-6',
+      apStatusData: {
+        ...currentAP.apStatusData,
+        afcInfo: {
+          afcStatus: AFCStatus.AFC_NOT_REQUIRED,
+          powerMode: AFCPowerMode.LOW_POWER
+        }
+      }
+    }
+
+    mockServer.use(
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({
+          model: 'R760',
+          supportTriRadio: true
+        }))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({ afcEnabled: true }))
+      )
+    )
+    render(<Provider>
+      <ApProperties
+        currentAP={testAP}
+        apDetails={apDetails}
+        isLoading={false}
+      /></Provider>, { route: { params } })
+    expect(screen.getByText('AP Properties')).toBeVisible()
+    fireEvent.click(screen.getByText('More'))
+    const apPropertiesDialog = await screen.findByRole('dialog')
+    expect(apPropertiesDialog).toHaveTextContent('AP Properties')
+    const a = await within(apPropertiesDialog).findByText(/Low Power Indoor/)
+    expect(a).not.toHaveTextContent('[User Set]')
+    const button = screen.getByRole('button', { name: /close/i })
+    await userEvent.click(button)
+    await waitFor(() => {
+      expect(apPropertiesDialog).not.toBeVisible()
+    })
   })
 })

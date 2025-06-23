@@ -180,67 +180,29 @@ export const switchDetailHeader = {
 
 export const defaultVlan = [{
   defaultVlanId: 1,
-  switchId: 'c0:c5:20:aa:32:79'
-}, {
-  defaultVlanId: 2,
-  switchId: '58:fb:96:0e:82:8a'
-}, {
-  // for switch level vlan
-  defaultVlanId: 1,
   switchId: 'c0:c5:20:aa:32:79',
   vlanList: [{
     vlanId: 1, vlanName: 'DEFAULT-VLAN'
   }, {
     vlanId: 2, vlanName: 'vlan2'
   }, {
-    vlanId: 3
+    vlanId: 22, vlanName: 'vlan22'
   }, {
-    vlanId: 4
+    vlanId: 33
+  }, {
+    vlanId: 44
+  }, {
+    vlanId: 55
+  }, {
+    vlanId: 66
   }]
 }, {
   defaultVlanId: 2,
   switchId: '58:fb:96:0e:82:8a',
   vlanList: [{
-    vlanId: 1
+    vlanId: 1, vlanName: 'DEFAULT-VLAN'
   }]
 }]
-
-export const switchVlanUnion = {
-  profileVlan: [
-    { vlanConfigName: 'vlan name', profileLevel: true, defaultVlan: false, vlanId: 6 },
-    { profileLevel: true, defaultVlan: false, vlanId: 2 },
-    { profileLevel: true, defaultVlan: false, vlanId: 3 },
-    { profileLevel: true, defaultVlan: false, vlanId: 5 },
-    { profileLevel: true, defaultVlan: false, vlanId: 4 }
-  ],
-  switchDefaultVlan: [{
-    defaultVlan: true,
-    profileLevel: false,
-    switchId: 'c0:c5:20:aa:32:79',
-    vlanConfigName: 'DEFAULT-VLAN',
-    vlanId: 1
-  }],
-  switchVlan: [
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 99 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 88 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 77 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 66 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 55 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 44 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 33 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 22 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: 'g', profileLevel: false, defaultVlan: false, vlanId: 14 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 13 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 41 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 76 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 32 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 333 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: '1111', profileLevel: false, defaultVlan: false, vlanId: 111 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 1111 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 16 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: '999', profileLevel: false, defaultVlan: false, vlanId: 999 }
-  ]
-}
 
 export const singleVlansByVenue = [
   {
@@ -575,23 +537,6 @@ export const aclUnion = {
   profileAcl: ['17', '18', '3', '5', '2','1','4','12', '16','6', 'all',
     '8','7','9','19','13','14','20','15','ee','extended','22','11','33'],
   switchAcl: ['test1', 'test acl']
-}
-
-export const switchesVlan = {
-  profileVlan: [
-    { profileLevel: true, defaultVlan: false, vlanId: 2 },
-    { profileLevel: true, defaultVlan: false, vlanId: 3 },
-    { profileLevel: true, defaultVlan: false, vlanId: 4 },
-    { profileLevel: true, defaultVlan: false, vlanId: 5 },
-    { vlanConfigName: 'vlan name', profileLevel: true, defaultVlan: false, vlanId: 6 }
-  ],
-  switchDefaultVlan: [{
-    defaultVlan: true,
-    profileLevel: false,
-    switchId: '58:fb:96:0e:82:8a',
-    vlanConfigName: 'DEFAULT-VLAN',
-    vlanId: 1
-  }]
 }
 
 export const untaggedVlansByVenue = [{

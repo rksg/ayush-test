@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import { Typography } from 'antd'
+import { AlignType }  from 'rc-table/lib/interface'
 import { useIntl }    from 'react-intl'
 
 import {
@@ -41,6 +42,7 @@ import {
 import { noDataDisplay } from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
+
 
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
@@ -108,6 +110,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       key: 'publishReadiness',
       title: $t({ defaultMessage: 'Publishing Readiness' }),
       dataIndex: 'publishReadiness',
+      align: 'center' as AlignType,
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
         return <PublishReadinessProgress

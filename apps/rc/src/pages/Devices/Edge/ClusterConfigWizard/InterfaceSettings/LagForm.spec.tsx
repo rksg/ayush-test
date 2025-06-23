@@ -1,10 +1,18 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import _         from 'lodash'
+import userEvent           from '@testing-library/user-event'
+import { Form }            from 'antd'
+import { cloneDeep, find } from 'lodash'
 
-import { StepsForm }                                                                                                              from '@acx-ui/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, edgePhysicalPortInitialConfigs, EdgePort, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                                                                                             from '@acx-ui/test-utils'
+import { StepsForm }      from '@acx-ui/components'
+import { Features }       from '@acx-ui/feature-toggle'
+import { EdgeLagTable }   from '@acx-ui/rc/components'
+import {
+  EdgeClusterStatus, EdgeFormFieldsPropsType,
+  EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures,
+  edgePhysicalPortInitialConfigs,
+  EdgePort, EdgePortTypeEnum, EdgeStatus,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/utils'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData } from '../__tests__/fixtures'
 import { ClusterConfigWizardContext }                                                   from '../ClusterConfigWizardDataProvider'
@@ -12,7 +20,7 @@ import { ClusterConfigWizardContext }                                           
 import { LagForm }                   from './LagForm'
 import { InterfaceSettingsFormType } from './types'
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
 const mockedClusterInfo = mockEdgeClusterList.data[0] as EdgeClusterStatus
 const nodeList = mockedClusterInfo.edgeList as EdgeStatus[]
@@ -32,7 +40,7 @@ const mockExpectedEditResult = {
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeLagTable: (
+  EdgeLagTable: jest.fn().mockImplementation((
     { onAdd, onEdit, onDelete }:
     {
       onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>,
@@ -47,7 +55,12 @@ jest.mock('@acx-ui/rc/components', () => ({
     </button>
     <button onClick={() => onEdit('serialNumber-1', mockExpectedEditResult)}>TestEdit</button>
     <button onClick={() => onDelete('serialNumber-1', '0')}>TestDelete</button>
-  </div>
+  </div>)
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('InterfaceSettings - LagForm', () => {
@@ -145,7 +158,7 @@ describe('InterfaceSettings - LagForm', () => {
 
   it('should edit successfully', async () => {
     const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const mockData = cloneDeep(mockClusterConfigWizardData)
     const n1lag0 = getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber, 'lag0', mockData.lagSettings, mockData.portSettings)
     n1lag0!.id = 2
@@ -233,7 +246,7 @@ describe('InterfaceSettings - LagForm', () => {
     expect(mockFormSetFieldValue).toBeCalledTimes(2)
 
     const port1FieldPath = ['portSettings', 'serialNumber-1', 'port1']
-    let expectedPort1Result = _.cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
+    let expectedPort1Result = cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber,
       'port1',
       mockClusterConfigWizardData.lagSettings,
@@ -246,7 +259,7 @@ describe('InterfaceSettings - LagForm', () => {
     expect(mockFormSetFieldValue).toBeCalledWith(port1FieldPath, [expectedPort1Result])
 
     const port2FieldPath = ['portSettings', 'serialNumber-1', 'port2']
-    let expectedPort2Result = _.cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
+    let expectedPort2Result = cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber,
       'port2',
       mockClusterConfigWizardData.lagSettings,
@@ -260,7 +273,7 @@ describe('InterfaceSettings - LagForm', () => {
   })
 
   describe('when no node configured LAG', () => {
-    const mockedOneNodeConfigured = _.cloneDeep(mockClusterConfigWizardData)
+    const mockedOneNodeConfigured = cloneDeep(mockClusterConfigWizardData)
     mockedOneNodeConfigured.lagSettings = undefined
 
     it('should edit successfully', async () => {
@@ -323,6 +336,75 @@ describe('InterfaceSettings - LagForm', () => {
       const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
       expect(lagSettings.length).toBe(1)
       expect(lagSettings.find(item => item.serialNumber === 'serialNumber-1')?.lags).toBe(undefined)
+    })
+  })
+
+  describe('when multi NAT IP enabled', () => {
+    const MockComponent = ({ formFieldsProps }: { formFieldsProps?: EdgeFormFieldsPropsType }) => {
+      return <Form.Item
+        data-testid='lag-table'
+        name='test-nat-pool-overlap'
+        {...formFieldsProps?.natStartIp}
+        children={<span></span>}
+      />
+    }
+
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+      jest.mocked(EdgeLagTable).mockImplementation((props) => <MockComponent {...props}/>)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    const mockNode1NatPoolEnabledData = cloneDeep(mockClusterConfigWizardData)
+    const node1Sn = mockedHaNetworkSettings.portSettings[0].serialNumber
+    const node2Sn = mockedHaNetworkSettings.portSettings[1].serialNumber
+    mockNode1NatPoolEnabledData.portSettings[node1Sn].port1[0].portType = EdgePortTypeEnum.WAN
+    mockNode1NatPoolEnabledData.portSettings[node1Sn].port1[0].natEnabled = true
+    // eslint-disable-next-line max-len
+    mockNode1NatPoolEnabledData.portSettings[node1Sn].port1[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+
+    it('should validate if NAT pool overlap between edges', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [ form ] = Form.useForm()
+        return form
+      })
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedClusterInfo,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <StepsForm form={formRef.current} initialValues={mockNode1NatPoolEnabledData}>
+            <StepsForm.StepForm>
+              <LagForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(await screen.findByTestId('lag-table')).toBeVisible()
+      const mockChangeNode2Lag = cloneDeep(mockClusterConfigWizardData.lagSettings[1].lags[0])
+      mockChangeNode2Lag.portType = EdgePortTypeEnum.WAN
+      mockChangeNode2Lag.natEnabled = true
+      mockChangeNode2Lag.natPools = [{ startIpAddress: '1.1.1.10', endIpAddress: '1.1.1.20' }]
+      formRef.current.setFieldValue('test-nat-pool-overlap', mockChangeNode2Lag)
+
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+      const error = await screen.findByRole('alert')
+      expect(error).toBeVisible()
+      const edge1Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node1Sn })?.name
+      const edge2Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node2Sn })?.name
+
+      // eslint-disable-next-line max-len
+      expect(error).toHaveTextContent(`NAT pool ranges on ${edge1Name} overlap with those on ${edge2Name}`)
     })
   })
 })

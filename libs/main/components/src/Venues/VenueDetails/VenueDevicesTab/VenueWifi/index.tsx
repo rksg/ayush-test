@@ -18,8 +18,7 @@ import {
   ApCompatibilityDrawer,
   retrievedCompatibilitiesOptions,
   retrievedApCompatibilitiesOptions,
-  useApGroupsFilterOpts,
-  useIsEdgeFeatureReady
+  useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -96,9 +95,6 @@ export function VenueWifi () {
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
 
   const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
-
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -133,7 +129,7 @@ export function VenueWifi () {
   }
 
   const alertNote = () => {
-    return isEdgeCompatibilityEnabled && venueId
+    return venueId
       ? <CompatibilityCheck venueId={venueId} />
       : (
         <AlertNote
@@ -215,17 +211,15 @@ export function VenueWifi () {
           rlsClause={`"zoneName" in ('${venueId}')`}
         />
       </Tabs.TabPane>
-      { isShowApGroupTable && (
-        <Tabs.TabPane key='apgroup'
-          tab={<Tooltip title={$t({ defaultMessage: 'AP Group List' })}>
-            <DevicesOutlined />
-          </Tooltip>}>
-          <ApGroupTable rowSelection={{ type: 'checkbox' }}
-            searchable={true}
-            enableActions={true}
-          />
-        </Tabs.TabPane>
-      )}
+      <Tabs.TabPane key='apgroup'
+        tab={<Tooltip title={$t({ defaultMessage: 'AP Group List' })}>
+          <DevicesOutlined />
+        </Tooltip>}>
+        <ApGroupTable rowSelection={{ type: 'checkbox' }}
+          searchable={true}
+          enableActions={true}
+        />
+      </Tabs.TabPane>
     </IconThirdTab>
   )
 }

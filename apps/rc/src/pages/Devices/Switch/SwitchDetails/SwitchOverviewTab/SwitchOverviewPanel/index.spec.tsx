@@ -3,9 +3,9 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -41,7 +41,8 @@ jest.mock('./SwitchFrontRearView', () => ({
     <div data-testid={'rc-SwitchFrontRearView'} title='SwitchFrontRearView' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  isLAGMemberPort: jest.fn(),
+  TopologyFloorPlanWidget: () => <div ata-testid={'rc-TopologyFloorPlanWidget'} />,
   SwitchBlinkLEDsDrawer: () =>
     <div data-testid={'rc-SwitchBlinkLEDsDrawer'} />
 }))
@@ -104,7 +105,6 @@ describe('SwitchOverviewTab', () => {
   }
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     const params = {
       tenantId: 'tenantId',
       switchId: 'switchId',
@@ -156,29 +156,5 @@ describe('SwitchOverviewTab', () => {
     expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer')).toBeVisible()
   })
 
-  it('should render SwitchesTrafficByVolume portOptions correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
-    const useStateSpy = jest.spyOn(React, 'useState')
-    const params = {
-      tenantId: 'tenantId',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'overview'
-    }
-    render(<Provider>
-      <SwitchOverviewPanel
-        filters={filters}
-        stackMember={stackMembersData}
-        switchDetail={switchDetailSwitchOnline}
-        currentSwitchDevice={currentSwitchDevice} />
-    </Provider>, {
-      route: {
-        params,
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
-      }
-    })
-    expect(await screen.findByTestId('rc-SwitchesTrafficByVolume')).toBeVisible()
-    expect(useStateSpy).toBeCalled()
-  })
 }
 )

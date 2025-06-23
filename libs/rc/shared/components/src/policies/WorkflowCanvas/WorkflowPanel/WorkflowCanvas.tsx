@@ -1,8 +1,8 @@
 import 'reactflow/dist/style.css' // Very important css must be imported!
 
-import { ReactElement, useEffect, useRef } from 'react'
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useIntl }      from 'react-intl'
+import { useIntl } from 'react-intl'
 import ReactFlow, {
   Panel,
   Background,
@@ -15,12 +15,16 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   useReactFlow,
-  NodeDimensionChange
+  NodeDimensionChange,
+  getNodesBounds
 } from 'reactflow'
 
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { ActionType, WorkflowPanelMode } from '@acx-ui/rc/utils'
+import { showActionModal }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useAttachStepBeneathStepMutation }                         from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, StepType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
+import { useWorkflowContext } from './WorkflowContextProvider'
 import {
   AupNode,
   CertTemplateNode,
@@ -28,19 +32,24 @@ import {
   DisplayMessageNode,
   DpskNode,
   MacRegistrationNode,
-  StartNode
+  StartNode,
+  SamlAuthNode
 } from './WorkflowStepNode'
+import DisconnectedBranchNode from './WorkflowStepNode/DisconnectedBranchNode'
+
 
 
 
 const nodeTypes: NodeTypes = {
   START: StartNode, // This is a special type for the starter node displaying
+  DISCONNECTED_BRANCH: DisconnectedBranchNode,
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
   [ActionType.DPSK]: DpskNode,
   [ActionType.MAC_REG]: MacRegistrationNode,
-  [ActionType.CERT_TEMPLATE]: CertTemplateNode
+  [ActionType.CERT_TEMPLATE]: CertTemplateNode,
+  [ActionType.SAML_AUTH]: SamlAuthNode
 }
 
 interface WorkflowProps {
@@ -54,6 +63,7 @@ const MIN_STEP_COUNT = 5
 
 export default function WorkflowCanvas (props: WorkflowProps) {
   const { initialNodes, mode = WorkflowPanelMode.Default, customPanel } = props
+  const { workflowId } = useWorkflowContext()
   const isFirstRender = useRef(true)
   const isDesignMode = mode === WorkflowPanelMode.Design
   const isEditMode = mode === WorkflowPanelMode.Edit
@@ -61,9 +71,20 @@ export default function WorkflowCanvas (props: WorkflowProps) {
   const { $t } = useIntl()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [currentSelectedId, setCurrentSelectedId] = useState('')
+
+  const [attachSteps] = useAttachStepBeneathStepMutation()
 
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
+  const nodeMap = useMemo(() => {
+    const nodeMap = new Map<string, Node>()
+    if(nodes && nodes.length > 0) {
+      nodes.forEach(n => {nodeMap.set(n.id, n)})
+    }
+    return nodeMap
+  }, [nodes])
 
   const fitFirstView = () => {
     if (!initialNodes) return
@@ -105,52 +126,188 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
   }
 
-  const onCustomNodeDrag = (event: React.MouseEvent, node: Node) => {
 
-    const { movementX, movementY, screenX, screenY } = event
-    const flowOldPosition = reactFlowInstance.screenToFlowPosition({
-      x: (screenX + movementX),
-      y: (screenY + movementY) })
-    const flowNewPosition = reactFlowInstance.screenToFlowPosition({ x: screenX, y: screenY })
-    const deltaX = (flowOldPosition.x - flowNewPosition.x)
-    const deltaY = (flowOldPosition.y - flowNewPosition.y)
+  const onNodeDragStop = useCallback((event:React.MouseEvent, node:Node) => {
+    // get intersecting nodes of the dragged node
+    const currentBranchBounds = getNodesBounds([node])
+    const allIntersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
 
-
-    const nodeMap = new Map<string, Node>()
-    nodes.forEach(n => {nodeMap.set(n.id, n)})
-
-    // TODO: update to handle splits in both directions
-
-    // update parents
-    let currentNodeId:string|null = node.id
-    while(currentNodeId) {
-      let currentNode = nodeMap.get(currentNodeId)
-      if(currentNode) {
-        currentNode.position = {
-          x: currentNode.position.x + deltaX,
-          y: currentNode.position.y + deltaY
-        }
-      }
-
-      currentNodeId = currentNode?.data.priorStepId ?? null
+    let otherBranchIntersectingNodes = undefined
+    if(allIntersectingNodes) {
+      otherBranchIntersectingNodes =
+        allIntersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
     }
 
-    // update children
-    currentNodeId = node.data?.nextStepId ?? null
-    while(currentNodeId) {
-      let currentNode = nodeMap.get(currentNodeId)
-      if(currentNode) {
-        currentNode.position = {
-          x: currentNode.position.x + deltaX,
-          y: currentNode.position.y + deltaY
-        }
-      }
-
-      currentNodeId = currentNode?.data?.nextStepId ?? null
+    // if no intersecting nodes were found then look for nodes that the plus drag handle is covering
+    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
+      // calculate bounding box for plus drag handle
+      // (plus is 16 pixels wide and 30 pixels from the top of the subflow)
+      const topPlusBounds = { x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8),
+        y: currentBranchBounds.y - 30, height: 30, width: 16 }
+      const topPlusIntersectingNodes = reactFlowInstance.getIntersectingNodes(topPlusBounds)
+      otherBranchIntersectingNodes = topPlusIntersectingNodes
     }
 
-    reactFlowInstance.setNodes(Array.from(nodeMap.values()))
-  }
+    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
+      // we are not intersecting other nodes
+      return
+    }
+
+    // find the final node of the branch we are intersecting with
+    let idsInIntersectedBranch = new Set()
+
+    let startingNode = undefined
+    startingNode = otherBranchIntersectingNodes[0]
+    // check if this node is a parent node (subflow) and get it's child if so
+    if(startingNode.type === 'DISCONNECTED_BRANCH') {
+      idsInIntersectedBranch.add(startingNode.id)
+      let firstMemberId = startingNode.id.split('parent')[0]
+      startingNode = nodeMap.get(firstMemberId)
+      if(!startingNode) { return }
+    }
+
+
+    // find the top node from the current node
+    // (this is necessary so we can determine if we are overlapping multiple branches)
+    idsInIntersectedBranch.add(startingNode.id)
+    let currentNode:undefined | Node = startingNode
+    while(currentNode?.data?.priorStepId) {
+      const previousNode = nodeMap.get(currentNode.data.priorStepId)
+      if(previousNode && previousNode.data.type !== StepType.Start) {
+        idsInIntersectedBranch.add(previousNode.id)
+        currentNode = previousNode
+      } else {
+        currentNode = undefined
+      }
+    }
+
+    // get the final node of the branch that was intersected with so we can attach to it
+    let finalIntersectedNode = startingNode
+    if (finalIntersectedNode.data?.nextStepId) {
+      let nextNode = nodeMap.get(finalIntersectedNode.data.nextStepId)
+      while(nextNode) {
+        if(nextNode.data.type === StepType.End) {
+          nextNode = undefined
+        } else {
+          idsInIntersectedBranch.add(nextNode.id)
+          finalIntersectedNode = nextNode
+          nextNode = nextNode.data.nextStepId ? nodeMap.get(nextNode.data.nextStepId) : undefined
+        }
+      }
+    }
+
+    // if we are intersecting multiple branches do nothing
+    let isMultipleBranches = (otherBranchIntersectingNodes.length > idsInIntersectedBranch.size
+      || otherBranchIntersectingNodes.filter(n => !idsInIntersectedBranch.has(n.id)).length > 0)
+    if(isMultipleBranches) {
+      return
+    }
+
+    // get the id of the step we want to attach below the intersected branch
+    let stepIdToAttach = node.id
+    if(stepIdToAttach && stepIdToAttach.endsWith('parent')) {
+      stepIdToAttach = node.id.split('parent')[0]
+    }
+
+    const title = $t(
+      { defaultMessage: 'Attach to Action "{formattedName}"?' },
+      { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }
+    )
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: $t({
+        defaultMessage:
+          'Are you sure you want to attach the branch below the step of type "{formattedName}"'
+      }, { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }),
+      okText: $t({ defaultMessage: 'Attach Actions' }),
+      onOk: () => {
+        attachSteps({ params: { policyId: workflowId, stepId: finalIntersectedNode.id,
+          detachedStepId: stepIdToAttach } }).unwrap()
+      }
+    })
+
+  }, [nodes])
+
+  const onSelectionChange = useCallback((params: { nodes: Node[]; edges: Edge[] }) => {
+
+    const selectedNode = params.nodes.length > 0 ? params.nodes[0] : undefined
+
+    let parentNodeId = undefined
+    if(selectedNode?.parentNode) {
+      parentNodeId = selectedNode.parentNode
+    } else if(selectedNode?.type === 'DISCONNECTED_BRANCH') {
+      parentNodeId = selectedNode.id
+    }
+
+    // prevent uneccessary updates
+    if(!selectedNode || selectedNode?.id === currentSelectedId
+      || (parentNodeId && parentNodeId === currentSelectedId)) {
+      return
+    }
+
+    setCurrentSelectedId(parentNodeId ?? (selectedNode?.id ?? ''))
+
+    let nodeIdSet = new Set()
+
+    let branchStartNodeId = undefined
+    if(parentNodeId) {
+      branchStartNodeId = parentNodeId.split('parent')[0]
+      nodeIdSet.add(parentNodeId)
+    } else {
+      branchStartNodeId = selectedNode.id
+      // find all previous nodes
+      let nonDetachedCurrentNodeId = selectedNode.id
+      while(nonDetachedCurrentNodeId) {
+        nodeIdSet.add(nonDetachedCurrentNodeId)
+        nonDetachedCurrentNodeId = nodeMap.get(nonDetachedCurrentNodeId)?.data?.priorStepId
+      }
+    }
+
+    // get all node ids in the branch
+    let currentNode = nodeMap.get(branchStartNodeId)
+    // nodeIdSet.add(parentNodeId)
+    while(currentNode) {
+      if(currentNode.data.type === StepType.End) {
+        currentNode = undefined
+      } else {
+        nodeIdSet.add(currentNode.id)
+        currentNode =
+          currentNode.data.nextStepId ? nodeMap.get(currentNode.data.nextStepId) : undefined
+      }
+    }
+
+    // update nodes
+    const updatedNodes:Node[] = []
+    nodes.forEach(n => {
+      if(nodeIdSet.has(n.id)) {
+        updatedNodes.push(
+          { ...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex : n.zIndex + 1000) : 1000 })
+      } else {
+        updatedNodes.push(
+          { ...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex - 1000 : n.zIndex) : undefined })
+      }
+    })
+
+    // update edges
+    const updatedEdges:Edge[] = []
+    edges.forEach(e => {
+      if(nodeIdSet.has(e.source)) {
+        updatedEdges.push(
+          { ...e, zIndex: e.zIndex ? (e.zIndex > 2000 ? e.zIndex : e.zIndex + 1000) : 1000 })
+      } else {
+        updatedEdges.push(
+          { ...e, zIndex: e.zIndex ? (e.zIndex > 2000 ? e.zIndex - 1000 : e.zIndex) : undefined })
+      }
+    })
+
+    setNodes(updatedNodes)
+    setEdges(updatedEdges)
+
+  }, [nodes, edges])
+
+
 
   useEffect(() => {
     if (props.initialNodes) {
@@ -172,27 +329,33 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodeTypes={nodeTypes}
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
-      onNodeDrag={onCustomNodeDrag}
-      nodesDraggable={workflowValidationEnhancementFFToggle ? true : false}
+      nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
+      onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
       nodesConnectable={false}
       minZoom={0.1}
+      elevateNodesOnSelect={false}
+      elevateEdgesOnSelect={false}
+      onSelectionChange={onSelectionChange}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
       proOptions={{ hideAttribution: true }}
     >
-      { isDesignMode &&
-        <>
-          <Controls
-            fitViewOptions={{ maxZoom: 1 }}
-            position={'bottom-right'}
-          />
+
+      <>
+        <Controls
+          fitViewOptions={{ maxZoom: 1 }}
+          position={'bottom-right'}
+          showInteractive={false}
+        />
+        { isDesignMode &&
           <Background
             color='#ccc'
             variant={BackgroundVariant.Dots}
           />
-        </>
-      }
+
+        }
+      </>
 
       { mode === WorkflowPanelMode.Default &&
         <Panel position={'top-left'} style={{ fontWeight: 600 }}>

@@ -15,9 +15,11 @@ import {
   useSwitchPortProfilesDetailQuery
 } from '@acx-ui/rc/services'
 import {
+  getDefaultPortSpeedOption
+} from '@acx-ui/rc/switch/utils'
+import {
   checkObjectNotExists,
   checkTaggedVlan,
-  getDefaultPortSpeedOption,
   getPolicyListRoutePath,
   LldpTlvMatchingType,
   LldpTlvs,
@@ -31,7 +33,8 @@ import {
   validateDuplicateVlanId,
   validateVlanExcludingReserved,
   usePoliciesBreadcrumb,
-  LocationExtended
+  LocationExtended,
+  excludeSpaceRegExp
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -347,6 +350,7 @@ export default function SwitchPortProfileForm () {
               label={$t({ defaultMessage: 'Profile Name' })}
               rules={[
                 { required: true },
+                { validator: (_, value) => excludeSpaceRegExp(value) },
                 { validator: (_, value) => profileNameDuplicateValidator(value) }
               ]}
               validateFirst

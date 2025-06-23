@@ -25,7 +25,8 @@ import {
   IpSecIntegrityAlgorithmEnum,
   IpSecProposalTypeEnum,
   IpSecPseudoRandomFunctionEnum,
-  IpsecViewData
+  IpsecViewData,
+  PersonaGroup
 } from '@acx-ui/rc/utils'
 
 export const mockedNetworkId = '5c342542bb824a8b981a9bb041a8a2da'
@@ -892,7 +893,9 @@ export const selfsignData = {
       duration: 12,
       unit: TimeUnitEnum.HOUR
     }
-  }
+  },
+  accountingRadius: mockedCloudPathAcctRadius,
+  enableAccountingService: true
 }
 export const guestpassData = {
   enableDhcp: true,
@@ -3100,6 +3103,11 @@ export const mockIdentityGroupQuery = {
   first: true,
   numberOfElements: 4,
   empty: false
+}
+
+export const mockIdentityGroupTemplate: PersonaGroup = {
+  id: 'mock-identity-group-template-id-1',
+  name: 'mock-identity-group-template-name-1'
 }
 
 export const mockSamlProfileA7Id = 'cbe337e7917f48878f6feb1982199430'

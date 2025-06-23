@@ -1,9 +1,8 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import { render,
   screen,
   mockRestApiQuery,
@@ -38,7 +37,6 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('Clients widget v2', () => {
-  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   it('should render loader and then content for no data', async () => {
     mockRestApiQuery(CommonUrlsInfo.getClientSummaries.url, 'post',{})
     const params = {
