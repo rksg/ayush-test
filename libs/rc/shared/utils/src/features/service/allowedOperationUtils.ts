@@ -1,6 +1,7 @@
-import { RbacOpsIds }                    from '@acx-ui/types'
-import { hasAllowedOperations }          from '@acx-ui/user'
-import { ApiInfo, getOpsApi, isRecSite } from '@acx-ui/utils'
+import { isRecSite }            from '@acx-ui/react-router-dom'
+import { RbacOpsIds }           from '@acx-ui/types'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { ApiInfo, getOpsApi }   from '@acx-ui/utils'
 
 import { useConfigTemplate }             from '../../configTemplate'
 import { ServiceType, ServiceOperation } from '../../constants'

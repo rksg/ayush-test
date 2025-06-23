@@ -1,16 +1,16 @@
 import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
 import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { Params, TenantType, useParams }                              from '@acx-ui/react-router-dom'
+import { Params, resolveTenantTypeFromPath, TenantType, useParams }   from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, UseQuery }                        from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasRoles, isCoreTier } from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi, isRecSite }                 from '@acx-ui/utils'
+import { AccountType, getIntl, getOpsApi }                            from '@acx-ui/utils'
 
 import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
 import { ConfigTemplateUrlsInfo }                    from '../urls'
 
-import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
+import { CONFIG_TEMPLATE_LIST_PATH }                                          from './configTemplateRouteUtils'
 import {
   configTemplateApGroupOperationMap, configTemplateIdentityGroupOperationMap,
   configTemplateNetworkOperationMap, ConfigTemplateOperation, configTemplatePolicyOperationMap,
@@ -27,7 +27,7 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
     {
       text: $t({ defaultMessage: 'Configuration Templates' }),
       link: CONFIG_TEMPLATE_LIST_PATH,
-      tenantType: isRecSite() ? 't' : 'v'
+      tenantType: resolveTenantTypeFromPath()
     }
   ]
 }

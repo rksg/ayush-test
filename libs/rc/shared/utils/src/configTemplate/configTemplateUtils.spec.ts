@@ -19,7 +19,8 @@ jest.mock('./useConfigTemplate', () => ({
 const mockedParams = { tenantId: 'exampleTenantId', venueId: 'exampleVenueId' }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useParams: () => mockedParams
+  useParams: () => mockedParams,
+  resolveTenantTypeFromPath: () => 'v'
 }))
 
 describe('config-template-utils', () => {
@@ -30,15 +31,6 @@ describe('config-template-utils', () => {
         text: 'Configuration Templates',
         link: CONFIG_TEMPLATE_LIST_PATH,
         tenantType: 'v'
-      }
-    ])
-
-    const breadcrumbForREC = generateConfigTemplateBreadcrumb('REC')
-    expect(breadcrumbForREC).toEqual([
-      {
-        text: 'Configuration Templates',
-        link: CONFIG_TEMPLATE_LIST_PATH,
-        tenantType: 't'
       }
     ])
   })

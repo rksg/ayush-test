@@ -5,6 +5,7 @@ import { ConfigTemplate }                              from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                        from '@acx-ui/user'
 import { getIntl, getOpsApi }                          from '@acx-ui/utils'
 
+import { AppliedToTenantList }   from './Templates/AppliedToListView'
 import { AppliedToTenantDrawer } from './Templates/AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './Templates/ApplyTemplateDrawer'
 import { ShowDriftsDrawer }      from './Templates/ShowDriftsDrawer'
@@ -14,6 +15,7 @@ export function ConfigTemplatePage () {
   return <ConfigTemplateView
     ApplyTemplateView={ApplyTemplateDrawer}
     AppliedToView={AppliedToTenantDrawer}
+    AppliedToListView={AppliedToTenantList}
     ShowDriftsView={ShowDriftsDrawer}
     appliedToColumn={getAppliedToColumn()}
   />

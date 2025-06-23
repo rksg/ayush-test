@@ -3,10 +3,12 @@ import _                                                                        
 import { generatePath, Params }                                                 from 'react-router-dom'
 
 import { get }                          from '@acx-ui/config'
+import { isRecSite }                    from '@acx-ui/react-router-dom'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
-import { getTenantId, isRecSite }            from './getTenantId'
+import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
+
 
 export interface ApiInfo {
   url: string;
@@ -104,7 +106,7 @@ export const createHttpRequest = (
     ...getJwtHeaders({ ignoreDelegation })
   }
 
-  apiInfo = convertApiInfoForRecConfigTemplate(apiInfo)
+  // apiInfo = convertApiInfoForRecConfigTemplate(apiInfo)
 
   const origin = window.location.origin
   const newApiHostName = origin.replace(

@@ -20,9 +20,8 @@ import {
   useConfigTemplate,
   useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
-import { LinkProps, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RbacOpsIds, ScopeKeys }                                   from '@acx-ui/types'
-import { isRecSite }                                               from '@acx-ui/utils'
+import { LinkProps, Path, resolveTenantTypeFromPath, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RbacOpsIds, ScopeKeys }                                                              from '@acx-ui/types'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
@@ -43,7 +42,7 @@ export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
   const currentPathState: LocationExtended['state'] | {} = attachCurrentPathToState ? { from: location } : {}
   const toPath = getConfigTemplatePath(to)
   const finalState = { ...state, ...currentPathState }
-  const tenantType = isRecSite() ? 't' : 'v'
+  const tenantType = resolveTenantTypeFromPath()
 
   return (
     <TenantLink to={toPath} state={finalState} tenantType={tenantType} {...rest}>

@@ -17,7 +17,8 @@ const mockedLocationFrom = { pathname: generalPreviousPath }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useLocation: () => ({ state: { from: mockedLocationFrom } }),
-  useTenantLink: (path: string) => path
+  useTenantLink: (path: string) => path,
+  resolveTenantTypeFromPath: () => 'v'
 }))
 
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])

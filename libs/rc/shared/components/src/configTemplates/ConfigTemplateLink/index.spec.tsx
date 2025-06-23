@@ -28,7 +28,7 @@ import {
   usePathBasedOnConfigTemplate
 } from '.'
 
-const mockedMspTenantLinkStateFn = jest.fn()
+const mockedTenantLinkStateFn = jest.fn()
 const mockedLocation = { pathname: 'previous/path' }
 const mockedLocationFn = jest.fn().mockReturnValue(mockedLocation)
 // eslint-disable-next-line max-len
@@ -36,13 +36,13 @@ const mockedUseTenantLink = jest.fn().mockImplementation((to: To, tenantType: Te
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  MspTenantLink: (props: { to: string, state: any }) => {
-    mockedMspTenantLinkStateFn(props.state)
+  TenantLink: (props: { to: string, state: any }) => {
+    mockedTenantLinkStateFn(props.state)
     return <div>{props.to}</div>
   },
-  TenantLink: (props: { to: string }) => <div>{props.to}</div>,
   useLocation: () => mockedLocationFn(),
-  useTenantLink: (to: To, tenantType: TenantType) => mockedUseTenantLink(to, tenantType)
+  useTenantLink: (to: To, tenantType: TenantType) => mockedUseTenantLink(to, tenantType),
+  resolveTenantTypeFromPath: () => 'v'
 }))
 
 const mockedUseConfigTemplate = jest.fn()
@@ -57,7 +57,7 @@ describe('ConfigTemplateLink', () => {
   })
 
   afterEach(() => {
-    mockedMspTenantLinkStateFn.mockClear()
+    mockedTenantLinkStateFn.mockClear()
     mockedUseConfigTemplate.mockRestore()
     mockedUseTenantLink.mockClear()
   })
@@ -67,7 +67,7 @@ describe('ConfigTemplateLink', () => {
 
     const targetPath = getConfigTemplatePath('test/config')
     expect(screen.getByText(targetPath)).toBeInTheDocument()
-    expect(mockedMspTenantLinkStateFn).toHaveBeenCalledWith({ from: mockedLocation })
+    expect(mockedTenantLinkStateFn).toHaveBeenCalledWith({ from: mockedLocation })
   })
 
   it('renders children with PolicyConfigTemplateLink', () => {

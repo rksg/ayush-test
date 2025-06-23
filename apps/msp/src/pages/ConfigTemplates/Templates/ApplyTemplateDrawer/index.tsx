@@ -8,8 +8,7 @@ import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggl
 import {
   ConfigTemplateOverrideModal, overrideDisplayViewMap,
   OverrideValuesPerMspEcType, transformOverrideValues,
-  useConfigTemplateOverride, useEcFilters,
-  CommonConfigTemplateDrawerProps,
+  useConfigTemplateOverride, CommonConfigTemplateDrawerProps,
   ConfigTemplatePageUI
 } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
@@ -21,6 +20,7 @@ import { AccountTier, AccountType }                          from '@acx-ui/utils
 
 import HspContext                    from '../../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS } from '../../constants'
+import { useEcFilters }              from '../../utils'
 import { CustomerFirmwareReminder }  from '../CustomerFirmwareReminder'
 import { TemplateListContainer }     from '../styledComponents'
 

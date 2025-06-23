@@ -45,9 +45,9 @@ import {
   hasConfigTemplateAllowedOperation,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                          from '@acx-ui/user'
-import { getOpsApi }                               from '@acx-ui/utils'
+import { resolveTenantTypeFromPath, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                     from '@acx-ui/user'
+import { getOpsApi }                                                          from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
 
@@ -67,6 +67,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     ApplyTemplateView,
     canApplyTemplate = (t: ConfigTemplate) => isTemplateTypeAllowed(t.type),
     AppliedToView,
+    AppliedToListView,
     ShowDriftsView,
     appliedToColumn
   } = props
@@ -81,7 +82,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const deleteMutationMap = useDeleteMutation()
-  const mspTenantLink = useTenantLink('', 'v')
+  const tenantLink = useTenantLink('', resolveTenantTypeFromPath())
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -123,7 +124,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
           })
         } else {
           const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+          navigate(`${tenantLink.pathname}/${editPath}`, { state: { from: location } })
         }
       }
     },
@@ -238,6 +239,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         selectedTemplate={selectedTemplates[0]}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
         ShowDriftsView={ShowDriftsView}
+        AppliedToListView={AppliedToListView}
       />}
     </>
   )

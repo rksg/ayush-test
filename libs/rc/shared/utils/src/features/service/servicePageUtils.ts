@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Path, TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                    from '@acx-ui/types'
-import { hasRoles }                                     from '@acx-ui/user'
-import { getIntl }                                      from '@acx-ui/utils'
+import { Path, resolveTenantTypeFromPath, TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                               from '@acx-ui/types'
+import { hasRoles }                                                                from '@acx-ui/user'
+import { getIntl }                                                                 from '@acx-ui/utils'
 
 import { LocationExtended }                                                               from '../../common'
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
@@ -58,7 +58,7 @@ export function useServicePreviousPath (
 ): LocationExtended['state']['from'] {
   const { isTemplate } = useConfigTemplate()
   const regularFallbackPath = useTenantLink(getServiceRoutePath({ type, oper }), 't')
-  const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
+  const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, resolveTenantTypeFromPath())
   const fallbackPath = isTemplate ? templateFallbackPath : regularFallbackPath
   const location = useLocation()
 
