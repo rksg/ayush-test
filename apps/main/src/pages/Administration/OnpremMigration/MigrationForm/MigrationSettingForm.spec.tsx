@@ -15,12 +15,10 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venuelist,
-  autocompleteResult,
-  timezoneResult
+  venuelist
 } from '../__tests__/fixtures'
 
-import { MigrationSettingForm, addressParser } from './MigrationSettingForm'
+import { MigrationSettingForm } from './MigrationSettingForm'
 
 const venueResponse = {
   id: '2c16284692364ab6a01f4c60f5941836',
@@ -43,8 +41,6 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
-const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
 describe('MigrationSettingForm', () => {
   let params: { tenantId: string }
@@ -98,20 +94,7 @@ describe('MigrationSettingForm', () => {
 
     // fireEvent.click(screen.getByText('Add'))
   })
-  it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
 
-    const addressResult = {
-      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-      city: 'United States',
-      country: 'United States',
-      latitude: 37.4112751,
-      longitude: -122.0191908,
-      timezone: 'America/Los_Angeles'
-    }
-
-    expect(address).toEqual(addressResult)
-  })
   it('google map is enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(

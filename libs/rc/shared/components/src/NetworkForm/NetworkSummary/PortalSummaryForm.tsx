@@ -9,6 +9,8 @@ import { getLanguage }          from '../../services/PortalDemo'
 import { AuthAccServerSummary } from '../CaptivePortal/AuthAccServerSummary'
 import * as UI                  from '../styledComponents'
 
+import { AaaSummary } from './AaaSummary'
+
 export function PortalSummaryForm (props: {
   summaryData: NetworkSaveData;
   portalData?: Demo
@@ -20,6 +22,8 @@ export function PortalSummaryForm (props: {
   const hostDomains = summaryData.guestPortal?.hostGuestConfig?.hostDomains
   const hostEmails = summaryData.guestPortal?.hostGuestConfig?.hostEmails
   const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   return (
     <>
@@ -128,7 +132,9 @@ export function PortalSummaryForm (props: {
           enableAcctProxy={summaryData.enableAccountingProxy}
           enableAuthProxy={summaryData.enableAuthProxy}/>
       }
-      {summaryData.guestPortal?.guestNetworkType!==GuestNetworkTypeEnum.Cloudpath&&
+      {
+        summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
+        summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow &&
       <Form.Item
         label={$t({ defaultMessage: 'Redirect URL:' })}
         children={summaryData.guestPortal?.redirectUrl ||
@@ -235,6 +241,14 @@ export function PortalSummaryForm (props: {
           label={$t({ defaultMessage: 'Walled Garden:' })}
           children={summaryData.guestPortal?.walledGardens?.map(garden=>
             <div key={garden}>{garden}</div>)}
+        />
+      }
+      {isSupportNetworkRadiusAccounting &&
+        !(summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr||
+        isCloudPath) &&
+        <AaaSummary
+          summaryData={summaryData}
+          isDisplayAuth={false}
         />
       }
       {portalData?.displayLangCode&&<Form.Item

@@ -5,7 +5,7 @@ import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                    from '@acx-ui/components'
-import { EdgeServiceStatusLight, useIsEdgeReady }                                                              from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight }                                                                              from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery, useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   DhcpUeSummaryStats,
@@ -34,7 +34,6 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeReady = useIsEdgeReady()
 
   const getDhcpStatsPayload = {
     fields: [
@@ -72,8 +71,6 @@ const EdgeDHCPDetail = () => {
   useGetDhcpUeSummaryStatsQuery({
     params,
     payload: getDhcpUeSummaryStatsPayload
-  },{
-    skip: !isEdgeReady
   })
   const { clusterNameMap, edgeNodeMap, isEdgeClusterInfoLoading } = useGetEdgeClusterListQuery({
     payload: {

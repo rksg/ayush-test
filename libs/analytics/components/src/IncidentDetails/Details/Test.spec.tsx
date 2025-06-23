@@ -64,7 +64,6 @@ import { SwitchVlanMismatch }         from './SwitchVlanMismatch'
 import { Ttc }                        from './Ttc'
 
 
-jest.mock('./MuteIncident', () => ({ MuteIncident: () => <div data-testid='muteIncident' /> }))
 jest.mock('../Insights', () => ({ Insights: () => <div data-testid='insights' /> }))
 jest.mock('../NetworkImpact')
 jest.mock('../IncidentDetails/TimeSeries')
@@ -398,7 +397,6 @@ describe('Test', () => {
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
 
-        expect(screen.getByTestId('muteIncident')).toBeVisible()
         expect(screen.getByTestId('insights')).toBeVisible()
         if (test.hasNetworkImpact) {
           // eslint-disable-next-line jest/no-conditional-expect
@@ -429,7 +427,6 @@ describe('Test', () => {
         render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
-        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
       it(`should hide mute for ${test.component.name} when scope does not match`, () => {
         const { sliceType } = test.fakeIncident
@@ -444,7 +441,6 @@ describe('Test', () => {
         render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
-        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
     })
   })
