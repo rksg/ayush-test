@@ -68,6 +68,15 @@ describe('IntentAI utils', () => {
           displayStatus: DisplayStates.applyScheduled
         }
       )).toEqual({ status: Statuses.active })
+
+      expect(getTransitionStatus(
+        Actions.Optimize,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.na,
+          displayStatus: DisplayStates.naVerified
+        }
+      )).toEqual({ status: Statuses.scheduled })
     })
 
     it('should handle (Actions.Revert)', () => {

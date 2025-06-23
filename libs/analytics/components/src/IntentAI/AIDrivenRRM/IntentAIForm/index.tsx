@@ -27,10 +27,12 @@ type CRRMFormValues = FormValues<{ crrmFullOptimization: boolean }>
 type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences'], undefined>>
 
 function getFormDTO (values: CRRMFormValues): CRRMPayload {
+  const shouldTransitionToScheduled =
+    values.status === Statuses.new || values.statusReason === 'verified'
   return {
     id: values.id,
-    status: values.status === Statuses.new ? Statuses.scheduled : values.status,
-    statusReason: values.status === Statuses.new ? undefined : values.statusReason,
+    status: shouldTransitionToScheduled ? Statuses.scheduled : values.status,
+    statusReason: shouldTransitionToScheduled ? undefined : values.statusReason,
     metadata: {
       ..._.pick(values, ['preferences']),
       scheduledAt: getScheduledAt(values).utc().toISOString()

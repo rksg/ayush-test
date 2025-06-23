@@ -19,11 +19,16 @@ const fieldName = 'settings'
 const dateName = [fieldName, 'date']
 const timeName = [fieldName, 'time']
 
-interface FormValues { status: Statuses, settings: SettingsType, preferences?: unknown }
+interface FormValues {
+  status: Statuses,
+  statusReason?: string,
+  settings: SettingsType,
+  preferences?: unknown
+}
 
 export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status)
+  const showDate = isDateVisible(intent.status, intent.statusReason)
   const form = Form.useFormInstance<FormValues>()
 
   useEffect(() => {
@@ -70,7 +75,7 @@ export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
 
   return <>
     {summary}
-    {isDateVisible(intent.status) && <ScheduleDate disabled={disabled} />}
+    {isDateVisible(intent.status, intent.statusReason) && <ScheduleDate disabled={disabled} />}
     <ScheduleTime disabled={disabled}/>
   </>
 }
@@ -100,7 +105,7 @@ function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
 function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status)
+  const showDate = isDateVisible(intent.status, intent.statusReason)
 
   const label = <FormattedMessage defaultMessage='Time' />
 
@@ -158,7 +163,7 @@ const formats = {
 ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status)
+  const showDate = isDateVisible(intent.status, intent.statusReason)
   const label = showDate
     ? $t({ defaultMessage: 'Date & Time' })
     : $t({ defaultMessage: 'Time' })
@@ -168,6 +173,7 @@ ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
       convert={(settings) => {
         const value = getScheduledAt({
           status: intent.status,
+          statusReason: intent.statusReason,
           settings: settings!
         })
         const values = {
@@ -184,11 +190,11 @@ ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   </Form.Item>
 }
 
-function isDateVisible (status: Statuses) {
+function isDateVisible (status: Statuses, statusReason?: string) {
   return [
     Statuses.new,
     Statuses.scheduled
-  ].includes(status)
+  ].includes(status) || statusReason === 'verified'
 }
 
 export function getScheduledAt (values: FormValues) {
@@ -201,7 +207,7 @@ export function getScheduledAt (values: FormValues) {
   })
 
   // when intent status matches isDateVisible implementation
-  if (isDateVisible(values.status)) return scheduledAt
+  if (isDateVisible(values.status, values.statusReason)) return scheduledAt
 
   const now = moment().seconds(0).milliseconds(0)
   const bufferedNow = getFutureTime(now.clone())
@@ -218,7 +224,7 @@ export function getScheduledAt (values: FormValues) {
 }
 
 function isScheduleAtValid (values: FormValues) {
-  const showDate = isDateVisible(values.status)
+  const showDate = isDateVisible(values.status, values.statusReason)
   // logic to move date to next day if scheduledAt <= current in `getScheduledAt`
   if (!showDate) return true
 

@@ -95,6 +95,10 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
 
 const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
+    const originalStatusTrail = item.statusTrail?.find(({ status }) => status === Statuses.na)
+    if (originalStatusTrail?.statusReason === StatusReasons.verified) {
+      return { status: Statuses.na, statusReason: StatusReasons.verified }
+    }
     return { status: Statuses.new }
   }
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
@@ -118,6 +122,10 @@ const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus
   ) {
     return { status: Statuses.active }
   } else if (preStatusTrail.status === Statuses.scheduled) {
+    const originalStatusTrail = item.statusTrail?.find(({ status }) => status === Statuses.na)
+    if (originalStatusTrail?.statusReason === StatusReasons.verified) {
+      return { status: Statuses.na, statusReason: StatusReasons.verified }
+    }
     return { status: Statuses.new }
   } else if (
     [DisplayStates.pausedRevertFailed, DisplayStates.pausedReverted].includes(item.displayStatus)) {
@@ -135,9 +143,13 @@ export const getTransitionStatus =(
     case Actions.One_Click_Optimize:
       return { status: Statuses.scheduled, statusReason: StatusReasons.oneClick }
     case Actions.Optimize:
-      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus) ?
-        { status: Statuses.active } :
-        { status: Statuses.scheduled }
+      if (displayStatus === DisplayStates.naVerified) {
+        return { status: Statuses.scheduled }
+      }
+      if ([DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus)) {
+        return { status: Statuses.active }
+      }
+      return { status: Statuses.scheduled }
     case Actions.Revert:
       return { status: Statuses.revertScheduled }
     case Actions.Pause:
