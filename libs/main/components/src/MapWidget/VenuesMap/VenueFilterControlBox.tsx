@@ -11,7 +11,7 @@ import * as UI                       from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-export interface FilterState {
+interface FilterState {
   [key: string]: boolean
   [ApVenueStatusEnum.REQUIRES_ATTENTION] : boolean
   [ApVenueStatusEnum.TRANSIENT_ISSUE]: boolean
