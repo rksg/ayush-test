@@ -51,6 +51,10 @@ export const defaultThreshold: KpiThresholdType = {
   switchMulticastIpv4Utilization: kpiConfig.switchMulticastIpv4Utilization
     .histogram.initialThreshold,
   switchMulticastIpv6Utilization: kpiConfig.switchMulticastIpv6Utilization
+    .histogram.initialThreshold,
+  switchUnicastIpv4Utilization: kpiConfig.switchUnicastIpv4Utilization
+    .histogram.initialThreshold,
+  switchUnicastIpv6Utilization: kpiConfig.switchUnicastIpv6Utilization
     .histogram.initialThreshold
 }
 
@@ -236,7 +240,7 @@ export function KpiSection (props: {
           <ContentSwitcher
             tabDetails={tabDetails}
             size='small'
-            align='center'
+            align='left'
           />
         )
       })()}

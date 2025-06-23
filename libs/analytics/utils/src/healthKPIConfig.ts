@@ -531,7 +531,7 @@ export const kpiConfig = {
     }
   },
   switchMulticastIpv4Utilization: {
-    text: defineMessage({ defaultMessage: 'Ipv4 Multicast Compliance' }),
+    text: defineMessage({ defaultMessage: 'Ipv4 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -549,18 +549,18 @@ export const kpiConfig = {
       reFormatFromBarChart: noFormat
     },
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'under' }),
-        defineMessage({ defaultMessage: '{threshold} utilized' })
+        defineMessage({ defaultMessage: '{threshold} utilization' })
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with Ipv4 Multicast utilization below a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 multicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
   switchMulticastIpv6Utilization: {
-    text: defineMessage({ defaultMessage: 'Ipv6 Multicast Compliance' }),
+    text: defineMessage({ defaultMessage: 'Ipv6 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -578,14 +578,72 @@ export const kpiConfig = {
       reFormatFromBarChart: noFormat
     },
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'under' }),
-        defineMessage({ defaultMessage: '{threshold} utilized' })
+        defineMessage({ defaultMessage: '{threshold} utilization' })
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with Ipv6 Multicast utilization below a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 multicast route entries are within the threshold of the configured/supported capacity' })
+    }
+  },
+  switchUnicastIpv4Utilization: {
+    text: defineMessage({ defaultMessage: 'Ipv4 Unicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUnicastIpv4UtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchUnicastIpv4Utilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 unicast route entries are within the threshold of the configured/supported capacity' })
+    }
+  },
+  switchUnicastIpv6Utilization: {
+    text: defineMessage({ defaultMessage: 'Ipv6 Unicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUnicastIpv6UtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchUnicastIpv6Utilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 unicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
   switchCpuUtilization: {
@@ -877,20 +935,11 @@ export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
         ],
         Table: [
           'switchMulticastIpv4Utilization',
-          'switchMulticastIpv6Utilization'
+          'switchMulticastIpv6Utilization',
+          'switchUnicastIpv4Utilization',
+          'switchUnicastIpv6Utilization'
         ]
       }
-
-      // [
-      //   // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
-      //   //'switchReachability',
-      //   'switchMulticastIpv4Utilization',
-      //   'switchMulticastIpv6Utilization',
-      //   'switchMemoryUtilization',
-      //   'switchCpuUtilization',
-      //   'switchesTemperature',
-      //   'switchPoeUtilization'
-      // ]
     }
   }
   if (is10010eKPIsEnabled) {
