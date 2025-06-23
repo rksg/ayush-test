@@ -38,7 +38,11 @@ export function PhoneInput ({ callback, name, onTop, defaultCountryCode }: Phone
       } else {
         defaultCountryCode && iti.setCountry(defaultCountryCode)
       }
+      return () => {
+        iti && iti.destroy()
+      }
     }
+    return
   }, [name])
 
   return (

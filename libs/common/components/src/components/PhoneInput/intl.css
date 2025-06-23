@@ -1,6 +1,11 @@
 .iti {
   width: 100%;
 }
+
+.iti.iti--container {
+  width: 390px;
+}
+
 .iti__flag {
   background-size: auto 15px;
 }
