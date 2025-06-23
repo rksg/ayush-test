@@ -28,6 +28,7 @@ import {
   VarCustomer
 } from '@acx-ui/msp/utils'
 import {
+  AdminRbacUrlsInfo,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
   useTableQuery
@@ -35,7 +36,7 @@ import {
 import { Link, TenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasAllowedOperations, hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi, isDelegationMode, noDataDisplay }            from '@acx-ui/utils'
+import { ApiInfo, getOpsApi, isDelegationMode, noDataDisplay }   from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -86,7 +87,8 @@ export function VarCustomers () {
   // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
   // backend will fix this later
   const isAdmin = isRbacPhase3ToggleEnabled
-    ? hasRoles(adminRoles)
+    ? hasAllowedOperations([
+      getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)])
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
   const showPendingInvitations = isRbacPhase3ToggleEnabled
     ? hasAllowedOperations([
