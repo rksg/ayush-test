@@ -51,13 +51,22 @@ jest.mock('@acx-ui/rc/components', () => ({
   NetworkDetails: () => <div>NetworkDetails</div>,
   VLANPoolDetail: () => <div>VLANPoolDetail</div>,
   DHCPDetail: () => <div>DHCPDetail</div>,
-  PersonaGroupDetails: () => <div>PersonaGroupDetails</div>
+  PersonaGroupDetails: () => <div>PersonaGroupDetails</div>,
+  WifiCallingConfigureForm: () => <div>WifiCallingConfigureForm</div>,
+  WifiCallingDetailView: () => <div>WifiCallingDetailView</div>,
+  EditEthernetPortProfile: () => <div>EditEthernetPortProfile</div>,
+  EthernetPortProfileDetail: () => <div>EthernetPortProfileDetail</div>,
+  SyslogDetailView: () => <div>SyslogDetailView</div>,
+  RogueAPDetectionDetailView: () => <div>RogueAPDetectionDetailView</div>,
+  ApGroupDetails: () => <div>ApGroupDetails</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
   VenuesForm: () => <div>VenuesForm</div>,
   VenueDetails: () => <div>VenueDetails</div>,
-  VenueEdit: () => <div>VenueEdit</div>
+  VenueEdit: () => <div>VenueEdit</div>,
+  ConfigTemplateDpskDetails: () => <div>ConfigTemplateDpskDetails</div>,
+  ConfigTemplatePortalDetails: () => <div>ConfigTemplatePortalDetails</div>
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
