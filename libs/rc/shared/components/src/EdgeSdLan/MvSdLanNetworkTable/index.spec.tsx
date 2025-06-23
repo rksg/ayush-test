@@ -23,8 +23,8 @@ const mockedOnChangeFn = jest.fn()
 const mockedGetNetworkViewmodelList = jest.fn()
 const { click } = userEvent
 
-jest.mock('../../../NetworkForm/AddNetworkModal', () => ({
-  ...jest.requireActual('../../../NetworkForm/AddNetworkModal'),
+jest.mock('../../NetworkForm/AddNetworkModal', () => ({
+  ...jest.requireActual('../../NetworkForm/AddNetworkModal'),
   AddNetworkModal: () => <div data-testid='AddNetworkModal' />
 }))
 

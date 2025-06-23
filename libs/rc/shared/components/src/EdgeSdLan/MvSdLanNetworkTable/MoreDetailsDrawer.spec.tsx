@@ -4,8 +4,8 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { MoreDetailsDrawer } from '.'
 
-jest.mock('../../../useEdgeActions', () => ({
-  ...jest.requireActual('../../../useEdgeActions'),
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
