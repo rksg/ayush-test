@@ -69,7 +69,7 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.DHCP}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
@@ -85,7 +85,7 @@ export default function ServiceCatalog () {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.PIN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
@@ -95,7 +95,7 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title={''}
+            title={IncompatibilityFeatures.SD_LAN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
           />

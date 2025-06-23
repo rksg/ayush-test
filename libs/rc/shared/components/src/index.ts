@@ -230,15 +230,9 @@ export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
-  EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton
-} from './EdgeSdLan/SdLanNetworkTable'
-export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
-export {
-  EdgeSdLanP2ActivatedNetworksTable
-} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export type { ActivatedNetworksTableP2Props }
-  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+  EdgeMvSdLanActivatedNetworksTable
+} from './EdgeSdLan/MvSdLanNetworkTable'
+export type { EdgeMvSdLanActivatedNetworksTableProps } from './EdgeSdLan/MvSdLanNetworkTable'
 export {
   useEdgeMvSdLanActions,
   useGetEdgeSdLanByClusterId,

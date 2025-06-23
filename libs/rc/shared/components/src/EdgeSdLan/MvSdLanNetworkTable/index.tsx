@@ -22,11 +22,11 @@ import { WifiScopes }         from '@acx-ui/types'
 import { filterByAccess }     from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
+import { AddNetworkModal } from '../../NetworkForm/AddNetworkModal'
 
-import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
-import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
-import * as UI                                                               from './styledComponents'
+import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
+import ForwardGuestTrafficDiagramVertical                                from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
+import * as UI                                                           from './styledComponents'
 
 const dmzTunnelColumnHeaderTooltip = defineMessage({
   defaultMessage:
@@ -77,7 +77,7 @@ type SdLanActivatedNetworksIsDisableFn = (
   tooltip?: string
 } | undefined
 
-export interface ActivatedNetworksTableP2Props {
+export interface EdgeMvSdLanActivatedNetworksTableProps {
   venueId: string,
   isGuestTunnelEnabled: boolean
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
@@ -85,12 +85,12 @@ export interface ActivatedNetworksTableP2Props {
   activatedGuest?: string[],
   disabled?: boolean | SdLanActivatedNetworksIsDisableFn,
   toggleButtonTooltip?: string,
-  onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
+  onActivateChange?: ActivateNetworkSwitchButtonProps['onChange'],
   isUpdating?: boolean,
   pinNetworkIds?: string[]
 }
 
-export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP2Props) => {
+export const EdgeMvSdLanActivatedNetworksTable = (props: EdgeMvSdLanActivatedNetworksTableProps) => {
   const {
     venueId,
     isGuestTunnelEnabled,
@@ -173,7 +173,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         tooltip = disabled(venueId, row, false)?.tooltip
       }
 
-      return <ActivateNetworkSwitchButtonP2
+      return <ActivateNetworkSwitchButton
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
@@ -205,7 +205,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       }
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
-        ? <ActivateNetworkSwitchButtonP2
+        ? <ActivateNetworkSwitchButton
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}

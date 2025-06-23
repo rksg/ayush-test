@@ -9,7 +9,7 @@ jest.mock('../../../useEdgeActions', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
-describe('EdgeSdLanP2ActivatedNetworksTable MoreDetailsDrawer', () => {
+describe('EdgeMvSdLanActivatedNetworksTable MoreDetailsDrawer', () => {
   it('should render correctly', async () => {
     const mockedSetVisible = jest.fn()
     render(<MoreDetailsDrawer

@@ -14,9 +14,9 @@ import {
 import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, hasPermission, setUserProfile } from '@acx-ui/user'
 
-import { mockNetworkViewmodelList } from '../../__tests__/fixtures'
+import { mockNetworkViewmodelList } from '../__tests__/fixtures'
 
-import { EdgeSdLanP2ActivatedNetworksTable } from '.'
+import { EdgeMvSdLanActivatedNetworksTable } from '.'
 
 const mockedSetFieldValue = jest.fn()
 const mockedOnChangeFn = jest.fn()
@@ -62,7 +62,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should correctly render', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
           onActivateChange={mockedOnChangeFn}
@@ -77,7 +77,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should correctly deactivate by switch', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
           activated={['network_2', 'network_3']}
@@ -105,7 +105,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should correctly activate by switcher', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
           onActivateChange={mockedOnChangeFn}
@@ -128,7 +128,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('can change column header title by props', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
           columnsSetting={[
@@ -150,7 +150,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should popup add network modal', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
         />
@@ -163,7 +163,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should grey out OWE transition network', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
         />
@@ -178,7 +178,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
   it('should grey out network is used by PIN', async () => {
     render(
       <Provider>
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId='mocked-venue'
           isGuestTunnelEnabled={false}
           pinNetworkIds={['network_1']}
@@ -195,7 +195,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     it('should correctly display', async () => {
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_2', 'network_3']}
@@ -215,7 +215,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     it('should correctly display when guest network is undefined', async () => {
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_2', 'network_3']}
@@ -234,7 +234,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     it('should correctly deactivate guest traffic by switcher', async () => {
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_1', 'network_4']}
@@ -292,7 +292,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_1', 'network_4']}
@@ -334,7 +334,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_2', 'network_3']}
@@ -362,7 +362,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_2', 'network_3']}
@@ -390,7 +390,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
       render(
         <Provider>
-          <EdgeSdLanP2ActivatedNetworksTable
+          <EdgeMvSdLanActivatedNetworksTable
             venueId='mocked-venue-2'
             isGuestTunnelEnabled={true}
             activated={['network_2', 'network_3']}

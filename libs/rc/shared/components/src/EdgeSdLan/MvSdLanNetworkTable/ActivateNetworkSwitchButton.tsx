@@ -7,7 +7,7 @@ import { EdgeScopes }                                                           
 import { hasPermission }                                                               from '@acx-ui/user'
 import { getOpsApi }                                                                   from '@acx-ui/utils'
 
-export interface ActivateNetworkSwitchButtonP2Props {
+export interface ActivateNetworkSwitchButtonProps {
     row: Network,
     activated: string[],
     disabled?: boolean,
@@ -21,7 +21,7 @@ export interface ActivateNetworkSwitchButtonP2Props {
     tooltip?: string
 }
 
-export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButtonP2Props) => {
+export const ActivateNetworkSwitchButton = (props: ActivateNetworkSwitchButtonProps) => {
   const { $t } = useIntl()
   const { fieldName, row, activated, disabled, onChange } = props
   const isActivated = findIndex(activated, i => i === row.id) !== -1
