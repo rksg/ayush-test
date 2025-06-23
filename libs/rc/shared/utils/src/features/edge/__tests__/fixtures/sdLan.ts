@@ -65,6 +65,7 @@ export const mockedMvSdLanDataList = [{
     networkName: 'Mocked_network_4',
     wlanId: '3'
   }],
+  tunneledWlanTemplates: [],
   edgeAlarmSummary: {
     edgeId: 'mocked-edge-1',
     severitySummary: {
@@ -138,6 +139,7 @@ export const mockedMvSdLanDataList = [{
     networkName: 'Mocked_network_2',
     wlanId: '1'
   }],
+  tunneledWlanTemplates: [],
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 20,
@@ -180,6 +182,7 @@ export const mockedL2oGreSdLanDataList = [{
     forwardingTunnelProfileId: 'mock_forwardingTunnelProfileId_2',
     forwardingTunnelType: TunnelTypeEnum.VXLAN_GPE
   }],
+  tunneledWlanTemplates: [],
   edgeAlarmSummary: {
     edgeId: 'mocked-edge-1',
     severitySummary: {
@@ -246,6 +249,7 @@ export const mockedL2oGreSdLanDataList = [{
     networkName: 'Mocked_network_1',
     wlanId: '2'
   }],
+  tunneledWlanTemplates: [],
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 20,
@@ -290,6 +294,7 @@ export const mockSdLanDataForPinMutuallyExclusive = [{
     networkName: 'Mocked_network_6',
     wlanId: '3'
   }],
+  tunneledWlanTemplates: [],
   edgeAlarmSummary: {
     edgeId: 'mocked-edge-1',
     severitySummary: {

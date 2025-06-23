@@ -794,8 +794,8 @@ describe('SD-LAN feature functions', () => {
       await waitFor(() =>
         expect(result.current)
           .toStrictEqual({
-            scopedNetworkIds: ['network_2'],
-            scopedGuestNetworkIds: [],
+            scopedNetworkIds: ['network_2', 'network_1'],
+            scopedGuestNetworkIds: ['network_2'],
             sdLans: mockData
           })
       )
@@ -817,9 +817,9 @@ describe('SD-LAN feature functions', () => {
       await waitFor(() =>
         expect(result.current)
           .toStrictEqual({
-            scopedNetworkIds: ['network_1', 'network_4', 'network_2'],
+            scopedNetworkIds: ['network_1', 'network_4'],
             scopedGuestNetworkIds: ['network_4'],
-            sdLans: mockedMvSdLanDataList
+            sdLans: mockedMvSdLanDataList.slice(0, 1)
           })
       )
     })
