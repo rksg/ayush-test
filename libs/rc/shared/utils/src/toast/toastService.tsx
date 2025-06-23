@@ -89,7 +89,7 @@ const showDetails = (tx: Transaction, intl: IntlShape) => {
     defaultMessage: 'The following information was reported for the error you encountered'
   })
   const errorDetails = JSON.parse((tx?.error) as string)
-  const description = errorDetails.errors?.[0].suggestion || errorDetails.errors?.[0].reason
+  const description = errorDetails?.errors?.[0]?.suggestion || errorDetails?.errors?.[0]?.reason
 
   showActionModal({
     type: 'error',

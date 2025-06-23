@@ -28,6 +28,7 @@ import {
   VarCustomer
 } from '@acx-ui/msp/utils'
 import {
+  AdminRbacUrlsInfo,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
   useTableQuery
@@ -86,6 +87,10 @@ export function VarCustomers () {
   // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
   // backend will fix this later
   const isAdmin = isRbacPhase3ToggleEnabled
+    ? hasAllowedOperations([
+      getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)])
+    : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const showPendingInvitations = isRbacPhase3ToggleEnabled
     ? hasAllowedOperations([
       getOpsApi(MspRbacUrlsInfo.acceptRejectInvitation)])
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
@@ -349,7 +354,7 @@ export function VarCustomers () {
         }
       />
       <div>
-        {!userProfile?.support && isAdmin && <InvitationList />}
+        {!userProfile?.support && showPendingInvitations && <InvitationList />}
         <VarCustomerTable />
       </div>
     </>
