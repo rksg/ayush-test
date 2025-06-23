@@ -248,14 +248,14 @@ function SettingsForm () {
               isDisplayAccounting={!isSupportNetworkRadiusAccounting}
             />
           </>}
-          {isSupportNetworkRadiusAccounting &&
+        </>}
+        {isSupportNetworkRadiusAccounting &&
           <div>
             <RadiusSettings
               isDisplayAuth={false}
             />
           </div>
-          }
-        </>}
+        }
         {(isOpenNetworkIntegrateIdentityGroupEnable &&
           !isMacRegistrationList &&
             (isTemplate ? isIdentityGroupTemplateEnabled : true) ) &&

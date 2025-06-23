@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { DonutChart, ContentSwitcher, Card, Loader, NoData } from '@acx-ui/components'
+import { DonutChart, ContentSwitcher, Loader, NoData, HistoricalCard } from '@acx-ui/components'
 
 import { useTopNWifiClientQuery } from './services'
 
@@ -35,7 +35,7 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
 
   return (
     <Loader states={[queryResults]}>
-      <Card type='default' title={title}>
+      <HistoricalCard type='default' title={title}>
         <div style={{ marginTop: -38 }}>
           <ContentSwitcher
             tabDetails={tabDetails}
@@ -64,7 +64,7 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
         ) : (
           <NoData />
         )}
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }
