@@ -1,10 +1,8 @@
 import { Typography, Input, Form }    from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { GridCol, GridRow }                                                from '@acx-ui/components'
+import { GridCol, GridRow, PhoneInput }                                    from '@acx-ui/components'
 import { DataPromptAction, DataPromptVariable, GenericActionPreviewProps } from '@acx-ui/rc/utils'
-
-import PhoneInput from '../../PhoneInput'
 
 import { ContentPreview } from './ContentPreview'
 
