@@ -2,11 +2,10 @@ import { useMemo } from 'react'
 
 import { Loader, GoogleMap }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { usePreference }                                        from '@acx-ui/rc/generic-features/components'
 import { useDashboardV2OverviewQuery }                          from '@acx-ui/rc/services'
 import { useParams }                                            from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
-
-import { usePreference } from '../usePreference'
 
 import VenuesMap             from './VenuesMap'
 import { massageVenuesData } from './VenuesMap/helper'

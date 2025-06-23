@@ -24,7 +24,8 @@ import {
   Subtitle,
   Fieldset,
   GridCol,
-  GridRow
+  GridRow,
+  PhoneInput
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -38,7 +39,6 @@ import {
   MspPortal,
   MspLogoFile
 } from '@acx-ui/msp/utils'
-import { PhoneInput }         from '@acx-ui/rc/components'
 import {
   useExternalProvidersQuery
 } from '@acx-ui/rc/services'
