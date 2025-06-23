@@ -33,10 +33,10 @@ import {
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, TenantLink, useParams }                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                                             from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { ApiInfo, getOpsApi, isDelegationMode, noDataDisplay }   from '@acx-ui/utils'
+import { Link, TenantLink, useParams }                 from '@acx-ui/react-router-dom'
+import { RolesEnum }                                   from '@acx-ui/types'
+import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi, isDelegationMode, noDataDisplay }  from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
