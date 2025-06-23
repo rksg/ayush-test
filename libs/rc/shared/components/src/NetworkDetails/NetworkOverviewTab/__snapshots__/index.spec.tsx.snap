@@ -48,6 +48,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
 
 .c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c3 .ant-card-head-wrapper {
@@ -337,6 +338,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
 
 .c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c3 .ant-card-head-wrapper {
@@ -632,6 +634,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
 
 .c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c3 .ant-card-head-wrapper {
