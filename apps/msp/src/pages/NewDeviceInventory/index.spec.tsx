@@ -305,7 +305,11 @@ describe('Device Inventory Table', () => {
   })
   it('should render page header and grid layout', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     render(
       <Provider>

@@ -291,9 +291,9 @@ export function NewDeviceInventory () {
     _customFilters = {
       ...filter
     } as Filter
-    if (isMspDeviceInventoryFirmwareDisplayEnabled && filter.hasOwnProperty('apFirmware')) {
-      const apSwitchFirmwareList = filter.apFirmware as string[]
-      delete (_customFilters as Filter).apFirmware
+    if (isMspDeviceInventoryFirmwareDisplayEnabled && filter.hasOwnProperty('fwVersion')) {
+      const apSwitchFirmwareList = filter.fwVersion as string[]
+      delete (_customFilters as Filter).fwVersion
 
       tableQuery.setPayload({
         ...tableQuery.payload,
