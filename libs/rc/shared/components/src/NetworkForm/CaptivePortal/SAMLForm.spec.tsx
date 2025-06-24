@@ -13,7 +13,8 @@ import {
   CertificateUrls,
   NetworkSaveData,
   AccessControlUrls,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -148,6 +149,10 @@ describe('CaptiveNetworkForm - SAML', () => {
       ),
       rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
       )
     )
   })

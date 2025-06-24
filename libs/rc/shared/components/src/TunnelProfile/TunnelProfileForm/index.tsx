@@ -92,8 +92,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const formId = form.getFieldValue('id')
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
@@ -135,15 +133,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       skip: !isEdgeL2greReady,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterServiceData: data?.data
-          ,isLoading
+          clusterServiceData: data?.data,
+          isLoading
         }
       }
     })
 
   const inValidClusterIds = clusterServiceData
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
-    item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
+      item.serviceType === EdgeServiceTypeEnum.SD_LAN ||
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
@@ -260,7 +258,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             />
           </Col>
         }
-        { isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+        { isEdgeVxLanTunnelKaReady &&
           <Col span={24}>
             <Form.Item
               name='type'

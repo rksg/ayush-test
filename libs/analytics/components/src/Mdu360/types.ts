@@ -1,6 +1,6 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-export interface Mdu360TabPros {
+export interface Mdu360TabProps {
   startDate: string
   endDate: string
 }
