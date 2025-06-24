@@ -158,6 +158,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     setIsSwitchDisabled(value === '')
     if (value === '') {
       form.setFieldsValue({ gatewayFailbackEnabled: false })
+      setFallbackEnable(false)
     }
   }
 
