@@ -68,6 +68,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const isGatewayFailbackEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE)
   const form = Form.useFormInstance()
   const mtuType = Form.useWatch('mtuType')
+  const secondaryGatewayAddress = Form.useWatch('secondaryGatewayAddress')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
   const [ fallbackEnable, setFallbackEnable ] = useState<boolean>(false)
@@ -233,7 +234,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                 children={
                   readMode
                     ? transformDisplayOnOff(softGreData?.gatewayFailbackEnabled ?? false)
-                    : <Switch aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
+                    : <Switch disabled={secondaryGatewayAddress?.length === 0} aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
                 }
               />
             </UI.StyledSpace>
@@ -282,7 +283,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                   noStyle
                   children={<InputNumber
                     aria-label='Primary Availability Check Interval'
-                    style={{ width: '60px' }}
+                    style={{ width: '80px' }}
                   />}
                 />
                 <div>{$t({ defaultMessage: 'minutes' })}</div>
