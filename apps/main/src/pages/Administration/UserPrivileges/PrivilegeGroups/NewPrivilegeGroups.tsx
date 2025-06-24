@@ -47,7 +47,6 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const mspUtils = MSPUtils()
   const navigate = useNavigate()
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
-  const isPtenantUsersPrivilegesEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE);
   const [customRoleOption, setCustomRoleOption] = useState<string[] | RolesEnum[]>()
   const { rbacOpsApiEnabled } = getUserProfile()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
@@ -113,13 +112,13 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   }
 
   function useColumns () {
-
+    const isPtenantUsersPrivilegesEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE);
     const columns:TableProps<PrivilegeGroup>['columns'] = [
       {
         title: $t({ defaultMessage: 'Name' }),
         key: 'name',
         dataIndex: 'name',
-        searchable: isPtenantUsersPrivilegesEnabled ? true : false,
+        searchable: isPtenantUsersPrivilegesEnabled,
         defaultSortOrder: 'ascend',
         sorter: { compare: sortProp('name', defaultSort) },
         render: (_, row) => {
