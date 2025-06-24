@@ -91,7 +91,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -312,7 +311,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
-      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+      visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (rows, clearSelection) => {

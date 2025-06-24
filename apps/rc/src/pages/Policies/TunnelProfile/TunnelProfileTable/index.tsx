@@ -43,7 +43,6 @@ const TunnelProfileTable = () => {
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const tableQuery = useTableQuery({
@@ -143,8 +142,7 @@ const TunnelProfileTable = () => {
         dataIndex: 'type',
         sorter: true,
         // eslint-disable-next-line max-len
-        render: (_, row) => getNetworkSegmentTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN,
-          isEdgeVxLanKaReady)
+        render: (_, row) => getNetworkSegmentTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN)
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
     ),
     ...((isEdgeL2greReady)?
