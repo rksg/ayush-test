@@ -58,7 +58,18 @@ describe('Administrators', () => {
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantAuthentications.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json([
+          {
+            id: '9db335ef808',
+            clientID: '8358489e',
+            clientSecret: '6bb84ba',
+            scopes: 'PRIME_ADMIN',
+            authenticationType: 'GOOGLE_WORKSPACE',
+            name: 'Prime',
+            clientIDStatus: 'ACTIVE',
+            samlSignatureEnabled: false
+          }
+        ]))
       )
     )
   })
@@ -98,5 +109,30 @@ describe('Administrators', () => {
 
     await screen.findByTestId('mocked-AdministratorsTable')
     expect(screen.queryByTestId('mocked-DelegationsTable')).toBeNull()
+  })
+
+  it('should correctly render in delegated mode', async () => {
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          ...fakeMspEcProfile,
+          msp_label: 'msp_ec'
+        }
+      }
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administrators />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByTestId('mocked-AdministratorsTable')
+    await screen.findByTestId('mocked-DelegationsTable')
   })
 })
