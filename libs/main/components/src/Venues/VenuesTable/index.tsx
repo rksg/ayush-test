@@ -174,20 +174,6 @@ function useColumns (
         )
       }
     },
-    ...(isIotEnabled ? [{
-      title: $t({ defaultMessage: 'IoT Controller' }),
-      key: 'iotControllers',
-      dataIndex: 'iotControllers',
-      sorter: true,
-      render: function (data: ReactNode, row: Venue) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/devices/iotController`}
-            children={row.iotControllers ? row.iotControllers : 0}
-          />
-        )
-      }
-    }] : []),
     ...(isSupportWifiWiredClient? [{
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'wifi-clients',
@@ -290,6 +276,20 @@ function useColumns (
         )
       }
     },
+    ...(isIotEnabled ? [{
+      title: $t({ defaultMessage: 'IoT Controller' }),
+      key: 'iotControllers',
+      dataIndex: 'iotControllers',
+      sorter: true,
+      render: function (data: ReactNode, row: Venue) {
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices/iotController`}
+            children={row.iotControllers ? row.iotControllers : 0}
+          />
+        )
+      }
+    }] : []),
     ...(isTagsColumnEnabled ? [{
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tagList',
