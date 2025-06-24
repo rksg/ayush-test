@@ -86,16 +86,14 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
     const rightColumn = data.slice(COLUMN_SIZE)
 
     return (
-      <Loader states={[queryResults]}>
-        <UI.ColumnWrapper>
-          {renderColumn(leftColumn, currentTab)}
-          <Divider
-            type='vertical'
-            style={{ height: '135px', marginInline: 16 }}
-          />
-          {renderColumn(rightColumn, currentTab)}
-        </UI.ColumnWrapper>
-      </Loader>
+      <UI.ColumnWrapper>
+        {renderColumn(leftColumn, currentTab)}
+        <Divider
+          type='vertical'
+          style={{ height: '135px', marginInline: 16 }}
+        />
+        {renderColumn(rightColumn, currentTab)}
+      </UI.ColumnWrapper>
     )
   }
 
@@ -120,14 +118,16 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
   const title = $t({ defaultMessage: 'Top 10 Applications' })
 
   return (
-    <HistoricalCard title={title}>
-      <UI.ContentSwitcherWrapper>
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          size='small'
-          align='right'
-        />
-      </UI.ContentSwitcherWrapper>
-    </HistoricalCard>
+    <Loader states={[queryResults]}>
+      <HistoricalCard title={title}>
+        <UI.ContentSwitcherWrapper>
+          <ContentSwitcher
+            tabDetails={tabDetails}
+            size='small'
+            align='right'
+          />
+        </UI.ContentSwitcherWrapper>
+      </HistoricalCard>
+    </Loader>
   )
 }
