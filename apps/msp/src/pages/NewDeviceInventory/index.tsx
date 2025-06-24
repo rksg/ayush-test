@@ -59,7 +59,7 @@ const transformMacaddressString = (row: EcDeviceInventory) => {
 }
 
 const transformFirmwareString = (row: EcDeviceInventory) => {
-  return row.fwVersion ? row.fwVersion : (row.firmwareVersion ? row.firmwareVersion : '')
+  return row.fwVersion ?? row.firmwareVersion ?? ''
 }
 
 function transformDeviceOperStatus (row: EcDeviceInventory, intl: IntlShape) {
