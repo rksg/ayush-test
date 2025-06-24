@@ -3,12 +3,12 @@ import React from 'react'
 import {
   Form,
   Radio,
-  RadioChangeEvent
+  RadioChangeEvent,
+  Space
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SpaceWrapper }           from '@acx-ui/rc/components'
 
 import * as UI from './styledComponents'
 
@@ -89,7 +89,7 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
         style={{ width: '100%' }}
         onChange={onSelectModeChange}
       >
-        <SpaceWrapper full direction='vertical' size='middle'>
+        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
           {authTypesList.map((item) => {
             return (
               <React.Fragment key={item.value}>
@@ -99,7 +99,7 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
                 </Radio>
               </React.Fragment>
             )})}
-        </SpaceWrapper>
+        </Space>
 
         <Form.Item
           noStyle

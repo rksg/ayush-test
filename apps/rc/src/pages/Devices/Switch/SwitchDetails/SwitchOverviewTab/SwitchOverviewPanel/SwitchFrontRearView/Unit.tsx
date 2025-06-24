@@ -6,14 +6,19 @@ import { useIntl } from 'react-intl'
 
 import { Button, Descriptions, Drawer, showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useAcknowledgeSwitchMutation,
+import {
+  useAcknowledgeSwitchMutation,
   useDeleteStackMemberMutation,
   useLazySwitchPortlistQuery,
-  useLazySwitchRearViewQuery }                                                                                      from '@acx-ui/rc/services'
-import { getPoeUsage,
+  useLazySwitchRearViewQuery
+}                                                                                      from '@acx-ui/rc/services'
+import {
+  getPoeUsage,
   getSwitchModel,
+  isEmpty
+} from '@acx-ui/rc/switch/utils'
+import {
   getSwitchPortLabel,
-  isEmpty,
   StackMember,
   SwitchFrontView,
   SwitchModelInfo,
@@ -23,7 +28,8 @@ import { getPoeUsage,
   SwitchSlot,
   SwitchStatusEnum,
   SwitchViewModel,
-  transformSwitchUnitStatus } from '@acx-ui/rc/utils'
+  transformSwitchUnitStatus
+} from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { hasPermission }                                from '@acx-ui/user'

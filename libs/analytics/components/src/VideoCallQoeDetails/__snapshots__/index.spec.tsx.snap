@@ -1386,6 +1386,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -7168,6 +7169,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -12454,6 +12456,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -18212,6 +18215,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -20433,6 +20437,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
