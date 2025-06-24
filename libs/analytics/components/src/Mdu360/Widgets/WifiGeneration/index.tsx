@@ -14,7 +14,7 @@ import {
 import type { DonutChartData } from '@acx-ui/components'
 import { intlFormats }         from '@acx-ui/formatter'
 
-import { DistributionMatrix, Mdu360TabPros } from '../../types'
+import { DistributionMatrix, Mdu360TabProps } from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
 
@@ -76,7 +76,7 @@ export const tooltipValuesFunc = (
   const values = distributionData[name].clientDistribution
   return {
     values: Object.entries(values).map(([clientCapability, clientCount], index) => (
-      <span key={clientCapability}>
+      <span key={clientCapability} style={{ marginLeft: '14px' }}>
         {clientCapability}: <strong>{clientCount}</strong>
         {index < Object.entries(values).length - 1 && <br/>}
       </span>
@@ -84,7 +84,7 @@ export const tooltipValuesFunc = (
   }
 }
 
-export const WifiGeneration: React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
+export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
   const { $t } = useIntl()
   const queryResults = useWifiGenerationQuery({
     path: [{ type: 'network', name: 'Network' }], // replace the finalized filter as needed
@@ -114,7 +114,7 @@ export const WifiGeneration: React.FC<Mdu360TabPros> = ({ startDate, endDate }) 
           showValue
           dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
           tooltipFormat={defineMessage({
-            defaultMessage: '{name}: {formattedValue}<br></br>{values}'
+            defaultMessage: 'Client Distribution:<br></br>{values}'
           })}
           tooltipValuesFunc={tooltipValuesFunc(data.distributionData)}
         />
