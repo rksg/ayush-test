@@ -134,15 +134,9 @@ export const InvalidIcon = styled.div`
   width: 16px;
   height: 16px;
 
-  svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--acx-semantics-red-70);
-    path:nth-child(2) {
-      fill: var(--acx-semantics-red-70);
-      stroke: var(--acx-semantics-red-70);
-    }
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export const EditButton = styled.div`

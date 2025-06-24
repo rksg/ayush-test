@@ -138,7 +138,7 @@ describe('BaseStepNode', () => {
     expect(screen.getByTestId('expectedChild')).toBeVisible()
     expect(screen.getByTestId('StartFlag')).toBeVisible()
     expect(screen.getByTestId('EndFlag')).toBeVisible()
-    expect(screen.getByTestId('WarningCircleSolid')).toBeVisible()
+    expect(screen.getByTestId('ExclamationMark')).toBeVisible()
 
     // selected style would not show up
     expect(screen.queryByTestId('Plus')).toBeNull()

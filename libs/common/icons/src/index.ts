@@ -156,6 +156,7 @@ export { ReactComponent as EnvelopClosedSolid } from './icons/EnvelopClosedSolid
 export { ReactComponent as EnvelopOpenOutlined } from './icons/EnvelopOpenOutlined.svg'
 export { ReactComponent as EnvelopOpenSolid } from './icons/EnvelopOpenSolid.svg'
 export { ReactComponent as Epson } from './icons/Epson.svg'
+export { ReactComponent as ExclamationMark } from './icons/ExclamationMark.svg'
 export { ReactComponent as ExpandAllCircleOutlined } from './icons/ExpandAllCircleOutlined.svg'
 export { ReactComponent as ExpandAllCircleSolid } from './icons/ExpandAllCircleSolid.svg'
 export { ReactComponent as ExpandSquareDown } from './icons/ExpandSquareDown.svg'
