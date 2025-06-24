@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { ResidentExperienceTab }                 from '@acx-ui/analytics/components'
-import type { Mdu360TabPros }                    from '@acx-ui/analytics/components'
+import { ResidentExperienceTab, Mdu360TabPros }  from '@acx-ui/analytics/components'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 

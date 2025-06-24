@@ -18,18 +18,18 @@ import { DistributionMatrix, Mdu360TabPros } from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
 
-const LEGEND: string[] = [
-  'Non Wi-Fi 6/6E AP',
-  'Wi-Fi 6/6E AP',
-  'Wi-Fi 7 AP'
-]
-
-type WiFiGenerationChartData = {
-  distribution: DonutChartData[],
+interface WiFiGenerationChartData {
+  distribution: DonutChartData[]
   distributionData: DistributionMatrix
   olderClientCount: number
   olderApCount: number
 }
+
+const apLegend: string[] = [
+  'Non Wi-Fi 6/6E AP',
+  'Wi-Fi 6/6E AP',
+  'Wi-Fi 7 AP'
+]
 
 const getWifiGenerationChartData =
 (data: ApDistribution[]): WiFiGenerationChartData => {
@@ -55,7 +55,7 @@ const getWifiGenerationChartData =
 
   return {
     distribution:
-    LEGEND
+    apLegend
       .filter(legendItem => distributionData[legendItem]) // Only include items that exist in data
       .map(name => ({
         name,

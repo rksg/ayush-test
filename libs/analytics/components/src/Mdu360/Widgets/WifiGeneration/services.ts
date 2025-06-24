@@ -3,18 +3,15 @@ import { gql } from 'graphql-request'
 import { dataApi } from '@acx-ui/store'
 
 import { Mdu360Filter } from '../../types'
-
-export type ApDistribution = {
+export interface ApDistribution {
   apWifiCapability: string
   clientCapability: string
   apCount: number
   clientCount: number
 }
-
-export type HierarchyNodeData = {
+export interface HierarchyNodeData {
   apWifiCapabilityDistribution: ApDistribution[]
 }
-
 interface Response <T> {
   network: {
     hierarchyNode: T
@@ -46,11 +43,7 @@ export const api = dataApi.injectEndpoints({
         }
       }
         `,
-        variables: {
-          start: payload.start,
-          end: payload.end,
-          path: payload.path
-        }
+        variables: payload
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>{
         return response.network.hierarchyNode.apWifiCapabilityDistribution ?? []
