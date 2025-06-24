@@ -53,6 +53,13 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => mockedUseLocation()
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ProtectedEnforceTemplateToggleVenue: () => <div>ProtectedEnforceTemplateToggleVenue</div>,
+  useEnforcedStatus: () => ({
+    getEnforcedStepsFormProps: jest.fn()
+  })
+}))
+
 const services = require('@acx-ui/rc/services')
 
 type MutationFnSwitcherTypes = Parameters<typeof useConfigTemplateMutationFnSwitcher>
