@@ -5,12 +5,17 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                                                               from '@acx-ui/feature-toggle'
-import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                                                               from '@acx-ui/rc/components'
-import { edgeApi }                                                                                                                                                                                              from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                                                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                                                                                                                          from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { edgeApi }                                                                from '@acx-ui/rc/services'
+import {
+  EdgeClusterStatus,
+  EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures,
+  EdgePortTypeEnum, EdgeSdLanFixtures,
+  EdgeUrlsInfo, IncompatibilityFeatures
+} from '@acx-ui/rc/utils'
+import { Provider, store }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -25,7 +30,7 @@ const {
   mockedHaNetworkSettings
 } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
-const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
+const { mockedMvSdLanServiceDmz } = EdgeSdLanFixtures
 const { mockedDualWanNetworkSettings } = EdgeDualWanFixtures
 const mockEdgeCluster = _.cloneDeep(EdgeGeneralFixtures.mockEdgeCluster)
 mockEdgeCluster.virtualIpSettings.virtualIps[0].virtualIp = '2.2.2.90'
@@ -113,7 +118,7 @@ const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
 const defaultCxtData = {
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   portsStatus: mockedPortsStatus,
-  edgeSdLanData: mockedSdLanServiceP2Dmz as EdgeSdLanViewDataP2,
+  edgeSdLanData: mockedMvSdLanServiceDmz,
   clusterNetworkSettings: mockedHaNetworkSettings,
   isLoading: false,
   isFetching: false

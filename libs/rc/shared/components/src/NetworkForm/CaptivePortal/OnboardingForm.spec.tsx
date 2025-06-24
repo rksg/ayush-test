@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                                                                                                         from '@acx-ui/components'
-import { CommonUrlsInfo, GuestNetworkTypeEnum, PortalUrlsInfo, WifiUrlsInfo, NetworkSaveData, NetworkTypeEnum, AccessControlUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved }                                               from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                                                                            from '@acx-ui/user'
+import { StepsFormLegacy }                                                                                                                            from '@acx-ui/components'
+import { CommonUrlsInfo, GuestNetworkTypeEnum, PortalUrlsInfo, WifiUrlsInfo, NetworkSaveData, NetworkTypeEnum, AccessControlUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                   from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved }                                                                  from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                                                                               from '@acx-ui/user'
 
 import {
   enhancedLayer2PolicyListResponse,
@@ -86,7 +86,10 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (_, res, ctx) => res(ctx.json(enhancedAccessControlList))),
       rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
-        (_, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse)))
+        (_, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      )
     )
   })
 
