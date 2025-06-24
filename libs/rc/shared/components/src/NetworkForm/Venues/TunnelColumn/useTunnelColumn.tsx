@@ -39,10 +39,8 @@ interface useTunnelColumnProps {
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const {
@@ -190,7 +188,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         </Space>
       }
     }]
-    : [ ...(!isEdgePinHaEnabled && (isEdgeSdLanMvEnabled || isSoftGreEnabled) ? [{
+    : [ ...(!isEdgePinHaEnabled ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',

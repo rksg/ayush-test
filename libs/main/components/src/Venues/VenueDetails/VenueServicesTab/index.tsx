@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
+import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier }                                                                                    from '@acx-ui/user'
 
@@ -15,8 +15,8 @@ import EdgeDhcpTab              from './DHCPInstance/Edge'
 import EdgeFirewall             from './Firewall'
 import MdnsProxyInstances       from './MdnsProxyInstances'
 import { EdgeMdnsTab }          from './MdnsProxyInstances/Edge'
+import EdgeMvSdLan              from './MvSdLan'
 import { EdgePin }              from './Pin'
-import EdgeSdLan                from './SdLan'
 import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
@@ -24,9 +24,6 @@ export function VenueServicesTab () {
   const { isTemplate } = useConfigTemplate()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE) && !isTemplate
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
   // eslint-disable-next-line max-len
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
@@ -90,7 +87,7 @@ export function VenueServicesTab () {
     }
   })
 
-  const { edgeSdLanData } = useGetEdgeSdLanP2ViewDataListQuery(
+  const { edgeSdLanData } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
       fields: [
         'id',
@@ -107,13 +104,12 @@ export function VenueServicesTab () {
         'guestEdgeClusterName',
         'isGuestTunnelEnabled',
         'edgeAlarmSummary',
-        ...(isEdgeSdLanMvEnabled
-          ? ['tunneledWlans', 'tunneledGuestWlans']
-          : ['networkIds', 'guestNetworkIds', 'networkInfos'])
+        'tunneledWlans',
+        'tunneledGuestWlans'
       ],
-      filters: { [isEdgeSdLanMvEnabled ? 'tunneledWlans.venueId' : 'venueId']: [venueId] }
+      filters: { 'tunneledWlans.venueId': [venueId] }
     } }, {
-      skip: !(isEdgeSdLanReady || isEdgeSdLanHaEnabled || isEdgeSdLanMvEnabled),
+      skip: isTemplate,
       selectFromResult: ({ data }) => {
         return { edgeSdLanData: data?.data?.[0] }
       }
@@ -204,7 +200,7 @@ export function VenueServicesTab () {
             tab={$t({ defaultMessage: 'SD-LAN' })}
             key={ServiceType.EDGE_SD_LAN}
           >
-            <EdgeSdLan data={edgeSdLanData} />
+            <EdgeMvSdLan data={edgeSdLanData}/>
           </Tabs.TabPane>
         }
       </Tabs>

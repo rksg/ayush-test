@@ -23,7 +23,8 @@ import {
   WifiUrlsInfo,
   EthernetPortProfileUrls,
   RulesManagementUrlsInfo,
-  MacRegListUrlsInfo
+  MacRegListUrlsInfo,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -172,6 +173,10 @@ describe('MyPolicies', () => {
       rest.get(
         SwitchUrlsInfo.getAccessControlCount.url,
         (req, res, ctx) => res(ctx.json(5))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [],totalCount: 0 }))
       )
     )
   })
