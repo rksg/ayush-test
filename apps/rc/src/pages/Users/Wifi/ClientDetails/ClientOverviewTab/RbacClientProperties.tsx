@@ -121,8 +121,8 @@ export function RbacClientProperties ({ clientDetails } : { clientDetails: Clien
       const getMetaData = async () => {
         try {
           await Promise.all([
-            getAp({ params: { venueId, serialNumber } }, true),
-            getVenue({ params: { venueId } }, true),
+            getAp({ params: { venueId, serialNumber }, enableRbac: true }, true),
+            getVenue({ params: { venueId }, enableRbac: true }, true),
             getNetwork({ params: { networkId }, enableRbac: true }, true)
           ]).then(([ ap, venue, network ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */

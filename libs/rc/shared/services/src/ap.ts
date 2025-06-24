@@ -451,7 +451,12 @@ export const apApi = baseApApi.injectEndpoints({
       keepUnusedDataFor: 0
     }),
     getAp: build.query<ApDeep, RequestPayload>({
-      queryFn: async ({ params }, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (!enableRbac) {
+          const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+          const res = await fetchWithBQ({ ...req })
+          return { data: res.data as ApDeep }
+        }
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
         const getApReq = createHttpRequest(WifiRbacUrlsInfo.getAp, params, apiCustomHeader)
         const getApRes = await fetchWithBQ({ ...getApReq })

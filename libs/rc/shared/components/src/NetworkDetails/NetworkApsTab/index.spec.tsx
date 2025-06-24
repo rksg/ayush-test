@@ -1,9 +1,9 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                          from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }              from '@acx-ui/test-utils'
 
 import { NetworkApsTab } from '.'
 
@@ -132,7 +132,14 @@ describe('NetworkApsTab', () => {
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(apGroupList))
-      )
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

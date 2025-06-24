@@ -14,7 +14,15 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockedVenueApList, mockedTenantId, mockedVenueId, mockedMdnsProxyList, mockedApList, mockedMdnsProxyQueryResult, mockedMdnsProxyQueryResultWithoutActivation } from './__tests__/fixtures'
+import {
+  mockedVenueApList,
+  mockedTenantId,
+  mockedVenueId,
+  mockedMdnsProxyList,
+  mockedApList,
+  mockedMdnsProxyQueryResult,
+  mockedMdnsProxyQueryResultWithoutActivation
+} from './__tests__/fixtures'
 
 import MdnsProxyInstances from '.'
 

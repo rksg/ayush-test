@@ -266,14 +266,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
-      ),
-      rest.get(WifiUrlsInfo.queryDpskService.url,
-        (_, res, ctx) => res(ctx.json({ })))
+      )
     )
   })
 
   describe('ClientProperties', () => {
-    // TODO: match snapshot
     describe('Normal Client', () => {
       it('should render client correctly', async () => {
         render(<Provider>
@@ -422,7 +419,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               dpskServiceProfileId: '123456789'
             }))
           ),
-          rest.get(WifiUrlsInfo.queryDpskService.url,
+          rest.get(WifiUrlsInfo.queryDpskService.url.replace(':networkId', clientDetails.networkInformation.id),
             (_, res, ctx) => res(ctx.json({ id: 'fakeDpskServiceId' }))),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
@@ -621,7 +618,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
           rest.post(CommonRbacUrlsInfo.getVenues.url, (_, res, ctx) =>
             res(ctx.json(VenueList))
           ),
-          rest.get(WifiUrlsInfo.queryDpskService.url,
+          rest.get(WifiUrlsInfo.queryDpskService.url.replace(':networkId', clientDetails.networkId),
             (_, res, ctx) => res(ctx.json({ id: 'fakeDpskServiceId' }))),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))

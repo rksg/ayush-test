@@ -15,7 +15,11 @@ import { RbacClientsTable } from './RbacClientsTable'
 
 export const defaultRbacClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','mldMacAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
+  searchTargetFields: [
+    'macAddress','mldMacAddress','ipAddress',
+    'username','hostname','osType',
+    'networkInformation.ssid','networkInformation.vni', 'networkInformation.vlan'
+  ],
   filters: {},
   fields: [
     'modelName', 'deviceType', 'osType', 'username', 'hostname',

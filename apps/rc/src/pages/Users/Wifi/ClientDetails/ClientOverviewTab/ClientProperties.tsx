@@ -118,10 +118,10 @@ export function ClientProperties ({ clientDetails }: { clientDetails: Client }) 
 
           await Promise.all([
             ...( shouldGetAp
-              ? [getAp({ params: { venueId, serialNumber } }, true)] : [[]]
+              ? [getAp({ params: { venueId, serialNumber }, enableRbac: true }, true)] : [[]]
             ),
             ...( shouldGetVenue
-              ? [getVenue({ params: { venueId } }, true)] : [[]]
+              ? [getVenue({ params: { venueId }, enableRbac: true }, true)] : [[]]
             ),
             getNetwork({ params: { networkId }, enableRbac: true }, true)
           ]).then(([ ap, venue, network ]) => {
