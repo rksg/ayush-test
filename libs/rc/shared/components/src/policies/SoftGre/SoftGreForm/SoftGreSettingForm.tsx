@@ -156,6 +156,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const handleSecondaryGatewayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim()
     setIsSwitchDisabled(value === '')
+    if (value === '') {
+      form.setFieldsValue({ gatewayFailbackEnabled: false })
+    }
   }
 
   const toggleFallbackEnable = (checked: boolean) => {
