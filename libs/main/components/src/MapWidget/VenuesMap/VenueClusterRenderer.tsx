@@ -24,7 +24,7 @@ import { NavigateProps } from '.'
 
 let currentInfoWindow: google.maps.InfoWindow
 
-export interface VenueClusterTooltipData {
+interface VenueClusterTooltipData {
   icon: ReactNode,
   title: string,
   popoverContent: ReactNode
