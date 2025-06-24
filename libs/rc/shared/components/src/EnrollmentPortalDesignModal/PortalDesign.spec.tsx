@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
@@ -50,6 +52,7 @@ const file = new File(['logo ruckus'],
 describe('Portal Design', () => {
   const getUIConfigApi = jest.fn()
   const getUIConfigImageApi = jest.fn()
+  const updateUIConfigImageApi = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   const params = { tenantId: 't1', policyId: 'id' }
   beforeEach(async () => {
@@ -68,17 +71,23 @@ describe('Portal Design', () => {
           getUIConfigImageApi()
           return res(ctx.json({ fileUrl: 'fileUrl' }))
         }
+      ),
+      rest.post(
+        WorkflowUrls.updateWorkflowUIConfig.url,
+        (reg, res, ctx) => {
+          updateUIConfigImageApi()
+          return res(ctx.json({}))
+        }
       )
     )
   })
 
   it('should render correctly', async () => {
     render(<Provider>
-      <PortalDesign id='id'/>
+      <PortalDesign id='id' />
     </Provider>, {
       route: { params }
     })
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await userEvent.click(await screen.findByTitle('deskicon'))
     await userEvent.click(await screen.findByTitle('tableticon'))
@@ -118,5 +127,23 @@ describe('Portal Design', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
+  })
+
+  it('should call onFinish from parent correctly', async () => {
+    const MockEnrollmentPortalDesignModal = () => {
+      const portalRef = useRef<{ onFinish: ()=> Promise<boolean> }>(null)
+      return <>
+        <button onClick={() => portalRef.current?.onFinish()}>Cancel</button>
+        <PortalDesign id='id' ref={portalRef} />
+      </>
+    }
+    render(<Provider>
+      <MockEnrollmentPortalDesignModal />
+    </Provider>, {
+      route: { params }
+    })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(updateUIConfigImageApi).toHaveBeenCalledTimes(1)
   })
 })
