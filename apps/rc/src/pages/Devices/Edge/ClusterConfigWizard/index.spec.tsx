@@ -20,7 +20,7 @@ import ClusterConfigWizard from './index'
 
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
@@ -81,7 +81,7 @@ describe('ClusterConfigWizard', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       ),
       rest.get(
         EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,

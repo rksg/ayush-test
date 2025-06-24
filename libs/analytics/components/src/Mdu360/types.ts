@@ -1,4 +1,4 @@
-export type Mdu360TabPros = {
+export type Mdu360TabProps = {
   startDate: string
   endDate: string
 }

@@ -61,8 +61,6 @@ describe('NetworkTunnelDrawer', () => {
     mockedGetVenueSdLanFn.mockReset()
     mockedOnFinish.mockReset()
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
@@ -462,8 +460,7 @@ describe('NetworkTunnelDrawer', () => {
         ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
-        || ff === Features.WIFI_R370_TOGGLE
-        || ff === Features.EDGE_SD_LAN_MV_TOGGLE)
+        || ff === Features.WIFI_R370_TOGGLE)
       mockServer.use(
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
