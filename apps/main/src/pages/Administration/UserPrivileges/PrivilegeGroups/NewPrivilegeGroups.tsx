@@ -113,6 +113,7 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   }
 
   function useColumns () {
+
     const columns:TableProps<PrivilegeGroup>['columns'] = [
       {
         title: $t({ defaultMessage: 'Name' }),
