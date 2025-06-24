@@ -334,7 +334,8 @@ export enum Features {
   WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication',
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
-  SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle'
+  SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
