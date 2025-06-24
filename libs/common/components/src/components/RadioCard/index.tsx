@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
-import { ButtonProps, RadioProps, Tooltip }          from 'antd'
+import { ButtonProps, RadioProps }                   from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { SmartEdgeSolid, SwitchSolid, WiFi } from '@acx-ui/icons'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
+import { Tooltip }               from '../Tooltip'
 
 import {
   Button, Radio, Card, Title, Description,
@@ -59,7 +60,8 @@ export function RadioCard ({
   type = 'default', title, description, value, categories = [], categoryDisplayMode = 'text',
   buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, disabledTooltip, ...rest
 }: RadioCardProps) {
-  return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
+
+  const radioCard = <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
       { isBetaFeature ? getTitleWithIndicator(title as string) : title }
       { helpIcon }
@@ -71,10 +73,13 @@ export function RadioCard ({
       buttonText={buttonText}
       buttonProps={buttonProps}
       onClick={onClick}
-      tooltip={disabledTooltip}
     />
-    {type === 'radio' && <RadioButton value={value} tooltip={disabledTooltip} {...rest} />}
+    {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
+
+  return disabledTooltip
+    ? <Tooltip title={disabledTooltip} >{radioCard}</Tooltip>
+    : radioCard
 }
 
 function CategoryViewer (
@@ -100,35 +105,19 @@ function CategoryViewer (
   </CategoryWrapper>
 }
 
-// eslint-disable-next-line max-len
-type ActionButtonProps = Pick<RadioCardProps, 'type' | 'buttonText' | 'buttonProps' | 'onClick'> & { tooltip?: React.ReactNode }
+type ActionButtonProps = Pick<RadioCardProps, 'type' | 'buttonText' | 'buttonProps' | 'onClick'>
 function ActionButton (props: ActionButtonProps) {
-  const { type, buttonText, buttonProps, onClick, tooltip } = props
+  const { type, buttonText, buttonProps, onClick } = props
   const { $t } = useIntl()
 
   if (type !== 'button' || !buttonText) return null
 
-  const button = <Button
+  return <Button
     {...buttonProps}
     onClick={onClick}
     size='small'
     type='primary'
   >{$t(buttonText)}</Button>
-
-  return tooltip
-    ? <Tooltip title={tooltip} ><span>{button}</span></Tooltip>
-    : button
-}
-
-type RadioButtonProps = RadioProps & Pick<RadioCardProps, 'value'> & { tooltip?: React.ReactNode }
-function RadioButton (props: RadioButtonProps) {
-  const { value, tooltip, ...rest } = props
-
-  const radio = <Radio value={value} {...rest}/>
-
-  return tooltip
-    ? <Tooltip title={tooltip}><span>{radio}</span></Tooltip>
-    : radio
 }
 
 RadioCard.Radio = Radio

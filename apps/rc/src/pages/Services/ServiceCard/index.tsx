@@ -66,7 +66,10 @@ export function ServiceCard (props: ServiceCardProps) {
       }
       buttonProps={{ disabled: isLimitReached }}
       disabled={isLimitReached}
-      disabledTooltip={$t(profileLimitReachedMessage, { maxCount: count })}
+      disabledTooltip={isLimitReached
+        ? $t(profileLimitReachedMessage, { maxCount: count })
+        : undefined
+      }
       key={serviceType}
       value={serviceType}
       title={formatServiceName()}
