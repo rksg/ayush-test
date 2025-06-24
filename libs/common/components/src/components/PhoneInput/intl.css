@@ -1,8 +1,12 @@
 .iti {
   width: 100%;
 }
+
+.iti.iti--container {
+  width: 390px;
+}
+
 .iti__flag {
-  background-image: url('img/flags2x.png');
   background-size: auto 15px;
 }
 .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
@@ -12,7 +16,7 @@
   background-color: var(--acx-accents-orange-10);
 }
 .iti__country.iti__active {
-  background-color: var(--acx-accents-orange-20);  
+  background-color: var(--acx-accents-orange-20);
 }
 
 /* ===== Phone Country List Scrollbar CSS ===== */

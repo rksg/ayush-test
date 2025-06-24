@@ -25,7 +25,7 @@ import { addressParserWithLatLng, defaultAddress } from '@acx-ui/msp/utils'
 import {
   GoogleMapWithPreference,
   usePlacesAutocomplete
-} from '@acx-ui/rc/components'
+} from '@acx-ui/rc/generic-features/components'
 import {
   useLazyVenuesListQuery,
   useGetVenueQuery,
