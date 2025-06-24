@@ -42,8 +42,19 @@ function KpiTimeseries ({
 }) {
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
+    ? enableSwitchFirmwareFilter()
+    : enableSwitchFirmwareFilter
+
   const queryResults = healthApi.useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: threshold as unknown as string, enableSwitchFirmwareFilter },
+    {
+      ...filters,
+      kpi,
+      threshold: threshold as unknown as string,
+      enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
+    },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

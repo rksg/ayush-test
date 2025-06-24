@@ -83,10 +83,16 @@ export function KpiWidget ({
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
+    ? enableSwitchFirmwareFilter()
+    : enableSwitchFirmwareFilter
+
   const historgramQuery = useKpiHistogramQuery({
     ...filters,
     kpi: name,
-    enableSwitchFirmwareFilter
+    enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
   }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
@@ -106,7 +112,7 @@ export function KpiWidget ({
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: calculateGranularity(startDate,endDate),
-    enableSwitchFirmwareFilter
+    enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
   }, {
     selectFromResult: (response) => {
       const agg = response.data && transformTSResponse(response.data, { startDate, endDate })

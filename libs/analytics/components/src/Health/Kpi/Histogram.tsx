@@ -77,6 +77,12 @@ function Histogram ({
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   const [ triggerSave ] = healthApi.useSaveThresholdMutation()
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
+    ? enableSwitchFirmwareFilter()
+    : enableSwitchFirmwareFilter
+
   const onButtonReset = useCallback(() => {
     const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
     setThresholdValue(defaultConfig)
@@ -112,7 +118,7 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
   const queryResults = healthApi.useKpiHistogramQuery(
-    { ...filters, kpi, enableSwitchFirmwareFilter },
+    { ...filters, kpi, enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
