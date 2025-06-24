@@ -3,13 +3,9 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { Loader, DonutChart, NoData } from '@acx-ui/components'
 import type { DonutChartData }        from '@acx-ui/components'
 import { formatter }                  from '@acx-ui/formatter'
+import { UseQueryResult }             from '@acx-ui/types'
 
-import { useTrafficByRadioQuery, TrafficByRadioData } from './services'
-
-import { TrafficByRadioFilters } from '.'
-
-
-export { TrafficSnapshotWidget as TrafficSnapshot }
+import { TrafficByRadioData } from './services'
 
 function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): DonutChartData[]{
   const trafficSnapshotChartData: DonutChartData[] = []
@@ -38,13 +34,8 @@ function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): Don
   return trafficSnapshotChartData
 }
 
-function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters }) {
-
-  const queryResults = useTrafficByRadioQuery({
-    path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
-    startDate: filters.startDate,
-    endDate: filters.endDate
-  })
+export function TrafficSnapshot ({ queryResults }:
+  { queryResults: UseQueryResult<TrafficByRadioData> }) {
 
   const chartData = getTrafficSnapshotChartData(queryResults?.data)
 
@@ -70,5 +61,3 @@ function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters })
     </Loader>
   )
 }
-
-export default TrafficSnapshotWidget

@@ -1,32 +1,19 @@
-import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                                  from '@acx-ui/analytics/utils'
-import { Loader, StackedAreaChart,
-  NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { formatter }                        from '@acx-ui/formatter'
-import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getSeriesData }                            from '@acx-ui/analytics/utils'
+import { Loader, NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { formatter }                                from '@acx-ui/formatter'
+import { UseQueryResult }                           from '@acx-ui/types'
 
-import { useTrafficByRadioQuery, TrafficByRadioData } from './services'
+import { TrafficByRadioData } from './services'
 
-import { TrafficByRadioFilters } from '.'
-
-type Key = keyof Omit<TrafficByRadioData, 'time'>
-
-export { TrafficTrendWidget as TrafficTrend }
-
-TrafficTrendWidget.defaultProps = {
-  vizType: 'line'
-}
-
-function TrafficTrendWidget ({
-  filters, vizType
-}: { filters : TrafficByRadioFilters , vizType: string }) {
+export function TrafficTrend ({
+  queryResults
+}: { queryResults: UseQueryResult<TrafficByRadioData> }) {
   const { $t } = useIntl()
-  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
+  type Key = keyof Omit<TrafficByRadioData, 'time'>
   const seriesMapping = [
     { key: 'userTraffic_all', name: $t({ defaultMessage: 'All Bands' }) },
     { key: 'userTraffic_24', name: formatter('radioFormat')('2.4') },
@@ -34,46 +21,21 @@ function TrafficTrendWidget ({
     { key: 'userTraffic_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
-  const queryResults = useTrafficByRadioQuery({
-    path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
-    startDate: filters.startDate,
-    endDate: filters.endDate
-  }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
-      ...rest
-    })
-  })
-
-  useTrackLoadTime({
-    itemName: widgetsMapping.TRAFFIC_BY_VOLUME,
-    states: [queryResults],
-    isEnabled: isMonitoringPageEnabled
-  })
+  const data = getSeriesData(queryResults.data!, seriesMapping)
 
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          queryResults.data.length ?
-            vizType === 'area' ?
-              <StackedAreaChart
-                style={{ width, height }}
-                stackColors={take(qualitativeColorSet(), 3)}
-                data={queryResults.data}
-                tooltipTotalTitle={$t({ defaultMessage: 'Total Traffic' })}
-                dataFormatter={formatter('bytesFormat')}
-              /> :
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults.data}
-                dataFormatter={formatter('bytesFormat')}
-              />
+          data.length ?
+            <MultiLineTimeSeriesChart
+              style={{ width, height }}
+              data={data}
+              dataFormatter={formatter('bytesFormat')}
+            />
             : <NoData/>
         )}
       </AutoSizer>
     </Loader>
   )
 }
-
-export default TrafficTrendWidget
