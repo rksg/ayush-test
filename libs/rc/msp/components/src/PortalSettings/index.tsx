@@ -62,7 +62,8 @@ import defaultAlarmLogo   from '../images/ruckus-logo-alarm.png'
 import defaultPortalLogo  from '../images/ruckus-logo-cloud.png'
 import defaultSupportLogo from '../images/ruckus-logo-notification.png'
 import supportLinkImg     from '../images/supportlink.png'
-import * as UI            from '../styledComponents'
+
+import * as UI from './styledComponents'
 
 export const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len

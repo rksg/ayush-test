@@ -12,12 +12,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  SelectIntegratorDrawer,
-  ManageMspDelegationDrawer
-} from '@acx-ui/msp/components'
-import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
@@ -42,8 +36,12 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import { AccountType, getOpsApi, noDataDisplay }                                                            from '@acx-ui/utils'
 
-import HspContext                  from '../../HspContext'
-import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
+import HspContext                    from '../../HspContext'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { AssignEcMspAdminsDrawer }   from '../MspCustomers/AssignEcMspAdminsDrawer'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 
 export function MspRecCustomers () {
   const { $t } = useIntl()

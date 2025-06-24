@@ -15,12 +15,6 @@ import {
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  ManageMspDelegationDrawer,
-  SelectIntegratorDrawer
-} from '@acx-ui/msp/components'
-import {
   useAddBrandCustomersMutation,
   useAddRecCustomerMutation,
   useDisableMspEcSupportMutation,
@@ -51,6 +45,11 @@ import {
 import { RolesEnum }                  from '@acx-ui/types'
 import { useUserProfileContext }      from '@acx-ui/user'
 import { AccountType, noDataDisplay } from '@acx-ui/utils'
+
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 import * as UI                     from './styledComponents'

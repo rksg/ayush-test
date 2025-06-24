@@ -69,6 +69,10 @@ jest.mock('@acx-ui/main/components', () => ({
   ConfigTemplatePortalDetails: () => <div>ConfigTemplatePortalDetails</div>
 }))
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  Brand360: () => <div>Brand360</div>
+}))
+
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.NETWORK]: false,
   [ConfigTemplateType.VENUE]: false,
