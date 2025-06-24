@@ -11,7 +11,9 @@ import {
   ClientStatistic,
   DpskUrls,
   SwitchRbacUrlsInfo,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  WifiRbacUrlsInfo,
+  ClientInfo
 } from '@acx-ui/rc/utils'
 import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
 import {
@@ -36,12 +38,12 @@ import {
   GuestClients,
   VenueList,
   dpskPassphraseClient,
-  nonRbacClientRadioType,
-  clientMeta
+  clientInfoList
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
+import { RbacClientProperties } from './RbacClientProperties'
 
 import { ClientOverviewTab } from '.'
 
@@ -99,14 +101,9 @@ describe('ClientOverviewTab root', () => {
           mockReqEventMeta()
           return res(ctx.json(eventMetaList))
         }),
-      rest.get(ClientUrlsInfo.getClientDetails.url,
-        (_, res, ctx) => res(ctx.json(clientList[0]))),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json(clientMeta))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
-      rest.get(WifiUrlsInfo.getNetwork.url,
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
@@ -115,10 +112,7 @@ describe('ClientOverviewTab root', () => {
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
-      rest.post(ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(CommonUrlsInfo.getVenues.url,
+      rest.post(CommonRbacUrlsInfo.getVenues.url,
         (_, res, ctx) => res(ctx.json(VenueList))
       ),
       graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
@@ -260,25 +254,21 @@ describe('ClientOverviewTab - ClientProperties', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMetaList))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
-      rest.get(WifiUrlsInfo.getNetwork.url,
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
-      rest.post(ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
-      ),
-      rest.post(ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
-      )
+      ),
+      rest.get(WifiUrlsInfo.queryDpskService.url,
+        (_, res, ctx) => res(ctx.json({ })))
     )
   })
 
@@ -287,9 +277,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
     describe('Normal Client', () => {
       it('should render client correctly', async () => {
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientList[0] as Client}
+          <RbacClientProperties
+            clientDetails={clientInfoList[0] as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -302,13 +291,15 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render client VNI correctly', async () => {
         const clientData = {
-          ...clientList[0],
-          vni: 9527
+          ...clientInfoList[0],
+          networkInformation: {
+            ...clientInfoList[0].networkInformation,
+            vni: 9527
+          }
         }
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientData as Client}
+          <RbacClientProperties
+            clientDetails={clientData as unknown as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -321,33 +312,34 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render client without some data correctly', async () => {
         const clientDetails = {
-          ...clientList[0],
+          ...clientInfoList[0],
           osType: null,
           hostname: null,
           networkName: null,
           receiveSignalStrength_dBm: -70,
           snr_dB: null,
           wifiCallingClient: true,
-          wifiCallingCarrierName: 'att1',
-          wifiCallingQosPriority: 'WIFICALLING_PRI_VOICE',
-          wifiCallingTotal: 242424,
-          wifiCallingTx: 121212,
-          wifiCallingRx: 121212
+          wifiCallingStatus: {
+            carrierName: 'att1',
+            qosPriority: 'WIFICALLING_PRI_VOICE',
+            trafficFromClient: 121212,
+            trafficToClient: 121212,
+            totalTraffic: 242424
+          }
         }
 
         mockServer.use(
-          rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+          rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
 
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientDetails as unknown as Client}
+          <RbacClientProperties
+            clientDetails={clientDetails as unknown as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -359,14 +351,14 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render guest client correctly', async () => {
         const clientDetails = {
-          ...clientList[0],
+          ...clientInfoList[0],
           osType: 'apple',
           networkName: null,
           receiveSignalStrength_dBm: -90
         }
 
         mockServer.use(
-          rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+          rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
               ...clientApList[0],
               name: null
@@ -376,7 +368,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientVenueList[0],
               name: null
             }))),
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'guest',
@@ -395,18 +387,14 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClients.url, (_, res, ctx) =>
-            res(ctx.json(GuestClients))
-          ),
           rest.post(
             SwitchRbacUrlsInfo.getSwitchClientList.url,
             (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
           )
         )
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientDetails as unknown as Client}
+          <RbacClientProperties
+            clientDetails={clientDetails as unknown as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -421,29 +409,29 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render dpsk client correctly', async () => {
         const clientDetails = {
-          ...clientList[0],
+          ...clientInfoList[0],
           username: 'Fake User 1',
-          osType: 'apple',
-          receiveSignalStrength_dBm: null
+          osType: 'apple'
         }
 
         mockServer.use(
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'dpsk',
               dpskServiceProfileId: '123456789'
             }))
           ),
+          rest.get(WifiUrlsInfo.queryDpskService.url,
+            (_, res, ctx) => res(ctx.json({ id: 'fakeDpskServiceId' }))),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
 
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientDetails as unknown as Client}
+          <RbacClientProperties
+            clientDetails={clientDetails as unknown as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -456,9 +444,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(true)
 
         render(<Provider>
-          <ClientProperties
-            clientStatus='connected'
-            clientDetails={clientList[0] as Client}
+          <RbacClientProperties
+            clientDetails={clientInfoList[0] as unknown as ClientInfo}
           />
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -494,7 +481,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         render(<Provider>
           <ClientProperties
-            clientStatus='historical'
             clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
@@ -520,16 +506,15 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 ssid: null
               }]
             }))),
-          rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+          rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(CommonRbacUrlsInfo.getVenue.url,
             (_, res, ctx) => res(ctx.json(null)))
         )
         render(<Provider>
           <ClientProperties
-            clientStatus='historical'
             clientDetails={{
               ...clientDetails,
               disconnectTime: null,
@@ -551,7 +536,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
 
         mockServer.use(
-          rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+          rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
               ...clientApList[0],
               name: null
@@ -561,7 +546,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
               ...clientVenueList[0],
               name: null
             }))),
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'guest',
@@ -591,7 +576,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
         )
         render(<Provider>
           <ClientProperties
-            clientStatus='historical'
             clientDetails={{
               ...clientDetails,
               ssid: null
@@ -605,7 +589,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
           }
         })
         await waitFor(() => {
-          expect(mockGetClientList).toBeCalledTimes(2)
+          expect(mockGetClientList).toBeCalledTimes(1)
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
@@ -615,10 +599,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
-          rest.get(WifiUrlsInfo.getNetwork.url,
+          rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'dpsk',
@@ -635,12 +618,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
-            res(ctx.json(GuestClients))
-          ),
-          rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
+          rest.post(CommonRbacUrlsInfo.getVenues.url, (_, res, ctx) =>
             res(ctx.json(VenueList))
           ),
+          rest.get(WifiUrlsInfo.queryDpskService.url,
+            (_, res, ctx) => res(ctx.json({ id: 'fakeDpskServiceId' }))),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
@@ -648,7 +630,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         render(<Provider>
           <ClientProperties
-            clientStatus='historical'
             clientDetails={clientDetails as unknown as Client}
           />
         </Provider>, {
@@ -663,12 +644,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
           key === 'clientStatus' ? 'historical' : null
         )
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         store.dispatch(dataApi.util.resetApiState())
         mockServer.use(
-          rest.get(ClientUrlsInfo.getClientDetails.url,
-            (_, res, ctx) => res(ctx.status(404), ctx.json({}))
-          ),
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
             (_, res, ctx) => res(ctx.json(histClientList))
           ),
