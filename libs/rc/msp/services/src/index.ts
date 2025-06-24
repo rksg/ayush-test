@@ -227,12 +227,13 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getDeviceFirmwareList: build.query<string[], RequestPayload>({
-      query: ({ params }) => {
+    getDeviceFirmwareList: build.query<{ data: string[] }, RequestPayload>({
+      query: ({ params, payload }) => {
         const req =
           createHttpRequest(MspUrlsInfo.getDeviceFirmwareList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
