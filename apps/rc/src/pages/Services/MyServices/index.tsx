@@ -11,13 +11,13 @@ import {
   useGetEdgeFirewallViewDataListQuery,
   useGetEdgeMdnsProxyViewDataListQuery,
   useGetEdgePinViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery,
   useGetEdgeTnmServiceListQuery,
   useGetEnhancedMdnsProxyListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetEdgeMvSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -47,8 +47,6 @@ export default function MyServices () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -127,12 +125,9 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.EDGE],
-      totalCount: useGetEdgeSdLanP2ViewDataListQuery({
+      totalCount: useGetEdgeMvSdLanViewDataListQuery({
         params, payload: { fields: ['id', 'edgeClusterId'] }
-      },{
-        skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
-      }).data?.totalCount,
-      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+      }).data?.totalCount
     },
     {
       type: ServiceType.EDGE_TNM_SERVICE,
