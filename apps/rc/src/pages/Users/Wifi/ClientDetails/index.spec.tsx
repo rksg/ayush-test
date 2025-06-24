@@ -6,8 +6,8 @@ import { apApi, clientApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   ClientUrlsInfo,
-  WifiUrlsInfo,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { store, Provider, dataApiURL } from '@acx-ui/store'
 import {
@@ -19,7 +19,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  clientList,
   clientApList,
   clientVenueList,
   clientReportList,
@@ -92,9 +91,9 @@ describe('ClientDetails', () => {
         (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventsMeta))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
-      rest.get(WifiUrlsInfo.getNetwork.url,
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
