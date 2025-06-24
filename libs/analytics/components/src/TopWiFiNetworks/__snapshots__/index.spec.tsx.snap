@@ -82,10 +82,15 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 332)"
     />
+    <path
+      d="M13 3.5l11 0l0 1l-11 0Z"
+      fill="none"
+      transform="translate(709 332)"
+    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
       transform="translate(709 332)"
       x="13"
@@ -108,10 +113,15 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 364)"
     />
+    <path
+      d="M13 3.5l4 0l0 1l-4 0Z"
+      fill="none"
+      transform="translate(709 364)"
+    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
       transform="translate(709 364)"
       x="13"
@@ -134,10 +144,15 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 396)"
     />
+    <path
+      d="M13 3.5l16 0l0 1l-16 0Z"
+      fill="none"
+      transform="translate(709 396)"
+    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
       transform="translate(709 396)"
       x="13"
@@ -160,10 +175,15 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 428)"
     />
+    <path
+      d="M13 3.5l3 0l0 1l-3 0Z"
+      fill="none"
+      transform="translate(709 428)"
+    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
       transform="translate(709 428)"
       x="13"
@@ -186,10 +206,15 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 460)"
     />
+    <path
+      d="M13 3.5l14 0l0 1l-14 0Z"
+      fill="none"
+      transform="translate(709 460)"
+    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
       transform="translate(709 460)"
       x="13"
@@ -203,12 +228,12 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill-opacity="0"
       stroke="#ccc"
       stroke-width="0"
-      transform="translate(363.4 400)"
+      transform="translate(376.2 400)"
     />
     <path
       d="M0 0l0 0l0 0l0 0Z"
       fill="none"
-      transform="translate(363.4 400)"
+      transform="translate(376.2 400)"
     />
   </g>
 </svg>
@@ -416,19 +441,12 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       stroke-width="2"
     />
     <path
-      d="M384 72L384 168Z"
-      fill="#F095FF"
-      stroke="#FFFFFF"
-      stroke-linejoin="round"
-      stroke-width="2"
-    />
-    <path
-      d="M-5 -5l39 0l0 154l-39 0Z"
+      d="M-5 -5l37 0l0 122l-37 0Z"
       fill="rgb(0,0,0)"
       fill-opacity="0"
       stroke="#ccc"
       stroke-width="0"
-      transform="translate(709 328)"
+      transform="translate(709 344)"
     />
     <path
       d="M8 4A4 4 0 1 1 8 3.9996"
@@ -438,19 +456,24 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       stroke-linejoin="round"
       stroke-miterlimit="10"
       stroke-width="0"
-      transform="translate(709 332)"
+      transform="translate(709 348)"
     />
     <path
       d="M13 -4l4 0l0 16l-4 0Z"
       fill="none"
-      transform="translate(709 332)"
+      transform="translate(709 348)"
+    />
+    <path
+      d="M13 3.5l4 0l0 1l-4 0Z"
+      fill="none"
+      transform="translate(709 348)"
     />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
-      transform="translate(709 332)"
+      transform="translate(709 348)"
       x="13"
       y="4"
     >
@@ -464,19 +487,24 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       stroke-linejoin="round"
       stroke-miterlimit="10"
       stroke-width="0"
-      transform="translate(709 364)"
+      transform="translate(709 380)"
     />
     <path
       d="M13 -4l4 0l0 16l-4 0Z"
       fill="none"
-      transform="translate(709 364)"
+      transform="translate(709 380)"
+    />
+    <path
+      d="M13 3.5l4 0l0 1l-4 0Z"
+      fill="none"
+      transform="translate(709 380)"
     />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
-      transform="translate(709 364)"
+      transform="translate(709 380)"
       x="13"
       y="4"
     >
@@ -490,19 +518,24 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       stroke-linejoin="round"
       stroke-miterlimit="10"
       stroke-width="0"
-      transform="translate(709 396)"
+      transform="translate(709 412)"
     />
     <path
       d="M13 -4l14 0l0 16l-14 0Z"
       fill="none"
-      transform="translate(709 396)"
+      transform="translate(709 412)"
+    />
+    <path
+      d="M13 3.5l14 0l0 1l-14 0Z"
+      fill="none"
+      transform="translate(709 412)"
     />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
-      transform="translate(709 396)"
+      transform="translate(709 412)"
       x="13"
       y="4"
     >
@@ -516,49 +549,28 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       stroke-linejoin="round"
       stroke-miterlimit="10"
       stroke-width="0"
-      transform="translate(709 428)"
+      transform="translate(709 444)"
     />
     <path
       d="M13 -4l11 0l0 16l-11 0Z"
       fill="none"
-      transform="translate(709 428)"
+      transform="translate(709 444)"
+    />
+    <path
+      d="M13 3.5l11 0l0 1l-11 0Z"
+      fill="none"
+      transform="translate(709 444)"
     />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
       text-anchor="start"
-      transform="translate(709 428)"
+      transform="translate(709 444)"
       x="13"
       y="4"
     >
       760_SV_WPA2
-    </text>
-    <path
-      d="M8 4A4 4 0 1 1 8 3.9996"
-      fill="#F095FF"
-      stroke="#FFFFFF"
-      stroke-linecap="butt"
-      stroke-linejoin="round"
-      stroke-miterlimit="10"
-      stroke-width="0"
-      transform="translate(709 460)"
-    />
-    <path
-      d="M13 -4l16 0l0 16l-16 0Z"
-      fill="none"
-      transform="translate(709 460)"
-    />
-    <text
-      dominant-baseline="central"
-      fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;"
-      text-anchor="start"
-      transform="translate(709 460)"
-      x="13"
-      y="4"
-    >
-      CIOT_APs-WPA2_SV
     </text>
     <path
       d="M-5 -5l10 0l0 10l-10 0Z"
@@ -566,12 +578,12 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       fill-opacity="0"
       stroke="#ccc"
       stroke-width="0"
-      transform="translate(363.4 400)"
+      transform="translate(376.2 400)"
     />
     <path
       d="M0 0l0 0l0 0l0 0Z"
       fill="none"
-      transform="translate(363.4 400)"
+      transform="translate(376.2 400)"
     />
   </g>
 </svg>
@@ -625,6 +637,7 @@ exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
 
 .c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c1 .ant-card-head-wrapper {

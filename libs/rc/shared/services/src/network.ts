@@ -46,7 +46,8 @@ import {
   MacRegistrationPool,
   TxStatus,
   NewAPModel,
-  VlanPool
+  VlanPool,
+  PoliciesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1489,10 +1490,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkApiPayload = arg.payload as Record<string, unknown>
+        const { isTemplate } = networkApiPayload
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
 
+        const wifiNetworksListUrl = isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : CommonRbacUrlsInfo.getWifiNetworksList
         const networkListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
+          ...createHttpRequest(wifiNetworksListUrl, apiCustomHeader),
           body: JSON.stringify(networkApiPayload) })
 
         const networksList = networkListQuery.data as TableResult<WifiNetwork>
@@ -1500,8 +1503,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         // fetch vlan pool info
         const networkIds = networksList?.data.map(item => item.id!) || []
         if (networksList.data.length && (networkApiPayload?.fields as string[])?.includes('vlanPool')) {
+          const vlanPoolListUrl = isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
           const vlanPoolListQuery = await fetchWithBQ({
-            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
+            ...createHttpRequest(vlanPoolListUrl),
             body: JSON.stringify({
               fields: ['id', 'name', 'wifiNetworkIds'],
               filters: { wifiNetworkIds: networkIds }
@@ -1825,6 +1829,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       query: ({ params }) => {
         const headers = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
+    }),
+    bindingWorkflowOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingWorkflowOnNetwork, params, headers)
         return {
           ...req
         }
@@ -2194,7 +2207,8 @@ export const {
   useVenueWifiRadioActiveNetworksQuery,
   useLazyVenueWifiRadioActiveNetworksQuery,
   useBindingPersonaGroupWithNetworkMutation,
-  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
+  useBindingWorkflowOnNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

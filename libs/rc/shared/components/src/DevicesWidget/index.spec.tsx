@@ -1,6 +1,6 @@
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { Provider  }              from '@acx-ui/store'
-import { render,
+import { Provider } from '@acx-ui/store'
+import {
+  render,
   screen
 } from '@acx-ui/test-utils'
 
@@ -13,12 +13,15 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} />
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} />
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
     expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(2)
+    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(3)
   })
   it('should render correctly with right arrow enabled', async () => {
     const params = {
@@ -26,7 +29,10 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} enableArrowClick/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -45,10 +51,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -67,10 +75,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -89,10 +99,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
           enableArrowClick
         />
       </Provider>,
@@ -109,12 +121,15 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]}/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]}/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
     expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(2)
+    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(3)
   })
   it('should render correctly with right arrow enabled', async () => {
     const params = {
@@ -122,7 +137,10 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} enableArrowClick/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -131,9 +149,6 @@ describe('Devices widget v1', () => {
 })
 
 describe('Devices widget V2 edge enabled', () => {
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-  })
   it('should render loader and then chart', async () => {
     const params = {
       tenantId: 'tenant-id'
@@ -145,10 +160,12 @@ describe('Devices widget V2 edge enabled', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={2}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -170,10 +187,12 @@ describe('Devices widget V2 edge enabled', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })

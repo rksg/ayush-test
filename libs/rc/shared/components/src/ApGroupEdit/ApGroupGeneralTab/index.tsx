@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Col, Form, Input, Row, Select, Tag } from 'antd'
 import { TransferItem }                               from 'antd/lib/transfer'
@@ -67,13 +67,11 @@ export function ApGroupGeneralTab () {
   const { isTemplate } = useConfigTemplate()
   const {
     isEditMode,
-    isApGroupTableFlag,
     isRbacEnabled,
     setEditContextData,
     venueId
   } = useContext(ApGroupEditContext)
   const [apsOption, setApsOption] = useState([] as TransferItem[])
-  const [apInfos, setApInfos] = useState({} as Record<string, NewAPModel>)
   const [tableDataOption, setTableDataOption] = useState([] as TransferItem[])
   const [isHide, setIsHide] = useState(false)
   // eslint-disable-next-line max-len
@@ -82,9 +80,7 @@ export function ApGroupGeneralTab () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = usePathBasedOnConfigTemplate('/devices/', '')
-  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
-    ? `${basePath.pathname}/wifi/apgroups`
-    : `${basePath.pathname}/wifi`)
+  const navigatePathName = isTemplate ? basePath.pathname : `${basePath.pathname}/wifi/apgroups`
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
@@ -141,21 +137,19 @@ export function ApGroupGeneralTab () {
     pagination: { pageSize: 10000 }
   })
 
-  useEffect(() => {
-    if (Object.keys(apInfos).length == 0) return
-    if (newApTableListQuery.data?.data && Object.keys(apInfos).length === 0) {
-      const apInfos = newApTableListQuery.data.data.reduce((acc, data) => {
-        if ((data as { children?: NewAPModel[] }).children?.length) {
-          (data as { children?: NewAPModel[] }).children?.forEach((ap) => {
-            acc[(ap as NewAPModel).serialNumber] = ap
-          })
-        }
-        return acc
-      }, {} as Record<string, NewAPModel>)
-      setApInfos(apInfos)
-    }
+  const apInfos: Record<string, NewAPModel> = useMemo(() => {
+    const dataList = newApTableListQuery.data?.data
+    if (!dataList) return {}
 
-  }, [newApTableListQuery])
+    return dataList.reduce((acc, data) => {
+      if ((data as { children?: NewAPModel[] }).children?.length) {
+        (data as { children?: NewAPModel[] }).children?.forEach((ap) => {
+          acc[(ap as NewAPModel).serialNumber] = ap
+        })
+      }
+      return acc
+    }, {} as Record<string, NewAPModel>)
+  }, [newApTableListQuery.data?.data])
 
   const locationState = location.state as { venueId?: string, history?: string }
 
@@ -198,7 +192,7 @@ export function ApGroupGeneralTab () {
   }, [isEditMode, apGroupData, isApGroupDataLoading, venueId, apInfos])
 
   const handleVenueChange = async (value: string,
-    extraMemberList?: ApGroupOptionType[]) => {
+    extraMemberList: ApGroupOptionType[] = []) => {
     const defaultApGroupOption: ApGroupOptionType[] = []
 
     if (value) {
@@ -239,7 +233,7 @@ export function ApGroupGeneralTab () {
       }
     }
 
-    if (extraMemberList && defaultApGroupOption) {
+    if (defaultApGroupOption) {
       setApsOption(defaultApGroupOption.concat(extraMemberList)
         .filter((option, ind) => ind ===
           defaultApGroupOption.findIndex(elem => elem.name === option.name &&
@@ -286,7 +280,7 @@ export function ApGroupGeneralTab () {
         isDirty: false
       })
 
-      if (!isEditMode || !isApGroupTableFlag) {
+      if (!isEditMode) {
         navigate(navigatePathName, { replace: true })
       }
     } catch (error) {
@@ -318,7 +312,7 @@ export function ApGroupGeneralTab () {
   }
 
   const handleFormChanged = async () => {
-    if (isEditMode && isApGroupTableFlag) {
+    if (isEditMode) {
       const curFormData = formRef.current?.getFieldsValue()
       const oldFormData = oldFormDataRef.current
 
@@ -387,12 +381,13 @@ export function ApGroupGeneralTab () {
           style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto', fontSize: '13px' }}
           type={'link'}
           onClick={() => {
-            if (isHide) {
-              setTableDataOption(apsOption)
-            } else {
-              setTableDataOption(apsOption.filter(option => option.name.includes('AP')))
-            }
             setIsHide(!isHide)
+            if (!isHide) {
+              // eslint-disable-next-line max-len
+              setTableDataOption(apsOption.filter(option => !option.apGroupName))
+            } else {
+              setTableDataOption(apsOption.filter(option => option))
+            }
           }}
         >
           {isHide
@@ -421,7 +416,7 @@ export function ApGroupGeneralTab () {
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              {(!isApGroupTableFlag || !isEditMode) &&
+              {(!isEditMode) &&
                 <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
               }
               <Form.Item
@@ -472,7 +467,10 @@ export function ApGroupGeneralTab () {
                   ? <Transfer
                     listStyle={{ width: 400, height: 400 }}
                     type={'table'}
-                    tableData={tableDataOption}
+                    tableData={
+                      tableDataOption
+                        .filter(option => isHide ? !option.apGroupName : option)
+                    }
                     leftColumns={leftColumns}
                     rightColumns={rightColumns}
                     showSearch

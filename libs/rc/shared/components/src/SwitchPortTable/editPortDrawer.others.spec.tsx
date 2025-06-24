@@ -4,10 +4,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { switchApi }                          from '@acx-ui/rc/services'
-import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { switchApi }                                                     from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo, allMultipleEditableFields } from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -22,19 +22,16 @@ import {
   aclUnion,
   defaultVlan,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue
 } from './__tests__/fixtures'
 import {
-  EditPortDrawer,
-  allMultipleEditableFields
+  EditPortDrawer
 } from './editPortDrawer'
 
 const params = {
@@ -46,21 +43,12 @@ const params = {
 
 const editPortVlans = async (
   inputTagged: string, inputUntagged: string,
-  currentStatus?: string, voiceVlan?: string, checkPortsModel?:boolean
+  currentStatus?: string, voiceVlan?: string
 ) => {
   await userEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
   const dialog = await screen.findByTestId('select-port-vlans')
-
-  if (checkPortsModel) {
-    await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
-    const dialogs = await screen.findAllByRole('dialog')
-    const drawer = dialogs[2]
-    expect(await within(drawer).findByText(/Add Model/i)).toBeVisible()
-    expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
-    await userEvent.click(await within(drawer).findByRole('button', { name: /Cancel/i }))
-  }
 
   if (inputTagged) {
     await userEvent.click(await within(dialog).findByRole('tab', { name: 'Tagged VLANs' }))
@@ -163,9 +151,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -196,9 +181,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
       ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
-      ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
@@ -220,12 +202,14 @@ describe('EditPortDrawer', () => {
   describe('multiple edit', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
+      mockServer.use(
+        rest.post(SwitchUrlsInfo.getDefaultVlan.url,
+          (_, res, ctx) => res(ctx.json(defaultVlan))
+        )
+      )
     })
     it('should render consistent LLDP data correctly', async () => {
       mockServer.use(
-        rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-          (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
-        ),
         rest.post(SwitchUrlsInfo.getPortsSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portsSetting,
@@ -261,11 +245,6 @@ describe('EditPortDrawer', () => {
     })
 
     it('should apply edit data correctly', async () => {
-      mockServer.use(
-        rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-          (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
-        )
-      )
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -294,7 +273,7 @@ describe('EditPortDrawer', () => {
       const dialog = await screen.findByTestId('select-port-vlans')
 
       const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
-      await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
+      await userEvent.click(await within(untaggedTabPanel).findByText('VLAN-ID-2'))
 
       await userEvent.click(await screen.findByText('Tagged VLAN'))
       const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
@@ -780,7 +759,7 @@ describe('EditPortDrawer', () => {
     it('should render status and vlans correctly (multiple edit)', async () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-          (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+          (_, res, ctx) => res(ctx.json(defaultVlan))
         ),
         rest.post(SwitchUrlsInfo.getPortsSetting.url,
           (_, res, ctx) => res(ctx.json({

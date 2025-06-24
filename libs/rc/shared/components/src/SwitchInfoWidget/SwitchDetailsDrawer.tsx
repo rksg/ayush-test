@@ -4,12 +4,14 @@ import { Divider, Form, Select } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }   from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchViewModel,
   getAdminPassword,
-  getSwitchModel,
   getStackMemberStatus,
   isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/utils'
@@ -34,7 +36,6 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   })
 
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
-  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
@@ -115,10 +116,10 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           label={$t({ defaultMessage: 'IP Address' })}
           children={switchDetail.ipAddress || noDataDisplay}
         />
-        { enableSwitchExternalIp && <Form.Item
+        <Form.Item
           label={$t({ defaultMessage: 'Ext. IP Address' })}
           children={switchDetail.extIp || noDataDisplay}
-        />}
+        />
         <Form.Item
           label={$t({ defaultMessage: 'Subnet Mask' })}
           children={switchDetail.subnetMask || noDataDisplay}

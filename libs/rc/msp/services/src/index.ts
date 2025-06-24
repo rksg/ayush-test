@@ -29,7 +29,6 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
   MspRbacUrlsInfo,
@@ -874,18 +873,6 @@ export const mspApi = baseMspApi.injectEndpoints({
         return { ...req, body: payload }
       }
     }),
-    getRecommandFirmwareUpgrade: build.query<RecommendFirmwareUpgrade, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const mspUrlsInfo = getMspUrls(enableRbac)
-        const req = createHttpRequest(enableRbac
-          ? mspUrlsInfo.getRecommandFirmwareUpgrade
-          : mspUrlsInfo.getRecommandFirmwareUpgrade, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getFirmwareUpgradeByApModel: build.query<RecommendFirmwareUpgradeByApModel[],
       RequestPayload>({
         query: ({ params, payload }) => {
@@ -940,9 +927,8 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const mspUrlsInfo = getMspUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(mspUrlsInfo.getMspCustomersList, arg.params),
+          ...createHttpRequest(MspRbacUrlsInfo.getMspCustomersListWithoutDelegations, arg.params),
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
@@ -984,6 +970,40 @@ export const mspApi = baseMspApi.injectEndpoints({
         return { data: aggregatedList }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(MspRbacUrlsInfo.getMspCustomersListWithoutDelegations, arg.params),
+          body: arg.payload
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<MspEcWithVenue>
+        const ecVenues:{ [index:string]: Venue[] } = {}
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
+
+        list.data.forEach(async (item:MspEcWithVenue) => {
+          ecVenues[item.id] = [] as Venue[]
+          item.isUnauthorizedAccess = false
+        })
+
+        const aggregatedList = aggregatedMspEcListData(list, ecVenues)
+
+        return { data: aggregatedList }
+      }
+    }),
+    getMspEcVenuesList: build.mutation<TableResult<Venue>, RequestPayload>({
+      query: ({ params, payload, ecTenantId }: RequestPayload) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': ecTenantId
+        }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CommonUrlsInfo.getVenuesList, params, CUSTOM_HEADER, true)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     addBrandCustomers: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1150,7 +1170,7 @@ const genVenuePayload = (arg:RequestPayload<unknown>, ecTenantId:string) => {
   }
 }
 
-const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
+export const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
   ecVenues:{ [index:string]: Venue[] }) => {
   const data:MspEcWithVenue[] = []
   ecList.data.forEach(item => {
@@ -1235,7 +1255,6 @@ export const {
   useUpdateMspAggregationsMutation,
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
-  useGetRecommandFirmwareUpgradeQuery,
   useGetFirmwareUpgradeByApModelQuery,
   useMspEcFirmwareUpgradeSchedulesMutation,
   useGetAvailableMspRecCustomersQuery,
@@ -1243,6 +1262,8 @@ export const {
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
+  useGetMspEcListQuery,
+  useGetMspEcVenuesListMutation,
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,

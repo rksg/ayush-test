@@ -4,13 +4,13 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy, StepsFormLegacyInstance }             from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { venueApi }                                             from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store, userApi }                             from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor }       from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                         from '@acx-ui/user'
+import { StepsFormLegacy, StepsFormLegacyInstance }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { venueApi }                                                      from '@acx-ui/rc/services'
+import { AaaUrls, AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store, userApi }                                      from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor }                from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                  from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -96,7 +96,10 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       rest.get(AdministrationUrlsInfo.getNotificationSmsProvider.url,
         (req, res, ctx) => res(ctx.json(twilioData))),
       rest.post(AdministrationUrlsInfo.getTwiliosWhatsappServices.url,
-        (req, res, ctx) => res(ctx.json(twilioWhatsAppData)))
+        (req, res, ctx) => res(ctx.json(twilioWhatsAppData))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 
@@ -601,6 +604,156 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
     })
   })
+  describe('RedirectUrlInput functionality', () => {
+    // Mock data for testing
+    const mockNetworkWithRedirectUrl = {
+      type: 'guest',
+      guestPortal: {
+        ...selfsignData.guestPortal,
+        redirectUrl: 'http://example.com'
+      },
+      tenantId: 'tenant-id',
+      id: 'network-id'
+    }
+
+    const mockNetworkWithoutRedirectUrl = {
+      ...mockNetworkWithRedirectUrl,
+      guestPortal: {
+        ...mockNetworkWithRedirectUrl.guestPortal,
+        redirectUrl: undefined
+      }
+    }
+
+    it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+      const router = { route: { params } }
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SelfSignInForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, router
+      )
+
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+    // eslint-disable-next-line max-len
+    it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+      const router = { route: { params } }
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: true,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SelfSignInForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, router
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+      const router = { route: { params } }
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SelfSignInForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, router
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+    // eslint-disable-next-line max-len
+    it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
+      const router = { route: { params } }
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithoutRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SelfSignInForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, router
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+  })
+
   describe('SMSTokenCheckbox Edit Mode', () => {
 
     it('R1, Over 100, SMS checked', async () => {

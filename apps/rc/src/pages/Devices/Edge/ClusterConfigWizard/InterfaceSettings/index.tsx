@@ -6,6 +6,7 @@ import { useIntl }                        from 'react-intl'
 import { useNavigate, useParams }         from 'react-router-dom'
 
 import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { emptyDualWanLinkSettings }                                               from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
@@ -19,7 +20,8 @@ import {
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber, EdgeUrlsInfo,
-  getEdgeWanInterfaceCount
+  getEdgeWanInterfaceCount,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission } from '@acx-ui/user'
@@ -44,7 +46,9 @@ import {
   InterfaceSettingsTypeEnum
 } from './types'
 import {
+  DualWanStepTitle,
   getAllInterfaceAsPortInfoFromForm,
+  getAllPhysicalInterfaceData,
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
@@ -54,8 +58,7 @@ import {
 } from './utils'
 import { VirtualIpForm } from './VirtualIpForm'
 
-const lagCompatibleErrorFields = getLagFormCompatibilityFields()
-const portCompatibleErrorFields = getPortFormCompatibilityFields()
+
 const subInterfaceCompatibleErrorFields = getSubInterfaceCompatibilityFields()
 
 export const InterfaceSettings = () => {
@@ -69,7 +72,11 @@ export const InterfaceSettings = () => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo,
+    clusterNetworkSettings,
+    requiredFwMap
+  } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
@@ -88,6 +95,10 @@ export const InterfaceSettings = () => {
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
   const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
 
+  // After removing core/access FF, move the following code outside the component
+  const lagCompatibleErrorFields = getLagFormCompatibilityFields(isEdgeCoreAccessSeparationReady)
+  const portCompatibleErrorFields = getPortFormCompatibilityFields(isEdgeCoreAccessSeparationReady)
+
   const doCompatibleCheck = (typeKey: string): void => {
     const checkResult = getCompatibleCheckResult(typeKey)
     updateAlertMessage(checkResult, typeKey)
@@ -97,7 +108,8 @@ export const InterfaceSettings = () => {
     const formData = get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
-      checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
+      // eslint-disable-next-line max-len
+      checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList, isEdgeCoreAccessSeparationReady)
     } else if (typeKey === InterfaceSettingsTypeEnum.SUB_INTERFACE) {
       const allInterfaces = getAllInterfaceAsPortInfoFromForm(configWizardForm)
       checkResult = subInterfaceCompatibleCheck(
@@ -114,7 +126,8 @@ export const InterfaceSettings = () => {
         }, {} as EdgeNodesPortsInfo)) as unknown as CompatibilityCheckResult
     } else {
       const lagFormData = get(configWizardForm.getFieldsValue(true), 'lagSettings')
-      checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
+      // eslint-disable-next-line max-len
+      checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList, isEdgeCoreAccessSeparationReady)
     }
 
     return checkResult
@@ -287,7 +300,10 @@ export const InterfaceSettings = () => {
       ...(
         (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
           [{
-            title: $t({ defaultMessage: 'Dual WAN' }),
+            title: <DualWanStepTitle
+              requiredFw={requiredFwMap?.[IncompatibilityFeatures.DUAL_WAN]}
+              edgeList={clusterInfo?.edgeList}
+            />,
             id: InterfaceSettingsTypeEnum.DUAL_WAN,
             content: <DualWanForm />
           }]:[]
@@ -315,12 +331,42 @@ export const InterfaceSettings = () => {
   // eslint-disable-next-line max-len
   }, [configWizardForm, getCompatibleCheckResult, handleValuesChange, onPortStepFinish, dynamicStepsVisible])
 
-  const invokeUpdateApi = async (
+  const invokeUpdateApi = async (payload: InterfaceSettingsFormType, callback: () => void) => {
+    await updateNetworkConfig({
+      params: {
+        venueId: clusterInfo?.venueId,
+        clusterId
+      },
+      payload: transformFromFormToApiData(
+        payload,
+        clusterInfo?.highAvailabilityMode,
+        isEdgeCoreAccessSeparationReady
+      )
+    }).unwrap()
+
+    callback()
+  }
+
+  const handleUpdate = async (
     value: InterfaceSettingsFormType,
     callback: () => void
   ) => {
     try {
-      if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
+      if(isSingleNode && isDualWanConfigRemoved(value)) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `You are about to reduce the number of enabled WAN ports, 
+            which will disable the Dual WAN feature.
+            Are you sure you want to proceed?`
+          }),
+          okText: $t({ defaultMessage: 'Apply the changes' }),
+          onOk: async () => {
+            await invokeUpdateApi(value, callback)
+          }
+        })
+      } else if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
@@ -330,33 +376,11 @@ export const InterfaceSettings = () => {
             of this cluster. Are you sure you want to continue?`
           }),
           onOk: async () => {
-            await updateNetworkConfig({
-              params: {
-                venueId: clusterInfo?.venueId,
-                clusterId
-              },
-              payload: transformFromFormToApiData(
-                value,
-                clusterInfo?.highAvailabilityMode,
-                isEdgeCoreAccessSeparationReady
-              )
-            }).unwrap()
-            callback()
+            await invokeUpdateApi(value, callback)
           }
         })
       } else {
-        await updateNetworkConfig({
-          params: {
-            venueId: clusterInfo?.venueId,
-            clusterId
-          },
-          payload: transformFromFormToApiData(
-            value,
-            clusterInfo?.highAvailabilityMode,
-            isEdgeCoreAccessSeparationReady
-          )
-        }).unwrap()
-        callback()
+        await invokeUpdateApi(value, callback)
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -367,15 +391,29 @@ export const InterfaceSettings = () => {
     return !isEqual(config, clusterNetworkSettingsFormData.vipConfig)
   }
 
+  const isDualWanConfigRemoved = (config: InterfaceSettingsFormType) => {
+    // eslint-disable-next-line max-len
+    const originWanCount = getAllPhysicalInterfaceData(clusterNetworkSettingsFormData.portSettings, clusterNetworkSettingsFormData.lagSettings)
+    const currentWanCount = getAllPhysicalInterfaceData(config.portSettings, config.lagSettings)
+    const isWanCountChanged = originWanCount !== currentWanCount
+
+    const originDualWanConfig = clusterNetworkSettingsFormData.multiWanSettings
+    const currentDualWanConfig = config.multiWanSettings
+    // eslint-disable-next-line max-len
+    const isConfigRemoved = !!originDualWanConfig?.wanMembers.length && isEqual(currentDualWanConfig, emptyDualWanLinkSettings)
+
+    return isWanCountChanged && isConfigRemoved
+  }
+
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
-    await invokeUpdateApi(
+    await handleUpdate(
       value,
       () => navigate(clusterListPage)
     )
   }
 
   const applyAndContinue = async (value: InterfaceSettingsFormType) => {
-    await invokeUpdateApi(
+    await handleUpdate(
       value,
       () => navigate(selectTypePage)
     )
@@ -417,43 +455,41 @@ export const InterfaceSettings = () => {
     rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)] }
   )
 
-  return (
-    <StepsForm<InterfaceSettingsFormType>
-      form={configWizardForm}
-      alert={isSingleNode ? undefined : alertData}
-      onFinish={applyAndFinish}
-      onCancel={handleCancel}
-      initialValues={clusterNetworkSettingsFormData}
-      buttonLabel={{
-        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
-      }}
-      customSubmit={hasUpdatePermission ? {
-        label: $t({ defaultMessage: 'Apply & Continue' }),
-        onCustomFinish: applyAndContinue
-      } : undefined}
-    >
-      {
-        steps.map((item, index) =>
-          <StepsForm.StepForm
-            key={`step-${index}`}
-            name={index.toString()}
-            title={item.title}
-            onFinish={item.onFinish
-              ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
-              : undefined}
-            onFinishFailed={() => {
-              validateResultRef.current = false
-            }}
-            onValuesChange={
-              item.onValuesChange
-                // eslint-disable-next-line max-len
-                ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
-                : undefined
-            }
-          >
-            {item.content}
-          </StepsForm.StepForm>)
-      }
-    </StepsForm>
-  )
+  return <StepsForm<InterfaceSettingsFormType>
+    form={configWizardForm}
+    alert={isSingleNode ? undefined : alertData}
+    onFinish={applyAndFinish}
+    onCancel={handleCancel}
+    initialValues={clusterNetworkSettingsFormData}
+    buttonLabel={{
+      submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
+    }}
+    customSubmit={hasUpdatePermission ? {
+      label: $t({ defaultMessage: 'Apply & Continue' }),
+      onCustomFinish: applyAndContinue
+    } : undefined}
+  >
+    {
+      steps.map((item, index) =>
+        <StepsForm.StepForm
+          key={`step-${index}`}
+          name={index.toString()}
+          title={item.title}
+          onFinish={item.onFinish
+            ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
+            : undefined}
+          onFinishFailed={() => {
+            validateResultRef.current = false
+          }}
+          onValuesChange={
+            item.onValuesChange
+            // eslint-disable-next-line max-len
+              ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
+              : undefined
+          }
+        >
+          {item.content}
+        </StepsForm.StepForm>)
+    }
+  </StepsForm>
 }

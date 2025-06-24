@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Row, Col, Badge, Typography } from 'antd'
 import { IntlShape, useIntl }          from 'react-intl'
@@ -72,6 +72,14 @@ export const NotificationsTable = () => {
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
+  useEffect(() => {
+    const showDrawerByForwarding =
+      !!sessionStorage.getItem('intent-subscription-forward-r1-show-drawer')
+    if (showDrawerByForwarding) {
+      setShowDrawer(true)
+      sessionStorage.removeItem('intent-subscription-forward-r1-show-drawer')
+    }
+  }, [])
 
   const notificationList = useGetNotificationRecipientsQuery({ params })
 

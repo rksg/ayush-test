@@ -26,7 +26,6 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, roleStringMap, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import { AccountType, getOpsApi, noDataDisplay }                                                      from '@acx-ui/utils'
 
-
 import * as UI from '../../Administrators/styledComponents'
 
 import AddUserDrawer  from './AddUserDrawer'
@@ -180,7 +179,8 @@ const UsersTable = (props: UsersTableProps) => {
       filterable: privilegeGroupOption?.map(role => ({
         key: role as string,
         value: roleStringMap[role as RolesEnum]
-          ? $t(roleStringMap[role as RolesEnum]) : role as string })),
+          ? $t(roleStringMap[role as RolesEnum]) : role as string }))
+        ?.sort(sortProp('value', defaultSort)),
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : row.role
@@ -282,7 +282,9 @@ const UsersTable = (props: UsersTableProps) => {
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Local Administrators' })}

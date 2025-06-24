@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { renderFilter, filterOption } from './filters'
+import { renderFilter, filterOption, getFilteredData } from './filters'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
@@ -180,6 +180,190 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
+    })
+  })
+
+  describe('getFilteredData', () => {
+    describe('columns with string values', () => {
+      const activeFilters = [
+        {
+          key: 'name',
+          dataIndex: 'name',
+          filterable: true,
+          filterMultiple: false
+        },
+        {
+          key: 'value',
+          dataIndex: 'value',
+          filterable: true,
+          filterMultiple: false
+        }
+      ]
+
+      it('should return filtered data without children', () => {
+        const dataSource = [
+          { name: 'john', value: 'apples' },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['john'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: 'apples',
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return filtered data with children', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' },
+              { name: 'john', value: 'carrot' }
+            ]
+          },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['jack'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' }
+            ]
+          }
+        ])
+      })
+
+      it('should return no children when parent is filtered', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' },
+              { name: 'john', value: 'carrot' }
+            ]
+          },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['jack'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'name'
+          ])
+        ).toEqual([])
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'value'
+          ])
+        ).toEqual([])
+      })
+    })
+
+    describe('columns with boolean values', () => {
+      const activeFilters = [
+        {
+          key: 'value',
+          dataIndex: 'value',
+          filterable: true,
+          filterMultiple: false
+        }
+      ]
+
+      it('should return filtered data without children', () => {
+        const dataSource = [
+          { name: 'john', value: true },
+          { name: 'jane', value: false }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return filtered data with children', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'jack', value: false },
+              { name: 'john', value: true }
+            ]
+          },
+          { name: 'jane', value: true }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'john', value: true }
+            ]
+          },
+          {
+            name: 'jane',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return no children when parent is filtered', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'jack', value: false },
+              { name: 'john', value: true }
+            ]
+          },
+          { name: 'jane', value: true }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'value'
+          ])
+        ).toEqual([
+          {
+            name: 'jane',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
     })
   })
 })

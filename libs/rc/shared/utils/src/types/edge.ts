@@ -1,3 +1,5 @@
+import { FormItemProps } from 'antd'
+
 import type { TimeStamp } from '@acx-ui/types'
 
 import {
@@ -187,6 +189,7 @@ export interface EdgePortStatus {
   interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
+  isAccessPort?: string
   multiWan?: EdgeMultiWanConfigStats
 }
 
@@ -393,6 +396,7 @@ export interface EdgeLagStatus {
   ip?: string
   subnet?: string
   isCorePort: string
+  isAccessPort?: string
   multiWan?: EdgeMultiWanConfigStats
 }
 
@@ -568,6 +572,7 @@ export interface EdgePortInfo {
   subnet: string
   portType: EdgePortTypeEnum
   isCorePort: boolean
+  isAccessPort?: boolean
   isLag: boolean
   isLagMember: boolean
   portEnabled: boolean
@@ -659,9 +664,21 @@ export interface SubInterface {
   interfaceName?: string
   corePortEnabled?: boolean
   accessPortEnabled?: boolean
+  gateway?: string
 }
 
 export interface ClusterArpTerminationSettings {
   enabled: boolean
   agingTimeSec: number
+}
+
+export interface EdgeFormFieldsPropsType {
+  [key: string]: FormItemProps & {
+    title?: string
+    options?: {
+      label: string,
+      value: EdgePortTypeEnum
+    }[]
+    disabled?: boolean,
+  }
 }

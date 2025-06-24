@@ -24,7 +24,8 @@ import {
   fakeIncidentPortCongestion,
   fakeIncidentUplinkPortCongestion,
   fakeIncidentLoopDetection,
-  fakeIncidentLLDPStatus
+  fakeIncidentLLDPStatus,
+  fakeIncidentPortFlap
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { Provider }                            from '@acx-ui/store'
@@ -56,13 +57,13 @@ import { SwitchLoopDetection }        from './SwitchLoopDetection'
 import { SwitchMemoryHigh }           from './SwitchMemoryHigh'
 import { SwitchPoePd }                from './SwitchPoePd'
 import { SwitchPortCongestion }       from './SwitchPortCongestion'
+import { SwitchPortFlap }             from './SwitchPortFlap'
 import { SwitchTcpSynDDoS }           from './SwitchTcpSynDDoS'
 import { SwitchUplinkPortCongestion } from './SwitchUplinkPortCongestion'
 import { SwitchVlanMismatch }         from './SwitchVlanMismatch'
 import { Ttc }                        from './Ttc'
 
 
-jest.mock('./MuteIncident', () => ({ MuteIncident: () => <div data-testid='muteIncident' /> }))
 jest.mock('../Insights', () => ({ Insights: () => <div data-testid='insights' /> }))
 jest.mock('../NetworkImpact')
 jest.mock('../IncidentDetails/TimeSeries')
@@ -255,6 +256,13 @@ describe('Test', () => {
         charts: []
       },
       {
+        component: SwitchPortFlap,
+        fakeIncident: fakeIncidentPortFlap,
+        hasNetworkImpact: false,
+        hasTimeSeries: true,
+        charts: []
+      },
+      {
         component: SwitchPortCongestion,
         fakeIncident: fakeIncidentPortCongestion,
         hasNetworkImpact: false,
@@ -389,7 +397,6 @@ describe('Test', () => {
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
 
-        expect(screen.getByTestId('muteIncident')).toBeVisible()
         expect(screen.getByTestId('insights')).toBeVisible()
         if (test.hasNetworkImpact) {
           // eslint-disable-next-line jest/no-conditional-expect
@@ -420,7 +427,6 @@ describe('Test', () => {
         render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
-        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
       it(`should hide mute for ${test.component.name} when scope does not match`, () => {
         const { sliceType } = test.fakeIncident
@@ -435,7 +441,6 @@ describe('Test', () => {
         render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
-        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
     })
   })
@@ -457,6 +462,13 @@ describe('Test', () => {
     {
       component: SwitchLLDPStatus,
       fakeIncident: fakeIncidentLLDPStatus,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchPortFlap,
+      fakeIncident: fakeIncidentPortFlap,
       hasNetworkImpact: false,
       hasTimeSeries: false,
       charts: []

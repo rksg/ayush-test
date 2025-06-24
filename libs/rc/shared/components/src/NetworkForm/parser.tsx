@@ -122,7 +122,16 @@ const parseHotspot20SettingDataToSave = (data: NetworkSaveData, editMode: boolea
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData = { ...data }
+  let saveData = {
+    ...data,
+    wlan: data.wlan ? { ...data.wlan } : {}
+  }
+
+  saveData.wlan.wlanSecurity = (saveData.enableOweTransition)
+    ? WlanSecurityEnum.OWETransition
+    : (saveData.enableOwe)
+      ? WlanSecurityEnum.OWE
+      : WlanSecurityEnum.Open
 
   if (!editMode) {
     saveData = {
@@ -176,6 +185,11 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       }
     },
     useDpskService: !!data.dpskServiceProfileId
+  }
+
+  if(saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
+    saveData.isCloudpathEnabled){
+    saveData.enableAuthProxy = false
   }
 
   if (data.dpskServiceProfileId === '') {
@@ -429,6 +443,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
 
   if (!get(data, 'wlan.advancedCustomization.qosMapSetOptions')) {
     advancedCustomization.qosMapSetOptions = { rules: [] }
+  }
+
+  if(!get(data, 'wlan.advancedCustomization.enableFastRoaming')){
+    advancedCustomization.fastRoamingOptions = undefined
   }
 
   let saveData:NetworkSaveData = {

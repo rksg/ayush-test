@@ -14,6 +14,7 @@ import {
 import {
   DhcpStats,
   filterByAccessForServicePolicyMutation,
+  getEdgeAppCurrentVersions,
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
@@ -25,9 +26,10 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { compareVersions }                        from '@acx-ui/utils'
 
 
-const EdgeDhcpTable = () => {
+const EdgeDhcpTable = ({ hideHeader = false } : { hideHeader?: boolean }) => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -41,6 +43,7 @@ const EdgeDhcpTable = () => {
       'health',
       'targetVersion',
       'currentVersion',
+      'clusterAppVersionInfo',
       'tags',
       'edgeAlarmSummary'
     ]
@@ -86,14 +89,22 @@ const EdgeDhcpTable = () => {
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
-    if (data?.currentVersion && data?.targetVersion) {
+
+    if (data?.clusterAppVersionInfo) {
+      data?.clusterAppVersionInfo.forEach(versionInfo => {
+        if (!isReadyToUpdate && versionInfo?.currentVersion && versionInfo?.targetVersion
+          && compareVersions(versionInfo?.currentVersion, versionInfo?.targetVersion) < 0
+        ) {
+          isReadyToUpdate = true
+        }
+      })
+    } else if (data?.currentVersion && data?.targetVersion) {
       data?.currentVersion.split(',').forEach(currentVersion=>{
         if (currentVersion.trim() !== data?.targetVersion) {
           isReadyToUpdate = true
         }
       })
     }
-
     return isReadyToUpdate
   }
 
@@ -180,7 +191,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'currentVersion',
       sorter: true,
       render (data, row) {
-        return row.currentVersion || $t({ defaultMessage: 'NA' })
+        return getEdgeAppCurrentVersions(row)
       }
     }
     // {
@@ -256,15 +267,16 @@ const EdgeDhcpTable = () => {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
-      <PageHeader
+      {!hideHeader && <PageHeader
         title={
           $t({ defaultMessage: 'DHCP for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
@@ -274,7 +286,7 @@ const EdgeDhcpTable = () => {
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
       <Loader states={[
         tableQuery,
         { isLoading: false, isFetching: isDeleteDhcpUpdating || isEdgeDhcpUpgrading }

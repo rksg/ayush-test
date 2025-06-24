@@ -1,13 +1,20 @@
+import { defineMessage } from 'react-intl'
+
 export interface IotControllerStatus {
   id: string
   name: string
   inboundAddress: string
+  serialNumber?: string
   iotSerialNumber: string
   publicAddress: string
   publicPort: number
   apiToken: string
   tenantId: string
-  assocVenueIds?: string[]
+  assocVenueId?: string
+  assocVenueCount?: number
+  assocApId?: string
+  assocApVenueId?: string
+  status: IotControllerStatusEnum
 }
 
 export interface IotControllerSetting {
@@ -20,37 +27,43 @@ export interface IotControllerSetting {
   iotSerialNumber: string
 }
 
+export interface IotControllerVenues {
+  requestId: string
+  venueIds: string[]
+}
+
 export interface IotSerialNumberResult {
   requestId: string
   serialNumber: string
 }
 
+export interface SerialNumberExistsResult {
+  requestId: string
+  serialNumber: string
+  existed: boolean
+}
+
 export interface IotControllerDashboard {
-  summary?: {
-    aps?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    rcapLicenseUtilization?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    associatedVenues?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
-    },
-    activePluginsByRadio?: ActivePluginsByRadio[]
+  requestId?: string
+  apStatus?: {
+    onlineAp: number
+    offlineAp: number
+    totalAp: number
+  },
+  pluginsByRadioStatus?: {
+    totalRadioCount: number
+    radioPlugins: ActivePluginsByRadio[]
   }
+}
+
+export enum ApStatusEnum {
+  ONLINE = 'onlineAp',
+  OFFLINE = 'offlineAp'
 }
 
 export type ActivePluginsByRadio = {
   name: string
+  displayName: string
   count: number
 }
 
@@ -82,3 +95,14 @@ export interface RcapLicenseUtilizationData {
   requestId?: string
 }
 
+export enum IotControllerStatusEnum {
+  UNKNOWN = 'UNKNOWN',
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
+export const IotControllerStatusMap = {
+  [IotControllerStatusEnum.UNKNOWN]: defineMessage({ defaultMessage: 'Unknown' }),
+  [IotControllerStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
+  [IotControllerStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Offline' })
+}

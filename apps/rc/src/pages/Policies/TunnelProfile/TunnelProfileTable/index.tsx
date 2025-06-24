@@ -6,7 +6,7 @@ import { useIsEdgeFeatureReady }                                                
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgePinViewDataListQuery,
-  useGetEdgeSdLanViewDataListQuery,
+  useGetEdgeMvSdLanViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
@@ -42,8 +42,6 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
@@ -91,7 +89,7 @@ const TunnelProfileTable = () => {
     })
   })
 
-  const { sdLanOptions } = useGetEdgeSdLanViewDataListQuery({
+  const { sdLanOptions } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -99,7 +97,6 @@ const TunnelProfileTable = () => {
       pageSize: 10000
     }
   }, {
-    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
     selectFromResult: ({ data }) => ({
       sdLanOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
@@ -198,18 +195,15 @@ const TunnelProfileTable = () => {
       sorter: true,
       render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
-    ...((isEdgeSdLanReady || isEdgeSdLanHaReady)
-      ? [{
-        title: $t({ defaultMessage: 'SD-LAN' }),
-        key: 'sdLanIds',
-        dataIndex: 'sdLanIds',
-        align: 'center',
-        filterable: sdLanOptions,
-        sorter: true,
-        render: (_, row) => row.sdLanIds?.length || 0
-      }] as TableColumn<TunnelProfileViewData, 'text'>[]
-      : []
-    ),
+    {
+      title: $t({ defaultMessage: 'SD-LAN' }),
+      key: 'sdLanIds',
+      dataIndex: 'sdLanIds',
+      align: 'center',
+      filterable: sdLanOptions,
+      sorter: true,
+      render: (_, row) => row.sdLanIds?.length || 0
+    },
     ...((isEdgeL2greReady)?[]:[
       {
         title: $t({ defaultMessage: 'Networks' }),

@@ -4,7 +4,6 @@ import { Col, Form, Input, Row, Space } from 'antd'
 import { MessageDescriptor, useIntl }   from 'react-intl'
 
 import { Button, Drawer, Select }  from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useUpdateWidgetMutation } from '@acx-ui/rc/services'
 import { WidgetListData }          from '@acx-ui/rc/utils'
 import { DateRange, dateRangeMap } from '@acx-ui/utils'
@@ -31,7 +30,6 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
   const { visible, setVisible, widget, canvasId, changeWidgetProperty } = props
   const [form] = Form.useForm()
   const [updateWidget] = useUpdateWidgetMutation()
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const [enabledReset, setEnabledReset] = useState(false)
   const [enabledTimeRangeOption, setEnabledTimeRangeOption] = useState(false)
 
@@ -105,7 +103,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
             children={<Input/>}
           />
 
-          { isCanvasQ2Enabled && widget.defaultTimeRange && (
+          { widget.defaultTimeRange && (
             <Form.Item>
               <Row justify='space-between' style={{ padding: '0 0 4px' }}>
                 <Col>
@@ -130,7 +128,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
                 <Space>{widget.defaultTimeRange}</Space>
                 <Button type='link'
                   onClick={()=>{
-                    setEnabledReset(false)
+                    setEnabledReset(true)
                     setEnabledTimeRangeOption(true)
                   }}>
                   {$t({ defaultMessage: 'Change' })}
@@ -143,9 +141,6 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
                 children={<Select
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={timeRangeOptions}
-                  onChange={() => {
-                    setEnabledReset(true)
-                  }}
                 />}
               />
             </Form.Item>

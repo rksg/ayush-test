@@ -32,8 +32,6 @@ import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
@@ -70,7 +68,7 @@ const TunnelProfileDetail = () => {
           `${tunnelProfileData.destinationIpAddress || noDataDisplay}`
       }
     }] : []),
-    ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
+    ...(isEdgeVxLanKaReady ? [{
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
         // eslint-disable-next-line max-len
@@ -121,7 +119,7 @@ const TunnelProfileDetail = () => {
         })
       }
     },
-    ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
+    ...(!isEdgeVxLanKaReady ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
         // eslint-disable-next-line max-len

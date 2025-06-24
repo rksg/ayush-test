@@ -6,7 +6,6 @@ import { rest }     from 'msw'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { apApi, firmwareApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import { CommonUrlsInfo,
-  FirmwareUrlsInfo,
   SwitchUrlsInfo,
   SwitchRbacUrlsInfo,
   SwitchFirmwareFixtures,
@@ -29,7 +28,6 @@ import {
   editStackDetail,
   editStackMembers,
   standaloneSwitches,
-  switchFirmwareVenue,
   staticRoutes,
   switchVenueV1002
 } from '../__tests__/fixtures'
@@ -39,7 +37,7 @@ import {
 
 import { StackForm } from '.'
 
-const { mockSwitchCurrentVersions, mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 const mockedUsedNavigate = jest.fn()
 
@@ -50,11 +48,8 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitcDefaultVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
-  }),
-  useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+  useGetSwitchDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersionsV1002
   }),
   useGetSwitchCurrentVersionsV1001Query: () => ({
     data: mockSwitchCurrentVersionsV1002
@@ -104,8 +99,6 @@ describe('Switch Stack Form - Add', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueV1002))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
@@ -244,8 +237,6 @@ describe('Switch Stack Form - Edit', () => {
         (_, res, ctx) => res(ctx.json(editStackData))),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(SwitchUrlsInfo.getMemberList.url,

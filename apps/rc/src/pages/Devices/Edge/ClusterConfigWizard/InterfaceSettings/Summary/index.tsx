@@ -64,6 +64,7 @@ export const Summary = () => {
         </Subtitle>
         <Form.Item>
           <SubInterfaceTable
+            lagData={lagSettings}
             portData={portSettings}
             portSubInterfaceData={portSubInterfaces}
             lagSubInterfaceData={lagSubInterfaces}

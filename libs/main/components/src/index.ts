@@ -1,3 +1,4 @@
+export { MapWidgetV2 } from './MapWidget'
 
 export * from './HeaderButtons'
 export * from './VenueFilter'
@@ -6,3 +7,4 @@ export * from './HeaderContext'
 export * from './GlobalSearchBar'
 export * from './FetchBot'
 export * from './Venues'
+export * from './configTemplatesPages'

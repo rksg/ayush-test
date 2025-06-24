@@ -3,7 +3,6 @@ import {
   DpskWlanAdvancedCustomization,
   MaxRateEnum,
   NetworkSaveData,
-  NetworkSegmentTypeEnum,
   NetworkTypeEnum,
   NetworkVenue,
   RadioEnum,
@@ -121,7 +120,8 @@ describe('NetworkForm parser', () => {
       }
       const tunnelInfo = {
         enableVxLan: true,
-        tunnelType: NetworkSegmentTypeEnum.VXLAN
+        enableTunnel: false,
+        vxLanTunnels: undefined
       }
 
       const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData, tunnelInfo)

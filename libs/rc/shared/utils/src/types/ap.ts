@@ -497,12 +497,17 @@ export interface LanPort {
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
   ethernetPortProfileId?: string,
+  authRadiusId?: string,
+  accountingRadiusId?: string,
   softGreProfileId?: string,
+  softGreProfileName?: string,
   softGreEnabled?: boolean,
   ipsecProfileId?: string,
+  ipsecProfileName?: string,
   ipsecEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
+  clientIsolationProfileName?: string,
   clientIsolationEnabled?: boolean,
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
@@ -621,6 +626,11 @@ export interface ApBandModeSettings {
   useVenueSettings: boolean
 }
 
+export interface ApBandModeSettingsV1Dot1 {
+  bandMode: BandModeEnum,
+  useVenueOrApGroupSettings: boolean
+}
+
 export type ApExternalAntennaSettings = {
   externalAntenna: ExternalAntenna,
   useVenueSettings: boolean
@@ -730,6 +740,10 @@ export interface ApSmartMonitor {
   enabled: boolean,
   interval: number,
   threshold: number
+}
+
+export interface ApIotController {
+  useVenueSettings: boolean
 }
 
 export interface ApIot {

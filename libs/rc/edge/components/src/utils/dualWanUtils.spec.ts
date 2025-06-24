@@ -2,7 +2,8 @@ import {
   EdgeMultiWanModeEnum,
   EdgeMultiWanProtocolEnum
 } from '@acx-ui/rc/utils'
-import { EdgeLinkDownCriteriaEnum } from '@acx-ui/rc/utils'
+import { EdgeLinkDownCriteriaEnum }  from '@acx-ui/rc/utils'
+import { EdgeWanPortRoleStatusEnum } from '@acx-ui/rc/utils'
 
 import {
   getDualWanModeString,
@@ -10,6 +11,7 @@ import {
   getWanLinkDownCriteriaString,
   getDisplayWanRole
 } from './dualWanUtils'
+import { getWanLinkStatusString } from './dualWanUtils'
 
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
@@ -36,24 +38,24 @@ describe('getDualWanModeString', () => {
 describe('getWanProtocolString', () => {
   it('returns "Ping" for EdgeMultiWanProtocolEnum.PING', () => {
     const result = getWanProtocolString(EdgeMultiWanProtocolEnum.PING)
-    expect(result).toBe('Ping')
+    expect(result).toBe('ICMP (Ping)')
   })
 
-  it('returns empty string for EdgeMultiWanProtocolEnum.NONE', () => {
+  it('returns -- for EdgeMultiWanProtocolEnum.NONE', () => {
     const result = getWanProtocolString(EdgeMultiWanProtocolEnum.NONE)
-    expect(result).toBe('')
+    expect(result).toBe('--')
   })
 
-  it('returns empty string for invalid enum value', () => {
+  it('returns -- for invalid enum value', () => {
     const result = getWanProtocolString('INVALID_VALUE' as EdgeMultiWanProtocolEnum)
-    expect(result).toBe('')
+    expect(result).toBe('--')
   })
 
-  it('returns empty string for null or undefined input', () => {
+  it('returns -- for null or undefined input', () => {
     const result1 = getWanProtocolString(null)
     const result2 = getWanProtocolString(undefined)
-    expect(result1).toBe('')
-    expect(result2).toBe('')
+    expect(result1).toBe('--')
+    expect(result2).toBe('--')
   })
 })
 
@@ -68,15 +70,15 @@ describe('getWanLinkDownCriteriaString', () => {
     expect(result).toBe('One or more of the targets were unreachable')
   })
 
-  it('returns empty string for INVALID', () => {
+  it('returns -- for INVALID', () => {
     const result = getWanLinkDownCriteriaString(EdgeLinkDownCriteriaEnum.INVALID)
-    expect(result).toBe('')
+    expect(result).toBe('--')
   })
 
-  it('returns empty string for invalid enum value', () => {
+  it('returns -- for invalid enum value', () => {
     // eslint-disable-next-line max-len
     const result = getWanLinkDownCriteriaString('INVALID_ENUM_VALUE' as unknown as EdgeLinkDownCriteriaEnum)
-    expect(result).toBe('')
+    expect(result).toBe('--')
   })
 })
 
@@ -93,5 +95,32 @@ describe('getDisplayWanRole', () => {
     expect(getDisplayWanRole(2)).toBe('Backup')
     expect(getDisplayWanRole(3)).toBe('Backup')
     expect(getDisplayWanRole(-1)).toBe('Backup')
+  })
+})
+
+describe('getWanLinkStatusString', () => {
+  it('returns "Active" for ACTIVE status', () => {
+    const result = getWanLinkStatusString(EdgeWanPortRoleStatusEnum.ACTIVE)
+    expect(result).toBe('Active')
+  })
+
+  it('returns "Backup" for BACKUP status', () => {
+    const result = getWanLinkStatusString(EdgeWanPortRoleStatusEnum.BACKUP)
+    expect(result).toBe('Backup')
+  })
+
+  it('returns -- for INVALID status', () => {
+    const result = getWanLinkStatusString(EdgeWanPortRoleStatusEnum.INVALID)
+    expect(result).toBe('--')
+  })
+
+  it('returns -- for undefined status', () => {
+    const result = getWanLinkStatusString(undefined)
+    expect(result).toBe('--')
+  })
+
+  it('returns -- for an invalid enum value', () => {
+    const result = getWanLinkStatusString('INVALID_ENUM_VALUE' as EdgeWanPortRoleStatusEnum)
+    expect(result).toBe('--')
   })
 })

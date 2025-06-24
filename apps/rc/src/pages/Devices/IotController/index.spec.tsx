@@ -24,7 +24,7 @@ const iotControllerList = {
       publicPort: 443,
       apiToken: 'xxxxxxxxxxxxxxxxxxx',
       tenantId: '3f10af1401b44902a88723cb68c4bc77',
-      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
+      assocVenueId: 'db2b80ba868c419fb5c1732575160808'
     }, {
       id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
       name: 'iotController1',
@@ -34,7 +34,7 @@ const iotControllerList = {
       publicPort: 443,
       apiToken: 'xxxxxxxxxxxxxxxxxxx',
       tenantId: '3f10af1401b44902a88723cb68c4bc77',
-      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
+      assocVenueId: 'db2b80ba868c419fb5c1732575160808'
     }] as IotControllerStatus[]
   }
 }

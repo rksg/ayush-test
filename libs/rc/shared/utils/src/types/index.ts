@@ -1,5 +1,7 @@
 import { defineMessage } from 'react-intl'
 
+import { TimeStamp } from '@acx-ui/types'
+
 import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
@@ -19,6 +21,7 @@ import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
+export * from './apGroup'
 export * from './venue'
 export * from './network'
 export * from './any-network'
@@ -105,6 +108,7 @@ export interface Venue extends EnforceableFields {
   clients?: number
   apWiredClients?: number
   edges?: number,
+  iotControllers?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
   addressLine?: string
@@ -304,7 +308,8 @@ export enum ApVenueStatusEnum {
   OFFLINE = '1_InSetupPhase_Offline',
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
-  TRANSIENT_ISSUE = '4_TransientIssue'
+  TRANSIENT_ISSUE = '4_TransientIssue',
+  IN_SETUP_PHASE_AND_OFFLINE = 'InSetupPhase_And_Offline' // for dashboard device widget only
 }
 
 export type ChartData = {
@@ -604,4 +609,16 @@ export const RWGStatusMap = {
   [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
   [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
   [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
+}
+
+export interface PendingAsset {
+  serial: string,
+  model: string,
+  shipDate: string,
+  createdDate: string,
+  status: string
+}
+
+export interface PendingAssetRefreshAt {
+  refreshedAt: TimeStamp
 }

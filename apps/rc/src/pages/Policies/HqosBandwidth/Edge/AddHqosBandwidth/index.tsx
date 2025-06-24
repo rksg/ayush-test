@@ -1,11 +1,11 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                                                                                 from '@acx-ui/components'
-import { useActivateHqosOnEdgeClusterMutation, useCreateEdgeHqosProfileMutation }                                     from '@acx-ui/rc/services'
-import { CommonErrorsResult, CommonResult, PolicyOperation, PolicyType, usePolicyListBreadcrumb, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                                 from '@acx-ui/react-router-dom'
-import { CatchErrorDetails }                                                                                          from '@acx-ui/utils'
+import { PageHeader }                                                                                                                                    from '@acx-ui/components'
+import { useActivateHqosOnEdgeClusterMutation, useCreateEdgeHqosProfileMutation }                                                                        from '@acx-ui/rc/services'
+import { CommonErrorsResult, CommonResult, PolicyOperation, PolicyType, usePolicyListBreadcrumb, usePolicyPreviousPath, useAfterPolicySaveRedirectPath } from '@acx-ui/rc/utils'
+import { useNavigate }                                                                                                                                   from '@acx-ui/react-router-dom'
+import { CatchErrorDetails }                                                                                                                             from '@acx-ui/utils'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { ScopeForm }                                 from '../HqosBandwidthForm/ScopeForm'
@@ -33,12 +33,10 @@ const getActivateClusterIds = (
 const AddEdgeHqosBandwidth = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const qosListRoute = getPolicyRoutePath({
-    type: PolicyType.HQOS_BANDWIDTH,
-    oper: PolicyOperation.LIST
-  })
 
-  const linkToProfileList = useTenantLink(qosListRoute)
+  const previousPath = usePolicyPreviousPath(PolicyType.HQOS_BANDWIDTH, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.HQOS_BANDWIDTH)
+
   const [addQosProfile] = useCreateEdgeHqosProfileMutation()
   const [activateEdgeCluster] = useActivateHqosOnEdgeClusterMutation()
   const [form] = Form.useForm()
@@ -140,7 +138,7 @@ const AddEdgeHqosBandwidth = () => {
         }).catch(reject)
       })
 
-      navigate(linkToProfileList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -158,7 +156,7 @@ const AddEdgeHqosBandwidth = () => {
         form={form}
         steps={steps}
         onFinish={handleFinish}
-        onCancel={() => navigate(linkToProfileList)}
+        onCancel={() => navigate(previousPath)}
       />
     </>
   )

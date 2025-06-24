@@ -20,7 +20,8 @@ jest.mock('@acx-ui/components', () => ({
   useStepFormContext: () => ({
     form: {
       getFieldValue: mockedGetFieldValue,
-      setFieldValue: mockedSetFieldValue
+      setFieldValue: mockedSetFieldValue,
+      getFieldsValue: jest.fn()
     }
   })
 }))

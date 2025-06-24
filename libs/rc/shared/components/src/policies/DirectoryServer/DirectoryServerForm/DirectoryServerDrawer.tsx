@@ -3,10 +3,10 @@ import {  Col, Form, Row }   from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Drawer }                           from '@acx-ui/components'
-import { useCreateDirectoryServerMutation } from '@acx-ui/rc/services'
-import { DirectoryServer }                  from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { Drawer }                                          from '@acx-ui/components'
+import { useCreateDirectoryServerMutation }                from '@acx-ui/rc/services'
+import { DirectoryServer, combineAttributeMappingsToData } from '@acx-ui/rc/utils'
+import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import { DirectoryServerSettingForm } from './DirectoryServerSettingForm'
 
@@ -30,7 +30,9 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
     try {
       if (!readMode) {
         await form.validateFields()
-        const values = form.getFieldsValue()
+        const values = combineAttributeMappingsToData(
+          form.getFieldsValue() as unknown as DirectoryServer
+        )
         const resData = await createDirectoryServer({ params, payload: values }).unwrap()
         if (resData.response?.id) {
           const newOption = {

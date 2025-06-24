@@ -34,80 +34,46 @@ describe('constants', () => {
     it('handle toggles off', () => {
       const { incidentsToggle, incidentCodes } = require('.')
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: false
+        [IncidentToggle.SwitchPortCongestionIncidents]: false
       }
       expect(incidentsToggle({ toggles })).toEqual(incidentCodes)
-    })
-    it('handle airtime incidents', () => {
-      const { incidentsToggle, incidentCodes } = require('.')
-      const toggles = {
-        [IncidentToggle.AirtimeIncidents]: true
-      }
-      expect(incidentsToggle({ toggles })).toEqual([
-        ...incidentCodes,
-        'p-airtime-b-24g-high',
-        'p-airtime-b-5g-high',
-        'p-airtime-b-6(5)g-high',
-        'p-airtime-rx-24g-high',
-        'p-airtime-rx-5g-high',
-        'p-airtime-rx-6(5)g-high',
-        'p-airtime-tx-24g-high',
-        'p-airtime-tx-5g-high',
-        'p-airtime-tx-6(5)g-high'
-      ])
     })
     it('handle category specific toggles', () => {
       const { incidentsToggle, categoryCodeMap } = require('.')
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: true
+        [IncidentToggle.SwitchPortCongestionIncidents]: true
       }
       expect(incidentsToggle({ toggles }, 'performance')).toEqual([
         ...categoryCodeMap.performance.codes,
-        'p-airtime-b-24g-high',
-        'p-airtime-b-5g-high',
-        'p-airtime-b-6(5)g-high',
-        'p-airtime-rx-24g-high',
-        'p-airtime-rx-5g-high',
-        'p-airtime-rx-6(5)g-high',
-        'p-airtime-tx-24g-high',
-        'p-airtime-tx-5g-high',
-        'p-airtime-tx-6(5)g-high'
+        'p-switch-port-congestion'
       ])
     })
     it('handle payload.code', () => {
       const { incidentsToggle, incidentCodes: code } = require('.')
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: true
+        [IncidentToggle.SwitchPortCongestionIncidents]: true
       }
       expect(incidentsToggle({ code, toggles }, 'performance')).toEqual([
         ...code,
-        'p-airtime-b-24g-high',
-        'p-airtime-b-5g-high',
-        'p-airtime-b-6(5)g-high',
-        'p-airtime-rx-24g-high',
-        'p-airtime-rx-5g-high',
-        'p-airtime-rx-6(5)g-high',
-        'p-airtime-tx-24g-high',
-        'p-airtime-tx-5g-high',
-        'p-airtime-tx-6(5)g-high'
+        'p-switch-port-congestion'
       ])
     })
     it('handle incorrect category', () => {
       const { incidentsToggle, categoryCodeMap } = require('.')
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: true
+        [IncidentToggle.SwitchDDoSIncidents]: true
       }
       const code = categoryCodeMap.performance.codes
       expect(incidentsToggle({ code, toggles }, 'infrastructure')).toEqual(code)
     })
     it('should return wired and wireless codes when no active toggles', () => {
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: false,
         [IncidentToggle.SwitchLoopDetectionIncidents]: false,
         [IncidentToggle.SwitchLLDPStatusIncidents]: false,
         [IncidentToggle.SwitchPortCongestionIncidents]: false,
-        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false,
+        [IncidentToggle.SwitchPortFlapIncidents]: false
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
@@ -134,16 +100,25 @@ describe('constants', () => {
           'i-apserv-continuous-reboots',
           'i-apserv-downtime-high',
           'i-apinfra-poe-low',
-          'i-apinfra-wanthroughput-low'
+          'i-apinfra-wanthroughput-low',
+          'p-airtime-b-24g-high',
+          'p-airtime-b-5g-high',
+          'p-airtime-b-6(5)g-high',
+          'p-airtime-rx-24g-high',
+          'p-airtime-rx-5g-high',
+          'p-airtime-rx-6(5)g-high',
+          'p-airtime-tx-24g-high',
+          'p-airtime-tx-5g-high',
+          'p-airtime-tx-6(5)g-high'
         ]
       ])
     })
     it('should return wired and wireless codes when active all switch related toggle', () => {
       const toggles = {
-        [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: true,
         [IncidentToggle.SwitchLoopDetectionIncidents]: true,
         [IncidentToggle.SwitchLLDPStatusIncidents]: true,
+        [IncidentToggle.SwitchPortFlapIncidents]: true,
         [IncidentToggle.SwitchPortCongestionIncidents]: true,
         [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
@@ -155,6 +130,7 @@ describe('constants', () => {
           's-switch-tcp-syn-ddos',
           'i-switch-loop-detection',
           'i-switch-lldp-status',
+          'i-switch-port-flap',
           'p-switch-port-congestion',
           'p-switch-uplink-port-congestion'
         ],
@@ -177,7 +153,16 @@ describe('constants', () => {
           'i-apserv-continuous-reboots',
           'i-apserv-downtime-high',
           'i-apinfra-poe-low',
-          'i-apinfra-wanthroughput-low'
+          'i-apinfra-wanthroughput-low',
+          'p-airtime-b-24g-high',
+          'p-airtime-b-5g-high',
+          'p-airtime-b-6(5)g-high',
+          'p-airtime-rx-24g-high',
+          'p-airtime-rx-5g-high',
+          'p-airtime-rx-6(5)g-high',
+          'p-airtime-tx-24g-high',
+          'p-airtime-tx-5g-high',
+          'p-airtime-tx-6(5)g-high'
         ]
       ])
     })

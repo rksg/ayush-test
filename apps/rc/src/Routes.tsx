@@ -50,7 +50,8 @@ import {
   EditSamlIdp,
   SamlIdpDetail,
   IdentityGroupForm,
-  IdentityForm
+  IdentityForm,
+  PersonaGroupDetails
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -73,7 +74,9 @@ import {
   ServiceType,
   IdentityProviderTabType,
   PersonaUrls,
-  useIsNewServicesCatalogEnabled
+  useIsNewServicesCatalogEnabled,
+  useDhcpStateMap,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -172,6 +175,8 @@ import AddDHCP                                      from './pages/Services/DHCP/
 import EdgeDHCPDetail                               from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable                                from './pages/Services/DHCP/Edge/DHCPTable'
 import EditDhcp                                     from './pages/Services/DHCP/Edge/EditDHCP'
+import DHCPConsolidation                            from './pages/Services/DHCPConsolidation'
+import CreateDHCPService                            from './pages/Services/DHCPConsolidation/create'
 import DpskDetails                                  from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskTable                                    from './pages/Services/Dpsk/DpskTable/DpskTable'
 import AddFirewall                                  from './pages/Services/EdgeFirewall/AddFirewall'
@@ -193,6 +198,8 @@ import EditEdgeMdnsProxy                     from './pages/Services/MdnsProxy/Ed
 import MdnsProxyDetail                       from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                        from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MdnsProxyConsolidation                from './pages/Services/MdnsProxyConsolidation'
+import CreateMdnsProxyService                from './pages/Services/MdnsProxyConsolidation/create'
 import MyServices                            from './pages/Services/MyServices'
 import NetworkSegAuthDetail                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm                    from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -219,7 +226,6 @@ import WifiCallingTable                     from './pages/Services/WifiCalling/W
 import Timeline                             from './pages/Timeline'
 import PersonaPortal                        from './pages/Users/Persona'
 import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList                     from './pages/Users/Switch/ClientList'
 import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
@@ -682,7 +688,6 @@ const edgeTnmRoutes = () => {
 }
 
 function ServiceRoutes () {
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -691,6 +696,8 @@ function ServiceRoutes () {
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const isDhcpConsolidationEnabled = useDhcpStateMap()[ServiceType.DHCP_CONSOLIDATION]
+  const isMdnsProxyConsolidationEnabled = useMdnsProxyStateMap()[ServiceType.MDNS_PROXY_CONSOLIDATION]
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -720,6 +727,28 @@ function ServiceRoutes () {
           <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
         </>
       }
+      {isMdnsProxyConsolidationEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/edge'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={'services/mdnsProxyConsolidation/list/:activeTab'}
+          element={<MdnsProxyConsolidation />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.CREATE })}
+          element={<CreateMdnsProxyService />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={
@@ -768,6 +797,28 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
         element={<WifiCallingTable/>}
       />
+      {isDhcpConsolidationEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/edge'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={'services/dhcpConsolidation/list/:activeTab'}
+          element={<DHCPConsolidation />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.CREATE })}
+          element={<CreateDHCPService />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={
@@ -924,10 +975,10 @@ function ServiceRoutes () {
         }
       />
 
-      {(isEdgeHaReady && isEdgeDhcpHaReady)
+      {isEdgeDhcpHaReady
         && edgeDhcpRoutes()}
 
-      {(isEdgeHaReady && isEdgeFirewallHaReady)
+      {isEdgeFirewallHaReady
         && edgeFirewallRoutes()}
 
 
@@ -1161,6 +1212,11 @@ function PolicyRoutes () {
               <CreateAccessControl />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/wifi'} />}
         />
         <Route
           path='policies/accessControls/create'
@@ -1656,7 +1712,10 @@ function PolicyRoutes () {
       {<>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
-          element={<EthernetPortProfile />}
+          element={isSwitchPortProfileEnabled
+            ? <TenantNavigate replace to={'policies/portProfile/wifi'} />
+            : <EthernetPortProfile />
+          }
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })}

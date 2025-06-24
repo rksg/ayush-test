@@ -8,15 +8,16 @@ import { useTenantId }       from '@acx-ui/utils'
 import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
   useGetAccountTierQuery,
-  useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
-  useGetAllowedOperationsQuery
+  useGetEarlyAccessQuery,
+  useGetAllowedOperationsQuery,
+  useGetTenantDetailsQuery
 } from './services'
-import { FeatureAPIResults, UserProfile }      from './types'
-import { setUserProfile, hasRoles, hasAccess } from './userProfile'
+import { FeatureAPIResults, TenantType, UserProfile } from './types'
+import { setUserProfile, hasRoles, hasAccess }        from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -27,14 +28,17 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
+  isAlphaUser?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
   isCustomRole?: boolean
+  isCustomPrivilegeGroup?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
   selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
+  tenantType?: TenantType
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -51,8 +55,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
 
+  const { data: tenantDetails } = useGetTenantDetailsQuery({ tenantId })
+  const tenantType = tenantDetails?.tenantType as TenantType
+
   let abacEnabled = false,
     isCustomRole = false,
+    isCustomPrivilegeGroup = false,
     rbacOpsApiEnabled = false,
     activityAllVenuesEnabled = false
 
@@ -76,10 +84,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   activityAllVenuesEnabled = featureFlagStates?.[activityAllVenuesFF] ?? false
   const selectedBetaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
-  const { data: beta } = useGetBetaStatusQuery(
-    { params: { tenantId }, enableRbac: abacEnabled },
-    { skip: !Boolean(profile) })
-  const betaEnabled = beta?.enabled === 'true'
   const { data: accTierResponse } = useGetAccountTierQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
@@ -113,14 +117,21 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
-  const { data: features } = useGetBetaFeatureListQuery({ params },
-    { skip: !(beta?.enabled === 'true') || !selectedBetaListEnabled })
+  const { data: earlyAcessStatus } = useGetEarlyAccessQuery({ params })
+  const betaStatus = earlyAcessStatus?.betaStatus
+  const alphaStatus = earlyAcessStatus?.alphaStatus
+  const isAlphaUser = ((betaStatus && profile?.dogfood) || !!alphaStatus)
 
-  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
+  const { data: features } = useGetBetaFeatureListQuery({ params },
+    { skip: !(betaStatus) || !selectedBetaListEnabled })
+
+  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures?.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
+    // eslint-disable-next-line max-len
+    isCustomPrivilegeGroup = profile?.privilegeGroupType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
@@ -128,21 +139,25 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       userProfile.roles = userProfile.roles
         .every(r => r in Role) ? userProfile.roles : [Role.PRIME_ADMIN]
       isCustomRole = false
+      isCustomPrivilegeGroup = false
     }
     setUserProfile({
       profile: userProfile,
       allowedOperations,
       accountTier,
-      betaEnabled,
+      betaEnabled: betaStatus,
+      isAlphaUser,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
       isCustomRole,
+      isCustomPrivilegeGroup,
       scopes: profile?.scopes,
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
-      betaFeaturesList
+      betaFeaturesList,
+      tenantType
     })
   }
 
@@ -155,15 +170,18 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaEnabled,
+      betaEnabled: betaStatus,
+      isAlphaUser,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
       isCustomRole,
+      isCustomPrivilegeGroup,
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
-      betaFeaturesList
+      betaFeaturesList,
+      tenantType
     }}
     children={props.children}
   />

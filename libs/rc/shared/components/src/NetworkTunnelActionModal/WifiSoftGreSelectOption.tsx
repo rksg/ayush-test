@@ -4,8 +4,6 @@ import {  Form, Space, Select, Switch, Row, Alert } from 'antd'
 import { DefaultOptionType }                        from 'antd/lib/select'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useGetSoftGreOptionsQuery,
   useLazyGetSoftGreOptionsQuery,
@@ -14,12 +12,6 @@ import {
 } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
-import {
-  ApCompatibilityDrawer,
-  ApCompatibilityToolTip,
-  ApCompatibilityType,
-  InCompatibilityFeatures
-} from '../ApCompatibility'
 import IpsecDrawer   from '../policies/Ipsec/IpsecForm/IpsecDrawer'
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
@@ -67,10 +59,6 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ enableOption, setEnableOption ] = useState<boolean>(true)
   const [ softGreDisabled, setSoftGreDisabled ] = useState<boolean>(false)
   const [ ipsecDisabled, setIpsecDisabled ] = useState<boolean>(false)
-
-  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-
-  const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
@@ -248,7 +236,6 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
 
   const handleClickAdd = () => {
     setDetailDrawerVisible(false)
-    setSoftGreDrawerVisible(false)
     setAddDrawerVisible(true)
   }
 
@@ -284,22 +271,6 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
           type='info'
           showIcon />
         }
-        {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-          title={''}
-          showDetailButton
-          placement='top'
-          onClick={() => setSoftGreDrawerVisible(true)}
-          icon={<QuestionMarkCircleOutlined
-            style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
-          />}
-        />}
-        {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-          visible={softGreDrawerVisible}
-          type={ApCompatibilityType.ALONE}
-          networkId={networkId}
-          featureName={InCompatibilityFeatures.SOFT_GRE}
-          onClose={() => setSoftGreDrawerVisible(false)}
-        />}
       </Row>
       <Row><Space wrap>
         <Form.Item

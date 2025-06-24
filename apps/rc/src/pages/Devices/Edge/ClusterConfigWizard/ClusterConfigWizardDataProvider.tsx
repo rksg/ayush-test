@@ -1,28 +1,33 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeClusterNetworkSettingsQuery,
   useGetEdgeClusterSubInterfaceSettingsQuery,
+  useGetEdgeFeatureSetsQuery,
   useGetEdgesPortStatusQuery
 } from '@acx-ui/rc/services'
 import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
+  EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  EdgeSdLanViewDataP2
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
   portsStatus?: EdgeNodesPortsInfo
   lagsStatus?: EdgeNodesPortsInfo
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
+  isSupportAccessPort?: boolean
+  requiredFwMap?: Record<string, string | undefined>
   isLoading: boolean
   isFetching: boolean
 }
@@ -77,7 +82,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo?.clusterId)
 
   const {
     data: clusterNetworkSettings,
@@ -105,6 +110,32 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     skip: !Boolean(clusterInfo)
   })
 
+  const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        // eslint-disable-next-line max-len
+        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION, IncompatibilityFeatures.DUAL_WAN]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFwMap: {
+          [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw,
+          [IncompatibilityFeatures.DUAL_WAN]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.DUAL_WAN)?.requiredFw
+        }
+      }
+    }
+  })
+
+  const isSupportAccessPort = clusterInfo?.edgeList?.every(
+    // eslint-disable-next-line max-len
+    edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.CORE_ACCESS_SEPARATION]) > -1
+  )
+
   const isLoading = isClusterInfoLoading || isPortStatusLoading || isEdgeSdLanLoading ||
     isClusterNetworkSettingsLoading || isClusterSubInterfaceSettingsLoading
   const isFetching = isClusterInfoFetching || isPortStatusFetching || isEdgeSdLanFetching ||
@@ -127,6 +158,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
+    isSupportAccessPort,
+    requiredFwMap,
     isLoading,
     isFetching
   }}>

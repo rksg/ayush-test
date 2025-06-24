@@ -1,13 +1,25 @@
 import { useState } from 'react'
 
+import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps }             from '@acx-ui/components'
-import { useIotControllerActions }                                   from '@acx-ui/rc/components'
-import { useGetIotControllerListQuery }                              from '@acx-ui/rc/services'
-import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }                     from '@acx-ui/user'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import {
+  useIotControllerActions
+} from '@acx-ui/rc/components'
+import {
+  useGetIotControllerListQuery,
+  useLazyGetIotControllerVenuesQuery
+} from '@acx-ui/rc/services'
+import {
+  getIotControllerStatus,
+  transformDisplayText,
+  IotControllerStatus,
+  IotControllerStatusEnum,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 
@@ -15,13 +27,25 @@ import { AssocVenueDrawer } from './AssocVenueDrawer'
 export function IotController () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
   const iotControllerActions = useIotControllerActions()
   const { isCustomRole } = useUserProfileContext()
   const [ assocVenueDrawerVisible, setAssocVenueDrawerVisible ] = useState(false)
   const [ venueIds, setVenueIds ] = useState<string[]>([])
+  const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
 
   const payload = {
-    filters: {}
+    fields: [
+      'id',
+      'name',
+      'inboundAddress',
+      'publicAddress',
+      'publicPort',
+      'tenantId',
+      'status',
+      'assocVenueCount'
+    ],
+    filters: { tenantId: [params.tenantId] }
   }
   const settingsId = 'iot-controller-table'
   const tableQuery = useTableQuery({
@@ -43,42 +67,70 @@ export function IotController () {
         title: $t({ defaultMessage: 'IoT Controller' }),
         key: 'name',
         dataIndex: 'name',
-        sorter: { compare: sortProp('name', defaultSort) },
+        sorter: true,
         fixed: 'left',
         searchable: searchable,
         defaultSortOrder: 'ascend',
         render: function (_, row, __, highlightFn) {
-          return (
+          return row.status !== IotControllerStatusEnum.ONLINE ? row.name : (
             <TenantLink
               to={`/devices/iotController/${row.id}/details/overview`}>
               {highlightFn(row.name)}</TenantLink>
           )
         }
       },{
+        title: $t({ defaultMessage: 'Status' }),
+        dataIndex: 'status',
+        key: 'status',
+        sorter: false,
+        render: function (_, row) {
+          const { name, color } = getIotControllerStatus(row.status)
+
+          return (
+            <Badge
+              color={`var(${color})`}
+              text={transformDisplayText(name)}
+            />
+          )
+        }
+      },{
         title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
         dataIndex: 'inboundAddress',
+        sorter: true,
         key: 'inboundAddress'
       },
       {
         title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
         dataIndex: 'publicAddress',
+        sorter: true,
         key: 'publicAddress',
         render: function (_, row) {
+          if (!row.publicAddress || !row.publicPort) {
+            return '--'
+          }
           return row.publicAddress + ':' + row.publicPort
         }
       },
       {
         title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
-        dataIndex: 'venueCount',
-        key: 'venueCount',
+        dataIndex: 'assocVenueCount',
+        sorter: true,
+        key: 'assocVenueCount',
         render: function (_, row) {
 
-          const onClickHandler = () => {
-            setVenueIds(row.assocVenueIds || [])
+          const onClickHandler = async () => {
+            const venues = (await getIotControllerVenues({
+              params: { iotId: row.id }
+            }, false)).data
+            if (venues) {
+              setVenueIds(venues.venueIds)
+            } else {
+              setVenueIds([])
+            }
             setAssocVenueDrawerVisible(true)
           }
 
-          return <Button type='link' onClick={onClickHandler}> {row.assocVenueIds?.length} </Button>
+          return <Button type='link' onClick={onClickHandler}> {row.assocVenueCount} </Button>
         }
       }
     ]
@@ -145,7 +197,7 @@ export function IotController () {
           key='association-drawer'
           visible={assocVenueDrawerVisible}
           setVisible={setAssocVenueDrawerVisible}
-          usedVenueIds={venueIds}
+          usedVenueIds={venueIds || []}
         />
         }
       </Loader>

@@ -9,12 +9,12 @@ export const productNames = get('IS_MLISA_SA')
   : { smartZone: 'RUCKUS One' }
 
 export enum IncidentToggle {
-  AirtimeIncidents = 'airtime-incidents',
   SwitchDDoSIncidents = 'switch-ddos-incidents',
   SwitchLoopDetectionIncidents = 'switch-loop-detection-incidents',
   SwitchLLDPStatusIncidents = 'switch-lldp-status-incidents',
   SwitchPortCongestionIncidents = 'switch-port-congestion-incidents',
   SwitchUplinkPortCongestionIncidents = 'switch-uplink-port-congestion-incidents',
+  SwitchPortFlapIncidents = 'switch-port-flap-incidents'
 }
 
 export type IncidentsToggleFilter = {
@@ -43,6 +43,7 @@ const allIncidentCodes = [
   'i-switch-vlan-mismatch',
   'i-switch-loop-detection',
   'i-switch-lldp-status',
+  'i-switch-port-flap',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -64,20 +65,6 @@ const incidentsToggleMap: Record<
   IncidentToggle,
   { categories: Array<'all' | CategoryOption>, code: IncidentCode[] }
 > = {
-  [IncidentToggle.AirtimeIncidents]: {
-    categories: ['all', 'performance'],
-    code: [
-      'p-airtime-b-24g-high',
-      'p-airtime-b-5g-high',
-      'p-airtime-b-6(5)g-high',
-      'p-airtime-rx-24g-high',
-      'p-airtime-rx-5g-high',
-      'p-airtime-rx-6(5)g-high',
-      'p-airtime-tx-24g-high',
-      'p-airtime-tx-5g-high',
-      'p-airtime-tx-6(5)g-high'
-    ]
-  },
   [IncidentToggle.SwitchDDoSIncidents]: {
     categories: ['all', 'security'],
     code: ['s-switch-tcp-syn-ddos']
@@ -89,6 +76,10 @@ const incidentsToggleMap: Record<
   [IncidentToggle.SwitchLLDPStatusIncidents]: {
     categories: ['all', 'infrastructure'],
     code: ['i-switch-lldp-status']
+  },
+  [IncidentToggle.SwitchPortFlapIncidents]: {
+    categories: ['all', 'infrastructure'],
+    code: ['i-switch-port-flap']
   },
   [IncidentToggle.SwitchPortCongestionIncidents]: {
     categories: ['all', 'performance'],
@@ -143,7 +134,16 @@ export const incidentCodes: IncidentCode[] = [
   'i-switch-vlan-mismatch',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
-  'i-apinfra-wanthroughput-low'
+  'i-apinfra-wanthroughput-low',
+  'p-airtime-b-24g-high',
+  'p-airtime-b-5g-high',
+  'p-airtime-b-6(5)g-high',
+  'p-airtime-rx-24g-high',
+  'p-airtime-rx-5g-high',
+  'p-airtime-rx-6(5)g-high',
+  'p-airtime-tx-24g-high',
+  'p-airtime-tx-5g-high',
+  'p-airtime-tx-6(5)g-high'
 ]
 
 export const getWiredWirelessIncidentCodes = (
@@ -208,6 +208,7 @@ export const categoryCodeMap = {
       'i-switch-poe-pd',
       'i-switch-loop-detection',
       'i-switch-lldp-status',
+      'i-switch-port-flap',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]

@@ -56,7 +56,7 @@ jest.mock('antd', () => {
 
 jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
-  useGetEdgeSdLanByEdgeOrClusterId: () => ({
+  useGetEdgeSdLanByClusterId: () => ({
     edgeSdLanData: undefined
   })
 }))
@@ -443,6 +443,48 @@ describe('Edge LAG table drawer', () => {
         subnet: '255.255.255.0'
       })
     expect(setVisibleSpy).toHaveBeenCalledWith(false)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should be blocked when the parent port of core/access sub-interface was marked as lag member', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          portList={mockEdgeCorePortPortConfig as EdgePort[]}
+          subInterfaceList={[{
+            interfaceName: 'port2.1',
+            vlan: 1,
+            portType: EdgePortTypeEnum.LAN,
+            ipMode: EdgeIpModeEnum.DHCP,
+            corePortEnabled: true,
+            accessPortEnabled: true
+          }]}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: '' }),
+      '2'
+    )
+    const port3 = screen.getByRole('checkbox', { name: 'Port2' })
+    await click(port3)
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'IP Address' }),
+      '12.12.12.11'
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Subnet Mask' }),
+      '255.255.255.0'
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('At least one port must be enabled and configured to WAN or Access port to form a cluster.')).toBeVisible()
   })
 })
 

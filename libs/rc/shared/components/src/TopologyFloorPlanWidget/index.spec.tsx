@@ -1,7 +1,6 @@
-import { useIsSplitOn }                                                                                                                                      from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, DeviceStates, DeviceTypes, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider  }                                                                                                                                         from '@acx-ui/store'
-import { render }                                                                                                                                            from '@acx-ui/test-utils'
+import { render, screen }                                                                                                                                    from '@acx-ui/test-utils'
 
 import { TopologyFloorPlanWidget } from '.'
 
@@ -41,27 +40,14 @@ const currentSwitchDevice = {
   childCount: 3
 } as NetworkDevice
 
-describe.skip('TopologyFloorPlanWidget', () => {
-  it('should render correctly', () => {
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
+describe('TopologyFloorPlanWidget', () => {
+  it('should render correctly', async () => {
+    render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>)
-    expect(asFragment()).toMatchSnapshot()
+    // expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText(/floor plans/i)).toBeVisible()
   })
-  it('should render floorplan topology widget under AP overview', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
-      showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
-      currentDevice={currentApDevice}
-      venueId='7231da344778480d88f37f0cca1c534f'
-      devicePosition={{ floorplanId: '',
-        xPercent: 0,
-        yPercent: 0 } as NetworkDevicePosition}/></Provider>,{
-      route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
-    })
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('should render next gen floorplan topology widget under AP overview', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render floorplan topology widget under AP overview', async () => {
     render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
       currentDevice={currentApDevice}
@@ -71,10 +57,26 @@ describe.skip('TopologyFloorPlanWidget', () => {
         yPercent: 0 } as NetworkDevicePosition}/></Provider>,{
       route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
     })
+    // expect(asFragment()).toMatchSnapshot()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/this access point is not placed on any floor plan/i)).toBeVisible()
+  })
+  it('should render next gen floorplan topology widget under AP overview', async () => {
+    render(<Provider><TopologyFloorPlanWidget
+      showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
+      currentDevice={currentApDevice}
+      venueId='7231da344778480d88f37f0cca1c534f'
+      devicePosition={{ floorplanId: '',
+        xPercent: 0,
+        yPercent: 0 } as NetworkDevicePosition}/></Provider>,{
+      route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
+    })
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/this access point is not placed on any floor plan/i)).toBeVisible()
   })
 
-  it('should render floorplan topology widget under Switch overview', () => {
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
+  it('should render floorplan topology widget under Switch overview', async () => {
+    render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
       currentDevice={currentSwitchDevice}
       venueId='7231da344778480d88f37f0cca1c534f'
@@ -83,6 +85,7 @@ describe.skip('TopologyFloorPlanWidget', () => {
         yPercent: 0 } as NetworkDevicePosition}/></Provider>,{
       route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
     })
-    expect(asFragment()).toMatchSnapshot()
+    // expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText(/this switch is not placed on any floor plan/i)).toBeVisible()
   })
 })

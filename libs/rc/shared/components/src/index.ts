@@ -77,8 +77,6 @@ export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
-export { MapWidgetV2 } from './MapWidget'
-export { getAPStatusDisplayName } from './MapWidget/VenuesMap/helper'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
@@ -86,7 +84,17 @@ export {
 export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
-export { SingleRadioSettings, RadioSettingsForm, LowPowerBannerAndModal } from './RadioSettings'
+export {
+  SingleRadioSettings,
+  RadioSettingsForm,
+  LowPowerBannerAndModal,
+  RadioLegends
+} from './RadioSettings'
+export {
+  getRadioTypeDisplayName,
+  isCurrentTabUseVenueSettings,
+  toggleState
+} from './RadioSettings/RadioSettingsContents'
 export {
   ClientAdmissionControlForm,
   ClientAdmissionControlLevelEnum,
@@ -127,10 +135,7 @@ export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { SwitchClientContext } from './SwitchClientsTable/context'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
-export { usePreference, countryCodes, wifiCountryCodes } from './usePreference'
-export type { updatePreferenceProps } from './usePreference'
-export { usePlacesAutocomplete } from './usePlacesAutocomplete'
-export { GoogleMapWithPreference } from './GoogleMapWithPreference'
+
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 export { MspSubscriptionUtilizationWidget }
   from './SubscriptionUtilizationWidget/MspSubscriptionUtilizationWidget'
@@ -169,7 +174,6 @@ export {
 } from './ConnectionMeteringForm'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
-export { PhoneInput } from './PhoneInput'
 export { PersonalIdentityNetworkServiceInfo } from './PersonalIdentityNetworkServiceInfo'
 export { PersonalIdentityNetworkDetailTableGroup } from './PersonalIdentityNetworkDetailTableGroup'
 export { AccessSwitchTable } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
@@ -183,8 +187,7 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady,
-  useIsEdgeReady
+  useIsEdgeFeatureReady
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,
@@ -221,18 +224,12 @@ export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
-  EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton
-} from './EdgeSdLan/SdLanNetworkTable'
-export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
-export {
-  EdgeSdLanP2ActivatedNetworksTable
-} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export type { ActivatedNetworksTableP2Props }
-  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+  EdgeMvSdLanActivatedNetworksTable
+} from './EdgeSdLan/MvSdLanNetworkTable'
+export type { EdgeMvSdLanActivatedNetworksTableProps } from './EdgeSdLan/MvSdLanNetworkTable'
 export {
   useEdgeMvSdLanActions,
-  useGetEdgeSdLanByEdgeOrClusterId,
+  useGetEdgeSdLanByClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction
@@ -244,7 +241,6 @@ export type {
 export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
-  useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   transformSdLanScopedVenueMap,
   isSdLanDmzUtilizedOnDiffVenue,
@@ -339,4 +335,5 @@ export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
 export * from './SoftGRETunnelSettings'
 export { ResourceBanner } from './ResourceBanner'
+export { BandManagement } from './BandManagement'
 export { IotControllerDrawer } from './IotControllerDrawer'

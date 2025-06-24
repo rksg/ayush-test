@@ -6,9 +6,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Select, showActionModal, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { PhoneInput }                               from '@acx-ui/rc/components'
+import { Drawer, PhoneInput, Select, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import {
   useAddAdminMutation,
   useGetTenantAuthenticationsQuery
@@ -21,7 +20,9 @@ import {
   PrivilegeGroup,
   CustomGroupType,
   generalPhoneRegExp,
-  emailRegExp
+  emailRegExp,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import { CatchErrorDetails } from '@acx-ui/utils'
@@ -182,6 +183,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
     label: $t(item.label),
     value: item.value
   }))
+    ?.sort(sortProp('label', defaultSort))
 
   return (
     <Drawer

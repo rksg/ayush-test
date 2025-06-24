@@ -6,6 +6,7 @@ import {
   Select,
   Button
 } from 'antd'
+import { useWatch }          from 'antd/lib/form/Form'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
@@ -27,6 +28,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { IdentityGroup }           from '../NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup'
+import { AccountingServiceInput }  from '../SharedComponent'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
@@ -62,10 +64,17 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     useState<{ id:string, name:string }>({ id: '', name: '' })
   const [ directoryServerList, setDirectoryServerList] = useState<DefaultOptionType[]>([])
   const { isTemplate } = useConfigTemplate()
+
+  const networkSecurity = useWatch('networkSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   // eslint-disable-next-line max-len
   const isDirectoryReuseComponentEnable = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   const { data: directoryServerListFromServer } =
     useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
@@ -128,12 +137,9 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     }
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
     }
 
-  }, [directoryServerListFromServer, data])
+  }, [directoryServerListFromServer, data?.id])
 
   return (<>
     <GridRow>
@@ -190,11 +196,20 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea enableDefaultWalledGarden={false} />
+        {isSupportNetworkRadiusAccounting &&
+          <AccountingServiceInput
+            isProxyModeConfigurable={true}
+          />
+        }
       </GridCol>
       <GridCol col={{ span: 14 }}>
-        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+        <NetworkDiagram
+          type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.Directory}
           wlanSecurity={data?.wlan?.wlanSecurity}
+          networkSecurity={networkSecurity}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
         />
       </GridCol>
     </GridRow>

@@ -7,7 +7,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/upgradeConfig/preferences',
     oldUrl: '/api/upgrade/tenant/:tenantId/preference',
-    newApi: true
+    newApi: true,
+    opsApi: 'GET:/upgradeConfig/preferences'
   },
   getSwitchUpgradePreferences: {
     method: 'get',
@@ -115,22 +116,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version',
     newApi: true
   },
-  getSwitchVenueVersionList: {
-    method: 'post',
-    url: '/venues/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
-    newApi: true
-  },
   getSwitchAvailableFirmwareList: {
     method: 'get',
     url: '/venues/switchFirmwares/versions/release',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/release',
-    newApi: true
-  },
-  getSwitchCurrentVersions: {
-    method: 'get',
-    url: '/venues/switchFirmwares/currentVersions',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
   getSwitchFirmwareList: {
@@ -254,9 +243,9 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   patchVenueApModelFirmwares: {
-    method: 'put',
+    method: 'PATCH',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
-    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
+    opsApi: 'PATCH:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

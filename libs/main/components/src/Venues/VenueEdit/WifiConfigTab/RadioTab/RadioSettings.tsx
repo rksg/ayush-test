@@ -41,7 +41,9 @@ import {
   SupportRadioChannelsContext,
   CorrectRadioChannels,
   GetSupportBandwidth,
-  GetSupportIndoorOutdoorBandwidth
+  GetSupportIndoorOutdoorBandwidth,
+  RadioLegends,
+  BandManagement
 } from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
@@ -71,7 +73,8 @@ import {
   TriBandSettings,
   VenueDefaultRegulatoryChannels,
   useConfigTemplate,
-  ScanMethodEnum
+  ScanMethodEnum,
+  useSupportedApModelTooltip
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -82,40 +85,7 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../venueConfigTemplateApiSwitcher'
 
-import { VenueBandManagement } from './VenueBandManagement'
 
-
-const displayWidth = '40px'
-const RadioLegends = styled.div`
-  position: relative;
-  padding-top: 1em;
-  .legends {
-    position: absolute;
-    display: grid;
-    grid-template-columns: 190px 114px 313px ;
-    grid-column-gap: 8px;
-    height: 16px;
-
-    .legend {
-      border: 1px dashed var(--acx-neutrals-50);
-      border-bottom: none;
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
-      position: relative;
-
-      .legend-display {
-        position: absolute;
-        width: ${displayWidth};
-        height: 20px;
-        top: -10px;
-        left: calc(50% - ${displayWidth}/2);
-        text-align: center;
-        background: white;
-        font-weight: 300;
-      }
-    }
-  }
-`
 const RadioLable = styled.div`
   display: flex;
   justify-content: center;
@@ -276,12 +246,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     }
   }, [supportChannelsData, afcFeatureflag])
 
-  const supportedApModelTooltip = supportWifi7_320MHz ?
-    // eslint-disable-next-line max-len
-    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
-    // eslint-disable-next-line max-len
-    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })
-
+  const supportedApModelTooltip = useSupportedApModelTooltip()
 
   const { triBandApModels, dual5gApModels, bandModeCaps } = useMemo(() => {
     if (venueApCaps) {
@@ -940,33 +905,19 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
                   hidden
                   children={<></>}
                 />
-                <VenueBandManagement style={{ paddingBottom: '5em' }}
+                <BandManagement style={{ paddingBottom: '5em' }}
                   disabled={!isAllowEdit}
                   triBandApModels={triBandApModels}
                   dual5gApModels={dual5gApModels}
                   bandModeCaps={bandModeCaps}
-                  venueTriBandApModels={venueTriBandApModels}
-                  currentVenueBandModeData={currentVenueBandModeData}
-                  setCurrentVenueBandModeData={setCurrentVenueBandModeData} />
+                  existingTriBandApModels={venueTriBandApModels}
+                  currentBandModeData={currentVenueBandModeData}
+                  setCurrentBandModeData={setCurrentVenueBandModeData} />
               </>
               }
             </Col>
           </Row>
-          {(isTriBandRadio || isWifiSwitchableRfEnabled) &&
-            <RadioLegends>
-              { isDual5gMode &&
-                <div className='legends'
-                  style={{ gridTemplateColumns: (isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) ?
-                    '190px 114px 313px' : '190px 313px' }}>
-                  <div></div>
-                  {(isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) && <div></div>}
-                  <div className='legend'>
-                    <div className='legend-display'>R760</div>
-                  </div>
-                </div>
-              }
-            </RadioLegends>
-          }
+          <RadioLegends isTriBandRadio={isTriBandRadio} isDual5gMode={isDual5gMode} isSupport6GCountry={isSupport6GCountry} />
           <Tabs onChange={onTabChange}
             activeKey={currentTab}
             type='third'

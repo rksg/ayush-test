@@ -8,11 +8,12 @@ import { getUserProfile, isCoreTier }                                           
 
 import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
+import { useIsEdgeFeatureReady }                 from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
+import { useDhcpStateMap, useMdnsProxyStateMap } from '../service'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                from './constants'
-import { buildUnifiedServices, isUnifiedServiceAvailable, useIsNewServicesCatalogEnabled } from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
 
 
 type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
@@ -33,24 +34,20 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+  const dhcpStateMap = useDhcpStateMap()
+  const mdnsProxyStateMap = useMdnsProxyStateMap()
 
   // Policy features
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
-  const isEdgeEnabled = useIsEdgeReady()
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const supportLbs = isLbsFeatureTierAllowed && !isCore
+  // eslint-disable-next-line max-len
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING) && propertyManagementEnabled
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
@@ -66,6 +63,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+
 
   return useMemo<Array<BaseAvailableUnifiedService>>(() => {
     const baseUnifiedServiceList = [
@@ -230,9 +228,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeEnabled
+        products: [RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: PolicyType.VLAN_POOL,
@@ -258,7 +255,22 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.DHCP,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.NETWORK_SERVICES
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        disabled: !dhcpStateMap[ServiceType.DHCP]
+      },
+      {
+        type: ServiceType.EDGE_DHCP,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+      },
+      {
+        type: ServiceType.DHCP_CONSOLIDATION,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
       },
       {
         type: ServiceType.DPSK,
@@ -267,26 +279,11 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
       },
       {
-        type: ServiceType.EDGE_DHCP,
-        sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
-      },
-      {
         type: ServiceType.EDGE_FIREWALL,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-        disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
-      },
-      {
-        type: ServiceType.EDGE_MDNS_PROXY,
-        sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !isEdgeMdnsReady,
-        isBetaFeature: isEdgeMdnsBetaEnabled
+        disabled: !isEdgeFirewallHaReady
       },
       {
         type: ServiceType.EDGE_OLT,
@@ -300,8 +297,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.EDGE_SD_LAN,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: ServiceType.EDGE_TNM_SERVICE,
@@ -311,15 +307,31 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !isEdgeTnmServiceReady
       },
       {
+        type: ServiceType.EDGE_MDNS_PROXY,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: !mdnsProxyStateMap[ServiceType.EDGE_MDNS_PROXY],
+        isBetaFeature: isEdgeMdnsBetaEnabled
+      },
+      {
         type: ServiceType.MDNS_PROXY,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: !mdnsProxyStateMap[ServiceType.MDNS_PROXY]
+      },
+      {
+        type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: !mdnsProxyStateMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
       },
       {
         type: ServiceType.PIN,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+        products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
         disabled: !isEdgePinReady
       },
@@ -347,7 +359,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: ServiceType.PORTAL_PROFILE,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS,
         disabled: !isPortalProfileEnabled
       },
@@ -364,9 +376,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
-  return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+  return buildUnifiedServices(baseUnifiedServiceList)
     .sort((a, b) => a.label.localeCompare(b.label))
 }

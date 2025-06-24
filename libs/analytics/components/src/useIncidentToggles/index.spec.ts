@@ -8,20 +8,20 @@ describe('useIncidentToggles', () => {
   it('should return correct toggles', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     expect(renderHook(() => useIncidentToggles()).result.current).toEqual({
-      [IncidentToggle.AirtimeIncidents]: true,
       [IncidentToggle.SwitchDDoSIncidents]: true,
       [IncidentToggle.SwitchLoopDetectionIncidents]: true,
       [IncidentToggle.SwitchLLDPStatusIncidents]: true,
+      [IncidentToggle.SwitchPortFlapIncidents]: true,
       [IncidentToggle.SwitchPortCongestionIncidents]: true,
       [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
     })
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     expect(renderHook(() => useIncidentToggles()).result.current).toEqual({
-      [IncidentToggle.AirtimeIncidents]: false,
       [IncidentToggle.SwitchDDoSIncidents]: false,
       [IncidentToggle.SwitchLoopDetectionIncidents]: false,
       [IncidentToggle.SwitchLLDPStatusIncidents]: false,
+      [IncidentToggle.SwitchPortFlapIncidents]: false,
       [IncidentToggle.SwitchPortCongestionIncidents]: false,
       [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
     })

@@ -3,10 +3,13 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                                                 from '@acx-ui/components'
-import { Features }                                                                                                                     from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached }                  from '@acx-ui/rc/components'
-import { IncompatibilityFeatures, PolicyType, ServiceType, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, PageHeader }                                                                                from '@acx-ui/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
+import {
+  collectAvailableProductsAndCategories, IncompatibilityFeatures,
+  PolicyType, ServiceType, UnifiedServiceType,
+  useAvailableUnifiedServicesList
+} from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
@@ -26,12 +29,12 @@ export function ServiceCatalog () {
   const { $t } = useIntl()
   const rawUnifiedServiceList = useAvailableUnifiedServicesList()
   const defaultSortOrder = ServiceSortOrder.ASC
+  const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
 
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
   } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
 
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const [
     edgeCompatibilityFeature,
     setEdgeCompatibilityFeature
@@ -41,7 +44,7 @@ export function ServiceCatalog () {
 
   const buildHelpIcon = (type: UnifiedServiceType): React.ReactNode | null => {
     const edgeIncompatibilityType = edgeServicesHelpIconMap[type]
-    if (isEdgeCompatibilityEnabled && edgeIncompatibilityType) {
+    if (edgeIncompatibilityType) {
       return <ApCompatibilityToolTip
         title={''}
         showDetailButton
@@ -63,6 +66,7 @@ export function ServiceCatalog () {
         setFilters={setFilters}
         defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
+        availableFilters={{ products, categories }}
       />
       <GridRow>
         {filteredServices.map(service => (
@@ -80,12 +84,12 @@ export function ServiceCatalog () {
         ))}
       </GridRow>
     </Space>
-    {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+    <EdgeCompatibilityDrawer
       visible={!!edgeCompatibilityFeature}
       type={EdgeCompatibilityType.ALONE}
       title={$t({ defaultMessage: 'Compatibility Requirement' })}
       featureName={edgeCompatibilityFeature}
       onClose={() => setEdgeCompatibilityFeature(undefined)}
-    />}
+    />
   </>
 }

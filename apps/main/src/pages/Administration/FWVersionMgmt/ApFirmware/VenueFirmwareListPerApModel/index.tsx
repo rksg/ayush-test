@@ -41,9 +41,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
-  filterByAccess,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasRoles
-}                                                               from '@acx-ui/user'
+} from '@acx-ui/user'
 import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
@@ -55,6 +55,7 @@ import { DowngradePerApModelDialog } from './DowngradeDialog'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const apFirmwareContext = useContext(ApFirmwareContext)
   const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const [searchString, setSearchString] = useState('')
@@ -290,6 +291,10 @@ export function VenueFirmwareListPerApModel () {
     }
   ]
 
+  const isPreferencesVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateEdgeUpgradePreferences)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return (<>
     <Loader states={[isLoading]}>
       <Table
@@ -304,7 +309,7 @@ export function VenueFirmwareListPerApModel () {
         // eslint-disable-next-line max-len
         rowSelection={filterByAccess(rowActions).length > 0 &&
           { type: 'checkbox', selectedRowKeys }}
-        actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
+        actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferencesModalVisible(true)
         }] : []}

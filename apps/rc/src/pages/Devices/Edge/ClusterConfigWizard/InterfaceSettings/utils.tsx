@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
-import { FormInstance, Space, Typography } from 'antd'
-import _, { cloneDeep }                    from 'lodash'
-import moment                              from 'moment-timezone'
-import { defineMessage }                   from 'react-intl'
+import { FormInstance, Space, Tooltip, Typography } from 'antd'
+import _, { cloneDeep, flatten, reduce }            from 'lodash'
+import moment                                       from 'moment-timezone'
+import { defineMessage, useIntl }                   from 'react-intl'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
+import { defaultRichTextFormatValues }                                                 from '@acx-ui/components'
+import { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
   ClusterHaFallbackScheduleTypeEnum,
   ClusterHaLoadDistributionEnum,
@@ -19,12 +20,16 @@ import {
   EdgeSerialNumber,
   NodeSubInterfaces,
   VirtualIpSetting,
-  SubInterface
+  SubInterface,
+  EdgeStatus,
+  isEdgeMatchedRequiredFirmware
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
 import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
+import { StyledCompatibilityWarningTriangleIcon }                                              from './styledComponents'
 import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
 const initialNodeCompatibleResult = {
@@ -154,7 +159,7 @@ export const getAvailableVipInterfaces = (
 }
 
 
-export const getPortFormCompatibilityFields = () => {
+export const getPortFormCompatibilityFields = (isEdgeCoreAccessSeparationReady: boolean) => {
   return [{
     key: 'ports',
     title: 'Number of Ports',
@@ -162,14 +167,16 @@ export const getPortFormCompatibilityFields = () => {
       <Typography.Text
         type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
-  }, {
-    key: 'corePorts',
-    title: 'Number of Core Ports',
-    render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
-      <Typography.Text
-        type={errors.corePorts.isError ? 'danger' : undefined}
-        children={errors.corePorts.value} />
-  }, {
+  }, ...(
+    isEdgeCoreAccessSeparationReady ? [] : [{
+      key: 'corePorts',
+      title: 'Number of Core Ports',
+      render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
+        <Typography.Text
+          type={errors.corePorts.isError ? 'danger' : undefined}
+          children={errors.corePorts.value} />
+    }]
+  ), {
     key: 'portTypes',
     title: 'Port Types',
     render: (errors:
@@ -188,7 +195,7 @@ export const getPortFormCompatibilityFields = () => {
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
 
-export const getLagFormCompatibilityFields = () => {
+export const getLagFormCompatibilityFields = (isEdgeCoreAccessSeparationReady: boolean) => {
   return [{
     key: 'lags',
     title: 'Number of LAGs',
@@ -196,15 +203,17 @@ export const getLagFormCompatibilityFields = () => {
       <Typography.Text
         type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
-  }, {
-    key: 'corePorts',
-    title: 'Number of Core Ports',
-    render: (errors:
+  }, ...(
+    isEdgeCoreAccessSeparationReady ? [] : [{
+      key: 'corePorts',
+      title: 'Number of Core Ports',
+      render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
-      <Typography.Text
-        type={errors.corePorts.isError ? 'danger' : undefined}
-        children={errors.corePorts.value} />
-  }, {
+        <Typography.Text
+          type={errors.corePorts.isError ? 'danger' : undefined}
+          children={errors.corePorts.value} />
+    }]
+  ), {
     key: 'portTypes',
     title: 'Port Types',
     render: (errors:
@@ -224,14 +233,16 @@ export const getLagFormCompatibilityFields = () => {
 }
 
 const getCompatibleCheckResult = (
-  countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>
+  countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>,
+  isEdgeCoreAccessSeparationReady?: boolean
 ): CompatibilityCheckResult => {
   let results = _.values(countResult)
   const targetData = results[0]
 
   const portsCheck = _.every(results,
     (result) => _.isEqual(result.errors.ports.value, targetData.errors.ports.value))
-  const corePortsCheck = _.every(results,
+  // ignore core ports check when edge core access FF is on
+  const corePortsCheck = isEdgeCoreAccessSeparationReady ? true : _.every(results,
     (result) => _.isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
 
   // append 'isError' data
@@ -280,7 +291,8 @@ const getCompatibleCheckResult = (
 export const interfaceCompatibilityCheck = (
   portSettings: InterfaceSettingsFormType['portSettings'],
   lagSettings: InterfaceSettingsFormType['lagSettings'],
-  nodeList: EdgeClusterStatus['edgeList']
+  nodeList: EdgeClusterStatus['edgeList'],
+  isEdgeCoreAccessSeparationReady: boolean
 ): CompatibilityCheckResult => {
   // eslint-disable-next-line max-len
   const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
@@ -326,12 +338,13 @@ export const interfaceCompatibilityCheck = (
     checkResult[serialNumber] = result
   })
 
-  return getCompatibleCheckResult(checkResult)
+  return getCompatibleCheckResult(checkResult, isEdgeCoreAccessSeparationReady)
 }
 
 export const lagSettingsCompatibleCheck = (
   lagSettings: InterfaceSettingsFormType['lagSettings'],
-  nodeList: EdgeClusterStatus['edgeList']
+  nodeList: EdgeClusterStatus['edgeList'],
+  isEdgeCoreAccessSeparationReady: boolean
 ): CompatibilityCheckResult => {
   // eslint-disable-next-line max-len
   const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
@@ -367,7 +380,7 @@ export const lagSettingsCompatibleCheck = (
     checkResult[serialNumber] = result
   })
 
-  return getCompatibleCheckResult(checkResult)
+  return getCompatibleCheckResult(checkResult, isEdgeCoreAccessSeparationReady)
 }
 
 const processLagSettings = (
@@ -486,25 +499,30 @@ const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
         }))
     } as NodeSubInterfaces)
   })
-  Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
-    // eslint-disable-next-line max-len
-    const lagSettingsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-    // eslint-disable-next-line max-len
+  const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
+    result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
+    return result
+  }, {} as { [serialNumber: string]: string[] })
+  Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
+    const lagMemberIdsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+      ?.flatMap(lag => lag.lagMembers.map(member => member.portId))
+    const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
     const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
     if(currentSubInterfaceItem) {
-      // eslint-disable-next-line max-len
-      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).filter(([portId]) => {
-        return !lagSettingsOfCurrentNode?.some(lag => lag.lagMembers.some(member => member.portId === portId))
-      }).map(([portId, subInterfaces]) => ({
-        portId: portId,
-        subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+      currentSubInterfaceItem.ports = portIds.map(portId => ({
+        portId,
+        subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+          preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+          []
       }))
     } else {
       subInterfaceSettings.push({
         serialNumber,
-        ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
-          portId: portId,
-          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        ports: portIds.map(portId => ({
+          portId,
+          subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+            preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+            []
         }))
       } as NodeSubInterfaces)
     }
@@ -602,6 +620,7 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
       subnet: item[0].subnet,
       portType: item[0].portType,
       isCorePort: item[0].corePortEnabled,
+      isAccessPort: item[0].accessPortEnabled,
       isLag: false,
       isLagMember: currentLagMembers?.includes(item[0].id) ?? false,
       portEnabled: item[0].enabled
@@ -616,6 +635,7 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
       subnet: item.subnet,
       portType: item.portType,
       isCorePort: item.corePortEnabled,
+      isAccessPort: item.accessPortEnabled,
       isLag: true,
       isLagMember: false,
       portEnabled: item.lagEnabled
@@ -625,4 +645,63 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
   }, {} as Record<EdgeSerialNumber, EdgePortInfo[]>)
 
   return result
+}
+
+export const getAllPhysicalInterfaceData = (
+  portSettings: InterfaceSettingsFormType['portSettings'],
+  lagSettings: InterfaceSettingsFormType['lagSettings']
+): { ports: Record<EdgeSerialNumber, EdgePort[]>, lags: Record<EdgeSerialNumber, EdgeLag[]> } => {
+
+  const allPortsData = reduce(portSettings, (result, values, key) => {
+    result[key] = flatten(Object.values(values))
+    return result
+  }, {} as Record<EdgeSerialNumber, EdgePort[]>)
+
+  const allLagsData = reduce(lagSettings, (result, values) => {
+    result[values.serialNumber] = values.lags
+    return result
+  }, {} as Record<EdgeSerialNumber, EdgeLag[]>)
+
+  return {
+    ports: allPortsData,
+    lags: allLagsData
+  }
+}
+
+// get physical port & LAG data from form instance
+export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
+  ports: Record<EdgeSerialNumber, EdgePort[]>,
+  lags: Record<EdgeSerialNumber, EdgeLag[]>
+} => {
+  const nodesPortData = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
+  const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+
+  return getAllPhysicalInterfaceData(nodesPortData, nodesLagData)
+}
+
+export const DualWanStepTitle = (props: {
+  requiredFw: string | undefined,
+  edgeList: EdgeStatus[] | undefined
+}) => {
+  const { $t } = useIntl()
+  const { requiredFw, edgeList } = props
+  const isLower = requiredFw && edgeList && !isEdgeMatchedRequiredFirmware(requiredFw, edgeList)
+
+  return <>{$t({ defaultMessage: 'Dual WAN' })}
+    {isLower && <Tooltip
+      title={$t({ defaultMessage: `Dual WAN feature requires your RUCKUS Edge cluster
+          running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
+          <venueSingular></venueSingular> firmware from {targetLink}` },
+      {
+        ...defaultRichTextFormatValues,
+        requiredFw,
+        targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+          {$t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' })}
+        </TenantLink>
+      })
+      }>
+      <StyledCompatibilityWarningTriangleIcon />
+    </Tooltip>
+    }
+  </>
 }

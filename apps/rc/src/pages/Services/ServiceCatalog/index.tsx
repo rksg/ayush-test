@@ -14,7 +14,9 @@ import {
   isServiceCardEnabled,
   isServiceCardSetEnabled,
   serviceTypeLabelMapping,
-  serviceTypeDescMapping
+  serviceTypeDescMapping,
+  useDhcpStateMap,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
@@ -23,7 +25,7 @@ import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
-interface ServiceCardItem {
+export interface ServiceCardItem {
   title: string
   items: {
     type: ServiceType
@@ -43,17 +45,13 @@ export default function ServiceCatalog () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
+  const dhcpStateMap = useDhcpStateMap()
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -62,23 +60,32 @@ export default function ServiceCatalog () {
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
-        { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.DHCP,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !dhcpStateMap[ServiceType.DHCP]
+        },
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.DHCP}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
-          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
+          disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+        },
+        {
+          type: ServiceType.DHCP_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.PIN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.PIN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
@@ -86,15 +93,12 @@ export default function ServiceCatalog () {
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          helpIcon: isEdgeCompatibilityEnabled
-            ? <ApCompatibilityToolTip
-              title={''}
-              showDetailButton
-              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
-            />
-            : undefined,
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          categories: [RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title={IncompatibilityFeatures.SD_LAN}
+            showDetailButton
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
+          />
         },
         {
           type: ServiceType.EDGE_OLT,
@@ -109,24 +113,33 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeFirewallHaReady
         }
       ]
     },
     {
       title: $t({ defaultMessage: 'Application' }),
       items: [
-        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.MDNS_PROXY,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
+        },
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady,
+          disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
           helpIcon: <ApCompatibilityToolTip
             title=''
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
           />,
           isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+        },
+        {
+          type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,
@@ -205,13 +218,13 @@ export default function ServiceCatalog () {
           </GridRow>
         </UI.CategoryContainer>
       })}
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+      <EdgeCompatibilityDrawer
         visible={!!edgeCompatibilityFeature}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeCompatibilityFeature}
         onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
+      />
     </>
   )
 }

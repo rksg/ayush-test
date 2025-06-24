@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Col }                         from 'antd'
 import { ExpandableConfig, SortOrder } from 'antd/lib/table/interface'
 import { capitalize }                  from 'lodash'
-import { useIntl }                     from 'react-intl'
+import { useIntl    }                  from 'react-intl'
 
 import {
   Button, GridRow, Loader,
@@ -11,7 +11,7 @@ import {
   Table, TableProps,
   ColumnType
 }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features }       from '@acx-ui/feature-toggle'
 import {
   EdgeLagMemberStatus, EdgeLagStatus,
   EdgeLagTimeoutEnum,
@@ -21,14 +21,16 @@ import {
   defaultSort,
   EdgeStatus,
   EdgeWanLinkHealthStatusEnum,
-  EdgeMultiWanConfigStats
+  EdgeMultiWanConfigStats,
+  EdgePortTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { getDisplayWanRole }              from '../utils/dualWanUtils'
-import { EdgeWanLinkHealthDetailsDrawer } from '../WanLinkHealthDetails'
-import { EdgeWanLinkHealthStatusLight }   from '../WanLinkHealthStatusLight'
+import { getDisplayWanRole, getWanLinkStatusString } from '../utils/dualWanUtils'
+import { EdgeWanLinkHealthDetailsDrawer }            from '../WanLinkHealthDetails'
+import { EdgeWanLinkHealthStatusLight }              from '../WanLinkHealthStatusLight'
 
 interface EdgeOverviewLagTableProps {
   data: EdgeLagStatus[]
@@ -56,7 +58,7 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
     edgeNodes
   } = props
   const { $t } = useIntl()
-  const isEdgeDualWanEnabled = useIsSplitOn(Features.EDGE_DUAL_WAN_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   // eslint-disable-next-line max-len
   const [linkHealthDetailIfName, setLinkHealthDetailIfName]= useState<string | undefined>(undefined)
@@ -74,6 +76,8 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
       sorter: false,
       show: false,
       render: (_, row) => {
+        if (row.portType !== EdgePortTypeEnum.WAN) return ''
+
         // eslint-disable-next-line max-len
         const result = transformDisplayOnOff(row.multiWan?.linkHealthMonitorEnabled ?? false)
 
@@ -94,7 +98,11 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
       dataIndex: ['multiWan', 'wanLinkStatus'],
       sorter: { compare: sortProp('multiWan.wanLinkStatus', defaultSort) },
       render: (_, row) => {
-        return row.multiWan?.wanLinkStatus
+        if (row.portType !== EdgePortTypeEnum.WAN) return ''
+
+        const isLinkHealthEnabled = row.multiWan?.linkHealthMonitorEnabled ?? false
+
+        return row.multiWan?.wanLinkStatus && isLinkHealthEnabled
           ? <EdgeWanLinkHealthStatusLight
             status={row.multiWan?.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
             // eslint-disable-next-line max-len
@@ -110,6 +118,8 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
       show: false,
       sorter: { compare: sortProp('multiWan.wanPortRole', defaultSort) },
       render: (_, row) => {
+        if (row.portType !== EdgePortTypeEnum.WAN) return ''
+
         return getDisplayWanRole(row.multiWan?.priority ?? 0)
       }
     },
@@ -117,7 +127,12 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
       title: $t({ defaultMessage: 'WAN Status' }),
       key: 'wanPortStatus',
       dataIndex: ['multiWan', 'wanPortStatus'],
-      sorter: { compare: sortProp('multiWan.wanPortStatus', defaultSort) }
+      sorter: { compare: sortProp('multiWan.wanPortStatus', defaultSort) },
+      render: (_, row) => {
+        if (row.portType !== EdgePortTypeEnum.WAN) return ''
+
+        return getWanLinkStatusString(row.multiWan?.wanPortStatus)
+      }
     }
   ]
 

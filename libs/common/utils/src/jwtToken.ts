@@ -7,7 +7,7 @@ import { getTenantId }                   from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
-  PLATINUM = 'Platinum',
+  PLATINUM = 'Platinum', // Professional Tier
   CORE = 'Silver' // Foundation Tier
 }
 

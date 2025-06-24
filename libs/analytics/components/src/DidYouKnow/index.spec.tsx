@@ -75,7 +75,7 @@ describe('DidYouKnowWidget', () => {
       data: { network: { hierarchyNode: { facts: sample } } }
     })
     render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
-    const regexPattern = /Top 3 applications in terms of users last week were/
+    const regexPattern = /Top applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
   })
   it('should handle change in slides', async () => {
@@ -96,7 +96,7 @@ describe('DidYouKnowWidget', () => {
       const slice = container.querySelector('.slick-slide.slick-active.slick-current')
       if (!slice) throw new Error('slide not rendered')
       const pattern = set === 1
-        ? /Top 3 applications in terms of users last week were/
+        ? /Top applications in terms of users last week were/
         : /Average daily airtime utilization last week/
       expect(await within(slice as HTMLElement).findByText(pattern)).toBeVisible()
       set = 0

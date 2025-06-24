@@ -38,7 +38,8 @@ import {
   macAuthMacFormatOptions,
   useConfigTemplate,
   SecurityOptionsDescription,
-  CertificateUrls
+  CertificateUrls,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
@@ -56,6 +57,7 @@ import { NetworkDiagram }                                                       
 import { MLOContext }                                                                                from '../NetworkForm'
 import NetworkFormContext                                                                            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }                                                                   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AccountingServiceInput }                                                                    from '../SharedComponent'
 import * as UI                                                                                       from '../styledComponents'
 
 import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
@@ -66,35 +68,26 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
-  const { editMode, cloneMode, data, setData, isRuckusAiMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
-  const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [hasSetRuckusAiFields, setRuckusAiFields] = useState(false)
-
-  // TODO: Remove deprecated codes below when RadSec feature is delivery
-  useEffect(()=>{
-    if(!supportRadsec && !isRuckusAiMode && data && (editMode || cloneMode)) {
-      setFieldsValue()
-    }
-  }, [data])
+  const useCertificateTemplate = useWatch('useCertificateTemplate', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+  const enableAuthProxy = useWatch('enableAuthProxy', form)
 
   useEffect(() => {
     if (isRuckusAiMode && (!isEmpty(data?.accountingRadiusId))
       && !hasSetRuckusAiFields && editMode) {
       setRuckusAiFields(true)
       form.setFieldValue('enableAccountingService', true)
-      setData && setData({ ...data, enableAccountingService: true })
     }
   }, [data?.accountingRadiusId])
 
   useEffect(()=>{
-    if(supportRadsec && data && (editMode || cloneMode)) {
+    if(data && (editMode || cloneMode)) {
       setFieldsValue()
     }
   }, [data?.id])
@@ -126,7 +119,13 @@ export function AaaSettingsForm () {
         <SettingsForm />
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram />
+        <NetworkDiagram
+          type={NetworkTypeEnum.AAA}
+          useCertificateTemplate={useCertificateTemplate}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+          enableAuthProxy={enableAuthProxy}
+        />
       </Col>
     </Row>
     {!(editMode) && !(isRuckusAiMode) && <Row>
@@ -151,6 +150,9 @@ function SettingsForm () {
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
     <Space align='start'>
@@ -224,7 +226,9 @@ function SettingsForm () {
           </Form.Item>
         </div>
         {
-          (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
+          (!useCertificateTemplate
+            && isWifiIdentityManagementEnable
+            && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
           <Form.Item>
             <IdentityGroup comboWidth='210px' />
           </Form.Item>
@@ -233,6 +237,11 @@ function SettingsForm () {
           {useCertificateTemplate
             ? isMultipleCertificateTemplatesEnabled ? <CertsAuth /> : <CertAuth />
             : <AaaService />}
+          {useCertificateTemplate && isSupportNetworkRadiusAccounting &&
+            <AccountingServiceInput
+              isProxyModeConfigurable={true}
+            />
+          }
         </div>
       </> : <AaaService />}
     </Space>
@@ -371,12 +380,10 @@ function AaaService () {
   const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
-  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
@@ -465,79 +472,54 @@ function AaaService () {
         </UI.FieldLabel>
       </div>
       <div>
-        <UI.FieldLabel width={labelWidth}>
-          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-          <Form.Item
-            name='enableAccountingService'
-            valuePropName='checked'
-            initialValue={false}
-            style={{ marginTop: '-5px', marginBottom: '0' }}
-            children={<Switch
-              onChange={(value)=>onProxyChange(value,'enableAccountingService')}
-            />}
-          />
-        </UI.FieldLabel>
-        {enableAccountingService && <>
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'/>
-          <UI.FieldLabel width={labelWidth}>
-            <Space align='start'>
-              { $t({ defaultMessage: 'Proxy Service' }) }
-              {proxyServiceTooltip}
-            </Space>
-            <Form.Item
-              name='enableAccountingProxy'
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch
-                onChange={(value) => onProxyChange(value,'enableAccountingProxy')}
-                disabled={supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled}/>}
-            />
-          </UI.FieldLabel>
-        </>}
+        <AccountingServiceInput
+          isProxyModeConfigurable={true}
+          labelWidth={labelWidth}
+          enableToggleOnChange={(value)=>onProxyChange(value,'enableAccountingService')}
+          proxyModeToggleOnChange={(value) => onProxyChange(value,'enableAccountingProxy')}
+        />
       </div>
-      {support8021xMacAuth && <>
-        <UI.FieldLabel width={labelWidth}>
-          <Space align='start'>
-            { $t({ defaultMessage: 'MAC Authentication' }) }
-            {!isR370UnsupportedFeatures && <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='bottom'
-              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              showDetailButton
-              placement='bottom'
-              onClick={() => setDrawerVisible(true)}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-              visible={drawerVisible}
-              type={ApCompatibilityType.ALONE}
-              networkId={networkId}
-              featureName={InCompatibilityFeatures.MAC_AUTH}
-              onClose={() => setDrawerVisible(false)}
-            />}
-          </Space>
-          <Form.Item
-            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
-            initialValue={false}
-            valuePropName='checked'
-            children={<Switch
-              disabled={editMode}
-              onChange={onMacAuthChange}
-              data-testid='macAuth8021x'/>}
-          />
-        </UI.FieldLabel>
-        {enableMacAuthentication &&
-          <Form.Item
-            label={$t({ defaultMessage: 'MAC Address Format' })}
-            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
-            initialValue={MacAuthMacFormatEnum.UpperDash}
-            children={<Select children={macAuthOptions} />}
-          />
-        }
-      </>}
+      <UI.FieldLabel width={labelWidth}>
+        <Space align='start'>
+          { $t({ defaultMessage: 'MAC Authentication' }) }
+          {!isR370UnsupportedFeatures && <Tooltip.Question
+            title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+            placement='bottom'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+            showDetailButton
+            placement='bottom'
+            onClick={() => setDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
+            visible={drawerVisible}
+            type={ApCompatibilityType.ALONE}
+            networkId={networkId}
+            featureNames={[InCompatibilityFeatures.MAC_AUTH]}
+            onClose={() => setDrawerVisible(false)}
+          />}
+        </Space>
+        <Form.Item
+          name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+          initialValue={false}
+          valuePropName='checked'
+          children={<Switch
+            disabled={editMode}
+            onChange={onMacAuthChange}
+            data-testid='macAuth8021x'/>}
+        />
+      </UI.FieldLabel>
+      {enableMacAuthentication &&
+        <Form.Item
+          label={$t({ defaultMessage: 'MAC Address Format' })}
+          name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+          initialValue={MacAuthMacFormatEnum.UpperDash}
+          children={<Select children={macAuthOptions} />}
+        />
+      }
     </Space>
   )
 }

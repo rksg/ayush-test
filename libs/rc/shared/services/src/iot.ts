@@ -8,7 +8,9 @@ import {
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotControllerVenues,
   IotSerialNumberResult,
+  SerialNumberExistsResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -33,9 +35,9 @@ export const iotApi = baseIotApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddIotController',
-            'DeleteIotController',
-            'UpdateIotController'
+            'Add IoT Controller',
+            'Delete IoT Controller',
+            'Update IoT Controller'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(iotApi.util.invalidateTags([{ type: 'IotController', id: 'LIST' }]))
@@ -96,6 +98,38 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
+    getIotControllerSerialNumber: build.query<SerialNumberExistsResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerSerialNumber, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenues: build.query<IotControllerVenues, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenueAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenueAssociations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerApAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerApAssociations, params)
+        return {
+          ...req
+        }
+      }
+    }),
     refreshIotController: build.mutation<void, void>({
       queryFn: async () => {
         return { data: undefined }
@@ -141,6 +175,14 @@ export const {
   useUpdateIotControllerMutation,
   useDeleteIotControllerMutation,
   useTestConnectionIotControllerMutation,
+  useGetIotControllerSerialNumberQuery,
+  useLazyGetIotControllerSerialNumberQuery,
+  useGetIotControllerVenuesQuery,
+  useLazyGetIotControllerVenuesQuery,
+  useGetIotControllerVenueAssociationsQuery,
+  useLazyGetIotControllerVenueAssociationsQuery,
+  useGetIotControllerApAssociationsQuery,
+  useLazyGetIotControllerApAssociationsQuery,
   useRefreshIotControllerMutation,
   useIotControllerLicenseStatusQuery,
   useIotControllerDashboardQuery,

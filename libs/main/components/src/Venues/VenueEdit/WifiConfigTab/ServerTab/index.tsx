@@ -25,6 +25,7 @@ import { useVenueConfigTemplateOpsApiSwitcher }      from '../../../venueConfigT
 
 import { ApSnmp }               from './ApSnmp'
 import { IotController }        from './IotController'
+import { IotControllerV2 }      from './IotControllerV2'
 import { LocationBasedService } from './LocationBasedService'
 import { MdnsFencing }          from './MdnsFencing/MdnsFencing'
 import { Syslog }               from './Syslog'
@@ -51,10 +52,10 @@ export function ServerTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
-  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
+  const supportLbs = isLbsFeatureTierAllowed && !isCore
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
+  const isIotV2Enabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const syslogApiUrlInfo = (!isTemplate)? SyslogUrls : PoliciesConfigTemplateUrlsInfo
@@ -112,7 +113,16 @@ export function ServerTab () {
       <ApSnmp isAllowEdit={isAllowEditVenueApSnmp} />))
   }
 
-  if (isIotFeatureEnabled) {
+  // v2
+  if (isIotFeatureEnabled && isIotV2Enabled && !isTemplate) {
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }),
+      'iotController',
+      <IotControllerV2 isAllowEdit={isAllowEditVenueIot} />))
+  }
+
+  // v1
+  if (isIotFeatureEnabled && !isIotV2Enabled) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }),
       'iotController',

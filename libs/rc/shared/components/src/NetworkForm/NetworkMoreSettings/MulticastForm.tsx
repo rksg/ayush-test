@@ -127,11 +127,12 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
               placement='right'
               onClick={() => setDrawerVisible(true)}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={drawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={networkId}
-              featureName={InCompatibilityFeatures.NETWORK_MULTICAST_RATE_LIMIT}
+              featureNames={[InCompatibilityFeatures.NETWORK_MULTICAST_RATE_LIMIT]}
               onClose={() => setDrawerVisible(false)}
             />}
           </Space>

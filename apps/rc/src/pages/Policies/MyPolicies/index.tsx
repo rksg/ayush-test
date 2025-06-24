@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                    from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -60,86 +60,79 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const policies = useCardData()
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
 
-  if (isEdgeCompatibilityEnabled) {
-    find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = isEdgeCompatibilityEnabled
-      ? <ApCompatibilityToolTip
-        title=''
-        showDetailButton
-        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
-      />
-      : undefined
-    find(policies, { type: PolicyType.HQOS_BANDWIDTH })!.helpIcon = isEdgeCompatibilityEnabled
-      ? <ApCompatibilityToolTip
-        title=''
-        showDetailButton
-        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
-      />
-      : undefined
-  }
+    find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = <ApCompatibilityToolTip
+      title=''
+      showDetailButton
+      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
+    />
+    find(policies, { type: PolicyType.HQOS_BANDWIDTH })!.helpIcon = <ApCompatibilityToolTip
+      title=''
+      showDetailButton
+      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+    />
 
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Policies & Profiles' })}
-        breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={<AddProfileButton
-          hasSomeProfilesPermission={() => hasSomePoliciesPermission(PolicyOperation.CREATE)}
-          linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
-          targetPath={getSelectPolicyRoutePath(true)}
-        />}
-      />
-      <GridRow>
-        {
+    return (
+      <>
+        <PageHeader
+          title={$t({ defaultMessage: 'Policies & Profiles' })}
+          breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
+          extra={<AddProfileButton
+            hasSomeProfilesPermission={() => hasSomePoliciesPermission(PolicyOperation.CREATE)}
+            linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
+            targetPath={getSelectPolicyRoutePath(true)}
+          />}
+        />
+        <GridRow>
+          {
           // eslint-disable-next-line max-len
-          policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
-            const title = <FormattedMessage
-              defaultMessage={
-                '{name} ({count})'
-              }
-              values={{
-                name: $t(policyTypeLabelMapping[policy.type]),
-                count: policy.totalCount ?? 0
-              }}
-            />
+            policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
+              const title = <FormattedMessage
+                defaultMessage={
+                  '{name} ({count})'
+                }
+                values={{
+                  name: $t(policyTypeLabelMapping[policy.type]),
+                  count: policy.totalCount ?? 0
+                }}
+              />
 
-            return (
-              <GridCol key={policy.type} col={{ span: 6 }}>
-                <RadioCard
-                  type={'default'}
-                  key={`${policy.type}_${index}`}
-                  value={policy.type}
-                  title={title}
-                  description={$t(policyTypeDescMapping[policy.type])}
-                  categories={policy.categories}
-                  onClick={() => {
-                    policy.listViewPath && navigate(policy.listViewPath)
-                  }}
-                  helpIcon={
-                    policy.helpIcon
-                      ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
-                      : ''
-                  }
-                  isBetaFeature={policy.isBetaFeature}
-                />
-              </GridCol>
-            )
-          })
-        }
-      </GridRow>
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
-        visible={!!edgeFeatureName}
-        type={EdgeCompatibilityType.ALONE}
-        title={$t({ defaultMessage: 'Compatibility Requirement' })}
-        featureName={edgeFeatureName}
-        onClose={() => setEdgeFeatureName(undefined)}
-      />}
-    </>
-  )
+              return (
+                <GridCol key={policy.type} col={{ span: 6 }}>
+                  <RadioCard
+                    type={'default'}
+                    key={`${policy.type}_${index}`}
+                    value={policy.type}
+                    title={title}
+                    description={$t(policyTypeDescMapping[policy.type])}
+                    categories={policy.categories}
+                    onClick={() => {
+                      policy.listViewPath && navigate(policy.listViewPath)
+                    }}
+                    helpIcon={
+                      policy.helpIcon
+                        ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                        : ''
+                    }
+                    isBetaFeature={policy.isBetaFeature}
+                  />
+                </GridCol>
+              )
+            })
+          }
+        </GridRow>
+        <EdgeCompatibilityDrawer
+          visible={!!edgeFeatureName}
+          type={EdgeCompatibilityType.ALONE}
+          title={$t({ defaultMessage: 'Compatibility Requirement' })}
+          featureName={edgeFeatureName}
+          onClose={() => setEdgeFeatureName(undefined)}
+        />
+      </>
+    )
 }
 
 interface PolicyCardData {
@@ -157,10 +150,8 @@ function useCardData (): PolicyCardData[] {
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
-  const isEdgeEnabled = useIsEdgeReady()
+  const supportLbs = isLbsFeatureTierAllowed && !isCore
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
@@ -301,13 +292,12 @@ function useCardData (): PolicyCardData[] {
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
-      }, { skip: !isEdgeEnabled }).data?.totalCount,
+      }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST }))
     },
     {
       type: PolicyType.CONNECTION_METERING,
@@ -409,7 +399,7 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isSwitchPortProfileEnabled
     },
     {

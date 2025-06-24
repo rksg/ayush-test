@@ -192,19 +192,26 @@ export const useUpdateNetworkTunnelAction = () => {
       // if no changes
       if (formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState === sdLanTunnelDmz)
         return Promise.resolve()
-      // check conflict when is CAPTIVEPORTAL network
-      // and 1. still SDLAN and tunnel guest changed
-      // or 2. activate SDLAN
-      if(((formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState !== sdLanTunnelDmz)
-      || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
-      && network.type === NetworkTypeEnum.CAPTIVEPORTAL) {
-        const activatedDmz = formValues.sdLan.isGuestTunnelEnabled ||
-          (currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE)
+      let showConnflictCondition = false
+      if(isEdgeL2oGreReady){
+        showConnflictCondition = (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan)
+      } else {
+        // check conflict when is CAPTIVEPORTAL network
+        // and 1. still SDLAN and tunnel guest changed
+        // or 2. activate SDLAN
+        showConnflictCondition = ((formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState !== sdLanTunnelDmz)
+        || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
+        && network.type === NetworkTypeEnum.CAPTIVEPORTAL
+      }
+
+      if(showConnflictCondition) {
+        const activatedDmz = formValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
         return await new Promise<void | boolean>((resolve) =>
           showSdLanGuestFwdConflictModal({
             currentNetworkVenueId: network?.venueId!,
             currentNetworkId: network?.id!,
             currentNetworkName: '',
+            currentFwdTunnelType: currentFwdTunnelType,
             activatedDmz: activatedDmz,
             tunneledWlans: venueSdLanInfo!.tunneledWlans,
             tunneledGuestWlans: venueSdLanInfo!.tunneledGuestWlans,

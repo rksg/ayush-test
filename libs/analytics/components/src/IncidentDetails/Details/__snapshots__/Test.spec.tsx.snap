@@ -193,21 +193,6 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -684,6 +669,46 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                               class=""
                             >
                               11/09/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -971,21 +996,6 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1467,6 +1477,46 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1749,21 +1799,6 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -2285,6 +2320,46 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -2567,21 +2642,6 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -3058,6 +3118,46 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                               class=""
                             >
                               01/25/2024 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -3340,21 +3440,6 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -3836,6 +3921,46 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -4113,21 +4238,6 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -4649,6 +4759,46 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -4926,21 +5076,6 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -5417,6 +5552,46 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                               class=""
                             >
                               01/25/2024 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -5704,21 +5879,6 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -6200,6 +6360,46 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -6482,21 +6682,6 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -7018,6 +7203,46 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -7300,21 +7525,6 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -7756,6 +7966,46 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -8041,21 +8291,6 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -8497,6 +8732,46 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -8782,21 +9057,6 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -9278,6 +9538,46 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -9563,21 +9863,6 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -10019,6 +10304,46 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -10304,21 +10629,6 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -10800,6 +11110,46 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -11088,21 +11438,6 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -11539,6 +11874,46 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                               class=""
                             >
                               07/10/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -11840,21 +12215,6 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -12296,6 +12656,46 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -12580,21 +12980,6 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -13036,6 +13421,46 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -13336,21 +13761,6 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -13787,6 +14197,46 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
                               class=""
                             >
                               07/20/2022 02:42
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -14080,21 +14530,6 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -14531,6 +14966,46 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
                               class=""
                             >
                               07/20/2022 02:42
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -14824,21 +15299,6 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -15275,6 +15735,46 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
                               class=""
                             >
                               07/20/2022 02:42
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -15568,21 +16068,6 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -16019,6 +16504,46 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
                               class=""
                             >
                               07/20/2022 02:42
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
                             </span>
                           </span>
                         </div>
@@ -16312,21 +16837,6 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -16768,6 +17278,46 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -17056,21 +17606,6 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -17456,6 +17991,46 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -17687,21 +18262,6 @@ exports[`Test Details should render NetSzNetLatency correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -18087,6 +18647,46 @@ exports[`Test Details should render NetSzNetLatency correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -18318,21 +18918,6 @@ exports[`Test Details should render NetTime correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -18718,6 +19303,46 @@ exports[`Test Details should render NetTime correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -18949,21 +19574,6 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -19349,6 +19959,46 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -19632,21 +20282,6 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -20032,6 +20667,46 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -20315,21 +20990,6 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -20715,6 +21375,46 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -20976,21 +21676,6 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -21376,6 +22061,46 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -21620,21 +22345,6 @@ exports[`Test Details should render SwitchPortCongestion correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -22020,6 +22730,46 @@ exports[`Test Details should render SwitchPortCongestion correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -22095,6 +22845,827 @@ exports[`Test Details should render SwitchPortCongestion correctly 1`] = `
         <div
           data-testid="ImpactedSwitchPortConjestionTable"
         />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render SwitchPortFlap correctly 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c1 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="c1"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          Port flap detected in Venue: GRP2
+        </span>
+      </div>
+    </div>
+  </div>
+  .c4 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c4 > span:after {
+  content: '';
+  display: block;
+}
+
+.c5 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c6 {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 5;
+  background-color: var(--acx-primary-white);
+  opacity: 0.8;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 .ant-descriptions-row > th {
+  padding-bottom: 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
+  top: -1px;
+}
+
+.c2 {
+  position: fixed;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+  .c6 {
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    background: none;
+    opacity: 1;
+  }
+}
+
+<div
+    class="ant-row "
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div
+          class="c2"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 1280px;"
+          >
+            <div
+              class="ant-descriptions c3"
+            >
+              <div
+                class="ant-descriptions-view"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Infrastructure
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Sub-Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Port Flap
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Type
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Venue
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Scope
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="c4"
+                            >
+                              <span
+                                class=""
+                              >
+                                GRP2
+                              </span>
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Duration
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              4 d 18 h
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event Start Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              09/30/2022 07:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              10/05/2022 01:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 203px;"
+      >
+        <div
+          class="c5"
+        >
+          <div
+            class="c6"
+          >
+            <span
+              aria-label="loader"
+              class=""
+              role="img"
+            >
+              <div
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
+              >
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 129px;"
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-SwitchImpactedPortsCount"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 326px;"
+      >
+        <div
+          class="c5"
+        >
+          <div
+            class="c6"
+          >
+            <span
+              aria-label="loader"
+              class=""
+              role="img"
+            >
+              <div
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
+              >
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -22294,21 +23865,6 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -22694,6 +24250,46 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -22968,21 +24564,6 @@ exports[`Test Details should render SwitchUplinkPortCongestion correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -23368,6 +24949,46 @@ exports[`Test Details should render SwitchUplinkPortCongestion correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -23642,21 +25263,6 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -24042,6 +25648,46 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -24299,21 +25945,6 @@ exports[`Test Details should render Ttc correctly 1`] = `
             </span>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <div
-                data-testid="muteIncident"
-              />
-            </div>
-          </div>
-        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -24755,6 +26386,46 @@ exports[`Test Details should render Ttc correctly 1`] = `
                         </div>
                       </td>
                     </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Visibility
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class=""
+                            >
+                              Unmuted
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -24850,6 +26521,8 @@ exports[`Test Feature Flag Off should not render anything for SwitchLLDPStatus 1
 exports[`Test Feature Flag Off should not render anything for SwitchLoopDetection 1`] = `<DocumentFragment />`;
 
 exports[`Test Feature Flag Off should not render anything for SwitchPortCongestion 1`] = `<DocumentFragment />`;
+
+exports[`Test Feature Flag Off should not render anything for SwitchPortFlap 1`] = `<DocumentFragment />`;
 
 exports[`Test Feature Flag Off should not render anything for SwitchTcpSynDDoS 1`] = `<DocumentFragment />`;
 

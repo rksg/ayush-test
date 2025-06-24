@@ -13,12 +13,7 @@ import {
 } from '@acx-ui/components'
 import { EdgePermissions } from '@acx-ui/edge/components'
 import {
-  Features,
-  useIsSplitOn
-} from '@acx-ui/feature-toggle'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
+  Features } from '@acx-ui/feature-toggle'
 import {
   useGetEdgeListQuery,
   useVenuesListQuery
@@ -30,7 +25,6 @@ import {
   FILTER,
   SEARCH,
   TABLE_QUERY,
-  TableQuery,
   allowRebootShutdownForStatus,
   allowResetForStatus,
   usePollingTableQuery
@@ -38,7 +32,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }        from '@acx-ui/utils'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
@@ -46,7 +40,6 @@ import { seriesMappingAP }                                from '../DevicesWidget
 import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
-import { useExportCsv }    from './useExportCsv'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -60,7 +53,6 @@ interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   filterColumns?: string[];
   // custom column is optional
   columns?: TableProps<EdgeStatus>['columns']
-  incompatibleCheck?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
@@ -93,7 +85,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
     tableQuery: customTableQuery,
     columns,
     filterColumns,
-    incompatibleCheck,
     filterables,
     ...otherProps
   } = props
@@ -101,8 +92,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -112,13 +101,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
-    defaultPayload: incompatibleCheck
-      ? {
-        ...defaultEdgeTablePayload,
-        fields: (defaultEdgeTablePayload.fields as string[]).concat(
-          isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
-      }
-      : defaultEdgeTablePayload,
+    defaultPayload: {
+      ...defaultEdgeTablePayload,
+      fields: (defaultEdgeTablePayload.fields as string[]).concat(
+        isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
+    },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
@@ -143,14 +130,10 @@ export const EdgesTable = (props: EdgesTableProps) => {
     })
 
   const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
-  // eslint-disable-next-line max-len
-  const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
 
   const handleColumnStateChange = (state: ColumnState) => {
-    if (isEdgeCompatibilityEnabled) {
-      if (showFeatureCompatibilitiy !== state['incompatible']) {
-        setShowFeatureCompatibilitiy(state['incompatible'])
-      }
+    if (showFeatureCompatibilitiy !== state['incompatible']) {
+      setShowFeatureCompatibilitiy(state['incompatible'])
     }
   }
 
@@ -260,7 +243,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       show: false
     },
-    ...(isEdgeCompatibilityEnabled && incompatibleCheck ? [{
+    {
       key: 'incompatible',
       // eslint-disable-next-line max-len
       tooltip: $t({ defaultMessage: 'Check for the RUCKUS Edge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
@@ -285,8 +268,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
           }} />
         )
       }
-    }] : [])
-  ], [showFeatureCompatibilitiy, statusFilterOptions, venueOptions, incompatibleCheck])
+    }
+  ], [showFeatureCompatibilitiy, statusFilterOptions, venueOptions])
 
   if (filterColumns) {
     filterColumns.forEach((columnTofilter) => {
@@ -369,17 +352,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
-        columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
+        columnState={{ onChange: handleColumnStateChange }}
         enableApiFilter
-        iconButton={(exportDevice && false) ? {
-          icon: <DownloadOutlined />,
-          disabled,
-          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-          onClick: exportCsv
-        } : undefined}
         {...otherProps}
       />
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+      <EdgeCompatibilityDrawer
         visible={!!compatibilitiesDrawerEdgeId}
         title={$t({ defaultMessage: 'Incompatibility Details: {edgeName}' },
           { edgeName:
@@ -390,7 +367,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         // eslint-disable-next-line max-len
         venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}
         edgeId={compatibilitiesDrawerEdgeId}
-      />}
+      />
     </Loader>
   )
 }

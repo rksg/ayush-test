@@ -138,7 +138,7 @@ describe('CustomizeWidgetDrawer', () => {
 
     await userEvent.click(screen.getByText('Select...'))
 
-    expect(screen.getByText('Reset to default range')).not.toBeVisible()
+    expect(screen.getByText('Reset to default range')).toBeVisible()
     expect(screen.getByText('Last 8 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 24 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
@@ -174,16 +174,6 @@ describe('CustomizeWidgetDrawer', () => {
     render(
       <Provider>
         <CustomizeWidgetDrawer {...mockLegacyProps} />
-      </Provider>
-    )
-    expect(screen.queryByText('Time Range')).not.toBeInTheDocument()
-  })
-
-  it('no render time range if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <CustomizeWidgetDrawer {...mockProps} />
       </Provider>
     )
     expect(screen.queryByText('Time Range')).not.toBeInTheDocument()

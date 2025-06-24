@@ -97,8 +97,6 @@ import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
 import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                   from '../useEdgeActions'
-
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -205,13 +203,12 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const isEdgeEnabled = useIsEdgeReady()
 
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
       { payload: {
         filters: { networkIds: [data?.id] }
       } },
-      { skip: !isEdgeEnabled || !data }
+      { skip: !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
@@ -338,7 +335,7 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -349,6 +346,9 @@ export function useRadiusServer () {
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
+
+      // Clone case don't need to deactivate
+      if (!newRadiusId && !!cloneMode) return
 
       const isRadiusIdChanged = isRadiusKeyChanged(radiusKey, saveData, radiusServerConfigurations)
       const isDifferentNetwork = saveData.id !== networkId
@@ -378,11 +378,11 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
-    await updateProfile(saveData, networkId)
+    await updateProfile(saveData, networkId, cloneMode)
   }
 
   return {
@@ -435,14 +435,12 @@ export function getRadiusIdFromFormData (key: RadiusIdKey, formData: NetworkSave
 export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
-    case NetworkTypeEnum.OPEN:
-      return !!saveData.wlan?.macAuthMacFormat
     case NetworkTypeEnum.DPSK:
-      return !!saveData.isCloudpathEnabled
     case NetworkTypeEnum.AAA:
-      return !saveData.useCertificateTemplate
+    case NetworkTypeEnum.OPEN:
+      return true
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+      return saveData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
   }
 
   return false
@@ -655,15 +653,23 @@ export function useCertificateTemplateActivation () {
     }
 
   const updateCertificateTemplateActivation =
-    async (networkId?: string, newIds: string[] = [], existingIds: string[] = []) => {
-      const requests = []
-      const activateIds = _.difference(newIds, existingIds)
-      const deactivateIds = _.difference(existingIds, newIds)
+    async (networkId?: string, formIds?: string[], existingIds: string[] = []) => {
+      if (!formIds) return  // no updated
 
-      requests.push(...deactivateIds.map(id => deactivateCertificateTemplate(id, networkId)))
-      requests.push(...activateIds.map(id => activateCertificateTemplate(id, networkId)))
+      const activateIds = _.difference(formIds, existingIds)
+      const deactivateIds = _.difference(existingIds, formIds)
 
-      return await Promise.all(requests)
+      const [preserveDeactivateId, ...restDeactivate] = deactivateIds
+      const [preserveActivateId, ...restActivate] = activateIds
+
+      await Promise.all(restDeactivate.map(id => deactivateCertificateTemplate(id, networkId)))
+      await Promise.all(restActivate.map(id => activateCertificateTemplate(id, networkId)))
+      if (preserveDeactivateId) {
+        await deactivateCertificateTemplate(preserveDeactivateId, networkId)
+      }
+      if (preserveActivateId) {
+        await activateCertificateTemplate(preserveActivateId, networkId)
+      }
     }
 
   return { activateCertificateTemplate, updateCertificateTemplateActivation }

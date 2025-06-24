@@ -8,6 +8,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/tenants/query'
   },
+  getMspCustomersListWithoutDelegations: {
+    method: 'post',
+    url: '/ecs/query?delegations=false',
+    newApi: true,
+    opsApi: 'POST:/ecs/query?delegations=false'
+  },
   // getMspECList: {
   //   method: 'post',
   //   url: '/ecs/query?delegations=true',
@@ -351,11 +357,6 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   // getMspEcAlarmList: {
   //   method: 'post',
   //   url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
-  // },
-  // getRecommandFirmwareUpgrade: {
-  //   method: 'get',
-  //   url: '/apFirmwares?status=default',
-  //   newApi: true
   // },
   getFirmwareUpgradeByApModel: {
     method: 'get',

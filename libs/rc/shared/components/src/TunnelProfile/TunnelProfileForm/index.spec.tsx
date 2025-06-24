@@ -190,12 +190,10 @@ describe('TunnelProfileForm', () => {
 
   })
 
-  describe('when SD-LAN and Keep Alive are ready', () => {
+  describe('when Keep Alive are ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
     })
 
     it('should display network segment type and keep alive related columns', async () => {
@@ -283,9 +281,7 @@ describe('TunnelProfileForm', () => {
   describe('when NAT-Traversal Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
     })
@@ -355,9 +351,7 @@ describe('TunnelProfileForm', () => {
   describe('when L2GRE Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE
           || ff === Features.EDGE_L2OGRE_TOGGLE
@@ -429,7 +423,7 @@ describe('TunnelProfileForm', () => {
       expect(screen.queryByText('Tunnel Keep Alive Retries')).not.toBeInTheDocument()
     })
 
-    it('should disabled L2GRE when network segment type is VNI', async () => {
+    it('should disabled VNI when tunnel type is L2GRE', async () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
@@ -438,9 +432,9 @@ describe('TunnelProfileForm', () => {
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
-      await user.click(screen.getByRole('radio', { name: 'VNI' }))
-      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
-      expect(screen.getByRole('radio', { name: /L2GRE/i })).toBeDisabled()
+      await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
     })
 
     it('should lock disabled fields L2GRE ff enabled', async () => {

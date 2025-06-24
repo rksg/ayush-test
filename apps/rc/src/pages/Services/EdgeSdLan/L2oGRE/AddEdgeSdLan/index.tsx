@@ -1,32 +1,29 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }          from '@acx-ui/components'
-import { useEdgeSdLanActions } from '@acx-ui/edge/components'
+import { PageHeader }                                        from '@acx-ui/components'
+import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
 import {
-  getServiceRoutePath,
-  ServiceOperation,
   ServiceType,
+  useAfterServiceSaveRedirectPath,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
+import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
 import { SummaryForm }                               from '../Form/SummaryForm'
+import { transformToApiData }                        from '../Form/utils'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-
-  const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
-    oper: ServiceOperation.LIST
-  })
-
-  const linkToServiceList = useTenantLink(cfListRoute)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
+  const isTemplateSupported = useIsEdgeDelegationPermitted()
+
   const [form] = Form.useForm()
 
   const steps = [
@@ -38,6 +35,10 @@ export const AddEdgeSdLan = () => {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
     },
+    ...isTemplateSupported ? [{
+      title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
+      content: NetworkTemplateSelectionForm
+    }] : [],
     {
       title: $t({ defaultMessage: 'Summary' }),
       content: SummaryForm
@@ -45,19 +46,12 @@ export const AddEdgeSdLan = () => {
   ]
 
   const handleFinish = async (formData: EdgeSdLanFormType) => {
+    const payload = transformToApiData(formData)
+
     try {
       await new Promise(async (resolve, reject) => {
         await createEdgeSdLan({
-          payload: {
-            name: formData.name,
-            tunnelProfileId: formData.tunnelProfileId,
-            activeNetwork: Object.entries(formData.activatedNetworks)
-              .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-                venueId,
-                networkId,
-                tunnelProfileId
-              }))).flat()
-          },
+          payload,
           callback: (result) => {
             // callback is after all RBAC related APIs sent
             if (Array.isArray(result)) {
@@ -67,14 +61,14 @@ export const AddEdgeSdLan = () => {
             }
           }
         // need to catch basic service profile failed
-        }).catch(reject)
+        }, isTemplateSupported).catch(reject)
       })
 
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     }
   }
 

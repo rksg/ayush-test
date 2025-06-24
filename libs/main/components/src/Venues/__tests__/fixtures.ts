@@ -68,6 +68,7 @@ export const venuelist = {
       switchClients: 2,
       switches: 1,
       edges: 3,
+      iotControllers: 2,
       clients: 1
     }
   ]
@@ -234,75 +235,6 @@ export const venueBssColoring = {
 export const venueApManagementVlan = {
   vlanOverrideEnabled: true,
   vlanId: 7
-}
-
-export const autocompleteResult = {
-  address_components: [
-    {
-      long_name: '350',
-      short_name: '350',
-      types: ['street_number']
-    },
-    {
-      long_name: 'West Java Drive',
-      short_name: 'W Java Dr',
-      types: ['route']
-    },
-    {
-      long_name: 'United States',
-      short_name: 'US',
-      types: ['country', 'political']
-    },
-    {
-      long_name: '94089',
-      short_name: '94089',
-      types: ['postal_code']
-    },
-    {
-      long_name: '1026',
-      short_name: '1026',
-      types: ['postal_code_suffix']
-    }
-  ],
-  // eslint-disable-next-line max-len
-  adr_address:
-    "<span class='street-address'>350 W Java Dr</span>, <span class='locality'>Sunnyvale</span>, <span class='region'>CA</span> <span class='postal-code'>94089-1026</span>, <span class='country-name'>USA</span>",
-  formatted_address: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-  geometry: {
-    location: {
-      lat: () => 37.4112751,
-      lng: () => -122.0191908
-    },
-    viewport: {
-      northeast: {
-        lat: 37.4128056302915,
-        lng: -122.0180266697085
-      },
-      southwest: {
-        lat: 37.4101076697085,
-        lng: -122.0207246302915
-      }
-    }
-  },
-  icon: 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png',
-  icon_background_color: '#7B9EB0',
-  icon_mask_base_uri:
-    'https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet',
-  name: '350 W Java Dr',
-  place_id: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
-  reference: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
-  types: ['premise'],
-  // eslint-disable-next-line max-len
-  url: 'https://maps.google.com/?q=350+W+Java+Dr,+Sunnyvale,+CA+94089,+USA&ftid=0x808fb7bec8fb92a7:0x40bb09e0f908a40a',
-  utc_offset: -420,
-  vicinity: 'Sunnyvale'
-}
-
-export const timezoneResult = {
-  dstOffset: 3600,
-  rawOffset: -28800,
-  timeZoneId: 'America/Los_Angeles',
-  timeZoneName: 'Pacific Daylight Time'
 }
 
 export const venueLanPorts = [{
@@ -3811,3 +3743,80 @@ export const mockedVenueLanPortSettings2 = {
 export const mockedVenueLanPortSettings3 = {
   enabled: true
 }
+
+export const mockedApModelFamilies = [
+  {
+    name: 'AC_WAVE1',
+    displayName: '11ac wave 1',
+    apModels: [
+      'R600',
+      'R500',
+      'R310',
+      'R730',
+      'T300',
+      'T300E',
+      'T301N',
+      'T301S'
+    ]
+  },
+  {
+    name: 'AC_WAVE2',
+    displayName: '11ac wave 2',
+    apModels: [
+      'R720',
+      'R710',
+      'R610',
+      'R510',
+      'R320',
+      'M510',
+      'H510',
+      'H320',
+      'E510',
+      'T710',
+      'T710S',
+      'T610',
+      'T610S',
+      'T310C',
+      'T310D',
+      'T310N',
+      'T310S'
+    ]
+  },
+  {
+    name: 'WIFI_6',
+    displayName: 'Wi-Fi 6',
+    apModels: [
+      'R850',
+      'R750',
+      'R650',
+      'R550',
+      'R350',
+      'H550',
+      'H350',
+      'T750',
+      'T750SE',
+      'T350C',
+      'T350D',
+      'T350SE'
+    ]
+  },
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: [
+      'R560',
+      'R760'
+    ]
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: [
+      'R770',
+      'R670',
+      'T670',
+      'T670SN',
+      'H670'
+    ]
+  }
+]

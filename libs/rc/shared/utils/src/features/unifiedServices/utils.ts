@@ -1,5 +1,6 @@
 import { MessageDescriptor } from 'react-intl'
 
+import { RadioCardCategory }                                      from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { getIntl }                                                from '@acx-ui/utils'
@@ -17,7 +18,7 @@ import {
   serviceTypeLabelMapping
 } from '../service'
 
-import { UnifiedService, UnifiedServiceSourceType } from './constants'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
 
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
@@ -25,15 +26,14 @@ export type BuildUnifiedServicesIncomingType =
   Omit<UnifiedService<MessageDescriptor>, 'label' | 'route' | 'description'>
 
 export function buildUnifiedServices (
-  list: Array<BuildUnifiedServicesIncomingType>,
-  isNewServiceCatalogEnabled: boolean
+  list: Array<BuildUnifiedServicesIncomingType>
 ): Array<UnifiedService> {
 
   return list.map(item => ({
     label: translateDescriptor(getLabelDescriptor(item)),
     route: getUnifiedServiceRoute(item, 'list'),
     description: translateDescriptor(getDescriptionDescriptor(item)),
-    breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
+    breadcrumb: generateUnifiedServiceListBreadCrumb(item),
     ...item,
     searchKeywords: item.searchKeywords?.map(keyword => translateDescriptor(keyword))
   }))
@@ -87,14 +87,13 @@ export function generateUnifiedServicesBreadcrumb (from?: LocationExtended['stat
 }
 
 function generateUnifiedServiceListBreadCrumb (
-  svc: UnifiedServiceTypeSet,
-  isNewServiceCatalogEnabled: boolean
+  svc: UnifiedServiceTypeSet
 ): { text: string, link?: string }[] {
   switch (svc.sourceType) {
     case UnifiedServiceSourceType.SERVICE:
-      return generateServiceListBreadcrumb(svc.type as ServiceType, isNewServiceCatalogEnabled)
+      return generateServiceListBreadcrumb(svc.type as ServiceType, true)
     case UnifiedServiceSourceType.POLICY:
-      return generatePolicyListBreadcrumb(svc.type as PolicyType, isNewServiceCatalogEnabled)
+      return generatePolicyListBreadcrumb(svc.type as PolicyType, true)
   }
 }
 
@@ -158,4 +157,21 @@ export function useIsNewServicesCatalogEnabled (): boolean {
   const isFFEanbled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
   return isTierAllowed && isFFEanbled
+}
+
+export function collectAvailableProductsAndCategories (
+  services: UnifiedService[]
+): { products: RadioCardCategory[]; categories: UnifiedServiceCategory[] } {
+  const productSet = new Set<RadioCardCategory>()
+  const categorySet = new Set<UnifiedServiceCategory>()
+
+  for (const service of services) {
+    service.products.forEach(product => productSet.add(product))
+    categorySet.add(service.category)
+  }
+
+  return {
+    products: Array.from(productSet),
+    categories: Array.from(categorySet)
+  }
 }

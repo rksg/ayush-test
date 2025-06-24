@@ -84,7 +84,6 @@ describe('CaptiveNetworkForm-WISPr', () => {
 
     it('should test WISPr network successfully', async () => {
       jest.mocked(useIsSplitOn).mockImplementation((splitName) =>
-        splitName !== Features.WIFI_WLAN_DEPRECATE_WEP &&
         splitName !== Features.WIFI_RBAC_API)
       render(
         <Provider>
@@ -124,12 +123,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       fireEvent.blur(insertInput)
       await userEvent.click(await screen.findByText('Copy Key'))
       await userEvent.click((await screen.findAllByTitle('WPA2 (Recommended)'))[0])
-      await userEvent.click((await screen.findAllByTitle('WEP'))[0])
-      const hexKey = await screen.findByLabelText(/Hex Key/)
-      fireEvent.change(hexKey, { target: { value: 'be434651bc9e23f2af29fa75f7' } })
-      fireEvent.blur(hexKey)
-      await userEvent.click(await screen.findByText('Generate'))
-      await userEvent.click((await screen.findAllByTitle('WEP'))[0])
+
       await userEvent.click((await screen.findAllByTitle('WPA2/WPA3 mixed mode'))[0])
       const wpa2Pass = await screen.findByLabelText(/WPA2 Passphrase/)
       fireEvent.change(wpa2Pass, { target: { value: 'wpa233333333' } })
@@ -250,6 +244,153 @@ describe('CaptiveNetworkForm-WISPr', () => {
       expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
       // eslint-disable-next-line max-len
       expect(await screen.findByTestId('radius_server_selection')).not.toHaveClass('ant-select-disabled')
+    })
+  })
+
+  describe('RedirectUrlInput functionality', () => {
+
+    // Mock data for testing
+    const mockNetworkWithRedirectUrl = {
+      type: 'guest',
+      guestPortal: {
+        ...wisprDataWPA2.guestPortal,
+        redirectUrl: 'http://example.com'
+      },
+      tenantId: 'tenant-id',
+      id: 'network-id',
+      wlan: { ...wisprDataWPA2.wlan }
+    }
+
+    const mockNetworkWithoutRedirectUrl = {
+      ...mockNetworkWithRedirectUrl,
+      guestPortal: {
+        ...mockNetworkWithRedirectUrl.guestPortal,
+        redirectUrl: undefined
+      }
+    }
+
+    it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: true,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+
+    it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithoutRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
     })
   })
 

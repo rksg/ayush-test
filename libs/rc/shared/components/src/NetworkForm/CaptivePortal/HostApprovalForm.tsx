@@ -33,6 +33,7 @@ import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AccountingServiceInput }    from '../SharedComponent'
 import { AsteriskFormTitle }         from '../styledComponents'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
@@ -59,21 +60,25 @@ export function HostApprovalForm () {
   keyof typeof CaptivePassphraseExpirationEnum>
   const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
   const domainOrEmail = useWatch(['guestPortal','hostGuestConfig', 'hostApprovalType'])
+
+  const networkSecurity = useWatch('networkSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
+
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
       setPasswordExp(data.guestPortal?.hostGuestConfig?.hostDurationChoices.toString().split(','))
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
-
       if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostDomains)) {
         form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], 'domain')
       } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {
         form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], 'email')
       }
     }
-  }, [])
+  }, [data?.id])
 
   const changeDomainOrEmailList = (e: RadioChangeEvent) => {
     const domainOrEmail = e.target.value
@@ -251,11 +256,20 @@ export function HostApprovalForm () {
         <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
           enableDefaultWalledGarden={false} />
+        {isSupportNetworkRadiusAccounting &&
+          <AccountingServiceInput
+            isProxyModeConfigurable={true}
+          />
+        }
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.HostApproval}
-          wlanSecurity={data?.wlan?.wlanSecurity} />
+          wlanSecurity={data?.wlan?.wlanSecurity}
+          networkSecurity={networkSecurity}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+        />
       </GridCol>
     </GridRow>
     {!(editMode) && !(isRuckusAiMode) && <GridRow>
