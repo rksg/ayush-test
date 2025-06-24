@@ -18,7 +18,6 @@ export interface KpiData {
   }
 }
 
-
 type ApPowerSaveDistributionResponse = {
   date: string
   name: string
@@ -31,8 +30,8 @@ type ApPowerSaveDistributionResponse = {
 
 const parseKpiData = (result?: KpiResultExtend|null): Partial<KpiResultExtend> =>
 {
-  const { enabled=0, disabled=0, unsupported=0 } = result ?? { }
-  const apTotalCount = enabled + disabled + unsupported
+  const { enabled=0, disabled=0, unsupported=0, excluded=0 } = result ?? { }
+  const apTotalCount = enabled + disabled + unsupported + excluded
   return { ...result, apTotalCount }
 }
 

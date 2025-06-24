@@ -94,13 +94,7 @@ describe('TunnelProfileDetail', () => {
     await checkNetworkTable()
   })
 
-  describe('when SD-LAN ready, Keep Alive not ready', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE))
-    })
-
+  describe('when Keep Alive not ready', () => {
     it('should display tunnel type', async () => {
       render(
         <Provider>
@@ -165,12 +159,10 @@ describe('TunnelProfileDetail', () => {
     })
   })
 
-  describe('when SD-LAN and Keep Alive ready', () => {
+  describe('when Keep Alive ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
     })
 
     it('should display network segment type and keep alive related columns', async () => {
@@ -211,7 +203,8 @@ describe('TunnelProfileDetail', () => {
   describe('when L2GRE is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
+        // eslint-disable-next-line max-len
+        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE))
       jest.mocked(useIsTierAllowed)
         .mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
     })

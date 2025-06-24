@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
@@ -11,6 +12,8 @@ import {
   useLazyGetIotControllerVenuesQuery
 } from '@acx-ui/rc/services'
 import {
+  getIotControllerStatus,
+  transformDisplayText,
   IotControllerStatus,
   IotControllerStatusEnum,
   useTableQuery
@@ -73,6 +76,21 @@ export function IotController () {
             <TenantLink
               to={`/devices/iotController/${row.id}/details/overview`}>
               {highlightFn(row.name)}</TenantLink>
+          )
+        }
+      },{
+        title: $t({ defaultMessage: 'Status' }),
+        dataIndex: 'status',
+        key: 'status',
+        sorter: false,
+        render: function (_, row) {
+          const { name, color } = getIotControllerStatus(row.status)
+
+          return (
+            <Badge
+              color={`var(${color})`}
+              text={transformDisplayText(name)}
+            />
           )
         }
       },{

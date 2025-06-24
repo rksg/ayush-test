@@ -33,12 +33,9 @@ const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 // isMapEnabled = false && SD-LAN not enabled
 const disabledFFs = [
   Features.G_MAP,
-  Features.EDGES_SD_LAN_TOGGLE,
-  Features.EDGES_SD_LAN_HA_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
-  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
   Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
@@ -86,10 +83,8 @@ describe('VenueNetworksTab - PIN enabled', () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
   })
 
-  describe('Edge and multi-venue SD-LAN FF is on', () => {
+  describe('multi-venue SD-LAN', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE
-        || ff === Features.EDGE_PIN_HA_TOGGLE)
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
@@ -322,28 +317,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
         isPinNetwork: true,
         cachedSoftGre: []
       }))
-    })
-  })
-
-  describe('when FFs are off', () => {
-    it('should return empty array', async () => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-      const { result } = renderHook(() => useTunnelColumn({
-        network: {
-          id: 'mock-networkId',
-          type: NetworkTypeEnum.PSK
-        },
-        sdLanScopedNetworkVenues: {
-          sdLansVenueMap: {},
-          networkVenueIds: [],
-          guestNetworkVenueIds: []
-        },
-        setTunnelModalState: jest.fn()
-      }), { wrapper: Provider })
-
-      expect(result.current.length).toBe(0)
     })
   })
 })

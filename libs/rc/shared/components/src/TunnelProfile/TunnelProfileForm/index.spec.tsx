@@ -190,12 +190,10 @@ describe('TunnelProfileForm', () => {
 
   })
 
-  describe('when SD-LAN and Keep Alive are ready', () => {
+  describe('when Keep Alive are ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
     })
 
     it('should display network segment type and keep alive related columns', async () => {
@@ -283,9 +281,7 @@ describe('TunnelProfileForm', () => {
   describe('when NAT-Traversal Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
     })
@@ -355,9 +351,7 @@ describe('TunnelProfileForm', () => {
   describe('when L2GRE Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE
           || ff === Features.EDGE_L2OGRE_TOGGLE

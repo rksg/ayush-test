@@ -332,11 +332,6 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
   },
-  getRecommandFirmwareUpgrade: {
-    method: 'get',
-    url: '/apFirmwares?status=default',
-    newApi: true
-  },
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
     url: '/mspCustomers/firmwareUpgradeSchedules',

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { MspRbacUrlsInfo, MspUrlsInfo }                   from '@acx-ui/msp/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -72,9 +72,6 @@ const mockedSetVisible = jest.fn()
 describe('ScheduleFirmwareDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    services.useGetRecommandFirmwareUpgradeQuery = jest.fn().mockImplementation(() => {
-      return {}
-    })
     services.useGetFirmwareUpgradeByApModelQuery = jest.fn().mockImplementation(() => {
       return versionList
     })
@@ -340,24 +337,5 @@ describe('ScheduleFirmwareDrawer', () => {
     })
     expect(mockedSetVisible).toHaveBeenLastCalledWith(false)
     expect(services.useMspEcFirmwareUpgradeSchedulesMutation).toHaveBeenCalled()
-  })
-
-  it('should show firmware version correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE )
-
-    render(
-      <Provider>
-        <ScheduleFirmwareDrawer
-          visible={true}
-          tenantIds={[params.tenantId]}
-          setVisible={mockedSetVisible}
-        />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(screen.getByText('Schedule Firmware Update')).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Next' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
 })
