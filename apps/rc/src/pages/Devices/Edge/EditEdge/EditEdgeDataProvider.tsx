@@ -1,8 +1,8 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
@@ -24,7 +24,7 @@ import {
   EdgeLagStatus,
   EdgePort,
   EdgePortInfo,
-  EdgeSdLanViewDataP2,
+  EdgeMvSdLanViewData,
   EdgeStaticRouteConfig,
   EdgeStatusEnum,
   IncompatibilityFeatures,
@@ -44,7 +44,7 @@ export interface EditEdgeDataContextType {
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   isSupportAccessPort?: boolean
   isClusterFormed: boolean
   isGeneralSettingsLoading: boolean
@@ -220,7 +220,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterId)
 
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {

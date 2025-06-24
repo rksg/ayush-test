@@ -340,7 +340,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_req, res, ctx) => res(ctx.json(mockSdLanDataForPinMutuallyExclusive))
+        (_req, res, ctx) => res(ctx.json({ data: mockSdLanDataForPinMutuallyExclusive }))
       )
     )
 

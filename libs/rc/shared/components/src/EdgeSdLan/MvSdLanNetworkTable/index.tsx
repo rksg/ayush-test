@@ -7,7 +7,6 @@ import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                               from '@acx-ui/feature-toggle'
 import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -23,12 +22,11 @@ import { WifiScopes }         from '@acx-ui/types'
 import { filterByAccess }     from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
-import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
+import { AddNetworkModal } from '../../NetworkForm/AddNetworkModal'
 
-import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
-import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
-import * as UI                                                               from './styledComponents'
+import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
+import ForwardGuestTrafficDiagramVertical                                from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
+import * as UI                                                           from './styledComponents'
 
 const dmzTunnelColumnHeaderTooltip = defineMessage({
   defaultMessage:
@@ -79,7 +77,7 @@ type SdLanActivatedNetworksIsDisableFn = (
   tooltip?: string
 } | undefined
 
-export interface ActivatedNetworksTableP2Props {
+export interface EdgeMvSdLanActivatedNetworksTableProps {
   venueId: string,
   isGuestTunnelEnabled: boolean
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
@@ -87,12 +85,12 @@ export interface ActivatedNetworksTableP2Props {
   activatedGuest?: string[],
   disabled?: boolean | SdLanActivatedNetworksIsDisableFn,
   toggleButtonTooltip?: string,
-  onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
+  onActivateChange?: ActivateNetworkSwitchButtonProps['onChange'],
   isUpdating?: boolean,
   pinNetworkIds?: string[]
 }
 
-export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP2Props) => {
+export const EdgeMvSdLanActivatedNetworksTable = (props: EdgeMvSdLanActivatedNetworksTableProps) => {
   const {
     venueId,
     isGuestTunnelEnabled,
@@ -175,7 +173,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         tooltip = disabled(venueId, row, false)?.tooltip
       }
 
-      return <ActivateNetworkSwitchButtonP2
+      return <ActivateNetworkSwitchButton
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
@@ -207,7 +205,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       }
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
-        ? <ActivateNetworkSwitchButtonP2
+        ? <ActivateNetworkSwitchButton
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
@@ -273,7 +271,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
 export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean) => void }) => {
   const { $t } = useIntl()
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   return <Drawer
     title={$t({ defaultMessage: 'Forward Guest Traffic to DMZ' })}
@@ -287,7 +284,6 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
           src={ForwardGuestTrafficDiagramVertical}
           alt={$t({ defaultMessage: 'SD-LAN forward guest traffic' })}
         />
-        {!isEdgeSdLanMvEnabled && <UI.FrameOverDiagram />}
       </UI.DiagramContainer>
       <UI.StyledParagraph>
         {
