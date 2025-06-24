@@ -24,10 +24,10 @@ export interface KpiThresholdType {
   switchUplinkPortUtilization: number
   switchPortUtilization: number
   clusterLatency: number
-  switchMulticastIpv4Utilization: number
-  switchMulticastIpv6Utilization: number
-  switchUnicastIpv4Utilization: number
-  switchUnicastIpv6Utilization: number
+  switchIpv4MulticastUtilization: number
+  switchIpv6MulticastUtilization: number
+  switchIpv4UnicastUtilization: number
+  switchIpv6UnicastUtilization: number
 }
 
 type datum = number []
@@ -139,10 +139,10 @@ interface ThresholdsApiResponse {
   switchUplinkPortUtilizationThreshold?: ThresholdData
   switchPortUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
-  switchMulticastIpv4UtilizationThreshold?: ThresholdData
-  switchMulticastIpv6UtilizationThreshold?: ThresholdData
-  switchUnicastIpv4UtilizationThreshold?: ThresholdData
-  switchUnicastIpv6UtilizationThreshold?: ThresholdData
+  switchIpv4MulticastUtilizationThreshold?: ThresholdData
+  switchIpv6MulticastUtilizationThreshold?: ThresholdData
+  switchIpv4UnicastUtilizationThreshold?: ThresholdData
+  switchIpv6UnicastUtilizationThreshold?: ThresholdData
 }
 
 type KpisHavingThreshold = keyof KpiThresholdType

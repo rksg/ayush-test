@@ -530,17 +530,17 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
-  switchMulticastIpv4Utilization: {
+  switchIpv4MulticastUtilization: {
     text: defineMessage({ defaultMessage: 'Ipv4 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchMulticastIpv4UtilizationCountAndSwitchCount'
+      apiMetric: 'switchIpv4MulticastUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchMulticastIpv4Utilization',
+      apiMetric: 'switchIpv4MulticastUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -559,17 +559,17 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 multicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
-  switchMulticastIpv6Utilization: {
+  switchIpv6MulticastUtilization: {
     text: defineMessage({ defaultMessage: 'Ipv6 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchMulticastIpv6UtilizationCountAndSwitchCount'
+      apiMetric: 'switchIpv6MulticastUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchMulticastIpv6Utilization',
+      apiMetric: 'switchIpv6MulticastUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -588,17 +588,17 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 multicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
-  switchUnicastIpv4Utilization: {
+  switchIpv4UnicastUtilization: {
     text: defineMessage({ defaultMessage: 'Ipv4 Unicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchUnicastIpv4UtilizationCountAndSwitchCount'
+      apiMetric: 'switchIpv4UnicastUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchUnicastIpv4Utilization',
+      apiMetric: 'switchIpv4UnicastUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -617,17 +617,17 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 unicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
-  switchUnicastIpv6Utilization: {
+  switchIpv6UnicastUtilization: {
     text: defineMessage({ defaultMessage: 'Ipv6 Unicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchUnicastIpv6UtilizationCountAndSwitchCount'
+      apiMetric: 'switchIpv6UnicastUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchUnicastIpv6Utilization',
+      apiMetric: 'switchIpv6UnicastUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -934,10 +934,10 @@ export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
           'switchPoeUtilization'
         ],
         Table: [
-          'switchMulticastIpv4Utilization',
-          'switchMulticastIpv6Utilization',
-          'switchUnicastIpv4Utilization',
-          'switchUnicastIpv6Utilization'
+          'switchIpv4MulticastUtilization',
+          'switchIpv6MulticastUtilization',
+          'switchIpv4UnicastUtilization',
+          'switchIpv6UnicastUtilization'
         ]
       }
     }
