@@ -25,7 +25,6 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
   MspRbacUrlsInfo,
@@ -845,18 +844,6 @@ export const mspApi = baseMspApi.injectEndpoints({
         return { ...req, body: payload }
       }
     }),
-    getRecommandFirmwareUpgrade: build.query<RecommendFirmwareUpgrade, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const mspUrlsInfo = getMspUrls(enableRbac)
-        const req = createHttpRequest(enableRbac
-          ? mspUrlsInfo.getRecommandFirmwareUpgrade
-          : mspUrlsInfo.getRecommandFirmwareUpgrade, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getFirmwareUpgradeByApModel: build.query<RecommendFirmwareUpgradeByApModel[],
       RequestPayload>({
         query: ({ params, payload }) => {
@@ -1239,7 +1226,6 @@ export const {
   useUpdateMspAggregationsMutation,
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
-  useGetRecommandFirmwareUpgradeQuery,
   useGetFirmwareUpgradeByApModelQuery,
   useMspEcFirmwareUpgradeSchedulesMutation,
   useGetAvailableMspRecCustomersQuery,

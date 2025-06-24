@@ -90,9 +90,9 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
 
       const startIpNUmber = convertIpToLong(startIp)
       const endIpNumber = convertIpToLong(endIp)
-      if (startIpNUmber >= endIpNumber) {
+      if (startIpNUmber > endIpNumber) {
         // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'Start IP cannot larger or equal to end IP' }))
+        return Promise.reject($t({ defaultMessage: 'Start IP cannot be greater than end IP' }))
       }
 
       return Promise.resolve()

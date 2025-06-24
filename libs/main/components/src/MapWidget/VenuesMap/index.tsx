@@ -10,7 +10,7 @@ import GMap                          from './GMap'
 import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
 import { FilterStateChange }         from './VenueFilterControlBox'
 
-export interface GoogleMapProps {
+interface GoogleMapProps {
   data: VenueMarkerOptions[]
   cluster?: boolean,
   enableVenueFilter?: boolean

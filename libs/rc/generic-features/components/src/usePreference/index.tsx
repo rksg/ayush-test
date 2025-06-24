@@ -6,9 +6,9 @@ import { useGetPreferencesQuery, useUpdatePreferenceMutation }                  
 import { WIFI_COUNTRY_CODE, COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc/utils'
 import { useNavigate, useParams }                                                  from '@acx-ui/react-router-dom'
 
-export const DEFAULT_MAP_REGION = 'US'
+const DEFAULT_MAP_REGION = 'US'
 
-export const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
+const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global?.mapRegion as string || DEFAULT_MAP_REGION
 }
 
