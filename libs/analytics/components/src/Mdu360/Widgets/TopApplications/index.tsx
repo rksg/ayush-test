@@ -16,6 +16,15 @@ interface TopApplicationsFilters {
   endDate: string;
 }
 
+interface ApplicationData {
+  name: string;
+  value: number;
+}
+
+type TabType = 'clientCount' | 'applicationTraffic'
+
+const COLUMN_SIZE = 5
+
 export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
@@ -25,64 +34,57 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
     end,
     n: 10
   })
-
   const results = queryResults?.data
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const clientData =
-  results?.topNApplicationByClient?.map(item => ({
-    name: item.name,
-    value: item.clientCount
-  })) || []
+  const clientData: ApplicationData[] = useMemo(() =>
+    results?.topNApplicationByClient?.map(item => ({
+      name: item.name,
+      value: item.clientCount
+    })) || [], [results?.topNApplicationByClient]
+  )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const trafficData =
-  results?.topNApplicationByTraffic?.map(item => ({
-    name: item.name,
-    value: item.applicationTraffic
-  })) || []
+  const trafficData: ApplicationData[] = useMemo(() =>
+    results?.topNApplicationByTraffic?.map(item => ({
+      name: item.name,
+      value: item.applicationTraffic
+    })) || [], [results?.topNApplicationByTraffic]
+  )
 
-  const formatValue = (value: number, currentTab: 'clientCount' | 'applicationTraffic') =>
+  const formatValue = (value: number, currentTab: TabType): string =>
     currentTab === 'applicationTraffic'
       ? formats.bytesFormat(value)
-      : value
+      : value.toString()
 
-  const getColumns = (
-    data: typeof clientData | typeof trafficData
-  ): [typeof data, typeof data] => {
-    return [data.slice(0, 5), data.slice(5)]
+  const getIconForApplication = (name: string) => {
+    return IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
+      IconList.find(icon => icon.name === 'chrome')?.icon
   }
 
-  const renderColumn = (
-    items: typeof clientData | typeof trafficData,
-    currentTab: 'clientCount' | 'applicationTraffic'
-  ) => (
-    <UI.ColumnHeaderWrapper>
-      {items.map(({ name, value }) => {
-        const icon =
-        IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
-        IconList.find(icon => icon.name === 'chrome')?.icon
+  const renderApplicationItem = (item: ApplicationData, currentTab: TabType) => {
+    const { name, value } = item
+    const icon = getIconForApplication(name)
 
-        return (
-          <UI.ColumnItemWrapper key={name}>
-            <UI.ColumnItemIconWrapper>
-              {icon}
-              <span>{name}</span>
-            </UI.ColumnItemIconWrapper>
-            <UI.ColumnValue>{formatValue(value, currentTab)}</UI.ColumnValue>
-            {/* <span><b>{formatValue(value, currentTab)}</b></span> */}
-          </UI.ColumnItemWrapper>
-        )
-      })}
+    return (
+      <UI.ColumnItemWrapper key={name}>
+        <UI.ColumnItemIconWrapper>
+          {icon}
+          <span>{name}</span>
+        </UI.ColumnItemIconWrapper>
+        <UI.ColumnValue>{formatValue(value, currentTab)}</UI.ColumnValue>
+      </UI.ColumnItemWrapper>
+    )
+  }
+
+  const renderColumn = (items: ApplicationData[], currentTab: TabType) => (
+    <UI.ColumnHeaderWrapper>
+      {items.map(item => renderApplicationItem(item, currentTab))}
     </UI.ColumnHeaderWrapper>
   )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const renderContent = (
-    data: typeof clientData | typeof trafficData,
-    currentTab: 'clientCount' | 'applicationTraffic'
-  ) => {
-    const [leftColumn, rightColumn] = getColumns(data)
+  const renderContent = (data: ApplicationData[], currentTab: TabType) => {
+    const leftColumn = data.slice(0, COLUMN_SIZE)
+    const rightColumn = data.slice(COLUMN_SIZE)
 
     return (
       <Loader states={[queryResults]}>
@@ -125,7 +127,6 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
           tabDetails={tabDetails}
           size='small'
           align='right'
-          // noPadding
         />
       </UI.ContentSwitcherWrapper>
     </HistoricalCard>

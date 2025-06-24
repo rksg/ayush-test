@@ -18,12 +18,12 @@ const IconWrapper = ({ children, zoom = 0.3 }: { children: React.ReactNode; zoom
 export const IconList = [
   { name: 'facebook', icon: <IconWrapper><FacebookColored /></IconWrapper> },
   { name: 'google', icon: <IconWrapper><GoogleColored /></IconWrapper> },
-  { name: 'twitter', icon: <IconWrapper><TwitterColored /></IconWrapper> },
+  { name: 'twitter', icon: <IconWrapper zoom={0.33}><TwitterColored /></IconWrapper> },
   { name: 'youtube', icon: <IconWrapper><YouTube /></IconWrapper> },
   { name: 'netflix', icon: <IconWrapper><Netflix /></IconWrapper> },
   { name: 'linkedin', icon: <IconWrapper><LinkedInColored /></IconWrapper> },
-  { name: 'apple', icon: <IconWrapper zoom={0.4}><Apple /></IconWrapper> },
-  { name: 'microsoft', icon: <IconWrapper zoom={0.4}><Microsoft /></IconWrapper> },
+  { name: 'apple', icon: <IconWrapper zoom={0.35}><Apple /></IconWrapper> },
+  { name: 'microsoft', icon: <IconWrapper zoom={0.35}><Microsoft /></IconWrapper> },
   { name: 'whatsapp', icon: <IconWrapper zoom={0.4}><Whatsapp /></IconWrapper> },
   { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> }
 ]
