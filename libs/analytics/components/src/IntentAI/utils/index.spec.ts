@@ -180,6 +180,19 @@ describe('IntentAI utils', () => {
         }
       )).toEqual({ status: Statuses.active })
 
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.scheduled },
+            { status: Statuses.na, statusReason: StatusReasons.verified }
+          ]
+        }
+      )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+
       expect(() => {
         try{
           getTransitionStatus(
@@ -230,7 +243,6 @@ describe('IntentAI utils', () => {
           { status: Statuses.active }
         )
       })
-
       it('should handle pausedFromActive', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -286,7 +298,6 @@ describe('IntentAI utils', () => {
           { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
-
       it('should handle pausedRevertFailed', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -303,7 +314,6 @@ describe('IntentAI utils', () => {
           { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
-
       it('should handle StatusReasons.waitingForEtl', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -364,7 +374,6 @@ describe('IntentAI utils', () => {
           { status: Statuses.new }
         )
       })
-
       it('should handle Invalid statusTrail(Resume)', () => {
         expect(() => {
           try{
@@ -384,6 +393,21 @@ describe('IntentAI utils', () => {
             throw error
           }
         }).toThrow('Invalid statusTrail(Resume)')
+      })
+      it('should handle naVerified', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.scheduled },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
+            ]
+          }
+        )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
       })
     })
   })

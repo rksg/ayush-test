@@ -143,13 +143,9 @@ export const getTransitionStatus =(
     case Actions.One_Click_Optimize:
       return { status: Statuses.scheduled, statusReason: StatusReasons.oneClick }
     case Actions.Optimize:
-      if (displayStatus === DisplayStates.naVerified) {
-        return { status: Statuses.scheduled }
-      }
-      if ([DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus)) {
-        return { status: Statuses.active }
-      }
-      return { status: Statuses.scheduled }
+      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus)
+        ? { status: Statuses.active }
+        : { status: Statuses.scheduled }
     case Actions.Revert:
       return { status: Statuses.revertScheduled }
     case Actions.Pause:
