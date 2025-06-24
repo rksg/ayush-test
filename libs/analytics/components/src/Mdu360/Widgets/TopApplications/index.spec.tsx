@@ -2,8 +2,7 @@ import { Provider }                                            from '@acx-ui/sto
 import { fireEvent, render, screen }                           from '@acx-ui/test-utils'
 import { AnalyticsFilter, DateRange, NodesFilter, SSIDFilter } from '@acx-ui/utils'
 
-import { mockTopApplications } from '../fixtures'
-
+import { mockTopApplications }      from './__tests__/fixtures'
 import { useTopNApplicationsQuery } from './services'
 
 import { TopApplications } from './index'

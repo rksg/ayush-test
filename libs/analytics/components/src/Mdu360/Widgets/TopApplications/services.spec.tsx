@@ -1,9 +1,8 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { mockTopApplications } from '../fixtures'
-
-import { api, Payload } from './services'
+import { mockTopApplications } from './__tests__/fixtures'
+import { api, Payload }        from './services'
 
 describe('TopApplications services', () => {
   afterEach(() => {
@@ -37,5 +36,17 @@ describe('TopApplications services', () => {
     expect(status).toBe('fulfilled')
     expect(data).toEqual({ nodes: [] })
     expect(error).toBeUndefined()
+  })
+
+  it('should handle error', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      error: new Error('something went wrong!')
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.topNApplications.initiate({} as Payload)
+    )
+    expect(status).toBe('rejected')
+    expect(data).toBeUndefined()
+    expect(error).not.toBeUndefined()
   })
 })

@@ -6,9 +6,8 @@ import { useIntl } from 'react-intl'
 import { ContentSwitcher, Loader, NoData, HistoricalCard, ContentSwitcherProps } from '@acx-ui/components'
 import { formats }                                                               from '@acx-ui/formatter'
 
-import * as UI from '../styledComponents'
-
 import { useTopNApplicationsQuery } from './services'
+import * as UI                      from './styledComponents'
 import { IconList }                 from './utils'
 
 interface TopApplicationsFilters {
