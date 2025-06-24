@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }   from '@acx-ui/components'
+import { Button }    from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -273,17 +273,17 @@ function getWorkflowDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
   let useProxy = props.enableAccountingProxy
   let useAcctService = props.enableAccountingService
-  if(useProxy) {
-    return wisprWithPsk ? WorkflowAcctProxyPskDiagram :
-      (wisprWithOwe ? WorkflowAcctProxyOweDiagram : WorkflowAcctProxyNoneDiagram)
-  } else {
-    if(useAcctService) {
+  if(useAcctService) {
+    if(useProxy) {
+      return wisprWithPsk ? WorkflowAcctProxyPskDiagram :
+        (wisprWithOwe ? WorkflowAcctProxyOweDiagram : WorkflowAcctProxyNoneDiagram)
+    } else {
       return wisprWithPsk ? WorkflowAcctOnPskDiagram :
         (wisprWithOwe ? WorkflowAcctOnOweDiagram : WorkflowAcctOnNoneDiagram)
-    } else {
-      return wisprWithPsk ? WorkflowAcctOffPskDiagram :
-        (wisprWithOwe ? WorkflowAcctOffOweDiagram : WorkflowAcctOffNoneDiagram)
     }
+  } else {
+    return wisprWithPsk ? WorkflowAcctOffPskDiagram :
+      (wisprWithOwe ? WorkflowAcctOffOweDiagram : WorkflowAcctOffNoneDiagram)
   }
 }
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
