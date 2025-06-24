@@ -2,6 +2,7 @@ ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
 ARG GAR_CICD_BASEIMAGE_CONTAINER_URL
+ARG NODE_VERSION=16.14.2
 
 # Avoid "docker build" for more than one hour, causing gcloud credential to time out.
 # So we need to execute "pull image" first.
@@ -9,8 +10,7 @@ FROM ${GAR_CICD_BASEIMAGE_CONTAINER_URL}ci-precommit-sonar:stable as sonar-stage
 FROM ${GAR_CONTAINER_URL}nginx:1.27.4-alpine as final-stage
 
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
-# FROM ${CI_SERVICE_BASE}node:master--latest as build-base
-FROM node:16.14.2-alpine as build-base
+FROM ${CI_SERVICE_BASE}node:${NODE_VERSION} as build-base
 
 WORKDIR /app
 
