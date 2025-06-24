@@ -18,11 +18,9 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  defaultApGroupsFilterOptsPayload,
-  GoogleMapWithPreference
-} from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { defaultApGroupsFilterOptsPayload } from '@acx-ui/rc/components'
+import { GoogleMapWithPreference }          from '@acx-ui/rc/generic-features/components'
 import {
   useApListQuery,
   useAddApMutation,
