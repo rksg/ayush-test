@@ -38,8 +38,6 @@ export default function SelectServiceForm () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -90,8 +88,7 @@ export default function SelectServiceForm () {
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          categories: [RadioCardCategory.EDGE]
         },
         {
           type: ServiceType.EDGE_OLT,
