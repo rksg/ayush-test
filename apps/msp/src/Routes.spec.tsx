@@ -9,8 +9,8 @@ import { NavigateProps }  from '@acx-ui/react-router-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import HspContext                      from './HspContext'
-import { Init, ConfigTemplatesRoutes } from './Routes'
+import HspContext                                 from './HspContext'
+import MspRoutes, { Init, ConfigTemplatesRoutes } from './Routes'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -20,6 +20,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('./pages/ConfigTemplates', () => ({
   ...jest.requireActual('./pages/ConfigTemplates'),
   ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
+}))
+
+jest.mock('./pages/Layout', () => ({
+  ...jest.requireActual('./pages/Layout'),
+  default: () => <div>Layout</div>
 }))
 
 jest.mock('@acx-ui/utils', () => ({
@@ -71,6 +76,10 @@ jest.mock('@acx-ui/main/components', () => ({
 
 jest.mock('@acx-ui/analytics/components', () => ({
   Brand360: () => <div>Brand360</div>
+}))
+
+jest.mock('@acx-ui/reports/components', () => ({
+  DataStudio: () => <div>DataStudio</div>
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
@@ -126,6 +135,17 @@ describe('Init', () => {
     expect(await screen.findByText(
       '{"replace":true,"to":{"pathname":"/undefined/v/brand360"}}'
     )).toBeVisible()
+  })
+
+  it('should navigate to the default page of the msp', async () => {
+    render(<Provider><MspRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('Layout')).toBeVisible()
   })
 })
 
