@@ -112,7 +112,9 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   }
 
   function useColumns () {
-    const isPtenantUsersPrivilegesEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE);
+    const isPtenantUsersPrivilegesEnabled = useIsSplitOn(
+      Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
+    );
     const columns:TableProps<PrivilegeGroup>['columns'] = [
       {
         title: $t({ defaultMessage: 'Name' }),
