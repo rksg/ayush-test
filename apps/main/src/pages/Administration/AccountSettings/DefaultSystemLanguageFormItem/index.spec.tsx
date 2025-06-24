@@ -37,7 +37,7 @@ jest.mock('antd', () => {
 })
 
 const mockedUpdatePreference = jest.fn()
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/rc/generic-features/components', () => ({
   usePreference: () => {
     return {
       data: { global: {

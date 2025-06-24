@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { softGreApi }                                      from '@acx-ui/rc/services'
+import { ipSecApi, softGreApi }                            from '@acx-ui/rc/services'
 import { IpsecUrls, SoftGreUrls }                          from '@acx-ui/rc/utils'
 import { Provider, store }                                 from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
@@ -50,6 +50,7 @@ describe('WifiSoftGreSelectOption', () => {
   const mockedGetFn = jest.fn()
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
+    store.dispatch(ipSecApi.util.resetApiState())
     mockedGetFn.mockClear()
     mockServer.use(
       rest.post(
