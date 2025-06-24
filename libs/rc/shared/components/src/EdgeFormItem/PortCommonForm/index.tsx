@@ -128,6 +128,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const hasWANPort = wanPortsInfo.length > 0
 
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+  const hasCorePortOnOthers = hasCorePortEnabled && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPortEnabled && !accessPortEnabled
 
   const handleCorePortChange = (e: CheckboxChangeEvent) => {
     if(!isSupportAccessPort) {
@@ -329,9 +331,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                               hasWANPort || (
                                 isEdgeSdLanRun ?
                                   (isNewNode ?
-                                    (hasCorePortEnabled && !corePortEnabled) :
+                                    hasCorePortOnOthers :
                                     hasCorePortEnabled) :
-                                  (hasCorePortEnabled && !corePortEnabled)
+                                  hasCorePortOnOthers
                               )
                             }
                           />
@@ -348,9 +350,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                                 !isSupportAccessPort || hasWANPort || (
                                   isEdgeSdLanRun ?
                                     (isNewNode ?
-                                      (hasAccessPortEnabled && !accessPortEnabled) :
+                                      hasAccessPortOnOthers :
                                       hasAccessPortEnabled) :
-                                    (hasAccessPortEnabled && !accessPortEnabled)
+                                    hasAccessPortOnOthers
                                 )
                               }
                             />

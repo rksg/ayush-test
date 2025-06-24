@@ -125,6 +125,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
     }
   }, [allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm, data?.id])
 
+  const hasCorePortOnOthers = hasCorePort && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPort && !accessPortEnabled
+
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
       { operation: data ? $t({ defaultMessage: 'Edit' }) :
@@ -239,7 +242,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 onChange={handleCorePortChange}
                 disabled={
                   !isPortEnabled || hasWanPort || (
-                    isSdLanRun ? hasCorePort : (hasCorePort && !corePortEnabled)
+                    isSdLanRun ? hasCorePort : hasCorePortOnOthers
                   )
                 }
               />
@@ -254,7 +257,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
                     !isSupportAccessPort || !isPortEnabled || hasWanPort || (
-                      isSdLanRun ? hasAccessPort : (hasAccessPort && !accessPortEnabled)
+                      isSdLanRun ? hasAccessPort : hasAccessPortOnOthers
                     )
                   }
                 />

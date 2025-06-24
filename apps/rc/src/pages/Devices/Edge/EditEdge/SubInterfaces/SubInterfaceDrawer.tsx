@@ -92,6 +92,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const hasWanPort = getEdgeWanInterfaceCount(portData, lagData) > 0
   const isSdLanRun = !!edgeSdLanData
+  const hasCorePortOnOthers = hasCorePort && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPort && !accessPortEnabled
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -189,7 +191,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 onChange={handleCorePortChange}
                 disabled={
                   !isPortEnabled || hasWanPort || (
-                    isSdLanRun ? hasCorePort : (hasCorePort && !corePortEnabled)
+                    isSdLanRun ? hasCorePort : hasCorePortOnOthers
                   )
                 }
               />
@@ -204,7 +206,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
                     !isSupportAccessPort || !isPortEnabled || hasWanPort || (
-                      isSdLanRun ? hasAccessPort : (hasAccessPort && !accessPortEnabled)
+                      isSdLanRun ? hasAccessPort : hasAccessPortOnOthers
                     )
                   }
                 />
