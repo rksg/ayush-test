@@ -55,12 +55,12 @@ const getWifiGenerationChartData =
 
   return {
     distribution:
-    apLegend
-      .filter(legendItem => distributionData[legendItem]) // Only include items that exist in data
-      .map(name => ({
-        name,
-        value: distributionData[name].apCount
-      })),
+      apLegend
+        .filter(legendItem => distributionData[legendItem]) // Only include items that exist in data
+        .map(name => ({
+          name,
+          value: distributionData[name].apCount
+        })),
     distributionData,
     olderClientCount,
     olderApCount
