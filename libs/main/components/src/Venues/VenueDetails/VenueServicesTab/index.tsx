@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                         from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier }                                                                                    from '@acx-ui/user'
@@ -24,11 +24,9 @@ export function VenueServicesTab () {
   const { isTemplate } = useConfigTemplate()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isEdgeEnabled = useIsEdgeReady() && !isTemplate
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE) && !isTemplate
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE) && !isTemplate
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
   // eslint-disable-next-line max-len
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
@@ -43,12 +41,12 @@ export function VenueServicesTab () {
   const { edgeData, isEdgeLoading, edgeClusterIds = [] } = useGetEdgeListQuery(
     { payload: {
       // Before Edge GA, no need to query firewallId
-      fields: (isEdgeHaReady && isEdgeFirewallHaReady)
+      fields: isEdgeFirewallHaReady
         ? edgeListFields.concat(['firewallId']) : edgeListFields,
       filters: { venueId: [venueId] }
     } },
     {
-      skip: !!!venueId || !isEdgeEnabled,
+      skip: !!!venueId || isTemplate,
       selectFromResult: ({ data, isLoading }) => ({
         edgeData: data?.data[0],
         isEdgeLoading: isLoading,
@@ -69,7 +67,7 @@ export function VenueServicesTab () {
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: edgeClusterIds.length === 0 || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: edgeClusterIds.length === 0 || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
@@ -122,7 +120,7 @@ export function VenueServicesTab () {
     })
 
   // Before Edge GA, need to hide the service not support HA
-  const isAppliedFirewall = (isEdgeHaReady && isEdgeFirewallHaReady)
+  const isAppliedFirewall = isEdgeFirewallHaReady
     ? !_.isEmpty(edgeData?.firewallId) : false
 
   return (
@@ -136,7 +134,7 @@ export function VenueServicesTab () {
               <DHCPInstance/>
             </Tabs.TabPane>
             {
-              isEdgeHaReady && isEdgeDhcpHaReady &&
+              isEdgeDhcpHaReady &&
             <Tabs.TabPane
               tab={$t({ defaultMessage: 'RUCKUS Edge' })}
               key={'smartEdge'}
@@ -192,7 +190,7 @@ export function VenueServicesTab () {
           </>
         }
         {
-          isEdgeHaReady && isEdgeFirewallHaReady && isAppliedFirewall &&
+          isEdgeFirewallHaReady && isAppliedFirewall &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}

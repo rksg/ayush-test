@@ -27,16 +27,17 @@ import {
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
   useGetSwitchAuthenticationQuery,
-  useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import {
+  getSwitchModel,
+  isOperationalSwitch
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
   Switch,
-  getSwitchModel,
   SwitchViewModel,
   IGMP_SNOOPING_TYPE,
   Vlan,
@@ -89,7 +90,6 @@ export function SwitchForm () {
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { $t } = useIntl()
@@ -100,16 +100,6 @@ export function SwitchForm () {
   const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
 
-  const venuesList = useGetSwitchVenueVersionListQuery({
-    params: { tenantId: tenantId },
-    payload: {
-      firmwareType: '',
-      firmwareVersion: '',
-      search: '', updateAvailable: ''
-    },
-    enableRbac: isSwitchRbacEnabled
-  }, { skip: isSwitchFirmwareV1002Enabled })
-
   const venuesListV1001 = useGetSwitchVenueVersionListV1001Query({
     params: { tenantId: tenantId },
     payload: {
@@ -117,7 +107,7 @@ export function SwitchForm () {
       firmwareVersion: '',
       search: '', updateAvailable: ''
     }
-  }, { skip: !isSwitchFirmwareV1002Enabled })
+  })
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -145,9 +135,6 @@ export function SwitchForm () {
 
   const [currentFirmwareV1002, setCurrentFirmwareV1002] =
     useState([] as FirmwareSwitchVenueVersionsV1002[])
-  const [currentFW, setCurrentFW] = useState('')
-  const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
-
 
   const getSwitchInfo = useGetSwitchListQuery({ params: { tenantId },
     payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
@@ -260,44 +247,25 @@ export function SwitchForm () {
 
 
   useEffect(() => {
-    if (isSwitchFirmwareV1002Enabled && !venuesListV1001.isLoading) {
+    if (!venuesListV1001.isLoading) {
       const venues = venuesListV1001?.data?.data?.map(item => ({
         label: item.venueName,
         value: item.venueId
       })) ?? []
       const sortedVenueOption = _.sortBy(venues, (v) => v.label)
       setVenueOption(sortedVenueOption)
-    } else if (!venuesList.isLoading){
-      const venues = venuesList?.data?.data?.map(item => ({
-        label: isSwitchRbacEnabled ? item.venueName : item.name,
-        value: isSwitchRbacEnabled ? item.venueId: item.id
-      })) ?? []
-      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
-      setVenueOption(sortedVenueOption)
     }
-  }, [venuesList, venuesListV1001, isSwitchFirmwareV1002Enabled])
+  }, [venuesListV1001])
 
   const handleVenueChange = async (value: string) => {
     setVenueId(value)
 
-    if (isSwitchFirmwareV1002Enabled) {
-      if (venuesListV1001 && venuesListV1001.data) {
-        const venueVersions = venuesListV1001.data?.data?.find(
-          venue => venue['venueId'] === value)?.versions
-        setCurrentFirmwareV1002(venueVersions || [])
-      }
-
-    } else if (!isSwitchFirmwareV1002Enabled) {
-      if (venuesList && venuesList.data) {
-        const venueId = isSwitchRbacEnabled ? 'venueId' : 'id'
-        // eslint-disable-next-line max-len
-        const venueFW = venuesList.data?.data?.find(venue => venue[venueId] === value)?.switchFirmwareVersion?.id
-        // eslint-disable-next-line max-len
-        const venueAboveTenFW = venuesList.data?.data?.find(venue => venue[venueId] === value)?.switchFirmwareVersionAboveTen?.id
-        setCurrentFW(venueFW || '')
-        setCurrentAboveTenFW(venueAboveTenFW || '')
-      }
+    if (venuesListV1001 && venuesListV1001.data) {
+      const venueVersions = venuesListV1001.data?.data?.find(
+        venue => venue['venueId'] === value)?.versions
+      setCurrentFirmwareV1002(venueVersions || [])
     }
+
 
     const vlansByVenue = value ?
       (await getVlansByVenue({
@@ -328,9 +296,7 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    const fw = isSwitchFirmwareV1002Enabled
-      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
-      : currentFW
+    const fw = getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
     if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
@@ -553,8 +519,8 @@ export function SwitchForm () {
         }}
       >
         <Loader states={[{
-          isLoading: venuesList.isLoading || isSwitchDataLoading
-            || isSwitchDetailLoading || venuesListV1001.isLoading
+          isLoading: isSwitchDataLoading || isSwitchDetailLoading
+          || venuesListV1001.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>
@@ -608,8 +574,6 @@ export function SwitchForm () {
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
-                    venueFirmware={currentFW}
-                    venueAboveTenFirmware={currentAboveTenFW}
                     venueFirmwareV1002={currentFirmwareV1002}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :

@@ -77,8 +77,6 @@ export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
-export { MapWidgetV2 } from './MapWidget'
-export { getAPStatusDisplayName } from './MapWidget/VenuesMap/helper'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
@@ -137,10 +135,7 @@ export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { SwitchClientContext } from './SwitchClientsTable/context'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
-export { usePreference, countryCodes, wifiCountryCodes } from './usePreference'
-export type { updatePreferenceProps } from './usePreference'
-export { usePlacesAutocomplete } from './usePlacesAutocomplete'
-export { GoogleMapWithPreference } from './GoogleMapWithPreference'
+
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 export { MspSubscriptionUtilizationWidget }
   from './SubscriptionUtilizationWidget/MspSubscriptionUtilizationWidget'
@@ -179,7 +174,6 @@ export {
 } from './ConnectionMeteringForm'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
-export { PhoneInput } from './PhoneInput'
 export { PersonalIdentityNetworkServiceInfo } from './PersonalIdentityNetworkServiceInfo'
 export { PersonalIdentityNetworkDetailTableGroup } from './PersonalIdentityNetworkDetailTableGroup'
 export { AccessSwitchTable } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
@@ -193,8 +187,7 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady,
-  useIsEdgeReady
+  useIsEdgeFeatureReady
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,

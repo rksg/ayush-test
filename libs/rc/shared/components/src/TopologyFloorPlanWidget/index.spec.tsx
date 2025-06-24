@@ -1,4 +1,3 @@
-import { useIsSplitOn }                                                                                                                                      from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, DeviceStates, DeviceTypes, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider  }                                                                                                                                         from '@acx-ui/store'
 import { render, screen }                                                                                                                                    from '@acx-ui/test-utils'
@@ -42,10 +41,6 @@ const currentSwitchDevice = {
 } as NetworkDevice
 
 describe('TopologyFloorPlanWidget', () => {
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-  })
-
   it('should render correctly', async () => {
     render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>)
@@ -53,7 +48,6 @@ describe('TopologyFloorPlanWidget', () => {
     expect(await screen.findByText(/floor plans/i)).toBeVisible()
   })
   it('should render floorplan topology widget under AP overview', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
       currentDevice={currentApDevice}
@@ -68,7 +62,6 @@ describe('TopologyFloorPlanWidget', () => {
     expect(await screen.findByText(/this access point is not placed on any floor plan/i)).toBeVisible()
   })
   it('should render next gen floorplan topology widget under AP overview', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
       currentDevice={currentApDevice}
