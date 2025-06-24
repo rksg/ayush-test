@@ -263,8 +263,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             ...item,
             lanPorts: lan,
             ...(poeMode && { poeMode: poeMode }),
-            ...(poeOut && { poeOut: poeOut }),
-            ...(poeOutMode && { poeOutMode: poeOutMode })
+            ...(poeOut && poeOutMode && { poeOutMode: poeOutMode })
           } : item
       }) as VenueLanPorts[]
 
