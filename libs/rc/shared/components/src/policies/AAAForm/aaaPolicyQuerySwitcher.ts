@@ -16,9 +16,6 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
   const { customPayload = {}, queryOptions = {} } = props
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
-    ? 1024
-    : AAA_LIMIT_NUMBER
 
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -26,7 +23,7 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
 
   const requestPayload = {
     params,
-    payload: { page: 1, pageSize: radiusMaxiumnNumber, ...customPayload },
+    payload: { page: 1, pageSize: AAA_LIMIT_NUMBER, ...customPayload },
     enableRbac
   }
   const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {

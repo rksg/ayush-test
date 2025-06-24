@@ -32,8 +32,6 @@ import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { $t } = useIntl()
@@ -69,13 +67,13 @@ const TunnelProfileDetail = () => {
           `${tunnelProfileData.destinationIpAddress || noDataDisplay}`
       }
     }] : []),
-    ...((isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
+    {
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
         // eslint-disable-next-line max-len
         return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
       }
-    }] : []),
+    },
     ...(isEdgeNatTraversalP1Ready ? [
       {
         title: $t({ defaultMessage: 'NAT-T Support' }),

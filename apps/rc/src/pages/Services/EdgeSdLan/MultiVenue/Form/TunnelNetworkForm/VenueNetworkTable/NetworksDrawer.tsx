@@ -7,7 +7,7 @@ import { FormattedMessage, useIntl }                      from 'react-intl'
 
 import { Drawer }                                                                                   from '@acx-ui/components'
 import { Features }                                                                                 from '@acx-ui/feature-toggle'
-import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { EdgeMvSdLanActivatedNetworksTable, showSdLanGuestFwdConflictModal, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum }                                         from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
@@ -183,7 +183,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           </Typography.Paragraph>
         </div>
 
-        <EdgeSdLanP2ActivatedNetworksTable
+        <EdgeMvSdLanActivatedNetworksTable
           venueId={venueId}
           isGuestTunnelEnabled={isGuestTunnelEnabled}
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}

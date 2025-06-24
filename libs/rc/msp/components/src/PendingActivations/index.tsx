@@ -11,7 +11,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
-import { SpaceWrapper }               from '@acx-ui/rc/components'
 import {
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'
@@ -26,7 +25,7 @@ import { getOpsApi, noDataDisplay }                       from '@acx-ui/utils'
 
 import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
 
-const PendingActivationsTable = () => {
+export const PendingActivations = () => {
   const { $t } = useIntl()
   const [activationData, setActivationData] = useState<EntitlementActivations>()
   const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
@@ -150,13 +149,5 @@ const PendingActivationsTable = () => {
       />}
 
     </Loader>
-  )
-}
-
-export const PendingActivations = () => {
-  return (
-    <SpaceWrapper fullWidth size='large' direction='vertical'>
-      <PendingActivationsTable />
-    </SpaceWrapper>
   )
 }

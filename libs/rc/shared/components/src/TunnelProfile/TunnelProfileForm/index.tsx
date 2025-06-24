@@ -92,8 +92,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const formId = form.getFieldValue('id')
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
@@ -134,15 +132,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       skip: !isEdgeL2greReady,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterServiceData: data?.data
-          ,isLoading
+          clusterServiceData: data?.data,
+          isLoading
         }
       }
     })
 
   const inValidClusterIds = clusterServiceData
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
-    item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
+      item.serviceType === EdgeServiceTypeEnum.SD_LAN ||
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
@@ -259,31 +257,29 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             />
           </Col>
         }
-        { (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
-          <Col span={24}>
-            <Form.Item
-              name='type'
-              label={$t({ defaultMessage: 'Network Segment Type' })}
-              initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
-              tooltip={$t(MessageMapping.network_segment_type_tooltip)}
-              children={
-                <Radio.Group disabled={isDefaultTunnelProfile
-                      || !!disabledFields?.includes('type')}
-                onChange={handleNetworkSegmentTypeChange}
-                >
-                  <Space direction='vertical'>
-                    <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
-                      {$t({ defaultMessage: 'VLAN to VNI map' })}
-                    </Radio>
-                    <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
-                      {$t({ defaultMessage: 'VNI' })}
-                    </Radio>
-                  </Space>
-                </Radio.Group>
-              }
-            />
-          </Col>
-        }
+        <Col span={24}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Network Segment Type' })}
+            initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
+            tooltip={$t(MessageMapping.network_segment_type_tooltip)}
+            children={
+              <Radio.Group disabled={isDefaultTunnelProfile
+                    || !!disabledFields?.includes('type')}
+              onChange={handleNetworkSegmentTypeChange}
+              >
+                <Space direction='vertical'>
+                  <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
+                    {$t({ defaultMessage: 'VLAN to VNI map' })}
+                  </Radio>
+                  <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
+                    {$t({ defaultMessage: 'VNI' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            }
+          />
+        </Col>
         { isEdgeL2greReady && isL2greType &&
           <Col span={14}>
             <Form.Item

@@ -28,7 +28,8 @@ const params = {
 const exampleMobile = /555/
 const mockedSetVisible = jest.fn()
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: ({ name, callback }: {
     name: string,
     callback?: (value: string) => void

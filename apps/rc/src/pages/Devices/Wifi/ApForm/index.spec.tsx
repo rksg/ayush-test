@@ -52,6 +52,15 @@ jest.mock('@acx-ui/utils', () => ({
   getEnabledDialogImproved: jest.fn().mockReturnValue(false),
   isShowImprovedErrorSuggestion: jest.fn().mockReturnValue(false)
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  defaultApGroupsFilterOptsPayload: {
+    fields: ['name', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: { isDefault: [false] }
+  }
+}))
 const venue = [
   {
     id: '0842f2133565438d85e1e46103889744',
