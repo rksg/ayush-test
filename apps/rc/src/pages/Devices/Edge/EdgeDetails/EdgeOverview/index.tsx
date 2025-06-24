@@ -4,9 +4,8 @@ import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }                                         from '@acx-ui/components'
-import { Features }                                              from '@acx-ui/feature-toggle'
-import { EdgeInfoWidget, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { GridRow, Tabs }           from '@acx-ui/components'
+import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
@@ -35,8 +34,6 @@ export const EdgeOverview = () => {
     isEdgeStatusLoading: isLoadingEdgeStatus,
     currentCluster
   } = useContext(EdgeDetailsDataContext)
-  const isEdgeReady = useIsEdgeReady()
-  const isEdgeLagEnabled = useIsEdgeFeatureReady(Features.EDGE_LAG)
 
   const isConfigurable = isEdgeConfigurable(currentEdge)
 
@@ -98,7 +95,6 @@ export const EdgeOverview = () => {
     params: { serialNumber },
     payload: edgeLagStatusPayload
   }, {
-    skip: !isEdgeLagEnabled,
     selectFromResult ({ data, isLoading }) {
       return {
         lagStatusList: data?.data,
@@ -140,7 +136,7 @@ export const EdgeOverview = () => {
       handleClickLagName={handleClickLagName}
     />
   },
-  ...(isEdgeLagEnabled ? [{
+  {
     label: $t({ defaultMessage: 'LAGs' }),
     value: 'lags',
     children: <LagsTab
@@ -148,7 +144,7 @@ export const EdgeOverview = () => {
       data={lagStatusList}
       isLoading={isLagListLoading}
     />
-  }] : []),
+  },
   {
     label: $t({ defaultMessage: 'Sub-Interfaces' }),
     value: 'subInterfaces',
@@ -158,7 +154,7 @@ export const EdgeOverview = () => {
       ports={portStatusList}
       lags={lagStatusList}
     />
-  }].filter(i => i.value !== 'monitor' || isEdgeReady)
+  }]
 
   return (
     <GridRow>

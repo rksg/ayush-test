@@ -21,6 +21,12 @@ export * from './urls'
 export * from './mspRbacUrls'
 export const MSP_USER_SETTING = 'COMMON$MSP'
 
+export {
+  addressParser,
+  addressParserWithLatLng,
+  defaultAddress
+} from './addressParser'
+
 export const MSPUtils = () => {
 
   const isMspEc = (mspEc: MspEcProfile | undefined): boolean => {

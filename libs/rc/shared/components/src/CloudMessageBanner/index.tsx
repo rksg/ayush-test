@@ -4,37 +4,31 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }     from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useLazyGetSwitchVenueVersionListQuery,
-  useLazyGetVenueEdgeFirmwareListQuery,
   useLazyGetScheduledFirmwareQuery,
-  useLazyGetSwitchVenueVersionListV1001Query
+  useLazyGetSwitchVenueVersionListV1001Query,
+  useLazyGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import {
   CloudVersion,
   getUserSettingsByPath,
-  useGetPlmMessageBannerQuery,
+  hasRoles,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  UserSettingsUIModel,
-  hasRoles
+  useGetPlmMessageBannerQuery,
+  UserSettingsUIModel
 } from '@acx-ui/user'
-
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -51,7 +45,6 @@ export function CloudMessageBanner () {
     enableRbac: isPtenantRbacApiEnabled })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
-  const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getSwitchVenueVersionListV1001] = useLazyGetSwitchVenueVersionListV1001Query()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
 
@@ -66,9 +59,7 @@ export function CloudMessageBanner () {
       if(!isSpecialRole) {
         checkWifiScheduleExists()
         checkSwitchScheduleExists()
-        if(isEdgeScheduleUpdateReady) {
-          checkEdgeScheduleExists()
-        }
+        checkEdgeScheduleExists()
       }
     }
   }, [cloudVersion, userSettings])
@@ -96,32 +87,16 @@ export function CloudMessageBanner () {
   }
 
   const checkSwitchScheduleExists = async () => {
-    if (isSwitchFirmwareV1002Enabled) {
-      return await getSwitchVenueVersionListV1001({ params })
-        .unwrap()
-        .then(result => {
-          const upgradeVenueViewList = result?.data ?? []
-          setNewSwitchScheduleExists(upgradeVenueViewList.filter(
-            item => item.nextSchedule).length > 0
-          )
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-
-    } else {
-      return await getSwitchVenueVersionList({ params, enableRbac: isSwitchRbacEnabled })
-        .unwrap()
-        .then(result => {
-          const upgradeVenueViewList = result?.data ?? []
-          setNewSwitchScheduleExists(upgradeVenueViewList.filter(
-            item => item.nextSchedule).length > 0
-          )
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-
-    }
-
+    return await getSwitchVenueVersionListV1001({ params })
+      .unwrap()
+      .then(result => {
+        const upgradeVenueViewList = result?.data ?? []
+        setNewSwitchScheduleExists(upgradeVenueViewList.filter(
+          item => item.nextSchedule).length > 0
+        )
+      }).catch((error) => {
+        console.log(error) // eslint-disable-line no-console
+      })
   }
 
   const checkEdgeScheduleExists = async () => {

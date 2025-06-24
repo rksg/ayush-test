@@ -95,6 +95,7 @@ exports[`Brand360 resets SLAs 1`] = `
 
 .c10 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c10 .ant-card-head-wrapper {

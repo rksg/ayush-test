@@ -18,8 +18,7 @@ import {
   ApCompatibilityDrawer,
   retrievedCompatibilitiesOptions,
   retrievedApCompatibilitiesOptions,
-  useApGroupsFilterOpts,
-  useIsEdgeFeatureReady
+  useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -97,8 +96,6 @@ export function VenueWifi () {
 
   const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
@@ -132,7 +129,7 @@ export function VenueWifi () {
   }
 
   const alertNote = () => {
-    return isEdgeCompatibilityEnabled && venueId
+    return venueId
       ? <CompatibilityCheck venueId={venueId} />
       : (
         <AlertNote

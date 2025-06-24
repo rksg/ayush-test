@@ -29,7 +29,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const { $t } = useIntl()
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeArptReady = useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE)
 
@@ -116,16 +115,13 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
           }
         </StepsForm.StepForm>
       </StepsForm>
-      {
-        isEdgeCompatibilityEnabled &&
-        <EdgeCompatibilityDrawer
-          visible={!!edgeFeatureName}
-          type={EdgeCompatibilityType.ALONE}
-          title={$t({ defaultMessage: 'Compatibility Requirement' })}
-          featureName={edgeFeatureName}
-          onClose={() => setEdgeFeatureName(undefined)}
-        />
-      }
+      <EdgeCompatibilityDrawer
+        visible={!!edgeFeatureName}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeFeatureName}
+        onClose={() => setEdgeFeatureName(undefined)}
+      />
     </>
   )
 }

@@ -29,7 +29,7 @@ import {
 
 import { getEnabledCorePortInfo }                      from '../EdgeFormItem/EdgePortsGeneralBase/utils'
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../EdgeFormItem/PortCommonForm'
-import { useGetEdgeSdLanByEdgeOrClusterId }            from '../EdgeSdLan/useEdgeSdLanActions'
+import { useGetEdgeSdLanByClusterId }                  from '../EdgeSdLan/useEdgeSdLanActions'
 import { useIsEdgeFeatureReady }                       from '../useEdgeActions'
 
 import { LagMembersComponent } from './LagMembersComponent'
@@ -78,7 +78,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
@@ -90,7 +89,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
     edgeSdLanData
-  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
+  } = useGetEdgeSdLanByClusterId(clusterId)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 

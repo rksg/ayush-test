@@ -25,13 +25,15 @@ export type IntentKPIConfig = {
 }
 
 export type KpiResultExtend = {
-  projectedPowerSaving?: number
+  powerSaving?: number
   enabled?: number
   disabled?: number
+  excluded?: number
   unsupported?: number
   powerConsumption?: number
   maxApPower?: number
-  minApPower?: number
+  minApPowerStandard?: number
+  minApPowerAi?: number
   apTotalCount?: number
 }
 

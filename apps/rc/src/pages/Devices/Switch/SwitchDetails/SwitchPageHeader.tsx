@@ -14,12 +14,10 @@ import { SwitchCliSession, SwitchStatus, useSwitchActions }                     
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
-  useLazyGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListV1001Query
 }                         from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitation,
   getStackUnitsMinLimitationV1002,
   getSwitchModelGroup,
   SwitchRbacUrlsInfo,
@@ -67,12 +65,10 @@ function SwitchPageHeader () {
   const linkToSwitch = useTenantLink('/devices/switch/')
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
-  const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getSwitchVenueVersionListV1001] = useLazyGetSwitchVenueVersionListV1001Query()
   const jwtToken = useGetJwtTokenQuery({
     params: { tenantId, serialNumber, venueId: switchDetailHeader?.venueId },
@@ -85,11 +81,8 @@ function SwitchPageHeader () {
   const [syncDataEndTime, setSyncDataEndTime] = useState('')
   const [cliModalState, setCliModalOpen] = useState(false)
   const [addStackMemberOpen, setAddStackMemberOpen] = useState(false)
-
-  const [venueFW, setVenueFW] = useState('')
-  const [venueAboveTenFw, setVenueAboveTenFw] = useState('')
   const [venueFwV1002, setVenueFwV1002] = useState([] as FirmwareSwitchVenueVersionsV1002[])
-
+  const [currentFw, setCurrentFw] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
 
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
@@ -171,51 +164,25 @@ function SwitchPageHeader () {
 
   const setVenueVersion = async (switchDetail: SwitchViewModel) => {
     if(switchDetail.venueName){
-      if(isSwitchFirmwareV1002Enabled) {
-        return await getSwitchVenueVersionListV1001({
-          params: { tenantId },
-          payload: {
-            firmwareType: '',
-            firmwareVersion: '',
-            searchString: switchDetail.venueName,
-            updateAvailable: ''
-          },
-          enableRbac: isSwitchRbacEnabled
-        }).unwrap()
-          .then(result => {
-            const venueFw = result?.data?.find(
-              venue => venue.venueId === switchDetail.venueId)?.versions || []
-            setVenueFwV1002(venueFw)
+      return await getSwitchVenueVersionListV1001({
+        params: { tenantId },
+        payload: {
+          firmwareType: '',
+          firmwareVersion: '',
+          searchString: switchDetail.venueName,
+          updateAvailable: ''
+        },
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
+        .then(result => {
+          const venueFw = result?.data?.find(
+            venue => venue.venueId === switchDetail.venueId)?.versions || []
+          setVenueFwV1002(venueFw)
 
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
-          })
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
 
-      } else {
-        return await getSwitchVenueVersionList({
-          params: { tenantId },
-          payload: {
-            firmwareType: '',
-            firmwareVersion: '',
-            searchString: switchDetail.venueName,
-            updateAvailable: ''
-          },
-          enableRbac: isSwitchRbacEnabled
-        }).unwrap()
-          .then(result => {
-            const venueId = isSwitchRbacEnabled ? 'venueId' : 'id'
-            const venueFw = result?.data?.find(
-              venue => venue[venueId] === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
-            const venueAboveTenFw = result?.data?.find(
-              venue => venue[venueId] === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
-
-            setVenueFW(venueFw)
-            setVenueAboveTenFw(venueAboveTenFw)
-
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
-          })
-      }
     }
     return {}
   }
@@ -230,19 +197,15 @@ function SwitchPageHeader () {
     if(switchDetailHeader?.stackMembers){
       const switchModel = switchDetailHeader?.model || ''
       const syncedStackMemberCount = switchData?.stackMembers?.length || 0
-      const currentFW = switchDetailHeader?.firmware || venueFW || ''
-      const currentAboveTenFW = switchDetailHeader?.firmware || venueAboveTenFw || ''
-      let maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
-      if (isSwitchFirmwareV1002Enabled && venueFwV1002.length > 0) {
-        const mg = getSwitchModelGroup(switchModel)
-        const currentVersion = switchDetailHeader?.firmware || venueFwV1002?.find(v =>
-          v.modelGroup === mg)?.version || ''
-        maxUnits = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
-      }
+      const mg = getSwitchModelGroup(switchModel)
+      const firmwareVersion = switchDetailHeader?.firmware || venueFwV1002?.find(v =>
+        v.modelGroup === mg)?.version || ''
+      const maxUnits = getStackUnitsMinLimitationV1002(switchModel, firmwareVersion)
 
       setMaxMembers(maxUnits - syncedStackMemberCount)
+      setCurrentFw(firmwareVersion)
     }
-  }, [switchDetailHeader, switchData, venueFW, venueAboveTenFw, venueFwV1002])
+  }, [switchDetailHeader, switchData, venueFwV1002])
 
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {
@@ -392,7 +355,7 @@ function SwitchPageHeader () {
         visible={addStackMemberOpen}
         setVisible={setAddStackMemberOpen}
         maxMembers={maxMembers}
-        venueFirmwareVersion={venueFW}
+        venueFirmwareVersion={currentFw}
       />
     </>
   )

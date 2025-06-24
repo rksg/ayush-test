@@ -1,9 +1,10 @@
 import { Form }    from 'antd'
+import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                 from '@acx-ui/components'
-import { useEdgeSdLanActions }                from '@acx-ui/edge/components'
-import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
+import { Loader, PageHeader }                                from '@acx-ui/components'
+import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
+import { useGetEdgeMvSdLanViewDataListQuery }                from '@acx-ui/rc/services'
 import {
   getServiceRoutePath,
   ServiceOperation,
@@ -15,12 +16,14 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
+import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
 import { transformToApiData, transformToFormData }   from '../Form/utils'
 
 export const EditEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
+
   const [form] = Form.useForm()
   const cfListRoute = getServiceRoutePath({
     type: ServiceType.EDGE_SD_LAN,
@@ -28,6 +31,8 @@ export const EditEdgeSdLan = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const { updateEdgeSdLan } = useEdgeSdLanActions()
+  const isTemplateSupported = useIsEdgeDelegationPermitted()
+
   const { data, isLoading, isFetching } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: ['id', 'name', 'tunnelProfileId', 'tunneledWlans'],
@@ -47,36 +52,35 @@ export const EditEdgeSdLan = () => {
     {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
-    }
+    },
+    ...isTemplateSupported ? [{
+      title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
+      content: NetworkTemplateSelectionForm
+    }] : []
   ]
 
   const handleFinish = async (formData: EdgeSdLanFormType) => {
     try {
-      const payload = {
-        name: formData.name,
-        tunnelProfileId: formData.tunnelProfileId,
-        activeNetwork: Object.entries(formData.activatedNetworks)
-          .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-            venueId,
-            networkId,
-            tunnelProfileId
-          }))).flat()
-      }
+      const payload = omit(transformToApiData(formData), 'id')
 
       await new Promise(async (resolve, reject) => {
-        await updateEdgeSdLan(transformToApiData(data), {
-          payload,
-          callback: (result) => {
+        await updateEdgeSdLan(
+          transformToApiData(data),
+          {
+            payload,
+            callback: (result) => {
             // callback is after all RBAC related APIs sent
-            if (Array.isArray(result)) {
-              resolve(true)
-              navigate(linkToServiceList, { replace: true })
-            } else {
-              reject(result)
+              if (Array.isArray(result)) {
+                resolve(true)
+                navigate(linkToServiceList, { replace: true })
+              } else {
+                reject(result)
+              }
             }
-          }
+          },
+          isTemplateSupported
           // need to catch basic service profile failed
-        }).catch(reject)
+        ).catch(reject)
       })
     } catch(err) {
       // eslint-disable-next-line no-console
