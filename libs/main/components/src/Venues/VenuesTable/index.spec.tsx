@@ -30,6 +30,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  useEnforcedStatus: () => ({
+    hasEnforcedItem: jest.fn(),
+    getEnforcedActionMsg: jest.fn()
+  })
+}))
+
 const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
 describe('Venues Table', () => {

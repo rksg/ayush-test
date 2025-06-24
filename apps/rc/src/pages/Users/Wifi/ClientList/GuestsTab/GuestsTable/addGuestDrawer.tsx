@@ -20,10 +20,9 @@ import moment, { LocaleSpecifier }                    from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { PhoneInput }                                             from '@acx-ui/rc/components'
+import { Button, Drawer, cssStr, showActionModal, PasswordInput, PhoneInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                          from '@acx-ui/formatter'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,

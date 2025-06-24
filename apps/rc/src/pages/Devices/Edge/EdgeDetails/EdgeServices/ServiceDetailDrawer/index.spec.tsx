@@ -41,7 +41,7 @@ const {
   mockEdgeList,
   mockEdgeServiceList
 } = EdgeGeneralFixtures
-const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
@@ -102,7 +102,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       ),
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
@@ -199,87 +199,20 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByTestId('rc-PinTableGroup')).toBeVisible()
   })
 
-  it('should render SD-LAN detail successfully', async () => {
-    render(
-      <Provider>
-        <ServiceDetailDrawer
-          visible={true}
-          setVisible={mockedSetVisible}
-          serviceData={mockEdgeServiceList.data[3]}
-        />
-      </Provider>, {
-        route: { params }
-      })
-    expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
-    expect(screen.queryByText('Tunnel Profile (AP-Cluster)')).toBeNull()
-  })
-
-  describe('SD-LAN Phase2', () => {
-    beforeEach(() => {
-      // mock SDLAN HA(i,e p2) enabled
-      jest.mocked(mockUseIsEdgeFeatureReady)
-        .mockImplementation((ff) => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-    })
-
-    it('should render DMZ scenario detail successfully', async () => {
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
-        )
-      )
-
-      render(
-        <Provider>
-          <ServiceDetailDrawer
-            visible={true}
-            setVisible={mockedSetVisible}
-            serviceData={mockEdgeServiceList.data[3]}
-          />
-        </Provider>, {
-          route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
-        })
-
-      expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
-      expect(screen.getByRole('link', { name: 'Mocked_tunnel-3' })).toBeVisible()
-      expect(screen.getByText('Tunnel Profile (Cluster-DMZ Cluster)')).toBeVisible()
-      const networkItemContainer = screen.getByText('Tunneling Networks to DMZ')
-        // eslint-disable-next-line testing-library/no-node-access
-        .closest('.ant-row.ant-form-item-row')
-      expect(within(networkItemContainer as HTMLElement).getByText('1')).toBeVisible()
-    })
-
-    it('should render non-DMZ scenario detail successfully', async () => {
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2.slice(1) }))
-        )
-      )
-
-      render(
-        <Provider>
-          <ServiceDetailDrawer
-            visible={true}
-            setVisible={mockedSetVisible}
-            serviceData={mockEdgeServiceList.data[3]}
-          />
-        </Provider>, {
-          route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
-        })
-
-      expect(await screen.findByRole('link', { name: 'Mocked_tunnel-2' })).toBeVisible()
-      const networkItemContainer = screen.getByText('Tunneling Networks')
-        // eslint-disable-next-line testing-library/no-node-access
-        .closest('.ant-row.ant-form-item-row')
-      expect(within(networkItemContainer as HTMLElement).getByText('1')).toBeVisible()
-    })
-  })
-
   describe('Multi-venues SD-LAN', () => {
-    beforeEach(() => {
-      jest.mocked(mockUseIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
+    it('should render SD-LAN detail successfully', async () => {
+      render(
+        <Provider>
+          <ServiceDetailDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            serviceData={mockEdgeServiceList.data[3]}
+          />
+        </Provider>, {
+          route: { params }
+        })
+      expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
+      expect(screen.queryByText('Tunnel Profile (AP-Cluster)')).toBeVisible()
     })
 
     it('should render DMZ scenario detail successfully', async () => {

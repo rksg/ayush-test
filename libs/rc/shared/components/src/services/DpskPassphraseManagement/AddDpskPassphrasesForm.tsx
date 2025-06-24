@@ -12,7 +12,7 @@ import {
 import { Rule }                      from 'antd/lib/form'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Tooltip, PasswordInput }                     from '@acx-ui/components'
+import { Tooltip, PasswordInput, PhoneInput }         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {
@@ -31,7 +31,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { ExpirationDateSelector } from '../../ExpirationDateSelector'
-import PhoneInput                 from '../../PhoneInput'
 import { IdentitySelector }       from '../../users/IdentitySelector'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
