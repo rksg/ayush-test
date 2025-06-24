@@ -194,7 +194,8 @@ export const composeNext = (
       ...step,
       isStart,
       isEnd: nextStep?.type === StepType.End,
-      mode
+      mode,
+      attachCandidate: false
     },
 
     hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
@@ -259,6 +260,7 @@ function addParentNode (firstStepId: string,
     },
     hidden: false,
     deletable: false,
+    dragHandle: '.subflow_drag_handle',
     data: { id: parentNodeId, enrollmentActionId: '' }
   })
 
