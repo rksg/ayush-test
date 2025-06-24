@@ -32,7 +32,6 @@ import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
-  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { $t } = useIntl()
@@ -68,14 +67,13 @@ const TunnelProfileDetail = () => {
           `${tunnelProfileData.destinationIpAddress || noDataDisplay}`
       }
     }] : []),
-    ...(isEdgeVxLanKaReady ? [{
+    {
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
         // eslint-disable-next-line max-len
-        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN,
-          isEdgeVxLanKaReady)
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
       }
-    }] : []),
+    },
     ...(isEdgeNatTraversalP1Ready ? [
       {
         title: $t({ defaultMessage: 'NAT-T Support' }),
@@ -87,21 +85,20 @@ const TunnelProfileDetail = () => {
         $t({ defaultMessage: 'Auto' }) :
         `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
     },
-    ...(isEdgeVxLanKaReady ? [
-      {
-        title: $t({ defaultMessage: 'PMTU Timeout' }),
-        content: () => {
-          if(!tunnelProfileData.mtuRequestTimeout) return
-          const result = mtuRequestTimeoutUnitConversion(tunnelProfileData.mtuRequestTimeout)
-          return $t({ defaultMessage: '{value} {unit}' }, {
-            value: result?.value,
-            unit: result?.unit
-          })
-        }
-      }, {
-        title: $t({ defaultMessage: 'PMTU Retries' }),
-        content: `${tunnelProfileData.mtuRequestRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
-      }] : []),
+    {
+      title: $t({ defaultMessage: 'PMTU Timeout' }),
+      content: () => {
+        if(!tunnelProfileData.mtuRequestTimeout) return
+        const result = mtuRequestTimeoutUnitConversion(tunnelProfileData.mtuRequestTimeout)
+        return $t({ defaultMessage: '{value} {unit}' }, {
+          value: result?.value,
+          unit: result?.unit
+        })
+      }
+    }, {
+      title: $t({ defaultMessage: 'PMTU Retries' }),
+      content: `${tunnelProfileData.mtuRequestRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+    },
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
       content: tunnelProfileData.forceFragmentation ?
@@ -119,23 +116,15 @@ const TunnelProfileDetail = () => {
         })
       }
     },
-    ...(!isEdgeVxLanKaReady ? [{
-      title: $t({ defaultMessage: 'Tunnel Type' }),
-      content: () => {
-        // eslint-disable-next-line max-len
-        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
-      }
-    }] : []),
-    ...(isEdgeVxLanKaReady ? [
-      {
-        title: $t({ defaultMessage: 'Keep Alive Interval' }),
-        content: `${tunnelProfileData.keepAliveInterval ?? ''}
+    {
+      title: $t({ defaultMessage: 'Keep Alive Interval' }),
+      content: `${tunnelProfileData.keepAliveInterval ?? ''}
         ${$t({ defaultMessage: 'seconds' })}`
-      },
-      {
-        title: $t({ defaultMessage: 'Keep Alive Reties' }),
-        content: `${tunnelProfileData.keepAliveRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
-      }] : [])
+    },
+    {
+      title: $t({ defaultMessage: 'Keep Alive Reties' }),
+      content: `${tunnelProfileData.keepAliveRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+    }
   ]
 
   return (

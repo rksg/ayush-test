@@ -1,7 +1,6 @@
 import { createContext } from 'react'
 
 import { Loader }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
@@ -22,9 +21,9 @@ import {
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
+  EdgeMvSdLanViewData,
   EdgePort,
   EdgePortInfo,
-  EdgeMvSdLanViewData,
   EdgeStaticRouteConfig,
   EdgeStatusEnum,
   IncompatibilityFeatures,
@@ -76,7 +75,6 @@ type EditEdgeDataProviderProps = React.PropsWithChildren<{
 }>
 export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
   const { serialNumber } = props
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
   const { clusterId, venueId } = useGetEdgeListQuery(
     { payload: {
@@ -166,7 +164,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
       sortOrder: 'ASC'
     }
   },{
-    skip: !isEdgeLagEnabled || !serialNumber,
+    skip: !serialNumber,
     selectFromResult ({ data, isLoading, isFetching }) {
       return {
         lagStatus: data?.data,
