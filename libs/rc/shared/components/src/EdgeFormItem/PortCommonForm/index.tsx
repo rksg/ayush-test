@@ -375,7 +375,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     <Checkbox
                       disabled={!corePortInfo.isExistingCorePortInLagMember
                         && (
-                          hasWANPort
+                          (hasWANPort && !corePortEnabled)
                           || (isEdgeSdLanRun
                             ? hasCorePortEnabled
                             // eslint-disable-next-line max-len
