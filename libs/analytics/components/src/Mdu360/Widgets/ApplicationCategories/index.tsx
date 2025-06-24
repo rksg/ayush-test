@@ -7,11 +7,12 @@ import {
   DonutChart,
   ContentSwitcher,
   Loader,
-  NoData,
   ContentSwitcherProps,
   HistoricalCard
 } from '@acx-ui/components'
 import { formats } from '@acx-ui/formatter'
+
+import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
 
 import { useTopNApplicationCategoriesQuery } from './services'
 
@@ -56,7 +57,7 @@ export const ApplicationCategories = ({
             )}
           </AutoSizer>
         ) : (
-          <NoData />
+          <StyledNoData />
         )
       },
       {
@@ -74,13 +75,12 @@ export const ApplicationCategories = ({
                 showTotal
                 showValue
                 showLabel
-                dataFormatter={(value) =>
-                  formats.bytesFormat(value as number)}
+                dataFormatter={(value) => formats.bytesFormat(value as number)}
               />
             )}
           </AutoSizer>
         ) : (
-          <NoData />
+          <StyledNoData />
         )
       }
     ],
@@ -88,21 +88,19 @@ export const ApplicationCategories = ({
   )
 
   return (
-    <Loader states={[]}>
+    <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Top 10 Application Categories' })}
       >
         <AutoSizer>
           {({ height, width }) => (
-            <div
-              style={{ display: 'block', height, width, marginTop: '-38px' }}
-            >
+            <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher
                 tabDetails={tabDetails}
                 align='right'
                 size='small'
               />
-            </div>
+            </ContentSwitcherWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>
