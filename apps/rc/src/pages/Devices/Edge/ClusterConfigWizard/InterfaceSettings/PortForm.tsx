@@ -64,7 +64,8 @@ const PortSettingView = (props: PortSettingViewProps) => {
     portsStatus,
     edgeSdLanData,
     isSupportAccessPort,
-    isFetching
+    isFetching,
+    clusterNetworkSettings
   } = useContext(ClusterConfigWizardContext)
   const [activeTab, setActiveTab] = useState<string>('')
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
@@ -144,6 +145,10 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 return lagData?.some(lag => String(lag.id) === lagId) ? subInterfaceList : []
               })
             const allSubInterface = portSubInterfaceList.concat(lagSubInterfaceList)
+            // eslint-disable-next-line max-len
+            const originalPortData = clusterNetworkSettings?.portSettings.find(item => item.serialNumber === serialNumber)?.ports
+            // eslint-disable-next-line max-len
+            const originalLagData = clusterNetworkSettings?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
 
             // only display when portConfig has data
             return portsConfigs
@@ -169,6 +174,10 @@ const PortSettingView = (props: PortSettingViewProps) => {
                         return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
                       } }] : []
                   }
+                }}
+                originalInterfaceData={{
+                  portSettings: originalPortData,
+                  lagSettings: originalLagData
                 }}
               />
               : <div />

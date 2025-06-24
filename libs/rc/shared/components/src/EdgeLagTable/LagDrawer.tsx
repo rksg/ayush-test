@@ -27,10 +27,10 @@ import {
   EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
-import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
-import { useIsEdgeFeatureReady }            from '../useEdgeActions'
+import { getEnabledCorePortInfo }                      from '../EdgeFormItem/EdgePortsGeneralBase/utils'
+import { EdgePortCommonForm, EdgePortCommonFormProps } from '../EdgeFormItem/PortCommonForm'
+import { useGetEdgeSdLanByEdgeOrClusterId }            from '../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }                       from '../useEdgeActions'
 
 import { LagMembersComponent } from './LagMembersComponent'
 
@@ -50,6 +50,7 @@ interface LagDrawerProps {
   clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 const defaultFormValues = {
@@ -73,7 +74,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
     clusterInfo, isSupportAccessPort,
-    formFieldsProps
+    formFieldsProps, originalInterfaceData
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -411,6 +412,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
           subnetInfoForValidation={subnetInfoForValidation}
           subInterfaceList={subInterfaceList}
           isSupportAccessPort={isSupportAccessPort}
+          originalInterfaceData={originalInterfaceData}
         />
       }}
     </Form.Item>

@@ -210,6 +210,10 @@ const Ports = () => {
               clusterInfo={clusterInfo!}
               isSupportAccessPort={isSupportAccessPort}
               subInterfaceList={subInterfaceList}
+              originalInterfaceData={{
+                portSettings: portData,
+                lagSettings: lagData
+              }}
             />
           </StepsForm.StepForm>
         </StepsForm>
