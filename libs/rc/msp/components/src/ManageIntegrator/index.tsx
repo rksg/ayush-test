@@ -51,7 +51,7 @@ import {
   defaultAddress,
   addressParser
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
   Address,

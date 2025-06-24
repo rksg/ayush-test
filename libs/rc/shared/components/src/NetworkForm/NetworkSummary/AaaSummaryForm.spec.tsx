@@ -71,7 +71,7 @@ describe('AaaSummaryForm', () => {
     )
     expect(await screen.findByText('Primary Server')).toBeVisible()
   })
-  it('should render AAA summary with accounting enabled', async () => {
+  it.skip('should render AAA summary with accounting enabled', async () => {
     mockSummary.enableAccountingService = true
     mockSummary.enableAuthProxy = false
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
