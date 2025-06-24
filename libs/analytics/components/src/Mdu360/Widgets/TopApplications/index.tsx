@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
 
+import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ContentSwitcher, Card, Loader, NoData, GridRow } from '@acx-ui/components'
-import { formats }                                        from '@acx-ui/formatter'
+import { ContentSwitcher, Loader, NoData, HistoricalCard, ContentSwitcherProps } from '@acx-ui/components'
+import { formats }                                                               from '@acx-ui/formatter'
 
 import * as UI from '../styledComponents'
 
@@ -17,9 +18,6 @@ interface TopApplicationsFilters {
 
 export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
   const { $t } = useIntl()
-  const [selectedTab, setSelectedTab] = useState<
-    'clientCount' | 'applicationTraffic'
-  >('clientCount')
   const { startDate: start, endDate: end } = filters
   const queryResults = useTopNApplicationsQuery({
     path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
@@ -28,39 +26,42 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
     n: 10
   })
 
-  const tabDetails = [
-    { label: $t({ defaultMessage: 'Client Count' }), value: 'clientCount', children: null },
-    { label: $t({ defaultMessage: 'Data Usage' }), value: 'applicationTraffic', children: null }
-  ]
-
   const results = queryResults?.data
 
-  const data = selectedTab === 'clientCount'
-    ? results?.topNApplicationByClient?.map((item) => ({
-      name: item.name,
-      value: item.clientCount
-    })) || []
-    : results?.topNApplicationByTraffic?.map((item) => ({
-      name: item.name,
-      value: item.applicationTraffic
-    })) || []
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const clientData =
+  results?.topNApplicationByClient?.map(item => ({
+    name: item.name,
+    value: item.clientCount
+  })) || []
 
-  const mid = Math.ceil(data.length / 2)
-  const leftColumn = data.slice(0, mid)
-  const rightColumn = data.slice(mid)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const trafficData =
+  results?.topNApplicationByTraffic?.map(item => ({
+    name: item.name,
+    value: item.applicationTraffic
+  })) || []
 
-  const formatValue = (value: number) => {
-    return selectedTab === 'applicationTraffic'
+  const formatValue = (value: number, currentTab: 'clientCount' | 'applicationTraffic') =>
+    currentTab === 'applicationTraffic'
       ? formats.bytesFormat(value)
       : value
+
+  const getColumns = (
+    data: typeof clientData | typeof trafficData
+  ): [typeof data, typeof data] => {
+    return [data.slice(0, 5), data.slice(5)]
   }
 
-  const renderColumn = (items: typeof data) => (
+  const renderColumn = (
+    items: typeof clientData | typeof trafficData,
+    currentTab: 'clientCount' | 'applicationTraffic'
+  ) => (
     <UI.ColumnHeaderWrapper>
       {items.map(({ name, value }) => {
         const icon =
-          IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
-          IconList.find(icon => icon.name === 'chrome')?.icon
+        IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
+        IconList.find(icon => icon.name === 'chrome')?.icon
 
         return (
           <UI.ColumnItemWrapper key={name}>
@@ -68,41 +69,65 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
               {icon}
               <span>{name}</span>
             </UI.ColumnItemIconWrapper>
-            <span><b>{formatValue(value)}</b></span>
+            <UI.ColumnValue>{formatValue(value, currentTab)}</UI.ColumnValue>
+            {/* <span><b>{formatValue(value, currentTab)}</b></span> */}
           </UI.ColumnItemWrapper>
         )
       })}
     </UI.ColumnHeaderWrapper>
   )
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const renderContent = (
+    data: typeof clientData | typeof trafficData,
+    currentTab: 'clientCount' | 'applicationTraffic'
+  ) => {
+    const [leftColumn, rightColumn] = getColumns(data)
+
+    return (
+      <Loader states={[queryResults]}>
+        <UI.ColumnWrapper>
+          {renderColumn(leftColumn, currentTab)}
+          <Divider
+            type='vertical'
+            style={{ height: '135px', marginInline: 16 }}
+          />
+          {renderColumn(rightColumn, currentTab)}
+        </UI.ColumnWrapper>
+      </Loader>
+    )
+  }
+
+  const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
+    () => [
+      {
+        label: $t({ defaultMessage: 'Client Count' }),
+        value: 'clientCount',
+        children: clientData.length > 0 ? renderContent(clientData, 'clientCount') : <NoData />
+      },
+      {
+        label: $t({ defaultMessage: 'Data Usage' }),
+        value: 'applicationTraffic',
+        children: trafficData.length > 0
+          ? renderContent(trafficData, 'applicationTraffic')
+          : <NoData />
+      }
+    ],
+    [$t, clientData, trafficData, renderContent]
+  )
+
   const title = $t({ defaultMessage: 'Top 10 Applications' })
 
   return (
-    <Loader states={[queryResults]}>
-      <Card type='default' title={title}>
-        <UI.ContentSwitcherWrapper>
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            value={selectedTab}
-            onChange={(value) => setSelectedTab(value as 'clientCount' | 'applicationTraffic')}
-            size='small'
-            align='right'
-            noPadding
-          />
-        </UI.ContentSwitcherWrapper>
-        {data.length > 0 ? (
-          <GridRow>
-            <UI.LeftColumnWrapper col={{ span: 12 }}>
-              {renderColumn(leftColumn)}
-            </UI.LeftColumnWrapper>
-            <UI.RightColumnWrapper col={{ span: 12 }}>
-              {renderColumn(rightColumn)}
-            </UI.RightColumnWrapper>
-          </GridRow>
-        ) : (
-          <NoData />
-        )}
-      </Card>
-    </Loader>
+    <HistoricalCard title={title}>
+      <UI.ContentSwitcherWrapper>
+        <ContentSwitcher
+          tabDetails={tabDetails}
+          size='small'
+          align='right'
+          // noPadding
+        />
+      </UI.ContentSwitcherWrapper>
+    </HistoricalCard>
   )
 }
