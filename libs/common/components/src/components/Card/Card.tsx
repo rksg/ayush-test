@@ -67,7 +67,7 @@ function Card ({
             { props.action ?
               <UI.LinkButton type='link' onClick={props.action.onActionClick}>
                 {props.action.actionName}
-              </UI.LinkButton> : null }
+              </UI.LinkButton> : null}
           </Space>
         }
       >
