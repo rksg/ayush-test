@@ -667,7 +667,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     setSelectedModel(defaultLanPortsData as VenueLanPorts)
     form?.setFieldsValue({
       ...defaultLanPortsData,
-      // poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPortsData?.poeOut),
       lan: defaultLanPortsData?.lanPorts
     })
     let records = clone(resetModels)
