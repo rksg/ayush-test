@@ -62,7 +62,7 @@ import {
   SoftGreDuplicationChangeState,
   Voter,
   mergeLanPortSettings,
-  IpsecOptionChangeState,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
