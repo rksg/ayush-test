@@ -112,10 +112,24 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: 'publishReadiness',
       align: 'center' as AlignType,
       sorter: false,
-      render: (_: React.ReactNode, row: Workflow) => {
-        return <PublishReadinessProgress
-          publishReadiness={row.publishReadiness as number}
-          reasons={row?.statusReasons as StatusReason[]}/>
+      width: 50,
+      render: (node: React.ReactNode, record:Workflow) => {
+        return {
+          props: {
+            style: {
+              background: record?.statusReasons && record.statusReasons.length > 0
+                ? 'var(--acx-semantics-red-10)' : '',
+              padding: '0px'
+            }
+          },
+          children:
+              <div style={{ alignItems: 'center', justifyContent: 'center',
+                display: 'flex', width: '100%', height: '100%' }}>
+                <PublishReadinessProgress
+                  variant='short'
+                  reasons={record?.statusReasons as StatusReason[]}/>
+              </div>
+        }
       }
     }] : []),
     {

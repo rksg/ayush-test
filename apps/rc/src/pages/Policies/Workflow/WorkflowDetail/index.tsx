@@ -163,8 +163,7 @@ export default function WorkflowDetails () {
     {
       title: $t({ defaultMessage: 'Publishing Readiness' }),
       visible: workflowValidationEnhancementFFToggle,
-      content: <PublishReadinessProgress
-        publishReadiness={data?.publishReadiness as number}
+      content: <PublishReadinessProgress variant='text'
         reasons={data?.statusReasons as StatusReason[]} />,
       colSpan: 4
     },
