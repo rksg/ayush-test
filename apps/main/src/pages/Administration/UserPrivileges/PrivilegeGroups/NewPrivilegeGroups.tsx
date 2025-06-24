@@ -50,6 +50,7 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const [customRoleOption, setCustomRoleOption] = useState<string[] | RolesEnum[]>()
   const { rbacOpsApiEnabled } = getUserProfile()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
+  const isPtenantUsersPrivilegesEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   //   const { data: privilegeGroupList, isLoading, isFetching }
@@ -112,9 +113,6 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   }
 
   function useColumns () {
-    const isPtenantUsersPrivilegesEnabled = useIsSplitOn(
-      Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
-    );
     const columns:TableProps<PrivilegeGroup>['columns'] = [
       {
         title: $t({ defaultMessage: 'Name' }),
