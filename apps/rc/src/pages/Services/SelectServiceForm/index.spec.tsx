@@ -11,8 +11,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }    from '@acx-ui/react-router-dom'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }            from '@acx-ui/react-router-dom'
+import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import SelectServiceForm from '.'
 
@@ -216,14 +216,17 @@ describe('Select Service Form', () => {
   })
 
   describe('Wi-Fi Calling', () => {
-    it('should not render Wi-Fi calling when limit is reached', () => {
+    it('should not render Wi-Fi calling when limit is reached', async () => {
       mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: true })
 
       render(<SelectServiceForm />, {
         route: { params, path }
       })
 
-      expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
+      const wifiCallingCard = await screen.findByText('Wi-Fi Calling')
+      // eslint-disable-next-line testing-library/no-node-access
+      const radio = within(wifiCallingCard.parentElement!).getByRole('radio')
+      expect(radio).toBeDisabled()
     })
   })
 
