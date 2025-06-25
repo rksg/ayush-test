@@ -48,6 +48,7 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
   isSupportAccessPort?: boolean
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -64,7 +65,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     subInterfaceList = [],
     isClusterWizard,
     clusterInfo,
-    isSupportAccessPort
+    isSupportAccessPort,
+    originalInterfaceData
   } = props
   const { $t } = useIntl()
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
@@ -117,6 +119,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             }
             subInterfaceList={subInterfaceList}
             isSupportAccessPort={isSupportAccessPort}
+            originalInterfaceData={originalInterfaceData}
           />
         )}
       </Form.List>,

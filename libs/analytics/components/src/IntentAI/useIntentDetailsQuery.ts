@@ -78,7 +78,7 @@ export type IntentConfigurationValue =
 export type IntentDetail = Intent & Partial<IntentKPI> & {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
-  dataCheck: {
+  dataCheck?: {
     isDataRetained: boolean
     isHotTierData: boolean
   }

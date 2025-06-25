@@ -34,8 +34,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -297,8 +295,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.EDGE_SD_LAN,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: ServiceType.EDGE_TNM_SERVICE,
@@ -360,7 +357,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: ServiceType.PORTAL_PROFILE,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS,
         disabled: !isPortalProfileEnabled
       },

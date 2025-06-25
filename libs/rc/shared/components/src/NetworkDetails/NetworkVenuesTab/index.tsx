@@ -91,7 +91,7 @@ import {
   transformRadios,
   transformScheduling
 } from '../../pipes/apGroupPipes'
-import { useGetNetwork }         from '../services'
+import { useGetNetwork } from '../services'
 
 import { useTunnelColumn } from './useTunnelColumn'
 

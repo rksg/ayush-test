@@ -3,11 +3,8 @@ import { EdgeSdLanUrls, hasPolicyPermission, hasServicePermission, IpsecUrls, Po
 import { hasPermission }                                                                                                                                from '@acx-ui/user'
 import { getOpsApi }                                                                                                                                    from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
-
 export const usePermissionResult = () => {
   const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const getSdLanPermission = () => {
@@ -50,7 +47,7 @@ export const usePermissionResult = () => {
   }
 
   // eslint-disable-next-line max-len
-  const hasEdgeSdLanPermission = !isEdgeSdLanMvEnabled || getSdLanPermission()
+  const hasEdgeSdLanPermission = getSdLanPermission()
   // eslint-disable-next-line max-len
   const hasSoftGrePermission = getSoftGrePermission()
   // eslint-disable-next-line max-len
