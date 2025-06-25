@@ -8,6 +8,7 @@ import Highlighter                                                    from 'reac
 import { useIntl }                                                    from 'react-intl'
 
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import type { Filter }                                               from '@acx-ui/types'
 import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { getTitleWithIndicator }               from '../BetaIndicator'
@@ -17,7 +18,6 @@ import { useLayoutContext }                    from '../Layout'
 import { Tooltip }                             from '../Tooltip'
 
 import {
-  Filter,
   getFilteredData,
   renderFilter,
   renderSearch,

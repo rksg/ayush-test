@@ -6,7 +6,6 @@ import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
-  Filter,
   Loader,
   Table,
   TableProps
@@ -31,6 +30,7 @@ import {
   AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
+import type { Filter }              from '@acx-ui/types'
 import { filterByAccess }           from '@acx-ui/user'
 import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 

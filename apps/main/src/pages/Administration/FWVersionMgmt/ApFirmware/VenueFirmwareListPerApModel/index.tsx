@@ -3,7 +3,7 @@ import { useCallback, useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                             from '@acx-ui/components'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
@@ -39,6 +39,7 @@ import {
   SortResult,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import type { Filter }           from '@acx-ui/types'
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess, getUserProfile, hasAllowedOperations,

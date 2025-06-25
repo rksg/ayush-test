@@ -246,6 +246,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockCheckDelegateAdmin = jest.fn()
+jest.mock('../../hooks/useCheckDelegateAdmin', () => ({
+  useCheckDelegateAdmin: () => ({ checkDelegateAdmin: mockCheckDelegateAdmin })
+}))
+
+
 describe('MspRecCustomers', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -265,10 +271,6 @@ describe('MspRecCustomers', () => {
     services.useDelegateToMspEcPath = jest.fn().mockImplementation(() => {
       const delegateToMspEcPath = jest.fn()
       return { delegateToMspEcPath }
-    })
-    services.useCheckDelegateAdmin = jest.fn().mockImplementation(() => {
-      const checkDelegateAdmin = jest.fn()
-      return { checkDelegateAdmin }
     })
     rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: fakedPrivilegeGroupList }
@@ -536,7 +538,7 @@ describe('MspRecCustomers', () => {
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getAllByRole('link')[0])
 
-    expect(services.useCheckDelegateAdmin).toHaveBeenCalled()
+    expect(mockCheckDelegateAdmin).toHaveBeenCalled()
   })
   it('should work correctly for customer name clicked for support user', async () => {
     const supportUserProfile = { ...userProfile }
