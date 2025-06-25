@@ -7,7 +7,6 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
-  Filter,
   Loader,
   PageHeader,
   Subtitle,
@@ -49,6 +48,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
+import type { Filter }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
 
