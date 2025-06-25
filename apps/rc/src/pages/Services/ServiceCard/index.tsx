@@ -4,9 +4,9 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
+  getServiceProfileLimitReachedMessage,
   getServiceRoutePath,
   hasServicePermission,
-  profileLimitReachedMessage,
   ServiceOperation,
   ServiceType,
   serviceTypeDescMapping,
@@ -67,7 +67,7 @@ export function ServiceCard (props: ServiceCardProps) {
       buttonProps={{ disabled: isLimitReached }}
       disabled={isLimitReached}
       disabledTooltip={isLimitReached
-        ? $t(profileLimitReachedMessage, { maxCount: count })
+        ? getServiceProfileLimitReachedMessage(serviceType)
         : undefined
       }
       key={serviceType}

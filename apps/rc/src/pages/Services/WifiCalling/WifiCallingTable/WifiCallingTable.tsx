@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, Tooltip }                                                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                              from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, defaultRbacNetworkPayload, getWifiCallingLimitReachedMessage, SimpleListTooltip, useEnforcedStatus, WIFICALLING_LIMIT_NUMBER } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader, Tooltip }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
@@ -27,7 +27,9 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   ConfigTemplateType,
-  useServicesBreadcrumb
+  useServicesBreadcrumb,
+  getServiceProfileMaximumNumber,
+  getServiceProfileLimitReachedMessage
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -145,7 +147,8 @@ export default function WifiCallingTable () {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
-  const hasReachedLimit = (tableQuery.data?.totalCount ?? 0) >= WIFICALLING_LIMIT_NUMBER
+  // eslint-disable-next-line max-len
+  const hasReachedLimit = (tableQuery.data?.totalCount ?? 0) >= getServiceProfileMaximumNumber(ServiceType.WIFI_CALLING)
 
   return (
     <>
@@ -164,11 +167,13 @@ export default function WifiCallingTable () {
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
             {hasReachedLimit
-              ? <Tooltip title={getWifiCallingLimitReachedMessage()}><span>
-                <Button disabled={true} type='primary'>
-                  {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
-                </Button>
-              </span></Tooltip>
+              ? <Tooltip title={getServiceProfileLimitReachedMessage(ServiceType.WIFI_CALLING)}>
+                <span>
+                  <Button disabled={true} type='primary'>
+                    {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
+                  </Button>
+                </span>
+              </Tooltip>
               : <Button type='primary'>
                 {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
               </Button>}
