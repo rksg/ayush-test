@@ -419,7 +419,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     if (!isLoadingVenueData && venueSavedChannelsData
-      && !isLoadingVenueData && apGroupRadioData
+      && !isLoadingApGroupData && apGroupRadioData
       && formRef?.current && supportRadioChannels) {
       const correctedData = correctApiRadioChannelData(venueSavedChannelsData)
       const correctedApGroupData = correctApiRadioChannelData(apGroupRadioData)
