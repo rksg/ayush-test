@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -9,15 +11,15 @@ import {
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
-import { ServiceSortOrder, ServicesToolBar }   from './ServicesToolBar'
-import { SkeletonLoaderCard }                  from './SkeletonLoaderCard'
-import { useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
-import { useUnifiedServiceSearchFilter }       from './useUnifiedServiceSearchFilter'
+import { ServicesToolBar }                                             from './ServicesToolBar'
+import { SkeletonLoaderCard }                                          from './SkeletonLoaderCard'
+import { useUnifiedServiceListWithTotalCount }                         from './useUnifiedServiceListWithTotalCount'
+import { getDefaultSearchFilterValues, useUnifiedServiceSearchFilter } from './useUnifiedServiceSearchFilter'
+
+const myServicesSettingsId = 'my-services'
 
 export function MyServices () {
   const { $t } = useIntl()
-  const defaultSortOrder = ServiceSortOrder.ASC
-
   const {
     unifiedServiceListWithTotalCount: rawUnifiedServiceList,
     isFetching
@@ -25,9 +27,15 @@ export function MyServices () {
 
   const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
 
+  // The function passed to useState will only run once on the initial render.
+  // This ensures getDefaultSearchFilterValues is called only once for initialization and not on every render.
+  // eslint-disable-next-line max-len
+  const [defaultSearchFilterValues] = useState(() => getDefaultSearchFilterValues(myServicesSettingsId))
+
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
-  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
+    // eslint-disable-next-line max-len
+  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSearchFilterValues, myServicesSettingsId)
 
   return <>
     <PageHeader
@@ -43,9 +51,9 @@ export function MyServices () {
       <ServicesToolBar
         setSearchTerm={setSearchTerm}
         setFilters={setFilters}
-        defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
         availableFilters={{ products, categories }}
+        defaultValues={defaultSearchFilterValues}
       />
       {isFetching
         ? <SkeletonLoaderCard />

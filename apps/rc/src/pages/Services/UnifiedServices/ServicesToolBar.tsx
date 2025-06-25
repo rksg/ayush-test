@@ -8,6 +8,8 @@ import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
 import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
 import { getIntl }                                   from '@acx-ui/utils'
 
+import { DefaultSearchFilterValues } from './useUnifiedServiceSearchFilter'
+
 export enum ServiceSortOrder {
   ASC,
   DESC,
@@ -31,18 +33,25 @@ export interface ServiceFiltersConfig {
   categories?: UnifiedServiceCategory[]
 }
 
-export interface ServicesToolBarProps {
+interface ServicesToolBarProps {
   setSearchTerm: (searchTerm: string) => void
   setFilters: React.Dispatch<React.SetStateAction<ServiceFiltersConfig>>
   availableFilters?: ServiceFiltersConfig
-  defaultSortOrder?: ServiceSortOrder
+  defaultValues?: DefaultSearchFilterValues
   setSortOrder: (sort: ServiceSortOrder) => void
 }
 
 export function ServicesToolBar (props: ServicesToolBarProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder , availableFilters = {} } = props
+  const { setSearchTerm, setFilters, defaultValues = {}, setSortOrder , availableFilters = {} } = props
+  const {
+    searchTerm: defaultSearchTerm,
+    filters: defaultFilters,
+    sortOrder: defaultSortOrder
+  } = defaultValues
+  const { products: defaultProducts, categories: defaultCategories } = defaultFilters ?? {}
+
   const {
     products = Object.values(RadioCardCategory),
     categories = [
@@ -82,6 +91,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
   return (
     <Space size={12}>
       <Table.SearchInput
+        defaultValue={defaultSearchTerm}
         onChange={handleSearchChange}
         placeholder={$t({ defaultMessage: 'Search for network controls...' })}
         style={{ width: 300 }}
@@ -90,6 +100,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       />
       <Select<RadioCardCategory>
         key='product'
+        defaultValue={defaultProducts?.[0]}
         onChange={handleProductFilterChange}
         placeholder={$t({ defaultMessage: 'Product' })}
         allowClear
@@ -104,6 +115,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       />
       <Select<UnifiedServiceCategory>
         key='category'
+        defaultValue={defaultCategories?.[0]}
         onChange={handleCategoryFilterChange}
         placeholder={$t({ defaultMessage: 'Category' })}
         allowClear

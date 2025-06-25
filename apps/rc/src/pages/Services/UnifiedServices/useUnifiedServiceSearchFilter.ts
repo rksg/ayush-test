@@ -1,20 +1,40 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { RadioCardCategory } from '@acx-ui/components'
 import { UnifiedService }    from '@acx-ui/rc/utils'
 
 import { ServiceFiltersConfig, ServiceSortOrder } from './ServicesToolBar'
 
+export type DefaultSearchFilterValues = {
+  searchTerm?: string
+  filters?: ServiceFiltersConfig
+  sortOrder?: ServiceSortOrder
+}
+
 export function useUnifiedServiceSearchFilter (
-  rawUnifiedServiceList: Array<UnifiedService>, defaultSortOrder: ServiceSortOrder
+  rawUnifiedServiceList: Array<UnifiedService>,
+  defaultValues: DefaultSearchFilterValues,
+  settingsId: string
 ) {
-  const [ searchTerm, setSearchTerm ] = useState<string>()
-  const [ filters, setFilters ] = useState<ServiceFiltersConfig>({})
+  const {
+    searchTerm: defaultSearchTerm = '',
+    filters: defaultFilters = {},
+    sortOrder: defaultSortOrder = ServiceSortOrder.ASC
+  } = defaultValues
+  const [ searchTerm, setSearchTerm ] = useState<string>(defaultSearchTerm)
+  const [ filters, setFilters ] = useState<ServiceFiltersConfig>(defaultFilters)
   const [ sortOrder, setSortOrder ] = useState<ServiceSortOrder>(defaultSortOrder)
 
   const filteredServices = useMemo(() => {
     return getFilteredAndSortedServices(rawUnifiedServiceList, { searchTerm, filters }, sortOrder)
   }, [rawUnifiedServiceList, searchTerm, filters, sortOrder])
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      settingsId,
+      JSON.stringify({ searchTerm, filters, sortOrder })
+    )
+  }, [searchTerm, filters, sortOrder])
 
   return { setSearchTerm, setFilters, setSortOrder, filteredServices }
 }
@@ -49,4 +69,11 @@ const matchSearchTerm = (svc: UnifiedService, searchTerm?: string) => {
   return svc.label.toLowerCase().includes(searchStr)
     || (svc.description ?? '').toLowerCase().includes(searchStr)
     || svc.searchKeywords?.some(kw => kw.toLowerCase().includes(searchStr))
+}
+
+export function getDefaultSearchFilterValues (settingsId: string): DefaultSearchFilterValues {
+  const saved = sessionStorage.getItem(settingsId)
+  return saved ? JSON.parse(saved) : {
+    sortOrder: ServiceSortOrder.ASC
+  }
 }
