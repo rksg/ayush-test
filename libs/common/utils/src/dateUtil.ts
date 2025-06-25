@@ -1,6 +1,6 @@
 import tz_lookup                            from '@photostructure/tz-lookup'
 import { pick }                             from 'lodash'
-import moment                               from 'moment-timezone'
+import moment, { Moment }                   from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { ITimeZone } from '@acx-ui/types'
@@ -25,7 +25,7 @@ export type DateRangeFilter = {
 
 const ceilMinute = () => moment().add(1, 'minutes').seconds(0).milliseconds(0)
 
-type Ranges = Record<string, [moment.Moment, moment.Moment]>
+type Ranges = Record<string, [Moment, Moment]>
 let ranges = defaultAllRanges()
 
 export const resetRanges = () => { ranges = defaultAllRanges() }
@@ -41,7 +41,7 @@ export function getDateRangeFilter (
     range === DateRange.custom && start && end
       ? [start, end]
       : ((ranges as Ranges)[range] ?? ranges[DateRange.last24Hours]).map(
-        (date: moment.Moment) => date.format()
+        (date: Moment) => date.format()
       )
   return { startDate, endDate, range }
 }
@@ -61,7 +61,7 @@ export function defaultAllRanges (subRange?: DateRange[]) {
 }
 
 export function defaultRanges (subRange?: DateRange[]) {
-  const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+  const defaultRange: Partial<{ [key in DateRange]: Moment[] }> = {
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
@@ -76,7 +76,7 @@ export function defaultRanges (subRange?: DateRange[]) {
 }
 
 export function defaultCoreTierRanges (subRange?: DateRange[]) {
-  const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+  const defaultRange: Partial<{ [key in DateRange]: Moment[] }> = {
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
@@ -115,7 +115,7 @@ export function computeRangeFilter <Filter extends object & { dateFilter?: DateR
 export function dateRangeForLast (
   duration: moment.DurationInputArg1,
   durationType: moment.DurationInputArg2
-): [moment.Moment, moment.Moment] {
+): [Moment, Moment] {
   return [ceilMinute().subtract(duration, durationType), ceilMinute()]
 }
 
@@ -159,5 +159,18 @@ export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
   return {
     timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
     rawOffset, dstOffset: 0
+  }
+}
+
+export function trackDateSelection (range: DateRange, startDate?: Moment, endDate?: Moment) {
+  const { pendo, location } = window
+  if (pendo) {
+    pendo.track('date-selections', {
+      env: location.host,
+      url: location.pathname.replace(/^.*\/(ai|t|v)\//g, '/'),
+      range,
+      startDate,
+      endDate
+    })
   }
 }

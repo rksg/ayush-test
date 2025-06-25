@@ -12,6 +12,7 @@ import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatte
 import { ClockOutlined }                                  from '@acx-ui/icons'
 import { getUserProfile, isCoreTier }                     from '@acx-ui/user'
 import {
+  trackDateSelection,
   defaultRanges,
   DateRange,
   dateRangeMap,
@@ -135,6 +136,16 @@ export const RangePicker = ({
     [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
+  const onDateApplyTracked = useCallback((args: {
+    startDate?: Moment,
+    endDate?: Moment,
+    range: DateRange
+  }) => {
+    onDateApply(args)
+    trackDateSelection(args.range, args.startDate, args.endDate)
+  }, [onDateApply])
+
+
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
@@ -154,14 +165,14 @@ export const RangePicker = ({
         setActiveIndex(0)
         rangeRef?.current?.blur()
         setIsCalendarOpen(false)
-        onDateApply({ range: selectedRange })
+        onDateApplyTracked({ range: selectedRange })
       }
     }
     document.addEventListener('click', handleClickForDatePicker)
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  }, [range, onDateApply, translatedOptions])
+  }, [range, onDateApplyTracked, translatedOptions])
 
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
   const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
@@ -206,7 +217,7 @@ export const RangePicker = ({
             setRange={setRange}
             defaultValue={selectedRange}
             setIsCalendarOpen={setIsCalendarOpen}
-            onDateApply={onDateApply}
+            onDateApply={onDateApplyTracked}
           />
         )}
         value={[range?.startDate, range?.endDate]}
