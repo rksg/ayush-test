@@ -169,7 +169,6 @@ export function StackForm () {
   const isStackSwitches = stackSwitches?.length > 0
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
   const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -857,9 +856,6 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    if (!enableStackUnitLimitationFlag) {
-      return true
-    }
     const miniMembers = getMiniMembers(activeSerialNumber)
     return tableData.length < miniMembers
   }
