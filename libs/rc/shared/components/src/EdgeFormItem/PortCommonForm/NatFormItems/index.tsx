@@ -13,7 +13,8 @@ import {
   EdgeLag, EdgeNatPool, EdgePort,
   getEdgeNatPools,
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
 import { useIsEdgeFeatureReady }  from '../../../useEdgeActions'
@@ -29,6 +30,7 @@ export interface NatFormItemsProps {
   clusterInfo: EdgeClusterStatus
   portsData: EdgePort[]
   lagData: EdgeLag[] | undefined
+  requiredFwMap: Record<string, string | undefined>
 }
 export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const { $t } = useIntl()
@@ -37,7 +39,8 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     formFieldsProps,
     serialNumber,
     clusterInfo,
-    portsData, lagData
+    portsData, lagData,
+    requiredFwMap
   } = props
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
   const form = Form.useFormInstance()
@@ -142,7 +145,11 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     // eslint-disable-next-line max-len
     isMultiNatIpEnabled && natEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
      <Form.Item
-       label={<NatPoolFormItemTitle serialNumber={serialNumber} />}>
+       label={<NatPoolFormItemTitle
+         serialNumber={serialNumber}
+         clusterInfo={clusterInfo}
+         requiredFw={get(requiredFwMap, IncompatibilityFeatures.MULTI_NAT_IP)}
+       />}>
        <Form.List name={parentNamePath.concat('natPools')}>
          {(fields) => {
            return <>

@@ -32,7 +32,8 @@ const defaultProps = {
   formFieldsProps: {},
   clusterInfo: { highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY },
   portsData: [],
-  lagData: []
+  lagData: [],
+  requiredFwMap: {}
 } as NatFormItemsProps
 
 const mockOnFinish = jest.fn()

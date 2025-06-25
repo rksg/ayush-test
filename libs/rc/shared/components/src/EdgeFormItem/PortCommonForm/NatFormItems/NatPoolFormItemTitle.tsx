@@ -1,47 +1,24 @@
 import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { defaultRichTextFormatValues }                            from '@acx-ui/components'
-import { useGetEdgeFeatureSetsQuery, useGetEdgeListQuery }        from '@acx-ui/rc/services'
-import { IncompatibilityFeatures, isEdgeMatchedRequiredFirmware } from '@acx-ui/rc/utils'
-import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { defaultRichTextFormatValues }                      from '@acx-ui/components'
+import { EdgeClusterStatus, isEdgeMatchedRequiredFirmware } from '@acx-ui/rc/utils'
+import { TenantLink }                                       from '@acx-ui/react-router-dom'
 
 import { CompatibilityWarningTriangleIcon } from '../../../Compatibility/styledComponents'
 
 export const NatPoolFormItemTitle = (props: {
   serialNumber: string | undefined,
+  clusterInfo: EdgeClusterStatus,
+  requiredFw: string | undefined,
 }) => {
   const { $t } = useIntl()
-  const { serialNumber } = props
+  const { serialNumber, clusterInfo, requiredFw } = props
 
-  const { requiredFw } = useGetEdgeFeatureSetsQuery({
-    payload: {
-      filters: {
-        featureNames: [IncompatibilityFeatures.MULTI_NAT_IP]
-      } }
-  }, {
-    selectFromResult: ({ data }) => ({
-      requiredFw: data?.featureSets
-        ?.find(item =>
-          item.featureName === IncompatibilityFeatures.MULTI_NAT_IP)?.requiredFw
-    })
-  })
-
-  const { data: edgeData } = useGetEdgeListQuery(
-    { payload: {
-      fields: [
-        'serialNumber',
-        'venueId',
-        'clusterId',
-        'firmwareVersion'
-      ],
-      filters: { serialNumber: [serialNumber] }
-    } }, {
-      skip: !serialNumber
-    })
+  const edgeData = clusterInfo.edgeList?.find(item => item.serialNumber === serialNumber)
 
   // eslint-disable-next-line max-len
-  const isLower = requiredFw && !!edgeData?.data?.length && !isEdgeMatchedRequiredFirmware(requiredFw, edgeData.data.slice(0, 1))
+  const isLower = requiredFw && !!edgeData && !isEdgeMatchedRequiredFirmware(requiredFw, [edgeData])
 
   return <>{$t({ defaultMessage: 'NAT IP Addresses Range' })}
     {isLower && <Tooltip
