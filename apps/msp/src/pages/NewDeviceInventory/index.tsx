@@ -4,7 +4,7 @@ import { SortOrder }                         from 'antd/lib/table/interface'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import {
-  Button, Filter,
+  Button,
   Loader,
   PageHeader,
   Table,
@@ -34,6 +34,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { Filter }                            from '@acx-ui/types'
 import { AccountType, exportMessageMapping } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'

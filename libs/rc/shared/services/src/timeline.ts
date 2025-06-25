@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import { Filter }             from '@acx-ui/components'
 import {
   Activity,
   EventBase,
@@ -21,9 +20,9 @@ import {
   EventExportSchedule,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { baseTimelineApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseTimelineApi }             from '@acx-ui/store'
+import type { Filter, RequestPayload } from '@acx-ui/types'
+import { createHttpRequest }           from '@acx-ui/utils'
 
 import { getMetaDetailsList, getMetaList, latestTimeFilter } from './utils'
 

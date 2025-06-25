@@ -3,7 +3,6 @@ import { setupServer } from 'msw/node'
 import { Provider }    from 'react-redux'
 
 import { getUserProfile as getUserProfileRA, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
-import { RadioBand }                                                from '@acx-ui/components'
 import { showActionModal }                                          from '@acx-ui/components'
 import * as config                                                  from '@acx-ui/config'
 import { useIsSplitOn, Features }                                   from '@acx-ui/feature-toggle'
@@ -11,7 +10,7 @@ import { ReportUrlsInfo, reportsApi }                               from '@acx-u
 import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
 import { store, refreshJWT }                                        from '@acx-ui/store'
 import { render, waitFor, act }                                     from '@acx-ui/test-utils'
-import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
+import { RadioBand, RolesEnum as RolesEnumR1 }                      from '@acx-ui/types'
 import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
 import { NetworkPath, useLocaleContext }                            from '@acx-ui/utils'
 
