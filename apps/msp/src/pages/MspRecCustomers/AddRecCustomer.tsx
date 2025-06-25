@@ -237,6 +237,7 @@ export function AddRecCustomer () {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
         mspRecCustomer.forEach((cus: MspRecCustomer) => {
           recCustomers.push({
+            propertyCode: cus.propertyCode,
             account_id: cus.account_id,
             name: cus.account_name,
             admin_delegations: delegations,
