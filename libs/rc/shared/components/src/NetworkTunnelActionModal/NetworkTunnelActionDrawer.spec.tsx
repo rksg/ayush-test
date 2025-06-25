@@ -15,8 +15,8 @@ import {
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-import { mockDeepNetworkList, mockSoftGreTable } from './__tests__/fixtures'
-import { useEdgeMvSdLanData }                    from './useEdgeMvSdLanData'
+import { mockDeepNetworkList, mockIpSecTable, mockSoftGreTable } from './__tests__/fixtures'
+import { useEdgeMvSdLanData }                                    from './useEdgeMvSdLanData'
 
 import { NetworkTunnelActionDrawer, NetworkTunnelTypeEnum } from '.'
 
@@ -473,7 +473,7 @@ describe('NetworkTunnelDrawer', () => {
           IpsecUrls.getIpsecViewDataList.url,
           (_, res, ctx) => {
             mockedGetFn()
-            return res(ctx.json(mockSoftGreTable))
+            return res(ctx.json(mockIpSecTable.data))
           }
         )
       )

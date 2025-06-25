@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ipSecApi, softGreApi }                            from '@acx-ui/rc/services'
-import { IpsecUrls, SoftGreUrls }                          from '@acx-ui/rc/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { ipSecApi, softGreApi, useLazyGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
+import { IpsecUrls, SoftGreUrls }                              from '@acx-ui/rc/utils'
+import { Provider, store }                                     from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }     from '@acx-ui/test-utils'
 
 import { mockSoftGreTable, mockIpSecTable } from './__tests__/fixtures'
 import { NetworkTunnelTypeEnum }            from './types'
@@ -45,24 +45,43 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useLazyGetIpsecOptionsQuery: jest.fn().mockReturnValue([
+    () => ({ unwrap: jest.fn().mockResolvedValue({ options: mockIpSecTable.data.data }) })
+  ]),
+  useLazyGetSoftGreOptionsQuery: jest.fn().mockReturnValue([
+    () => ({ unwrap: jest.fn().mockResolvedValue({
+      options: mockSoftGreTable.data,
+      id: '', //mockSoftGreTable.data[0].id,
+      gatewayIps: [],
+      activationProfiles: []
+    }) })
+  ])
+}))
+
 const tenantId = 'tenantId'
 describe('WifiSoftGreSelectOption', () => {
-  const mockedGetFn = jest.fn()
+  const mockedSoftGreFn = jest.fn()
+  const mockedIpSecFn = jest.fn()
+
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
     store.dispatch(ipSecApi.util.resetApiState())
-    mockedGetFn.mockClear()
+    mockedSoftGreFn.mockClear()
+    mockedIpSecFn.mockClear()
+
     mockServer.use(
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => {
-          mockedGetFn()
+          mockedSoftGreFn()
           return res(ctx.json(mockSoftGreTable))
         }),
       rest.post(
         IpsecUrls.getIpsecViewDataList.url,
         (_, res, ctx) => {
-          mockedGetFn()
+          mockedIpSecFn()
           return res(ctx.json(mockIpSecTable.data))
         })
     )
@@ -88,8 +107,13 @@ describe('WifiSoftGreSelectOption', () => {
       { route: { path: viewPath, params: { venueId, tenantId } } }
     )
 
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalled())
     expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
     expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
+    // // softGRE and IPSec will invoke each other 1 time in their API endpoint
+    // expect(mockedSoftGreFn).toBeCalledTimes(2)
+    // expect(mockedIpSecFn).toBeCalledTimes(2)
+
     await userEvent.selectOptions(await screen.findByRole('combobox'),
       await screen.findByRole('option', { name: 'softGreProfileName1' }))
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
@@ -101,6 +125,9 @@ describe('WifiSoftGreSelectOption', () => {
         newProfileId: '0d89c0f5596c4689900fb7f5f53a0859'
       }
     })
+
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(4))
+    expect(mockedIpSecFn).toBeCalledTimes(4)
   })
 
   it('should correctly render softGRE tunneling selected', async () => {
@@ -122,7 +149,7 @@ describe('WifiSoftGreSelectOption', () => {
       </Provider>,
       { route: { path: viewPath, params: { venueId, tenantId } } }
     )
-    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalled())
     await waitFor(async () => expect(await screen.findByRole('button',
       { name: /Profile details/i }
     )).toBeEnabled())
@@ -145,10 +172,13 @@ describe('WifiSoftGreSelectOption', () => {
       }
     })
     expect(await screen.findByRole('option', { name: 'softGreProfileName4' })).toBeDisabled()
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(5))
+    expect(mockedIpSecFn).toBeCalledTimes(5)
   })
 
   it('should show error render softGRE tunneling selected(Non-profile)', async () => {
     const venueId = 'venueId-2'
+    // a networkId that not exist in any activation
     const networkId = 'network_9'
     const { result: formRef } = renderHook(() => {
       return Form.useForm()[0]
@@ -176,6 +206,9 @@ describe('WifiSoftGreSelectOption', () => {
     await userEvent.selectOptions(await screen.findByRole('combobox'),
       await screen.findByRole('option', { name: 'softGreProfileName4' }))
     await waitFor(() => expect(screen.queryByText(/Please choose a different one./)).toBeNull())
+
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(5))
+    expect(mockedIpSecFn).toBeCalledTimes(5)
   })
 
   it('should show error render softGRE tunneling selected(Exist-profile)', async () => {
@@ -184,6 +217,20 @@ describe('WifiSoftGreSelectOption', () => {
     const { result: formRef } = renderHook(() => {
       return Form.useForm()[0]
     })
+
+    const mockData = mockSoftGreTable.data.filter(d =>
+      d.activations.find(a => a.venueId === venueId && a.wifiNetworkIds.includes(networkId)))
+
+    jest.mocked(useLazyGetSoftGreOptionsQuery).mockImplementation(jest.fn().mockReturnValue([
+      () => ({ unwrap: jest.fn().mockResolvedValue({
+        options: mockSoftGreTable.data,
+        id: mockSoftGreTable.data[0].id,
+        // eslint-disable-next-line max-len
+        gatewayIps: mockData.flatMap((item) => [item.primaryGatewayAddress, item.secondaryGatewayAddress ?? '']),
+        activationProfiles: mockData.map(d => d.id)
+      }) })
+    ]))
+
     render(
       <Provider>
         <Form form={formRef.current}>
@@ -200,7 +247,7 @@ describe('WifiSoftGreSelectOption', () => {
 
     expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
     expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
-    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalled())
     await waitFor(async () => expect(await screen.findByRole('button',
       { name: /Profile details/i }
     )).toBeEnabled())
@@ -226,6 +273,9 @@ describe('WifiSoftGreSelectOption', () => {
       }
     })
     await waitFor(() => expect(screen.queryByText(/Please choose a different one./)).toBeNull())
+
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(6))
+    expect(mockedIpSecFn).toBeCalledTimes(6)
   })
 
   it(`should all profiles can be selected
@@ -253,6 +303,9 @@ describe('WifiSoftGreSelectOption', () => {
     expect(await screen.findByRole('option', { name: 'softGreProfileName2' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName3' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName4' })).toBeEnabled()
+
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(4))
+    expect(mockedIpSecFn).toBeCalledTimes(4)
   })
 
 
@@ -284,5 +337,8 @@ describe('WifiSoftGreSelectOption', () => {
     expect(await screen.findByRole('option', { name: 'softGreProfileName5' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName6' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName7' })).toBeEnabled()
+
+    await waitFor(() => expect(mockedSoftGreFn).toBeCalledTimes(3))
+    expect(mockedIpSecFn).toBeCalledTimes(3)
   })
 })
