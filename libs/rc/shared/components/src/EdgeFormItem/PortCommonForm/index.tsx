@@ -36,6 +36,7 @@ import * as UI              from './styledComponents'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
+  serialNumber: string
   fieldHeadPath?: string[],
   portsDataRootPath?: string[],
   portsData: EdgePort[],
@@ -59,6 +60,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const { $t } = useIntl()
   const {
     formRef: form,
+    serialNumber,
     fieldHeadPath = [],
     isEdgeSdLanRun,
     portsData,
@@ -249,6 +251,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         {
           isNatItemsVisible &&
           <EdgeNatFormItems
+            serialNumber={serialNumber}
             parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
             getFieldFullPath={getFieldFullPath}
             formFieldsProps={formFieldsProps}
