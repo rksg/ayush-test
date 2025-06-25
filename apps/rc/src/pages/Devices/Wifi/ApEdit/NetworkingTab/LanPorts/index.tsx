@@ -472,7 +472,7 @@ export function LanPorts (props: ApEditItemProps) {
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
 
-    if (info?.changedFields) return
+    if (info?.changedFields.length === 0) return
 
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
