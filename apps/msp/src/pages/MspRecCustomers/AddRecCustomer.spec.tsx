@@ -104,7 +104,8 @@ const recList = {
       billing_country: 'United States',
       billing_postal_code: '33172',
       billing_state: 'FL',
-      billing_street: '11275 Northwest 12th Street,'
+      billing_street: '11275 Northwest 12th Street,',
+      propertyCode: 'BBBBB'
     },
     {
       account_name: 'Springhill Suites Las Vegas',
@@ -113,7 +114,8 @@ const recList = {
       billing_country: 'United States',
       billing_postal_code: '95035',
       billing_state: 'CA',
-      billing_street: '1480 Falcon Drive'
+      billing_street: '1480 Falcon Drive',
+      propertyCode: 'AAAAA'
     }
   ]
 }
