@@ -55,15 +55,13 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   )
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
-  //   const { data: privilegeGroupList, isLoading, isFetching }
-  //     = useGetPrivilegeGroupsQuery({ params })
-
   const settingsId = 'new-privilege-group-table'
 
   const payload = {
     page: 0,
     pageStartZero: true,
-    includeCounts: true
+    includeCounts: true,
+    includeSystemRoles: true
   }
   const tableQuery = useTableQuery({
     useQuery: useGetMspEcPrivilegeGroupsPaginatedQuery,
