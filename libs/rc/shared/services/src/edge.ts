@@ -3,9 +3,6 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { findIndex }           from 'lodash'
 
 import {
-  Filter
-} from '@acx-ui/components'
-import {
   ApiVersionEnum,
   ClusterArpTerminationSettings,
   ClusterNetworkSettings,
@@ -60,8 +57,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }    from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseEdgeApi }                 from '@acx-ui/store'
+import type { Filter, RequestPayload } from '@acx-ui/types'
 import {
   createHttpRequest,
   getEnabledDialogImproved,
