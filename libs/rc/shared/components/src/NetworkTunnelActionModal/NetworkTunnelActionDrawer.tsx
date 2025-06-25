@@ -38,7 +38,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     onClose, onFinish,
     cachedActs, cachedSoftGre
   } = props
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
@@ -185,7 +184,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               }
               : undefined} />
         }
-        {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
+        {network && visible && !venuePinInfo &&
         tunnelType===NetworkTunnelTypeEnum.SdLan &&
         <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
           <EdgeSdLanSelectOption

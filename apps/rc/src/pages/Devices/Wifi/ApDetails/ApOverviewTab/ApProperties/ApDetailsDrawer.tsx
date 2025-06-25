@@ -5,9 +5,9 @@ import { Button, Divider, Tooltip } from 'antd'
 import { capitalize, includes }     from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
-import { get }                                 from '@acx-ui/config'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
+import { get }                                                           from '@acx-ui/config'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   defaultSwitchPayload,
   EditPortDrawer,
@@ -26,9 +26,10 @@ import {
   useLazySwitchPortlistQuery,
   useLazyGetLagListQuery,
   useGetApOperationalQuery,
-  useGetFlexAuthenticationProfilesQuery
+  useGetFlexAuthenticationProfilesQuery,
+  useLazyGetApNeighborsQuery,
+  useLazyGetApLldpNeighborsQuery
 } from '@acx-ui/rc/services'
-import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -85,7 +86,6 @@ const useGetApPassword = (currentAP: ApViewModel) => {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -143,8 +143,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const apNeighborQuery = isUseRbacApi ?
     useLazyGetApNeighborsQuery :
     useLazyGetApLldpNeighborsQuery
-  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
-  const { handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
+  const [ getApNeighbors,
+    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = apNeighborQuery()
+  const { isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({
     params: { tenantId: routeParams.tenantId },
@@ -162,7 +163,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const apPassword = useGetApPassword(currentAP)
 
   const fetchSwitchDetails = async () => {
-    if (!portLinkEnabled || !hasPermission({
+    if (!hasPermission({
       scopes: [SwitchScopes.UPDATE],
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
     })) {
@@ -259,11 +260,16 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return null
   }
 
-  const currentAPNeighbor = getApNeighborsStates.data?.neighbors?.find(
+  const currentAPNeighbor = apNeighborsData?.neighbors?.find(
     (n: ApLldpNeighbor | ApRfNeighbor) => 'lldpPowerType' in n && n.lldpPowerType != null
   ) as ApLldpNeighbor
   const poeClass = currentAPNeighbor?.lldpClass
   const allocatedPower = currentAPNeighbor?.lldpPSEAllocPowerVal
+  let initSocket = true
+  if (isDetecting) {
+    initSocket = false
+  }
+  const isLoadingPoE = (initSocket || isDetecting || isLoadingApNeighbors) && !apNeighborsData
 
   const getPoePortSpeed = (): string | undefined => {
     const poePortId = apCapabilities?.lanPorts
@@ -501,10 +507,32 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     children={getPoePortSpeed()} />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'PoE Class' })}
-                    children={getPoeClassDesc(poeClass)} />
+                    children={
+                      <Loader
+                        states={[{ isLoading: isLoadingPoE, isFetching: isLoadingPoE }]}
+                        style={{ display: 'inline-block', marginLeft: '7px' }}
+                        fallback={<SuspenseBoundary.DefaultFallback size='small' />}
+                        children={
+                          <div style={{ marginLeft: '-7px' }}>
+                            {getPoeClassDesc(poeClass)}
+                          </div>
+                        }
+                      />
+                    } />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'Allocated Power' })}
-                    children={getAllocPowerVal(allocatedPower)} />
+                    children={
+                      <Loader
+                        states={[{ isLoading: isLoadingPoE, isFetching: isLoadingPoE }]}
+                        style={{ display: 'inline-block', marginLeft: '7px' }}
+                        fallback={<SuspenseBoundary.DefaultFallback size='small' />}
+                        children={
+                          <div style={{ marginLeft: '-7px' }}>
+                            {getAllocPowerVal(allocatedPower)}
+                          </div>
+                        }
+                      />
+                    } />
                 </>
               )}
           </Descriptions>

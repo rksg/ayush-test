@@ -1,395 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through with OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="ClickThroughOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through with PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="ClickThroughPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="ClickThrough"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath with OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="CloudpathOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath with PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="CloudpathPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath with proxy & OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="CloudpathProxyOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath with proxy & PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="CloudpathProxyPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath with proxy) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="CloudpathProxy"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="Cloudpath"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Guest Pass with OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="GuestPassOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Guest Pass with PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="GuestPassPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Guest Pass) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="GuestPass"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Host Approval with OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="HostApprovalOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Host Approval with PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="HostApprovalPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Host Approval) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="HostApproval"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr With OWE) diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
@@ -600,7 +210,67 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and OWE) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
+  .c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c1 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c1 svg:before {
+  content: 'a';
+}
+
+.c1 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c1[disabled] svg path,
+.c1.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
+.c1[disabled].ant-btn-default svg path,
+.c1.ant-btn-disabled.ant-btn-default svg path,
+.c1[disabled].ant-btn-primary svg path,
+.c1.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
   width: 358px;
   margin-top: 40px;
 }
@@ -619,6 +289,37 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
           src="WorkflowAcctproxyOwe"
         />
       </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="display: flex; justify-content: center;"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            disabled=""
+            type="button"
+          >
+            <span>
+              Authentication Service
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            type="button"
+          >
+            <span>
+              Accounting Service
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -626,7 +327,67 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and PSK) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
+  .c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c1 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c1 svg:before {
+  content: 'a';
+}
+
+.c1 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c1[disabled] svg path,
+.c1.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
+.c1[disabled].ant-btn-default svg path,
+.c1.ant-btn-disabled.ant-btn-default svg path,
+.c1[disabled].ant-btn-primary svg path,
+.c1.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
   width: 358px;
   margin-top: 40px;
 }
@@ -645,6 +406,37 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
           src="WorkflowAcctproxyPsk"
         />
       </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="display: flex; justify-content: center;"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            disabled=""
+            type="button"
+          >
+            <span>
+              Authentication Service
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            type="button"
+          >
+            <span>
+              Accounting Service
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -652,7 +444,67 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
+  .c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c1 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c1 svg:before {
+  content: 'a';
+}
+
+.c1 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c1[disabled] svg path,
+.c1.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
+.c1[disabled].ant-btn-default svg path,
+.c1.ant-btn-disabled.ant-btn-default svg path,
+.c1[disabled].ant-btn-primary svg path,
+.c1.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
   width: 358px;
   margin-top: 40px;
 }
@@ -670,6 +522,37 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
           alt="Captive Portal"
           src="WorkflowAcctproxyNone"
         />
+      </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="display: flex; justify-content: center;"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            disabled=""
+            type="button"
+          >
+            <span>
+              Authentication Service
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link c1"
+            type="button"
+          >
+            <span>
+              Accounting Service
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -850,58 +733,6 @@ exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagr
       >
         <img
           src="Hotspot20"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="Aaa"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Passphrase (PSK/SAE)"
-          src="Psk"
         />
       </div>
     </div>
