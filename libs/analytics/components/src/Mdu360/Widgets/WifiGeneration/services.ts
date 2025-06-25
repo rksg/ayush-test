@@ -3,11 +3,12 @@ import { gql } from 'graphql-request'
 import { dataApi } from '@acx-ui/store'
 
 import { Mdu360Filter } from '../../types'
+
+export interface ClientDistribution extends Record<string, number> {}
 export interface ApDistribution {
   apWifiCapability: string
-  clientCapability: string
+  clientCapabilities: ClientDistribution
   apCount: number
-  clientCount: number
 }
 export interface HierarchyNodeData {
   apWifiCapabilityDistribution: ApDistribution[]
@@ -35,9 +36,8 @@ export const api = dataApi.injectEndpoints({
           hierarchyNode(path: $path) {
             apWifiCapabilityDistribution {
               apWifiCapability
-              clientCapability
+              clientCapabilities
               apCount
-              clientCount
             }
           }
         }

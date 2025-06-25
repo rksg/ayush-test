@@ -9,8 +9,3 @@ export interface Mdu360Filter {
   start: string
   end: string
 }
-export interface DistributionData {
-  apCount: number
-  clientDistribution: Record<string, number|undefined>
-}
-export interface DistributionMatrix extends Record<string, DistributionData> {}

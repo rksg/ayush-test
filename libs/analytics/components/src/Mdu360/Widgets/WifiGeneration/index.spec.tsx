@@ -44,7 +44,7 @@ describe('WifiGeneration', () => {
       data: {
         network: {
           hierarchyNode: {
-            apWifiCapabilityDistribution: [mockedWifiGeneration[0], mockedWifiGeneration[1]]
+            apWifiCapabilityDistribution: [mockedWifiGeneration[1], mockedWifiGeneration[2]]
           }
         }
       }
@@ -54,7 +54,7 @@ describe('WifiGeneration', () => {
     expect(await screen.findByText('Wi-Fi Generation')).toBeVisible()
     expect(await screen.findByText('Distribution')).toBeVisible()
     expect(await screen.findByText('Upgrade Opportunity')).toBeVisible()
-    expect(await screen.findByText('Non Wi-Fi 6/6E AP:')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi 6/6E AP:')).toBeVisible()
     const opportunity = await screen.findByRole('radio', { name: 'Upgrade Opportunity' })
     fireEvent.click(opportunity)
     expect(await screen.findByText(/the latest and greatest APs in your network/)).toBeVisible()

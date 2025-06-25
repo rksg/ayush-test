@@ -14,9 +14,14 @@ import {
 import type { DonutChartData } from '@acx-ui/components'
 import { intlFormats }         from '@acx-ui/formatter'
 
-import { DistributionMatrix, Mdu360TabProps } from '../../types'
+import { Mdu360TabProps } from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
+interface DistributionData {
+  apCount: number
+  clientDistribution: Record<string, number>
+}
+interface DistributionMatrix extends Record<string, DistributionData> {}
 
 interface WiFiGenerationChartData {
   distribution: DonutChartData[]
@@ -38,17 +43,21 @@ const getWifiGenerationChartData =
   let olderApCount = 0
 
   if (data && data.length > 0) {
-    data.forEach(({ apWifiCapability, clientCapability, apCount, clientCount }) => {
+    data.forEach(({ apWifiCapability, clientCapabilities, apCount }) => {
       if (!distributionData[apWifiCapability]) {
         distributionData[apWifiCapability] = { apCount: 0, clientDistribution: {} }
       }
 
       distributionData[apWifiCapability].apCount += apCount
-      distributionData[apWifiCapability].clientDistribution[clientCapability] = clientCount
+      distributionData[apWifiCapability].clientDistribution = clientCapabilities
 
-      if (clientCapability !== 'Non Wi-Fi 6/6E' && apWifiCapability === 'Non Wi-Fi 6/6E AP') {
-        olderApCount += apCount
-        olderClientCount += clientCount
+      if (apWifiCapability === 'Non Wi-Fi 6/6E AP') {
+        Object.entries(clientCapabilities).forEach(([clientCapability, clientCount]) => {
+          if (clientCapability !== 'Non Wi-Fi 6/6E') {
+            olderApCount += apCount
+            olderClientCount += clientCount
+          }
+        })
       }
     })
   }
