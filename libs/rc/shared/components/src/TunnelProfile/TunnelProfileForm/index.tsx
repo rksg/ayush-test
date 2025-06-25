@@ -92,7 +92,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const formId = form.getFieldValue('id')
-  const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
@@ -258,31 +257,29 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             />
           </Col>
         }
-        { isEdgeVxLanTunnelKaReady &&
-          <Col span={24}>
-            <Form.Item
-              name='type'
-              label={$t({ defaultMessage: 'Network Segment Type' })}
-              initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
-              tooltip={$t(MessageMapping.network_segment_type_tooltip)}
-              children={
-                <Radio.Group disabled={isDefaultTunnelProfile
-                      || !!disabledFields?.includes('type')}
-                onChange={handleNetworkSegmentTypeChange}
-                >
-                  <Space direction='vertical'>
-                    <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
-                      {$t({ defaultMessage: 'VLAN to VNI map' })}
-                    </Radio>
-                    <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
-                      {$t({ defaultMessage: 'VNI' })}
-                    </Radio>
-                  </Space>
-                </Radio.Group>
-              }
-            />
-          </Col>
-        }
+        <Col span={24}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Network Segment Type' })}
+            initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
+            tooltip={$t(MessageMapping.network_segment_type_tooltip)}
+            children={
+              <Radio.Group disabled={isDefaultTunnelProfile
+                    || !!disabledFields?.includes('type')}
+              onChange={handleNetworkSegmentTypeChange}
+              >
+                <Space direction='vertical'>
+                  <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
+                    {$t({ defaultMessage: 'VLAN to VNI map' })}
+                  </Radio>
+                  <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
+                    {$t({ defaultMessage: 'VNI' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            }
+          />
+        </Col>
         { isEdgeL2greReady && isL2greType &&
           <Col span={14}>
             <Form.Item
@@ -464,7 +461,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Form.Item>
         </Col>
         {
-          (isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) && !!!isL2greType &&
+          mtuType === MtuTypeEnum.AUTO && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Path MTU Request Timeout' })}
@@ -503,7 +500,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Form.Item>
         </Col>
         }
-        {(isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) && !!!isL2greType &&
+        {mtuType === MtuTypeEnum.AUTO && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Path MTU Request Retries' })}
@@ -593,74 +590,74 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Col>
         }
         {
-          isEdgeVxLanTunnelKaReady && !!!isL2greType &&
-        <Col span={24}>
-          <Form.Item
-            label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
-            tooltip={$t(MessageMapping.keep_alive_interval_tooltip)}
-          >
-            <Space>
-              <Form.Item
-                name='keepAliveInterval'
-                rules={[
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Interval' })
-                  },
-                  {
-                    type: 'number',
-                    min: 1,
-                    max: 5,
-                    message: $t({
-                      defaultMessage: 'Tunnel Keep Alive Interval must be between 1 and 5'
-                    })
-                  }
-                ]}
-                children={<InputNumber disabled={isDefaultTunnelProfile ||
-                  !!disabledFields?.includes('keepAliveInterval')}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              <div>{$t({ defaultMessage: 'seconds' })}</div>
-            </Space>
-          </Form.Item>
-        </Col>
+          !!!isL2greType &&
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
+              tooltip={$t(MessageMapping.keep_alive_interval_tooltip)}
+            >
+              <Space>
+                <Form.Item
+                  name='keepAliveInterval'
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Interval' })
+                    },
+                    {
+                      type: 'number',
+                      min: 1,
+                      max: 5,
+                      message: $t({
+                        defaultMessage: 'Tunnel Keep Alive Interval must be between 1 and 5'
+                      })
+                    }
+                  ]}
+                  children={<InputNumber disabled={isDefaultTunnelProfile ||
+                    !!disabledFields?.includes('keepAliveInterval')}/>}
+                  validateFirst
+                  noStyle
+                  hasFeedback
+                />
+                <div>{$t({ defaultMessage: 'seconds' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
         }
         {
-          isEdgeVxLanTunnelKaReady && !!!isL2greType &&
-        <Col span={24}>
-          <Form.Item
-            label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
-            tooltip={$t(MessageMapping.keep_alive_retry_tooltip)}
-          >
-            <Space>
-              <Form.Item
-                name='keepAliveRetry'
-                rules={[
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Retries' })
-                  },
-                  {
-                    type: 'number',
-                    min: 3,
-                    max: 10,
-                    message: $t({
-                      defaultMessage: 'Tunnel Keep Alive Retries must be between 3 and 10'
-                    })
-                  }
-                ]}
-                children={<InputNumber disabled={isDefaultTunnelProfile ||
-                  !!disabledFields?.includes('keepAliveRetry')}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              <div>{$t({ defaultMessage: 'retries' })}</div>
-            </Space>
-          </Form.Item>
-        </Col>
+          !!!isL2greType &&
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
+              tooltip={$t(MessageMapping.keep_alive_retry_tooltip)}
+            >
+              <Space>
+                <Form.Item
+                  name='keepAliveRetry'
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Retries' })
+                    },
+                    {
+                      type: 'number',
+                      min: 3,
+                      max: 10,
+                      message: $t({
+                        defaultMessage: 'Tunnel Keep Alive Retries must be between 3 and 10'
+                      })
+                    }
+                  ]}
+                  children={<InputNumber disabled={isDefaultTunnelProfile ||
+                    !!disabledFields?.includes('keepAliveRetry')}/>}
+                  validateFirst
+                  noStyle
+                  hasFeedback
+                />
+                <div>{$t({ defaultMessage: 'retries' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
         }
       </Row>}
       {<EdgeCompatibilityDrawer
