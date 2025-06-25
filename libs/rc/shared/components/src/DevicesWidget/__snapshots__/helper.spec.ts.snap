@@ -163,7 +163,7 @@ Object {
       "category": "",
       "series": Array [
         Object {
-          "name": "Offline",
+          "name": "<1>Offline",
           "value": 1,
         },
       ],

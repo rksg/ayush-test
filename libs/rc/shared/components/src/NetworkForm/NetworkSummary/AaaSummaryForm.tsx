@@ -16,7 +16,6 @@ export function AaaSummaryForm (props: {
 }) {
   const { summaryData } = props
   const { $t } = useIntl()
-  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   // eslint-disable-next-line max-len
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
@@ -32,15 +31,12 @@ export function AaaSummaryForm (props: {
       isDisplayAuth={isDisplayAuth}
       isDisplayAccounting={isDisplayAccounting}
     />
-    {support8021xMacAuth &&
-      <Form.Item
-        label={$t({ defaultMessage: 'MAC Authentication' })}
-        children={
-          summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
-            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
-    }
-    {support8021xMacAuth &&
-     summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
+    <Form.Item
+      label={$t({ defaultMessage: 'MAC Authentication' })}
+      children={
+        summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
+          $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+    {summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
       <Form.Item
         label={$t({ defaultMessage: 'MAC Address Format' })}
         children={

@@ -5,12 +5,11 @@ import TextArea                     from 'antd/lib/input/TextArea'
 import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
 
-import { GridCol, GridRow }                                                         from '@acx-ui/components'
+import { GridCol, GridRow, PhoneInput }                                             from '@acx-ui/components'
 import { useLazySearchPersonaListQuery }                                            from '@acx-ui/rc/services'
 import { checkObjectNotExists, emailRegExp, phoneRegExp, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { validationMessages }                                                       from '@acx-ui/utils'
 
-import PhoneInput             from '../../PhoneInput'
 import { PersonaGroupSelect } from '../PersonaGroupSelect'
 
 
