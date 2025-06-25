@@ -562,10 +562,6 @@ describe('VenueNetworksTab', () => {
     const tenantId = 'tenantId'
     const venueId = 'venueId-1'
 
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-    })
-
     it('should correctly display tunnel column when SoftGre is running on it', async () => {
       render(<Provider><VenueNetworksTab /></Provider>, {
         route: { params: { tenantId, venueId },

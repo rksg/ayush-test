@@ -3,7 +3,7 @@ import userEvent           from '@testing-library/user-event'
 import { cloneDeep, find } from 'lodash'
 import { rest }            from 'msw'
 
-import { useIsSplitOn, Features }                                                        from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { softGreApi }                                                                    from '@acx-ui/rc/services'
 import { EdgeSdLanFixtures, EdgePinFixtures, NetworkTypeEnum, SoftGreUrls, EdgePinUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                               from '@acx-ui/store'
@@ -56,6 +56,11 @@ describe('NetworkTunnelModal', () => {
     mockedOnFinish.mockReset()
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    mockServer.use(
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
+    )
   })
 
   describe('SD-LAN exist', () => {
@@ -146,7 +151,11 @@ describe('NetworkTunnelModal', () => {
           sdLan: {
             isGuestTunnelEnabled: false
           },
-          tunnelType: NetworkTunnelTypeEnum.SdLan
+          tunnelType: NetworkTunnelTypeEnum.SdLan,
+          softGre: {
+            newProfileId: '',
+            newProfileName: ''
+          }
         })
       })
 
@@ -465,7 +474,6 @@ describe('NetworkTunnelModal', () => {
       mockedGetFn.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
       // eslint-disable-next-line max-len
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
       mockServer.use(
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,

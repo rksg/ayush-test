@@ -56,7 +56,6 @@ const disabledFFs = [
   Features.WIFI_RBAC_API,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
   Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
@@ -202,7 +201,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
@@ -301,7 +299,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })

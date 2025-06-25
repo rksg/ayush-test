@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Tooltip, Typography } from 'antd'
 
-import { Loader, Modal }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Loader, Modal }  from '@acx-ui/components'
+import { Features }       from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,

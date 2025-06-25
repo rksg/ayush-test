@@ -179,7 +179,6 @@ export enum Features {
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
-  WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'removable-ff',
   WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE = 'wifi-ipsec-psk-over-network',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',

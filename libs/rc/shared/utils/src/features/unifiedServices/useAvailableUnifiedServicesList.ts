@@ -215,7 +215,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.SOFTGRE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: PolicyType.SYSLOG,
