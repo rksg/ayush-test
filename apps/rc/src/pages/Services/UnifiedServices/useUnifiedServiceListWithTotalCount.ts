@@ -5,7 +5,7 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
@@ -25,7 +25,8 @@ import {
   useGetEnhancedPortalProfileListQuery, useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery,
   useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery
+  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery,
+  useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                                       from '@acx-ui/types'
@@ -97,7 +98,7 @@ function useUnifiedServiceTotalCountMap (
     [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac, isSNMPv3PassphraseOn }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
     [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: !typeSet.has(PolicyType.TUNNEL_PROFILE) }),
     [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: !typeSet.has(PolicyType.CONNECTION_METERING) }),
-    [PolicyType.ADAPTIVE_POLICY]: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: !typeSet.has(PolicyType.ADAPTIVE_POLICY) }),
+    [PolicyType.ADAPTIVE_POLICY_PROFILE]: useAdaptivePolicyTotalCount( { ...params, excludeContent: 'true' }, !typeSet.has(PolicyType.ADAPTIVE_POLICY_PROFILE)),
     [PolicyType.LBS_SERVER_PROFILE]: useGetLbsServerProfileListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.LBS_SERVER_PROFILE) }),
     [PolicyType.WORKFLOW]: useSearchInProgressWorkflowListQuery({ params: { ...params, excludeContent: 'true' } }, { skip: !typeSet.has(PolicyType.WORKFLOW) }),
     [PolicyType.CERTIFICATE_TEMPLATE]: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.CERTIFICATE_TEMPLATE) }),
@@ -307,5 +308,23 @@ export function useMdnsProxyConsolidationTotalCount (
   return {
     data: { totalCount: Number(mdnsProxyData?.totalCount ?? 0) + Number(edgeMdnsProxyData?.totalCount ?? 0) },
     isFetching: mdnsProxyFetching || edgeMdnsProxyIsFetching
+  }
+}
+
+function useAdaptivePolicyTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
+
+  const { data: adaptivePolicyData, isFetching: adaptivePolicyFetching } =
+    useAdaptivePolicyListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: adaptivePolicySetData, isFetching: adaptivePolicySetFetching } =
+    useAdaptivePolicySetListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: attributeGroupData, isFetching: attributeGroupFetching } =
+    useRadiusAttributeGroupListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  return {
+    data: { totalCount: Number(adaptivePolicyData?.totalCount ?? 0) + Number(adaptivePolicySetData?.totalCount ?? 0)
+        + Number(attributeGroupData?.totalCount ?? 0) },
+    isFetching: adaptivePolicyFetching || adaptivePolicySetFetching || attributeGroupFetching
   }
 }
