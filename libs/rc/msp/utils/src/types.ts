@@ -467,6 +467,7 @@ export interface RecommendFirmwareUpgradeByApModel {
 
 export interface MspRecData {
   account_id?: string;
+  propertyCode?: string;
   name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];

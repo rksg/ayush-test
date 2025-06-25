@@ -27,7 +27,6 @@ export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const layout = useLayoutContext()
 
@@ -65,7 +64,7 @@ export function CloudMessageBanner () {
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
+    return await getCloudScheduleVersion({ params }).unwrap()
       .then(cloudScheduleVersion => {
         if (!cloudScheduleVersion) return
 
