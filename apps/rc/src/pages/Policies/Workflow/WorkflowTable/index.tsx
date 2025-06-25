@@ -94,7 +94,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: ['publishedDetails', 'version'],
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
-        return row.publishedDetails?.version
+        return workflowMap.get(row.id!)?.publishedDetails?.version
           ? <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.WORKFLOW,
@@ -102,7 +102,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
               policyId: row.id!!,
               activeTab: WorkflowDetailsTabKey.OVERVIEW
             })}
-          >{row.publishedDetails?.version}</TenantLink>
+          >{workflowMap.get(row.id!)?.publishedDetails?.version}</TenantLink>
           : noDataDisplay
       }
     },

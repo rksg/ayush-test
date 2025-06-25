@@ -11,7 +11,6 @@ export interface Workflow {
   disallowedIps?: string[]
   startStepId?: string
   links?: { rel: string, href: string }[],
-  publishReadiness?: number,
   statusReasons?: StatusReason[]
 }
 
