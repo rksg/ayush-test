@@ -223,18 +223,12 @@ export {
   RadiusAttributeGroupSelectDrawer
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
-  EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton
-} from './EdgeSdLan/SdLanNetworkTable'
-export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
-export {
-  EdgeSdLanP2ActivatedNetworksTable
-} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export type { ActivatedNetworksTableP2Props }
-  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+  EdgeMvSdLanActivatedNetworksTable
+} from './EdgeSdLan/MvSdLanNetworkTable'
+export type { EdgeMvSdLanActivatedNetworksTableProps } from './EdgeSdLan/MvSdLanNetworkTable'
 export {
   useEdgeMvSdLanActions,
-  useGetEdgeSdLanByEdgeOrClusterId,
+  useGetEdgeSdLanByClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction
@@ -246,7 +240,6 @@ export type {
 export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
-  useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   transformSdLanScopedVenueMap,
   isSdLanDmzUtilizedOnDiffVenue,
