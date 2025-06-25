@@ -8,11 +8,13 @@ import { Button, cssStr, StepsForm, Tooltip, useStepFormContext }          from 
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery } from '@acx-ui/rc/services'
 import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
+import {
   checkObjectNotExists,
   CliTemplateVariable,
   SwitchProfileModel,
   TableResult,
-  getSwitchModel,
   useConfigTemplateQueryFnSwitcher,
   whitespaceOnlyRegExp,
   ICX_MODELS_MODULES

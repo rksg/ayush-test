@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { Loader }         from '@acx-ui/components'
 import { Features }       from '@acx-ui/feature-toggle'
 import {
-  EdgeSdLanP2ActivatedNetworksTable,
+  EdgeMvSdLanActivatedNetworksTable,
   isSdLanLastNetworkInVenue,
   showSdLanGuestFwdConflictModal,
   showSdLanVenueDissociateModal,
@@ -158,7 +158,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
   }
 
   return <Loader states={[{ isLoading: isPinNetworkIdsLoading }]}>
-    <EdgeSdLanP2ActivatedNetworksTable
+    <EdgeMvSdLanActivatedNetworksTable
       columnsSetting={[{
         key: 'name',
         title: $t({ defaultMessage: 'Network' }),

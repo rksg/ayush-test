@@ -211,6 +211,7 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
 
+// TODO: refactor
 // export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
 //   syncedSwitchConfig = true, suspendingDeployTime = '') => {
 //   const { $t } = getIntl()
@@ -248,6 +249,7 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
 //   }
 // }
 
+// TODO: refactor
 // export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
 //   syncedSwitchConfig = false, suspendingDeployTime = '') => {
 //   const { $t } = getIntl()
@@ -326,6 +328,7 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
 //   return { message, deviceStatus, isOperational }
 // }
 
+// TODO: refactor
 // export const getSwitchStatusString = (row: SwitchRow) => {
 //   const { $t } = getIntl()
 //   const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
@@ -358,6 +361,7 @@ export const getPoeUsage = (data: SwitchViewModel) => {
   }
 }
 
+// TODO: refactor
 // export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
 //   const { $t } = getIntl()
 //   if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {

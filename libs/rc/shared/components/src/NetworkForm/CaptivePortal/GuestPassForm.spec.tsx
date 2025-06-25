@@ -9,7 +9,8 @@ import {
   PortalUrlsInfo,
   WifiUrlsInfo,
   NetworkSaveData,
-  AccessControlUrls
+  AccessControlUrls,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -85,7 +86,10 @@ describe('CaptiveNetworkForm-GuestPass', () => {
       rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
         (_, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
       rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
-        (_, res, ctx) => res(ctx.json(enhancedAccessControlList)))
+        (_, res, ctx) => res(ctx.json(enhancedAccessControlList))),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      )
     )
   })
 
