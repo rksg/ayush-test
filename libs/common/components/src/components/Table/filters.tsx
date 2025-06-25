@@ -94,7 +94,7 @@ export function getFilteredData <RecordType> (
       }
 
       const filteredValue = filterValues[key as keyof Filter]!
-      const value = _.get(row, key) as unknown as string
+      const value = _.get(row, key, '') as unknown as string
       const valueStr = value.toString()
       if (!filteredValue.includes(valueStr)) {
         return false
