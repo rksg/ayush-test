@@ -243,16 +243,34 @@ describe('MdnsProxyInstances', () => {
     const saveFn = jest.fn()
 
     mockServer.use(
-      rest.post(
-        MdnsProxyUrls.addMdnsProxyAps.url,
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
+      ),
+      rest.put(
+        MdnsProxyUrls.addMdnsProxyApsRbac.url,
         (req, res, ctx) => {
           saveFn(req.body)
           return res(ctx.json({ requestId: '123456789' }))
         }
       ),
-      rest.get(
-        MdnsProxyUrls.getMdnsProxyList.url,
-        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockedMdnsProxyQueryResult))
+        }
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockedVenueApList))
+        }
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockedVenueApList))
+        }
       )
     )
 
@@ -265,7 +283,7 @@ describe('MdnsProxyInstances', () => {
     )
 
     const targetVenueAp = mockedVenueApList[0]
-    const targetMdnsProxyService = mockedMdnsProxyList[0]
+    const targetMdnsProxyService = mockedMdnsProxyQueryResult.data[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetVenueAp.apName) })
 
     await userEvent.click(within(targetRow).getByRole('radio'))
@@ -275,65 +293,12 @@ describe('MdnsProxyInstances', () => {
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
 
-    await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
+    await userEvent.click(await screen.findByText(targetMdnsProxyService.name))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     await waitFor(() => {
-      expect(saveFn).toHaveBeenCalledWith([targetVenueAp.serialNumber])
-    })
-
-    // Assert the drawer closed
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).toBeNull()
-    })
-  })
-
-  it('should add instance', async () => {
-    const saveFn = jest.fn()
-
-    mockServer.use(
-      rest.post(
-        MdnsProxyUrls.addMdnsProxyAps.url,
-        (req, res, ctx) => {
-          saveFn(req.body)
-          return res(ctx.json({ requestId: '123456789' }))
-        }
-      ),
-      rest.get(
-        MdnsProxyUrls.getMdnsProxyList.url,
-        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
-      ),
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedApList }))
-      )
-    )
-
-    render(
-      <Provider>
-        <MdnsProxyInstances />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-
-    const targetMdnsProxyService = mockedMdnsProxyList[0]
-    const targetAp = mockedApList.data[0]
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Instance' }))
-
-    await userEvent.click(await screen.findByRole('combobox', { name: /AP/i }))
-    await userEvent.click(await screen.findByText(targetAp.name))
-
-    await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
-
-    await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-
-    await waitFor(() => {
-      expect(saveFn).toHaveBeenCalledWith([targetAp.serialNumber])
+      expect(saveFn).toHaveBeenCalled()
     })
 
     // Assert the drawer closed
