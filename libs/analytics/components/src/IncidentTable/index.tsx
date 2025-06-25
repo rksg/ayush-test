@@ -16,15 +16,16 @@ import {
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip, Button, Table, Filter } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                  from '@acx-ui/formatter'
+import { Loader, TableProps, Drawer, Tooltip, Button, Table } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   EyeOpenOutlined,
   EyeSlashOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import type { Filter }                   from '@acx-ui/types'
 import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
 import {
   filterByAccess,

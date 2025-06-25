@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { RadioBand, Cascader, CascaderOption } from '..'
+import type { RadioBand } from '@acx-ui/types'
+
+import { Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
