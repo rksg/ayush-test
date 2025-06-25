@@ -14,10 +14,12 @@ import {
 import {
   ApiInfo,
   createHttpRequest,
+} from '../apiService'
+import {
   TABLE_DEFAULT_PAGE_SIZE,
   TABLE_MAX_PAGE_SIZE,
   TABLE_QUERY_POLLING_INTERVAL
-} from '@acx-ui/utils'
+} from '../constants'
 
 
 // export { RequestPayload }

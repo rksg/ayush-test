@@ -5,7 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                                        from '@acx-ui/components'
 import { useGetDhcpHostStatsQuery }                                                         from '@acx-ui/rc/services'
-import { DhcpHostStats, DhcpStats, EdgeDhcpHostStatus, genExpireTimeString, useTableQuery } from '@acx-ui/rc/utils'
+import { DhcpHostStats, DhcpStats, EdgeDhcpHostStatus, genExpireTimeString } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 interface LeaseTableProps {
   venueId: string

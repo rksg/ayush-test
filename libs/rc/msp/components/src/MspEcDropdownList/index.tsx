@@ -16,10 +16,9 @@ import { MspEc, VarCustomer } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery }                   from '@acx-ui/rc/utils'
 import { Link, useParams  }                from '@acx-ui/react-router-dom'
 import { useUserProfileContext }           from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload, useTableQuery } from '@acx-ui/utils'
 
 enum DelegationType {
   MSP_EC = 'MSP_EC',

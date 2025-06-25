@@ -20,11 +20,11 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                          from '@acx-ui/types'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'

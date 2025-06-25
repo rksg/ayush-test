@@ -21,12 +21,11 @@ import {
   ClientList,
   getDeviceTypeIcon,
   getOsTypeIcon,
-  usePollingTableQuery,
   networkTypes } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { usePollingTableQuery, noDataDisplay }                 from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 

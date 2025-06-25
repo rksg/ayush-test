@@ -46,13 +46,12 @@ import {
 import {
   EntitlementUtil,
   FILTER,
-  SEARCH,
-  useTableQuery
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
+import { AccountType, getOpsApi, isDelegationMode, noDataDisplay, useTableQuery }                           from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 import * as UI    from '../Subscriptions/styledComponent'

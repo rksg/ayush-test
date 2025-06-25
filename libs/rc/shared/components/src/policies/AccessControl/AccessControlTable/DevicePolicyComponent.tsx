@@ -20,9 +20,9 @@ import {
   getScopeKeyByPolicy,
   Network, PolicyOperation,
   PolicyType,
-  useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { AddModeProps }                     from '../../AccessControlForm'

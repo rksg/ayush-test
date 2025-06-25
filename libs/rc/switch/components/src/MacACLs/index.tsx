@@ -14,12 +14,11 @@ import { useGetSwitchMacAclsQuery, useDeleteSwitchMacAclMutation } from '@acx-ui
 import {
   MacAcl,
   SwitchUrlsInfo,
-  SwitchViewModel,
-  useTableQuery
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { SwitchScopes }   from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
-import { getOpsApi }      from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
 
 import { MacACLDetail } from './MacACLDetail'
 import { MacACLDrawer } from './MacACLDrawer'

@@ -48,7 +48,6 @@ import {
   useEnhanceVenueNetworkTableV2Query
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkType,
   NetworkTypeEnum,
   RadioTypeEnum,
@@ -81,7 +80,7 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { useTableQuery, getOpsApi } from '@acx-ui/utils'
 
 import { useTunnelColumn } from './useTunnelColumn'
 

@@ -15,11 +15,11 @@ import {
   getIotControllerStatus,
   transformDisplayText,
   IotControllerStatus,
-  IotControllerStatusEnum,
-  useTableQuery
+  IotControllerStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { useTableQuery }                         from '@acx-ui/utils'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 

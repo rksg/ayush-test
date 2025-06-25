@@ -14,11 +14,10 @@ import {
   l2AclPolicyInfoType,
   L3AclPolicy,
   l3AclPolicyInfoType,
-  PoliciesConfigTemplateUrlsInfo,
-  TableResult
+  PoliciesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
-import { createHttpRequest }            from '@acx-ui/utils'
+import { createHttpRequest, TableResult }            from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

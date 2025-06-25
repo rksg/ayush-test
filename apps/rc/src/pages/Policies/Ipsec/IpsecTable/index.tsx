@@ -11,7 +11,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   IpsecViewData,
-  useTableQuery,
   PolicyOperation,
   PolicyType,
   usePoliciesBreadcrumb,
@@ -27,6 +26,7 @@ import {
   IpSecEncryptionAlgorithmEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }             from '@acx-ui/utils'
 
 
 const defaultPayload = {

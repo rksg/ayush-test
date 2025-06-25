@@ -16,13 +16,12 @@ import {
   MdnsProxyAp,
   MdnsProxyUrls,
   ServiceOperation,
-  ServiceType,
-  useTableQuery
+  ServiceType
 }   from '@acx-ui/rc/utils'
 import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getOpsApi }                     from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }                     from '@acx-ui/utils'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'

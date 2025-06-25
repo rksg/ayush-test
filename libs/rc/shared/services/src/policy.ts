@@ -9,13 +9,13 @@ import {
   SyslogUrls, SyslogPolicyDetailType, SyslogPolicyListType,
   VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
-  TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
-  devicePolicyInfoType, DevicePolicy, NewTableResult,
-  transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
+  onSocketActivityChanged, onActivityMessageReceived, CommonResult,
+  devicePolicyInfoType, DevicePolicy,
+  AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
   AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
+  ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
   WifiOperatorUrls,
@@ -43,8 +43,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult,
-  transferToNewTablePaginationParams,
+
   CertificateUrls,
   CertificateTemplate,
   CertificateAuthority,
@@ -81,7 +80,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { batchApi, createHttpRequest, NewTableResult, NewAPITableResult, transferNewResToTableResult,
+  transferToNewTablePaginationParams, createNewTableHttpRequest, TableChangePayload,
+  TableResult, transferToTableResult } from '@acx-ui/utils'
 
 import {
   commonQueryFn,

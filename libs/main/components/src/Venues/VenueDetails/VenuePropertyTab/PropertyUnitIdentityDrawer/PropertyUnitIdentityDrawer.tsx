@@ -9,12 +9,8 @@ import {
   useGetUnitsLinkedIdentitiesQuery,
   useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
-import {
-  FILTER,
-  Persona,
-  SEARCH,
-  useTableQuery
-} from '@acx-ui/rc/utils'
+import { Persona } from '@acx-ui/rc/utils'
+import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 export interface PropertyUnitIdentityDrawerProps {
   visible: boolean,

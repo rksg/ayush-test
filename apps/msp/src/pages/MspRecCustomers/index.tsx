@@ -34,13 +34,10 @@ import {
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import {
-  useTableQuery
-} from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, noDataDisplay }                                                            from '@acx-ui/utils'
+import { AccountType, getOpsApi, noDataDisplay, useTableQuery }                                             from '@acx-ui/utils'
 
 import HspContext                  from '../../HspContext'
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'

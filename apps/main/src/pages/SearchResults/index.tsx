@@ -45,11 +45,13 @@ import {
   NewAPModelExtended,
   SwitchClient,
   SwitchRow,
-  TableQuery,
-  useTableQuery,
   Venue,
   WifiNetwork
 } from '@acx-ui/rc/utils'
+import {
+  TableQuery,
+  useTableQuery
+} from '@acx-ui/utils'
 import { RequestPayload } from '@acx-ui/types'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'

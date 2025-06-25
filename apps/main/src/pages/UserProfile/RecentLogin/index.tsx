@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps  }              from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { useAdminLogsOnlyQuery }                   from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { noDataDisplay }                           from '@acx-ui/utils'
+import { AdminLog, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { noDataDisplay, useTableQuery }                           from '@acx-ui/utils'
 
 export type EventList = AdminLog
 

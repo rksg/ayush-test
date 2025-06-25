@@ -5,9 +5,9 @@ import { each, keyBy, assign }                                                  
 import { Params }                                                                         from 'react-router-dom'
 import { v4 as uuidv4 }                                                                   from 'uuid'
 
-import { ServicesConfigTemplateUrlsInfo, DHCPUrls, VenueConfigTemplateUrlsInfo, GetApiVersionHeader, ApiVersionEnum, DHCPSaveData, DHCPConfigTypeEnum, WifiDhcpPoolUsages, LeaseUnit, IpUtilsService, TableResult, DHCPUsage, VenueDHCPProfile, VenueDHCPPoolInst } from '@acx-ui/rc/utils'
+import { ServicesConfigTemplateUrlsInfo, DHCPUrls, VenueConfigTemplateUrlsInfo, GetApiVersionHeader, ApiVersionEnum, DHCPSaveData, DHCPConfigTypeEnum, WifiDhcpPoolUsages, LeaseUnit, IpUtilsService, DHCPUsage, VenueDHCPProfile, VenueDHCPPoolInst } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                                                                                                                                                                           from '@acx-ui/types'
-import { createHttpRequest }                                                                                                                                                                                                                                        from '@acx-ui/utils'
+import { createHttpRequest, TableResult }                                                                                                                                                                                                                                        from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

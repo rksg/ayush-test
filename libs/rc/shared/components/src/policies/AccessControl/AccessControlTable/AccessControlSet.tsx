@@ -24,11 +24,11 @@ import {
   getPolicyDetailsLink, getScopeKeyByPolicy, Network,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }                              from '@acx-ui/user'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { ApplicationDrawer }                from '../../AccessControlForm/ApplicationDrawer'

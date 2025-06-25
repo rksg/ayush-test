@@ -11,7 +11,8 @@ import {
   SignalPoor
 } from '@acx-ui/icons'
 import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
-import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { RogueDeviceCategory, RogueOldApResponseType } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 import ApLocateDetail from './ApLocateDetail'

@@ -38,7 +38,6 @@ import {
   useEnhanceNetworkVenueTableV2Query
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkSaveData,
   NetworkVenue,
   Venue,
@@ -68,7 +67,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
+import { useTableQuery, getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
 import { useEnforcedStatus }                from '../../configTemplates'
 import {

@@ -7,9 +7,9 @@ import { useWifiNetworkListQuery }   from '@acx-ui/rc/services'
 import {
   NetworkType,
   NetworkTypeEnum,
-  useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface NetworkTableProps {

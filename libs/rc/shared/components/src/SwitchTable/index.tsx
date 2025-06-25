@@ -38,16 +38,11 @@ import {
   transformSwitchStatus,
   DeviceConnectionStatus,
   getStackMemberStatus,
-  usePollingTableQuery,
   getFilters,
-  TableQuery,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
   isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
-  FILTER,
-  SEARCH,
-  GROUPBY,
   getAdminPassword,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo
@@ -63,7 +58,12 @@ import {
   AccountVertical,
   useTrackLoadTime,
   widgetsMapping,
-  getOpsApi
+  getOpsApi,
+  usePollingTableQuery,
+  TableQuery,
+  FILTER,
+  SEARCH,
+  GROUPBY
 } from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'

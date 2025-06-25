@@ -20,13 +20,13 @@ import {
   getPolicyDetailsLink,
   usePoliciesBreadcrumb,
   getPolicyRoutePath,
-  useTableQuery,
   Venue,
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'lbsServerVenueName', 'server', 'venueIds'],

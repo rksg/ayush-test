@@ -3,7 +3,6 @@ import _, { cloneDeep }      from 'lodash'
 
 import {
   Ipsec,
-  TableResult,
   IpsecViewData,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -23,7 +22,7 @@ import {
 import { baseIpSecApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { CommonResult }      from '@acx-ui/user'
-import { createHttpRequest } from '@acx-ui/utils'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { softGreApi }                     from './softGre'
 import { handleCallbackWhenActivityDone } from './utils'

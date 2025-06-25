@@ -14,8 +14,6 @@ import {
   PriorityEnum,
   ProtocolEnum,
   PersonaGroup,
-  NewTableResult,
-  NewTablePageable,
   ResidentPortal,
   ConnectionMetering,
   BillingCycleType,
@@ -34,7 +32,7 @@ import {
   IsolatePacketsTypeEnum,
   Persona
 } from '@acx-ui/rc/utils'
-
+import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
 
 export const successResponse = {

@@ -19,11 +19,10 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                           from '@acx-ui/utils'
+import { noDataDisplay, useTableQuery }                            from '@acx-ui/utils'
 
 export default function DirectoryServerTable () {
   const { $t } = useIntl()

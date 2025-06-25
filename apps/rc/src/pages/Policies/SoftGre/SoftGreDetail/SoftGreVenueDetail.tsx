@@ -1,12 +1,13 @@
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Card,  Loader,  Table, TableProps }                                                                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                        from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                                                                                             from '@acx-ui/rc/components'
-import { useGetVenuesSoftGrePolicyQuery }                                                                                                                                from '@acx-ui/rc/services'
-import { ProfileLanApActivations, ProfileLanVenueActivations, SoftGreActivation, SoftGreViewData, VenueTableSoftGreActivation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                    from '@acx-ui/react-router-dom'
+import { Card,  Loader,  Table, TableProps }                                                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                         from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                                                                                                              from '@acx-ui/rc/components'
+import { useGetVenuesSoftGrePolicyQuery }                                                                                                                 from '@acx-ui/rc/services'
+import { ProfileLanApActivations, ProfileLanVenueActivations, SoftGreActivation, SoftGreViewData, VenueTableSoftGreActivation, VenueTableUsageBySoftGre } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                     from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                                                                                  from '@acx-ui/utils'
 
 
 const defaultVenuePayload = {

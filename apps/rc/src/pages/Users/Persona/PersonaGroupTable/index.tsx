@@ -32,10 +32,11 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }             from '@acx-ui/rc/utils'
+import { PersonaGroup, PersonaUrls }                                            from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier } from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }    from '@acx-ui/utils'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping,
+  FILTER, SEARCH, useTableQuery }    from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 

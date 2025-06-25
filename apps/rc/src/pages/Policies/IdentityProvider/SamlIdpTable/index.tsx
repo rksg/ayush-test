@@ -26,13 +26,13 @@ import {
   SamlIdpProfileViewData,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   Network,
   KeyValue,
   ServerCertificate,
   SamlIdpProfileFormType
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 const SamlIdpTable = () => {
   const { $t } = useIntl()

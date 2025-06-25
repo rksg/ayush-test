@@ -22,17 +22,13 @@ import {
   EdgeStatus,
   EdgeStatusEnum,
   EdgeUrlsInfo,
-  FILTER,
-  SEARCH,
-  TABLE_QUERY,
   allowRebootShutdownForStatus,
-  allowResetForStatus,
-  usePollingTableQuery
+  allowResetForStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
-import { getOpsApi }                              from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery, FILTER, SEARCH, TABLE_QUERY }                              from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'

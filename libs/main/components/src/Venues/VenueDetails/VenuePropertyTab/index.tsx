@@ -39,13 +39,12 @@ import {
   PropertyUnitMessages,
   PropertyUnitStatus, PropertyUrlsInfo,
   SEARCH,
-  SwitchViewModel,
-  useTableQuery
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { TenantLink }                                                     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                                from '@acx-ui/utils'
+import { exportMessageMapping, getOpsApi, useTableQuery }                                from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }         from './PropertyUnitDrawer'

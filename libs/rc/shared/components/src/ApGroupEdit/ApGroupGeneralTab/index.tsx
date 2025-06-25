@@ -28,10 +28,11 @@ import {
   trailingNorLeadingSpaces, useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher, useTableQuery,
+  useConfigTemplateQueryFnSwitcher,
   validateByteLength,
   Venue
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 import { ApGroupEditContext }           from '../context'

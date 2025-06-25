@@ -11,10 +11,10 @@ import { DateFormatEnum, formatter }                                            
 import { ClockSolid }                                                                                                                          from '@acx-ui/icons'
 import { TimelineDrawer }                                                                                                                      from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                                                                                                  from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping, initActivitySocket, closeActivitySocket, TxStatus } from '@acx-ui/rc/utils'
+import { Activity, CommonUrlsInfo, getActivityDescription, severityMapping, initActivitySocket, closeActivitySocket, TxStatus } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate, useParams }                                                                                               from '@acx-ui/react-router-dom'
 import { getProductKey, getUserSettingsByPath, setDeepUserSettings, useLazyGetAllUserSettingsQuery, useSaveUserSettingsMutation }              from '@acx-ui/user'
-import { DateRange, DateRangeFilter, getDateRangeFilter }                                                                                      from '@acx-ui/utils'
+import { useTableQuery, DateRange, DateRangeFilter, getDateRangeFilter }                                                                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

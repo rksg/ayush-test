@@ -36,15 +36,14 @@ import {
   FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
-  SortResult,
-  useTableQuery
+  SortResult
 } from '@acx-ui/rc/utils'
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess, getUserProfile, hasAllowedOperations,
   hasRoles
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'

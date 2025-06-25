@@ -10,14 +10,14 @@ import {
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
+  AdaptivePolicySet, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RulesManagementUrlsInfo, SEARCH, useTableQuery
+  PolicyType, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }                                    from '@acx-ui/utils'
+import { getOpsApi, useTableQuery, SEARCH, FILTER }     from '@acx-ui/utils'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()

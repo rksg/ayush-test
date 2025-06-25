@@ -33,7 +33,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const utils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 
 jest.mock('../ApCompatibility', () => ({
   ...jest.requireActual('../ApCompatibility'),

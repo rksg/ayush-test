@@ -6,8 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { getUserProfile }                                                 from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
-import { useTableQuery }                                                  from '@acx-ui/rc/utils'
-import { getIntl }                                                        from '@acx-ui/utils'
+import { getIntl, useTableQuery }                                                        from '@acx-ui/utils'
 
 import { useDeleteSmartZone, useGetSmartZoneListQuery, useGetDistinctSmartZoneStatusQuery } from './services'
 import { Errors }                                                                           from './styledComponents'

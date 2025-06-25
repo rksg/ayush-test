@@ -1,5 +1,6 @@
 import { useApListQuery }                                                from '@acx-ui/rc/services'
-import { APExtended, CommonUrlsInfo, useTableQuery }                     from '@acx-ui/rc/utils'
+import { APExtended, CommonUrlsInfo }                     from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { Provider }                                                      from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, renderHook, waitFor, within } from '@acx-ui/test-utils'
 import { RequestPayload }                                                from '@acx-ui/types'

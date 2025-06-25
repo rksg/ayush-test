@@ -27,7 +27,6 @@ import {
 } from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
-  usePollingTableQuery,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   PoeSchedulerType
@@ -36,8 +35,8 @@ import { useParams }                                                   from '@ac
 import { ErrorDisableRecoveryDrawer, PoeSchedule }                     from '@acx-ui/switch/components'
 import { SwitchScopes }                                                from '@acx-ui/types'
 import { filterByAccess, hasPermission }                               from '@acx-ui/user'
-import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                                                     from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL,
+  usePollingTableQuery, getIntl} from '@acx-ui/utils'
 
 import { SimpleListTooltip }    from '../SimpleListTooltip'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'

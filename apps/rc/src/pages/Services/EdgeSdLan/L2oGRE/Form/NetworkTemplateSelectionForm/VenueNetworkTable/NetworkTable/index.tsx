@@ -23,9 +23,8 @@ import {
   sortProp,
   TunnelProfileViewData,
   TunnelTypeEnum,
-  useHelpPageLink,
-  useTableQuery } from '@acx-ui/rc/utils'
-import { compareVersions, getIntl } from '@acx-ui/utils'
+  useHelpPageLink } from '@acx-ui/rc/utils'
+import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 
 import { EdgeSdLanFormType }      from '../../..'
 import { useEdgeSdLanContext }    from '../../../EdgeSdLanContextProvider'

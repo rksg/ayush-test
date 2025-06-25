@@ -9,10 +9,10 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { useDeleteWebhookMutation, useGetWebhooksQuery }                                             from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, defaultSort, sortProp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
 import { SwitchScopes, WifiScopes }                                                                  from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
-import { getOpsApi }                                                                                 from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }                                                                                 from '@acx-ui/utils'
 
 import { getWebhookPayloadEnumString } from './webhookConfig'
 import { WebhookForm }                 from './WebhookForm'

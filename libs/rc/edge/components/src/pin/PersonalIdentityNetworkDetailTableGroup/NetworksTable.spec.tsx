@@ -1,4 +1,5 @@
-import { NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen }                 from '@acx-ui/test-utils'
 

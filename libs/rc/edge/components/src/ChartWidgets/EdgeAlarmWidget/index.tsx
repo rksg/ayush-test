@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import { cssStr, DonutChartData }                                  from '@acx-ui/components'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, EventSeverityEnum, useTableQuery } from '@acx-ui/rc/utils'
-
+import { Alarm, CommonUrlsInfo, EventSeverityEnum } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { EdgeOverviewDonutWidget } from '../EdgeOverviewDonutWidget'
 
 const alarmListPayload = {

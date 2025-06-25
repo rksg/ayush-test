@@ -225,7 +225,7 @@ jest.mock('react-router-dom', () => ({
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-20T12:33:37.101+00:00').getTime()
 })
-const utils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 
 describe('AssignMspLicense', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string }

@@ -19,7 +19,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   getPolicyRoutePath,
@@ -34,6 +33,7 @@ import {
   usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 export default function AAATable () {
   const { $t } = useIntl()

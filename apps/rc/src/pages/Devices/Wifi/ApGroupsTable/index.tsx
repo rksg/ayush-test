@@ -7,10 +7,10 @@ import { Button }                                                   from '@acx-u
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { ApGroupTable, ApGroupsTabContext }                         from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useVenuesListQuery }                 from '@acx-ui/rc/services'
-import { ApGroupViewModel, usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { ApGroupViewModel, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { TenantLink }                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                               from '@acx-ui/types'
-import { getOpsApi }                                                from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery }                                                from '@acx-ui/utils'
 
 
 export default function useApGroupsTable () {

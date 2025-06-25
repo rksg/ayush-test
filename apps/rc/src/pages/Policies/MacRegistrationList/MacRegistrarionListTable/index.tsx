@@ -18,23 +18,20 @@ import {
   useSearchMacRegListsQuery, useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
   PolicyType,
-  SEARCH,
   getPolicyDetailsLink,
   usePoliciesBreadcrumb,
   getPolicyRoutePath,
   returnExpirationString,
-  useTableQuery,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }                                               from '@acx-ui/utils'
+import { getOpsApi, FILTER, SEARCH, useTableQuery }                from '@acx-ui/utils'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()

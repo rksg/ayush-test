@@ -54,11 +54,11 @@ const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
-const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
 const user = require('@acx-ui/user')
+const utils = require('@acx-ui/utils')
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils')
+}))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
 }))

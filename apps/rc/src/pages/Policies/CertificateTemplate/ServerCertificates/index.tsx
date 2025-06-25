@@ -11,18 +11,15 @@ import {
   CertificateStatusType,
   EnrollmentType,
   ExtendedKeyUsages,
-  FILTER,
   PolicyOperation,
   PolicyType,
-  SEARCH,
   ServerCertificate,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   serverCertStatusColors,
-  useTableQuery,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {

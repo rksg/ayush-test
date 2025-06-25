@@ -19,7 +19,8 @@ import {
   useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery,
   useGetVenueTemplateSwitchAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
+import { AAAServerTypeEnum, AAA_SERVER_TYPE, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { useParams }                                                                                                          from '@acx-ui/react-router-dom'
 
 import { AAADraggableItem } from './AAADraggableItem'

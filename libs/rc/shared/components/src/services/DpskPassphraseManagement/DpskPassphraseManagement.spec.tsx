@@ -10,8 +10,7 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  ClientUrlsInfo, PersonaUrls,
-  useTableQuery
+  ClientUrlsInfo, PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -22,6 +21,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import {
   mockedDpskPassphraseList,

@@ -25,10 +25,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
-  FILTER,
-  SEARCH,
   Workflow,
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
@@ -39,7 +36,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
 

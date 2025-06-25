@@ -11,15 +11,11 @@ import {
   useLazyGetLagListQuery
 }    from '@acx-ui/rc/services'
 import {
-  FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
   getClientIpAddr,
-  SEARCH,
   SwitchClient,
-  usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
-  TableQuery,
   Lag,
   SwitchRow,
   SwitchPortStatus,
@@ -28,7 +24,8 @@ import {
 import { useParams, TenantLink }                       from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }                from '@acx-ui/types'
 import { hasPermission }                               from '@acx-ui/user'
-import { getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getOpsApi, useTrackLoadTime, widgetsMapping,
+  usePollingTableQuery, FILTER, SEARCH, TableQuery} from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {

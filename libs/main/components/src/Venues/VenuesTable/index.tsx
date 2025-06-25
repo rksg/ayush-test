@@ -35,9 +35,7 @@ import {
   ConfigTemplateType,
   getAPStatusDisplayName,
   PropertyUrlsInfo,
-  TableQuery,
   useIsEdgeFeatureReady,
-  usePollingTableQuery,
   Venue,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -57,7 +55,7 @@ import {
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
-import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
+import { getOpsApi, transformToCityListOptions, TableQuery, usePollingTableQuery } from '@acx-ui/utils'
 
 const incompatibleIconStyle = {
   position: 'absolute' as const,

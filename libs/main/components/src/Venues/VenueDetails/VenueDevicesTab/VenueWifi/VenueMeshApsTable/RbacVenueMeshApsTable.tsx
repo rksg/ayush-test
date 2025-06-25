@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Loader, Tooltip } from '@acx-ui/components'
 import { useRbacMeshApsQuery }                from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { MeshSignalSpan } from '../styledComponents'

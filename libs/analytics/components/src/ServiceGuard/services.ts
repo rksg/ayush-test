@@ -12,10 +12,10 @@ import { showToast, TableProps, useStepFormContext }                     from '@
 import { get }                                                           from '@acx-ui/config'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { useWifiNetworkListQuery, useNetworkListQuery }                  from '@acx-ui/rc/services'
-import { Network, TableResult }                                          from '@acx-ui/rc/utils'
+import { Network }                                          from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { serviceGuardApi }                                               from '@acx-ui/store'
-import { NetworkPath, PathNode, TABLE_DEFAULT_PAGE_SIZE, noDataDisplay } from '@acx-ui/utils'
+import { NetworkPath, PathNode, TABLE_DEFAULT_PAGE_SIZE, noDataDisplay, TableResult } from '@acx-ui/utils'
 
 import { authMethodsByClientType }     from './authMethods'
 import { messageMapping, stages }      from './contents'

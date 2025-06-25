@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 
 import { useIdentityListQuery }            from '@acx-ui/cloudpath/components'
 import { useGetEdgePinByIdQuery }          from '@acx-ui/rc/services'
-import { useTableQuery }                   from '@acx-ui/rc/utils'
+import { useTableQuery }                   from '@acx-ui/utils'
 import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { PersonalIdentityNetworkDetailTableGroupProps } from '../PersonalIdentityNetworkDetailTableGroup'

@@ -6,11 +6,9 @@ import {
   ApGroup,
   ApGroupViewModel,
   CountAndNames,
-  FILTER,
   NewAPModel,
   NewApGroupViewModelResponseType,
   NewGetApGroupResponseType,
-  TableResult,
   Venue,
   WifiNetwork,
   WifiRbacUrlsInfo,
@@ -24,7 +22,7 @@ import {
   AddApGroup
 } from '@acx-ui/rc/utils'
 import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { createHttpRequest, FILTER, TableResult } from '@acx-ui/utils'
 
 import { QueryFn }           from './servicePolicy.utils'
 import { isPayloadHasField } from './utils'

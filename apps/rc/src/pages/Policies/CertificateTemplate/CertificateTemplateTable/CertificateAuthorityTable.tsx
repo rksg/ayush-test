@@ -5,11 +5,11 @@ import { Modal as AntModal }    from 'antd'
 import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
-import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                                              from '@acx-ui/components'
-import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                                                                                  from '@acx-ui/rc/components'
-import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                                           from '@acx-ui/rc/services'
-import { CertificateAuthority, CertificateCategoryType, CertificateUrls, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { getOpsApi }                                                                                                                                                                                       from '@acx-ui/utils'
+import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                               from '@acx-ui/components'
+import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                                                                   from '@acx-ui/rc/components'
+import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                            from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateCategoryType, CertificateUrls, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
+import { getOpsApi, useTableQuery }                                                                                                                                                         from '@acx-ui/utils'
 
 import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 
