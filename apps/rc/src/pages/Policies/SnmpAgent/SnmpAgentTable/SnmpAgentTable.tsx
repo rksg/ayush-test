@@ -72,7 +72,6 @@ export default function SnmpAgentTable () {
 
 
   // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
     enableRbac: isUseRbacApi,
@@ -86,7 +85,7 @@ export default function SnmpAgentTable () {
     defaultPayload: filterPayload,
     customHeaders:
     ( isUseRbacApi ?
-      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      GetApiVersionHeader(ApiVersionEnum.v1_1):
       undefined)
   })
 
@@ -115,7 +114,7 @@ export default function SnmpAgentTable () {
     },
     customHeaders:
     ( isUseRbacApi ?
-      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      GetApiVersionHeader(ApiVersionEnum.v1_1):
       undefined)
   })
 
