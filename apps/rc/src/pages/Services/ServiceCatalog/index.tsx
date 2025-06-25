@@ -46,8 +46,6 @@ export default function ServiceCatalog () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -72,7 +70,7 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.DHCP}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
@@ -88,7 +86,7 @@ export default function ServiceCatalog () {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.PIN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
@@ -98,11 +96,10 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title={''}
+            title={IncompatibilityFeatures.SD_LAN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
-          />,
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          />
         },
         {
           type: ServiceType.EDGE_OLT,

@@ -53,10 +53,13 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import {
+  getSwitchModel,
+  isSameModelFamily,
+  isOperationalSwitch
+} from '@acx-ui/rc/switch/utils'
 import {
   Switch,
-  getSwitchModel,
   SwitchTable,
   SwitchStatusEnum,
   SwitchViewModel,
@@ -65,7 +68,6 @@ import {
   VenueMessages,
   SwitchRow,
   SwitchMessages,
-  isSameModelFamily,
   isFirmwareVersionAbove10010f,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
@@ -167,9 +169,7 @@ export function StackForm () {
   const isStackSwitches = stackSwitches?.length > 0
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
   const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
@@ -446,7 +446,7 @@ export function StackForm () {
 
   const hasBlockingTsb = function () {
     const fw = getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
-    return !checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch
+    return !checkVersionAtLeast09010h(fw)
   }
 
   const transformSwitchData = (switchData: Switch) => {
@@ -856,9 +856,6 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    if (!enableStackUnitLimitationFlag) {
-      return true
-    }
     const miniMembers = getMiniMembers(activeSerialNumber)
     return tableData.length < miniMembers
   }

@@ -6,11 +6,8 @@ import _                                                             from 'lodas
 import moment                                                        from 'moment-timezone'
 import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
 
-import { Drawer, Loader, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import {
-  PhoneInput
-} from '@acx-ui/rc/components'
+import { Drawer, Loader, PhoneInput, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,

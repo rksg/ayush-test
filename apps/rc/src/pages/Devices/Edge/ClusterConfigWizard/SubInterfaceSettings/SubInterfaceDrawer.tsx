@@ -109,10 +109,12 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       item => item.portType === EdgePortTypeEnum.WAN && item.portEnabled && !item.isLagMember
     )
 
-    const hasCorePort = allInterface.some(item => item.isCorePort) ||
+    const hasCorePort = allInterface.some(item =>
+      item.isCorePort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
       allSubInterfacesWithoutCurrent.some(item => item.corePortEnabled)
 
-    const hasAccessPort = allInterface.some(item => item.isAccessPort) ||
+    const hasAccessPort = allInterface.some(item =>
+      item.isAccessPort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
       allSubInterfacesWithoutCurrent.some(item => item.accessPortEnabled)
 
     return {
@@ -122,6 +124,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       hasAccessPort
     }
   }, [allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm, data?.id])
+
+  const hasCorePortOnOthers = hasCorePort && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPort && !accessPortEnabled
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -236,8 +241,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 children={$t({ defaultMessage: 'Core port' })}
                 onChange={handleCorePortChange}
                 disabled={
-                  !isPortEnabled || hasWanPort || (hasCorePort && !corePortEnabled) ||
-                  isSdLanRun
+                  !isPortEnabled || hasWanPort || (
+                    isSdLanRun ? hasCorePort : hasCorePortOnOthers
+                  )
                 }
               />
             </Form.Item>
@@ -250,8 +256,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 <Checkbox
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
-                    !isPortEnabled || hasWanPort || (hasAccessPort && !accessPortEnabled) ||
-                  isSdLanRun || !isSupportAccessPort
+                    !isSupportAccessPort || !isPortEnabled || hasWanPort || (
+                      isSdLanRun ? hasAccessPort : hasAccessPortOnOthers
+                    )
                   }
                 />
               </Form.Item>

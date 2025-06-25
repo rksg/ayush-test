@@ -9,7 +9,7 @@ import {
   EdgeClusterStatus, EdgeFormFieldsPropsType,
   EdgeGeneralFixtures, EdgePortConfigFixtures,
   EdgePortTypeEnum, EdgeSdLanFixtures,
-  EdgeSdLanViewDataP2, EdgeStatus
+  EdgeMvSdLanViewData, EdgeStatus
 } from '@acx-ui/rc/utils'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -21,7 +21,7 @@ import { transformFromApiToFormData } from './utils'
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
-const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
+const { mockedMvSdLanServiceDmz } = EdgeSdLanFixtures
 // eslint-disable-next-line max-len
 const mockedHaWizardNetworkSettings = transformFromApiToFormData(mockedHaNetworkSettings)
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
@@ -36,7 +36,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 const defaultCxtData = {
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   portsStatus: mockedPortsStatus,
-  edgeSdLanData: mockedSdLanServiceP2Dmz as EdgeSdLanViewDataP2,
+  edgeSdLanData: mockedMvSdLanServiceDmz as EdgeMvSdLanViewData,
   isLoading: false,
   isFetching: false
 }

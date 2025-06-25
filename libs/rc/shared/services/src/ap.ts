@@ -2,7 +2,6 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter } from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -106,9 +105,8 @@ import {
   ApGroupQueryRadioCustomization,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { baseApApi } from '@acx-ui/store'
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-import { MaybePromise, RequestPayload } from '@acx-ui/types'
+import { baseApApi }                                 from '@acx-ui/store'
+import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
 import {
   ApiInfo,
   batchApi,

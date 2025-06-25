@@ -18,7 +18,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   ExpirationDateSelector: () => <div data-testid='ExpirationDateSelector'>
     Passphrase Expiration
     <input type='radio' id='NEVER' value='NEVER' /><label htmlFor='NEVER'>Same as pool</label>
-  </div>,
+  </div>
+}))
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: ({ name, callback }: {
     name: string,
     callback?: (value: string) => void

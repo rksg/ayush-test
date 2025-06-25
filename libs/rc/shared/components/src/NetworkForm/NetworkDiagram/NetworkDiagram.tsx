@@ -224,18 +224,17 @@ function getOpenDiagram (props: OpenDiagramProps) {
     OpenMacregAaaDiagram
   }
 
-
-  if (props.enableMACAuth) {
-    if (props.isMacRegistrationList) {
-      return (props.enableAccountingService) ?
-        getAAADiagramByParams(
-          props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
-        ) : diagramSet.OpenMacregDiagram
-    }
-    return getAAADiagramByParams(props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram)
+  if (props.enableMACAuth && props.isMacRegistrationList) {
+    return (props.enableAccountingService) ?
+      getAAADiagramByParams(
+        props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
+      ) : diagramSet.OpenMacregDiagram
   }
 
-  return diagramSet.OpenDiagram
+  return (props.enableAccountingService) ?
+    getAAADiagramByParams(
+      props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram
+    ) : diagramSet.OpenDiagram
 }
 
 function getAAADiagramByParams (
@@ -274,17 +273,17 @@ function getWorkflowDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
   let useProxy = props.enableAccountingProxy
   let useAcctService = props.enableAccountingService
-  if(useProxy) {
-    return wisprWithPsk ? WorkflowAcctProxyPskDiagram :
-      (wisprWithOwe ? WorkflowAcctProxyOweDiagram : WorkflowAcctProxyNoneDiagram)
-  } else {
-    if(useAcctService) {
+  if(useAcctService) {
+    if(useProxy) {
+      return wisprWithPsk ? WorkflowAcctProxyPskDiagram :
+        (wisprWithOwe ? WorkflowAcctProxyOweDiagram : WorkflowAcctProxyNoneDiagram)
+    } else {
       return wisprWithPsk ? WorkflowAcctOnPskDiagram :
         (wisprWithOwe ? WorkflowAcctOnOweDiagram : WorkflowAcctOnNoneDiagram)
-    } else {
-      return wisprWithPsk ? WorkflowAcctOffPskDiagram :
-        (wisprWithOwe ? WorkflowAcctOffOweDiagram : WorkflowAcctOffNoneDiagram)
     }
+  } else {
+    return wisprWithPsk ? WorkflowAcctOffPskDiagram :
+      (wisprWithOwe ? WorkflowAcctOffOweDiagram : WorkflowAcctOffNoneDiagram)
   }
 }
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {

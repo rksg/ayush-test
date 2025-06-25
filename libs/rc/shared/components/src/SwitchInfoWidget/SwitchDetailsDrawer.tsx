@@ -4,12 +4,14 @@ import { Divider, Form, Select } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }   from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchViewModel,
   getAdminPassword,
-  getSwitchModel,
   getStackMemberStatus,
   isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/utils'

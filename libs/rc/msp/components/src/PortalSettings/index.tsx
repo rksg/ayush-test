@@ -24,7 +24,8 @@ import {
   Subtitle,
   Fieldset,
   GridCol,
-  GridRow
+  GridRow,
+  PhoneInput
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -38,7 +39,6 @@ import {
   MspPortal,
   MspLogoFile
 } from '@acx-ui/msp/utils'
-import { PhoneInput }         from '@acx-ui/rc/components'
 import {
   useExternalProvidersQuery
 } from '@acx-ui/rc/services'
@@ -64,7 +64,7 @@ import defaultSupportLogo from '../images/ruckus-logo-notification.png'
 import supportLinkImg     from '../images/supportlink.png'
 import * as UI            from '../styledComponents'
 
-export const getFileExtension = function (fileName: string) {
+const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
   const extensionsRegex: RegExp = /(png|jpg|gif)$/i
   const matched = extensionsRegex.exec(fileName)
