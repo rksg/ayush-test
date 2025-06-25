@@ -1,15 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import {
   ClusterNetworkSettings,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgeGeneralFixtures,
-  EdgeClusterStatus
+  EdgeClusterStatus,
+  EdgeCompatibilityFixtures,
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor
@@ -57,10 +61,12 @@ const {
 const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData(mockEdgePortConfigWithStatusIpWithoutCorePort.ports)
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedOnTabChange = jest.fn()
 
 const mockedProps = {
+  serialNumber: 'mock-sn',
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   statusData: mockPortInfo as EdgePortInfo[],
   isEdgeSdLanRun: false,
@@ -70,7 +76,14 @@ const mockedProps = {
 }
 
 describe('EditEdge ports - ports general - user actions', () => {
-
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      )
+    )
+  })
   describe('subnet overlap', () => {
 
     const MockedComponent = (props: { vipConfig?: ClusterNetworkSettings['virtualIpSettings'] })=>
