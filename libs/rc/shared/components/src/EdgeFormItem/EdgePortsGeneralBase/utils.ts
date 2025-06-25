@@ -67,13 +67,17 @@ export const getEnabledAccessPortInfo = (
     key: string | undefined
   } => {
   const lagMemberIds = lagData.flatMap(lag => lag.lagMembers?.map(member => member.portId))
+  const lagMemberInterfaceName = portsData.filter(item => lagMemberIds.includes(item.id))
+    .map(item => item.interfaceName)
   const physicalAccessPort = portsData.find(item =>
     item.accessPortEnabled && item.enabled && item.portType === EdgePortTypeEnum.LAN &&
     !lagMemberIds.includes(item.id))
   const lagAccessPort = lagData.find(item =>
     item.accessPortEnabled && item.lagEnabled && item.portType === EdgePortTypeEnum.LAN)
   const subInterfaceAccessPort = subInterfaceData.find(item =>
-    item.accessPortEnabled && item.portType === EdgePortTypeEnum.LAN)
+    item.accessPortEnabled && item.portType === EdgePortTypeEnum.LAN &&
+    !lagMemberInterfaceName.includes(item.interfaceName?.split('.')?.[0])
+  )
   const accessPortKey = physicalAccessPort?.interfaceName ||
     (!isNil(lagAccessPort?.id) && lagAccessPort?.id + '') ||
     subInterfaceAccessPort?.interfaceName

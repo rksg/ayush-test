@@ -409,6 +409,7 @@ describe('EditEdge ports - ports general', () => {
 
         expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
         expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+        expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
       })
 
       it('should show gateway field when access port is checked', async () => {
