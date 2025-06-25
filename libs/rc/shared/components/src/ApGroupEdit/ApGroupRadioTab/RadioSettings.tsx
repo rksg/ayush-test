@@ -89,6 +89,13 @@ import { RadioLabel }                  from '../styledComponents'
 
 import { ApGroupSingleRadioSettings } from './ApGroupSingleRadioSettings'
 
+const Radio24GAllowedChannels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+const Radio5GAllowedChannels = ['36', '40', '44', '48', '52', '56', '60', '64', '100', '104', '108', '112', '116', '120', '124', '128', '132', '136', '140', '144', '149', '153', '157', '161']
+const RadioInner5GAllowedChannels = ['36', '40', '44', '48', '52', '56', '60' , '64']
+const RadioUpper5GAllowedChannels = ['100', '104', '108', '112', '116', '120', '124', '128', '132', '136', '140', '144', '149', '153', '157', '161']
+const Radio6GIndoorAllowedChannels = ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93', '97', '101', '105', '109', '113', '117', '121', '125', '129', '133', '137', '141', '145', '149', '153', '157', '161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221']
+const Radio6GOutdoorAllowedChannels = ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93', '129', '133', '137', '141', '145', '149', '153', '157']
+
 const {
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -391,11 +398,62 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       if (!isAFCEnabled) {
         set(data, 'radioParams6G.enableAfc', false)
       }
-      const { radioParams6G } = data
+      const { radioParams6G, radioParams24G, radioParams50G, radioParamsDual5G } = data
+      if (radioParams24G) {
+        const { channel, method } = radioParams24G
+        if (channel && method === 'MANUAL') {
+          set(data, 'radioParams24G.allowedChannels', [channel.toString()])
+        }
+      }
+      if (radioParams50G) {
+        const { indoorChannel, outdoorChannel, method } = radioParams50G
+        if (indoorChannel && method === 'MANUAL') {
+          set(data, 'radioParams50G.allowedIndoorChannels', [indoorChannel.toString()])
+        }
+        if (outdoorChannel && method === 'MANUAL') {
+          set(data, 'radioParams50G.allowedOutdoorChannels', [outdoorChannel.toString()])
+        }
+      }
+      if (radioParamsDual5G) {
+        const { enabled, radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G
+        if (enabled) {
+          if (radioParamsLower5G) {
+            const { indoorChannel, outdoorChannel, method } = radioParamsLower5G
+            if (indoorChannel && method === 'MANUAL') {
+              set(data, 'radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels', [indoorChannel.toString()])
+            }
+            if (outdoorChannel && method === 'MANUAL') {
+              set(data, 'radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels', [outdoorChannel.toString()])
+            }
+          }
+          if (radioParamsUpper5G) {
+            const { indoorChannel, outdoorChannel, method } = radioParamsUpper5G
+            if (indoorChannel && method === 'MANUAL') {
+              set(data, 'radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels', [indoorChannel.toString()])
+            }
+            if (outdoorChannel && method === 'MANUAL') {
+              set(data, 'radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels', [outdoorChannel.toString()])
+            }
+          }
+        }
+      }
       if (radioParams6G) {
-        const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting } = radioParams6G
+        const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting, indoorChannel, outdoorChannel, method } = radioParams6G
         if (enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting) {
           set(data, 'radioParams6G.enableMulticastRateLimiting', true)
+          if (enableMulticastUplinkRateLimiting) {
+            set(data, 'radioParams6G.multicastUplinkRateLimiting', radioParams6G.multicastUplinkRateLimiting)
+          }
+          if (enableMulticastDownlinkRateLimiting) {
+            set(data, 'radioParams6G.multicastDownlinkRateLimiting', radioParams6G.multicastDownlinkRateLimiting)
+          }
+        }
+
+        if (indoorChannel && method === 'MANUAL') {
+          set(data, 'radioParams6G.allowedIndoorChannels', [indoorChannel.toString()])
+        }
+        if (outdoorChannel && method === 'MANUAL') {
+          set(data, 'radioParams6G.allowedOutdoorChannels', [outdoorChannel.toString()])
         }
       }
 
@@ -802,21 +860,84 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         payload: {
           radioParams24G: {
             ...defaultRadioSettings?.radioParams24G,
-            ...data.radioParams24G
+            ...data.radioParams24G,
+            ...(data.radioParams24G.method === 'MANUAL'
+              ? {
+                allowedChannels: Radio24GAllowedChannels,
+                channel: data.radioParams24G.allowedChannels![0]
+              }
+              : {}
+            )
           },
           radioParams5G: {
             ...defaultRadioSettings?.radioParams50G,
-            ...data.radioParams50G
+            ...data.radioParams50G,
+            ...(data.radioParams50G.method === 'MANUAL' && data.radioParams50G.allowedIndoorChannels
+              ? {
+                allowedIndoorChannels: Radio5GAllowedChannels,
+                indoorChannel: data.radioParams50G.allowedIndoorChannels[0]
+              }
+              : {}
+            ),
+            ...(data.radioParams50G.method === 'MANUAL' && data.radioParams50G.allowedOutdoorChannels
+              ? {
+                allowedOutdoorChannels: Radio5GAllowedChannels,
+                outdoorChannel: data.radioParams50G.allowedOutdoorChannels[0]
+              }
+              : {}
+            )
           },
           ...(isDual5gModeRef.current ? {
             radioParamsDual5G: {
               ...defaultRadioSettings?.radioParamsDual5G,
-              ...data.radioParamsDual5G
+              ...data.radioParamsDual5G,
+              ...(data.radioParamsDual5G?.radioParamsLower5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsLower5G?.allowedIndoorChannels
+                ? {
+                  allowedIndoorChannels: RadioInner5GAllowedChannels,
+                  indoorChannel: data.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels[0]
+                }
+                : {}
+              ),
+              ...(data.radioParamsDual5G?.radioParamsUpper5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsUpper5G?.allowedIndoorChannels
+                ? {
+                  allowedIndoorChannels: RadioInner5GAllowedChannels,
+                  indoorChannel: data.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels[0]
+                }
+                : {}
+              ),
+              ...(data.radioParamsDual5G?.radioParamsLower5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsLower5G?.allowedOutdoorChannels
+                ? {
+                  allowedOutdoorChannels: RadioUpper5GAllowedChannels,
+                  outdoorChannel: data.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels[0]
+                }
+                : {}
+              ),
+              ...(data.radioParamsDual5G?.radioParamsUpper5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsUpper5G?.allowedOutdoorChannels
+                ? {
+                  allowedOutdoorChannels: RadioUpper5GAllowedChannels,
+                  outdoorChannel: data.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels[0]
+                }
+                : {}
+              )
             }
           } : {}),
           radioParams6G: {
             ...defaultRadioSettings?.radioParams6G,
-            ...data.radioParams6G
+            ...data.radioParams6G,
+            ...(data.radioParams6G?.method === 'MANUAL' && data.radioParams6G?.allowedIndoorChannels
+              ? {
+                allowedIndoorChannels: Radio6GIndoorAllowedChannels,
+                indoorChannel: data.radioParams6G.allowedIndoorChannels[0]
+              }
+              : {}
+            ),
+            ...(data.radioParams6G?.method === 'MANUAL' && data.radioParams6G?.allowedOutdoorChannels
+              ? {
+                allowedOutdoorChannels: Radio6GOutdoorAllowedChannels,
+                outdoorChannel: data.radioParams6G.allowedOutdoorChannels[0]
+              }
+              : {}
+            )
           }
         },
         enableRbac: resolvedRbacEnabled
