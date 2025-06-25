@@ -66,10 +66,10 @@ export function createIntentContextProvider (
       kpis: spec.kpis,
       state: (intent && intentState(intent))!,
       isDataRetained: preventColdTier
-        ? intent?.dataCheck.isDataRetained!
+        ? intent?.dataCheck?.isDataRetained ?? false
         : isDataRetained(intent?.metadata.dataEndTime),
       isHotTierData: preventColdTier
-        ? intent?.dataCheck.isHotTierData!
+        ? intent?.dataCheck?.isHotTierData ?? false
         : true
     }
 

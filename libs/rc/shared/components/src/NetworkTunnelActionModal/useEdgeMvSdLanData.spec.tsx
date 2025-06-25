@@ -4,8 +4,6 @@ import { EdgeSdLanUrls, EdgeSdLanFixtures, NetworkTypeEnum } from '@acx-ui/rc/ut
 import { Provider }                                          from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                   from '@acx-ui/test-utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
-
 import { mockVlanPoolList }   from './__tests__/fixtures'
 import { useEdgeMvSdLanData } from './useEdgeMvSdLanData'
 
@@ -66,20 +64,6 @@ describe('NetworkTunnelActionModal - useEdgeSdLanData', () => {
     await waitFor(() => expect(result.current.venueSdLan?.id).toBe(mockedMvSdLanDataList[0].id))
     const vlanPool = result.current.networkVlanPool
     await waitFor(() => expect(vlanPool?.id).toBe(mockVlanPoolList[0].id))
-  })
-
-  it('should not trigger API when FF is not on', () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-    const { result } = renderHook(() => useEdgeMvSdLanData({
-      id: 'mock-network',
-      type: NetworkTypeEnum.AAA,
-      venueId: 'mock-venue'
-    }), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    expect(result.current.venueSdLan).toStrictEqual(undefined)
-    expect(mockedReqFn).toBeCalledTimes(0)
   })
 
   it('should not trigger API when network is undefined', () => {

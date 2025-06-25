@@ -13,17 +13,6 @@ export const DiagramContainer = styled.div`
   }
 `
 
-export const FrameOverDiagram = styled.div`
-  position: absolute;
-  top: 42px;
-  left: 22px;
-  width: 170px;
-  height: 210px;
-  border-radius: 8px;
-  border: 4px solid var(--acx-accents-orange-50);
-  z-index: 1;
-`
-
 export const StyledParagraph = styled(Typography.Paragraph)`
   line-height: var(--acx-body-3-line-height);
 `

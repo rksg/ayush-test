@@ -1,8 +1,9 @@
 import userEvent        from '@testing-library/user-event'
 import { Form }         from 'antd'
 import _, { cloneDeep } from 'lodash'
+import { rest }         from 'msw'
 
-import { Features }        from '@acx-ui/feature-toggle'
+import { Features }           from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
@@ -12,10 +13,13 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting,
-  getEdgePortDisplayName
+  getEdgePortDisplayName,
+  EdgeUrlsInfo,
+  EdgeCompatibilityFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor,
@@ -70,10 +74,12 @@ const formEdgePortConfig = transformApiDataToFormListData(mockEdgePortConfig.por
 const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData(mockEdgePortConfigWithStatusIpWithoutCorePort.ports)
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedOnTabChange = jest.fn()
 
 const mockedProps = {
+  serialNumber: 'mock-sn',
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   statusData: mockPortInfo as EdgePortInfo[],
   isEdgeSdLanRun: false,
@@ -83,9 +89,16 @@ const mockedProps = {
 }
 
 describe('EditEdge ports - ports general', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      )
+    )
+  })
 
   describe('WAN port exist and no core port configured', () => {
-    beforeEach(() => {})
 
     const MockedComponent = (props: {
       vipConfig?: ClusterNetworkSettings['virtualIpSettings'],
@@ -409,6 +422,7 @@ describe('EditEdge ports - ports general', () => {
 
         expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
         expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+        expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
       })
 
       it('should show gateway field when access port is checked', async () => {
@@ -442,6 +456,12 @@ describe('EditEdge ports', () => {
   beforeEach(() => {
     // eslint-disable-next-line max-len
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      )
+    )
   })
 
   afterEach(() => {
@@ -611,6 +631,13 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
     jest.clearAllMocks()
     // eslint-disable-next-line max-len
     jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      )
+    )
   })
 
   const natPoolTestPreparation = async () => {

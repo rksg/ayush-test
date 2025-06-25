@@ -64,7 +64,7 @@ import defaultSupportLogo from '../images/ruckus-logo-notification.png'
 import supportLinkImg     from '../images/supportlink.png'
 import * as UI            from '../styledComponents'
 
-export const getFileExtension = function (fileName: string) {
+const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
   const extensionsRegex: RegExp = /(png|jpg|gif)$/i
   const matched = extensionsRegex.exec(fileName)

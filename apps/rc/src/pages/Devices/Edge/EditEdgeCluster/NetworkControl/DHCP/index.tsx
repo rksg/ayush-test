@@ -17,7 +17,6 @@ export const DhcpFormItem = (props: {
 }) => {
   const { currentClusterStatus, setEdgeFeatureName } = props
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isMvEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const { $t } = useIntl()
   const { form } = useStepFormContext()
 
@@ -63,7 +62,7 @@ export const DhcpFormItem = (props: {
       }
     },
     {
-      skip: !Boolean(currentClusterStatus.clusterId) || !isMvEdgeSdLanEnabled,
+      skip: !Boolean(currentClusterStatus.clusterId),
       selectFromResult: ({ data }) => {
         return {
           hasSdlan: data?.data.some(sdlan => {

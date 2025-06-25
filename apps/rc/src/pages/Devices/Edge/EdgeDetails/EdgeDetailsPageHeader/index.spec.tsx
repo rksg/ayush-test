@@ -43,6 +43,10 @@ describe('Edge Detail Page Header', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
       ),

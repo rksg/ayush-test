@@ -23,7 +23,9 @@ export const DisconnectedBranchNode = styled.div<{ selected?: boolean }>`
   }
 `
 
-export const StepNode = styled.div<{ selected?: boolean, invalid?: boolean }>`
+export const StepNode = styled.div<{ selected?: boolean,
+  attachCandidate?: boolean, invalid?: boolean }>`
+  
   background-color: var(--acx-primary-white);
   font-size: 12px;
   width: 220px;
@@ -49,7 +51,7 @@ export const StepNode = styled.div<{ selected?: boolean, invalid?: boolean }>`
     `
     : ''}
 
-  ${props => props.selected
+  ${props => props.selected || props.attachCandidate
     ? `
     border-radius: 4px;
     border: 1px solid var(--acx-accents-orange-50);
@@ -57,7 +59,7 @@ export const StepNode = styled.div<{ selected?: boolean, invalid?: boolean }>`
     `
     : ''}
 
-  ${props => props.invalid && props.selected
+  ${props => props.invalid && (props.selected || props.attachCandidate)
     ? `
     border-radius: 4px;
     border: 1px solid var(--acx-semantics-red-50);

@@ -41,7 +41,7 @@ export const TunnelDetailsDrawer = (props: TunnelDetailsDrawerProps) => {
         label={$t({ defaultMessage: 'Network Segment Type' })}
       >
         <Form.Item>
-          {getNetworkSegmentTypeString($t, data?.type || NetworkSegmentTypeEnum.VXLAN, true)}
+          {getNetworkSegmentTypeString($t, data?.type || NetworkSegmentTypeEnum.VXLAN)}
         </Form.Item>
       </Descriptions.Item>
       <Descriptions.Item
