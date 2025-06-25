@@ -148,7 +148,7 @@ export default function WifiCallingTable () {
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
   // eslint-disable-next-line max-len
-  const hasReachedLimit = (tableQuery.data?.totalCount ?? 0) >= getServiceProfileMaximumNumber(ServiceType.WIFI_CALLING)
+  const isLimitReached = (tableQuery.data?.totalCount ?? 0) >= getServiceProfileMaximumNumber(ServiceType.WIFI_CALLING)
 
   return (
     <>
@@ -166,7 +166,7 @@ export default function WifiCallingTable () {
             rbacOpsIds={getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
-            {hasReachedLimit
+            {isLimitReached
               ? <Tooltip title={getServiceProfileLimitReachedMessage(ServiceType.WIFI_CALLING)}>
                 <span>
                   <Button disabled={true} type='primary'>
