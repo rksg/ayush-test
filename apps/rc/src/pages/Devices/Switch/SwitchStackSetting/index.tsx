@@ -10,11 +10,13 @@ import {
   checkVlanDiffFromTargetVlan
 } from '@acx-ui/rc/components'
 import {
+  isL3FunctionSupported
+} from '@acx-ui/rc/switch/utils'
+import {
   FlexAuthMessages,
   FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
-  isL3FunctionSupported,
   isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,

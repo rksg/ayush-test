@@ -6,11 +6,11 @@ import {
   Checkbox,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { useWatch } from 'antd/lib/form/Form'
+import { useIntl }  from 'react-intl'
 
 
-import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -18,8 +18,7 @@ import {
   NetworkSaveData,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  URLProtocolRegExp,
-  useConfigTemplate
+  URLProtocolRegExp
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -41,23 +40,15 @@ export function CloudpathForm () {
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
-
-  // TODO: Remove deprecated codes below when RadSec feature is delivery
-  useEffect(()=>{
-    if(!supportRadsec && (editMode || cloneMode) && data){
-      setFieldsValue()
-    }
-  },[data])
+  const networkSecurity = useWatch('networkSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
 
   useEffect(()=>{
-    if(supportRadsec && (editMode || cloneMode) && data){
+    if((editMode || cloneMode) && data){
       setFieldsValue()
     }
-  },[supportRadsec, data?.id, data?.wlan?.wlanSecurity])
+  },[data?.id])
 
   const setFieldsValue = () => {
     if (!data) {
@@ -125,9 +116,13 @@ export function CloudpathForm () {
         <AuthAccServerSetting/>
       </GridCol>
       <GridCol col={{ span: 14 }}>
-        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+        <NetworkDiagram
+          type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.Cloudpath}
           wlanSecurity={data?.wlan?.wlanSecurity}
+          networkSecurity={networkSecurity}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
         />
       </GridCol>
     </GridRow>

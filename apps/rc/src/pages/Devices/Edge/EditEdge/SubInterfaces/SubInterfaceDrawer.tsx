@@ -92,6 +92,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const hasWanPort = getEdgeWanInterfaceCount(portData, lagData) > 0
   const isSdLanRun = !!edgeSdLanData
+  const hasCorePortOnOthers = hasCorePort && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPort && !accessPortEnabled
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -188,8 +190,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 children={$t({ defaultMessage: 'Core port' })}
                 onChange={handleCorePortChange}
                 disabled={
-                  !isPortEnabled || hasWanPort || (hasCorePort && !corePortEnabled) ||
-                  isSdLanRun
+                  !isPortEnabled || hasWanPort || (
+                    isSdLanRun ? hasCorePort : hasCorePortOnOthers
+                  )
                 }
               />
             </Form.Item>
@@ -202,8 +205,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 <Checkbox
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
-                    !isPortEnabled || hasWanPort || (hasAccessPort && !accessPortEnabled) ||
-                  isSdLanRun || !isSupportAccessPort
+                    !isSupportAccessPort || !isPortEnabled || hasWanPort || (
+                      isSdLanRun ? hasAccessPort : hasAccessPortOnOthers
+                    )
                   }
                 />
               </Form.Item>

@@ -20,7 +20,6 @@ import {
 import { switchLatestV1002, switchVenueV1002 } from '../__tests__/fixtures'
 
 import {
-  switchVenue,
   preference,
   switchReleaseV1002
 } from './__test__/fixtures'
@@ -108,14 +107,6 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
   })
 
   it('should render table with empty firmware', async () => {
-
-    mockServer.use(
-      rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(switchVenue))
-      )
-    )
-
     render(
       <Provider>
         <VenueFirmwareList />

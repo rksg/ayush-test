@@ -25,13 +25,15 @@ export type IntentKPIConfig = {
 }
 
 export type KpiResultExtend = {
-  projectedPowerSaving?: number
+  powerSaving?: number
   enabled?: number
   disabled?: number
+  excluded?: number
   unsupported?: number
   powerConsumption?: number
   maxApPower?: number
-  minApPower?: number
+  minApPowerStandard?: number
+  minApPowerAi?: number
   apTotalCount?: number
 }
 
@@ -76,7 +78,7 @@ export type IntentConfigurationValue =
 export type IntentDetail = Intent & Partial<IntentKPI> & {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
-  dataCheck: {
+  dataCheck?: {
     isDataRetained: boolean
     isHotTierData: boolean
   }

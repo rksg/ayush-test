@@ -19,10 +19,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  getAPStatusDisplayName,
-  useEnforcedStatus,
-  useIsEdgeFeatureReady,
-  useIsEdgeReady
+  useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useDeleteVenueMutation,
@@ -36,8 +33,10 @@ import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
   ConfigTemplateType,
+  getAPStatusDisplayName,
   PropertyUrlsInfo,
   TableQuery,
+  useIsEdgeFeatureReady,
   usePollingTableQuery,
   Venue,
   WifiRbacUrlsInfo
@@ -90,7 +89,6 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsEdgeReady()
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
   const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
@@ -176,20 +174,6 @@ function useColumns (
         )
       }
     },
-    ...(isIotEnabled ? [{
-      title: $t({ defaultMessage: 'IoT Controller' }),
-      key: 'iotControllers',
-      dataIndex: 'iotControllers',
-      sorter: true,
-      render: function (data: ReactNode, row: Venue) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/devices/iotController`}
-            children={row.iotControllers ? row.iotControllers : 0}
-          />
-        )
-      }
-    }] : []),
     ...(isSupportWifiWiredClient? [{
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'wifi-clients',
@@ -292,6 +276,20 @@ function useColumns (
         )
       }
     },
+    ...(isIotEnabled ? [{
+      title: $t({ defaultMessage: 'IoT Controller' }),
+      key: 'iotControllers',
+      dataIndex: 'iotControllers',
+      sorter: true,
+      render: function (data: ReactNode, row: Venue) {
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices/iotController`}
+            children={row.iotControllers ? row.iotControllers : 0}
+          />
+        )
+      }
+    }] : []),
     ...(isTagsColumnEnabled ? [{
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tagList',
@@ -304,12 +302,10 @@ function useColumns (
     }] : [])
   ]
 
-  return columns.filter(({ key }) =>
-    (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
+  return columns
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsEdgeReady()
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
@@ -326,7 +322,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'switchClients',
       'clients',
       ...(isSupportWifiWiredClient? ['apWiredClients'] : []),
-      ...(isEdgeEnabled ? ['edges'] : []),
+      'edges',
       ...(isIotEnabled ? ['iotControllers'] : []),
       'cog',
       'latitude',
@@ -513,7 +509,6 @@ function useGetVenueCityList () {
 }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
   const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
@@ -544,10 +539,10 @@ const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayloa
       setTableData(result)
     }
 
-    if (isEdgeCompatibilityEnabled && tableQuery.data)
+    if (tableQuery.data)
       fetchVenueEdgeCompatibilities(tableQuery.data.data)
 
-  }, [isEdgeCompatibilityEnabled, tableQuery.data?.data])
+  }, [tableQuery.data?.data])
 
   return tableData
 }

@@ -19,10 +19,10 @@ export const BenefitsGrid: React.FC<{
 
   const values: KPICardConfig[] = (noData || !current || !isDataRetained) ? [
     {
-      key: 'projectedPowerSaving',
+      key: 'powerSaving',
       label: defineMessage({ defaultMessage: 'Projected power saving' }),
-      value: kpiQuery?.data?.data?.data?.projectedPowerSaving
-        ? formatter('countFormat')(kpiQuery?.data?.data?.data?.projectedPowerSaving)
+      value: kpiQuery?.data?.data?.data?.powerSaving
+        ? formatter('countFormat')(kpiQuery?.data?.data?.data?.powerSaving)
         : $t({ defaultMessage: 'Not available' })
     }]
     : getKPIConfigsData(BenefitsConfig, current ?? {}, previous ?? {})
