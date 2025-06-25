@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { ReactNode, useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep, get } from 'lodash'
@@ -22,8 +22,6 @@ import {
   useSdLanScopedVenueNetworks,
   checkSdLanScopedNetworkDeactivateAction,
   renderConfigTemplateDetailsComponent,
-  useGetNetworkTunnelInfo,
-  useIsEdgeFeatureReady,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
   NetworkTunnelActionDrawer,
@@ -69,7 +67,6 @@ import {
   KeyValue,
   VLANPoolViewModelType,
   EdgeMvSdLanViewData,
-  EdgeSdLanViewDataP2,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   WifiRbacUrlsInfo,
@@ -263,16 +260,11 @@ export function VenueNetworksTab () {
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
 
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-
   // hooks for tunnel column - start
   // for tunnel type data refetching
   const refetchFnRef = useRef({} as { [key: string]: () => void })
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id), refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
-  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     venueId: venueId!,
@@ -478,20 +470,6 @@ export function VenueNetworksTab () {
     //   title: $t({ defaultMessage: 'Health' }),
     //   dataIndex: 'health'
     // },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady && !isSoftGreEnabled) ? [{
-      key: 'tunneled',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneled',
-      render: function (_: ReactNode, row: Network) {
-        if (Boolean(row.activated?.isActivated)) {
-          const destinationsInfo = (sdLanScopedNetworks?.sdLans as EdgeSdLanViewDataP2[])
-            ?.filter(sdlan => sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
-        } else {
-          return ''
-        }
-      }
-    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -775,7 +753,7 @@ export function VenueNetworksTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
+      {tunnelModalState.visible &&
         <>
           {!isIpSecOverNetworkEnabled && <NetworkTunnelActionModal
             {...tunnelModalState}

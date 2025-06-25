@@ -76,11 +76,23 @@ describe('SnmpAgentDetail', () => {
 
 
     // Verify the instances
-    await screen.findByText('Instances (2)')
+    await screen.findByText('Instances (4)')
     const targetVenue = mockInstancesData.data[0]
     // eslint-disable-next-line max-len
     const venueLink = await screen.findByRole('link', { name: new RegExp(targetVenue.venueName!) })
     expect(venueLink).toBeVisible()
+
+    const venueTable = await screen.findByTestId('venue-table')
+    expect(venueTable).toBeVisible()
+
+    const apTab = await screen.findByTestId('ap-tab')
+    await userEvent.click(apTab)
+
+    const apTable = await screen.findByTestId('ap-table')
+    expect(apTable).toBeVisible()
+
+    const venueTableAfterSwitch = screen.queryByTestId('venue-table')
+    expect(venueTableAfterSwitch).not.toBeVisible()
 
     await userEvent.click(venueLink)
     expect(venueLink).toHaveAttribute(

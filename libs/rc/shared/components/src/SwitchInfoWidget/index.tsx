@@ -10,15 +10,20 @@ import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui
 import type { DonutChartData }                                     from '@acx-ui/components'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import {
+  getPoeUsage
+} from '@acx-ui/rc/switch/utils'
+import {
   Alarm,
+  CommonUrlsInfo,
   EventSeverityEnum,
-  getPoeUsage,
-  SwitchViewModel
+  SwitchViewModel,
+  SwitchStatusEnum,
+  SWITCH_DISCONNECTED,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, SwitchStatusEnum, SWITCH_DISCONNECTED, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
-import { getUserProfile, isCoreTier }                                           from '@acx-ui/user'
-import type { AnalyticsFilter }                                                 from '@acx-ui/utils'
+import { useParams, TenantLink }      from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
+import type { AnalyticsFilter }       from '@acx-ui/utils'
 
 
 import * as UI                 from './styledComponents'

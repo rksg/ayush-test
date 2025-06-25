@@ -4,11 +4,11 @@ import { Form, FormInstance, Input, InputNumber } from 'antd'
 import TextArea                                   from 'antd/lib/input/TextArea'
 import { useIntl }                                from 'react-intl'
 
+import { PhoneInput }                                                                        from '@acx-ui/components'
 import { useLazySearchPersonaListQuery }                                                     from '@acx-ui/rc/services'
 import { checkObjectNotExists, emailRegExp, Persona, phoneRegExp, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                from '@acx-ui/utils'
 
-import PhoneInput             from '../../PhoneInput'
 import { PersonaGroupSelect } from '../PersonaGroupSelect'
 
 

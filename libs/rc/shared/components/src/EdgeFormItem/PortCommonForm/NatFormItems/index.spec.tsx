@@ -126,7 +126,22 @@ describe('EdgeNatFormItems', () => {
       await userEvent.type(endInput, '1.1.1.1')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await screen.findByRole('alert')
-      await screen.findByText('Start IP cannot larger or equal to end IP')
+      await screen.findByText('Start IP cannot be greater than end IP')
+    })
+
+    it('should allow to configure pool start IP == end IP', async () => {
+      render(<MockComponent />)
+
+      const { startInput, endInput } = await natPoolTestPreparation()
+
+      await userEvent.type(startInput, '1.1.5.100')
+      await userEvent.type(endInput, '1.1.5.100')
+      await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+      await waitFor(() => expect(mockOnFinish).toBeCalledWith({
+        natEnabled: true,
+        natPools: [{ startIpAddress: '1.1.5.100', endIpAddress: '1.1.5.100' }]
+      }))
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
     })
 
     it('correctly block when pool range size > over maximum', async () => {

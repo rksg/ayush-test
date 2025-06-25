@@ -63,6 +63,19 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 describe('TunnelProfileForm', () => {
   const defaultValues = getTunnelProfileFormDefaultValues()
 
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterServiceList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+  })
+
   it('should render TunnelProfileForm successfully', () => {
     render(
       <Provider><Form initialValues={defaultValues}>
@@ -76,7 +89,7 @@ describe('TunnelProfileForm', () => {
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeVisible()
     expect(screen.getByRole('switch')).toBeVisible()
     expect(screen.getByText('Tunnel Idle Timeout')).toBeVisible()
-    expect(screen.getByRole('spinbutton')).toBeVisible()
+    expect(screen.getAllByRole('spinbutton').length).toBe(5)
   })
 
   it('should show MTU size field when select Manual', async () => {
@@ -88,7 +101,7 @@ describe('TunnelProfileForm', () => {
     )
     await user.click(screen.getByRole('radio', { name: 'Manual' }))
     const spinBtns = await screen.findAllByRole('spinbutton') // MTU size / idleTime unit
-    expect(spinBtns.length).toBe(2)
+    expect(spinBtns.length).toBe(4)
     expect(spinBtns.filter(i => i.id === 'mtuSize').length).toBe(1)
     expect(screen.getByText(/Please check Ethernet MTU on AP/i)).toBeVisible()
   })
@@ -99,7 +112,7 @@ describe('TunnelProfileForm', () => {
         <TunnelProfileForm />
       </Form></Provider>
     )
-    const ageTimeInput = await screen.findByRole('spinbutton')
+    const ageTimeInput = (await screen.findAllByRole('spinbutton'))[2]
 
     await userEvent.clear(ageTimeInput)
     await userEvent.type(ageTimeInput, '1')
@@ -118,10 +131,10 @@ describe('TunnelProfileForm', () => {
         <TunnelProfileForm />
       </Form></Provider>
     )
-    const ageTimeInput = await screen.findByRole('spinbutton')
+    const ageTimeInput = (await screen.findAllByRole('spinbutton'))[2]
     await userEvent.clear(ageTimeInput)
     await userEvent.type(ageTimeInput, '5')
-    const ageTimeUnitSelect = screen.getByRole('combobox')
+    const ageTimeUnitSelect = screen.getAllByRole('combobox')[1]
     await userEvent.selectOptions(
       ageTimeUnitSelect,
       await screen.findByRole('option', { name: 'Week' })
@@ -174,11 +187,10 @@ describe('TunnelProfileForm', () => {
     const switchBtns = screen.getAllByRole('switch')
     const fragmentSwitch = switchBtns.find(btn => btn.id === 'forceFragmentation')
     expect(fragmentSwitch).toBeDisabled()
-    expect(screen.getByRole('spinbutton')).toBeDisabled()
-    expect(screen.getByRole('combobox')).toBeDisabled()
+    expect(screen.getAllByRole('spinbutton')[2]).toBeDisabled()
+    expect(screen.getAllByRole('combobox')[1]).toBeDisabled()
     const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
     expect(natTraversalSwitch).toBeDisabled()
-    expect(screen.getByRole('combobox')).toBeDisabled()
   })
 
   it('MTU help message should only display when manual', async () => {
@@ -190,14 +202,7 @@ describe('TunnelProfileForm', () => {
 
   })
 
-  describe('when SD-LAN and Keep Alive are ready', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-    })
-
+  describe('when Keep Alive are ready', () => {
     it('should display network segment type and keep alive related columns', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
@@ -283,10 +288,7 @@ describe('TunnelProfileForm', () => {
   describe('when NAT-Traversal Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
-          || ff === Features.EDGE_PIN_HA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
     })
 
@@ -355,10 +357,7 @@ describe('TunnelProfileForm', () => {
   describe('when L2GRE Support is ready', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
-          || ff === Features.EDGE_PIN_HA_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE
           || ff === Features.EDGE_L2OGRE_TOGGLE
         )
