@@ -7,12 +7,11 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useVenueSummariesQuery }            from '@acx-ui/rc/services'
 import {
   Dashboard,
-  ApVenueStatusEnum
+  ApVenueStatusEnum,
+  getAPStatusDisplayName
 } from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams }                         from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
-
-import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
 import * as UI from './styledComponents'
 

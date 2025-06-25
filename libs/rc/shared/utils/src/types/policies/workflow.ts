@@ -108,7 +108,8 @@ interface Step extends BaseStep {
 }
 
 interface SplitStep extends BaseStep {
-  splitOptionsList?: SplitOption[]
+  splitOptionsList?: SplitOption[],
+  attachCandidate?: boolean
 }
 
 export interface SplitOption {

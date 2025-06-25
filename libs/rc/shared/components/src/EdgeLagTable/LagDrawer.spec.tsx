@@ -56,7 +56,7 @@ jest.mock('antd', () => {
 
 jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
-  useGetEdgeSdLanByEdgeOrClusterId: () => ({
+  useGetEdgeSdLanByClusterId: () => ({
     edgeSdLanData: undefined
   })
 }))

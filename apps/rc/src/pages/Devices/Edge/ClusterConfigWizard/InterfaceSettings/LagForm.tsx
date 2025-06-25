@@ -60,7 +60,9 @@ const LagSettingView = (props: LagSettingViewProps) => {
   const { value, onChange } = props
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
 
-  const { clusterInfo, isSupportAccessPort } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo, isSupportAccessPort, clusterNetworkSettings
+  } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
 
   // eslint-disable-next-line max-len
@@ -179,6 +181,10 @@ const LagSettingView = (props: LagSettingViewProps) => {
               return lagList?.some(lag => String(lag.id) === lagId) ? subInterfaceList : []
             })
           const allSubInterface = portSubInterfaceList.concat(lagSubInterfaceList)
+          // eslint-disable-next-line max-len
+          const originalPortData = clusterNetworkSettings?.portSettings.find(item => item.serialNumber === serialNumber)?.ports
+          // eslint-disable-next-line max-len
+          const originalLagData = clusterNetworkSettings?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
 
           return <>
             <UI.StyledHiddenFormItem
@@ -223,6 +229,10 @@ const LagSettingView = (props: LagSettingViewProps) => {
                       return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
                     } }] : []
                 }
+              }}
+              originalInterfaceData={{
+                portSettings: originalPortData,
+                lagSettings: originalLagData
               }}
             />
           </>
