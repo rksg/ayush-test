@@ -636,7 +636,6 @@ describe('RadioSettingsTab', ()=> {
     afterEach(() => cleanup())
 
     it('should render 6G channels correctly for T670 when separation FF is on', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
       render(
         <Provider>
           <ApEditContext.Provider value={{
