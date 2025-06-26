@@ -1591,7 +1591,9 @@ describe('NetworkDiagram', () => {
               editMode: false,
               cloneMode: false,
               isRuckusAiMode: false,
-              data: { type, enableAccountingProxy: true },
+              data: { type,
+                enableAccountingService: true,
+                enableAccountingProxy: true },
               setData: jest.fn()
             }}>
               <NetworkDiagram networkPortalType={portalType} />
@@ -1615,7 +1617,9 @@ describe('NetworkDiagram', () => {
               editMode: false,
               cloneMode: false,
               isRuckusAiMode: false,
-              data: { type, enableAccountingProxy: true },
+              data: { type,
+                enableAccountingService: true,
+                enableAccountingProxy: true },
               setData: jest.fn()
             }}>
               <NetworkDiagram
@@ -1641,7 +1645,9 @@ describe('NetworkDiagram', () => {
               editMode: false,
               cloneMode: false,
               isRuckusAiMode: false,
-              data: { type, enableAccountingProxy: true },
+              data: { type,
+                enableAccountingService: true,
+                enableAccountingProxy: true },
               setData: jest.fn()
             }}>
               <NetworkDiagram

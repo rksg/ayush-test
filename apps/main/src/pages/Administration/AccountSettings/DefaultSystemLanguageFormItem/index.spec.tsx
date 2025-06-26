@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import userEvent from '@testing-library/user-event'
+
 import { TenantPreferenceSettings } from '@acx-ui/rc/utils'
 import { Provider  }                from '@acx-ui/store'
 import { render, screen }           from '@acx-ui/test-utils'
@@ -66,5 +68,21 @@ describe('Default System Language Selector', () => {
     await screen.findByText('español')
     await screen.findByText('Japanese (japonés)')
     await screen.findByText('German (alemán)')
+  })
+
+  it('should call updatePreference when a new language is selected', async () => {
+    render(
+      <Provider>
+        <DefaultSystemLanguageFormItem/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('English (inglés)')
+    const select = screen.getByRole('combobox') as HTMLSelectElement
+
+    await userEvent.selectOptions(select, 'en-US')
+
+    expect(mockedUpdatePreference).toHaveBeenCalled()
   })
 })
