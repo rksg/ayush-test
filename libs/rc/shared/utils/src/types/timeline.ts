@@ -36,6 +36,7 @@ export const eventProductMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
   IOT: defineMessage({ defaultMessage: 'IoT Controller' }),
   POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
 }
@@ -191,3 +192,5 @@ export type AdminLogBase = EventBase
 export type AdminLogMeta = EventMeta
 
 export type AdminLog = AdminLogBase & AdminLogMeta
+
+
