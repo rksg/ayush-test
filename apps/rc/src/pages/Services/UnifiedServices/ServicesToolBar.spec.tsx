@@ -18,7 +18,9 @@ describe('ServicesToolBar', () => {
         setSearchTerm={mockedSetSearchTerm}
         setFilters={mockedSetFilters}
         setSortOrder={mockedSetSortOrder}
-        defaultSortOrder={ServiceSortOrder.ASC}
+        defaultValues={{
+          sortOrder: ServiceSortOrder.ASC
+        }}
       />
     )
   }

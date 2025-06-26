@@ -6,7 +6,6 @@ import { UnifiedService }    from '@acx-ui/rc/utils'
 import { ServiceFiltersConfig, ServiceSortOrder } from './ServicesToolBar'
 
 export type DefaultSearchFilterValues = {
-  searchTerm?: string
   filters?: ServiceFiltersConfig
   sortOrder?: ServiceSortOrder
 }
@@ -17,11 +16,10 @@ export function useUnifiedServiceSearchFilter (
   settingsId: string
 ) {
   const {
-    searchTerm: defaultSearchTerm = '',
     filters: defaultFilters = {},
     sortOrder: defaultSortOrder = ServiceSortOrder.ASC
   } = defaultValues
-  const [ searchTerm, setSearchTerm ] = useState<string>(defaultSearchTerm)
+  const [ searchTerm, setSearchTerm ] = useState<string>()
   const [ filters, setFilters ] = useState<ServiceFiltersConfig>(defaultFilters)
   const [ sortOrder, setSortOrder ] = useState<ServiceSortOrder>(defaultSortOrder)
 
