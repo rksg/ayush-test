@@ -1,4 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
+import moment        from 'moment'
 
 import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
@@ -29,6 +30,7 @@ export const dataApi = createApi({
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
+      headers.set('x-mlisa-timezone', moment.tz.guess())
       return headers
     }
   }),

@@ -6,12 +6,12 @@ import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
-import { FilterValue } from 'antd/lib/table/interface'
-import _               from 'lodash'
-import moment          from 'moment'
-import { IntlShape }   from 'react-intl'
+import _             from 'lodash'
+import moment        from 'moment'
+import { IntlShape } from 'react-intl'
 
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import type { Filter }                                                    from '@acx-ui/types'
 import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
@@ -20,7 +20,6 @@ import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
 
-export interface Filter extends Record<string, FilterValue|null> {}
 
 export const MIN_SEARCH_LENGTH = 2
 
@@ -95,7 +94,7 @@ export function getFilteredData <RecordType> (
       }
 
       const filteredValue = filterValues[key as keyof Filter]!
-      const value = _.get(row, key) as unknown as string
+      const value = _.get(row, key, '') as unknown as string
       const valueStr = value.toString()
       if (!filteredValue.includes(valueStr)) {
         return false
