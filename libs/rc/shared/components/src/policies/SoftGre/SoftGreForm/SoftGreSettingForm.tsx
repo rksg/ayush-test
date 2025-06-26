@@ -84,7 +84,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
       skip: !policyId,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData,
+          softGreData: data?.data?.[0] as SoftGreViewData,
           isLoading
         }
       }
