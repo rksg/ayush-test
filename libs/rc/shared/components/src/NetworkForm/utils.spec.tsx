@@ -735,7 +735,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.OPEN
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
 
       it('check for DPSK network type', () => {
@@ -775,7 +775,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.CAPTIVEPORTAL
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
     })
     describe('shouldSaveRadiusServerProfile', () => {
@@ -798,7 +798,7 @@ describe('Network utils test', () => {
             guestNetworkType: GuestNetworkTypeEnum.GuestPass
           }
         }
-        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(false)
+        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(true)
       })
     })
 

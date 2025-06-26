@@ -22,7 +22,6 @@ import {
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useCheckDelegateAdmin,
   useGetMspLabelQuery
 } from '@acx-ui/msp/services'
 import {
@@ -37,7 +36,8 @@ import {
   AccountType, getOpsApi, isDelegationMode
 } from '@acx-ui/utils'
 
-import HspContext from '../../HspContext'
+import { useCheckDelegateAdmin } from '../../hooks/useCheckDelegateAdmin'
+import HspContext                from '../../HspContext'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length

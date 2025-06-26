@@ -20,7 +20,7 @@ export default function DisconnectedBranchNode (props: NodeProps)
   return (
     <UI.DisconnectedBranchNode {...props} style={{ width: '100%', height: '100%' }}>
 
-      <UI.DisconnectedBranchPlusButton>
+      <UI.DisconnectedBranchPlusButton className='subflow_drag_handle'>
         <Plus />
       </UI.DisconnectedBranchPlusButton>
 

@@ -6,7 +6,7 @@ import { useIntl }                                                 from 'react-i
 import { useParams }                                               from 'react-router-dom'
 
 import {  StepsForm, Tooltip, useStepFormContext, Loader }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { Features }                                                              from '@acx-ui/feature-toggle'
 import { InformationSolid }                                                      from '@acx-ui/icons'
 import { SpaceWrapper, CompatibilityWarningTriangleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
@@ -292,11 +292,11 @@ const ClusterFirmwareInfo = (props: {
 }) => {
   const { $t } = useIntl()
   const { clusterId } = props
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
-    payload: sdLanFeatureRequirementPayload }, {
-    skip: !isEdgeCompatibilityEnabled,
+    payload: sdLanFeatureRequirementPayload
+  },
+  {
     selectFromResult: ({ data, isLoading }) => {
       return {
         requiredFw: data?.featureSets
@@ -314,7 +314,6 @@ const ClusterFirmwareInfo = (props: {
       ],
       filters: { clusterId: [clusterId] }
     } }, {
-    skip: !isEdgeCompatibilityEnabled,
     selectFromResult: ({ data, isFetching }) => ({
       nodesData: data?.data ?? [],
       isFwVerFetching: isFetching
@@ -326,7 +325,7 @@ const ClusterFirmwareInfo = (props: {
   const minNodeVersion = edgesData?.[0]?.firmwareVersion
   const isLower = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
 
-  return isEdgeCompatibilityEnabled && !isFwVerFetching
+  return !isFwVerFetching
     ? ( <Space align='center' size='small'>
       <Typography>
         {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },

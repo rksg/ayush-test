@@ -4,7 +4,7 @@ import { cloneDeep, get } from 'lodash'
 import { rest }           from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features }                  from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }     from '@acx-ui/rc/components'
 import { edgeApi }                   from '@acx-ui/rc/services'
 import {
@@ -119,7 +119,24 @@ describe('Edge SD-LAN form: settings', () => {
           mockedReqClusterList(req.body)
           return res(ctx.json(mockEdgeClusterList))
         }
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => {
+          const clusterid = get(req.body, 'filters.clusterId.0')
+          const singleNode = {
+            data: mockEdgeList.data.slice(0, 1),
+            totalCount: 1
+          }
+          const multiNodes = {
+            data: mockEdgeList.data.slice(1, 3),
+            totalCount: 2
+          }
+          return res(ctx.json(clusterid === 'clusterId_2' ? multiNodes : singleNode))
+        })
     )
   })
 
@@ -141,7 +158,7 @@ describe('Edge SD-LAN form: settings', () => {
 
     // default DMZ is not enabled
     expect(await within(formBody).findByRole('switch')).not.toBeChecked()
-    expect(featureSetsReq).toBeCalledTimes(0)
+    expect(featureSetsReq).toBeCalledTimes(1)
   })
 
   it('should render correctly with DMZ enabled', async () => {
@@ -367,29 +384,6 @@ describe('Edge SD-LAN form: settings', () => {
   })
 
   it('should display compatible warning', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeFeatureSets.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
-      rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => {
-          const clusterid = get(req.body, 'filters.clusterId.0')
-          const singleNode = {
-            data: mockEdgeList.data.slice(0, 1),
-            totalCount: 1
-          }
-          const multiNodes = {
-            data: mockEdgeList.data.slice(1, 3),
-            totalCount: 2
-          }
-          return res(ctx.json(clusterid === 'clusterId_2' ? multiNodes : singleNode))
-        })
-    )
-
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent form={stepFormRef.current} />, {
       route: { params: { tenantId }, path: '/:tenantId' }

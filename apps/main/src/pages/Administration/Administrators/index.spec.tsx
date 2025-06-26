@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import {
@@ -34,6 +36,14 @@ jest.mock('./AdministratorsTable', () => ({
     return <div data-testid='mocked-AdministratorsTable'></div>
   }
 }))
+
+const mockedUsedNavigate = jest.fn()
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
 
@@ -58,7 +68,18 @@ describe('Administrators', () => {
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantAuthentications.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json([
+          {
+            id: '9db335ef808',
+            clientID: '8358489e',
+            clientSecret: '6bb84ba',
+            scopes: 'PRIME_ADMIN',
+            authenticationType: 'GOOGLE_WORKSPACE',
+            name: 'Prime',
+            clientIDStatus: 'ACTIVE',
+            samlSignatureEnabled: false
+          }
+        ]))
       )
     )
   })
@@ -98,5 +119,60 @@ describe('Administrators', () => {
 
     await screen.findByTestId('mocked-AdministratorsTable')
     expect(screen.queryByTestId('mocked-DelegationsTable')).toBeNull()
+  })
+
+  it('should correctly render in delegated mode', async () => {
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          ...fakeMspEcProfile,
+          msp_label: 'msp_ec'
+        }
+      }
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administrators />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByTestId('mocked-AdministratorsTable')
+    await screen.findByTestId('mocked-DelegationsTable')
+  })
+
+  it('should correctly render when isGroupBasedLoginEnabled is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      (ff === Features.GROUP_BASED_LOGIN_TOGGLE))
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          ...fakeMspEcProfile,
+          msp_label: 'msp_ec'
+        }
+      }
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administrators />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('Local Admins (0)')).toBeInTheDocument()
+    expect(await screen.findByText('Admin Groups (0)')).toBeInTheDocument()
+    await userEvent.click(await screen.findByText('Admin Groups (0)'))
+
+    expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 })

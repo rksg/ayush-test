@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 
 import {
   Form,
-  Radio
+  Radio,
+  Space
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Select }                  from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-import { SpaceWrapper }            from '@acx-ui/rc/components'
 import { useTableQuery }           from '@acx-ui/rc/utils'
 import { RolesEnum }               from '@acx-ui/types'
 import { AccountType }             from '@acx-ui/utils'
@@ -101,7 +101,7 @@ const MspCustomerSelector = () => {
     >
       <Radio.Group style={{ width: '100%' }}
         disabled={role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER}>
-        <SpaceWrapper full direction='vertical' size='middle'>
+        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
           {ecTypesList.map((item) => {
             return (
               <React.Fragment key={item.value}>
@@ -132,7 +132,7 @@ const MspCustomerSelector = () => {
                 )}
               </React.Fragment>
             )})}
-        </SpaceWrapper>
+        </Space>
       </Radio.Group>
     </Form.Item>
   )

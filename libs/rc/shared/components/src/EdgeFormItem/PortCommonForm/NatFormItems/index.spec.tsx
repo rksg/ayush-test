@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Button }                                                                                     from '@acx-ui/components'
-import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                   from '@acx-ui/store'
-import { render, screen, waitFor }                                                                    from '@acx-ui/test-utils'
+import { Button }                                                            from '@acx-ui/components'
+import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { render, screen, waitFor }                                           from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
@@ -20,23 +20,20 @@ jest.mock('../../../ApCompatibility/ApCompatibilityToolTip', () => ({
       <button onClick={props.onClick}>See compatibility</button>
     </div>
 }))
-
-jest.mock('../../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
-  ...jest.requireActual('../../../Compatibility/Edge/EdgeCompatibilityDrawer'),
-  EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
-    <div data-testid='EdgeCompatibilityDrawer'>
-      <span>Feature:{props.featureName}</span>
-      <button onClick={props.onClose}>Close</button>
-    </div>
+jest.mock('./NatPoolFormItemTitle', () => ({
+  NatPoolFormItemTitle: jest.fn().mockImplementation(() =>
+    <div data-testid='NatPoolFormItemTitle'>NAT IP Addresses Range</div>)
 }))
 
 const defaultProps = {
+  serialNumber: 'mock-sn',
   parentNamePath: [],
   getFieldFullPath: (name: string) => [name],
   formFieldsProps: {},
   clusterInfo: { highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY },
   portsData: [],
-  lagData: []
+  lagData: [],
+  requiredFwMap: {}
 } as NatFormItemsProps
 
 const mockOnFinish = jest.fn()
@@ -126,7 +123,22 @@ describe('EdgeNatFormItems', () => {
       await userEvent.type(endInput, '1.1.1.1')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await screen.findByRole('alert')
-      await screen.findByText('Start IP cannot larger or equal to end IP')
+      await screen.findByText('Start IP cannot be greater than end IP')
+    })
+
+    it('should allow to configure pool start IP == end IP', async () => {
+      render(<MockComponent />)
+
+      const { startInput, endInput } = await natPoolTestPreparation()
+
+      await userEvent.type(startInput, '1.1.5.100')
+      await userEvent.type(endInput, '1.1.5.100')
+      await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+      await waitFor(() => expect(mockOnFinish).toBeCalledWith({
+        natEnabled: true,
+        natPools: [{ startIpAddress: '1.1.5.100', endIpAddress: '1.1.5.100' }]
+      }))
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
     })
 
     it('correctly block when pool range size > over maximum', async () => {
@@ -283,19 +295,6 @@ describe('EdgeNatFormItems', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await screen.findByRole('alert')
       await screen.findByText('NAT IP address range exceeds maximum size 128')
-    })
-
-    it('should show "Multi NAT IP" compatibility component', async () => {
-      render(<MockComponent />)
-
-      await natPoolTestPreparation()
-      const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(compatibilityToolTips.length).toBe(1)
-      compatibilityToolTips.forEach(t => expect(t).toBeVisible())
-      await userEvent.click(compatibilityToolTips[0])
-      const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
-      expect(compatibilityDrawer).toBeVisible()
-      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.MULTI_NAT_IP)
     })
 
     describe('LAG has existing NAT pool', () => {

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareSwitchVenueVersionsV1002,
@@ -80,7 +79,6 @@ export function SwitchUpgradeNotification (props: {
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
   const icon = isNeedUpgrade ? <UI.WarningTriangle /> : ''
   const content = upgradeDescription[type][descriptionIndex]
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   const { parseSwitchVersion, checkSwitchModelGroup } = useSwitchFirmwareUtils()
 
@@ -94,7 +92,7 @@ export function SwitchUpgradeNotification (props: {
   />
 
   if (isRodanModel) {
-    if ((enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
+    if ((Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
       return <UI.Wrapper>
         <UI.Content style={{ padding: '4px 8px 4px' }}>
           <div><StackUnitsMinLimitaionMsg /></div>
@@ -146,7 +144,7 @@ export function SwitchUpgradeNotification (props: {
         </UI.Header>
       }
       <UI.Content>
-        {enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
+        {Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
           <div style={{ paddingBottom: '4px' }}><StackUnitsMinLimitaionMsg /></div>
         }
 

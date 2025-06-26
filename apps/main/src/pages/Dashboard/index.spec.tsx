@@ -44,16 +44,17 @@ jest.mock('@acx-ui/rc/components', () => ({
   AlarmWidgetV2: () => <div data-testid={'rc-AlarmWidgetV2'} title='AlarmWidgetV2' />,
   ClientsWidgetV2: () => <div data-testid={'rc-ClientsWidgetV2'} title='ClientsWidgetV2' />,
   DevicesDashboardWidgetV2: () => <div data-testid={'rc-DevicesDashboardWidgetV2'} title='DevicesDashboardWidgetV2' />,
-  MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
   VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />
 }))
 jest.mock('@acx-ui/main/components', () => ({
-  VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
-}))
-jest.mock('@acx-ui/main/components', () => ({
+  MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
   VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeReady: jest.fn().mockReturnValue(true)
+}))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetCanvasesQuery: jest.fn(),

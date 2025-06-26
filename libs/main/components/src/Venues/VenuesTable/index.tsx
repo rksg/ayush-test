@@ -19,9 +19,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  getAPStatusDisplayName,
-  useEnforcedStatus,
-  useIsEdgeFeatureReady
+  useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useDeleteVenueMutation,
@@ -35,8 +33,10 @@ import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
   ConfigTemplateType,
+  getAPStatusDisplayName,
   PropertyUrlsInfo,
   TableQuery,
+  useIsEdgeFeatureReady,
   usePollingTableQuery,
   Venue,
   WifiRbacUrlsInfo
@@ -174,20 +174,6 @@ function useColumns (
         )
       }
     },
-    ...(isIotEnabled ? [{
-      title: $t({ defaultMessage: 'IoT Controller' }),
-      key: 'iotControllers',
-      dataIndex: 'iotControllers',
-      sorter: true,
-      render: function (data: ReactNode, row: Venue) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/devices/iotController`}
-            children={row.iotControllers ? row.iotControllers : 0}
-          />
-        )
-      }
-    }] : []),
     ...(isSupportWifiWiredClient? [{
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'wifi-clients',
@@ -290,6 +276,20 @@ function useColumns (
         )
       }
     },
+    ...(isIotEnabled ? [{
+      title: $t({ defaultMessage: 'IoT Controller' }),
+      key: 'iotControllers',
+      dataIndex: 'iotControllers',
+      sorter: true,
+      render: function (data: ReactNode, row: Venue) {
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices/iotController`}
+            children={row.iotControllers ? row.iotControllers : 0}
+          />
+        )
+      }
+    }] : []),
     ...(isTagsColumnEnabled ? [{
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tagList',
@@ -509,7 +509,6 @@ function useGetVenueCityList () {
 }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
   const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
@@ -540,10 +539,10 @@ const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayloa
       setTableData(result)
     }
 
-    if (isEdgeCompatibilityEnabled && tableQuery.data)
+    if (tableQuery.data)
       fetchVenueEdgeCompatibilities(tableQuery.data.data)
 
-  }, [isEdgeCompatibilityEnabled, tableQuery.data?.data])
+  }, [tableQuery.data?.data])
 
   return tableData
 }

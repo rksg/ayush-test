@@ -37,7 +37,7 @@ export default function PortalServiceModal (props:{
         {$t({ defaultMessage: 'Add Guest Portal Service' })}
       </Button>
       <Modal
-        title={$t({ defaultMessage: 'Add Portal Service' })}
+        title={$t({ defaultMessage: 'Add Guest Portal Service' })}
         visible={visible}
         type={ModalType.ModalStepsForm}
         mask={true}

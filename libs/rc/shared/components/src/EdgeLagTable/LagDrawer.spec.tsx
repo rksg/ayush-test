@@ -1,15 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
+import { rest }  from 'msw'
 
-import { Features }                    from '@acx-ui/feature-toggle'
+import { Features }   from '@acx-ui/feature-toggle'
 import {
   EdgeIpModeEnum, EdgeLag,
   EdgeLagFixtures, EdgePortConfigFixtures,
   EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort,
-  EdgePortTypeEnum, VirtualIpSetting
+  EdgePortTypeEnum, VirtualIpSetting, EdgeUrlsInfo,
+  EdgeCompatibilityFixtures, EdgeGeneralFixtures,
+  EdgeClusterStatus
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor,
@@ -23,6 +27,9 @@ import { LagDrawer } from './LagDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 const { click } = userEvent
 const mockEdgeCorePortPortConfig = _.cloneDeep(mockEdgePortConfig.ports)
 mockEdgeCorePortPortConfig.splice(0, 1)
@@ -56,7 +63,7 @@ jest.mock('antd', () => {
 
 jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
-  useGetEdgeSdLanByEdgeOrClusterId: () => ({
+  useGetEdgeSdLanByClusterId: () => ({
     edgeSdLanData: undefined
   })
 }))
@@ -64,20 +71,34 @@ jest.mock('../useEdgeActions', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
+const mockDefaultProps = {
+  clusterId: 'test-cluster',
+  serialNumber: 'test-edge',
+  visible: true,
+  setVisible: jest.fn(),
+  clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+  onAdd: async () => {},
+  onEdit: async () => {}
+}
+
 describe('Edge LAG table drawer', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      )
+    )
+  })
+
   it('should correctly render', async () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
-          setVisible={() => {}}
+          {...mockDefaultProps}
           data={mockedEdgeLagList.content[0] as EdgeLag}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
           existedLagList={mockedEdgeLagList.content as EdgeLag[]}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -88,13 +109,8 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
-          setVisible={() => {}}
+          {...mockDefaultProps}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -120,13 +136,9 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -140,13 +152,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
           onAdd={onAddSpy}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
     await userEvent.selectOptions(
@@ -192,13 +201,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           data={mockedEdgeLagList.content[1]}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
-          onAdd={async () => {}}
           onEdit={onEditSpy}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
@@ -218,13 +224,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           data={mockedEdgeLagList.content[1]}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
-          onAdd={async () => {}}
           onEdit={onEditSpy}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
@@ -244,9 +247,7 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           data={mockedEdgeLagList.content[1]}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
@@ -256,7 +257,6 @@ describe('Edge LAG table drawer', () => {
               portName: 'lag2'
             }]
           }] as VirtualIpSetting[]}
-          onAdd={async () => {}}
           onEdit={onEditSpy}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
@@ -274,15 +274,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
-          setVisible={() => {}}
+          {...mockDefaultProps}
           data={mockEdgeLag as EdgeLag}
           portList={mockEdgePortConfigDifferentMaxSpeed as EdgePort[]}
           existedLagList={[]}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
     const portCheckboxes = screen.getAllByRole('checkbox', { name: /Port/i })
@@ -322,13 +317,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           setVisible={setVisibleSpy}
           portList={mock2WanPorts as EdgePort[]}
           onAdd={onAddSpy}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
     await userEvent.selectOptions(
@@ -389,13 +381,10 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           setVisible={setVisibleSpy}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
           onAdd={onAddSpy}
-          onEdit={async () => {}}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -453,9 +442,7 @@ describe('Edge LAG table drawer', () => {
     render(
       <Provider>
         <LagDrawer
-          clusterId='test-cluster'
-          serialNumber='test-edge'
-          visible={true}
+          {...mockDefaultProps}
           portList={mockEdgeCorePortPortConfig as EdgePort[]}
           subInterfaceList={[{
             interfaceName: 'port2.1',

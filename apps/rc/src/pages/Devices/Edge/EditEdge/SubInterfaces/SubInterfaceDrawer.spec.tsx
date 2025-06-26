@@ -280,5 +280,139 @@ describe('EditEdge ports - sub-interface', () => {
       await userEvent.click(await screen.findByText('Static IP'))
       expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
     })
+
+    it('should disable access checkbox when edge is not support access port', async () => {
+      render(
+        <Provider>
+          <EditEdgeDataContext.Provider value={{
+            portData: [{
+              id: 'port1',
+              enabled: true,
+              portType: 'LAN'
+            }]
+          } as EditEdgeDataContextType}>
+            <SubInterfaceDrawer
+              mac={mockedPortsConfig.mac}
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              portId='port1'
+              isSupportAccessPort={false}
+            />
+          </EditEdgeDataContext.Provider>
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).not.toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    it('should disable core/access checkbox when SD-LAN is running', async () => {
+      render(
+        <Provider>
+          <EditEdgeDataContext.Provider value={{
+            portData: [{
+              id: 'port1',
+              enabled: true,
+              portType: 'LAN',
+              corePortEnabled: true,
+              accessPortEnabled: true
+            }],
+            edgeSdLanData: {}
+          } as EditEdgeDataContextType}>
+            <SubInterfaceDrawer
+              mac={mockedPortsConfig.mac}
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              portId='port1'
+              isSupportAccessPort={true}
+            />
+          </EditEdgeDataContext.Provider>
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    it('should disable core/access checkbox when port is disabled', async () => {
+      render(
+        <Provider>
+          <EditEdgeDataContext.Provider value={{
+            portData: [{
+              id: 'port1',
+              enabled: false,
+              portType: 'LAN'
+            }]
+          } as EditEdgeDataContextType}>
+            <SubInterfaceDrawer
+              mac={mockedPortsConfig.mac}
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              portId='port1'
+              isSupportAccessPort={true}
+            />
+          </EditEdgeDataContext.Provider>
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should disable core/access checkbox when the core/access port has been configured on other interface', async () => {
+      render(
+        <Provider>
+          <EditEdgeDataContext.Provider value={{
+            portData: [{
+              id: 'port1',
+              enabled: true,
+              portType: 'LAN',
+              corePortEnabled: true,
+              accessPortEnabled: true
+            }]
+          } as EditEdgeDataContextType}>
+            <SubInterfaceDrawer
+              mac={mockedPortsConfig.mac}
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              portId='port1'
+              isSupportAccessPort={true}
+            />
+          </EditEdgeDataContext.Provider>
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
   })
 })
