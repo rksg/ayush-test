@@ -45,7 +45,8 @@ export interface NetworksDrawerProps {
   venueId: string,
   venueName?: string,
   activatedNetworks?: NetworkActivationType,
-  pinNetworkIds?: string[]
+  pinNetworkIds?: string[],
+  softGreNetworkIds?: string[]
 }
 
 export interface NetworkActivationType {
@@ -65,7 +66,8 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     venueId,
     venueName,
     activatedNetworks = {},
-    pinNetworkIds
+    pinNetworkIds,
+    softGreNetworkIds
   } = props
 
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
@@ -172,6 +174,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             onActivateChange={handleActivateChange}
             onTunnelProfileChange={handelTunnelProfileChange}
             pinNetworkIds={pinNetworkIds}
+            softGreNetworkIds={softGreNetworkIds}
             validationFormRef={validationForm}
           />
         </Form>
