@@ -71,6 +71,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
   const [ fallbackEnable, setFallbackEnable ] = useState<boolean>(false)
+  const [ isSwitchDisabled, setIsSwitchDisabled ] = useState<boolean>(true)
   const { isTemplate } = useConfigTemplate()
   const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
@@ -83,7 +84,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
       skip: !policyId,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData,
+          softGreData: data?.data?.[0] as SoftGreViewData,
           isLoading
         }
       }
@@ -95,6 +96,12 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
 
     if (softGreData.gatewayFailbackEnabled) {
       setFallbackEnable(softGreData.gatewayFailbackEnabled)
+    }
+
+    if (softGreData.secondaryGatewayAddress && softGreData.primaryGatewayAddress.length > 0) {
+      setIsSwitchDisabled(false)
+    } else {
+      setIsSwitchDisabled(true)
     }
 
     form.setFieldsValue(softGreData)
@@ -144,6 +151,15 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     return (value && primaryGatewayAddress && primaryGatewayAddress === value) ?
       Promise.reject($t( { defaultMessage: 'Primary and secondary gateways must be different. Please enter a new gateway IP address or FQDN.' })) :
       Promise.resolve()
+  }
+
+  const handleSecondaryGatewayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim()
+    setIsSwitchDisabled(value === '')
+    if (value === '') {
+      form.setFieldsValue({ gatewayFailbackEnabled: false })
+      setFallbackEnable(false)
+    }
   }
 
   const toggleFallbackEnable = (checked: boolean) => {
@@ -210,7 +226,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             validateFirst
             hasFeedback
             children={readMode ? softGreData?.secondaryGatewayAddress || noDataDisplay :
-              <Input/>
+              <Input onChange={handleSecondaryGatewayChange}/>
             }
           />
         </Col>
@@ -233,7 +249,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                 children={
                   readMode
                     ? transformDisplayOnOff(softGreData?.gatewayFailbackEnabled ?? false)
-                    : <Switch aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
+                    : <Switch disabled={isSwitchDisabled} aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
                 }
               />
             </UI.StyledSpace>
@@ -282,7 +298,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                   noStyle
                   children={<InputNumber
                     aria-label='Primary Availability Check Interval'
-                    style={{ width: '60px' }}
+                    style={{ width: '80px' }}
                   />}
                 />
                 <div>{$t({ defaultMessage: 'minutes' })}</div>
