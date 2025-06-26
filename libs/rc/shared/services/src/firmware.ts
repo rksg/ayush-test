@@ -9,7 +9,6 @@ import {
   UpgradePreferences,
   FirmwareUrlsInfo,
   FirmwareVersion,
-  FirmwareVenue,
   FirmwareSwitchVenue,
   ABFVersion,
   onSocketActivityChanged,
@@ -93,49 +92,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
-    }),
-    getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersionList, {
-          ...params,
-          version: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
-          // eslint-disable-next-line max-len
-          type: queryString?.filters?.type ? queryString.filters.type.map(t => t.toLowerCase()).join(',') : '',
-          search: queryString?.searchString ?? ''
-        })
-        return{
-          ...req
-        }
-      },
-      transformResponse (result: FirmwareVenue[] ) {
-        return {
-          data: result,
-          page: 1,
-          totalCount: result.length
-        } as TableResult<FirmwareVenue>
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
-            api.dispatch(firmwareApi.util.invalidateTags([
-              { type: 'Firmware', id: 'LIST' }
-            ]))
-          })
-        })
-      },
-      providesTags: [{ type: 'Firmware', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
-    getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getLatestFirmwareList, params)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     getAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
@@ -622,17 +578,13 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        if (enableRbac) {
-          return {
-            ...createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params),
-            body: JSON.stringify({
-              fields: ['nextApFirmwareSchedules'],
-              page: 1, pageSize: 10000
-            })
-          }
-        } else {
-          return createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params),
+          body: JSON.stringify({
+            fields: ['nextApFirmwareSchedules'],
+            page: 1, pageSize: 10000
+          })
         }
       },
       // eslint-disable-next-line max-len
@@ -823,8 +775,6 @@ export const {
   useUpdateUpgradePreferencesMutation,
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
-  useGetVenueVersionListQuery,
-  useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
   useGetAvailableABFListQuery,
   useGetApModelFamiliesQuery,
