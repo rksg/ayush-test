@@ -130,7 +130,6 @@ export enum Features {
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
   RBAC_OPERATIONS_API_TOGGLE = 'acx-ui-rbac-allow-operations-api-toggle',
   RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
-  ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
