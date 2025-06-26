@@ -1,7 +1,7 @@
 import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { cloneDeep, isObject }                  from 'lodash'
+import { cloneDeep }                            from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                           from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { LanPortPoeSettings, LanPortSettings, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,

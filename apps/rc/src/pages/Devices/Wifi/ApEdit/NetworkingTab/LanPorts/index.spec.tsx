@@ -163,9 +163,7 @@ describe('Lan Port', () => {
       // T750SE have 3 Lan ports
       expect(tabs.length).toBe(3)
       await userEvent.click(tabs[1])
-      screen.debug()
       await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
-      screen.debug()
       expect(screen.queryByRole('button', { name: 'Reset to default' })).not.toBeInTheDocument()
 
       const poeCombobox = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
