@@ -78,6 +78,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+  const mspHspDisplayToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
@@ -236,6 +237,7 @@ export function AddRecCustomer () {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
         mspRecCustomer.forEach((cus: MspRecCustomer) => {
           recCustomers.push({
+            ...(mspHspDisplayToggle && { propertyCode: cus.propertyCode }),
             account_id: cus.account_id,
             name: cus.account_name,
             admin_delegations: delegations,

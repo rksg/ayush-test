@@ -24,11 +24,20 @@ export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicens
   if (rcapSummary) {
     seriesMapping.forEach(({ key, name, color }) => {
       if (rcapSummary[key as keyof RcapLicenseUtilizationData]) {
-        chartData.push({
-          name,
-          value: rcapSummary[key as keyof RcapLicenseUtilizationData] as number,
-          color
-        })
+        if (key === RcapLicenseUtilizationEnum.AVAILABLE) {
+          chartData.push({
+            name,
+            // eslint-disable-next-line max-len
+            value: rcapSummary[RcapLicenseUtilizationEnum.AVAILABLE] as number - (rcapSummary[RcapLicenseUtilizationEnum.USED] as number),
+            color
+          })
+        } else {
+          chartData.push({
+            name,
+            value: rcapSummary[key as keyof RcapLicenseUtilizationData] as number,
+            color
+          })
+        }
       }
     })
   }

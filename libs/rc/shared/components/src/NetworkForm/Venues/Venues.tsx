@@ -177,7 +177,6 @@ export function Venues (props: VenuesProps) {
 
   const { isTemplate } = useConfigTemplate()
 
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
@@ -752,7 +751,7 @@ export function Venues (props: VenuesProps) {
               onCancel={handleCancel}
             />
           </Form.Provider>
-          {(isEdgeSdLanMvEnabled || isSoftGreEnabled) && tunnelModalState.visible &&
+          {tunnelModalState.visible &&
           <>
             {!isIpSecEnabled &&
             <NetworkTunnelActionModal

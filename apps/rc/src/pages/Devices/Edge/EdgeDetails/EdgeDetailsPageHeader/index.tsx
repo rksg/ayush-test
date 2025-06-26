@@ -13,7 +13,7 @@ import { useIntl } from 'react-intl'
 import { Button, CaretDownSolidIcon, Dropdown, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
 import { EdgePermissions }                                                                        from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                                 from '@acx-ui/rc/components'
+import { EdgeStatusLight, useEdgeActions }                                                        from '@acx-ui/rc/components'
 import {
   EdgeStatusEnum, EdgeUrlsInfo, rebootShutdownEdgeStatusWhiteList, resettableEdgeStatuses
 } from '@acx-ui/rc/utils'
@@ -47,7 +47,6 @@ export const EdgeDetailsPageHeader = () => {
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
   const menuConfig = [
     {
@@ -57,13 +56,13 @@ export const EdgeDetailsPageHeader = () => {
       key: 'reboot',
       showupstatus: rebootShutdownEdgeStatusWhiteList
     },
-    ...(isGracefulShutdownReady ? [{
+    {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       label: $t({ defaultMessage: 'Shutdown' }),
       key: 'shutdown',
       showupstatus: rebootShutdownEdgeStatusWhiteList
-    }] : []),
+    },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],

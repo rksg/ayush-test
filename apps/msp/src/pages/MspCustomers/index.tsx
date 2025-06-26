@@ -25,7 +25,6 @@ import {
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
   useDelegateToMspEcPath,
-  useCheckDelegateAdmin,
   useGetMspEcAlarmListQuery
 } from '@acx-ui/msp/services'
 import {
@@ -50,6 +49,7 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
 
+import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
 import HspContext                    from '../../HspContext'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'

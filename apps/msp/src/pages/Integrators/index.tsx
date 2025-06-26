@@ -18,7 +18,6 @@ import {
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useCheckDelegateAdmin,
   useGetMspLabelQuery
 } from '@acx-ui/msp/services'
 import {
@@ -33,6 +32,7 @@ import {
   AccountType, getOpsApi, isDelegationMode
 } from '@acx-ui/utils'
 
+import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
 import HspContext                    from '../../HspContext'
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'

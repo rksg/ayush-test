@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 
-import { Filter }                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import type { Filter }                            from '@acx-ui/types'
 import { getIntl, noDataDisplay }                 from '@acx-ui/utils'
 
 import { authenticationTypeLabel, AuthenticationType } from '../FlexibleAuthentication'
