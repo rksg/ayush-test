@@ -215,7 +215,7 @@ export const PlusButton = styled.div<{ disabled?: boolean }>`
   }
 `
 
-export const DisconnectedBranchPlusButton = styled.div<{ disabled?: boolean }>`
+export const DisconnectedBranchDragHandle = styled.div<{ disabled?: boolean }>`
   position: absolute;
   top: -31px;
   right: 125px;
@@ -246,13 +246,9 @@ export const DisconnectedBranchPlusButton = styled.div<{ disabled?: boolean }>`
     border: 1px solid var(--acx-accents-orange-50) !important;
     background-color: var(--acx-accents-orange-10) !important;
 
-    path {
-      stroke: var(--acx-accents-orange-50) !important;
-    }
-
-    ::after {
-      height: 17px;
-      background-color: var(--acx-accents-orange-50);
+    ::before {
+      height: 16px;
+      background-color: var(--acx-accents-orange-50) !important;
     }
   }
 `
