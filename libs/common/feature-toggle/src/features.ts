@@ -204,7 +204,6 @@ export enum Features {
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
   WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'removable-ff',
-  WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
