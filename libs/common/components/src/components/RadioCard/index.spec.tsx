@@ -1,8 +1,9 @@
 import { defineMessage } from 'react-intl'
 
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen }     from '@acx-ui/test-utils'
+import { RadioCardCategory as Category } from '@acx-ui/types'
 
-import { RadioCard, RadioCardCategory as Category } from '.'
+import { RadioCard } from '.'
 
 describe('RadioCard', () => {
   describe('type = default', () => {
