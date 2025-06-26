@@ -4,17 +4,18 @@ import AutoSizer                                    from 'react-virtualized-auto
 import {
   HistoricalCard,
   Loader,
-  NoData,
   DonutChart,
   ContentSwitcher,
   ContentSwitcherProps,
   GridRow,
-  GridCol
+  GridCol,
+  NoData
 } from '@acx-ui/components'
 import type { DonutChartData } from '@acx-ui/components'
 import { intlFormats }         from '@acx-ui/formatter'
 
-import { Mdu360TabProps } from '../../types'
+import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
+import { Mdu360TabProps }                       from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
 interface DistributionData {
@@ -73,7 +74,6 @@ const getWifiGenerationChartData =
     distributionData,
     olderClientCount,
     olderApCount
-
   }
 }
 
@@ -127,27 +127,30 @@ export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate })
           })}
           tooltipValuesFunc={tooltipValuesFunc(data.distributionData)}
         />
-        : <NoData style={{ margin: '38px 0 0 0' }}/>
+        : <StyledNoData />
     )}
   </AutoSizer>
 
   const upgradeOpportunity =
     <GridRow>
-      <GridCol col={{ span: 24 }} style={{ maxHeight: '140px', display: 'inline-block' }}>
-        {data?.olderClientCount > 0 ?
-          (<FormattedMessage
-            defaultMessage={
-              '{olderClientCount} clients are connected to older-generation access points. ' +
+      <GridCol col={{ span: 24 }} style={{ display: 'inline-block' }}>
+        {isDistributionDataAvailable ?
+          data?.olderClientCount > 0 ?
+            (<FormattedMessage
+              defaultMessage={
+                '{olderClientCount} clients are connected to older-generation access points. ' +
             'Consider upgrading {olderApCount} APs to enhance performance and user experience.'
-            }
-            values={{
-              olderClientCount: <strong>{data.olderClientCount}</strong>,
-              olderApCount: <strong>{data.olderApCount}</strong>
-            }}
-          /> ):
-          (<span>{$t({ defaultMessage: 'You’ve got the latest and greatest APs in your network! ' +
+              }
+              values={{
+                olderClientCount: <strong>{data.olderClientCount}</strong>,
+                olderApCount: <strong>{data.olderApCount}</strong>
+              }}
+            /> ):
+            (<span>
+              {$t({ defaultMessage: 'You’ve got the latest and greatest APs in your network! ' +
           'All clients are connected to the newest ' +
-          'Wi-Fi generation and are enjoying exceptional performance.' })}</span>) }
+          'Wi-Fi generation and are enjoying exceptional performance.' })}</span>) :
+          <NoData style={{ marginTop: '95px' }}/>}
       </GridCol>
     </GridRow>
 
@@ -165,9 +168,9 @@ export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate })
       <HistoricalCard title={$t({ defaultMessage: 'Wi-Fi Generation' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
+            <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
-            </div>
+            </ContentSwitcherWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>
