@@ -3,6 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
   HistoricalCard,
+  Loader,
   ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
@@ -38,14 +39,16 @@ export function TrafficByRadio ({ filters }: { filters: TrafficByRadioFilters })
   ]
 
   return (
-    <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
-            <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
-          </div>
-        )}
-      </AutoSizer>
-    </HistoricalCard>
+    <Loader states={[queryResults]}>
+      <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
+              <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
+            </div>
+          )}
+        </AutoSizer>
+      </HistoricalCard>
+    </Loader>
   )
 }

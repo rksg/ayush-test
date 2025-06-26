@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                            from '@acx-ui/analytics/utils'
-import { Loader, NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import { UseQueryResult }                           from '@acx-ui/types'
+import { getSeriesData }                    from '@acx-ui/analytics/utils'
+import { NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
+import { UseQueryResult }                   from '@acx-ui/types'
 
 import { TrafficByRadioData } from './services'
 
@@ -24,18 +24,16 @@ export function TrafficTrend ({
   const data = getSeriesData(queryResults.data!, seriesMapping)
 
   return (
-    <Loader states={[queryResults]}>
-      <AutoSizer>
-        {({ height, width }) => (
-          data.length ?
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={data}
-              dataFormatter={formatter('bytesFormat')}
-            />
-            : <NoData/>
-        )}
-      </AutoSizer>
-    </Loader>
+    <AutoSizer>
+      {({ height, width }) => (
+        data.length ?
+          <MultiLineTimeSeriesChart
+            style={{ width, height }}
+            data={data}
+            dataFormatter={formatter('bytesFormat')}
+          />
+          : <NoData/>
+      )}
+    </AutoSizer>
   )
 }
