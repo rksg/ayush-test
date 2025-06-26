@@ -110,11 +110,12 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !cloudpathBetaEnabled
       },
       {
-        type: PolicyType.CERTIFICATE_TEMPLATE,
+        type: PolicyType.CERTIFICATE_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-        disabled: !isCertificateTemplateEnabled
+        disabled: !isCertificateTemplateEnabled,
+        route: '/policies/certificateTemplate/list'
       },
       {
         type: PolicyType.CLIENT_ISOLATION,

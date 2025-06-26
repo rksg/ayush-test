@@ -5,7 +5,7 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
@@ -25,7 +25,8 @@ import {
   useGetEnhancedPortalProfileListQuery, useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery,
   useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery
+  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery,
+  useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery
 } from '@acx-ui/rc/services'
 import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                                       from '@acx-ui/types'
@@ -100,7 +101,7 @@ function useUnifiedServiceTotalCountMap (
     [PolicyType.ADAPTIVE_POLICY]: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: !typeSet.has(PolicyType.ADAPTIVE_POLICY) }),
     [PolicyType.LBS_SERVER_PROFILE]: useGetLbsServerProfileListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.LBS_SERVER_PROFILE) }),
     [PolicyType.WORKFLOW]: useSearchInProgressWorkflowListQuery({ params: { ...params, excludeContent: 'true' } }, { skip: !typeSet.has(PolicyType.WORKFLOW) }),
-    [PolicyType.CERTIFICATE_TEMPLATE]: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.CERTIFICATE_TEMPLATE) }),
+    [PolicyType.CERTIFICATE_PROFILE]: useCertificateTotalCount(params, !typeSet.has(PolicyType.CERTIFICATE_PROFILE)),
     [PolicyType.ETHERNET_PORT_PROFILE]: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !typeSet.has(PolicyType.ETHERNET_PORT_PROFILE) }),
     [PolicyType.HQOS_BANDWIDTH]: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.HQOS_BANDWIDTH) }),
     [PolicyType.SOFTGRE]: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.SOFTGRE) }),
@@ -307,5 +308,28 @@ export function useMdnsProxyConsolidationTotalCount (
   return {
     data: { totalCount: Number(mdnsProxyData?.totalCount ?? 0) + Number(edgeMdnsProxyData?.totalCount ?? 0) },
     isFetching: mdnsProxyFetching || edgeMdnsProxyIsFetching
+  }
+}
+
+function useCertificateTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
+
+  const { data: certTemplateData, isFetching: certTemplateFetching } =
+    useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: caData, isFetching: caFetching } =
+    useGetCertificateAuthoritiesQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: deviceCertData, isFetching: deviceCertFetching } =
+    useGetCertificatesQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: serverCertData, isFetching: serverCertFetching } =
+    useGetServerCertificatesQuery({ params, payload: {} }, { skip: isDisabled })
+
+  return {
+    data: {
+      totalCount: Number(certTemplateData?.totalCount ?? 0) + Number(caData?.totalCount ?? 0)
+        + Number(deviceCertData?.totalCount ?? 0) + Number(serverCertData?.totalCount ?? 0)
+    },
+    isFetching: certTemplateFetching || caFetching || deviceCertFetching || serverCertFetching
   }
 }
