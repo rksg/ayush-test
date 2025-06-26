@@ -3,12 +3,14 @@ import { DefaultOptionType }                from 'antd/lib/select'
 import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { cssStr }    from '@acx-ui/components'
-import { switchApi } from '@acx-ui/rc/services'
+import { cssStr }       from '@acx-ui/components'
+import { switchApi }    from '@acx-ui/rc/services'
+import {
+  getSwitchModel,
+  getPortSpeedOptions
+} from '@acx-ui/rc/switch/utils'
 import {
   AclUnion,
-  getPortSpeedOptions,
-  getSwitchModel,
   LldpQosModel,
   SwitchPortViewModel,
   SwitchDefaultVlan,
@@ -233,8 +235,7 @@ export const updateSwitchVlans = (
   switchVlans: SwitchVlanUnion,
   setSwitchVlans: (switchVlans: SwitchVlanUnion) => void,
   venueVlans: Vlan[],
-  setVenueVlans: (switchVlans: Vlan[]) => void,
-  isSwitchLevelVlanEnabled?: boolean
+  setVenueVlans: (switchVlans: Vlan[]) => void
 ) => {
   store.dispatch(switchApi.util.invalidateTags([
     { type: 'SwitchVlan', id: 'LIST' }
@@ -249,12 +250,6 @@ export const updateSwitchVlans = (
       ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
     }] as SwitchVlan[]
 
-  const profileVlan = [
-    ...(switchVlans?.profileVlan ?? []), {
-      profileLevel: true, defaultVlan: false, vlanId: Number(vlan.vlanId),
-      ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
-    }] as SwitchVlan[]
-
   const filteredSwitchVlans = {
     ...switchVlans,
     switchVlan: switchVlans.switchVlan?.filter(
@@ -264,7 +259,7 @@ export const updateSwitchVlans = (
 
   setSwitchVlans({
     ...filteredSwitchVlans,
-    ...(isSwitchLevelVlanEnabled ? { switchVlan } : { profileVlan })
+    switchVlan
   })
   setVenueVlans([ ...venueVlans, vlan ])
 }

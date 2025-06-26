@@ -1,20 +1,15 @@
-import moment from 'moment-timezone'
+import * as UI                   from './styledComponents'
+import { ApplicationCategories } from './Widgets/ApplicationCategories'
+import { WifiClient }            from './Widgets/WifiClient'
 
-import { GridRow , GridCol } from '@acx-ui/components'
+import type { Mdu360TabProps } from '.'
 
-import type { Mdu360TabPros } from '.'
-
-const ResidentExperienceTab: React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
-
+const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
   return (
-    <GridRow>
-      <GridCol col={{ span: 24 }} >
-        {/* Please add widgets and remove this content */}
-       startDate: {moment(startDate).format('YYYY-MM-DD HH:mm:ss')},
-       endDate: {moment(endDate).format('YYYY-MM-DD HH:mm:ss')}
-      </GridCol>
-    </GridRow>
-
+    <UI.Grid>
+      <WifiClient filters={{ startDate, endDate }} />
+      <ApplicationCategories filters={{ startDate, endDate }} />
+    </UI.Grid>
   )
 }
 

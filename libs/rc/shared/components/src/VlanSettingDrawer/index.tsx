@@ -170,7 +170,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const defaultVlan = vlansList.find(vlan => vlan.vlanName === SWITCH_DEFAULT_VLAN_NAME)
 
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const is10020aSwitchOnlyRstpEnabled = useIsSplitOn(Features.SWITCH_UPDATE_RSTP_ABOVE_10020A)
 
   const isSwitchLevel = !!switchFamilyModel
@@ -214,7 +213,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }, [vlan])
 
   useEffect(() => {
-    if(vlan && isSwitchLevelVlanEnabled){
+    if(vlan){
       const portsUsedByLag = Object.keys(portsUsedBy?.lag ?? {})
       const isPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
         _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
@@ -223,7 +222,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
       setHasPortsUsedByLag(!!isPortsUsedByLag)
     }
-  }, [vlan, portsUsedBy, isSwitchLevelVlanEnabled])
+  }, [vlan, portsUsedBy])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
     ...(!isSwitchLevel ? [{
@@ -552,7 +551,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      { (!isSwitchLevelVlanEnabled || enablePortModelConfigure) && <>
+      { enablePortModelConfigure && <>
         <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
           <Col>
             <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
@@ -599,7 +598,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           vlanList={
             vlansList.filter(vlan => vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
           }
-          switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
+          switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
           stackMember={stackMember}

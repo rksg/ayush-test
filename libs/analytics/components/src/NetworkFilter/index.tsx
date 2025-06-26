@@ -9,10 +9,11 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Cascader, Loader, RadioBand }           from '@acx-ui/components'
+import { Cascader, Loader }                      from '@acx-ui/components'
 import type { CascaderOption }                   from '@acx-ui/components'
 import { Features, useAnySplitsOn }              from '@acx-ui/feature-toggle'
 import { useReportsFilter }                      from '@acx-ui/reports/utils'
+import type { RadioBand }                        from '@acx-ui/types'
 import { NetworkPath, getIntl, AnalyticsFilter } from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'

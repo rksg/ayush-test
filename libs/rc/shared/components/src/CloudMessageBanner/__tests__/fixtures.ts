@@ -21,25 +21,6 @@ export const cloudVersion = {
   versionUpgradeDate: null
 }
 
-export const scheduleVersion = {
-  scheduleVersionList: ['6.2.1.103.2573', '6.2.1.103.2550']
-}
-
-export const switchVenueVersionList = {
-  upgradeVenueViewList: [{
-    availableVersions: [
-      { id: '09010f_b19', name: '09010f_b19', category: 'RECOMMENDED' },
-      { id: '10010_rc2', name: '10010_rc2', category: 'RECOMMENDED' }
-    ],
-    id: '923f6df894c340498894a6b7c68feaae',
-    name: 'My-Venue',
-    preDownload: true,
-    witchFirmwareVersion: { id: '09010e_b392', name: '09010e_b392', category: 'RECOMMENDED' },
-    switchFirmwareVersionAboveTen: { id: '10010_b176', name: '10010_b176', category: 'RECOMMENDED' },
-    upgradeVenueViewList: null
-  }]
-}
-
 export const venueApModelFirmwareList = {
   totalCount: 1,
   page: 1,

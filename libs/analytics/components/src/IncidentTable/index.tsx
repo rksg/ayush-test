@@ -1,9 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 
-import { Checkbox }                                 from 'antd'
-import { stringify }                                from 'csv-stringify/browser/esm/sync'
-import { omit }                                     from 'lodash'
-import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
+import { stringify }                                           from 'csv-stringify/browser/esm/sync'
+import { omit }                                                from 'lodash'
+import { useIntl, defineMessage, FormattedMessage, IntlShape } from 'react-intl'
 
 import {
   productNames,
@@ -17,13 +16,16 @@ import {
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
+import { Loader, TableProps, Drawer, Tooltip, Button, Table } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
 import {
-  DownloadOutlined
+  DownloadOutlined,
+  EyeOpenOutlined,
+  EyeSlashOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import type { Filter }                   from '@acx-ui/types'
 import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
 import {
   filterByAccess,
@@ -49,10 +51,8 @@ import {
   IncidentTableRow,
   IncidentNodeData
 } from './services'
-import * as UI                                                                   from './styledComponents'
-import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
-
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import * as UI                                             from './styledComponents'
+import { GetIncidentBySeverity, ShortIncidentDescription } from './utils'
 
 export function downloadIncidentList (
   incidents: IncidentNodeData,
@@ -133,6 +133,57 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
   </TenantLink>
 }
 
+type IncidentRowData = Pick<
+  IncidentTableRow,
+  'id' | 'code' | 'severityLabel' | 'isMuted'
+  >
+
+export enum IncidentVisibility {
+  All,
+  Muted,
+  Unmuted
+}
+
+const visibilityFilterOptions = ($t: IntlShape['$t']) => [
+  {
+    id: IncidentVisibility.Unmuted,
+    key: 'false',
+    value: (
+      <UI.OptionItemWithIcon>
+        <EyeOpenOutlined height={18} /> {$t({ defaultMessage: 'Unmuted' })}
+      </UI.OptionItemWithIcon>
+    ),
+    label: $t({ defaultMessage: 'Unmuted' })
+  },
+  {
+    id: IncidentVisibility.Muted,
+    key: 'true',
+    value: (
+      <UI.OptionItemWithIcon>
+        <EyeSlashOutlined height={18} /> {$t({ defaultMessage: 'Muted' })}
+      </UI.OptionItemWithIcon>
+    ),
+    label: $t({ defaultMessage: 'Muted' })
+  }
+]
+
+export const getIncidentsMutedStatus = (incidents: IncidentRowData[]) => {
+  if (incidents.length === 0) return IncidentVisibility.All
+  const firstIncidentIsMuted = incidents[0].isMuted
+
+  for (let i = 1; i < incidents.length; i++) {
+    if (incidents[i].isMuted !== firstIncidentIsMuted) return IncidentVisibility.All
+  }
+
+  return firstIncidentIsMuted
+    ? IncidentVisibility.Muted
+    : IncidentVisibility.Unmuted
+}
+
+const defaultSelectedFilters: Filter = {
+  isMuted: ['false']
+}
+
 export function IncidentTable ({ filters }: {
    filters: IncidentFilter }) {
   const intl = useIntl()
@@ -142,20 +193,11 @@ export function IncidentTable ({ filters }: {
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
-  const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
-  const [muteIncident] = useMuteIncidentsMutation()
-  const [selectedRowData, setSelectedRowData] = useState<{
-    id: string,
-    code: string,
-    severityLabel: string,
-    isMuted: boolean
-  }[]>([])
-
-  const selectedIncident = selectedRowData[0]
-  const data = (showMuted)
-    ? queryResults.data
-    : filterMutedIncidents(queryResults.data)
+  const [muteIncident, { isLoading }] = useMuteIncidentsMutation()
+  const [selectedRowsData, setSelectedRowsData] = useState<IncidentRowData[]>(
+    []
+  )
 
   const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
     permission: 'WRITE_INCIDENTS',
@@ -173,23 +215,56 @@ export function IncidentTable ({ filters }: {
     rbacOpsIds: [aiOpsApis.updateIncident]
   })
 
-  const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
-    {
-      key: getShowWithoutRbacCheckKey('mute'),
-      visible: ([row]) => row && row.sliceType.startsWith('switch')
-        ? !!hasUpdateSwitchIncidentPermission
-        : !!hasUpdateWifiIncidentPermission,
-      label: $t(selectedIncident?.isMuted
-        ? defineMessage({ defaultMessage: 'Unmute' })
-        : defineMessage({ defaultMessage: 'Mute' })
-      ),
-      onClick: async () => {
-        const { id, code, severityLabel, isMuted } = selectedIncident
-        await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
-        setSelectedRowData([])
+  const muteSelectedIncidents = useCallback(async (mute: boolean) => {
+    await muteIncident(
+      selectedRowsData
+        .filter(({ isMuted }) => isMuted !== mute)
+        .map(({ id, code, severityLabel }) => ({
+          id,
+          code,
+          priority: severityLabel,
+          mute
+        }))
+    ).unwrap()
+  }, [muteIncident, selectedRowsData])
+
+  const rowActions: TableProps<IncidentTableRow>['rowActions'] = useMemo(() => {
+    const incidentsMutedStatus = getIncidentsMutedStatus(selectedRowsData)
+    return [
+      {
+        key: getShowWithoutRbacCheckKey('mute'),
+        visible: ([row]) =>
+          row && row.sliceType.startsWith('switch')
+            ? !!hasUpdateSwitchIncidentPermission
+            : !!hasUpdateWifiIncidentPermission,
+        label: $t(defineMessage({ defaultMessage: 'Mute' })),
+        onClick: async () => {
+          await muteSelectedIncidents(true)
+          setSelectedRowsData([])
+        },
+        disabled: incidentsMutedStatus === IncidentVisibility.Muted
+      },
+      {
+        key: getShowWithoutRbacCheckKey('unmute'),
+        visible: ([row]) =>
+          row && row.sliceType.startsWith('switch')
+            ? !!hasUpdateSwitchIncidentPermission
+            : !!hasUpdateWifiIncidentPermission,
+        label: $t(defineMessage({ defaultMessage: 'Unmute' })),
+        onClick: async () => {
+          await muteSelectedIncidents(false)
+          setSelectedRowsData([])
+        },
+        disabled: incidentsMutedStatus === IncidentVisibility.Unmuted
       }
-    }
-  ]
+    ]
+  }, [
+    $t,
+    hasUpdateSwitchIncidentPermission,
+    hasUpdateWifiIncidentPermission,
+    selectedRowsData,
+    muteSelectedIncidents
+  ])
 
   const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
@@ -253,7 +328,8 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
-      filterable: true
+      filterable: true,
+      filterableWidth: 130
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
@@ -297,6 +373,27 @@ export function IncidentTable ({ filters }: {
       sorter: { compare: sortProp('type', defaultSort) },
       show: false,
       filterable: true
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Visibility' })),
+      width: 80,
+      dataIndex: 'isMuted',
+      key: 'isMuted',
+      align: 'center',
+      render: (_, { isMuted }) =>
+        isMuted ? (
+          <Tooltip title={$t({ defaultMessage: 'Muted' })}>
+            <EyeSlashOutlined height={18} />
+          </Tooltip>
+        ) : (
+          <Tooltip title={$t({ defaultMessage: 'Unmuted' })}>
+            <EyeOpenOutlined height={18} />
+          </Tooltip>
+        ),
+      filterValueNullable: true,
+      filterValueArray: true,
+      filterMultiple: false,
+      filterable: visibilityFilterOptions($t)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
@@ -308,50 +405,52 @@ export function IncidentTable ({ filters }: {
   })
 
   return (
-    <Loader states={[queryResults]} style={{ height: 'auto' }}>
-      <UI.IncidentTableWrapper
+    <Loader
+      states={[
+        { ...queryResults, isLoading: queryResults.isLoading || isLoading }
+      ]}
+      style={{ height: 'auto' }}
+    >
+      <Table<IncidentTableRow>
+        selectedFilters={defaultSelectedFilters}
         settingsId='incident-table'
         type='tall'
-        dataSource={data}
+        dataSource={queryResults.data}
         columns={ColumnHeaders}
         rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
-          disabled: !Boolean(data?.length),
+          disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
-            downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
+            downloadIncidentList(queryResults.data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={hasRowSelection && {
-          type: 'radio',
-          selectedRowKeys: selectedRowData.map(val => val.id),
-          onChange: (_, [row]) => {
-            row && setSelectedRowData([{
-              id: row.id,
-              code: row.code,
-              severityLabel: row.severityLabel,
-              isMuted: row.isMuted
-            }])
+        rowSelection={
+          hasRowSelection && {
+            type: 'checkbox',
+            selectedRowKeys: selectedRowsData.map((val) => val.id),
+            onChange: (_, selectedRows) => {
+              selectedRows.length > 0 &&
+                setSelectedRowsData(
+                  selectedRows.map((row) => ({
+                    id: row.id,
+                    code: row.code,
+                    severityLabel: row.severityLabel,
+                    isMuted: row.isMuted
+                  }))
+                )
+            }
           }
-        }}
+        }
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
-        onResetState={() => {
-          setShowMuted(false)
-          setSelectedRowData([])
-        }}
-        extraSettings={[
-          <Checkbox
-            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
-            checked={showMuted}
-            children={$t({ defaultMessage: 'Show Muted Incidents' })}
-          />
-        ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-disabled' : 'table-row-normal'}
-        filterableWidth={155}
+        onResetState={() => setSelectedRowsData([])}
+        filterableWidth={100}
         searchableWidth={240}
+        optionLabelProp='label'
+        columnsToFilterChildrenRowBasedOnParentRow={['isMuted']}
       />
       <Drawer
         visible={!!drawerSelection}

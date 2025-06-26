@@ -30,19 +30,33 @@ jest.mock('@acx-ui/msp/services', () => ({
     name: ''
   } })
 }))
-jest.mock('@acx-ui/main/components', () => ({
-  ...jest.requireActual('@acx-ui/main/components'),
-  LicenseBanner: () => <div data-testid='license-banner' />,
-  ActivityButton: () => <div data-testid='activity-button' />,
-  AlarmsButton: () => <div data-testid='alarms-button' />,
-  HelpButton: () => <div data-testid='help-button' />,
-  UserButton: () => <div data-testid='user-button' />,
-  FetchBot: () => <div data-testid='fetch-bot' />
-}))
+jest.mock('@acx-ui/main/components', () => {
+  const React = require('react')
+  return {
+    LicenseBanner: () => <div data-testid='license-banner' />,
+    ActivityButton: () => <div data-testid='activity-button' />,
+    AlarmsButton: () => <div data-testid='alarms-button' />,
+    HelpButton: () => <div data-testid='help-button' />,
+    UserButton: () => <div data-testid='user-button' />,
+    FetchBot: () => <div data-testid='fetch-bot' />,
+    GlobalSearchBar: () => <div data-testid='global-search-bar' />,
+    PropertyUnitDetails: () => <div data-testid='property-unit-details' />,
+    RegionButton: () => <div data-testid='region-button' />,
+    VenueDetails: () => <div data-testid='venue-details' />,
+    VenueEdit: () => <div data-testid='venue-edit' />,
+    VenuesForm: () => <div data-testid='venues-form' />,
+    HeaderContext: React.createContext({
+      setSearchExpanded: jest.fn(),
+      setLicenseExpanded: jest.fn(),
+      searchExpanded: true,
+      licenseExpanded: false
+    })
+  }
+})
 jest.mock('@acx-ui/rc/components', () => ({
+  withTemplateFeatureGuard: () => () => <div data-testid='with-template-feature-guard' />,
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
   useUpdateGoogleMapRegion: () => { return { update: jest.fn() }},
-  useIsEdgeReady: jest.fn().mockReturnValue(false),
   SpaceWrapper: () => <div data-testid='space-wrapper' />
 }))
 jest.mock('@acx-ui/user', () => ({

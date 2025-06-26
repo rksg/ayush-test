@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Typography } from 'antd'
 
-import { Drawer, Loader }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drawer, Loader }             from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
@@ -16,8 +17,9 @@ import { TenantLink }         from '@acx-ui/react-router-dom'
 import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { SpaceWrapper }          from '../SpaceWrapper'
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { SpaceWrapper }                                                                                from '../SpaceWrapper'
+import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
 
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
@@ -36,9 +38,11 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     onClose, onFinish,
     cachedActs, cachedSoftGre
   } = props
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
+  const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
   const { hasEdgeSdLanPermission, hasSoftGrePermission } = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
@@ -93,6 +97,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     }
     visible={visible}
     width={450}
+    push={false}
     children={visible &&
       <Form form={form} layout='vertical' onFinish={handleApply}>
         <Typography style={{ marginBottom: '20px' }}>
@@ -100,7 +105,28 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
         </Typography>
         <Form.Item
           name='tunnelType'
-          label={$t({ defaultMessage: 'Tunneling Method' })}
+          label={<>
+            {$t({ defaultMessage: 'Tunneling Method' })}
+            {isR370UnsupportedFeatures &&
+            <>
+              <ApCompatibilityToolTip
+                title={'SoftGRE has specific compatibility requirements.'}
+                showDetailButton
+                placement='top'
+                onClick={() => setSoftGreDrawerVisible(true)}
+                icon={<QuestionMarkCircleOutlined
+                  style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
+                />}
+              />
+              <ApCompatibilityDrawer
+                visible={softGreDrawerVisible}
+                type={ApCompatibilityType.ALONE}
+                networkId={networkId}
+                featureNames={[InCompatibilityFeatures.NETWORK_SOFT_GRE]}
+                onClose={() => setSoftGreDrawerVisible(false)}
+              />
+            </>}
+          </>}
           initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {
@@ -158,9 +184,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               }
               : undefined} />
         }
+        {network && visible && !venuePinInfo &&
+        tunnelType===NetworkTunnelTypeEnum.SdLan &&
         <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
-          {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
-          tunnelType===NetworkTunnelTypeEnum.SdLan &&
           <EdgeSdLanSelectOption
             tunnelTypeInitVal={tunnelTypeInitVal}
             currentTunnelType={tunnelType}
@@ -180,8 +206,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               }
               : undefined}
           />
-          }
         </Loader>
+        }
         {isEdgePinHaEnabled && !hiddenPin && venuePinInfo && hasPinAllowOps &&
         <SpaceWrapper fullWidth>
           <Typography>

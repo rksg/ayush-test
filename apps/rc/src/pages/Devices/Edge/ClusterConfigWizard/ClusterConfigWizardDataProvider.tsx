@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeClusterNetworkSettingsQuery,
@@ -13,8 +13,8 @@ import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
+  EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  EdgeSdLanViewDataP2,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
@@ -23,10 +23,11 @@ export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
   portsStatus?: EdgeNodesPortsInfo
   lagsStatus?: EdgeNodesPortsInfo
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
   isSupportAccessPort?: boolean
+  requiredFwMap?: Record<string, string | undefined>
   isLoading: boolean
   isFetching: boolean
 }
@@ -81,7 +82,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo?.clusterId)
 
   const {
     data: clusterNetworkSettings,
@@ -112,7 +113,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {
       filters: {
-        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]
+        // eslint-disable-next-line max-len
+        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION, IncompatibilityFeatures.DUAL_WAN]
       } }
   }, {
     selectFromResult: ({ data }) => {
@@ -120,7 +122,10 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
         requiredFwMap: {
           [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: data?.featureSets
             ?.find(item =>
-              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw
+              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw,
+          [IncompatibilityFeatures.DUAL_WAN]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.DUAL_WAN)?.requiredFw
         }
       }
     }
@@ -154,6 +159,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
     isSupportAccessPort,
+    requiredFwMap,
     isLoading,
     isFetching
   }}>

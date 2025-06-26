@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash'
+
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
 import { ClusterNetworkSettings }                                                                                                                                                                                                                                                            from '../../../../types/edge'
 
@@ -425,6 +427,9 @@ export const mockEdgeClusterList = {
     }
   ]
 }
+
+export const mockSingleNodeClusterStatus = cloneDeep(mockEdgeClusterList.data[0])
+mockSingleNodeClusterStatus.edgeList = [mockSingleNodeClusterStatus.edgeList[0]]
 
 export const mockEdgeCluster = {
   id: 'clusterId_1',

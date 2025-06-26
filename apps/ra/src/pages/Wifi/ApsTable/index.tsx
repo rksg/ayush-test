@@ -4,9 +4,10 @@ import { useIntl } from 'react-intl'
 
 import { AP, useApListQuery }                                                           from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter, QueryParamsForZone } from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, useDateRange, Loader, Filter }                     from '@acx-ui/components'
+import { Table, TableProps, Tooltip, useDateRange, Loader }                             from '@acx-ui/components'
 import { formatter }                                                                    from '@acx-ui/formatter'
 import { TenantLink }                                                                   from '@acx-ui/react-router-dom'
+import type { Filter }                                                                  from '@acx-ui/types'
 
 import {  Ul, Chevron, Li } from './styledComponents'
 

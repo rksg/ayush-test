@@ -222,7 +222,6 @@ export function NetworkForm (props:{
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
@@ -324,8 +323,12 @@ export function NetworkForm (props:{
         delete updateSate.accountingRadius
       }
 
-      // Only when isCloudpathEnabled exists and value is false then delete radius data
-      if (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) {
+      const isDeleteAuthRadiusCase =
+        (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
+        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
+
+      if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
@@ -716,10 +719,7 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow
-    ){
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -727,7 +727,7 @@ export function NetworkForm (props:{
       delete data.authRadiusId
     }
 
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    updateSaveData({ ...data, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
@@ -999,7 +999,7 @@ export function NetworkForm (props:{
       beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
       beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId, cloneMode))
       }
       beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
@@ -1057,7 +1057,7 @@ export function NetworkForm (props:{
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
+        if (formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
@@ -1274,7 +1274,7 @@ export function NetworkForm (props:{
       afterVenueActivationRequest.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
-      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
+      if (form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)

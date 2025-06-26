@@ -21,13 +21,11 @@ import {
 
 import {
   venuelist,
-  autocompleteResult,
-  timezoneResult,
   successResponse,
   mockVenueConfigTemplates
 } from '../__tests__/fixtures'
 
-import { VenuesForm, addressParser } from '.'
+import { VenuesForm } from '.'
 
 const venueResponse = {
   id: '2c16284692364ab6a01f4c60f5941836',
@@ -55,6 +53,13 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => mockedUseLocation()
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ProtectedEnforceTemplateToggleVenue: () => <div>ProtectedEnforceTemplateToggleVenue</div>,
+  useEnforcedStatus: () => ({
+    getEnforcedStepsFormProps: jest.fn()
+  })
+}))
+
 const services = require('@acx-ui/rc/services')
 
 type MutationFnSwitcherTypes = Parameters<typeof useConfigTemplateMutationFnSwitcher>
@@ -70,8 +75,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplateLazyQueryFnSwitcher: (props: LazyQueryFnSwitcherTypes) => mockedLazyQueryFnSwitcher(props),
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
-
-const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
 describe('Venues Form', () => {
   let params: { tenantId: string }
@@ -168,20 +171,6 @@ describe('Venues Form', () => {
     expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
   })
 
-  it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
-
-    const addressResult = {
-      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-      city: 'United States',
-      country: 'United States',
-      latitude: 37.4112751,
-      longitude: -122.0191908,
-      timezone: 'America/Los_Angeles'
-    }
-
-    expect(address).toEqual(addressResult)
-  })
   it('google map is enabled', async () => {
     render(
       <Provider>

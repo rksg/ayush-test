@@ -84,7 +84,6 @@ describe('CaptiveNetworkForm-WISPr', () => {
 
     it('should test WISPr network successfully', async () => {
       jest.mocked(useIsSplitOn).mockImplementation((splitName) =>
-        splitName !== Features.WIFI_WLAN_DEPRECATE_WEP &&
         splitName !== Features.WIFI_RBAC_API)
       render(
         <Provider>
@@ -124,12 +123,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       fireEvent.blur(insertInput)
       await userEvent.click(await screen.findByText('Copy Key'))
       await userEvent.click((await screen.findAllByTitle('WPA2 (Recommended)'))[0])
-      await userEvent.click((await screen.findAllByTitle('WEP'))[0])
-      const hexKey = await screen.findByLabelText(/Hex Key/)
-      fireEvent.change(hexKey, { target: { value: 'be434651bc9e23f2af29fa75f7' } })
-      fireEvent.blur(hexKey)
-      await userEvent.click(await screen.findByText('Generate'))
-      await userEvent.click((await screen.findAllByTitle('WEP'))[0])
+
       await userEvent.click((await screen.findAllByTitle('WPA2/WPA3 mixed mode'))[0])
       const wpa2Pass = await screen.findByLabelText(/WPA2 Passphrase/)
       fireEvent.change(wpa2Pass, { target: { value: 'wpa233333333' } })

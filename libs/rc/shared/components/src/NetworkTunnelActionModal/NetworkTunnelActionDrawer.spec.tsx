@@ -46,6 +46,12 @@ jest.mock('./useEdgeMvSdLanData', () => ({
   })
 }))
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 const { click } = userEvent
 
 describe('NetworkTunnelDrawer', () => {
@@ -55,8 +61,6 @@ describe('NetworkTunnelDrawer', () => {
     mockedGetVenueSdLanFn.mockReset()
     mockedOnFinish.mockReset()
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
@@ -456,7 +460,7 @@ describe('NetworkTunnelDrawer', () => {
         ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
-        || ff === Features.EDGE_SD_LAN_MV_TOGGLE)
+        || ff === Features.WIFI_R370_TOGGLE)
       mockServer.use(
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
@@ -510,6 +514,8 @@ describe('NetworkTunnelDrawer', () => {
       await userEvent.click(await screen.findByTestId('softgre-option'))
 
       await waitFor(() => expect(mockedGetFn).toBeCalled())
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
     })
 
     it('should correctly hidden when SoftGRE run on this venue (CAPTIVEPORTAL)', async () => {
@@ -545,6 +551,10 @@ describe('NetworkTunnelDrawer', () => {
 
       await checkPageLoaded(mockedNetworkData.venueName)
       const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
+
       await userEvent.click(tunnelingMethod)
       await userEvent.click(await screen.findByTestId('softgre-option'))
 

@@ -2,8 +2,6 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }                                                                                 from '@acx-ui/components'
-import { Features }                                                                               from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                  from '@acx-ui/rc/components'
 import { EdgeService, EdgeServiceTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                             from '@acx-ui/react-router-dom'
 
@@ -14,8 +12,6 @@ import { FirewallDetails }                from './FirewallDetails'
 import { MdnsDetails }                    from './MdnsDetails'
 import { MvSdLanDetails }                 from './MvSdLan'
 import { PersonalIdentityNetworkDetails } from './PersonalIdentityNetworkDetails'
-import { SdLanDetails }                   from './SdLanDetails'
-import { SdLanDetailsP2 }                 from './SdLanDetailsP2'
 
 interface ServiceDetailDrawerProps {
   visible: boolean
@@ -28,44 +24,33 @@ const drawerWidthMap = {
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
   [EdgeServiceTypeEnum.PIN]: '50%',
   [EdgeServiceTypeEnum.SD_LAN]: 500,
-  [EdgeServiceTypeEnum.SD_LAN_P2]: 500,
-  [EdgeServiceTypeEnum.MV_SD_LAN]: 500,
   [EdgeServiceTypeEnum.MDNS_PROXY]: 500,
   [EdgeServiceTypeEnum.TUNNEL_PROFILE]: 500
 }
 
 const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
   switch(serviceType) {
-    case EdgeServiceTypeEnum.SD_LAN_P2:
-    case EdgeServiceTypeEnum.MV_SD_LAN:
+    case EdgeServiceTypeEnum.SD_LAN:
       return 12
     default:
       return 8
   }
 }
 
-const useSdLanServiceType = () => {
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isMvEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  return isMvEdgeSdLanEnabled
-    ? EdgeServiceTypeEnum.MV_SD_LAN
-    : (isEdgeSdLanHaEnabled ? EdgeServiceTypeEnum.SD_LAN_P2 : EdgeServiceTypeEnum.SD_LAN)
-}
+// const useSdLanServiceType = () => {
+//   return EdgeServiceTypeEnum.MV_SD_LAN
+// }
 
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
   const serviceContent = useServiceContentByType(serviceData)
-  const sdLanServiceType = useSdLanServiceType()
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const serviceType = serviceData.serviceType === EdgeServiceTypeEnum.SD_LAN
-    ? sdLanServiceType
-    : serviceData.serviceType
+  const serviceType = serviceData.serviceType
 
   const drawerContent =(
     <Form
@@ -140,8 +125,6 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, serviceId: string
 }
 
 const useServiceContentByType = (serviceData: EdgeService) => {
-  const sdLanServiceType = useSdLanServiceType()
-
   switch(serviceData.serviceType) {
     case EdgeServiceTypeEnum.DHCP:
       return <DhcpDetails serviceData={serviceData} />
@@ -150,11 +133,7 @@ const useServiceContentByType = (serviceData: EdgeService) => {
     case EdgeServiceTypeEnum.PIN:
       return <PersonalIdentityNetworkDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.SD_LAN:
-      return sdLanServiceType === EdgeServiceTypeEnum.MV_SD_LAN
-        ? <MvSdLanDetails serviceData={serviceData} />
-        : (sdLanServiceType === EdgeServiceTypeEnum.SD_LAN_P2
-          ? <SdLanDetailsP2 serviceData={serviceData} />
-          : <SdLanDetails serviceData={serviceData} />)
+      return <MvSdLanDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.MDNS_PROXY:
       return <MdnsDetails serviceData={serviceData} />
     default:

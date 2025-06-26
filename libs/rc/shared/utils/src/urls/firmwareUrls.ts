@@ -1,7 +1,5 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-const venueVersionParams = '?firmware_version=:version&firmware_type=:type&search=:search'
-
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getUpgradePreferences: {
     method: 'get',
@@ -27,18 +25,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/upgradeConfig/switchPreference',
     newApi: true,
     opsApi: 'PUT:/upgradeConfig/switchPreference'
-  },
-  getVenueVersionList: {
-    method: 'get',
-    url: '/venues/apFirmwares/schedules' + venueVersionParams,
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
-    newApi: true
-  },
-  getLatestFirmwareList: {
-    method: 'get',
-    url: '/apFirmwares?status=latest',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/latest',
-    newApi: true
   },
   getAvailableFirmwareList: {
     method: 'get',
@@ -116,22 +102,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version',
     newApi: true
   },
-  getSwitchVenueVersionList: {
-    method: 'post',
-    url: '/venues/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
-    newApi: true
-  },
   getSwitchAvailableFirmwareList: {
     method: 'get',
     url: '/venues/switchFirmwares/versions/release',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/release',
-    newApi: true
-  },
-  getSwitchCurrentVersions: {
-    method: 'get',
-    url: '/venues/switchFirmwares/currentVersions',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
   getSwitchFirmwareList: {
@@ -222,12 +196,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
-  getScheduledFirmware: {
-    method: 'get',
-    url: '/apFirmwares?status=scheduled',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
-    newApi: true
-  },
   getVenueApModelFirmwareList: {
     method: 'post',
     url: '/venues/query',
@@ -255,9 +223,9 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   patchVenueApModelFirmwares: {
-    method: 'put',
+    method: 'PATCH',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
-    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
+    opsApi: 'PATCH:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

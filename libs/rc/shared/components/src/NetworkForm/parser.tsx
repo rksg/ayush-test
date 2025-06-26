@@ -122,7 +122,16 @@ const parseHotspot20SettingDataToSave = (data: NetworkSaveData, editMode: boolea
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData = { ...data }
+  let saveData = {
+    ...data,
+    wlan: data.wlan ? { ...data.wlan } : {}
+  }
+
+  saveData.wlan.wlanSecurity = (saveData.enableOweTransition)
+    ? WlanSecurityEnum.OWETransition
+    : (saveData.enableOwe)
+      ? WlanSecurityEnum.OWE
+      : WlanSecurityEnum.Open
 
   if (!editMode) {
     saveData = {
@@ -434,6 +443,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
 
   if (!get(data, 'wlan.advancedCustomization.qosMapSetOptions')) {
     advancedCustomization.qosMapSetOptions = { rules: [] }
+  }
+
+  if(!get(data, 'wlan.advancedCustomization.enableFastRoaming')){
+    advancedCustomization.fastRoamingOptions = undefined
   }
 
   let saveData:NetworkSaveData = {

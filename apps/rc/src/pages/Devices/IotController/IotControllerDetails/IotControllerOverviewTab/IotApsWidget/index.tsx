@@ -5,7 +5,7 @@ import AutoSizer        from 'react-virtualized-auto-sizer'
 import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
 import type { DonutChartData }                             from '@acx-ui/components'
 import { useIotControllerDashboardQuery }                  from '@acx-ui/rc/services'
-import { IotApStatusEnum, IotControllerDashboard }         from '@acx-ui/rc/utils'
+import { ApStatusEnum, IotControllerDashboard }            from '@acx-ui/rc/utils'
 import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
@@ -13,21 +13,21 @@ import * as UI from './styledComponents'
 // eslint-disable-next-line max-len
 export const getIotApsDonutChartData = (overviewData?: IotControllerDashboard): DonutChartData[] => {
   const seriesMapping = [
-    { key: IotApStatusEnum.ONLINE,
+    { key: ApStatusEnum.ONLINE,
       name: 'Online',
       color: cssStr('--acx-semantics-green-50') },
-    { key: IotApStatusEnum.OFFLINE,
+    { key: ApStatusEnum.OFFLINE,
       name: 'Offline',
       color: cssStr('--acx-semantics-red-50') }
   ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
-  const apsSummary = overviewData?.summary?.aps?.summary
+  const apsSummary = overviewData?.apStatus
   if (apsSummary) {
     seriesMapping.forEach(({ key, name, color }) => {
-      if (apsSummary[key]) {
+      if (apsSummary[key as keyof typeof apsSummary]) {
         chartData.push({
           name,
-          value: apsSummary[key],
+          value: apsSummary[key as keyof typeof apsSummary] as number,
           color
         })
       }
@@ -50,7 +50,7 @@ export function IotApsWidget () {
 
   const { data } = overviewQuery
 
-  const subTitle = <Space style={{ width: 'max-content' }}>
+  const subTitle = <Space style={{ alignSelf: 'center', marginTop: '18px' }}>
     <Badge
       color={cssStr('--acx-semantics-green-50')}
       text={$t({ defaultMessage: 'Online' })}

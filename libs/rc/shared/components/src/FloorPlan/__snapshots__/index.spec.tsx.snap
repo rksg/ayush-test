@@ -942,6 +942,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
 
 .c2 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c2 .ant-card-head-wrapper {

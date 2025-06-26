@@ -9,18 +9,17 @@ import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button, showToast, Filter }                                                                  from '@acx-ui/components'
+import { Loader, Table, TableProps, Button, showToast }                                                                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
 import { DownloadOutlined }                                                                                                      from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                                                                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                                        from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                        from '@acx-ui/types'
+import type { Filter, RequestPayload }                                                                                           from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, useUserProfileContext }                                 from '@acx-ui/user'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
-import { useIsEdgeReady } from '../useEdgeActions'
 
 import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
@@ -77,7 +76,6 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
@@ -94,7 +92,6 @@ export const EventTable = ({
   }
 
   const excludeEventType = [
-    ...(!isEdgeEnabled ? ['EDGE'] : []),
     ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
   ]
 
@@ -172,10 +169,6 @@ export const EventTable = ({
       onClick: exportCsv
     }
 
-  const excludeProduct = [
-    ...(!isEdgeEnabled ? ['EDGE'] : [])
-  ]
-
   const columns: TableProps<Event>['columns'] = [
     {
       key: 'event_datetime',
@@ -217,7 +210,7 @@ export const EventTable = ({
       dataIndex: 'product',
       sorter: true,
       render: (_, row) => valueFrom(productMapping, row.product),
-      filterable: filtersFrom(omit(productMapping, excludeProduct), filterables, 'product')
+      filterable: filtersFrom(productMapping, filterables, 'product')
     },
     {
       key: 'source',
