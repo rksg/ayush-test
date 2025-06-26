@@ -14,7 +14,6 @@ import {
   ActionTypeTitle,
   DisablePreviewActionTypes,
   MaxAllowedSteps,
-  MaxTotalSteps,
   StepStatusCodes,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
@@ -36,7 +35,10 @@ export default function BaseStepNode (props: NodeProps
 
   const nodeId = useNodeId()
   const nodes = useNodes()
-  const isOverMaximumSteps = useMemo(() => nodes.length >= MaxTotalSteps, [nodes])
+  const isOverMaximumSteps = useMemo(() => {
+    const regularNodes = nodes.filter(n => n.type != 'START' && n.type != 'DISCONNECTED_BRANCH')
+    return regularNodes.length >= MaxAllowedSteps
+  }, [nodes])
   const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const {
     nodeState, actionDrawerState,

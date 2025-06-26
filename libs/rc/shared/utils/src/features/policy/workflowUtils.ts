@@ -26,6 +26,7 @@ import {
 } from '../../types'
 
 export const InitialEmptyStepsCount = 2
+// MaxAllowedSteps - the total number of allowed steps, not including start and end steps
 export const MaxAllowedSteps = 20
 export const MaxTotalSteps = InitialEmptyStepsCount + MaxAllowedSteps
 
