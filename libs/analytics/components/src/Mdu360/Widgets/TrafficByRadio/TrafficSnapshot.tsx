@@ -35,7 +35,6 @@ function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): Don
 }
 
 function hasData (chartData: DonutChartData[]): boolean {
-  console.log(chartData)
   if (chartData[0].value === 0 && chartData[1].value === 0 && chartData[2].value === 0) {
     return false
   }

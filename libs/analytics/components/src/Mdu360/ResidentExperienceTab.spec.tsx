@@ -27,6 +27,6 @@ describe('ResidentExperienceTab', () => {
 
     expect(await screen.findByText('Wi-Fi Client')).toBeVisible()
     expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
-    expect(await screen.findByText('Traffic By Radio'))
+    expect(await screen.findByText('Traffic By Radio')).toBeVisible()
   })
 })
