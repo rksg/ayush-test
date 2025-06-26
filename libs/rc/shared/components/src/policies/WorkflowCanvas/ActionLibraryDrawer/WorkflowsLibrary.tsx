@@ -73,9 +73,10 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
           }
         }).unwrap()
           .then((result) => {
+            // eslint-disable-next-line max-len
             const allRegularSteps = result?.content?.filter(s => s.type !== StepType.Start && s.type !== StepType.End)
             const totalStepCount = allRegularSteps.length
-            if (totalStepCount <= InitialEmptyStepsCount) {
+            if (totalStepCount <= 0) {
               showActionModal({
                 type: 'warning',
                 // eslint-disable-next-line max-len
