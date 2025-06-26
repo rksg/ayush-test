@@ -17,9 +17,9 @@ import {
   VenueLanPortSettings,
   LanPortsUrls
 } from '@acx-ui/rc/utils'
-import { baseEthernetPortProfileApi } from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { createHttpRequest, TableResult }          from '@acx-ui/utils'
+import { baseEthernetPortProfileApi }     from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 
 export const createDefaultEthPort = (

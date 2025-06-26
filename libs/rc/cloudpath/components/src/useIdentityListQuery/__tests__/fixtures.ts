@@ -1,4 +1,4 @@
-import { IdentityClient } from '@acx-ui/rc/utils'
+import { IdentityClient }                   from '@acx-ui/rc/utils'
 import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 
 export const mockedIdentityList = {

@@ -28,7 +28,7 @@ import {
   MSPUtils,
   MspEc
 } from '@acx-ui/msp/utils'
-import { AccountType, useTableQuery }   from '@acx-ui/utils'
+import { AccountType, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 

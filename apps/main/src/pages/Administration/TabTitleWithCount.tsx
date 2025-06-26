@@ -8,9 +8,9 @@ import {
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery } from '@acx-ui/utils'
 import { transformDisplayNumber, Webhook } from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { useTableQuery }                   from '@acx-ui/utils'
 
 export const AdminsTabTitleWithCount = () => {
   const { $t } = useIntl()

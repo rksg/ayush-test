@@ -9,8 +9,8 @@ import {
   WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum,
   DHCP_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi }      from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
+import { baseConfigTemplateApi }                   from '@acx-ui/store'
+import { RequestPayload }                          from '@acx-ui/types'
 import { TableResult, ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import {

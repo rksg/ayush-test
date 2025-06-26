@@ -67,8 +67,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                   from '@acx-ui/types'
-import { useUserProfileContext }       from '@acx-ui/user'
+import { RolesEnum }                                 from '@acx-ui/types'
+import { useUserProfileContext }                     from '@acx-ui/user'
 import { AccountType, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'

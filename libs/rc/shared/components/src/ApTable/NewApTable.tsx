@@ -60,13 +60,13 @@ import {
   ApGroupViewModel,
   NewAPModel
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping, usePollingTableQuery, FILTER,
   SEARCH,
   TableQuery,
-  TableResult,
+  TableResult
 } from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'

@@ -21,11 +21,11 @@ import {
   SwitchPortStatus,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                       from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }                from '@acx-ui/types'
-import { hasPermission }                               from '@acx-ui/user'
+import { useParams, TenantLink }                     from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }              from '@acx-ui/types'
+import { hasPermission }                             from '@acx-ui/user'
 import { getOpsApi, useTrackLoadTime, widgetsMapping,
-  usePollingTableQuery, FILTER, SEARCH, TableQuery} from '@acx-ui/utils'
+  usePollingTableQuery, FILTER, SEARCH, TableQuery } from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {

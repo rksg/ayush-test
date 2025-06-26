@@ -21,7 +21,7 @@ import {
 import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getOpsApi, useTableQuery }                     from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'

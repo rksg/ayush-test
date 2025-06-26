@@ -7,8 +7,9 @@ import { useIdentityListQuery }                                                 
 import { Card }                                                                      from '@acx-ui/components'
 import { useIsSplitOn, Features }                                                    from '@acx-ui/feature-toggle'
 import { PersonalIdentityNetworkApiVersion, useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
-import { Persona, useIsEdgeFeatureReady }                 from '@acx-ui/rc/utils'
-import { TableQuery, useTableQuery } from '@acx-ui/utils'
+import { Persona, useIsEdgeFeatureReady }                                            from '@acx-ui/rc/utils'
+import { TableQuery, useTableQuery }                                                 from '@acx-ui/utils'
+
 import { PersonalIdentityNetworkDetailTableGroup } from '../PersonalIdentityNetworkDetailTableGroup'
 import { defaultApPayload }                        from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
 import  TopologyDiagram                            from '../TopologyDiagram'

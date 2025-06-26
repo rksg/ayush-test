@@ -31,12 +31,12 @@ import {
   SwitchUrlsInfo,
   PoeSchedulerType
 } from '@acx-ui/rc/utils'
-import { useParams }                                                   from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer, PoeSchedule }                     from '@acx-ui/switch/components'
-import { SwitchScopes }                                                from '@acx-ui/types'
-import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { ErrorDisableRecoveryDrawer, PoeSchedule } from '@acx-ui/switch/components'
+import { SwitchScopes }                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }           from '@acx-ui/user'
 import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL,
-  usePollingTableQuery, getIntl} from '@acx-ui/utils'
+  usePollingTableQuery, getIntl } from '@acx-ui/utils'
 
 import { SimpleListTooltip }    from '../SimpleListTooltip'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'

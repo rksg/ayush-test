@@ -11,8 +11,8 @@ import {
   useGetVenueTemplateSwitchAaaSettingQuery, useVenueSwitchAAAServerListQuery
 } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useTableQuery } from '@acx-ui/utils'
-import { useParams }                                                                                         from '@acx-ui/react-router-dom'
+import { useParams }                                                                          from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                      from '@acx-ui/utils'
 
 import { AAAServerTable }  from './AAAServerTable'
 import { AAANotification } from './contentsMap'

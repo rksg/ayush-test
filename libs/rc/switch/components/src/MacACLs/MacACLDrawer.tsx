@@ -23,9 +23,9 @@ import {
   MacAcl,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }    from '@acx-ui/react-router-dom'
-import { SwitchScopes } from '@acx-ui/types'
-import { getOpsApi, useTableQuery }    from '@acx-ui/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { SwitchScopes }             from '@acx-ui/types'
+import { getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import { SwitchAccessControlDrawer } from './SwitchAccessControlDrawer'
 

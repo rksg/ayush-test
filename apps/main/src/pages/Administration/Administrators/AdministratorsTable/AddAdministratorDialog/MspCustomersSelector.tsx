@@ -7,11 +7,11 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Select }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-import { RolesEnum }               from '@acx-ui/types'
-import { AccountType, useTableQuery }             from '@acx-ui/utils'
+import { Select }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery }    from '@acx-ui/msp/services'
+import { RolesEnum }                  from '@acx-ui/types'
+import { AccountType, useTableQuery } from '@acx-ui/utils'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',

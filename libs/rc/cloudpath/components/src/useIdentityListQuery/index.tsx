@@ -11,7 +11,7 @@ import {
   useLazySearchIdentityClientsQuery
 } from '@acx-ui/rc/services'
 import { Certificate, DPSKDeviceInfo, Persona } from '@acx-ui/rc/utils'
-import { TableResult, useTableQuery } from '@acx-ui/utils'
+import { TableResult, useTableQuery }           from '@acx-ui/utils'
 
 interface UsePersonaListQueryProps {
   personaGroupId?: string

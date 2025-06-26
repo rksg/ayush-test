@@ -15,9 +15,9 @@ import {
   transformDisplayNumber,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                  from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                 from '@acx-ui/types'
-import { filterByAccess, getUserProfile, hasPermission, isCoreTier }                  from '@acx-ui/user'
+import { TenantLink, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasPermission, isCoreTier } from '@acx-ui/user'
 import { DateRange, getDateRangeFilter, getOpsApi, useTrackLoadTime, widgetsMapping,
   usePollingTableQuery, FILTER } from '@acx-ui/utils'
 

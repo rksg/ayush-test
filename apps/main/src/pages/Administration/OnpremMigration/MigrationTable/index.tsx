@@ -34,7 +34,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink }                              from '@acx-ui/react-router-dom'
 import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getOpsApi, useTableQuery }                               from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }                from '@acx-ui/utils'
 
 import {
   GuestsDetail

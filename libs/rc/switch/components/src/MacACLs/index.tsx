@@ -16,9 +16,9 @@ import {
   SwitchUrlsInfo,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { SwitchScopes }   from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
+import { SwitchScopes }             from '@acx-ui/types'
+import { filterByAccess }           from '@acx-ui/user'
+import { getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import { MacACLDetail } from './MacACLDetail'
 import { MacACLDrawer } from './MacACLDrawer'

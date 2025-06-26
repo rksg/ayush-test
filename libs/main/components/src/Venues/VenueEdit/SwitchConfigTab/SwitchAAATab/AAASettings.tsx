@@ -20,8 +20,8 @@ import {
   useGetVenueTemplateSwitchAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery
 } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, AAA_SERVER_TYPE, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useTableQuery } from '@acx-ui/utils'
-import { useParams }                                                                                                          from '@acx-ui/react-router-dom'
+import { useParams }                                                                                           from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                                       from '@acx-ui/utils'
 
 import { AAADraggableItem } from './AAADraggableItem'
 import * as UI              from './styledComponents'

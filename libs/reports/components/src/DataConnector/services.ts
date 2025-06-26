@@ -1,6 +1,6 @@
-import { TableResult } from '@acx-ui/utils'
 import { notificationApi } from '@acx-ui/store'
 import { RequestPayload }  from '@acx-ui/types'
+import { TableResult }     from '@acx-ui/utils'
 
 import {
   Response,

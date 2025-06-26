@@ -16,8 +16,8 @@ import {
   l3AclPolicyInfoType,
   PoliciesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { MaybePromise, RequestPayload } from '@acx-ui/types'
-import { createHttpRequest, TableResult }            from '@acx-ui/utils'
+import { MaybePromise, RequestPayload }   from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

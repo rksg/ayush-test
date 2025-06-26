@@ -3,10 +3,10 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                        from '@acx-ui/components'
-import { useGetDhcpHostStatsQuery }                                                         from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                                         from '@acx-ui/components'
+import { useGetDhcpHostStatsQuery }                                          from '@acx-ui/rc/services'
 import { DhcpHostStats, DhcpStats, EdgeDhcpHostStatus, genExpireTimeString } from '@acx-ui/rc/utils'
-import { useTableQuery } from '@acx-ui/utils'
+import { useTableQuery }                                                     from '@acx-ui/utils'
 
 interface LeaseTableProps {
   venueId: string

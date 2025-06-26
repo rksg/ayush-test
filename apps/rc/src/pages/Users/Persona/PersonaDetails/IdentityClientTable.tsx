@@ -10,7 +10,7 @@ import {
   ClientInfo, defaultSort, sortProp,
   IdentityClient
 } from '@acx-ui/rc/utils'
-import { TABLE_MAX_PAGE_SIZE, SORTER, 
+import { TABLE_MAX_PAGE_SIZE, SORTER,
   usePollingTableQuery  } from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'

@@ -9,7 +9,7 @@ import {
   CommonUrlsInfo,
   AdminLog
 } from '@acx-ui/rc/utils'
-import { useUserProfileContext }                            from '@acx-ui/user'
+import { useUserProfileContext }                                                  from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter, usePollingTableQuery } from '@acx-ui/utils'
 
 import { adminLogTypeMapping, eventTypeMapping } from './mapping'

@@ -48,9 +48,9 @@ import {
   ABFVersion,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay, useTableQuery }  from '@acx-ui/utils'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'

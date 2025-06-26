@@ -22,10 +22,10 @@ import {
   getDeviceTypeIcon,
   getOsTypeIcon,
   networkTypes } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { usePollingTableQuery, noDataDisplay }                 from '@acx-ui/utils'
+import { TenantLink, useParams }               from '@acx-ui/react-router-dom'
+import { WifiScopes }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }       from '@acx-ui/user'
+import { usePollingTableQuery, noDataDisplay } from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 

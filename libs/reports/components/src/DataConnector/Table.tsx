@@ -4,7 +4,6 @@ import { Loader, showToast, Table, TableProps }   from '@acx-ui/components'
 import { get }                                    from '@acx-ui/config'
 import { DateFormatEnum, formatter }              from '@acx-ui/formatter'
 import { doProfileDelete }                        from '@acx-ui/rc/services'
-import { useTableQuery } from '@acx-ui/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import {
@@ -13,6 +12,7 @@ import {
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
+import { useTableQuery } from '@acx-ui/utils'
 
 import {
   useDataConnectorQuery,

@@ -25,7 +25,7 @@ import {
   NetworkApGroup,
   VlanPool
 } from '@acx-ui/rc/utils'
-import { RequestPayload }             from '@acx-ui/types'
+import { RequestPayload }                                  from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, FILTER, TableResult } from '@acx-ui/utils'
 
 import { QueryFn }                        from './servicePolicy.utils'

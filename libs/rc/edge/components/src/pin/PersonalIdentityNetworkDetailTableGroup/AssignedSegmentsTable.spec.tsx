@@ -10,10 +10,10 @@ import {
   ServiceType,
   EdgePinFixtures
 } from '@acx-ui/rc/utils'
-import { useTableQuery } from '@acx-ui/utils'
 import { Provider, store }                                         from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 import { RequestPayload }                                          from '@acx-ui/types'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { mockedPersonaList, replacePagination } from './__tests__/fixtures'
 import { AssignedSegmentsTable }                from './AssignedSegmentsTable'

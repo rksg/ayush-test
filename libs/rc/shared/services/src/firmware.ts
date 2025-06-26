@@ -38,10 +38,10 @@ import {
   StartEdgeFirmwareVenueUpdateNowPayload,
   UpdateEdgeFirmwareVenueSchedulePayload
 } from '@acx-ui/rc/utils'
-import { baseFirmwareApi }              from '@acx-ui/store'
-import { MaybePromise, RequestPayload } from '@acx-ui/types'
-import { CloudVersion }                 from '@acx-ui/user'
-import { batchApi, createHttpRequest, TableResult }  from '@acx-ui/utils'
+import { baseFirmwareApi }                          from '@acx-ui/store'
+import { MaybePromise, RequestPayload }             from '@acx-ui/types'
+import { CloudVersion }                             from '@acx-ui/user'
+import { batchApi, createHttpRequest, TableResult } from '@acx-ui/utils'
 
 const v1Header = {
   'Content-Type': 'application/vnd.ruckus.v1+json',

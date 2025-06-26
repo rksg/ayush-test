@@ -19,8 +19,8 @@ import { CommonResult,
   IpsecUrls,
   IpsecViewData
 } from '@acx-ui/rc/utils'
-import { baseSoftGreApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
+import { baseSoftGreApi }                 from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
 import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import consolidateActivations             from './softGreUtils'

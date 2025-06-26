@@ -7,9 +7,9 @@ import {
   PersonalIdentityNetworks,
   Persona
 } from '@acx-ui/rc/utils'
-import { TableQuery, useTableQuery } from '@acx-ui/utils'
 import { Provider }                   from '@acx-ui/store'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { TableQuery, useTableQuery }  from '@acx-ui/utils'
 
 
 

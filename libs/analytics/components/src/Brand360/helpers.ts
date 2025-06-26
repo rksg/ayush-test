@@ -2,8 +2,8 @@ import { groupBy }       from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter }              from '@acx-ui/formatter'
-import { MspEc }                  from '@acx-ui/msp/utils'
+import { formatter }                           from '@acx-ui/formatter'
+import { MspEc }                               from '@acx-ui/msp/utils'
 import { getIntl, noDataDisplay, TableResult } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'

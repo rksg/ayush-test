@@ -20,10 +20,10 @@ import {
   SwitchRbacUrlsInfo,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-import { SwitchScopes }                               from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { getOpsApi, handleBlobDownloadFile, usePollingTableQuery }          from '@acx-ui/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                            from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey }              from '@acx-ui/user'
+import { getOpsApi, handleBlobDownloadFile, usePollingTableQuery } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../..'
 

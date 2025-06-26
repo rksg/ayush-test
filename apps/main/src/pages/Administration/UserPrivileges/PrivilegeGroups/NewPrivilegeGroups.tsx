@@ -26,7 +26,7 @@ import { sortProp,
 import { TenantType, useTenantLink }                                                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                           from '@acx-ui/types'
 import { CustomRoleType, filterByAccess, getUserProfile, hasAllowedOperations, roleStringMap } from '@acx-ui/user'
-import { AccountType, getOpsApi, useTableQuery }                                                              from '@acx-ui/utils'
+import { AccountType, getOpsApi, useTableQuery }                                               from '@acx-ui/utils'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;

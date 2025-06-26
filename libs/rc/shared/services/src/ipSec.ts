@@ -19,9 +19,9 @@ import {
   SoftGreUrls,
   SoftGreViewData
 } from '@acx-ui/rc/utils'
-import { baseIpSecApi }      from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { CommonResult }      from '@acx-ui/user'
+import { baseIpSecApi }                   from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { CommonResult }                   from '@acx-ui/user'
 import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { softGreApi }                     from './softGre'

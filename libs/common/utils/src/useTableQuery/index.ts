@@ -11,9 +11,10 @@ import {
   UseQueryResult,
   UseQueryOptions
 } from '@acx-ui/types'
+
 import {
   ApiInfo,
-  createHttpRequest,
+  createHttpRequest
 } from '../apiService'
 import {
   TABLE_DEFAULT_PAGE_SIZE,
