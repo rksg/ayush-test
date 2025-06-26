@@ -4,8 +4,7 @@ import { Form, Input, Radio, Space, Typography } from 'antd'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import { cssNumber, Drawer } from '@acx-ui/components'
-import { PhoneInput }        from '@acx-ui/rc/components'
+import { cssNumber, Drawer, PhoneInput } from '@acx-ui/components'
 import {
   phoneRegExp,
   emailRegExp

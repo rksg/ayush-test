@@ -8,7 +8,6 @@ import { CatchErrorDetails }                                                    
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export const useTunnelProfileActions = () => {
-  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   // eslint-disable-next-line max-len
   const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
@@ -24,25 +23,14 @@ export const useTunnelProfileActions = () => {
       result.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
     }
 
-
-    if (isEdgeVxLanKaReady) {
-      if (data.mtuRequestTimeoutUnit === MtuRequestTimeoutUnit.SECONDS
+    if (data.mtuRequestTimeoutUnit === MtuRequestTimeoutUnit.SECONDS
           && !!data.mtuRequestTimeout) {
-        result.mtuRequestTimeout = data.mtuRequestTimeout * 1000
-      }
+      result.mtuRequestTimeout = data.mtuRequestTimeout * 1000
+    }
 
-      if (data.mtuType === MtuTypeEnum.MANUAL) {
-        delete result.mtuRequestRetry
-        delete result.mtuRequestTimeout
-      }
-
-      delete result.mtuRequestTimeoutUnit
-    } else {
-      delete result.keepAliveInterval
-      delete result.keepAliveRetry
+    if (data.mtuType === MtuTypeEnum.MANUAL) {
       delete result.mtuRequestRetry
       delete result.mtuRequestTimeout
-      delete result.mtuRequestTimeoutUnit
     }
 
     if (data.mtuType === MtuTypeEnum.AUTO) {
@@ -63,6 +51,7 @@ export const useTunnelProfileActions = () => {
       }
     }
 
+    delete result.mtuRequestTimeoutUnit
     delete result.ageTimeUnit
     //remove for acitvate api params
     delete result.edgeClusterId

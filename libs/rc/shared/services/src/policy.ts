@@ -2544,7 +2544,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
             body: JSON.stringify( {
-              fields: ['apSerialNumbers', 'venueIds'],
+              fields: ['venueIds', 'apActivations'],
               filters: { id: [params?.policyId] }
             })
           }
@@ -2552,10 +2552,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const rbacApSnmpViewModel = response.data as TableResult<RbacApSnmpViewModelData>
           const apSnmpProfile = rbacApSnmpViewModel.data[0]
 
-          const { venueIds, apSerialNumbers } = apSnmpProfile
+
+          const { venueIds, apActivations } = apSnmpProfile
+
+          const snmpUsageData: ApSnmpApUsage[] = []
 
           const venueIdNameMap = new Map<string, string>()
-          if (venueIds.length) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (venueIds.length && (payload as any).searchForActivation === 'venue') {
             const venueListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, apiCustomHeader),
               body: JSON.stringify({
@@ -2571,16 +2575,24 @@ export const policyApi = basePolicyApi.injectEndpoints({
             venuesData?.forEach(venue => {
               venueIdNameMap.set(venue.id, venue.name)
             })
+
+            venueIdNameMap.forEach((value, key) => {
+              snmpUsageData.push({
+                apId: '',
+                apName: '',
+                venueId: key,
+                venueName: value
+              })
+            })
           }
 
-          const snmpUsageData: ApSnmpApUsage[] = []
-          let apUsedVenueIds: string[] = []
-          if (apSerialNumbers.length) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (apActivations.length && (payload as any).searchForActivation === 'ap') {
             const apListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, apiCustomHeader),
               body: JSON.stringify({
                 fields: ['name', 'serialNumber', 'venueId'],
-                filters: { serialNumber: apSerialNumbers },
+                filters: { serialNumber: apActivations.map((ap) => ap.apSerialNumber) },
                 page: 1,
                 pageSize: 10000
               })
@@ -2588,31 +2600,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
             const apList = apListQuery.data as TableResult<NewAPModel>
             const apListData = apList?.data as NewAPModel[]
 
+            const venueListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, apiCustomHeader),
+              body: JSON.stringify({
+                fields: ['id', 'name'],
+                filters: { id: apActivations.map((ap) => ap.venueId) },
+                page: 1,
+                pageSize: 10000
+              })
+            })
+            const venueList = venueListQuery.data as TableResult<Venue>
             apListData?.forEach(ap => {
               const { name='', serialNumber='', venueId='' } = ap
-              apUsedVenueIds.push(venueId)
-
               snmpUsageData.push({
                 apId: serialNumber,
                 apName: name,
                 venueId,
-                venueName: venueIdNameMap.get(venueId) ?? ''
+                venueName: venueList.data.find(venue => venue.id === venueId)?.name ?? ''
               })
             })
           }
-
-          apUsedVenueIds = uniq(apUsedVenueIds)
-          // only venue data without AP
-          venueIdNameMap.forEach((value, key) => {
-            if (!apUsedVenueIds.includes(key)) {
-              snmpUsageData.push({
-                apId: '',
-                apName: '',
-                venueId: key,
-                venueName: value
-              })
-            }
-          })
 
           const result : TableResult<ApSnmpApUsage> = {
             page: 1,

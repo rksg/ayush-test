@@ -114,4 +114,53 @@ describe('Transfer', () => {
     expect(await screen.findByText('5 available')).toBeVisible()
     expect(await screen.findByText('0 selected')).toBeVisible()
   })
+
+  it('should render correct available counts with "excludeDisabledInCount"', async () => {
+    render(<IntlProvider locale='en'>
+      <Transfer
+        excludeDisabledInCount
+        listStyle={{ width: 250, height: 300 }}
+        showSearch
+        showSelectAll={false}
+        dataSource={[
+          { name: 'item1', key: 'item1', disabled: true },
+          { name: 'item2', key: 'item2', disabled: true },
+          { name: 'item3', key: 'item3' },
+          { name: 'item4', key: 'item4' },
+          { name: 'item5', key: 'item5' }
+        ]}
+        render={item => item.name}
+        operations={['Add', 'Remove']}
+        titles={['Available APs', 'Selected APs']}
+      />
+    </IntlProvider>)
+
+    expect(await screen.findByText('3 available')).toBeVisible()
+    expect(await screen.findByText('0 selected')).toBeVisible()
+  })
+
+  it('should render correct selected counts with "excludeDisabledInCount"', async () => {
+    render(<IntlProvider locale='en'>
+      <Transfer
+        excludeDisabledInCount
+        listStyle={{ width: 250, height: 300 }}
+        showSearch
+        showSelectAll={false}
+        targetKeys={['item1', 'item4', 'item5']}
+        dataSource={[
+          { name: 'item1', key: 'item1', disabled: true },
+          { name: 'item2', key: 'item2', disabled: true },
+          { name: 'item3', key: 'item3' },
+          { name: 'item4', key: 'item4' },
+          { name: 'item5', key: 'item5' }
+        ]}
+        render={item => item.name}
+        operations={['Add', 'Remove']}
+        titles={['Available APs', 'Selected APs']}
+      />
+    </IntlProvider>)
+
+    expect(await screen.findByText('1 available')).toBeVisible()
+    expect(await screen.findByText('2 selected')).toBeVisible()
+  })
 })

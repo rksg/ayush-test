@@ -47,9 +47,11 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  AssignActionEnum
+  AssignActionEnum,
+  defaultAddress,
+  addressParser
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
   Address,
@@ -79,12 +81,6 @@ import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 import * as UI                       from '../styledComponents'
 
-interface AddressComponent {
-  long_name?: string;
-  short_name?: string;
-  types?: Array<string>;
-}
-
 interface EcFormData {
     name: string,
     address: Address,
@@ -99,66 +95,6 @@ interface EcFormData {
     apswLicense: number,
     ecCustomers: MspEc[],
     number_of_days: string
-}
-
-export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
-  // array reverse applied since search should be done from general to specific, google provides from vice-versa
-  const reversedAddrComponents = addressComponents.reverse()
-  /** Step 1. Looking for locality / sublocality_level_X / postal_town */
-  let cityComponent = reversedAddrComponents.find(el => {
-    return el.types?.includes('locality')
-      || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
-      || el.types?.includes('postal_town')
-  })
-  /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
-   * administrative_area_level_1 excluded from search since considered as `political state`
-   */
-  if (!cityComponent) {
-    cityComponent = reversedAddrComponents.find(el => {
-      return el.types?.includes('neighborhood')
-        || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
-    })
-  }
-  const stateComponent = addressComponents
-    .find(el => el.types?.includes('administrative_area_level_1'))
-  // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
-  if (!cityComponent && !stateComponent) {
-    cityComponent = { long_name: country }
-  }
-  return {
-    city: cityComponent? cityComponent.long_name: '',
-    state: stateComponent ? stateComponent.long_name : null
-  }
-}
-
-export const addressParser = async (place: google.maps.places.PlaceResult) => {
-  const address: Address = {}
-  address.addressLine = place.formatted_address
-  const countryObj = place?.address_components?.find(
-    el => el.types.includes('country')
-  )
-  const country = countryObj?.long_name ?? ''
-  address.country = country
-  if (place && place.address_components) {
-    const cityObj = retrieveCityState(
-      place.address_components,
-      country
-    )
-    if (cityObj) {
-      address.city = cityObj.state
-        ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
-    }
-  }
-  return { address }
-}
-
-const defaultAddress: Address = {
-  addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-  city: 'Sunnyvale, California',
-  country: 'United States',
-  latitude: 37.4112751,
-  longitude: -122.0191908,
-  timezone: 'America/Los_Angeles'
 }
 
 export function ManageIntegrator () {

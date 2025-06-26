@@ -49,7 +49,7 @@ jest.mock('./Pin', () => ({
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
 }))
-jest.mock('./SdLan', () => ({
+jest.mock('./MvSdLan', () => ({
   default: () => <div data-testid='EdgeSdLan' />,
   __esModule: true
 }))
@@ -129,6 +129,9 @@ describe('Venue service tab', () => {
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
+        expect(screen.queryByTestId(/rc-tabpane-SD-LAN/)).toBeNull()
+        expect(screen.queryByTestId(/rc-tabpane-PIN/)).toBeNull()
+        expect(screen.queryByTestId(/rc-tabpane-Firewall/)).toBeNull()
 
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
       })
@@ -210,27 +213,6 @@ describe('Venue service tab', () => {
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(11)
       })
 
-      it('when only HA OFF, should not render EdgeDhcp and EdgeFirewall', async () => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE && ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
-
-        render(
-          <Provider>
-            <VenueServicesTab />
-          </Provider>, {
-            route: { params }
-          })
-
-        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
-        expect(mockedGetEdgeDhcpFn).not.toBeCalled()
-        await screen.findByTestId(/rc-tabpane-SD-LAN/)
-        expect( screen.getAllByTestId(/rc-tabpane-/).length).toBe(7)
-        // tab: DHCP - SmartEdge
-        expect(screen.queryByTestId(/rc-tabpane-SmartEdge/)).toBeNull()
-        expect(screen.queryByTestId(/rc-tabpane-Firewall/)).toBeNull()
-      })
-
       it('when HA ON and DHCP_HA OFF, should not render EdgeDhcp', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE && ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
 
@@ -247,46 +229,6 @@ describe('Venue service tab', () => {
         expect(mockedGetEdgeDhcpFn).not.toBeCalled()
         await screen.findByTestId(/rc-tabpane-SD-LAN/)
         expect(screen.queryByTestId(/rc-tabpane-SmartEdge/)).toBeNull()
-      })
-
-      it('should render sdlan tab when sdlan-ha FF enabled, P1 FF disabled', async () => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff =>
-          ff !== Features.EDGES_SD_LAN_TOGGLE && ff !== Features.EDGE_MDNS_PROXY_TOGGLE
-        )
-
-        render(
-          <Provider>
-            <VenueServicesTab />
-          </Provider>, {
-            route: { params }
-          })
-
-        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
-        await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
-
-        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(9)
-      })
-
-      it('should not trigger query when sdlan all FF are off', async () => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff =>
-          !(ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGE_SD_LAN_MV_TOGGLE)
-          && ff !== Features.EDGE_MDNS_PROXY_TOGGLE
-        )
-
-        render(
-          <Provider>
-            <VenueServicesTab />
-          </Provider>, {
-            route: { params }
-          })
-
-        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
-        expect(mockedGetSdLanListFn).not.toBeCalled()
-        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(8)
       })
     })
   })

@@ -186,7 +186,7 @@ describe('WorkflowUtils', () => {
       findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
       testParentId,
-      targetNodes, targetEdges, 0, 0
+      targetNodes, targetEdges, 0, 0, 1005
     )
 
     expect(targetNodes).toHaveLength(3)
@@ -195,8 +195,9 @@ describe('WorkflowUtils', () => {
     const firstNode = targetNodes[0]
     expect(firstNode.parentNode).toBe(testParentId)
     expect(firstNode.extent).toBe('parent')
+    expect(firstNode.zIndex).toBe(1007)
 
-    targetEdges.forEach(e => expect(e.zIndex).toBe(1000))
+    targetEdges.forEach(e => expect(e.zIndex).toBe(1006))
   })
 
   it('should handle composeNext correctly', () => {
@@ -207,7 +208,7 @@ describe('WorkflowUtils', () => {
       findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
       undefined,
-      targetNodes, targetEdges, 0, 0
+      targetNodes, targetEdges, 0, 0, 1005
     )
 
     expect(targetNodes).toHaveLength(3)
@@ -231,7 +232,7 @@ describe('WorkflowUtils', () => {
       WorkflowPanelMode.Default,
       'step-unknown-id',
       new Map(), undefined,
-      targetNodes, targetEdges, 0, 0
+      targetNodes, targetEdges, 0, 0, 1005
     )
 
     // if it can not find the next one, it should not modify the original Node[] and Edge[] input sources.
