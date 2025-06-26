@@ -4,6 +4,7 @@ import { Path }               from 'react-router-dom'
 
 import { PageHeader, StepsForm }            from '@acx-ui/components'
 import {
+  getPolicyAllowedOperation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   LocationExtended,
@@ -11,6 +12,7 @@ import {
   PolicyType, useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                    from '@acx-ui/user'
 
 enum AdaptivePolicyTabsEnum {
   ATTRIBUTE_GROUP = 'attributeGroup',
@@ -76,15 +78,21 @@ export default function CreateAdaptivePolicyProfile () {
             initialValue={AdaptivePolicyTabsEnum.ADAPTIVE_POLICY}>
             <Radio.Group>
               <Space direction='vertical'>
+                {/* eslint-disable-next-line max-len */}
+                { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE) ?? []) &&
                 <Radio value={AdaptivePolicyTabsEnum.ADAPTIVE_POLICY}>
                   {$t({ defaultMessage: 'Adaptive Policy' })}
-                </Radio>
+                </Radio>}
+                {/* eslint-disable-next-line max-len */}
+                {hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? []) &&
                 <Radio value={AdaptivePolicyTabsEnum.ADAPTIVE_POLICY_SET}>
                   {$t({ defaultMessage: 'Adaptive Policy Set' })}
-                </Radio>
+                </Radio>}
+                {/* eslint-disable-next-line max-len */}
+                { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE) ?? []) &&
                 <Radio value={AdaptivePolicyTabsEnum.ATTRIBUTE_GROUP}>
                   {$t({ defaultMessage: 'RADIUS Attribute Group' })}
-                </Radio>
+                </Radio>}
               </Space>
             </Radio.Group>
           </Form.Item>

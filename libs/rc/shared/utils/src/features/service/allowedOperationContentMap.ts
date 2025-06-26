@@ -371,5 +371,11 @@ export const policyAllowedOperationMap = {
     ]],
     [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
     [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup),
+      [getOpsApi(RulesManagementUrlsInfo.createPolicy), getOpsApi(RulesManagementUrlsInfo.addConditions)],
+      [getOpsApi(RulesManagementUrlsInfo.createPolicySet), getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority)]
+    ]
   }
 }
