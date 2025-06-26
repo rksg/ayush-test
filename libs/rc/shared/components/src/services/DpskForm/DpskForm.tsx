@@ -40,11 +40,11 @@ import {
   ConfigTemplateType,
   useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { TableResult } from '@acx-ui/utils'
 import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../../configTemplates'
 

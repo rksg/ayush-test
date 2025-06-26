@@ -11,9 +11,9 @@ import {
   getPolicyRoutePath,
   WorkflowStep
 } from '@acx-ui/rc/utils'
-import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { NewAPITableResult }                                                      from '@acx-ui/utils'
 
 import WorkflowTable from '.'
 const workflows:Workflow[] = [{

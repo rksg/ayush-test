@@ -16,8 +16,8 @@ import {
   useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 

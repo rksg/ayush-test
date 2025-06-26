@@ -5,7 +5,7 @@ import {
   WifiCallingFormContextType, WifiCallingSetting,
   WifiCallingUrls
 } from '@acx-ui/rc/utils'
-import { CommonResult }                from '@acx-ui/user'
+import { CommonResult }                             from '@acx-ui/user'
 import { batchApi, createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { QueryFn } from './common'

@@ -7,9 +7,9 @@ import {
   EdgeMdnsProxyViewData,
   EdgeMdnsProxyStatsData
 } from '@acx-ui/rc/utils'
-import { baseEdgeMdnsProxyApi } from '@acx-ui/store'
-import { RequestPayload }       from '@acx-ui/types'
-import { TableResult, createHttpRequest }    from '@acx-ui/utils'
+import { baseEdgeMdnsProxyApi }           from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import { serviceApi }                     from './service'
 import { handleCallbackWhenActivityDone } from './utils'

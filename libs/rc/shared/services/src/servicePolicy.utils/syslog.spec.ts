@@ -2,8 +2,8 @@
 import { BaseQueryApi, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import { FacilityEnum, FlowLevelEnum, PoliciesConfigTemplateUrlsInfo, SyslogPolicyDetailType, SyslogPolicyListType, SyslogUrls, VenueSyslogSettingType } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                             from '@acx-ui/types'
-import { batchApi, createHttpRequest, TableResult }                                                                                                                                from '@acx-ui/utils'
+import { RequestPayload }                                                                                                                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, TableResult }                                                                                                      from '@acx-ui/utils'
 
 import { addSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, updateSyslogPolicyFn } from './syslog'
 

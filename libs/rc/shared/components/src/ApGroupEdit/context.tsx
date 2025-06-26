@@ -13,8 +13,8 @@ import {
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher, VenueExtended
 } from '@acx-ui/rc/utils'
+import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 export type ApGroupEditContextType = {
   tabTitle: string

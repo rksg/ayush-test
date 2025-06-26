@@ -6,8 +6,8 @@ import {
   AccessSwitch,
   Persona, sortProp
 } from '@acx-ui/rc/utils'
-import { TableQuery } from '@acx-ui/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { TableQuery } from '@acx-ui/utils'
 
 import { PropertyUnitLink } from '../CommonLinkHelper'
 

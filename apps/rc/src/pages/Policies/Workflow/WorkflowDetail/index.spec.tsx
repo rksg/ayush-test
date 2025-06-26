@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { ActionType, Workflow, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
-import { NewAPITableResult } from '@acx-ui/utils'
-import { Provider }                                                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                           from '@acx-ui/test-utils'
+import { Provider }                                                                   from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                        from '@acx-ui/test-utils'
+import { NewAPITableResult }                                                          from '@acx-ui/utils'
 
 
 import WorkflowDetails from '.'

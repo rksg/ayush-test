@@ -7,8 +7,8 @@ import {
   ZdConfigurationType,
   MigrationResultType
 } from '@acx-ui/rc/utils'
-import { baseMigrationApi }                    from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
+import { baseMigrationApi }                                                  from '@acx-ui/store'
+import { RequestPayload }                                                    from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal, RequestFormData, TableResult } from '@acx-ui/utils'
 
 export const migrationApi = baseMigrationApi.injectEndpoints({

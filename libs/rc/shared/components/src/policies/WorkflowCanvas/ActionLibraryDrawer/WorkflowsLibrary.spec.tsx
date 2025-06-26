@@ -7,9 +7,9 @@ import {
   WorkflowStep,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
-import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { NewAPITableResult }                              from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModalProps } from '../../../WorkflowActionPreviewModal'
 

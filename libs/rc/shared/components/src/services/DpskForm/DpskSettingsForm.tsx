@@ -48,7 +48,7 @@ import {
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
-import { TableResult, getIntl }              from '@acx-ui/utils'
+import { TableResult, getIntl } from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
 import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'

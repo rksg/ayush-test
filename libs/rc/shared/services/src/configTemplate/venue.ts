@@ -39,9 +39,9 @@ import {
   EthernetPortProfileViewData,
   VenueLanPortSettings
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { TableResult, createHttpRequest }     from '@acx-ui/utils'
+import { baseConfigTemplateApi }          from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                        from '../utils'

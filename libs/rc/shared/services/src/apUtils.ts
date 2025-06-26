@@ -35,8 +35,8 @@ import {
   WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload, MaybePromise } from '@acx-ui/types'
-import { FILTER, TableResult, createHttpRequest, getIntl }   from '@acx-ui/utils'
+import { RequestPayload, MaybePromise }                    from '@acx-ui/types'
+import { FILTER, TableResult, createHttpRequest, getIntl } from '@acx-ui/utils'
 
 import { isFulfilled, isPayloadHasField } from './utils'
 

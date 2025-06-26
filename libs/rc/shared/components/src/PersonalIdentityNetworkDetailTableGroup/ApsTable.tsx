@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, Table, TableProps }                    from '@acx-ui/components'
 import {
   APExtended,
   APExtendedGrouped,

@@ -16,9 +16,9 @@ import {
   IdentityProviderTabType,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TableResult } from '@acx-ui/utils'
 import { Params, Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RbacOpsIds, ScopeKeys, UseQuery }                      from '@acx-ui/types'
+import { TableResult }                                          from '@acx-ui/utils'
 
 import IdentityProviderTable from './IdentityProviderTable/IdentityProviderTable'
 import SamlIdpTable          from './SamlIdpTable'

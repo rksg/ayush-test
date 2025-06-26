@@ -8,8 +8,8 @@ import {
   NetworkTypeEnum,
   networkTypes
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
-import { TableQuery, noDataDisplay }  from '@acx-ui/utils'
+import { RequestPayload }            from '@acx-ui/types'
+import { TableQuery, noDataDisplay } from '@acx-ui/utils'
 
 import { ClientsTable }     from './ClientsTable'
 import { RbacClientsTable } from './RbacClientsTable'

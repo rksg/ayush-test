@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
-import { TableResult, batchApi }              from '@acx-ui/utils'
+import { TableResult, batchApi } from '@acx-ui/utils'
 
 
 import { commonQueryFn } from '../servicePolicy.utils'

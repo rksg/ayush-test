@@ -30,8 +30,8 @@ import {
   transformApStatus,
   transformDisplayText
 } from '@acx-ui/rc/utils'
+import { RequestPayload }          from '@acx-ui/types'
 import { TableQuery, TableResult } from '@acx-ui/utils'
-import { RequestPayload } from '@acx-ui/types'
 
 
 import { NewApTable } from './NewApTable'

@@ -25,7 +25,7 @@ import {
   IdentityDetailsLink,
   CertificateUrls
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                    from '@acx-ui/types'
+import { RequestPayload }                                                from '@acx-ui/types'
 import { TableQuery, SEARCH, FILTER, getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'

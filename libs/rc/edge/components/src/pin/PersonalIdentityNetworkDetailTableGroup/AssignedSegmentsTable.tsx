@@ -7,8 +7,8 @@ import {
   Persona, sortProp,
   PropertyUnitLink
 } from '@acx-ui/rc/utils'
-import { TableQuery } from '@acx-ui/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { TableQuery } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

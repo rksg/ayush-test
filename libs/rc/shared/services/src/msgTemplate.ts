@@ -7,8 +7,8 @@ import {
   MsgCategory,
   TemplateGroup
 } from '@acx-ui/rc/utils'
-import { baseMsgTemplateApi }                  from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
+import { baseMsgTemplateApi }   from '@acx-ui/store'
+import { RequestPayload }       from '@acx-ui/types'
 import { TableResult,createHttpRequest, ignoreErrorModal,
   transferToNewTablePaginationParams,
   NewAPITableResult,

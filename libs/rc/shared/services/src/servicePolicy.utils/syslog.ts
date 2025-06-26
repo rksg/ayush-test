@@ -3,9 +3,9 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { difference }                              from 'lodash'
 
 import { SyslogPolicyDetailType, PoliciesConfigTemplateUrlsInfo, SyslogUrls, SyslogPolicyListType, VenueSyslogSettingType } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                from '@acx-ui/types'
-import { CommonResult }                                                                                                                  from '@acx-ui/user'
-import { createHttpRequest, batchApi, TableResult }                                                                                                   from '@acx-ui/utils'
+import { RequestPayload }                                                                                                   from '@acx-ui/types'
+import { CommonResult }                                                                                                     from '@acx-ui/user'
+import { createHttpRequest, batchApi, TableResult }                                                                         from '@acx-ui/utils'
 
 import { QueryFn } from '../servicePolicy.utils'
 

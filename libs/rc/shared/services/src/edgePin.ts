@@ -22,8 +22,8 @@ import {
   TunnelProfileUrls,
   TunnelProfileViewData
 } from '@acx-ui/rc/utils'
-import { basePinApi }                          from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
+import { basePinApi }                                       from '@acx-ui/store'
+import { RequestPayload }                                   from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal, TableResult } from '@acx-ui/utils'
 
 import { serviceApi }                     from './service'

@@ -18,8 +18,8 @@ import {
   whitespaceOnlyRegExp,
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
+import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 

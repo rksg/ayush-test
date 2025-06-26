@@ -13,8 +13,8 @@ import {
   RWGRow,
   RWGClusterNode
 } from '@acx-ui/rc/utils'
-import { baseRWGApi }                  from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
+import { baseRWGApi }                               from '@acx-ui/store'
+import { RequestPayload }                           from '@acx-ui/types'
 import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 export const rwgApi = baseRWGApi.injectEndpoints({

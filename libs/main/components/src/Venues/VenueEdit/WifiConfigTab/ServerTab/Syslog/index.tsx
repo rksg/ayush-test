@@ -29,12 +29,12 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { TableResult } from '@acx-ui/utils'
 import {
   useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import * as UI                                        from '../../styledComponents'

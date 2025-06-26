@@ -11,10 +11,10 @@ import {
   EdgeFirewallBaseStatsPayload,
   EdgeFirewallACLStatsPayload
 } from '@acx-ui/rc/utils'
-import { baseEdgeFirewallApi } from '@acx-ui/store'
-import { RequestPayload }      from '@acx-ui/types'
+import { baseEdgeFirewallApi }  from '@acx-ui/store'
+import { RequestPayload }       from '@acx-ui/types'
 import { TableResult, createHttpRequest, NewAPITableResult,
-  transferNewResToTableResult, }   from '@acx-ui/utils'
+  transferNewResToTableResult }   from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 

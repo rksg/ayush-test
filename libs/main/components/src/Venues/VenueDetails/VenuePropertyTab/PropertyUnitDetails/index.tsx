@@ -23,8 +23,8 @@ import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, filterByOperations } from '@acx-ui/user'
-import { FILTER, SEARCH, getOpsApi, noDataDisplay }           from '@acx-ui/utils'
+import { filterByAccess, filterByOperations }       from '@acx-ui/user'
+import { FILTER, SEARCH, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'

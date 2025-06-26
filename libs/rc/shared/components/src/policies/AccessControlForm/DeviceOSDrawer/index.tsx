@@ -42,9 +42,9 @@ import {
   useConfigTemplateQueryFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { TableResult } from '@acx-ui/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TableResult }               from '@acx-ui/utils'
 
 import { AddModeProps, editModeProps }                            from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_DEVICE_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'

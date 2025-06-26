@@ -3,11 +3,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 
-import { Activity } from '@acx-ui/rc/utils'
-import { TableQuery } from '@acx-ui/utils'
-import { Provider }             from '@acx-ui/store'
-import { render, screen }       from '@acx-ui/test-utils'
-import { RequestPayload }       from '@acx-ui/types'
+import { Activity }       from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
+import { TableQuery }     from '@acx-ui/utils'
 
 import { activities } from './__tests__/fixtures'
 

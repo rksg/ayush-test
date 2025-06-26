@@ -11,8 +11,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi }                 from '@acx-ui/store'
-import { RequestPayload }                  from '@acx-ui/types'
+import { baseEdgeDhcpApi }                              from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
 import { TableResult, createHttpRequest, showApiError } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
