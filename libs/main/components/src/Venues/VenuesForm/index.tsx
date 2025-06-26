@@ -40,7 +40,6 @@ import {
   whitespaceOnlyRegExp,
   useConfigTemplateLazyQueryFnSwitcher,
   Venue,
-  TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplatePageHeaderTitle,
   CommonResult,
@@ -54,7 +53,7 @@ import {
   useLocation
 } from '@acx-ui/react-router-dom'
 import { RequestPayload }     from '@acx-ui/types'
-import { validationMessages } from '@acx-ui/utils'
+import { TableResult, validationMessages } from '@acx-ui/utils'
 
 import { MessageMapping }      from '../MessageMapping'
 import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'

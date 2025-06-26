@@ -35,12 +35,12 @@ import {
   useServicePageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   useServicePreviousPath,
   useConfigTemplate,
   ConfigTemplateType,
   useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import {
   useNavigate,
   useParams

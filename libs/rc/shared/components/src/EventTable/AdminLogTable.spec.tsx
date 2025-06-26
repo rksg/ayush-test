@@ -2,7 +2,8 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { AdminLog, TableQuery } from '@acx-ui/rc/utils'
+import { AdminLog } from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 import { Provider }             from '@acx-ui/store'
 import { render, screen }       from '@acx-ui/test-utils'
 import { RequestPayload }       from '@acx-ui/types'

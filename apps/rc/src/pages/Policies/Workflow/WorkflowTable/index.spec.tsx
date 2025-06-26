@@ -4,7 +4,6 @@ import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  NewAPITableResult,
   PolicyOperation,
   PolicyType,
   Workflow,
@@ -12,6 +11,7 @@ import {
   getPolicyRoutePath,
   WorkflowStep
 } from '@acx-ui/rc/utils'
+import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 

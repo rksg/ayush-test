@@ -28,12 +28,12 @@ import {
   PolicyOperation,
   PolicyType,
   sortProp,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 

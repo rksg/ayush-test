@@ -14,9 +14,9 @@ import {
   PolicyOperation,
   getPolicyRoutePath,
   IdentityProviderTabType,
-  getPolicyAllowedOperation,
-  TableResult
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import { Params, Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RbacOpsIds, ScopeKeys, UseQuery }                      from '@acx-ui/types'
 

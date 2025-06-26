@@ -10,9 +10,9 @@ import {
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
-  TableResult,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 

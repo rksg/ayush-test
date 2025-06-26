@@ -14,10 +14,11 @@ import { Features, useIsSplitOn }                                               
 import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
 import { DownloadOutlined }                                                                                                      from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency }                                        from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                                        from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, useUserProfileContext }                                 from '@acx-ui/user'
-import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay,
+  useTrackLoadTime, widgetsMapping, TableQuery } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

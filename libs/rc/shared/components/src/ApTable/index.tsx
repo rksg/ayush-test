@@ -27,11 +27,10 @@ import {
   NewAPExtendedGrouped,
   NewAPModelExtended,
   PowerSavingStatusEnum,
-  TableQuery,
-  TableResult,
   transformApStatus,
   transformDisplayText
 } from '@acx-ui/rc/utils'
+import { TableQuery, TableResult } from '@acx-ui/utils'
 import { RequestPayload } from '@acx-ui/types'
 
 

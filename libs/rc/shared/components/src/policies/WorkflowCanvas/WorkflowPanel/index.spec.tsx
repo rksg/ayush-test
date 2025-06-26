@@ -1,7 +1,8 @@
 import { waitFor } from '@testing-library/react'
 import { rest }    from 'msw'
 
-import { NewAPITableResult, Workflow, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Workflow, WorkflowUrls } from '@acx-ui/rc/utils'
+import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                  from '@acx-ui/store'
 import { mockServer, render, screen }                from '@acx-ui/test-utils'
 

@@ -5,16 +5,15 @@ import {
   Template,
   Registration,
   MsgCategory,
-  TemplateGroup,
-  transferToNewTablePaginationParams,
-  NewAPITableResult,
-  TableResult,
-  TableChangePayload,
-  transferNewResToTableResult
+  TemplateGroup
 } from '@acx-ui/rc/utils'
 import { baseMsgTemplateApi }                  from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { TableResult,createHttpRequest, ignoreErrorModal,
+  transferToNewTablePaginationParams,
+  NewAPITableResult,
+  TableChangePayload,
+  transferNewResToTableResult } from '@acx-ui/utils'
 
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({

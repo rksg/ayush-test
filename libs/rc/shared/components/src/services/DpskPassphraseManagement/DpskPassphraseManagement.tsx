@@ -40,11 +40,11 @@ import {
   getScopeKeyByService,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
-  IdentityDetailsLink, TableQuery
+  IdentityDetailsLink
 } from '@acx-ui/rc/utils'
 import { RequestPayload, RolesEnum, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
-import { getIntl, getOpsApi, validationMessages }                                   from '@acx-ui/utils'
+import { getIntl, getOpsApi, validationMessages, TableQuery }                                   from '@acx-ui/utils'
 
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'

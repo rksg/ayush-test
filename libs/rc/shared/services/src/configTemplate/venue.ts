@@ -8,7 +8,6 @@ import {
   LocalUser,
   Mesh,
   RadiusServer,
-  TableResult,
   TacacsServer,
   TriBandSettings,
   Venue,
@@ -42,7 +41,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { TableResult, createHttpRequest }     from '@acx-ui/utils'
 
 import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                        from '../utils'

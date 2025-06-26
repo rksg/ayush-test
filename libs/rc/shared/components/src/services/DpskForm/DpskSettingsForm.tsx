@@ -44,12 +44,11 @@ import {
   passphraseFormatDescription,
   useConfigTemplateLazyQueryFnSwitcher,
   DpskSaveData,
-  TableResult,
   useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
-import { getIntl }              from '@acx-ui/utils'
+import { TableResult, getIntl }              from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
 import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'

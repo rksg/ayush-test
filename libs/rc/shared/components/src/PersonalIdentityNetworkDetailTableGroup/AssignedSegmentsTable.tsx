@@ -4,9 +4,9 @@ import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
   defaultSort,
   AccessSwitch,
-  Persona, sortProp,
-  TableQuery
+  Persona, sortProp
 } from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PropertyUnitLink } from '../CommonLinkHelper'

@@ -24,7 +24,6 @@ import {
   ApDeep,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign, NewAPModel,
-  TableResult,
   trailingNorLeadingSpaces, useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
@@ -32,7 +31,7 @@ import {
   validateByteLength,
   Venue
 } from '@acx-ui/rc/utils'
-import { useTableQuery } from '@acx-ui/utils'
+import { useTableQuery, TableResult } from '@acx-ui/utils'
 
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 import { ApGroupEditContext }           from '../context'

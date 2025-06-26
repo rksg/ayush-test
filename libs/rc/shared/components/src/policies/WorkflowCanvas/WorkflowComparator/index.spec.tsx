@@ -4,7 +4,8 @@ import { Path }       from 'react-router-dom'
 import ResizeObserver from 'resize-observer-polyfill'
 
 import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { NewAPITableResult, Workflow, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Workflow, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                     from '@acx-ui/test-utils'
 

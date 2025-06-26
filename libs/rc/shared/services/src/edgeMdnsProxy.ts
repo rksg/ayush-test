@@ -1,5 +1,4 @@
 import {
-  TableResult,
   CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -10,7 +9,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseEdgeMdnsProxyApi } from '@acx-ui/store'
 import { RequestPayload }       from '@acx-ui/types'
-import { createHttpRequest }    from '@acx-ui/utils'
+import { TableResult, createHttpRequest }    from '@acx-ui/utils'
 
 import { serviceApi }                     from './service'
 import { handleCallbackWhenActivityDone } from './utils'

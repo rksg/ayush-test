@@ -25,11 +25,11 @@ import {
   PolicyType,
   SyslogPolicyListType,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   VenueSyslogSettingType,
   useConfigTemplateMutationFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import {
   useLocation,
   useNavigate,

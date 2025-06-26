@@ -3,11 +3,11 @@ import { rest }  from 'msw'
 
 import {
   ActionType,
-  NewAPITableResult,
   Workflow,
   WorkflowStep,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
+import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 

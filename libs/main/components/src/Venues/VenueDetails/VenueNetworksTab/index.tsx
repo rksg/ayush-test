@@ -67,7 +67,6 @@ import {
   VLANPoolViewModelType,
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   WifiRbacUrlsInfo,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -80,7 +79,7 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { useTableQuery, getOpsApi } from '@acx-ui/utils'
+import { TableResult, useTableQuery, getOpsApi } from '@acx-ui/utils'
 
 import { useTunnelColumn } from './useTunnelColumn'
 

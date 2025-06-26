@@ -1,5 +1,5 @@
 import { ColumnType, TableProps } from '@acx-ui/components'
-import { TableQuery }             from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 import { RequestPayload }         from '@acx-ui/types'
 
 export interface ApGroupTableProps<T>

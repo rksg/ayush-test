@@ -6,7 +6,8 @@ import { useIntl }        from 'react-intl'
 import { Button, cssStr, PageHeader }                                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useGetApGroupsTemplateListQuery, useGetApOperationalQuery } from '@acx-ui/rc/services'
-import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher }                 from '@acx-ui/rc/utils'
+import { ApGroupViewModel, useConfigTemplateQueryFnSwitcher }                 from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import {
   TenantLink,
   useNavigate,

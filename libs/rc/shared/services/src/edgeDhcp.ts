@@ -9,12 +9,11 @@ import {
   EdgeServiceCompatibilitiesResponse,
   EdgeServiceCompatibilitiesResponseV1_1,
   onActivityMessageReceived,
-  onSocketActivityChanged,
-  TableResult
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseEdgeDhcpApi }                 from '@acx-ui/store'
 import { RequestPayload }                  from '@acx-ui/types'
-import { createHttpRequest, showApiError } from '@acx-ui/utils'
+import { TableResult, createHttpRequest, showApiError } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
 

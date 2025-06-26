@@ -6,7 +6,8 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { WorkflowUrls, Workflow, NewAPITableResult }      from '@acx-ui/rc/utils'
+import { WorkflowUrls, Workflow }      from '@acx-ui/rc/utils'
+import { NewAPITableResult } from '@acx-ui/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 

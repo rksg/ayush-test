@@ -8,12 +8,12 @@ import {
   useLazyGetEnhancedPortalTemplateListQuery } from '@acx-ui/rc/services'
 import {
   Portal,
-  TableResult,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
   useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { PortalDemo } from '../PortalDemo'

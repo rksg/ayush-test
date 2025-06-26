@@ -8,8 +8,8 @@ import { useIntl }                    from 'react-intl'
 import { Tooltip }                                                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
-import { TableResult, VLANPoolViewModelType, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
-
+import { VLANPoolViewModelType, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import VLANPoolModal from './VLANPoolModal'
 
 

@@ -58,7 +58,8 @@ import {
   BandModeEnum,
   ApBandModeSettingsV1Dot1
 } from '@acx-ui/rc/utils'
-import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { ApGroupViewModel, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'

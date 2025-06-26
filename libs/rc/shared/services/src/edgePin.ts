@@ -12,7 +12,6 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   SwitchLite,
-  TableResult,
   WebAuthTemplate,
   WebAuthTemplateTableData,
   EdgeClusterStatus,
@@ -25,7 +24,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { basePinApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { createHttpRequest, ignoreErrorModal, TableResult } from '@acx-ui/utils'
 
 import { serviceApi }                     from './service'
 import { handleCallbackWhenActivityDone } from './utils'

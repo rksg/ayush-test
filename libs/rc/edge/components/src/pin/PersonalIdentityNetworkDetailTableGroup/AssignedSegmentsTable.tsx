@@ -5,9 +5,9 @@ import {
   defaultSort,
   AccessSwitch,
   Persona, sortProp,
-  TableQuery,
   PropertyUnitLink
 } from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'

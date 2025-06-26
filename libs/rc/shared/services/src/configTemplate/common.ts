@@ -13,7 +13,6 @@ import {
   ConfigTemplateUrlsInfo,
   Network,
   NetworkSaveData,
-  TableResult,
   WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -27,7 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
