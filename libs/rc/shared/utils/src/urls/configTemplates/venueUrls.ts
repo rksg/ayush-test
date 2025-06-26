@@ -307,6 +307,26 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  activateVenueRadiusServiceRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    opsApi: 'PUT:/templates/venues/{id}/radiusServerProfiles/{id}',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVenueRadiusServiceRbac: {
+    method: 'delete',
+    url: '/templates//venues/:venueId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    opsApi: 'DELETE:/templates/venues/{id}/radiusServerProfiles/{id}',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/templates/venues/:venueId/dosProtectionSettings',

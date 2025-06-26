@@ -107,7 +107,9 @@ export const useCasesToRefreshVlanPoolTemplateList = [
 export const useCasesToRefreshRadiusServerTemplateList = [
   'AddRadiusServerProfileTemplate',
   'UpdateRadiusServerProfileTemplate',
-  'DeleteRadiusServerProfileTemplate'
+  'DeleteRadiusServerProfileTemplate',
+  'ActivateRadiusServerProfileOnVenueTemplate',
+  'DeactivateRadiusServerProfileOnVenueTemplate'
 ]
 
 export const useCasesToRefreshWifiCallingTemplateList = [

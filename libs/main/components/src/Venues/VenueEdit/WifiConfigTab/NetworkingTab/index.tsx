@@ -34,6 +34,7 @@ import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
 import { RadiusOptions }       from './RadiusOptions'
 import { SmartMonitor }        from './SmartMonitor'
+import { VenueRadiusService }  from './VenueRadiusService'
 
 
 export interface NetworkingSettingContext {
@@ -43,6 +44,7 @@ export interface NetworkingSettingContext {
   updateDirectedMulticast?: (() => void),
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
+  updateRadiusService?: (() => void),
   updateRadiusOptions?: (() => void),
   updateSmartMonitor?: (() => void)
 }
@@ -56,6 +58,7 @@ export function NetworkingTab () {
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
+  const isSupportVenueRadiusCustom = useIsSplitOn(Features.WIFI_VENUE_RADIUS_CUSTOM_TOGGLE)
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
   const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
   const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
@@ -118,20 +121,31 @@ export function NetworkingTab () {
     VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac
   )
 
+  const activateRadiusServiceOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.activateVenueRadiusService,
+    VenueConfigTemplateUrlsInfo.activateVenueRadiusServiceRbac
+  )
+  const deactivateRadiusServiceOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.deactivateVenueRadiusService,
+    VenueConfigTemplateUrlsInfo.deactivateVenueRadiusServiceRbac
+  )
+
   const [
     isAllowEditLanPort,
     isAllowEditMesh,
     isAllowEditDMulticast,
     isAllowEditCellular,
     isAllowEditSmartMonitor,
-    isAllowEditRADIUSOptions
+    isAllowEditRADIUSOptions,
+    isAllowEditRADIUSService
   ] = [
     hasAllowedOperations([lanPortOpsApi]),
     hasAllowedOperations([meshOpsApi]),
     hasAllowedOperations([dMulticastOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueCellularSettings)]),
     hasAllowedOperations([smartMonitorOpsApi]),
-    hasAllowedOperations([radiusOptionsOpsApi])
+    hasAllowedOperations([radiusOptionsOpsApi]),
+    hasAllowedOperations([[ activateRadiusServiceOpsApi, deactivateRadiusServiceOpsApi ]])
   ]
 
   const {
@@ -142,29 +156,38 @@ export function NetworkingTab () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
+  const lanPortTitle = $t({ defaultMessage: 'LAN Ports' })
+  const meshTitle = $t({ defaultMessage: 'Mesh Network' })
+  const dMulticastTitle = $t({ defaultMessage: 'Directed Multicast' })
+  const cellularOptionsTitle = $t({ defaultMessage: 'Cellular Options' })
+  const smartMonitorTitle = $t({ defaultMessage: 'Smart Monitor' })
+  const radiusTitle = isSupportVenueRadiusCustom
+    ? $t({ defaultMessage: 'RADIUS Service' })
+    : $t({ defaultMessage: 'RADIUS Options' })
+
   const items = [...(isShowLanPortSettings ? [{
-    title: $t({ defaultMessage: 'LAN Ports' }),
+    title: lanPortTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='lan-ports'>
-        { $t({ defaultMessage: 'LAN Ports' }) }
+        { lanPortTitle }
       </StepsFormLegacy.SectionTitle>
       <LanPorts isAllowEdit={isAllowEditLanPort}/>
     </>
   }] : []), {
-    title: $t({ defaultMessage: 'Mesh Network' }),
+    title: meshTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>
-        { $t({ defaultMessage: 'Mesh Network' }) }
+        { meshTitle }
       </StepsFormLegacy.SectionTitle>
       <MeshNetwork isAllowEdit={isAllowEditMesh}/>
     </>
   },
   {
-    title: $t({ defaultMessage: 'Directed Multicast' }),
+    title: dMulticastTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='directed-multicast'>
         {<Space align='baseline'>
-          { $t({ defaultMessage: 'Directed Multicast' }) }
+          { dMulticastTitle }
           <Tooltip
             title={$t( directedMulticastInfo )}
             placement='right'>
@@ -180,27 +203,29 @@ export function NetworkingTab () {
       <DirectedMulticast isAllowEdit={isAllowEditDMulticast} />
     </> },
   ...(hasCellularAps? [{
-    title: $t({ defaultMessage: 'Cellular Options' }),
+    title: cellularOptionsTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='cellular-options'>
-        { $t({ defaultMessage: 'Cellular Options' }) }
+        { cellularOptionsTitle }
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm isAllowEdit={isAllowEditCellular} />
     </> }] : []),
   ...(isSmartMonitorFFEnabled? [{
-    title: $t({ defaultMessage: 'Smart Monitor' }),
+    title: smartMonitorTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='smart-monitor'>
-        { $t({ defaultMessage: 'Smart Monitor' }) }
+        { smartMonitorTitle }
       </StepsFormLegacy.SectionTitle>
       <SmartMonitor isAllowEdit={isAllowEditSmartMonitor} />
     </> }] : []),
   {
-    title: $t({ defaultMessage: 'RADIUS Options' }),
+    title: radiusTitle,
     content: <>
       <StepsFormLegacy.SectionTitle id='radius-options'>
-        { $t({ defaultMessage: 'RADIUS Options' }) }
+        { radiusTitle }
       </StepsFormLegacy.SectionTitle>
+      {isSupportVenueRadiusCustom &&
+      <VenueRadiusService isAllowEdit={isAllowEditRADIUSService} />}
       <RadiusOptions isAllowEdit={isAllowEditRADIUSOptions} />
     </>
   }]
@@ -211,6 +236,7 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
+      await editNetworkingContextData?.updateRadiusService?.()
       await editNetworkingContextData?.updateRadiusOptions?.()
       await editNetworkingContextData?.updateSmartMonitor?.()
 
@@ -227,6 +253,7 @@ export function NetworkingTab () {
         delete newData.updateCellular
         delete newData.updateMesh
         delete newData.updateDirectedMulticast
+        delete newData.updateRadiusService
         delete newData.updateRadiusOptions
         delete newData.updateSmartMonitor
 

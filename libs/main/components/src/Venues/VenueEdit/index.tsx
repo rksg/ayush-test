@@ -260,6 +260,7 @@ function processWifiTab (props: VenueEditContextProps) {
       editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
+      editNetworkingContextData?.updateRadiusService?.()
       editNetworkingContextData?.updateRadiusOptions?.()
       editNetworkingContextData?.updateSmartMonitor?.()
       break
