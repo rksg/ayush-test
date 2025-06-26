@@ -22,7 +22,6 @@ jest.mock('./useUnifiedServiceSearchFilter', () => ({
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  AddProfileButton: () => <div>AddProfileButton</div>,
   canCreateAnyUnifiedService: jest.fn(() => true),
   getServiceCatalogRoutePath: jest.fn(() => '/service-catalog')
 }))
@@ -61,7 +60,7 @@ describe('<MyServices />', () => {
     const targetService2 = mockedUnifiedServicesListWithTotalCount[1]
 
     expect(screen.getByText('My Services')).toBeInTheDocument()
-    expect(screen.getByText('AddProfileButton')).toBeInTheDocument()
+    expect(screen.getByText('Add Service')).toBeInTheDocument()
     expect(screen.getByText('ServicesToolBar')).toBeInTheDocument()
     expect(screen.getByText(`ServiceCard: ${targetService1.type}`)).toBeInTheDocument()
     expect(screen.getByText(`ServiceCard: ${targetService2.type}`)).toBeInTheDocument()
