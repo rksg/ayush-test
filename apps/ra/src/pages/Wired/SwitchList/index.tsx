@@ -2,11 +2,12 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useSwitchListQuery, Switch }                      from '@acx-ui/analytics/services'
-import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
-import { formatter }                                       from '@acx-ui/formatter'
-import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import { useSwitchListQuery, Switch }              from '@acx-ui/analytics/services'
+import { defaultSort, sortProp  }                  from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { formatter }                               from '@acx-ui/formatter'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
+import type { Filter }                             from '@acx-ui/types'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 

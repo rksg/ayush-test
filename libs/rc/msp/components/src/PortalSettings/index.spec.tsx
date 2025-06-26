@@ -110,7 +110,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: ({ name, callback }: {
     name: string,
     callback?: (value: string) => void

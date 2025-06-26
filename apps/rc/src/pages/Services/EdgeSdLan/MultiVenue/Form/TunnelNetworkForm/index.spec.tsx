@@ -12,11 +12,14 @@ import { Features }                   from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }      from '@acx-ui/rc/components'
 import { tunnelProfileApi, venueApi } from '@acx-ui/rc/services'
 import {
+  APCompatibilityFixtures,
   CommonUrlsInfo,
   EdgeSdLanFixtures,
   EdgeTunnelProfileFixtures,
   NetworkSegmentTypeEnum,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -151,6 +154,14 @@ describe('Tunneled Venue Networks Form', () => {
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json(APCompatibilityFixtures.mockApCompatibilitiesVenue))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getVenueApCompatibilities.url,
+        (req, res, ctx) => res(ctx.json(APCompatibilityFixtures.mockApCompatibilitiesVenue))
       )
     )
   })

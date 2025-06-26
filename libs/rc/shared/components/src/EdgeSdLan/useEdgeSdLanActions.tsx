@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import { useMemo } from 'react'
 
-import { difference, flatMap, uniq, groupBy, intersection, isNil, isEqual, pick } from 'lodash'
+import { difference, uniq, intersection, isNil, isEqual, pick } from 'lodash'
 
 import { showActionModal }              from '@acx-ui/components'
-import { Features }                     from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeMvSdLanNetworkMutation,
   useActivateEdgeSdLanDmzClusterMutation,
@@ -12,7 +11,7 @@ import {
   useAddEdgeMvSdLanMutation,
   useDeactivateEdgeMvSdLanNetworkMutation,
   useDeactivateEdgeSdLanDmzClusterMutation,
-  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeMvSdLanViewDataListQuery,
   useToggleEdgeSdLanDmzMutation,
   useUpdateEdgeMvSdLanPartialMutation
 } from '@acx-ui/rc/services'
@@ -21,13 +20,10 @@ import {
   CommonResult,
   EdgeMvSdLanExtended,
   EdgeMvSdLanNetworks,
-  EdgeMvSdLanViewData,
-  EdgeSdLanSettingP2,
-  EdgeSdLanViewDataP2
+  EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { getIntl, CatchErrorDetails } from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 // return the networks NOT included in `second`
 const differenceVenueNetworks = (first: EdgeMvSdLanNetworks, second: EdgeMvSdLanNetworks) => {
@@ -56,7 +52,7 @@ const useEdgeSdLanCommonActions = () => {
   const [activateDmzTunnel] = useActivateEdgeSdLanDmzTunnelProfileMutation()
 
   const activateGuestEdgeCluster = (
-    serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended,
+    serviceId: string, payload: EdgeMvSdLanExtended,
     activityCallback?: (res: (CommonResult[] | CommonErrorsResult<CatchErrorDetails>)) => void
   ): Promise<CommonResult> => {
     return new Promise(async (resolve, reject) => {
@@ -81,7 +77,7 @@ const useEdgeSdLanCommonActions = () => {
   }
 
   const activateGuestTunnel =
-  (serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended): Promise<CommonResult> => {
+  (serviceId: string, payload: EdgeMvSdLanExtended): Promise<CommonResult> => {
     return activateDmzTunnel({ params: {
       serviceId,
       tunnelProfileId: payload.guestTunnelProfileId
@@ -395,7 +391,7 @@ export const useEdgeMvSdLanActions = () => {
 }
 
 export interface SdLanScopedVenueNetworksData {
-  sdLans: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] | undefined,
+  sdLans: EdgeMvSdLanViewData[] | undefined,
   scopedNetworkIds: string[],
   scopedGuestNetworkIds: string[]
 }
@@ -404,60 +400,41 @@ export const useSdLanScopedVenueNetworks = (
   networkIds: string[] | undefined,
   refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>
 ) => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  const { data, refetch, isUninitialized } = useGetEdgeSdLanP2ViewDataListQuery({
+  const { data, refetch, isUninitialized } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
-      filters: isEdgeMvSdLanReady
-        ? { 'tunneledWlans.venueId': [venueId] }
-        : { networkIds, venueId: [venueId] },
+      filters: { 'tunneledWlans.venueId': [venueId] },
       fields: [
         'id',
         'name',
         'venueId',
         'isGuestTunnelEnabled',
-        ...(isEdgeSdLanHaReady
-          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
-          : ['edgeId', 'edgeName']),
-        ...(isEdgeMvSdLanReady
-          ? ['tunneledWlans', 'tunneledGuestWlans']
-          : ['networkIds', 'guestNetworkIds'])
+        'edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName',
+        'tunneledWlans', 'tunneledGuestWlans'
       ],
       pageSize: 10000
     }
   }, {
-    skip: !venueId || !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+    skip: !venueId || !networkIds
   })
 
   if(refetchFnRef && !isUninitialized) refetchFnRef.current.sdlan = refetch
 
   const result = useMemo(() => {
-    if (isEdgeMvSdLanReady) {
-      const mvSdlan = (data?.data as EdgeMvSdLanViewData[])?.[0]
+    const mvSdlan = (data?.data as EdgeMvSdLanViewData[])?.[0]
 
-      return {
-        sdLans: mvSdlan ? [mvSdlan] : [],
-        scopedNetworkIds: mvSdlan?.tunneledWlans?.map(wlan => wlan.networkId) ?? [],
-        scopedGuestNetworkIds: mvSdlan?.tunneledGuestWlans?.map(wlan => wlan.networkId) ?? []
-      } as SdLanScopedVenueNetworksData
-    } else {
-      const sdlans = data?.data as EdgeSdLanViewDataP2[]
-      return {
-        sdLans: sdlans,
-        scopedNetworkIds: uniq(flatMap(sdlans, (item) => item.networkIds)),
-        scopedGuestNetworkIds: uniq(flatMap(sdlans, (item) =>
-          item.isGuestTunnelEnabled ? item.guestNetworkIds : undefined)).filter(i => !!i)
-      } as SdLanScopedVenueNetworksData
-    }
+    return {
+      sdLans: mvSdlan ? [mvSdlan] : [],
+      scopedNetworkIds: mvSdlan?.tunneledWlans?.map(wlan => wlan.networkId) ?? [],
+      scopedGuestNetworkIds: mvSdlan?.tunneledGuestWlans?.map(wlan => wlan.networkId) ?? []
+    } as SdLanScopedVenueNetworksData
+
   }, [data])
 
   return result
 }
 
 export interface SdLanScopedNetworkVenuesData {
-    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] },
+    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
     networkVenueIds: string[] | undefined,
     guestNetworkVenueIds: string[] | undefined
 }
@@ -465,71 +442,50 @@ export const useSdLanScopedNetworkVenues = (
   networkId: string | undefined,
   refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>
 ) => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  const { data, refetch, isUninitialized } = useGetEdgeSdLanP2ViewDataListQuery({
+  const { data, refetch, isUninitialized } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
-      filters: isEdgeMvSdLanReady
-        ? { 'tunneledWlans.networkId': [networkId] }
-        : { networkIds: [networkId] },
+      filters: { 'tunneledWlans.networkId': [networkId] },
       fields: [
         'id',
         'name',
         'venueId',
         'isGuestTunnelEnabled',
-        ...(isEdgeSdLanHaReady
-          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
-          : ['edgeId', 'edgeName']),
-        ...(isEdgeMvSdLanReady
-          ? ['tunneledWlans', 'tunneledGuestWlans']
-          : ['guestNetworkIds'])
+        'edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName',
+        'tunneledWlans', 'tunneledGuestWlans'
       ],
       pageSize: 10000
     }
   }, {
-    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady || isEdgeMvSdLanReady)
+    skip: !networkId
   })
 
   if (refetchFnRef && !isUninitialized) refetchFnRef.current.sdlan = refetch
 
   const result = useMemo(() => {
-    if (isEdgeMvSdLanReady) {
-      const mvSdlans = data?.data as EdgeMvSdLanViewData[]
-      const sdLansVenueMap: { [venueId in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
-      const guestNetworkVenueIds: string[] = []
+    const mvSdlans = data?.data as EdgeMvSdLanViewData[]
+    const sdLansVenueMap: { [venueId in string]: ( EdgeMvSdLanViewData)[] } = {}
+    const guestNetworkVenueIds: string[] = []
 
-      mvSdlans?.forEach(sdlan => {
-        const wlans = sdlan.tunneledWlans?.filter(wlan => wlan.networkId === networkId)
-        wlans?.forEach(wlan => {
-          if (!sdLansVenueMap[wlan.venueId]) sdLansVenueMap[wlan.venueId] = []
+    mvSdlans?.forEach(sdlan => {
+      const wlans = sdlan.tunneledWlans?.filter(wlan => wlan.networkId === networkId)
+      wlans?.forEach(wlan => {
+        if (!sdLansVenueMap[wlan.venueId]) sdLansVenueMap[wlan.venueId] = []
 
-          sdLansVenueMap[wlan.venueId].push(sdlan)
-        })
-
-        guestNetworkVenueIds.push(...(uniq(sdlan.isGuestTunnelEnabled
-          ? (sdlan.tunneledGuestWlans
-            ?.filter(wlan => wlan.networkId === networkId)?.map(i => i.venueId))
-          : [])
-        ))
+        sdLansVenueMap[wlan.venueId].push(sdlan)
       })
 
-      return {
-        sdLansVenueMap,
-        networkVenueIds: Object.keys(sdLansVenueMap),
-        guestNetworkVenueIds
-      } as SdLanScopedNetworkVenuesData
-    } else {
-      return {
-        sdLansVenueMap: groupBy(data?.data, 'venueId'),
-        networkVenueIds: data?.data?.map(item => item.venueId),
-        guestNetworkVenueIds: data?.data
-          ?.map(item =>
-            item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
-          .filter(i => !!i)
-      } as SdLanScopedNetworkVenuesData
-    }
+      guestNetworkVenueIds.push(...(uniq(sdlan.isGuestTunnelEnabled
+        ? (sdlan.tunneledGuestWlans
+          ?.filter(wlan => wlan.networkId === networkId)?.map(i => i.venueId))
+        : [])
+      ))
+    })
+
+    return {
+      sdLansVenueMap,
+      networkVenueIds: Object.keys(sdLansVenueMap),
+      guestNetworkVenueIds
+    } as SdLanScopedNetworkVenuesData
 
   }, [data?.data, networkId])
 
@@ -566,32 +522,20 @@ export const checkSdLanScopedNetworkDeactivateAction =
     }
   }
 
-// id: is `serialNumber` when SD_LAN HA FF off
-//     means `clusterId` when SD_LAN HA FF on
-export const useGetEdgeSdLanByEdgeOrClusterId = (id?: string) => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-
+export const useGetEdgeSdLanByClusterId = (clusterId?: string) => {
   const {
     edgeSdLanData,
     isLoading,
     isFetching
-  } = useGetEdgeSdLanP2ViewDataListQuery(
+  } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
-      filters: isEdgeSdLanHaReady
-        ? undefined
-        : { edgeId: [id] },
-      fields: ['id'].concat((isEdgeSdLanHaReady
-        ? ['edgeClusterId', 'guestEdgeClusterId']
-        : 'edgeId'))
+      fields: ['id', 'edgeClusterId', 'guestEdgeClusterId']
     } },
     {
-      skip: !id || !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+      skip: !clusterId,
       selectFromResult: ({ data, isLoading, isFetching }) => ({
-        edgeSdLanData: data?.data?.filter((item, idx) => {
-          return isEdgeSdLanHaReady
-            ? (item.edgeClusterId === id || item.guestEdgeClusterId === id)
-            : idx === 0
+        edgeSdLanData: data?.data?.filter((item) => {
+          return (item.edgeClusterId === clusterId || item.guestEdgeClusterId === clusterId)
         })[0],
         isLoading,
         isFetching

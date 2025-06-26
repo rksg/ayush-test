@@ -30,6 +30,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  useEnforcedStatus: () => ({
+    hasEnforcedItem: jest.fn(),
+    getEnforcedActionMsg: jest.fn()
+  })
+}))
+
 const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
 describe('Venues Table', () => {
@@ -56,6 +63,10 @@ describe('Venues Table', () => {
           mockedApCompReq()
           return res(ctx.json(venuesApCompatibilitiesData))
         }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
       ),
       rest.delete(
         CommonUrlsInfo.deleteVenue.url,
@@ -139,8 +150,6 @@ describe('Venues Table', () => {
   })
 
   it('should have edge column when feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     render(
       <Provider>
         <VenuesTable />
@@ -153,24 +162,7 @@ describe('Venues Table', () => {
     expect(await screen.findByRole('columnheader', { name: 'RUCKUS Edges' })).toBeVisible()
   })
 
-  it('should not have edge column when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <VenuesTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'RUCKUS Edges' })).toBeFalsy()
-  })
-
   it('should have correct edge device quantity', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     render(
       <Provider>
         <VenuesTable />
@@ -244,8 +236,6 @@ describe('Venues Table', () => {
   })
 
   it('should have edge compatibilies correct', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
     const mockVenuelist = cloneDeep(venuelist)
     mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenue.compatibilities![0].id
     mockVenuelist.data[0].name = 'Test-Edge-Compatibility'
@@ -254,10 +244,6 @@ describe('Venues Table', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenuelist))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
       )
     )
 
@@ -277,8 +263,7 @@ describe('Venues Table', () => {
 
   it('should have edge compatibilies correct - V1_1', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
-        Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
+      [Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
     const mockVenuelist = cloneDeep(venuelist)
     mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenueV1_1.compatibilities![0].id
     mockVenuelist.data[0].name = 'Test-Edge-Compatibility'

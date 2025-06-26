@@ -19,11 +19,6 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgeServices } from '.'
 
-jest.mock('./ServiceDetailDrawer/SdLanDetailsP2', () => ({
-  ...jest.requireActual('./ServiceDetailDrawer/SdLanDetailsP2'),
-  SdLanDetailsP2: () => <div data-testid='rc-SdLanDetailsP2'/>
-}))
-
 const mockUseIsEdgeFeatureReady = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -105,7 +100,7 @@ describe('Edge Detail Services Tab', () => {
   })
 
   it('when HA OFF and click DHCP service, should not render DHCP service detail drawer', async () => {
-    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     const user = userEvent.setup()
     render(

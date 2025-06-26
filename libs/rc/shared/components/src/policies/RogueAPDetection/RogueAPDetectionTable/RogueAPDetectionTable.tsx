@@ -27,11 +27,9 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { RequestPayload }                                          from '@acx-ui/types'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
-import { useIsEdgeReady }    from '../../../useEdgeActions'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsEdgeReady()
 
   return {
     fields: [
@@ -45,7 +43,7 @@ const useDefaultVenuePayload = (): RequestPayload => {
       'switches',
       'switchClients',
       'clients',
-      ...(isEdgeEnabled ? ['edges'] : []),
+      'edges',
       'cog',
       'latitude',
       'longitude',

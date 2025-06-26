@@ -46,7 +46,7 @@ function BarChart ({
       ...filters,
       kpi,
       threshold: threshold as unknown as string,
-      granularity: 'PT24H',
+      granularity: 'P1D',
       startDate,
       enableSwitchFirmwareFilter
     },

@@ -222,7 +222,6 @@ export function NetworkForm (props:{
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
@@ -720,11 +719,7 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.SelfSignIn
-    ){
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -1062,7 +1057,7 @@ export function NetworkForm (props:{
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
+        if (formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
@@ -1279,7 +1274,7 @@ export function NetworkForm (props:{
       afterVenueActivationRequest.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
-      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
+      if (form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)

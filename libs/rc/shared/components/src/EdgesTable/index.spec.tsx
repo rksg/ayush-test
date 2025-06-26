@@ -2,7 +2,6 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }                                                from '@acx-ui/feature-toggle'
 import { edgeApi, venueApi }                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                         from '@acx-ui/store'
@@ -14,8 +13,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
-
 import { mockEdgeList } from './__tests__/fixtures'
 
 import { EdgesTable } from '.'
@@ -23,8 +20,8 @@ import { EdgesTable } from '.'
 // eslint-disable-next-line max-len
 const mockEdgeCompatibilitiesVenue = cloneDeep(EdgeCompatibilityFixtures.mockEdgeCompatibilitiesVenue)
 // mockEdgeList.data[4] is operational
-mockEdgeCompatibilitiesVenue.compatibilities[0].id = mockEdgeList.data[4].serialNumber
-mockEdgeCompatibilitiesVenue.compatibilities[1].id = mockEdgeList.data[1].serialNumber
+mockEdgeCompatibilitiesVenue.compatibilities![0].id = mockEdgeList.data[4].serialNumber
+mockEdgeCompatibilitiesVenue.compatibilities![1].id = mockEdgeList.data[1].serialNumber
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -312,9 +309,6 @@ describe('Edge Table', () => {
   })
 
   it('should shutdown the selected SmartEdge', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-
     const user = userEvent.setup()
     render(
       <Provider>
@@ -365,9 +359,6 @@ describe('Edge Table', () => {
   })
 
   it('should show incopatible warning', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      [Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
-
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,

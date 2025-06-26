@@ -4,7 +4,6 @@ import { useState } from 'react'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareSwitchVenueVersionsV1002,
@@ -43,11 +42,8 @@ export function SwitchUpgradeNotification (props: {
     type,
     validateModel,
     stackUnitsMinLimitaion,
-    venueFirmware,
-    venueAboveTenFirmware,
     venueFirmwareV1002,
     switchModel } = props
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const upgradeDescription = {
     stack: [{
       // normal
@@ -83,7 +79,6 @@ export function SwitchUpgradeNotification (props: {
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
   const icon = isNeedUpgrade ? <UI.WarningTriangle /> : ''
   const content = upgradeDescription[type][descriptionIndex]
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   const { parseSwitchVersion, checkSwitchModelGroup } = useSwitchFirmwareUtils()
 
@@ -97,7 +92,7 @@ export function SwitchUpgradeNotification (props: {
   />
 
   if (isRodanModel) {
-    if ((enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
+    if ((Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
       return <UI.Wrapper>
         <UI.Content style={{ padding: '4px 8px 4px' }}>
           <div><StackUnitsMinLimitaionMsg /></div>
@@ -127,26 +122,16 @@ export function SwitchUpgradeNotification (props: {
   const getVenueFirmware = function () {
     if (!switchModel) return ''
 
-    if (isSwitchFirmwareV1002Enabled) {
-      const model = checkSwitchModelGroup(validateModel[0])
-      return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
-    } else {
-      return (switchModel.includes('8200') || switchModel.includes('8100') ? venueAboveTenFirmware : venueFirmware)
-    }
+    const model = checkSwitchModelGroup(validateModel[0])
+    return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
   }
 
   const getVenueCategory = function () {
     if (!switchModel) return ''
 
-    if (isSwitchFirmwareV1002Enabled) {
-      const model = checkSwitchModelGroup(validateModel[0])
+    const model = checkSwitchModelGroup(validateModel[0])
 
-      return SwitchModelGroupDisplayText[model]
-    } else {
-      if (switchModel.includes('8200')) return '8200'
-      if (switchModel.includes('8100')) return '8100'
-      return '7000'
-    }
+    return SwitchModelGroupDisplayText[model]
 
   }
 
@@ -159,7 +144,7 @@ export function SwitchUpgradeNotification (props: {
         </UI.Header>
       }
       <UI.Content>
-        {enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
+        {Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
           <div style={{ paddingBottom: '4px' }}><StackUnitsMinLimitaionMsg /></div>
         }
 
