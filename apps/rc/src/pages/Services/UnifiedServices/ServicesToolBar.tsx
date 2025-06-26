@@ -5,11 +5,11 @@ import { debounce }                                  from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
-import { UnifiedServiceCategory }                                  from '@acx-ui/rc/utils'
-import { getIntl }                                                 from '@acx-ui/utils'
+import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
+import { getIntl }                                   from '@acx-ui/utils'
 
+import { FilterSelect }              from './styledComponents'
 import { DefaultSearchFilterValues } from './useUnifiedServiceSearchFilter'
-import { FilterSelect } from './styledComponents'
 
 export enum ServiceSortOrder {
   ASC,

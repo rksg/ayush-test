@@ -1,5 +1,5 @@
 import { Select } from 'antd'
-import styled from 'styled-components'
+import styled     from 'styled-components'
 
 export const FilterSelect = styled(Select)`
   .ant-select-selector:has(.ant-select-selection-item) {
