@@ -86,12 +86,11 @@ export function LanPortPoeSettings (props: {
         onChange={() => onChangedByCustom('poeOut')}
       />}
     />}
-    { isPoeOutModeEnabled && selectedModelCaps?.canSupportPoeOutMode &&
+    { isPoeOutModeEnabled && apPoeOut && selectedModelCaps?.canSupportPoeOutMode &&
     <Form.Item
       label={$t({ defaultMessage: 'PoE Out Mode' })}
       name='poeOutMode'
       initialValue={selectedModel?.poeOutMode || '802.3af'}
-      hidden={!apPoeOut}
       extra={
         <span style={{ fontSize: 10 }}>
           {poeOutModeDescriptions[apPoeOutMode] || 'Please select a PoE Out mode.'}
@@ -101,6 +100,7 @@ export function LanPortPoeSettings (props: {
         <Select
           data-testid='poeOutModeSelect'
           onChange={() => onChangedByCustom('poeOutMode')}
+          disabled={disabled || useVenueSettings}
           options={selectedModelCaps?.poeOutModeCapabilities?.map(p => ({
             label: poeOutModeLabels[p], value: p })) ?? []}
         />

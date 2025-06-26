@@ -544,7 +544,7 @@ describe('LanPortsForm', () => {
     await userEvent.click(screen.getAllByText('802.3at')[1])
 
     expect(screen.getByLabelText('Enable PoE Out')).not.toBeChecked()
-    expect(screen.getByLabelText('PoE Out Mode')).not.toBeVisible()
+    expect(screen.queryByLabelText('PoE Out Mode')).not.toBeInTheDocument()
     await userEvent.click(screen.getByLabelText('Enable PoE Out'))
     expect(screen.getByLabelText('Enable PoE Out')).toBeChecked()
     expect(screen.getByTestId('poeOutModeSelect')).toBeVisible()

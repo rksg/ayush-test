@@ -180,14 +180,12 @@ export function LanPorts (props: ApEditItemProps) {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
       // eslint-disable-next-line max-len
       const convertToFormData = (lanPortsData: WifiApSetting | VenueLanPorts, lanPortsCap: LanPort[]) => {
-        const poeOutFormData = ConvertPoeOutToFormData(lanPortsData, lanPortsCap)
         const formData = {
-          ...lanPortsData,
-          ...(poeOutFormData && { poeOut: poeOutFormData })
+          ...lanPortsData
         }
 
         formData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
-          formData.lanPorts, lanPortsCap, tenantId
+          formData.lanPorts ?? [], lanPortsCap, tenantId
         )
 
         return formData
@@ -228,13 +226,14 @@ export function LanPorts (props: ApEditItemProps) {
         )
 
         const isDhcpEnabled = await getDhcpEnabled(venueId!)
-
         const apLanPortsCap = apCaps.lanPorts
-        const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
-        const venueLanPorts = convertToFormData(venueLanPortsMergedData, apLanPortsCap)
+        const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap) as WifiApSetting
+        // eslint-disable-next-line max-len
+        const venueLanPorts = convertToFormData(venueLanPortsMergedData, apLanPortsCap) as VenueLanPorts
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts.useVenueSettings ? venueLanPorts : lanPorts)
+        // eslint-disable-next-line max-len
+        setSelectedModel(lanPorts.useVenueSettings ? { ...venueLanPorts, useVenueSettings: true } : lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
@@ -316,12 +315,10 @@ export function LanPorts (props: ApEditItemProps) {
   const isResetLanPort = (currentLans: WifiApSetting | undefined) => {
     if (!currentLans) return false
 
-    const { lan, poeOut } = currentLans
+    const { lan } = currentLans
     const currentLanPorts: WifiApSetting = {
       ...apLanPorts,
-      lanPorts: lan,
-      ...(poeOut && isObject(poeOut) &&
-          { poeOut: Object.values(poeOut).some(item => item === true) })
+      lanPorts: lan
     }
 
     const eqOriginLan = isEqualLanPort(currentLanPorts!, apLanPortsData!)
@@ -331,7 +328,7 @@ export function LanPorts (props: ApEditItemProps) {
   }
 
   const processUpdateLanPorts = async (values: WifiApSetting) => {
-    const { lan, poeMode, poeOut, useVenueSettings } = values
+    const { lan, poeMode, poeOut, poeOutMode, useVenueSettings } = values
     const lanPortsNoVni = lan?.filter(lanPort => !lanPort.vni)
 
     if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
@@ -339,8 +336,10 @@ export function LanPorts (props: ApEditItemProps) {
         ...apLanPorts,
         lanPorts: lanPortsNoVni,
         ...(poeMode ? { poeMode } : {}),
-        ...(poeOut && isObject(poeOut) &&
-            { poeOut: Object.values(poeOut).some(item => item === true) }),
+        ...(poeOut !== undefined ? { poeOut } : {}),
+        ...(poeOut
+          ? (poeOutMode !== undefined ? { poeOutMode } : {})
+          : { poeOutMode: undefined }),
         useVenueSettings
       }
 
@@ -383,8 +382,7 @@ export function LanPorts (props: ApEditItemProps) {
           ...apLanPorts,
           lanPorts: lan,
           //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
-          ...(poeOut && isObject(poeOut) &&
-              { poeOut: Object.values(poeOut).some(item => item === true) }),
+          ...(poeOut && poeOutMode && { poeOutMode: poeOutMode }),
           useVenueSettings: false
         }
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
@@ -501,14 +499,12 @@ export function LanPorts (props: ApEditItemProps) {
 
   const handleResetDefaultLanPorts = () => {
     if (apCaps && defaultLanPorts && !isDefaultPortsLoading) {
-      const poeOutFormData = ConvertPoeOutToFormData(defaultLanPorts, apCaps.lanPorts)
       const defaultLanPortsFormData = {
-        ...defaultLanPorts,
-        ...(poeOutFormData && { poeOut: poeOutFormData })
+        ...defaultLanPorts
       }
 
       defaultLanPortsFormData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
-        defaultLanPortsFormData.lanPorts, apCaps.lanPorts, tenantId
+        defaultLanPortsFormData.lanPorts ?? [], apCaps.lanPorts, tenantId
       )
 
       setSelectedModel(defaultLanPortsFormData)

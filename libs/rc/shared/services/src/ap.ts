@@ -1387,6 +1387,7 @@ export const apApi = baseApApi.injectEndpoints({
             payload: {
               poeMode: apSettings.poeMode,
               poeOut: apSettings.poeOut,
+              poeOutMode: apSettings.poeOutMode,
               useVenueSettings: apSettings.useVenueSettings
             }
           }
