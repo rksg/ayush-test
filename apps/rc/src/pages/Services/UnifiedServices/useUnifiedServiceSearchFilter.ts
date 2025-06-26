@@ -28,11 +28,13 @@ export function useUnifiedServiceSearchFilter (
   }, [rawUnifiedServiceList, searchTerm, filters, sortOrder])
 
   useEffect(() => {
+    const defaultValues: DefaultSearchFilterValues = { filters, sortOrder }
+
     sessionStorage.setItem(
       settingsId,
-      JSON.stringify({ searchTerm, filters, sortOrder })
+      JSON.stringify(defaultValues)
     )
-  }, [searchTerm, filters, sortOrder])
+  }, [filters, sortOrder])
 
   return { setSearchTerm, setFilters, setSortOrder, filteredServices }
 }

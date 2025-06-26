@@ -34,7 +34,7 @@ export interface ServiceFiltersConfig {
   categories?: UnifiedServiceCategory[]
 }
 
-interface ServicesToolBarProps {
+export interface ServicesToolBarProps {
   setSearchTerm: (searchTerm: string) => void
   setFilters: React.Dispatch<React.SetStateAction<ServiceFiltersConfig>>
   availableFilters?: ServiceFiltersConfig

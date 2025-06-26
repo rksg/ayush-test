@@ -15,7 +15,14 @@ jest.mock('./useUnifiedServiceSearchFilter', () => ({
     setFilters: jest.fn(),
     setSortOrder: jest.fn(),
     filteredServices: list
-  })
+  }),
+  getDefaultSearchFilterValues: jest.fn(() => ({
+    filters: {
+      products: [],
+      categories: []
+    },
+    sortOrder: 0
+  }))
 }))
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -37,6 +44,9 @@ jest.mock('./ServicesToolBar', () => ({
     ASC: 'asc',
     DESC: 'desc'
   }
+}))
+jest.mock('./SkeletonLoaderCard', () => ({
+  SkeletonLoaderCard: () => <div>SkeletonLoaderCard</div>
 }))
 
 describe('<MyServices />', () => {
@@ -73,10 +83,6 @@ describe('<MyServices />', () => {
 
     render(<MyServices />, { route: { params, path } })
 
-    const skeletonLoadingElements = screen.getAllByRole('list')
-      .filter(el => el.classList.contains('ant-skeleton-paragraph'))
-
-
-    expect(skeletonLoadingElements.length).toBe(4)
+    expect(screen.getByText('SkeletonLoaderCard')).toBeInTheDocument()
   })
 })
