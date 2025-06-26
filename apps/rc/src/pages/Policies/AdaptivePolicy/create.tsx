@@ -2,14 +2,13 @@ import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 import { Path }               from 'react-router-dom'
 
-import { PageHeader, StepsForm } from '@acx-ui/components'
+import { PageHeader, StepsForm }            from '@acx-ui/components'
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   LocationExtended,
   PolicyOperation,
-  PolicyType, useAdaptivePolicyBreadcrumb,
-  usePolicyPageHeaderTitle
+  PolicyType, useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -19,7 +18,7 @@ enum AdaptivePolicyTabsEnum {
   ADAPTIVE_POLICY_SET = 'adaptivePolicySet'
 }
 
-export default function CreateAdaptivePolicy () {
+export default function CreateAdaptivePolicyProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
