@@ -34,6 +34,14 @@ function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): Don
   return trafficSnapshotChartData
 }
 
+function hasData (chartData: DonutChartData[]): boolean {
+  console.log(chartData)
+  if (chartData[0].value === 0 && chartData[1].value === 0 && chartData[2].value === 0) {
+    return false
+  }
+  return true
+}
+
 export function TrafficSnapshot ({ queryResults }:
   { queryResults: UseQueryResult<TrafficByRadioData> }) {
 
@@ -42,7 +50,7 @@ export function TrafficSnapshot ({ queryResults }:
   return (
     <AutoSizer>
       {({ height, width }) => (
-        queryResults.data?.time.length ?
+        queryResults.data?.time.length && hasData(chartData) ?
           <DonutChart
             style={{ width, height }}
             data={chartData}
