@@ -155,8 +155,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               <Select.Option
                 data-testid='sd-lan-option'
                 value={NetworkTunnelTypeEnum.SdLan}
-                disabled={isDisabledAll || !hasEdgeSdLanPermission
-                  || isPinNetwork || !!!venueSdLanInfo}>
+                disabled={isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork}>
                 <Tooltip
                   title={isPinNetwork
                     ? $t(messageMappings.disable_pin_network)

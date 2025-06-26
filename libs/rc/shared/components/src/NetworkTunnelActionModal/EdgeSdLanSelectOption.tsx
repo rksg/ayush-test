@@ -44,7 +44,7 @@ export const EdgeSdLanSelectOption = (props: SdLanSelectOptionProps) => {
   return !disabledInfo?.isDisabled ? (
     isEdgeL2greReady ? (
       <EdgeSdLanSelectOptionL2greContent
-        venueSdLan={venueSdLan}
+        venueId={networkVenueId}
         networkType={networkType}
         hasVlanPool={hasVlanPool}
       />
