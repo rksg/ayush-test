@@ -1,9 +1,8 @@
 import _ from 'lodash'
 
-import { Filter }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useDownloadSwitchsCSVMutation } from '@acx-ui/rc/services'
-import { RequestPayload }                from '@acx-ui/types'
+import type { Filter, RequestPayload }   from '@acx-ui/types'
 import { useTenantId, TableQuery }       from '@acx-ui/utils'
 
 export function useExportCsv<T> (

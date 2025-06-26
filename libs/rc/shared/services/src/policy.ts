@@ -794,7 +794,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection',
             'DeleteVenue',
-            'DeleteVenues'
+            'DeleteVenues',
+            'AddRoguePolicy',
+            'DeleteRoguePolicy',
+            'UpdateRoguePolicy'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'RogueAp', id: 'LIST' }
