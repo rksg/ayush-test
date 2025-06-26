@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useDownloadApsCSVMutation }   from '@acx-ui/rc/services'
 import type { Filter, RequestPayload } from '@acx-ui/types'
-import { useTenantId, TableQuery }   from '@acx-ui/utils'
+import { useTenantId, TableQuery }     from '@acx-ui/utils'
 
 export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>

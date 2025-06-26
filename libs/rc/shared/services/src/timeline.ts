@@ -17,8 +17,8 @@ import {
   EventExportSchedule,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { baseTimelineApi }             from '@acx-ui/store'
-import type { Filter, RequestPayload } from '@acx-ui/types'
+import { baseTimelineApi }                                from '@acx-ui/store'
+import type { Filter, RequestPayload }                    from '@acx-ui/types'
 import { TableResult, SEARCH, SORTER, createHttpRequest } from '@acx-ui/utils'
 
 import { getMetaDetailsList, getMetaList, latestTimeFilter } from './utils'
