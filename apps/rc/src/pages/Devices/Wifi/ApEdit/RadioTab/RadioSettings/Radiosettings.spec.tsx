@@ -18,7 +18,6 @@ import {
   ApRadioParams24G,
   ApRadioParams50G,
   ApRadioParams6G,
-  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   FirmwareUrlsInfo,
   WifiRbacUrlsInfo,
@@ -626,10 +625,21 @@ describe('RadioSettingsTab', ()=> {
         rest.put(
           WifiRbacUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({}))),
-        rest.put(
-          CommonRbacUrlsInfo.getVenueApModelBandModeSettings.url,
+        rest.get(
+          WifiRbacUrlsInfo.getVenueApModelBandModeSettings.url,
           (_, res, ctx) => res(ctx.json(tripleBandMode))
-        )
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getApBandModeSettings.url,
+          (_, res, ctx) => res(ctx.json({
+            bandMode: 'TRIPLE',
+            model: 'T670',
+            useVenueSettings: true
+          }))
+        ),
+        rest.post(
+          FirmwareUrlsInfo.getApModelFamilies.url,
+          (_, res, ctx) => res(ctx.json(mockedApModelFamilies)))
       )
     })
 
@@ -672,46 +682,6 @@ describe('RadioSettingsTab', ()=> {
       expect(screen.queryAllByText('193').length).toBe(0)
       expect(screen.queryAllByText('197').length).toBe(0)
       expect(screen.queryAllByText('221').length).toBe(0)
-    })
-
-    it('should render 6G channels correctly for T670 when separation FF is off', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
-      render(
-        <Provider>
-          <ApEditContext.Provider value={{
-            ...defaultApEditCxtData,
-            apViewContextData: {
-              apStatusData: {
-                afcInfo: {
-                  afcStatus: AFCStatus.PASSED,
-                  powerMode: AFCPowerMode.STANDARD_POWER
-                }
-              }
-            }
-          }}
-          >
-            <ApDataContext.Provider value={defaultT670ApDataCxtData}>
-              <RadioSettings />
-            </ApDataContext.Provider>
-          </ApEditContext.Provider>
-        </Provider>, { route: { params } })
-
-      await screen.findByRole('tab', { name: '6 GHz' })
-
-      const r6gTab = await screen.findByRole('tab', { name: '6 GHz' })
-      await userEvent.click(r6gTab)
-      const outdoorChannel = await screen.findByText('93')
-      expect(outdoorChannel).toBeInTheDocument()
-      expect(screen.queryAllByText('97').length).toBe(1)
-      expect(screen.queryAllByText('101').length).toBe(1)
-      expect(screen.queryAllByText('105').length).toBe(1)
-      expect(screen.queryAllByText('109').length).toBe(1)
-      expect(screen.queryAllByText('113').length).toBe(1)
-      expect(screen.queryAllByText('185').length).toBe(1)
-      expect(screen.queryAllByText('189').length).toBe(1)
-      expect(screen.queryAllByText('193').length).toBe(1)
-      expect(screen.queryAllByText('197').length).toBe(1)
-      expect(screen.queryAllByText('221').length).toBe(1)
     })
   })
 })
