@@ -9,13 +9,13 @@ import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button, showToast, Filter }                                                                  from '@acx-ui/components'
+import { Loader, Table, TableProps, Button, showToast }                                                                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
 import { DownloadOutlined }                                                                                                      from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                                                                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                                        from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                        from '@acx-ui/types'
+import type { Filter, RequestPayload }                                                                                           from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, useUserProfileContext }                                 from '@acx-ui/user'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
@@ -78,6 +78,7 @@ export const EventTable = ({
   const [current, setCurrent] = useState<Event>()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
   const { rbacOpsApiEnabled } = getUserProfile()
@@ -92,7 +93,12 @@ export const EventTable = ({
   }
 
   const excludeEventType = [
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : []),
+    ...(!isIotEnabled ? ['IOT'] : [])
+  ]
+
+  const excludeProductType = [
+    ...(!isIotEnabled ? ['IOT'] : [])
   ]
 
   const supportedEventTypes =
@@ -210,7 +216,7 @@ export const EventTable = ({
       dataIndex: 'product',
       sorter: true,
       render: (_, row) => valueFrom(productMapping, row.product),
-      filterable: filtersFrom(productMapping, filterables, 'product')
+      filterable: filtersFrom(omit(productMapping, excludeProductType), filterables, 'product')
     },
     {
       key: 'source',
@@ -314,3 +320,5 @@ export const EventTable = ({
     }
   </Loader>
 }
+
+

@@ -3,11 +3,7 @@ import { QueryReturnValue }                        from '@rtk-query/graphql-requ
 import { ResultType }                              from 'antd/lib/result'
 import _                                           from 'lodash'
 import moment                                      from 'moment-timezone'
-import { useIntl }                                 from 'react-intl'
 
-import {
-  showActionModal
-} from '@acx-ui/components'
 import {
   AssignedEc,
   BaseUrl,
@@ -60,31 +56,6 @@ const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo
 }
 
-export function useCheckDelegateAdmin (isRbacEnabled: boolean) {
-  const { $t } = useIntl()
-  const [getDelegatedAdmins] = useLazyGetMspEcDelegatedAdminsQuery()
-  const { delegateToMspEcPath } = useDelegateToMspEcPath()
-  const checkDelegateAdmin = async (ecTenantId: string, adminId: string) => {
-    try {
-      const admins = await getDelegatedAdmins({ params: { mspEcTenantId: ecTenantId },
-        enableRbac: isRbacEnabled } ).unwrap()
-      const allowDelegate = admins.find( admin => admin.msp_admin_id === adminId )
-      if (allowDelegate) {
-        delegateToMspEcPath(ecTenantId)
-      } else {
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Error' }),
-          content:
-            $t({ defaultMessage: 'You are not authorized to manage this customer' })
-        })
-      }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-  return { checkDelegateAdmin }
-}
 
 export function useDelegateToMspEcPath () {
   const delegateToMspEcPath = async (ecTenantId: string) => {
@@ -225,6 +196,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getDeviceFirmwareList: build.query<{ data: string[] }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getDeviceFirmwareList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1199,6 +1180,7 @@ export const {
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
   useDeviceInventoryListQuery,
+  useGetDeviceFirmwareListQuery,
   useIntegratorDeviceInventoryListQuery,
   useMspAdminListQuery,
   useMspEntitlementListQuery,

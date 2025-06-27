@@ -37,7 +37,6 @@ import {
   venueData,
   venueLanPorts,
   venueSetting,
-  venueVersionList,
   deviceAps,
   r650Cap
 } from '../../__tests__/fixtures'
@@ -114,7 +113,6 @@ jest.mock('react-router-dom', () => ({
 
 const excludedFlags = [
   Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
-  Features.AP_FW_MGMT_UPGRADE_BY_MODEL,
   Features.WIFI_RBAC_API
 ]
 describe('ApEdit', () => {
@@ -153,9 +151,6 @@ describe('ApEdit', () => {
           global: { mapRegion: 'US',defaultLanguage: 'en-US' },
           edgeBeta: { 'enabled': 'true','Start Date': '2023-06-08 UTC' }
         }))
-      ),
-      rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(venueVersionList))
       ),
       rest.get(WifiUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
