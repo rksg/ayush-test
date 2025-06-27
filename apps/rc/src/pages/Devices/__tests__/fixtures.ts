@@ -15,7 +15,8 @@ import {
   MgmtTxRate6GEnum,
   IsolatePacketsTypeEnum,
   TxPowerEnum,
-  ScanMethodEnum } from '@acx-ui/rc/utils'
+  ScanMethodEnum
+} from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
