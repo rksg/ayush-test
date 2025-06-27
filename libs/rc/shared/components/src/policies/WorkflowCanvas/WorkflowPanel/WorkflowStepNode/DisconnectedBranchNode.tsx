@@ -3,7 +3,7 @@ import { Row, Tooltip } from 'antd'
 import { useIntl }      from 'react-intl'
 import { NodeProps }    from 'reactflow'
 
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DragArrow, ExclamationMark } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
