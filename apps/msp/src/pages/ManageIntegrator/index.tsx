@@ -31,6 +31,7 @@ import {
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
+  useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useGetMspEcDelegatedAdminsQuery,
@@ -44,13 +45,14 @@ import {
   MspEc,
   MspEcData,
   MspAssignmentHistory,
+  MspAssignmentSummary,
   MspEcDelegatedAdmins,
   AssignActionEnum,
   defaultAddress,
   addressParser
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete }                                         from '@acx-ui/rc/generic-features/components'
-import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/generic-features/components'
+import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -58,10 +60,10 @@ import {
   EntitlementUtil,
   useTableQuery,
   EntitlementDeviceType,
+  EntitlementDeviceSubType,
   whitespaceOnlyRegExp,
   PrivilegeGroup,
-  PrivacyFeatureName,
-  EntitlementSummaries
+  PrivacyFeatureName
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -75,7 +77,6 @@ import { AccountType, noDataDisplay  } from '@acx-ui/utils'
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
-// eslint-disable-next-line import/order
 import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 import * as UI                       from '../styledComponents'
 
@@ -92,13 +93,13 @@ interface EcFormData {
     switchLicense: number,
     apswLicense: number,
     ecCustomers: MspEc[],
-    number_of_days: string,
-    solutionTokenLicense: number
+    number_of_days: string
 }
 
-export function NewManageIntegrator () {
+export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
@@ -115,8 +116,9 @@ export function NewManageIntegrator () {
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
+  const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
+  const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [availableApswLicense, setAvailableApswLicense] = useState(0)
-  const [availableSolutionTokenLicense, setAvailableSolutionTokenLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -139,14 +141,8 @@ export function NewManageIntegrator () {
   const isEditMode = action === 'edit'
   const tenantType = type
 
-  const entitlementSummaryPayload = {
-    filters: {
-      licenseType: ['APSW', 'SLTN_TOKEN'],
-      usageType: 'ASSIGNED'
-    }
-  }
-
   const { data: userProfile } = useUserProfileContext()
+  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
@@ -178,9 +174,6 @@ export function NewManageIntegrator () {
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params: useParams() },
     { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
-  const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload })
-
   const { data: privacySettingsData } =
    useGetPrivacySettingsQuery({ params: useParams() },
      { skip: isEditMode || !isAppMonitoringEnabled })
@@ -194,31 +187,34 @@ export function NewManageIntegrator () {
   }, [privacySettingsData])
 
   useEffect(() => {
-    if (licenseSummaryResults) {
-      checkAvailableLicense(licenseSummaryResults)
+    if (licenseSummary) {
+      checkAvailableLicense(licenseSummary)
     }
 
-    if (licenseSummaryResults && isEditMode && data && licenseAssignment) {
+    if (licenseSummary && isEditMode && data && licenseAssignment) {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
       }
 
       const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
       setAssignedLicense(assigned)
+      const wifi = assigned.filter(en =>
+        en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
+      const wLic = wifi.length > 0 ? wifi[0].quantity : 0
+      const sw = assigned.filter(en =>
+        en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
+      const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
       const apsw = assigned.filter(en =>
         en.deviceType === EntitlementDeviceType.MSP_APSW && en.status === 'VALID')
       const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-      const solutionToken = assigned.filter(en =>
-        en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN && en.status === 'VALID')
-      const solutionTokenLic = solutionToken.length > 0
-        ? solutionToken.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-      checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
+      checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
 
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
+        wifiLicense: wLic,
+        switchLicense: sLic,
         apswLicense: apswLic,
-        solutionTokenLicense: solutionTokenLic,
         service_expiration_date: moment(data?.service_expiration_date)
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -256,8 +252,7 @@ export function NewManageIntegrator () {
       }
       setSubscriptionStartDate(moment())
     }
-  }, [data, licenseSummaryResults,
-    licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -375,27 +370,35 @@ export function NewManageIntegrator () {
         ]
       }
       const licAssignment = []
-
-      if (_.isString(ecFormData.apswLicense)) {
-        const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+      if (_.isString(ecFormData.wifiLicense)) {
+        const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
         licAssignment.push({
-          quantity: quantityApsw,
+          quantity: quantityWifi,
           action: AssignActionEnum.ADD,
           isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_APSW
+          deviceType: EntitlementDeviceType.MSP_WIFI
         })
       }
-
-      if(_.isString(ecFormData.solutionTokenLicense)) {
-        const quantitySltn = parseInt(ecFormData.solutionTokenLicense, 10)
+      if (_.isString(ecFormData.switchLicense)) {
+        const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
         licAssignment.push({
-          quantity: quantitySltn,
+          quantity: quantitySwitch,
           action: AssignActionEnum.ADD,
           isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SLTN_TOKEN
+          deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
-
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          licAssignment.push({
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         customer.licenses = { assignments: licAssignment }
       }
@@ -405,10 +408,13 @@ export function NewManageIntegrator () {
         customer.privilege_group_ids = pgIds
       }
 
+      const result =
       await addIntegrator({ params: { tenantId: tenantId },
         payload: isRbacEnabled ? { data: [customer] }: customer,
         enableRbac: isRbacEnabled }).unwrap()
-
+      if (result) {
+      // const ecTenantId = result.tenant_id
+      }
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
@@ -437,31 +443,43 @@ export function NewManageIntegrator () {
       }
       // handle license assignments
       const licAssignment = []
-
-      if (_.isString(ecFormData.apswLicense)) {
-        const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
-        const quantityApsw = parseInt(ecFormData.apswLicense, 10)
-        const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+      if (_.isString(ecFormData.wifiLicense)) {
+        const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
+        const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
+        const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
         licAssignment.push({
-          quantity: quantityApsw,
-          assignmentId: apswAssignId,
-          action: actionApsw,
-          deviceType: EntitlementDeviceType.MSP_APSW
+          quantity: quantityWifi,
+          assignmentId: wifiAssignId,
+          action: actionWifi,
+          isTrial: false,
+          deviceType: EntitlementDeviceType.MSP_WIFI
         })
       }
-
-      if (_.isString(ecFormData.solutionTokenLicense)) {
-        const sltnAssignId = getAssignmentId(EntitlementDeviceType.MSP_SLTN_TOKEN)
-        const quantitySltn = parseInt(ecFormData.solutionTokenLicense, 10)
-        const actionApsw = sltnAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+      if (_.isString(ecFormData.switchLicense)) {
+        const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
+        const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
+        const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
         licAssignment.push({
-          quantity: quantitySltn,
-          assignmentId: sltnAssignId,
-          action: actionApsw,
-          deviceType: EntitlementDeviceType.MSP_SLTN_TOKEN
+          quantity: quantitySwitch,
+          assignmentId: switchAssignId,
+          action: actionSwitch,
+          deviceSubtype: EntitlementDeviceSubType.ICX,
+          deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
-
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantityApsw,
+            assignmentId: apswAssignId,
+            action: actionApsw,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         let assignLicense = {
           subscription_start_date: today,
@@ -577,27 +595,32 @@ export function NewManageIntegrator () {
   }
 
   const checkAvailableLicense =
-  (entitlements: EntitlementSummaries[], apswLic?: number,
-    solutionTokenLic?: number) => {
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number) => {
+    const wifiLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
+    let remainingWifi = 0
+    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingWifi += lic.remainingDevices
+    })
+    wLic ? setAvailableWifiLicense(remainingWifi+wLic) : setAvailableWifiLicense(remainingWifi)
 
-    const apswLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
-      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+    const switchLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_SWITCH)
+    let remainingSwitch = 0
+    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingSwitch += lic.remainingDevices
+    })
+    swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
+      : setAvailableSwitchLicense(remainingSwitch)
+
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
-    apswLicenses.forEach( (lic: EntitlementSummaries) => {
-      remainingApsw += lic.remainingQuantity
+    apswLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingApsw += lic.remainingDevices
     })
     apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
       : setAvailableApswLicense(remainingApsw)
-
-
-    const solutionTokenLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
-        p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
-    let remainingSltn = 0
-    solutionTokenLicenses.forEach( (lic: EntitlementSummaries) => {
-      remainingSltn += lic.remainingQuantity
-    })
-    solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSltn+solutionTokenLic)
-      : setAvailableSolutionTokenLicense(remainingSltn)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -830,8 +853,11 @@ export function NewManageIntegrator () {
 
   const CustomerSubscriptionForm = () => {
     return <div>
-      <ApswSubscription />
-      <SolutionTokenSubscription />
+      {!isDeviceAgnosticEnabled && <div>
+        <WifiSubscription />
+        <SwitchSubscription />
+      </div>}
+      {isDeviceAgnosticEnabled && <ApswSubscription />}
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
         <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
         <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
@@ -872,6 +898,52 @@ export function NewManageIntegrator () {
       </UI.FieldLabeServiceDate></div>
   }
 
+  const WifiSubscription = () => {
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <Form.Item
+          name='wifiLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => fieldValidator(value, availableWifiLicense) }
+          ]}
+          children={<Input type='number'/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableWifiLicense} available' }, {
+            availableWifiLicense: availableWifiLicense })}
+        </label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
+
+  const SwitchSubscription = () => {
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+        <Form.Item
+          name='switchLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
+          ]}
+          children={<Input type='number'/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableSwitchLicense} available' }, {
+            availableSwitchLicense: availableSwitchLicense })}
+        </label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
+
   const ApswSubscription = () => {
     return <div >
       <UI.FieldLabelSubs width='275px'>
@@ -897,30 +969,6 @@ export function NewManageIntegrator () {
             : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
               availableApswLicense: availableApswLicense })
           }
-        </label>
-      </UI.FieldLabelSubs>
-    </div>
-  }
-
-  const SolutionTokenSubscription = () => {
-    return <div >
-      <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Solution Token' })}</label>
-        <Form.Item
-          name='solutionTokenLicense'
-          label=''
-          initialValue={0}
-          rules={[
-            { required: true },
-            { validator: (_, value) => fieldValidator(value, availableSolutionTokenLicense) }
-          ]}
-          children={<Input type='number'/>}
-          style={{ paddingRight: '20px' }}
-        />
-        <label>
-          {intl.$t({ defaultMessage:
-            'licenses out of {availableSolutionTokenLicense} available' }, {
-            availableSolutionTokenLicense })}
         </label>
       </UI.FieldLabelSubs>
     </div>
@@ -991,18 +1039,24 @@ export function NewManageIntegrator () {
           </Paragraph>}
         </Form.Item>
 
-        <Form.Item
+        {!isDeviceAgnosticEnabled && <div>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+          >
+            <Paragraph>{formData.wifiLicense}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+          >
+            <Paragraph>{formData.switchLicense}</Paragraph>
+          </Form.Item>
+        </div>}
+        {isDeviceAgnosticEnabled && <Form.Item
           label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
             : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{formData.apswLicense}</Paragraph>
-        </Form.Item>
-
-        <Form.Item
-          label={intl.$t({ defaultMessage: 'Solution Tokens' })}
-        >
-          <Paragraph>{formData.solutionTokenLicense}</Paragraph>
-        </Form.Item>
+        </Form.Item>}
 
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}

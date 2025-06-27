@@ -1,5 +1,5 @@
-import { RadioCardCategory }                                                                                                 from '@acx-ui/components'
 import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
+import { RadioCardCategory }                                                                                                 from '@acx-ui/types'
 
 export const mockedAvailableUnifiedServicesList: Array<UnifiedService> = [
   {

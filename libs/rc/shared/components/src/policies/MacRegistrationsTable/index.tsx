@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete, getDisabledActionMessage,
   useDeleteMacRegistrationsMutation,
   useDeletePersonaDevicesMutation,
   useGetMacRegListQuery,
@@ -25,7 +24,8 @@ import {
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
   PolicyType, PolicyOperation, IdentityDetailsLink, TableQuery,
   MacRegListUrlsInfo,
-  PersonaUrls
+  PersonaUrls,
+  doProfileDelete, getDisabledActionMessage
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 import { getOpsApi }      from '@acx-ui/utils'
