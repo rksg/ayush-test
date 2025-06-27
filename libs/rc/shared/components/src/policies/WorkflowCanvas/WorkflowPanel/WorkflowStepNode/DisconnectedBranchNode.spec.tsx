@@ -53,7 +53,7 @@ describe('DisconnectedBranchNode', () => {
     )
 
     // default style
-    expect(screen.queryByTestId('Plus')).toBeVisible()
+    expect(screen.queryByTestId('DragArrow')).toBeVisible()
     expect(screen.queryByTestId('ExclamationMark')).toBeVisible()
   })
 
@@ -76,7 +76,7 @@ describe('DisconnectedBranchNode', () => {
     )
 
     // default style
-    expect(screen.queryByTestId('Plus')).toBeVisible()
+    expect(screen.queryByTestId('DragArrow')).toBeVisible()
     expect(screen.queryByTestId('ExclamationMark')).toBeNull()
   })
 

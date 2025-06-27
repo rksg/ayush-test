@@ -187,7 +187,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       }
     }
 
-    if(intersectedNode === undefined) {
+    if(intersectedNode === undefined || intersectedNode.type === 'START') {
       return
     }
 

@@ -3,8 +3,8 @@ import { Row, Tooltip } from 'antd'
 import { useIntl }      from 'react-intl'
 import { NodeProps }    from 'reactflow'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ExclamationMark, Plus }  from '@acx-ui/icons'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { DragArrow, ExclamationMark } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -20,9 +20,9 @@ export default function DisconnectedBranchNode (props: NodeProps)
   return (
     <UI.DisconnectedBranchNode {...props} style={{ width: '100%', height: '100%' }}>
 
-      <UI.DisconnectedBranchPlusButton className='subflow_drag_handle'>
-        <Plus />
-      </UI.DisconnectedBranchPlusButton>
+      <UI.DisconnectedBranchDragHandle className='subflow_drag_handle'>
+        <DragArrow />
+      </UI.DisconnectedBranchDragHandle>
 
       {workflowValidationEnhancementFFToggle &&
         <Tooltip
