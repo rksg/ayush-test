@@ -3,7 +3,6 @@ import { Col, Row, Space, Switch } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { CompatibilityWarningTriangleIcon }                                            from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
@@ -23,7 +22,6 @@ import * as UI from '../styledComponents'
 export const ScopeForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeHqosViewData>()
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeClusterListQuery,
@@ -54,7 +52,7 @@ export const ScopeForm = () => {
       ],
       filters: { clusterId: clusterIds }
     } }, {
-    skip: !clusterIds?.length || !isEdgeCompatibilityEnabled,
+    skip: !clusterIds?.length,
     selectFromResult: ({ data }) => {
       return { clusterNodesMap: clusterIds?.reduce((acc, curr = '') => {
         return {
@@ -67,10 +65,9 @@ export const ScopeForm = () => {
   const { requiredFw } = useGetEdgeFeatureSetsQuery({
     payload: {
       filters: {
-        featureNames: ['HQoS']
+        featureNames: [IncompatibilityFeatures.HQOS]
       }
     } }, {
-    skip: !isEdgeCompatibilityEnabled,
     selectFromResult: ({ data }) => {
       return {
         requiredFw: data?.featureSets
@@ -149,18 +146,16 @@ export const ScopeForm = () => {
         const hqosReadOnly =
           row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
         return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
-          <>
-            <UI.StyledFormItem
-              name={['activateChangedClusters', row.clusterId??'']}
-              valuePropName='checked'
-              children={
-                <Switch disabled={hqosReadOnly}
-                  onChange={() =>
+          <UI.StyledFormItem
+            name={['activateChangedClusters', row.clusterId??'']}
+            valuePropName='checked'
+            children={
+              <Switch disabled={hqosReadOnly}
+                onChange={() =>
                   // eslint-disable-next-line max-len
-                    setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
-              }
-            />
-          </>
+                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+            }
+          />
         </Tooltip>
       }
     }

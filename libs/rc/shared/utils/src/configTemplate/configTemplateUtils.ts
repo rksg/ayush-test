@@ -46,7 +46,7 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
 export function useRecConfigTemplateAccess (): boolean {
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isRecConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_REC)
+  const isRecConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_REC_P1)
 
   return !isCore && isRecConfigTemplateEnabled
 }

@@ -3,6 +3,8 @@ import React, { ReactNode, useEffect, useState, useRef } from 'react'
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
+import type { RadioBand } from '@acx-ui/types'
+
 import { Button }  from '../Button'
 import { Tooltip } from '../Tooltip'
 
@@ -14,8 +16,6 @@ import {
 import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-
-export type RadioBand = '6' | '5' | '2.4'
 
 export type CascaderProps = BaseCascaderProps & {
   onApply: (

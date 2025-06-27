@@ -23,7 +23,8 @@ import {
   WifiUrlsInfo,
   EthernetPortProfileUrls,
   RulesManagementUrlsInfo,
-  MacRegListUrlsInfo
+  MacRegListUrlsInfo,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -172,6 +173,10 @@ describe('MyPolicies', () => {
       rest.get(
         SwitchUrlsInfo.getAccessControlCount.url,
         (req, res, ctx) => res(ctx.json(5))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [],totalCount: 0 }))
       )
     )
   })
@@ -287,7 +292,7 @@ describe('MyPolicies', () => {
 
   it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+      [Features.EDGE_QOS_TOGGLE].includes(ff as Features))
     jest.mocked(useIsBetaEnabled).mockReturnValue(true)
 
     mockServer.use(

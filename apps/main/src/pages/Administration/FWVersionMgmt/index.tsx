@@ -2,26 +2,16 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
-import { useIsEdgeReady }         from '@acx-ui/rc/components'
-import {
-  compareVersions,
-  getApVersion,
-  getReleaseFirmware
-} from '@acx-ui/rc/components'
+import { Tabs, Tooltip }             from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { InformationSolid }          from '@acx-ui/icons'
 import {
   useGetLatestEdgeFirmwareQuery,
-  useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
   useGetSwitchDefaultFirmwareListV1001Query,
-  useGetSwitchLatestFirmwareListQuery,
-  useGetSwitchVenueVersionListQuery,
   useGetSwitchVenueVersionListV1001Query,
   useGetVenueApModelFirmwareListQuery,
-  useGetVenueEdgeFirmwareListQuery,
-  useGetVenueVersionListQuery
+  useGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { compareSwitchVersion, SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
@@ -32,7 +22,6 @@ import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 import ApFirmware          from './ApFirmware'
 import EdgeFirmware        from './EdgeFirmware'
 import * as UI             from './styledComponents'
-import SwitchFirmware      from './SwitchFirmware'
 import SwitchFirmwareV1002 from './SwitchFirmwareV1002'
 
 const FWVersionMgmt = () => {
@@ -41,38 +30,18 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsEdgeReady()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-
   const isCore = isCoreTier(accountTier)
 
-
-  const { data: latestSwitchReleaseVersions } =
-    useGetSwitchLatestFirmwareListQuery({ params, enableRbac: isSwitchRbacEnabled },
-      { skip: isSwitchFirmwareV1002Enabled })
-
   const { data: recommendedSwitchReleaseVersions } =
-    useGetSwitchDefaultFirmwareListV1001Query( { params },
-      { skip: !isSwitchFirmwareV1002Enabled })
-
-  const { data: switchVenueVersionList } =
-    useGetSwitchVenueVersionListQuery(
-      { params, enableRbac: isSwitchRbacEnabled },
-      { skip: isSwitchFirmwareV1002Enabled })
+    useGetSwitchDefaultFirmwareListV1001Query( { params })
 
   const { data: switchVenueVersionListV1001 } =
-    useGetSwitchVenueVersionListV1001Query(
-      { params },
-      { skip: !isSwitchFirmwareV1002Enabled })
+    useGetSwitchVenueVersionListV1001Query( { params })
 
-  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
-    skip: !isEdgeEnabled
-  })
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
   const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
-    skip: !isEdgeEnabled,
     selectFromResult: ({ data }) => ({
       latestEdgeReleaseVersion: data?.[0]
     })
@@ -88,26 +57,11 @@ const FWVersionMgmt = () => {
     })
   })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
-  const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [hasRecomendedSwitchFirmware, setHasRecomendedSwitchFirmware] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
 
-  useEffect(()=>{
-    if (!isSwitchFirmwareV1002Enabled && latestSwitchReleaseVersions && switchVenueVersionList) {
-      const latest09 = getReleaseFirmware(latestSwitchReleaseVersions)[0] // 09010f_b5
-      const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
-      const hasOutdated09 = latest09 && switchVenueVersionList.data.some(fv=>
-        compareSwitchVersion(latest09.id, fv.switchFirmwareVersion?.id))
-      const hasOutdated10 = latest10 && switchVenueVersionList.data.some(fv =>
-        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))
-
-      setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
-    }
-  }, [latestSwitchReleaseVersions, switchVenueVersionList])
-
   useEffect(() => {
-    if (isSwitchFirmwareV1002Enabled && recommendedSwitchReleaseVersions
-      && switchVenueVersionListV1001) {
+    if (recommendedSwitchReleaseVersions && switchVenueVersionListV1001) {
 
       const recommended71 = recommendedSwitchReleaseVersions.filter(
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].versions[0].id
@@ -155,20 +109,13 @@ const FWVersionMgmt = () => {
       content: <ApFirmware />,
       visible: true
     },
-    switchFirmware: isSwitchFirmwareV1002Enabled ? {
+    switchFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
         {hasRecomendedSwitchFirmware && <Tooltip children={<InformationSolid />}
           // eslint-disable-next-line max-len
           title={$t({ defaultMessage: 'New recommended versions are available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmwareV1002 />,
-      visible: true
-    } : {
-      title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
-        {isSwitchFirmwareAvailable && <Tooltip children={<InformationSolid />}
-          title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
-      </UI.TabWithHint>,
-      content: <SwitchFirmware />,
       visible: true
     },
     edgeFirmware: {
@@ -181,7 +128,7 @@ const FWVersionMgmt = () => {
         }
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: true
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}
@@ -225,29 +172,13 @@ export default FWVersionMgmt
 
 function useIsApFirmwareAvailable () {
   const params = useParams()
-  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const [ isApFirmwareAvailable, setIsApFirmwareAvailable ] = useState(false)
   const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery(
     { params, payload: {
       fields: ['name', 'id', 'isApFirmwareUpToDate'],
       page: 1, pageSize: 10000
-    } },
-    { skip: !isUpgradeByModelEnabled }
+    } }
   )
-  // eslint-disable-next-line max-len
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params }, { skip: isUpgradeByModelEnabled })
-  // eslint-disable-next-line max-len
-  const { data: venueVersionList } = useGetVenueVersionListQuery({ params }, { skip: isUpgradeByModelEnabled })
-
-  useEffect(() => {
-    if (!latestReleaseVersions || !venueVersionList) return
-
-    // As long as one of the venues' version smaller than the latest release version, it would be the available
-    const latest = [...latestReleaseVersions].sort((a, b) => compareVersions(a.id, b.id)).pop()
-    // eslint-disable-next-line max-len
-    const hasOutdated = venueVersionList.data.some(fv => compareVersions(getApVersion(fv), latest?.id) < 0)
-    setIsApFirmwareAvailable(hasOutdated)
-  }, [latestReleaseVersions, venueVersionList])
 
   useEffect(() => {
     if (!venueApModelFirmwareList?.data) return

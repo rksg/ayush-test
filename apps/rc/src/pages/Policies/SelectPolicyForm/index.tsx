@@ -6,7 +6,6 @@ import {
   GridRow,
   PageHeader,
   RadioCard,
-  RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
 import {
@@ -15,7 +14,7 @@ import {
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, LBS_SERVER_PROFILE_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, LBS_SERVER_PROFILE_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
@@ -32,7 +31,7 @@ import {
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }                    from '@acx-ui/types'
+import { RadioCardCategory, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, hasPermission, isCoreTier }   from '@acx-ui/user'
 
 export default function SelectPolicyForm () {
@@ -44,7 +43,6 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const isEdgeEnabled = useIsEdgeReady()
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
@@ -138,8 +136,7 @@ export default function SelectPolicyForm () {
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
-      categories: [RadioCardCategory.EDGE],
-      disabled: !isEdgeEnabled
+      categories: [RadioCardCategory.EDGE]
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,

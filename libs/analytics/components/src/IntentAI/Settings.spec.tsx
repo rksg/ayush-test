@@ -11,7 +11,8 @@ import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/a
 import { get }                                                   from '@acx-ui/config'
 import { notificationApiURL, Provider, store }                   from '@acx-ui/store'
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
-import { CatchErrorDetails }                                     from '@acx-ui/utils'
+import { getUserProfile as getR1UserProfile, setUserProfile }    from '@acx-ui/user'
+import { AccountTier, CatchErrorDetails }                        from '@acx-ui/utils'
 
 import { AiFeatures }                                                                                            from './config'
 import { Settings, convertToIntentSubscriptions, getEnabledIntentSubscriptions, prepareNotificationPreferences } from './Settings'
@@ -59,8 +60,10 @@ describe('IntentAI Settings', () => {
     store.dispatch(preferencesApi.util.resetApiState())
     components.showToast.mockClear()
     mockedUseUpdateTenantSettingsMutation.mockClear()
+    jest.clearAllMocks()
   })
   it('should render Settings and about intents drawer', async () => {
+    mockGet.mockReturnValue('true')
     const settings = JSON.stringify({
       [AiFeatures.EcoFlex]: true
     })
@@ -79,6 +82,7 @@ describe('IntentAI Settings', () => {
     expect(intentSubscriptions).toBeVisible()
   })
   it('should save settings', async () => {
+    mockGet.mockReturnValue('true')
     const settings = JSON.stringify({
       [AiFeatures.EcoFlex]: true
     })
@@ -113,6 +117,7 @@ describe('IntentAI Settings', () => {
     })
   })
   it('should handle error on save settings for tenantSettings', async () => {
+    mockGet.mockReturnValue('true')
     const error = 'tenantSettings server error'
     const updateSettingsMock = jest.fn(() => Promise.resolve({
       error: {
@@ -196,6 +201,11 @@ describe('IntentAI Settings', () => {
       expect(sessionStorage.getItem('intent-subscription-forward-r1-show-drawer')).toBeNull()
     })
     it('should render the correct links in R1', async () => {
+      setUserProfile({
+        allowedOperations: [],
+        profile: getR1UserProfile().profile,
+        accountTier: AccountTier.PLATINUM
+      })
       const settings = JSON.stringify({
         [AiFeatures.EcoFlex]: true
       })
@@ -250,6 +260,95 @@ describe('IntentAI Settings', () => {
         result = prepareNotificationPreferences(mockedIntentNotificationsWithoutIntentAI, false)
         expect(result).toEqual(mockedIntentNotificationsWithoutIntentAI)
       })
+  })
+
+  describe('should show correct intents', () => {
+    it('should show all intents for RAI', async () => {
+      mockGet.mockReturnValue('true')
+      mockRaiUserProfile.mockReturnValue({
+        selectedTenant: 'tenant-id'
+      } as unknown as UserProfile)
+      const settings = JSON.stringify({
+        [AiFeatures.EcoFlex]: true
+      })
+      render(<Settings settings={settings} />, {
+        wrapper: Provider,
+        route: { params: { tenantId: 'tenant-id' } }
+      })
+      const intentSubscriptions = await screen.findByText(
+        'Intent Subscriptions (4)'
+      )
+      expect(intentSubscriptions).toBeVisible()
+      await userEvent.click(intentSubscriptions)
+      expect(await screen.findByText('Available Intents')).toBeVisible()
+      const energySavingText = await screen.findByText('Energy Saving')
+      // eslint-disable-next-line testing-library/no-node-access
+      const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+      expect(disabledItem).not.toBeInTheDocument()
+    })
+
+    it('should show all intents for R1 when user is professional tier (AccountTier.PLATINUM)',
+      async () => {
+        mockGet.mockReturnValue('')
+        setUserProfile({
+          allowedOperations: [],
+          profile: {
+            ...getR1UserProfile().profile,
+            tenantId: 'tenant-id'
+          },
+          accountTier: AccountTier.PLATINUM
+        })
+        const settings = JSON.stringify({
+          [AiFeatures.EcoFlex]: true
+        })
+        render(<Settings settings={settings} />, {
+          wrapper: Provider,
+          route: { params: { tenantId: 'tenant-id' } }
+        })
+        const intentSubscriptions = await screen.findByText(
+          'Intent Subscriptions (4)'
+        )
+        expect(intentSubscriptions).toBeVisible()
+        await userEvent.click(intentSubscriptions)
+        expect(await screen.findByText('Available Intents')).toBeVisible()
+        const energySavingText = await screen.findByText('Energy Saving')
+        // eslint-disable-next-line testing-library/no-node-access
+        const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+        expect(disabledItem).not.toBeInTheDocument()
+      })
+
+    it.each([
+      AccountTier.CORE,
+      AccountTier.GOLD
+    ])('should not show Energy Saving intent for R1 when user is %s tier', async (accountTier) => {
+      mockGet.mockReturnValue('')
+      setUserProfile({
+        allowedOperations: [],
+        profile: {
+          ...getR1UserProfile().profile,
+          tenantId: 'tenant-id'
+        },
+        accountTier
+      })
+      const settings = JSON.stringify({
+        [AiFeatures.EcoFlex]: true
+      })
+      render(<Settings settings={settings} />, {
+        wrapper: Provider,
+        route: { params: { tenantId: 'tenant-id' } }
+      })
+      const intentSubscriptions = await screen.findByText(
+        'Intent Subscriptions (4)'
+      )
+      expect(intentSubscriptions).toBeVisible()
+      await userEvent.click(intentSubscriptions)
+
+      const energySavingText = await screen.findByText('Energy Saving')
+      // eslint-disable-next-line testing-library/no-node-access
+      const disabledItem = energySavingText.closest('.ant-transfer-list-content-item-disabled')
+      expect(disabledItem).toBeInTheDocument()
+      expect(disabledItem).toContainElement(energySavingText)
+    })
   })
 })
 

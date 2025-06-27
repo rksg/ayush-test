@@ -17,7 +17,7 @@ import {
   useDeleteWorkflowsMutation,
   useSearchInProgressWorkflowListQuery,
   useLazySearchWorkflowsVersionListQuery,
-  useCloneWorkflowMutation, doProfileDelete,
+  useCloneWorkflowMutation,
   useLazyGetWorkflowStepsByIdQuery
 } from '@acx-ui/rc/services'
 import {
@@ -34,7 +34,8 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation, InitialEmptyStepsCount,
-  StatusReason
+  StatusReason,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import {
   TenantLink

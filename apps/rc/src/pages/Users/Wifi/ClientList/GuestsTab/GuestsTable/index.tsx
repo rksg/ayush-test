@@ -412,7 +412,7 @@ export const GuestsTable = () => {
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestType?.includes('SelfSign')) {
-      customFilters.guestType.push('HostGuest')
+      customFilters.guestType = [...customFilters.guestType, 'HostGuest']
     }
     if(customFilters?.includeExpired){
       customFilters = {

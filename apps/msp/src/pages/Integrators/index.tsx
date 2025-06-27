@@ -13,16 +13,11 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
-  AssignEcDrawer,
-  ResendInviteModal,
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  ManageMspDelegationDrawer
+  ResendInviteModal
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useCheckDelegateAdmin,
   useGetMspLabelQuery
 } from '@acx-ui/msp/services'
 import {
@@ -37,7 +32,12 @@ import {
   AccountType, getOpsApi, isDelegationMode
 } from '@acx-ui/utils'
 
-import HspContext from '../../HspContext'
+import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
+import HspContext                    from '../../HspContext'
+import { AssignEcDrawer }            from '../AssignEcDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length

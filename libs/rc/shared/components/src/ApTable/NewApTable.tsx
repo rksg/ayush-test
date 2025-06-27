@@ -70,13 +70,12 @@ import { RequestPayload, WifiScopes, RolesEnum }                             fro
 import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
-import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
-import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
-import { useApActions }                                                       from '../useApActions'
-import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
-import { VenueSelector }                                                      from '../VenueSelector'
+import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
+import { seriesMappingAP }                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }               from '../ImportFileDrawer'
+import { useApActions }                                                  from '../useApActions'
+import { VenueSelector }                                                 from '../VenueSelector'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -96,7 +95,7 @@ export const newDefaultApPayload = {
     'switchName', 'meshRole', 'clientCount', 'apWiredClientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
-    'powerSavingStatus'
+    'powerSavingStatus', 'supportSecureBoot'
   ]
 }
 
@@ -137,7 +136,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
@@ -900,17 +898,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
             />
           </div>
         </ImportFileDrawer>
-        {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
-          visible={compatibilitiesDrawerVisible}
-          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-          venueId={params.venueId}
-          networkId={params.networkId}
-          apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
-          apName={selectedApInfo?.name}
-          isMultiple
-          onClose={() => setCompatibilitiesDrawerVisible(false)}
-        />}
-        {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+        <EnhancedApCompatibilityDrawer
           visible={compatibilitiesDrawerVisible}
           isMultiple
           type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
@@ -918,7 +906,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           networkId={params.networkId}
           apInfo={selectedApInfo}
           onClose={() => setCompatibilitiesDrawerVisible(false)}
-        />}
+        />
       </GroupRowWrapper>
     </Loader>
   )

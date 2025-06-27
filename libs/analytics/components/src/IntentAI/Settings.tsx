@@ -9,13 +9,13 @@ import {
   useSetNotificationMutation,
   useUpdateTenantSettingsMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile as getRaiUserProfile }           from '@acx-ui/analytics/utils'
-import { Drawer, Button, Loader, Transfer, showToast }   from '@acx-ui/components'
-import { get }                                           from '@acx-ui/config'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
-import { TenantLink }                                    from '@acx-ui/react-router-dom'
-import { getUserProfile as getR1UserProfile }            from '@acx-ui/user'
-import { CatchErrorResponse }                            from '@acx-ui/utils'
+import { getUserProfile as getRaiUserProfile }                    from '@acx-ui/analytics/utils'
+import { Drawer, Button, Loader, Transfer, showToast }            from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }          from '@acx-ui/icons'
+import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { getUserProfile as getR1UserProfile, isProfessionalTier } from '@acx-ui/user'
+import { CatchErrorResponse }                                     from '@acx-ui/utils'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
@@ -27,12 +27,14 @@ type IntentSubscriptions = {
   [AiFeatures.EquiFlex]?: boolean
   [AiFeatures.EcoFlex]?: boolean
 }
+
 const iconMap = {
   [AiFeatures.RRM]: <AIDrivenRRM />,
   [AiFeatures.AIOps]: <AIOperation />,
   [AiFeatures.EquiFlex]: <EquiFlex />,
   [AiFeatures.EcoFlex]: <EcoFlexAI />
 }
+
 const subscribedIntents = defineMessage({ defaultMessage: 'Subscribed Intents' })
 const unsubscribedIntents = defineMessage({ defaultMessage: 'Unsubscribed Intents' })
 export const prepareNotificationPreferences = (
@@ -53,6 +55,19 @@ const defaultIntentSubscriptions: IntentSubscriptions = {
   [AiFeatures.EquiFlex]: true,
   [AiFeatures.EcoFlex]: false
 }
+
+const professionalTierIntents = [AiFeatures.EcoFlex]
+
+const isIntentFeatureDisabled = (feature: AiFeatures): boolean => {
+  const isRai = get('IS_MLISA_SA')
+
+  return !(
+    isRai ||
+    isProfessionalTier(getR1UserProfile().accountTier) ||
+    !professionalTierIntents.includes(feature)
+  )
+}
+
 export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
   const dbConfig = JSON.parse(tenantSettings) as IntentSubscriptions
   const merged = { ...defaultIntentSubscriptions, ...dbConfig }
@@ -60,6 +75,7 @@ export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
     .filter((key) => merged[key])
   return enabledKeys
 }
+
 export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
   const dbConfig = {} as IntentSubscriptions
   (Object.values(AiFeatures) as string[]).forEach((key) => {
@@ -67,6 +83,7 @@ export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
   })
   return JSON.stringify(dbConfig)
 }
+
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateTenantSettingsMutation()
@@ -76,8 +93,11 @@ export function Settings ({ settings }: { settings: string }) {
   const [visible, setVisible] = useState(false)
   const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
   const [form] = Form.useForm()
-  const aiFeatures = Object.entries(aiFeaturesLabel)
-    .map(([key, value]) => ({ name: $t(value), key }))
+  const aiFeatures = Object.entries(aiFeaturesLabel).map(([key, value]) => ({
+    name: $t(value),
+    key,
+    disabled: isIntentFeatureDisabled(key as AiFeatures)
+  }))
 
   useEffect(() => {
     setTargetKeys(getEnabledIntentSubscriptions(settings))
@@ -186,6 +206,7 @@ export function Settings ({ settings }: { settings: string }) {
           <br/>
           <Form.Item>
             <Transfer
+              excludeDisabledInCount
               listStyle={{
                 width: 245,
                 height: 200
@@ -272,6 +293,7 @@ const IntentSummaryBlock = (props: IntentSummaryProps) => {
     </div>
   </div>)
 }
+
 function AboutIntentsDrawer () {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)

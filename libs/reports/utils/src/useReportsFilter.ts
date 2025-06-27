@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { defaultNetworkPath }  from '@acx-ui/analytics/utils'
-import { RadioBand }           from '@acx-ui/components'
+import type { RadioBand }      from '@acx-ui/types'
 import { useEncodedParameter } from '@acx-ui/utils'
 import type { NetworkPath }    from '@acx-ui/utils'
 

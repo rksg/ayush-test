@@ -11,8 +11,7 @@ import {
   EdgeLagTypeEnum,
   EdgePortConfigFixtures,
   EdgePortTypeEnum,
-  EdgeSdLanFixtures,
-  EdgeSdLanViewDataP2
+  EdgeSdLanFixtures
 } from '@acx-ui/rc/utils'
 
 import { InterfaceSettingsFormType }    from '../InterfaceSettings/types'
@@ -20,7 +19,9 @@ import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
 const { mockedHaNetworkSettings, mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
-const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+
+const mockedMvSdLanServiceDmz = mockedMvSdLanDataList[0]
 
 export const mockClusterConfigWizardData = {
   portSettings: _.reduce(mockedHaNetworkSettings.portSettings,
@@ -95,7 +96,7 @@ export const mockClusterConfigWizardData = {
 export const defaultCxtData = {
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   portsStatus: mockedPortsStatus,
-  edgeSdLanData: mockedSdLanServiceP2Dmz as EdgeSdLanViewDataP2,
+  edgeSdLanData: mockedMvSdLanServiceDmz,
   isLoading: false,
   isFetching: false
 }

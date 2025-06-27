@@ -1,9 +1,7 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
-import { CommonUrlsInfo, EdgeSdLanFixtures }        from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -13,16 +11,6 @@ import {
 import { ApNetworksTab } from '.'
 
 jest.mock('socket.io-client')
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
-    sdLans: [],
-    scopedNetworkIds: [],
-    scopedGuestNetworkIds: []
-  })
-}))
-
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 const list = {
   totalCount: 10,
@@ -75,40 +63,5 @@ describe('Networks Table', () => {
       })
 
     expect(await screen.findByRole('row', { name: /network-01/ })).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'Tunnel' })).toBeNull()
-  })
-
-  describe('SD-LAN FF is ON', () => {
-    const mockedSdLanScopeData = {
-      sdLans: [{
-        ...mockedSdLanDataListP2[0],
-        networkIds: [list.data[0].id],
-        guestNetworkIds: []
-      }],
-      scopedNetworkIds: [list.data[0].id],
-      scopedGuestNetworkIds: []
-    }
-
-    beforeEach(() => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
-    })
-
-    it('should render table', async () => {
-      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
-
-      render(
-        <Provider>
-          <ApNetworksTab />
-        </Provider>, {
-          route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/networks' }
-        })
-
-      const row = await screen.findByRole('row', { name: /network-01/ })
-      expect(row).toBeVisible()
-      expect(screen.getByRole('columnheader', { name: 'Tunnel' })).toBeVisible()
-      expect(row).toHaveTextContent('Tunneled (SE_Cluster 0)')
-    })
   })
 })

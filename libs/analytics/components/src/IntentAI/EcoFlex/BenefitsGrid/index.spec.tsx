@@ -56,7 +56,7 @@ describe('BenefitsGrid', () => {
     expect(await screen.findByText('Not available')).toBeVisible()
   })
 
-  it('shows value when DataRetained is false and projectedPowerSaving is exist', async () => {
+  it('shows value when DataRetained is false and powerSaving is exist', async () => {
     mockIntentContext({ intent:
         {
           ...mocked,
@@ -72,7 +72,7 @@ describe('BenefitsGrid', () => {
     render(<BenefitsGrid kpiQuery={mockedQueryResult} />, { wrapper: Provider })
     expect(await screen.findByText('Projected power saving')).toBeVisible()
     expect(await screen.findByText(
-      `${mockedQueryResult.data?.data.data.projectedPowerSaving} kWh`
+      `${mockedQueryResult.data?.data.data.powerSaving} kWh`
     )).toBeVisible()
     expect(await screen.findByText('/month')).toBeVisible()
   })
