@@ -1,20 +1,33 @@
+import { useState } from 'react'
+
 import { Form, Space }       from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { isEmpty }           from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { PasswordInput, Select }                           from '@acx-ui/components'
+import { Button, PasswordInput, Select }                   from '@acx-ui/components'
 import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
-import { useConfigTemplate }                               from '@acx-ui/rc/utils'
+import {
+  AAA_LIMIT_NUMBER,
+  PolicyOperation,
+  PolicyType,
+  useConfigTemplate,
+  useTemplateAwarePolicyPermission
+} from '@acx-ui/rc/utils'
+
+import { VenueRadiusServiceDrawer } from './VenueRadiusServiceDrawer'
 
 const { useWatch } = Form
 
 type VenueRadiusServiceFormProps = {
   label: string,
   fieldName: string,
+  type: string,
   disabled?: boolean,
   options: DefaultOptionType[] | undefined,
-  onRadiusChanged?: ((v: string)=> void)
+  radiusTotalCount: number,
+  onRadiusChanged?: ((v: string)=> void),
+  onRadiusCreated?: ((v: string)=> void)
 }
 
 const useGetRadiusDetail = (radiusId: string | undefined) => {
@@ -37,28 +50,35 @@ const useGetRadiusDetail = (radiusId: string | undefined) => {
 export const VenueRadiusServiceForm = (props: VenueRadiusServiceFormProps) => {
   const { $t } = useIntl()
 
-  const { label, fieldName, disabled, options, onRadiusChanged } = props
+  const { label, fieldName, type,
+    options, radiusTotalCount, disabled,
+    onRadiusChanged, onRadiusCreated } = props
+
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   const radiusId = useWatch<string>(fieldName)
 
   const { data: radiusData } = useGetRadiusDetail(radiusId)
 
-
   const { primary: primaryRadius, secondary: secondaryRadius } = radiusData ?? {}
-
 
   const handleRadiusSelectChanged = (value: string) => {
     onRadiusChanged?.(value)
   }
+
+  const handleDrawerClose = () => {
+    setDrawerVisible(false)
+  }
+
+  // eslint-disable-next-line max-len
+  const hasAddRadiusPermission = useTemplateAwarePolicyPermission(PolicyType.AAA, PolicyOperation.CREATE)
 
   return (<>
     <Space>
       <Form.Item
         name={fieldName}
         label={label}
-        rules={[
-          { required: true }
-        ]}
+        rules={[{ required: true }]}
         children={<Select
           style={{ width: 210 }}
           disabled={disabled}
@@ -66,17 +86,21 @@ export const VenueRadiusServiceForm = (props: VenueRadiusServiceFormProps) => {
           onChange={handleRadiusSelectChanged}
         />}
       />
-      {/*
-      <AAAPolicyModal updateInstance={(data) => {
-        setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-        form.setFieldValue(radiusIdName, data.id)
-        form.setFieldValue(type, data)
-      }}
-      aaaCount={aaaDropdownItems.length}
-      type={radiusType}
-      forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
-      />
-      */}
+      {hasAddRadiusPermission && <>
+        <Button type='link'
+          onClick={()=>setDrawerVisible(true)}
+          disabled={radiusTotalCount>=AAA_LIMIT_NUMBER || disabled}>
+          {$t({ defaultMessage: 'Add Server' })}
+        </Button>
+        <VenueRadiusServiceDrawer
+          visible={drawerVisible}
+          type={type}
+          onClose={handleDrawerClose}
+          updateInstance={(data) => {
+            onRadiusCreated?.(data.id!)
+          }}
+        />
+      </>}
     </Space>
     <div style={{
       marginTop: 6,
@@ -117,5 +141,4 @@ export const VenueRadiusServiceForm = (props: VenueRadiusServiceFormProps) => {
       </>}
     </div>
   </>)
-
 }

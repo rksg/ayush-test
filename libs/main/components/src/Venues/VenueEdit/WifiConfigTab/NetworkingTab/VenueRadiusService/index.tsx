@@ -29,7 +29,7 @@ type VenueRadiusServiceProps = {
   onDataChanged?: (()=> void)
 }
 
-type RadiusServiceRefType = {
+type RadiusRefType = {
   initAuthId: string | undefined,
   initAccountingId: string | undefined
 }
@@ -38,10 +38,12 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isAllowEdit=true } = props
-  const initRadiusServiceRef = useRef<RadiusServiceRefType>({
+  const initRadiusRef = useRef<RadiusRefType>({
     initAuthId: undefined,
     initAccountingId: undefined
   })
+  const createdAuthRadiusIdRef = useRef<string>()
+  const createAccountingRadiusIdRef = useRef<string>()
 
   const {
     editContextData,
@@ -53,6 +55,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
 
   const [ authRadiusOptions, setAuthRadiusOptions ] = useState<DefaultOptionType[]>([])
   const [ accountingOptions, setAccountingOptions ] = useState<DefaultOptionType[]>([])
+  const [ radiusTotalCount, setRadiusTotalCount ] = useState(0)
 
   const form = Form.useFormInstance()
   const [ overrideAuthEnabled, overrideAccountingEnabled ]= [
@@ -84,28 +87,44 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
   useEffect(() => {
     const { data, isLoading } = getRadiusServerProfiles
     if (isLoading === false && data && venueId) {
-      const excludeRecSec = data?.data.filter(radius => radius.radSecOptions?.tlsEnabled !== true)
+      const excludeRecSec = data.data?.filter(radius => radius.radSecOptions?.tlsEnabled !== true)
 
       const authServices = excludeRecSec.filter(radius => radius.type === 'AUTHENTICATION')
       const initAuthServiceId = authServices.find(radius => radius.venueIds?.includes(venueId))?.id
       const authOptions = authServices?.map(radius => ({ label: radius.name, value: radius.id })) ?? []
 
       const accountingServices = excludeRecSec.filter(radius => radius.type === 'ACCOUNTING')
-      const initAccountServiceId = accountingServices.find(radius => radius.venueIds?.includes(venueId))?.id
+      const initAccountingServiceId = accountingServices.find(radius => radius.venueIds?.includes(venueId))?.id
       const accountingOptions = accountingServices?.map(radius => ({ label: radius.name, value: radius.id! })) ?? []
 
-      initRadiusServiceRef.current = {
+      initRadiusRef.current = {
         initAuthId: initAuthServiceId,
-        initAccountingId: initAccountServiceId
+        initAccountingId: initAccountingServiceId
       }
 
       setAuthRadiusOptions(authOptions)
       setAccountingOptions(accountingOptions)
+      setRadiusTotalCount(data.totalCount ?? 0)
 
-      form.setFieldValue('overrideAuthEnabled', !!initAuthServiceId)
-      form.setFieldValue('overrideAccountingEnabled', !!initAccountServiceId)
-      form.setFieldValue('authServiceId', initAuthServiceId)
-      form.setFieldValue('accountingServiceId', initAccountServiceId)
+      const createdAuthId = createdAuthRadiusIdRef.current
+      const hasIncludedAuthOptions = createdAuthId && authOptions.find((option) => option.value === createdAuthId)
+      const curAuthRadiusId = hasIncludedAuthOptions? createdAuthId : initAuthServiceId
+
+      const createdAccountingId = createAccountingRadiusIdRef.current
+      const hasIncludedAccountingOptions = createdAuthId && accountingOptions.find((option) => option.value === createdAccountingId)
+      const curAccountingRadiusId = hasIncludedAccountingOptions? createdAccountingId : initAccountingServiceId
+
+      form.setFieldValue('overrideAuthEnabled', !!curAuthRadiusId)
+      form.setFieldValue('overrideAccountingEnabled', !!curAccountingRadiusId)
+      form.setFieldValue('authServiceId', curAuthRadiusId)
+      form.setFieldValue('accountingServiceId', curAccountingRadiusId)
+
+      if (hasIncludedAuthOptions) {
+        createdAuthRadiusIdRef.current = undefined
+      }
+      if (hasIncludedAccountingOptions) {
+        createAccountingRadiusIdRef.current = undefined
+      }
 
       setReadyToScroll?.(r => [...(new Set(r.concat('RADIUS-Options')))])
     }
@@ -116,7 +135,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     const curAuthId = form.getFieldValue('authServiceId')
     const curAccountingId = form.getFieldValue('accountingServiceId')
 
-    const { initAuthId, initAccountingId } = initRadiusServiceRef.current
+    const { initAuthId, initAccountingId } = initRadiusRef.current
 
     if (initAuthId !== curAuthId) {
       if (curAuthId) {
@@ -162,6 +181,15 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     handleChanged()
   }
 
+  const handleRadiusCreated = (id: string, type: AaaServerTypeEnum) => {
+    if (type === AaaServerTypeEnum.AUTHENTICATION) {
+      createdAuthRadiusIdRef.current = id
+    } else {
+      createAccountingRadiusIdRef.current = id
+    }
+    handleChanged()
+  }
+
   const authTooltipTitle = $t({ defaultMessage: '....' })
   const accTooltipTitle = $t({ defaultMessage: '....' })
 
@@ -186,9 +214,12 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     {overrideAuthEnabled &&
       <VenueRadiusServiceForm
         label={$t({ defaultMessage: 'Authentication Service' })}
-        fieldName={'authServiceId'}
+        fieldName='authServiceId'
+        type='AUTHENTICATION'
         options={authRadiusOptions}
+        radiusTotalCount={radiusTotalCount}
         onRadiusChanged={handleRadiusIdChanged}
+        onRadiusCreated={(id) => handleRadiusCreated(id, AaaServerTypeEnum.AUTHENTICATION)}
       />}
     <StepsForm.FieldLabel width={'330px'}>
       <Space>
@@ -207,9 +238,12 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     {overrideAccountingEnabled &&
       <VenueRadiusServiceForm
         label={$t({ defaultMessage: 'Accounting Service' })}
-        fieldName={'accountingServiceId'}
+        fieldName='accountingServiceId'
+        type='ACCOUNTING'
         options={accountingOptions}
+        radiusTotalCount={radiusTotalCount}
         onRadiusChanged={handleRadiusIdChanged}
+        onRadiusCreated={(id) => handleRadiusCreated(id, AaaServerTypeEnum.ACCOUNTING)}
       />}
   </Loader>)
 
