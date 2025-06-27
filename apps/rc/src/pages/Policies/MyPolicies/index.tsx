@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                       from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
@@ -34,7 +34,6 @@ import {
   useAccessControlsCountQuery
 } from '@acx-ui/rc/services'
 import {
-  AddProfileButton,
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
@@ -51,7 +50,10 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }          from '@acx-ui/types'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
+
+import { AddProfileButton } from '../../Services/UnifiedServices/MyServices'
 
 const defaultPayload = {
   fields: ['id']
