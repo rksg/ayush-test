@@ -3,8 +3,8 @@ import { Row, Tooltip } from 'antd'
 import { useIntl }      from 'react-intl'
 import { NodeProps }    from 'reactflow'
 
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { Plus, WarningCircleSolid } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ExclamationMark, Plus }  from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -32,7 +32,7 @@ export default function DisconnectedBranchNode (props: NodeProps)
           title={<Row>{ $t({ defaultMessage: 'This branch is diconnected from the rest of the '
             + 'workflow. Drag over another branch to connect them.' }) }</Row>}>
           <UI.InvalidIcon>
-            <WarningCircleSolid />
+            <ExclamationMark />
           </UI.InvalidIcon>
         </Tooltip>
       }
