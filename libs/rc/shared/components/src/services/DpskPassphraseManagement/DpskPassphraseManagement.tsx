@@ -17,13 +17,10 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
-  getDisabledActionMessage,
-  showAppliedInstanceMessage,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -40,7 +37,8 @@ import {
   getScopeKeyByService,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
-  IdentityDetailsLink, TableQuery
+  IdentityDetailsLink, TableQuery,
+  doProfileDelete, getDisabledActionMessage, showAppliedInstanceMessage
 } from '@acx-ui/rc/utils'
 import { RequestPayload, RolesEnum, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
