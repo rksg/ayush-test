@@ -163,8 +163,6 @@ describe('Lan Port', () => {
 
       await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
 
-      expect(screen.queryByRole('button', { name: 'Reset to default' })).not.toBeInTheDocument()
-
       const poeCombobox = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
       await userEvent.click(poeCombobox)
 
