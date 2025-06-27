@@ -151,8 +151,7 @@ export enum Features {
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
-  SWITCH_STACK_UNIT_LIMITATION = 'removable-ff',
-  SWITCH_SUPPORT_ICX8100 = 'acx-ui-switch-support-icx8100-toggle',
+  SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_FLEXIBLE_AUTHENTICATION = 'switch-consumer-flexible-authentication-toggle',
@@ -192,7 +191,6 @@ export enum Features {
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   WORKFLOW_CERTIFICATE_TEMPLATE_ACTION = 'workflow-cert-template-enabled',
-  AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'removable-ff',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
@@ -312,7 +310,8 @@ export enum Features {
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
-  MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle'
+  MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
