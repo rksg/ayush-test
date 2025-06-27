@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/rc/msp/components/src",
   "projectType": "library",
-  "tags": ["acx-lib", "type:components-fixing"],
+  "tags": ["acx-lib", "type:components"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
