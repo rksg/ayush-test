@@ -206,7 +206,9 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
             disabled={isEdit}
             options={attributes.map(p => {
               const label = p.attributeType === 'DATE_RANGE' ? p.name :
-                $t({ defaultMessage: '{name} (Regex)' }, { name: p.name })
+                // eslint-disable-next-line max-len
+                $t({ defaultMessage: '{category, select, identity {Identity} other {{name}}} (Regex)' },
+                  { name: p.name, category: p.category })
               return ({ label, value: p.id })
             })}
             onChange={(value) => {

@@ -1,4 +1,4 @@
-import { RadioCardCategory } from '@acx-ui/components'
+import { RadioCardCategory } from '@acx-ui/types'
 
 import { ServiceType } from '../../constants'
 import { PolicyType }  from '../../types'
