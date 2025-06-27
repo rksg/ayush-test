@@ -1,11 +1,21 @@
-import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, Channel320MHzGroupEnum, ChannelBandwidth6GEnum, EthernetPortType, IsolatePacketsTypeEnum, ScanMethodEnum } from '@acx-ui/rc/utils'
-import { ApStateEnum } from 'libs/rc/shared/utils/src/models/ApStateEnum'
-import { ApSubStateEnum } from 'libs/rc/shared/utils/src/models/ApSubStateEnum'
-import { BssMinRate6GEnum } from 'libs/rc/shared/utils/src/models/BssMinRate6GEnum'
-import { ChannelBandwidth24GEnum } from 'libs/rc/shared/utils/src/models/ChannelBandwidth24GEnum'
-import { ChannelBandwidth5GEnum } from 'libs/rc/shared/utils/src/models/ChannelBandwidth5GEnum'
-import { MgmtTxRate6GEnum } from 'libs/rc/shared/utils/src/models/MgmtTxRate6GEnum'
-import { TxPowerEnum } from 'libs/rc/shared/utils/src/models/TxPowerEnum'
+import {
+  ApStateEnum,
+  AFCPowerMode,
+  AFCStatus,
+  ApRadioBands,
+  ApSubStateEnum,
+  ApVenueStatusEnum,
+  ApViewModel,
+  BssMinRate6GEnum,
+  ChannelBandwidth24GEnum,
+  ChannelBandwidth5GEnum,
+  Channel320MHzGroupEnum,
+  ChannelBandwidth6GEnum,
+  EthernetPortType,
+  MgmtTxRate6GEnum,
+  IsolatePacketsTypeEnum,
+  TxPowerEnum,
+  ScanMethodEnum } from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
