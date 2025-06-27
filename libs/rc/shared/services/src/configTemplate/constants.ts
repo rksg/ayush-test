@@ -108,8 +108,8 @@ export const useCasesToRefreshRadiusServerTemplateList = [
   'AddRadiusServerProfileTemplate',
   'UpdateRadiusServerProfileTemplate',
   'DeleteRadiusServerProfileTemplate',
-  'ActivateRadiusServerProfileOnVenueTemplate',
-  'DeactivateRadiusServerProfileOnVenueTemplate'
+  'ActivateRadiusServerProfileTemplateOnVenueTemplate',
+  'DeactivateRadiusServerProfileTemplateOnVenueTemplate'
 ]
 
 export const useCasesToRefreshWifiCallingTemplateList = [
