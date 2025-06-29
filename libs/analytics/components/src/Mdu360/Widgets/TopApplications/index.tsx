@@ -1,28 +1,18 @@
 import { useMemo } from 'react'
 
-import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { ContentSwitcher, Loader, NoData, HistoricalCard, ContentSwitcherProps } from '@acx-ui/components'
 import { formats }                                                               from '@acx-ui/formatter'
 
-import { useTopNApplicationsQuery } from './services'
-import * as UI                      from './styledComponents'
-import { IconList }                 from './utils'
+import { useTopNApplicationsQuery }       from './services'
+import * as UI                            from './styledComponents'
+import { ApplicationData, renderContent } from './utils'
 
 interface TopApplicationsFilters {
   startDate: string;
   endDate: string;
 }
-
-interface ApplicationData {
-  name: string;
-  value: number;
-}
-
-type TabType = 'clientCount' | 'applicationTraffic'
-
-const COLUMN_SIZE = 5
 
 export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
   const { $t } = useIntl()
@@ -38,82 +28,31 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
   const clientData: ApplicationData[] = useMemo(() =>
     results?.topNApplicationByClient?.map(item => ({
       name: item.name,
-      value: item.clientCount
+      value: (item.clientCount).toString()
     })) || [], [results?.topNApplicationByClient]
   )
 
   const trafficData: ApplicationData[] = useMemo(() =>
     results?.topNApplicationByTraffic?.map(item => ({
       name: item.name,
-      value: item.applicationTraffic
+      value: formats.bytesFormat(item.applicationTraffic)
     })) || [], [results?.topNApplicationByTraffic]
   )
 
-  const formatValue = (value: number, currentTab: TabType): string =>
-    currentTab === 'applicationTraffic'
-      ? formats.bytesFormat(value)
-      : value.toString()
-
-  const getIconForApplication = (name: string) => {
-    return IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
-      IconList.find(icon => icon.name === 'chrome')?.icon
-  }
-
-  const renderApplicationItem = (item: ApplicationData, currentTab: TabType) => {
-    const { name, value } = item
-    const icon = getIconForApplication(name)
-
-    return (
-      <UI.ColumnItemWrapper key={name}>
-        <UI.ColumnItemIconWrapper>
-          {icon}
-          <span>{name}</span>
-        </UI.ColumnItemIconWrapper>
-        <UI.ColumnValue>{formatValue(value, currentTab)}</UI.ColumnValue>
-      </UI.ColumnItemWrapper>
-    )
-  }
-
-  const renderColumn = (items: ApplicationData[], currentTab: TabType) => (
-    <UI.ColumnHeaderWrapper>
-      {items.map(item => renderApplicationItem(item, currentTab))}
-    </UI.ColumnHeaderWrapper>
-  )
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const renderContent = (data: ApplicationData[], currentTab: TabType) => {
-    const leftColumn = data.slice(0, COLUMN_SIZE)
-    const rightColumn = data.slice(COLUMN_SIZE)
-
-    return (
-      <UI.ColumnWrapper>
-        {renderColumn(leftColumn, currentTab)}
-        <Divider
-          type='vertical'
-          style={{ height: '135px', marginInline: 16 }}
-        />
-        {renderColumn(rightColumn, currentTab)}
-      </UI.ColumnWrapper>
-    )
-  }
-
-  const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
-    () => [
-      {
-        label: $t({ defaultMessage: 'Client Count' }),
-        value: 'clientCount',
-        children: clientData.length > 0 ? renderContent(clientData, 'clientCount') : <NoData />
-      },
-      {
-        label: $t({ defaultMessage: 'Data Usage' }),
-        value: 'applicationTraffic',
-        children: trafficData.length > 0
-          ? renderContent(trafficData, 'applicationTraffic')
-          : <NoData />
-      }
-    ],
-    [$t, clientData, trafficData, renderContent]
-  )
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Client Count' }),
+      value: 'clientCount',
+      children: clientData.length > 0 ? renderContent(clientData) : <NoData />
+    },
+    {
+      label: $t({ defaultMessage: 'Data Usage' }),
+      value: 'applicationTraffic',
+      children: trafficData.length > 0
+        ? renderContent(trafficData)
+        : <NoData />
+    }
+  ]
 
   const title = $t({ defaultMessage: 'Top 10 Applications' })
 

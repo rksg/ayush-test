@@ -28,7 +28,8 @@ describe('TopApplications services', () => {
 
   it('should handle when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: { network: { hierarchyNode: { nodes: [] } } }
+      data: { network: { hierarchyNode: {
+        topNApplicationByClient: [], topNApplicationByTraffic: [] } } }
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.topNApplications.initiate(payload)

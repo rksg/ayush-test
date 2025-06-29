@@ -43,7 +43,6 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
             onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
             size='small'
             align='right'
-            noPadding
           />
         </div>
         {chartData && chartData.length > 0 ? (
