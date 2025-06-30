@@ -1,4 +1,23 @@
-import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType, IsolatePacketsTypeEnum, PoeOutModeEnum } from '@acx-ui/rc/utils'
+import {
+  ApStateEnum,
+  AFCPowerMode,
+  AFCStatus,
+  ApRadioBands,
+  ApSubStateEnum,
+  ApVenueStatusEnum,
+  ApViewModel,
+  BssMinRate6GEnum,
+  ChannelBandwidth24GEnum,
+  ChannelBandwidth5GEnum,
+  Channel320MHzGroupEnum,
+  ChannelBandwidth6GEnum,
+  EthernetPortType,
+  MgmtTxRate6GEnum,
+  IsolatePacketsTypeEnum,
+  TxPowerEnum,
+  ScanMethodEnum,
+  PoeOutModeEnum
+} from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
@@ -778,44 +797,53 @@ export const t670Ap = {
   serialNumber: '922406000185',
   apGroupId: '59181904e1224ff884b77a4c363d7cbf',
   venueId: '4910e33b100d42da97fba46d89a8fc0f',
+  lastContacted: '',
+  lastUpdated: '',
+  firmware: '7.1.1.2.3',
+  state: ApStateEnum.Operational,
+  subState: ApSubStateEnum.Operational,
+  mac: 'aa:bb:cc:dd:ee:ff',
+  ip: '1.2.3.4',
+  externalIp: '1.2.3.4',
+  meshRole: 'Root',
   radio: {
     apRadioParams24G: {
-      method: 'CHANNELFLY',
+      method: ScanMethodEnum.BACKGROUND_SCANNING,
       manualChannel: 0,
       operativeTxPower: 'max',
       operativeChannel: 10,
       snr_dB: 32,
       useVenueSettings: true,
-      channelBandwidth: 'AUTO',
-      txPower: 'MAX',
+      channelBandwidth: ChannelBandwidth24GEnum.AUTO,
+      txPower: TxPowerEnum.MAX,
       changeInterval: 33
     },
     apRadioParams50G: {
-      method: 'CHANNELFLY',
-      channelBandwidth: 'AUTO',
+      method: ScanMethodEnum.BACKGROUND_SCANNING,
+      channelBandwidth: ChannelBandwidth5GEnum.AUTO,
       manualChannel: 0,
       operativeTxPower: 'max',
       operativeChannel: 36,
       snr_dB: 24,
-      txPower: 'MAX',
+      txPower: TxPowerEnum.MAX,
       useVenueSettings: true,
       changeInterval: 33
     },
     apRadioParamsDual5G: {
       enabled: false,
       radioParamsLower5G: {
-        method: 'BACKGROUND_SCANNING',
-        channelBandwidth: 'AUTO',
+        method: ScanMethodEnum.BACKGROUND_SCANNING,
+        channelBandwidth: ChannelBandwidth5GEnum.AUTO,
         manualChannel: 0,
-        txPower: 'MAX',
+        txPower: TxPowerEnum.MAX,
         useVenueSettings: true,
         changeInterval: 33
       },
       radioParamsUpper5G: {
-        method: 'BACKGROUND_SCANNING',
-        channelBandwidth: 'AUTO',
+        method: ScanMethodEnum.BACKGROUND_SCANNING,
+        channelBandwidth: ChannelBandwidth5GEnum.AUTO,
         manualChannel: 0,
-        txPower: 'MAX',
+        txPower: TxPowerEnum.MAX,
         useVenueSettings: true,
         changeInterval: 33
       },
@@ -826,9 +854,9 @@ export const t670Ap = {
       operativeTxPower: 'max',
       operativeChannel: 1,
       snr_dB: 5,
-      channelBandwidth320MhzGroup: 'AUTO',
+      channelBandwidth320MhzGroup: Channel320MHzGroupEnum.AUTO,
       useVenueSettings: false,
-      method: 'CHANNELFLY',
+      method: ScanMethodEnum.CHANNELFLY,
       allowedChannels: [
         '1',
         '5',
@@ -855,16 +883,17 @@ export const t670Ap = {
         '89',
         '93'
       ],
-      channelBandwidth: 'AUTO',
-      bssMinRate6G: 'HE_MCS_0',
-      mgmtTxRate6G: '6',
-      txPower: 'MAX',
+      channelBandwidth: ChannelBandwidth6GEnum.AUTO,
+      bssMinRate6G: BssMinRate6GEnum.HE_MCS_0,
+      mgmtTxRate6G: MgmtTxRate6GEnum._6,
+      txPower: TxPowerEnum.MAX,
       enableMulticastUplinkRateLimiting: false,
       multicastUplinkRateLimiting: 1,
       enableMulticastDownlinkRateLimiting: false,
       multicastDownlinkRateLimiting: 1,
       enableAfc: true,
-      changeInterval: 33
+      changeInterval: 33,
+      enable6G: true
     },
     useVenueSettings: true,
     enable24G: true,
@@ -1305,10 +1334,10 @@ export const triBandApCap = {
   ]
 }
 
-export const tripleBandMode = {
+export const tripleBandMode = [{
   bandMode: 'TRIPLE',
-  useVenueSettings: true
-}
+  model: 'T670'
+}]
 
 export const apRadio = {
   apRadioParams24G: {

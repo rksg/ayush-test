@@ -5,7 +5,6 @@ import {
   GridCol,
   GridRow,
   PageHeader,
-  RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -21,6 +20,7 @@ import {
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                from '@acx-ui/types'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard }     from '../ServiceCard'
