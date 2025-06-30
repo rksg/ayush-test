@@ -6,10 +6,8 @@ import { useIntl }            from 'react-intl'
 import {
   categoryMapping,
   PageHeader,
-  RadioCardCategory,
   StepsForm
 }  from '@acx-ui/components'
-import { Features }                                                               from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   getSelectServiceRoutePath,
@@ -20,10 +18,10 @@ import {
   useServiceListBreadcrumb,
   redirectPreviousPage,
   hasServicePermission,
-  useIsEdgeFeatureReady,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                       from '@acx-ui/types'
 
 import { MdnsProxyConsolidationTabKey } from '.'
 
@@ -39,7 +37,6 @@ export default function CreateMdnsProxyService () {
   const createEdgeMdnsProxyPath = useTenantLink(
     getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.CREATE })
   )
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
@@ -109,13 +106,13 @@ export default function CreateMdnsProxyService () {
           </Form.Item>
         </StepsForm.StepForm>
       </StepsForm>
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+      <EdgeCompatibilityDrawer
         visible={!!edgeCompatibilityFeature}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeCompatibilityFeature}
         onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
+      />
     </>
   )
 }

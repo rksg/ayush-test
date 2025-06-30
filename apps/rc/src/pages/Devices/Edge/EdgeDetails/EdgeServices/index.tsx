@@ -28,7 +28,6 @@ export const EdgeServices = () => {
   const params = useParams()
   const { serialNumber } = params
 
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -58,10 +57,10 @@ export const EdgeServices = () => {
   const showServiceDetailsDrawer = (data: EdgeService) => {
     switch (data.serviceType) {
       case EdgeServiceTypeEnum.DHCP:
-        if (!isEdgeHaReady || !isEdgeDhcpHaReady) return
+        if (!isEdgeDhcpHaReady) return
         break
       case EdgeServiceTypeEnum.FIREWALL:
-        if (!isEdgeHaReady || !isEdgeFirewallHaReady) return
+        if (!isEdgeFirewallHaReady) return
         break
       case EdgeServiceTypeEnum.PIN:
         if (!isEdgePinReady) return
@@ -220,7 +219,7 @@ export const EdgeServices = () => {
       label: $t({ defaultMessage: 'Restart' }),
       scopeKey: [EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeDhcpUrls.restartDhcpService)],
-      disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
+      disabled: isEdgeDhcpHaReady ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }
         ) : undefined,

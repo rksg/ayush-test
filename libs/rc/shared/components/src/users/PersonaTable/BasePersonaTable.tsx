@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
+import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier }     from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
@@ -42,6 +42,9 @@ function useColumns (
   useByIdentityGroup: boolean
 ) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
@@ -57,7 +60,7 @@ function useColumns (
     params: { venueId: venueId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
   },
-  { skip: !venueId || !isMultipleIdentityUnits }
+  { skip: !venueId || !isMultipleIdentityUnits || isCore }
   ).data?.data?.map(identity => [identity.personaId, identity.unitId]))
 
   const units = new Map(useGetPropertyUnitListQuery({
@@ -69,7 +72,8 @@ function useColumns (
       sortOrder: 'ASC'
     }
   },
-  { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
+  { skip: !venueId || !isMultipleIdentityUnits || isCore }
+  ).data?.data?.map(unit => [unit.id,unit.name]))
 
   const shrinkedColumns: TableProps<Persona>['columns'] = [
     {
@@ -111,22 +115,24 @@ function useColumns (
       align: 'center',
       ...props.deviceCount
     },
-    {
-      key: 'identityId',
-      dataIndex: 'identityId',
-      title: $t({ defaultMessage: 'Unit' }),
-      sorter: true,
-      render: (_, row) =>
-        <PropertyUnitLink
-          venueId={venueId}
-          unitId={row.identityId ? row.identityId : identities.get(row.id)}
-          name={row.identityId
-            ? unitPool.get(row.identityId)
-            : units.get(identities.get(row.id) ?? '')}
-        />
-      ,
-      ...props.identityId
-    }
+    ...isCore
+      ? []
+      : [{
+        key: 'identityId',
+        dataIndex: 'identityId',
+        title: $t({ defaultMessage: 'Unit' }),
+        sorter: true,
+        render: (_, row) =>
+          <PropertyUnitLink
+            venueId={venueId}
+            unitId={row.identityId ? row.identityId : identities.get(row.id)}
+            name={row.identityId
+              ? unitPool.get(row.identityId)
+              : units.get(identities.get(row.id) ?? '')}
+          />
+        ,
+        ...props.identityId
+      } as TableColumn<Persona>]
   ]
 
 
@@ -195,7 +201,7 @@ function useColumns (
           render: (_, row) => row.certificateCount ?? 0,
           ...props.certificateCount
         } as TableColumn<Persona>] : [],
-    ...(props.identityId?.disable)
+    ...(props.identityId?.disable || isCore)
       ? []
       : [{
         key: 'identityId',
@@ -289,6 +295,10 @@ export interface PersonaTableProps {
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
+
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const {
     mode, personaGroupId,
     colProps, settingsId = 'base-persona-table', onChange,
@@ -334,6 +344,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   useEffect(() => {
     if (!venueId || !personaListQuery.data?.data) return
+    if (isCore) return
     const unitIds: string[] = []
 
     personaListQuery.data?.data.forEach(persona => {

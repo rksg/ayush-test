@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }                                                                                             from '@acx-ui/components'
-import { Features }                                                                                                      from '@acx-ui/feature-toggle'
-import { IncompatibilityFeatures, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                      from '@acx-ui/store'
-import { render, screen }                                                                                                from '@acx-ui/test-utils'
+import { IncompatibilityFeatures, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
+import { Provider }                                                                               from '@acx-ui/store'
+import { render, screen }                                                                         from '@acx-ui/test-utils'
+import { RadioCardCategory }                                                                      from '@acx-ui/types'
 
 import { mockedAvailableUnifiedServicesList } from './__tests__/fixtures'
 
@@ -87,9 +86,6 @@ describe('ServiceCatalog', () => {
 
   describe('Edge SD-LAN', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
       mockedUseAvailableUnifiedServicesList.mockReturnValue([
         ...mockedAvailableUnifiedServicesList,
         {

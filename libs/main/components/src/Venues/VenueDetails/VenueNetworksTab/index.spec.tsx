@@ -52,20 +52,17 @@ import {
 
 import { VenueNetworksTab } from './index'
 
-const { mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
-// isMapEnabled = false && SD-LAN not enabled
 const disabledFFs = [
   Features.G_MAP,
-  Features.EDGES_SD_LAN_TOGGLE,
-  Features.EDGES_SD_LAN_HA_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
-  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE,
-  Features.EDGE_PIN_ENHANCE_TOGGLE
+  Features.EDGE_PIN_ENHANCE_TOGGLE,
+  Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -175,7 +172,10 @@ describe('VenueNetworksTab', () => {
         VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
-
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
       // rbac API
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
@@ -420,70 +420,10 @@ describe('VenueNetworksTab', () => {
     //await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
-  describe('Edge and SD-LAN P2 FF is on', () => {
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
-    })
-    const mockedSdLanScopeData = {
-      sdLans: [{
-        ...mockedSdLanDataListP2[0],
-        networkIds: ['d556bb683e4248b7a911fdb40c307aa5']
-      }],
-      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5'],
-      scopedGuestNetworkIds: []
-    }
-
-    it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
-
-      render(<Provider><VenueNetworksTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-      })
-
-      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
-      await userEvent.click(await within(activatedRow).findByRole('switch'))
-      const popup = await screen.findByRole('dialog')
-      await screen.findByText(/This network is running the SD-LAN service on this venue/i)
-      await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(popup).not.toBeVisible())
-    })
-
-    it('should correctly display tunnel column when SD-LAN is running on it', async () => {
-      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
-
-      render(<Provider><VenueNetworksTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-      })
-
-      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
-      screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 0)')
-    })
-
-    it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
-      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
-        sdLans: [],
-        scopedNetworkIds: [],
-        scopedGuestNetworkIds: []
-      })
-
-      render(<Provider><VenueNetworksTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-      })
-
-      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
-      screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Local Breakout')
-    })
-  })
-
-  describe('Edge and multi-venue SD-LAN FF is on', () => {
+  describe('multi-venue SD-LAN', () => {
     const targetNetworkInfo = venueNetworkApGroupData[0]
     const targetNetworkId = targetNetworkInfo.networkId
 
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
-    })
     const mockedSdLanScopeData = {
       sdLans: [{
         ...mockedMvSdLanDataList[0],
@@ -517,7 +457,6 @@ describe('VenueNetworksTab', () => {
 
     it('should correctly display tunnel column when SD-LAN is running on it', async () => {
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
-
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -557,7 +496,6 @@ describe('VenueNetworksTab', () => {
         scopedGuestNetworkIds: []
       }
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedData)
-
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,

@@ -16,7 +16,8 @@ import * as UI from './styledComponents'
 
 interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
   formListItemKey: string
-  id: string
+  id: string // interfaceName
+  serialNumber: string
   statusData?: EdgePortInfo
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
@@ -25,6 +26,7 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]
   isSupportAccessPort?: boolean
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 const { useWatch, useFormInstance } = Form
@@ -32,6 +34,7 @@ const { useWatch, useFormInstance } = Form
 export const PortConfigForm = (props: ConfigFormProps) => {
   const {
     id,
+    serialNumber,
     statusData,
     formListItemKey,
     isEdgeSdLanRun,
@@ -41,7 +44,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     formFieldsProps,
     subInterfaceList = [],
     clusterInfo,
-    isSupportAccessPort
+    isSupportAccessPort,
+    originalInterfaceData
   } = props
 
   const { $t } = useIntl()
@@ -127,6 +131,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
               return <EdgePortCommonForm
                 formRef={form}
+                serialNumber={serialNumber}
                 portsData={portsData}
                 lagData={lagData}
                 isEdgeSdLanRun={isEdgeSdLanRun}
@@ -138,6 +143,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 clusterInfo={clusterInfo}
                 subInterfaceList={subInterfaceList}
                 isSupportAccessPort={isSupportAccessPort}
+                originalInterfaceData={originalInterfaceData}
               />
             }}
           </Form.Item>

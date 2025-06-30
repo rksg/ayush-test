@@ -41,6 +41,9 @@ jest.mock('./Administrators', () => () => {
 jest.mock('./FWVersionMgmt', () => () => {
   return <div data-testid='mocked-FWVersionMgmt'></div>
 })
+jest.mock('./PendingAssets', () => () => {
+  return <div data-testid='mocked-PendingAssets'></div>
+})
 jest.mock('./OnpremMigration', () => () => {
   return <div data-testid='mocked-OnpremMigration'></div>
 })
@@ -281,6 +284,25 @@ describe('Administration page', () => {
       })
 
     const tab = screen.getByRole('tab', { name: 'Version Management' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render pending assets tab correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_PROVISION_MANAGEMENT)
+    params.activeTab = 'pendingAssets'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'Pending Assets' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 

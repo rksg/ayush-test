@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import React                   from 'react'
 
-import { Checkbox, Divider, Form, Radio } from 'antd'
-import { useForm }                        from 'antd/lib/form/Form'
-import _                                  from 'lodash'
-import moment                             from 'moment'
-import { defineMessage, useIntl }         from 'react-intl'
+import { Checkbox, Divider, Form, Radio, Space } from 'antd'
+import _                                         from 'lodash'
+import moment                                    from 'moment'
+import { defineMessage, useIntl }                from 'react-intl'
 
 import {
   Button,
@@ -15,7 +14,6 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
-import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import { usePatchEntitlementsActivationsMutation } from '@acx-ui/rc/services'
 import { EntitlementActivations }                  from '@acx-ui/rc/utils'
 import { useUserProfileContext }                   from '@acx-ui/user'
@@ -56,7 +54,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
   const [currentRegion, setCurrentRegion] = useState(RegionRadioButtonEnum.US)
-  const [form] = useForm()
+  const [form] = Form.useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
   const isActivationStartdatePassed = moment(activationData?.spaStartDate).isBefore(new Date())
   const acivationStartDate = activationData?.trial
@@ -171,7 +169,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       ]}
     >
       <Radio.Group style={{ width: '100%' }}>
-        <SpaceWrapper full direction='vertical' size='small'>
+        <Space direction='vertical' size='small' style={{ width: '100%' }}>
           {regionList.map((item) => {
             return (
               <React.Fragment key={item.value}>
@@ -179,8 +177,9 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
                   {item.label}
                 </Radio>
               </React.Fragment>
-            )})}
-        </SpaceWrapper>
+            )
+          })}
+        </Space>
       </Radio.Group>
     </Form.Item>
 

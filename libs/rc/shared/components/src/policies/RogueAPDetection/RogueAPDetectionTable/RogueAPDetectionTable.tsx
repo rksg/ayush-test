@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete,
   useDelRoguePoliciesMutation,
   useEnhancedRoguePoliciesQuery,
   useVenuesListQuery
@@ -21,17 +20,16 @@ import {
   PolicyOperation,
   PolicyType,
   useTableQuery,
-  Venue
+  Venue,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                          from '@acx-ui/types'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
-import { useIsEdgeReady }    from '../../../useEdgeActions'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsEdgeReady()
 
   return {
     fields: [
@@ -45,7 +43,7 @@ const useDefaultVenuePayload = (): RequestPayload => {
       'switches',
       'switchClients',
       'clients',
-      ...(isEdgeEnabled ? ['edges'] : []),
+      'edges',
       'cog',
       'latitude',
       'longitude',

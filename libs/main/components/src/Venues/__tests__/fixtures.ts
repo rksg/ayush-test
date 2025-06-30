@@ -32,7 +32,8 @@ import {
   MtuTypeEnum,
   SoftGreViewData,
   IsolatePacketsTypeEnum,
-  Persona
+  Persona,
+  PoeOutModeEnum
 } from '@acx-ui/rc/utils'
 
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
@@ -211,6 +212,65 @@ export const venueCaps = {
       '802.3bt-Class_6',
       '802.3bt-Class_7'
     ]
+  }, {
+    model: 'H670',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    canSupportPoeOutMode: true,
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5'
+    ],
+    poeOutModeCapabilities: [PoeOutModeEnum._802_3af, PoeOutModeEnum._802_3at],
+    defaultPoeOutMode: PoeOutModeEnum._802_3af,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h670.jpg',
+    lanPorts: [{
+      defaultType: 'Access',
+      id: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: true,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '2',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '3',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '4',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Trunk',
+      id: '5',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
   }],
   version: '6.0.0.x.xxx'
 }
@@ -237,75 +297,6 @@ export const venueApManagementVlan = {
   vlanId: 7
 }
 
-export const autocompleteResult = {
-  address_components: [
-    {
-      long_name: '350',
-      short_name: '350',
-      types: ['street_number']
-    },
-    {
-      long_name: 'West Java Drive',
-      short_name: 'W Java Dr',
-      types: ['route']
-    },
-    {
-      long_name: 'United States',
-      short_name: 'US',
-      types: ['country', 'political']
-    },
-    {
-      long_name: '94089',
-      short_name: '94089',
-      types: ['postal_code']
-    },
-    {
-      long_name: '1026',
-      short_name: '1026',
-      types: ['postal_code_suffix']
-    }
-  ],
-  // eslint-disable-next-line max-len
-  adr_address:
-    "<span class='street-address'>350 W Java Dr</span>, <span class='locality'>Sunnyvale</span>, <span class='region'>CA</span> <span class='postal-code'>94089-1026</span>, <span class='country-name'>USA</span>",
-  formatted_address: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-  geometry: {
-    location: {
-      lat: () => 37.4112751,
-      lng: () => -122.0191908
-    },
-    viewport: {
-      northeast: {
-        lat: 37.4128056302915,
-        lng: -122.0180266697085
-      },
-      southwest: {
-        lat: 37.4101076697085,
-        lng: -122.0207246302915
-      }
-    }
-  },
-  icon: 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png',
-  icon_background_color: '#7B9EB0',
-  icon_mask_base_uri:
-    'https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet',
-  name: '350 W Java Dr',
-  place_id: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
-  reference: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
-  types: ['premise'],
-  // eslint-disable-next-line max-len
-  url: 'https://maps.google.com/?q=350+W+Java+Dr,+Sunnyvale,+CA+94089,+USA&ftid=0x808fb7bec8fb92a7:0x40bb09e0f908a40a',
-  utc_offset: -420,
-  vicinity: 'Sunnyvale'
-}
-
-export const timezoneResult = {
-  dstOffset: 3600,
-  rawOffset: -28800,
-  timeZoneId: 'America/Los_Angeles',
-  timeZoneName: 'Pacific Daylight Time'
-}
-
 export const venueLanPorts = [{
   lanPorts: [{ type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true }],
   model: 'E510'
@@ -323,6 +314,17 @@ export const venueLanPorts = [{
     { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
   ],
   model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '3', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '4', enabled: false },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '5', enabled: false }
+  ],
+  model: 'H670',
   poeMode: 'Auto',
   poeOut: false
 }]
@@ -1859,6 +1861,12 @@ export const mockDirectedMulticast = {
   wiredEnabled: true,
   wirelessEnabled: true,
   networkEnabled: true
+}
+
+export const mockSmartMonitor = {
+  enabled: true,
+  interval: 5,
+  threshold: 60
 }
 
 export const mockRadiusOptions = {

@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import { Filter } from '@acx-ui/components'
+import type { Filter } from '@acx-ui/types'
 
 export const SwitchClientContext = createContext({} as {
   setSwitchCount: (data: number) => void

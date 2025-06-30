@@ -61,6 +61,14 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
           mockedDeactivateDhcpApi(req.url.pathname)
           return res(ctx.status(202))
         }
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -165,8 +173,6 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     const mockedSdlanData = cloneDeep(mockedMvSdLanDataList[0])
     mockedSdlanData.edgeClusterId = 'mockClusterId'
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,

@@ -80,19 +80,19 @@ export const MetricsConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.enabled,
+      value: (current.enabled ?? 0) + (current.disabled ?? 0),
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
 },{
-  key: 'disabled',
+  key: 'excluded',
   label: defineMessage({ defaultMessage: 'Excluded APs' }),
   format: formatter('countFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled,
+      value: current.excluded,
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs manually excluded from AI-Driven Energy Saving. These APs operate at full power.' })
@@ -111,15 +111,15 @@ export const MetricsConfig: IntentKPIConfigExtend[] = [{
 }]
 
 export const BenefitsConfig: IntentKPIConfigExtend[] = [{
-  key: 'projectedPowerSaving',
+  key: 'powerSaving',
   label: defineMessage({ defaultMessage: 'Projected power saving' }),
   format: formatter('percentFormatRound'),
-  deltaSign: '-',
+  deltaSign: '+',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
-      value: current.projectedPowerSaving,
-      previous: previous.projectedPowerSaving,
+      value: current.powerSaving,
+      previous: previous.powerSaving,
       isPill: true
     }),
   valueFormatter: formatter('countFormat'),
@@ -135,22 +135,22 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
-      value: current.enabled,
-      previous: previous.enabled,
+      value: (current.enabled ?? 0) + (current.disabled ?? 0),
+      previous: (previous.enabled ?? 0) + (previous.disabled ?? 0),
       total: current.apTotalCount,
       isPill: true
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
 },{
-  key: 'disabled',
+  key: 'excluded',
   label: defineMessage({ defaultMessage: 'Excluded APs' }),
   format: formatter('countFormat'),
   deltaSign: '-',
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
-      value: current.disabled,
-      previous: previous.disabled,
+      value: current.excluded,
+      previous: previous.excluded,
       total: current.apTotalCount,
       isPill: true
     }),
@@ -198,10 +198,10 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   format: formatter('countFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
+  valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.minApPower,
-      previous: previous.minApPower,
+      value: current.minApPowerStandard,
+      previous: current.minApPowerAi,
       isShowPreviousSpan: true
     }),
   valueSuffixMessage: defineMessage({ defaultMessage: 'vs <previousSpan>{previous}W</previousSpan>' }),

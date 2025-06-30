@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                             from '@acx-ui/components'
 import { Features }                                         from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }            from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                            from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import { NodeClusterRoleEnum }                              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
@@ -21,9 +21,6 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { serialNumber } = params
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
-  const isEdgeReady = useIsEdgeReady()
-  const isEdgePingTraceRouteReady = useIsEdgeFeatureReady(Features.EDGES_PING_TRACEROUTE_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
 
   const { hasDhcpService = false } = useGetDhcpStatsQuery({
@@ -48,14 +45,13 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
       filters: { edgeId: [serialNumber] }
     }
   }, {
-    skip: !isEdgeReady,
     selectFromResult: ({ data }) => ({
       servicesCount: data?.totalCount
     })
   })
 
-  const showTroubleshooting = isEdgePingTraceRouteReady && props.isOperational && hasPermission({ scopes: [EdgeScopes.UPDATE] })
-  const showDhcp = isEdgeHaReady && isEdgeDhcpHaReady && hasDhcpService &&
+  const showTroubleshooting = props.isOperational && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const showDhcp = isEdgeDhcpHaReady && hasDhcpService &&
     ((currentCluster?.smartEdges.length ?? 0) > 1 ? currentEdge?.haStatus === NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE : true)
 
   return (
@@ -64,14 +60,12 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
       {
         showTroubleshooting &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
-          key='troubleshooting' />}
-      {
-        isEdgeReady &&
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-          key='services'
-        />
+          key='troubleshooting' />
       }
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+        key='services'
+      />
       {
         showDhcp &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />

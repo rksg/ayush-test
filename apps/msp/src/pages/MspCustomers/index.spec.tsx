@@ -13,6 +13,10 @@ import { AccountType }                                                          
 
 import { MspCustomers } from '.'
 
+jest.mock('./ScheduleFirmwareDrawer', () => ({
+  ScheduleFirmwareDrawer: () => <div>ScheduleFirmwareDrawer</div>
+}))
+
 const list = {
   totalCount: 3,
   page: 1,
@@ -1025,5 +1029,54 @@ describe('MspCustomers', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
+  })
+
+  it('should render ScheduleFirmwareDrawer for MspEcTable', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: { tenantType: AccountType.MSP } }
+    })
+    render(<Provider><MspCustomers /></Provider>, {
+      route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const targetRow = await screen.findByRole('row', { name: /ec 111/i })
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Schedule Firmware Update/i }))
+
+    expect(await screen.findByText('ScheduleFirmwareDrawer')).toBeVisible()
+  })
+
+  it('should render ScheduleFirmwareDrawer for integrator table', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: { tenantType: AccountType.MSP_INTEGRATOR } }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetRow = await screen.findByRole('row', { name: /ec 111/i })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Schedule Firmware Update/i }))
+
+    expect(await screen.findByText('ScheduleFirmwareDrawer')).toBeVisible()
   })
 })

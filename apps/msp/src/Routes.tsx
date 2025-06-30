@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                                                from '@acx-ui/msp/services'
+import { Brand360 }                                                                                    from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails, ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
+import { PortalSettings }                                                                              from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                                                                   from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -49,17 +49,19 @@ import { AccountType, getJwtTokenPayload }                                      
 
 import HspContext, { HspActionTypes }              from './HspContext'
 import { hspReducer }                              from './HspReducer'
-import { ConfigTemplate }                          from './pages/ConfigTemplates'
-import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
-import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
+import { ConfigTemplatePage }                      from './pages/ConfigTemplates'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
+import { ManageCustomer }                          from './pages/ManageCustomer'
+import { ManageIntegrator }                        from './pages/ManageIntegrator'
 import Mdu360                                      from './pages/Mdu360'
 import { MspCustomers }                            from './pages/MspCustomers'
 import { MspRecCustomers }                         from './pages/MspRecCustomers'
 import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
 import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
+import { NewManageCustomer }                       from './pages/NewManageCustomer'
+import { NewManageIntegrator }                     from './pages/NewManageIntegrator'
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
@@ -220,7 +222,7 @@ export function ConfigTemplatesRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
-        <Route path='templates' element={<ConfigTemplate />} />
+        <Route path='templates' element={<ConfigTemplatePage />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
@@ -286,7 +288,7 @@ export function ConfigTemplatesRoutes () {
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
-            element={<DpskDetails />}
+            element={<ConfigTemplateDpskDetails />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.DHCP] && <>
@@ -314,7 +316,7 @@ export function ConfigTemplatesRoutes () {
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
-            element={<PortalDetail/>}
+            element={<ConfigTemplatePortalDetails/>}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>

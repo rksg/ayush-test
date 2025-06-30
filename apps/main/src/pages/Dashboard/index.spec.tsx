@@ -6,7 +6,6 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }                                         from '@acx-ui/rc/components'
 import { ruckusAiChatApi, useGetCanvasesQuery }                   from '@acx-ui/rc/services'
 import { RuckusAiChatUrlInfo }                                    from '@acx-ui/rc/utils'
 import { BrowserRouter }                                          from '@acx-ui/react-router-dom'
@@ -45,17 +44,17 @@ jest.mock('@acx-ui/rc/components', () => ({
   AlarmWidgetV2: () => <div data-testid={'rc-AlarmWidgetV2'} title='AlarmWidgetV2' />,
   ClientsWidgetV2: () => <div data-testid={'rc-ClientsWidgetV2'} title='ClientsWidgetV2' />,
   DevicesDashboardWidgetV2: () => <div data-testid={'rc-DevicesDashboardWidgetV2'} title='DevicesDashboardWidgetV2' />,
+  VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />
+}))
+jest.mock('@acx-ui/main/components', () => ({
   MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
-  VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />,
-  useIsEdgeReady: jest.fn().mockReturnValue(true)
-}))
-jest.mock('@acx-ui/main/components', () => ({
-  VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
-}))
-jest.mock('@acx-ui/main/components', () => ({
   VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeReady: jest.fn().mockReturnValue(true)
+}))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetCanvasesQuery: jest.fn(),
@@ -124,12 +123,6 @@ describe('Dashboard', () => {
   it('should show report link correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(screen.getByText('See more reports')).toBeVisible()
-  })
-
-  it('should hide edge tab when FF is off', async () => {
-    jest.mocked(useIsEdgeReady).mockReturnValue(false)
-    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
-    expect(await screen.findAllByRole('radio')).toHaveLength(2)
   })
 
   it('DashboardFilterProvider provides default value', async () => {
