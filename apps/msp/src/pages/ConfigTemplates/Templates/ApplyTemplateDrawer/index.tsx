@@ -7,7 +7,7 @@ import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateOverrideModal, overrideDisplayViewMap,
-  OverrideValuesPerMspEcType, transformOverrideValues,
+  OverrideValuesPerTarget, transformOverrideValues,
   useConfigTemplateOverride, CommonConfigTemplateDrawerProps,
   ConfigTemplatePageUI
 } from '@acx-ui/main/components'
@@ -237,7 +237,7 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
 interface ApplyTemplateConfirmationDrawerProps {
   targetMspEcs: MspEc[]
   selectedTemplate: ConfigTemplate
-  overrideValues: OverrideValuesPerMspEcType | undefined
+  overrideValues: OverrideValuesPerTarget | undefined
   onBack: () => void
   onApply: () => void
   onCancel: () => void
@@ -304,7 +304,7 @@ export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmatio
 interface AppliedMspEcListProps {
   targetMspEcs: MspEc[]
   templateType: ConfigTemplateType
-  overrideValues: OverrideValuesPerMspEcType | undefined
+  overrideValues: OverrideValuesPerTarget | undefined
 }
 export function AppliedMspEcListView (props: AppliedMspEcListProps) {
   const { targetMspEcs, templateType, overrideValues } = props

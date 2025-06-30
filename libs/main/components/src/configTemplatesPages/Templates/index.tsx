@@ -3,7 +3,6 @@ import { ReactNode, useState } from 'react'
 import { TypedMutationTrigger } from '@reduxjs/toolkit/query/react'
 import { useIntl }              from 'react-intl'
 
-
 import {
   Table,
   TableProps,
@@ -62,6 +61,10 @@ import {
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
+const defaultActionRbacOpsIds: ConfigTemplateViewProps['actionRbacOpsIds'] = {
+  apply: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)]
+}
+
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const {
     ApplyTemplateView,
@@ -69,7 +72,8 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     AppliedToView,
     AppliedToListView,
     ShowDriftsView,
-    appliedToColumn
+    appliedToColumn,
+    actionRbacOpsIds = { ...defaultActionRbacOpsIds, ...(props.actionRbacOpsIds || {}) }
   } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -137,7 +141,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
       }
     },
     {
-      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
+      rbacOpsIds: actionRbacOpsIds.apply,
       label: $t({ defaultMessage: 'Apply Template' }),
       disabled: (selectedRows) => !selectedRows[0] || !canApplyTemplate(selectedRows[0]),
       onClick: (rows: ConfigTemplate[]) => {

@@ -46,16 +46,17 @@ import {
   DpskSaveData,
   TableResult,
   useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getIntl }              from '@acx-ui/utils'
 
-import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
-import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'
-import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
-import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
-import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
+import { AdaptivePolicySetForm }                                              from '../../AdaptivePolicySetForm'
+import { ProtectedEnforceTemplateToggleP1, useIsConfigTemplateEnabledByType } from '../../configTemplates'
+import { ExpirationDateSelector }                                             from '../../ExpirationDateSelector'
+import { hasCreateIdentityGroupPermission }                                   from '../../useIdentityGroupUtils'
+import { IdentityGroupForm }                                                  from '../../users/IdentityGroupForm'
 
 import { FieldSpace } from './styledComponents'
 
@@ -183,7 +184,8 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const [ isChanging, setIsChanging ] = useState(false)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: false })
   const policySetId = Form.useWatch<string>('policySetId', form)
   const deviceCountLimit = Form.useWatch<number>('deviceCountLimit', form)

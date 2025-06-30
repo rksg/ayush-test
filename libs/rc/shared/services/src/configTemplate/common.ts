@@ -29,11 +29,12 @@ import {
   ApiVersionEnum,
   ConfigTemplateType
 } from '@acx-ui/rc/utils'
+import { isRecSite }                   from '@acx-ui/react-router-dom'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { networkApi }    from '../network'
+import { networkApi }     from '../network'
 import {
   fetchEnhanceRbacNetworkVenueList,
   fetchNetworkVlanPoolList,
@@ -47,7 +48,8 @@ import { handleCallbackWhenActivityDone } from '../utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
-  useCasesToRefreshNetworkTemplateList
+  useCasesToRefreshNetworkTemplateList,
+  useCasesToRefreshRecTemplateList
 } from './constants'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
@@ -60,7 +62,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
+          const useCases = isRecSite() ? useCasesToRefreshRecTemplateList : useCasesToRefreshTemplateList
+          onActivityMessageReceived(msg, useCases, () => {
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
         })
@@ -502,9 +505,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         const driftInstanceIdsRes = await fetchWithBQ({
           ...createHttpRequest(ConfigTemplateUrlsInfo.queryDriftInstances, params),
           body: JSON.stringify({
-            filters: { status: ['drift'] },
-            page: 1,
-            pageSize: 100
+            filter: { status: 'DRIFT' }
           })
         })
 

@@ -12,7 +12,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
@@ -76,32 +76,31 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                                   from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
+import { useEnforcedStatus, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '../configTemplates'
+import { useGetNetwork }                                                                     from '../NetworkDetails/services'
 
-import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }          from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }       from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }         from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
-import { SAMLForm }               from './CaptivePortal/SAMLForm'
-import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }              from './CaptivePortal/WISPrForm'
-import { WorkflowForm }           from './CaptivePortal/WorkflowForm'
+import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
+import { SAMLForm }                from './CaptivePortal/SAMLForm'
+import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { WorkflowForm }            from './CaptivePortal/WorkflowForm'
 import {
   useUpdateEdgeSdLanActivations
 } from './edgeUtils'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   handleServicePolicyRbacPayload,
   tranferSettingsToSave,
@@ -228,7 +227,8 @@ export function NetworkForm (props:{
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
   const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isMultipleCertificateTemplateEnabled = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props

@@ -265,6 +265,7 @@ export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): Network
 type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
+  const isRadiusServerTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.RADIUS)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
@@ -366,6 +367,8 @@ export function useRadiusServer () {
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!shouldSaveRadiusServerSettings(saveData)) return Promise.resolve()
+
+    if (isTemplate && !isRadiusServerTemplateEnabled) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },

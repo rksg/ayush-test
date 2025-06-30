@@ -17,7 +17,7 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const targetId = 'MOCKED-TARGET-ID'
   const { $t } = useIntl()
   const { setVisible, selectedTemplate } = props
-  const [ applyConfigTemplate ] = useApplyRecConfigTemplateMutation()
+  const [ applyConfigTemplate, { isLoading: isApplying } ] = useApplyRecConfigTemplateMutation()
   const {
     overrideModalVisible,
     overrideValues,
@@ -54,10 +54,10 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
-    {canBeOverriden && <Button onClick={onOverride} type='primary'>
+    {canBeOverriden && <Button onClick={onOverride} type='primary' loading={isApplying}>
       {$t({ defaultMessage: 'Override Template' })}
     </Button>}
-    <Button onClick={onApply} type='primary'>
+    <Button onClick={onApply} type='primary' loading={isApplying}>
       {$t({ defaultMessage: 'Apply' })}
     </Button>
   </div>

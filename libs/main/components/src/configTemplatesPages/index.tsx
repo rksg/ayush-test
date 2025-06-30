@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, TableColumn } from '@acx-ui/components'
 import { ConfigTemplate }          from '@acx-ui/rc/utils'
+import { RbacOpsIds }              from '@acx-ui/types'
 
 import { ConfigTemplateList } from './Templates'
 
@@ -28,6 +29,9 @@ export interface ConfigTemplateViewProps {
   ShowDriftsView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   // eslint-disable-next-line max-len
   appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
+  actionRbacOpsIds?: {
+    apply?: RbacOpsIds
+  }
 }
 
 export function ConfigTemplateView (props: ConfigTemplateViewProps) {
@@ -36,14 +40,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
   return (
     <>
       <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
-      <ConfigTemplateList
-        ApplyTemplateView={props.ApplyTemplateView}
-        canApplyTemplate={props.canApplyTemplate}
-        AppliedToView={props.AppliedToView}
-        AppliedToListView={props.AppliedToListView}
-        ShowDriftsView={props.ShowDriftsView}
-        appliedToColumn={props.appliedToColumn}
-      />
+      <ConfigTemplateList {...props} />
     </>
   )
 }

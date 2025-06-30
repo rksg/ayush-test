@@ -106,7 +106,7 @@ export const createHttpRequest = (
     ...getJwtHeaders({ ignoreDelegation })
   }
 
-  // apiInfo = convertApiInfoForRecConfigTemplate(apiInfo)
+  apiInfo = convertApiInfoForRecConfigTemplate(apiInfo)
 
   const origin = window.location.origin
   const newApiHostName = origin.replace(

@@ -32,7 +32,8 @@ import {
   hexRegExp,
   passphraseRegExp,
   generateHexKey, useConfigTemplate,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -42,13 +43,14 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../../ApCompatibility'
-import { AAAInstance }             from '../AAAInstance'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
-import NetworkFormContext          from '../NetworkFormContext'
-import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AccountingServiceInput }  from '../SharedComponent/AccountingServiceInput'
-import * as UI                     from '../styledComponents'
+import { useIsConfigTemplateEnabledByType } from '../../configTemplates'
+import { AAAInstance }                      from '../AAAInstance'
+import { NetworkDiagram }                   from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                       from '../NetworkForm'
+import NetworkFormContext                   from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }          from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AccountingServiceInput }           from '../SharedComponent/AccountingServiceInput'
+import * as UI                              from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
@@ -119,7 +121,8 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const { networkId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
     wlanSecurity,

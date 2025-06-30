@@ -33,13 +33,13 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   applyRecConfigTemplate: {
     method: 'post',
-    url: '/recTemplates/:templateId/instances',
+    url: '/rec/templates/:templateId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'POST:/recTemplates/{id}/instances'
+    opsApi: 'POST:/rec/templates/{id}'
   },
   addNetworkTemplate: {
     method: 'post',

@@ -43,8 +43,8 @@ import {
   LicenseUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useRecConfigTemplateAccess,
-  CONFIG_TEMPLATE_LIST_PATH,
-  TenantType
+  TenantType,
+  getConfigTemplatePath
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -398,10 +398,11 @@ export function useMenuConfig () {
     }]),
     ...(isRecConfigTemplateEnabled
       ? [{
-        uri: `/${CONFIG_TEMPLATE_LIST_PATH}`,
+        uri: getConfigTemplatePath(),
         label: $t({ defaultMessage: 'Templates' }),
         inactiveIcon: CopyOutlined,
-        activeIcon: CopySolid
+        activeIcon: CopySolid,
+        isActiveCheck: new RegExp('^/configTemplates')
       }] : []),
     {
       label: $t({ defaultMessage: 'Administration' }),

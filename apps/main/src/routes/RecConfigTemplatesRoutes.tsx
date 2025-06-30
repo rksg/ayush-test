@@ -28,7 +28,7 @@ import { ConfigTemplatePage }                  from '../pages/ConfigTemplates'
 import { VenueDetails, VenuesForm, VenueEdit } from '../pages/Venues'
 
 export default function ConfigTemplatesRoutes () {
-  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()  // TODO
+  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
 
   return rootRoutes(
     <Route path=':tenantId/t/'>
