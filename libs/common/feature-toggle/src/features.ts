@@ -221,7 +221,6 @@ export enum Features {
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
-  WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
   WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE = 'wifi-network-radius-accounting-toggle',
   WIFI_NETWORK_VENUE_QUERY = 'wifi-eda-network-venue-query-toggle',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
