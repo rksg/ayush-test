@@ -53,7 +53,6 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const isEdgeDualWanReady = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const {
@@ -301,7 +300,7 @@ export const EdgeClusterTable = () => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
-      visible: (selectedRows) => (isGracefulShutdownReady &&
+      visible: (selectedRows) => (
         selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Shutdown' }),

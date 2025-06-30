@@ -87,7 +87,6 @@ export function LanPorts (props: ApEditItemProps) {
   const { isAllowEdit=true } = props
   const navigate = useNavigate()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
   const isApPoeModeEnabled = useIsSplitOn(Features.WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE)
@@ -123,7 +122,7 @@ export function LanPorts (props: ApEditItemProps) {
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
-  }, { skip: !isResetLanPortEnabled })
+  })
 
   const [getVenueLanPortsWithEthernet] = useLazyGetVenueLanPortWithEthernetSettingsQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -288,7 +287,7 @@ export function LanPorts (props: ApEditItemProps) {
         })
         setUseVenueSettings(values?.useVenueSettings)
 
-        if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
+        if (isResetClick.current && isResetLanPort(values)) {
           showActionModal({
             type: 'confirm',
             width: 450,
@@ -569,9 +568,9 @@ export function LanPorts (props: ApEditItemProps) {
           initialValues={{ lan: selectedModel?.lanPorts }}
         >
           <Row gutter={24}
-            style={isResetLanPortEnabled ?
+            style={
               { position: 'absolute', right: '0', top: '0', whiteSpace: 'nowrap',
-                marginRight: '34%', transform: 'translateY(-326%)' } : {}}>
+                marginRight: '34%', transform: 'translateY(-326%)' }}>
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
@@ -666,8 +665,7 @@ export function LanPorts (props: ApEditItemProps) {
     const hasVni = lanData.filter(lan => lan?.vni > 0 ).length > 0
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return hasVni ? <></> : <Space
-      style={isResetLanPortEnabled ? { display: 'flex', fontSize: '12px' } :
-        { display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+      style={{ display: 'flex', fontSize: '12px' }}>
       {useVenueSettings
         ? <FormattedMessage
           defaultMessage={
@@ -681,15 +679,15 @@ export function LanPorts (props: ApEditItemProps) {
               {venueData?.name}
             </Button>
           }} />
-        : (isResetLanPortEnabled ? <>{$t({ defaultMessage: 'Custom settings' })}
+        : (<>{$t({ defaultMessage: 'Custom settings' })}
           <Button type='link'
             size='small'
             disabled={!isAllowEdit}
             onClick={handleResetDefaultLanPorts}>
             {$t({ defaultMessage: 'Reset to default' })}
-          </Button></> : $t({ defaultMessage: 'Custom settings' }) )
+          </Button></>)
       }
-      {showButton && isResetLanPortEnabled && <div>|</div>}
+      {showButton && <div>|</div>}
       {showButton && <Button type='link'
         size='small'
         disabled={useVenueSettings ? !isAllowUpdate : !isAllowReset}

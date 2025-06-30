@@ -9,7 +9,6 @@ import { useIsEdgeFeatureReady, useTunnelProfileActions } from '@acx-ui/rc/compo
 import {
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
-  useGetEdgeSdLanViewDataListQuery,
   useGetTunnelProfileByIdQuery,
   useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
@@ -28,8 +27,6 @@ const EditTunnelProfile = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const [form] = Form.useForm()
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
@@ -50,23 +47,8 @@ const EditTunnelProfile = () => {
 
   const { updateTunnelProfileOperation } = useTunnelProfileActions()
 
-  const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
-    { payload: {
-      fields: [
-        'tunnelProfileId'
-      ],
-      filters: { tunnelProfileId: [policyId] }
-    } },
-    {
-      skip: isEdgeSdLanHaReady || !isEdgeSdLanReady,
-      selectFromResult: ({ data, isFetching }) => ({
-        isSdLanP1Used: !!data?.data?.[0],
-        isSdLanP1Fetching: isFetching
-      })
-    }
-  )
 
-  const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeMvSdLanViewDataListQuery(
+  const { isSdLanHaUsed, isDMZUsed, isSdLanFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
       fields: [
         'isGuestTunnelEnabled',
@@ -76,7 +58,6 @@ const EditTunnelProfile = () => {
       ]
     } },
     {
-      skip: !isEdgeSdLanHaReady,
       selectFromResult: ({ data, isFetching }) => ({
         isSdLanHaUsed: data?.data.some(sdlan => {
           return sdlan.tunnelProfileId === policyId
@@ -88,7 +69,7 @@ const EditTunnelProfile = () => {
           // eslint-disable-next-line max-len
           || (sdlan.tunneledWlans?.some(wlan => wlan.forwardingTunnelProfileId === policyId && wlan.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE ))
         ),
-        isSdLanHaFetching: isFetching
+        isSdLanFetching: isFetching
       })
     }
   )
@@ -102,7 +83,7 @@ const EditTunnelProfile = () => {
       filters: { vxlanTunnelProfileId: [policyId] }
     }
   }, {
-    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady) || !isEdgePinReady,
+    skip: !isEdgePinReady,
     selectFromResult: ({ data, isFetching }) => {
       return {
         pinId: data?.data[0]?.id,
@@ -111,7 +92,7 @@ const EditTunnelProfile = () => {
     }
   })
 
-  const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
+  const isSdLanUsed = isSdLanHaUsed
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
   const formInitValues = useMemo(() => {
     const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
@@ -142,7 +123,7 @@ const EditTunnelProfile = () => {
     updateTunnelProfileOperation(policyId || '', data, formInitValues)
 
   // eslint-disable-next-line max-len
-  const loaderLoading = isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching || isTunnelViewFetching
+  const loaderLoading = isFetching || isSdLanFetching || isPinFetching || isTunnelViewFetching
 
   return (
     <Loader states={[{

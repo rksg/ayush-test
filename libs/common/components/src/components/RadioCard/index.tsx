@@ -4,6 +4,7 @@ import { ButtonProps, RadioProps, Tooltip }          from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { SmartEdgeSolid, SwitchSolid, WiFi } from '@acx-ui/icons'
+import { RadioCardCategory }                 from '@acx-ui/types'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
 
@@ -12,12 +13,6 @@ import {
   Category, CategoryWrapper, CategoryIcon,
   RadioCardType
 } from './styledComponents'
-
-export enum RadioCardCategory {
-  WIFI = 'wifi',
-  SWITCH = 'switch',
-  EDGE = 'edge',
-}
 
 export type RadioCardProps = RadioProps & {
   type?: RadioCardType

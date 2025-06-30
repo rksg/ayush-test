@@ -12,13 +12,14 @@ import {
   StepsForm,
   showActionModal
 } from '@acx-ui/components'
-import { WarningCircleOutlined }               from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
+import { WarningCircleOutlined }                    from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }                   from '@acx-ui/rc/components'
 import {
   useBatchUpdateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchAvailableFirmwareListV1001Query,
-  useBatchSkipSwitchUpgradeSchedulesMutation } from '@acx-ui/rc/services'
+  useBatchSkipSwitchUpgradeSchedulesMutation,
+  useBatchCreateSwitchVenueSchedulesV1001Mutation } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
@@ -58,6 +59,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const { wizardType } = props
   const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
   const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1001Mutation()
+  const [batchCreateSwitchVenueSchedules] = useBatchCreateSwitchVenueSchedulesV1001Mutation()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1001Query({ params })
   const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1001Query({ params })
 
@@ -128,7 +130,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             versions
           }
         }))
-        await batchUpdateSwitchVenueSchedules(venueRequests)
+        await batchCreateSwitchVenueSchedules(venueRequests)
 
         const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
         const switchRequests = Object.keys(switchVenueGroups).map(key =>
@@ -139,7 +141,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
               versions
             }
           }))
-        await batchUpdateSwitchVenueSchedules(switchRequests)
+        await batchCreateSwitchVenueSchedules(switchRequests)
 
         form.resetFields()
         props.setVisible(false)

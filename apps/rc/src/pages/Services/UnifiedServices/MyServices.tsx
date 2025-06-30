@@ -1,11 +1,15 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                               from '@acx-ui/components'
+import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import {
-  AddProfileButton, canCreateAnyUnifiedService,
-  collectAvailableProductsAndCategories, getServiceCatalogRoutePath
+  canCreateAnyUnifiedService,
+  collectAvailableProductsAndCategories,
+  filterByAccessForServicePolicyMutation,
+  getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { getUserProfile } from '@acx-ui/user'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
@@ -62,4 +66,24 @@ export function MyServices () {
         </GridRow>}
     </Space>
   </>
+}
+
+
+interface AddProfileButtonProps {
+  targetPath: string
+  linkText: string
+  hasSomeProfilesPermission: () => boolean
+}
+
+export function AddProfileButton (props: AddProfileButtonProps) {
+  const { targetPath, linkText, hasSomeProfilesPermission } = props
+
+  const AddButton = <TenantLink to={targetPath}>
+    <Button type='primary'>{linkText}</Button>
+  </TenantLink>
+
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasSomeProfilesPermission() ? AddButton : null
+  }
+  return filterByAccessForServicePolicyMutation([AddButton])[0]
 }

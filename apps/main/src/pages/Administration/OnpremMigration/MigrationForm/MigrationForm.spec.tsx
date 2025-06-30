@@ -4,7 +4,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { defaultAddress } from '@acx-ui/msp/utils'
 import {
   policyApi
 } from '@acx-ui/rc/services'
@@ -24,8 +25,7 @@ import {
 } from '../__tests__/fixtures'
 import MigrationContext from '../MigrationContext'
 
-import MigrationForm      from './MigrationForm'
-import { defaultAddress } from './MigrationSettingForm'
+import MigrationForm from './MigrationForm'
 
 const venueResponse = {
   id: '2c16284692364ab6a01f4c60f5941836',

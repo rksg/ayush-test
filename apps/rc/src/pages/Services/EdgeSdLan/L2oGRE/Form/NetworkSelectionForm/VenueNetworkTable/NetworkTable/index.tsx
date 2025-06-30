@@ -45,7 +45,8 @@ import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from '.
 const getRowDisabledInfo = (
   row: Network,
   dsaeOnboardNetworkIds?: string[],
-  pinNetworkIds?: string[]
+  pinNetworkIds?: string[],
+  softGreNetworkIds?: string[]
 ) => {
   const { $t } = getIntl()
   let disabled = false
@@ -62,7 +63,11 @@ const getRowDisabledInfo = (
   } else if (pinNetworkIds?.includes(row.id)) {
     disabled = true
     // eslint-disable-next-line max-len
-    tooltip = $t({ defaultMessage: 'This network already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+    tooltip = $t({ defaultMessage: 'This network is already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+  } else if (softGreNetworkIds?.includes(row.id)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This network already has SoftGRE enabled and cannot be used for SD-LAN traffic.' })
   }
 
   return { disabled, tooltip }
@@ -78,6 +83,7 @@ export interface ActivatedNetworksTableProps {
   onTunnelProfileChange?: (data: Network, tunnelProfileId: string) => void
   isUpdating?: boolean
   pinNetworkIds?: string[]
+  softGreNetworkIds?: string[]
   validationFormRef?: FormInstance
 }
 
@@ -92,6 +98,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onTunnelProfileChange,
     isUpdating,
     pinNetworkIds,
+    softGreNetworkIds,
     validationFormRef
   } = props
 
@@ -219,7 +226,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds)
+      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds, softGreNetworkIds)
       let isDisabled = disabled
       let tooltip = toggleButtonTooltip
 
@@ -261,7 +268,8 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onActivateChange,
     disabled,
     dsaeOnboardNetworkIds,
-    pinNetworkIds
+    pinNetworkIds,
+    softGreNetworkIds
   ])
 
   const actions: TableProps<Network>['actions'] = [{

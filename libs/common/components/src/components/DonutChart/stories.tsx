@@ -184,3 +184,30 @@ storiesOf('Donut Chart', module)
         </AutoSizer>
       </Card>
     </div>})
+  .add('Tooltip - with tooltipValuesFunc', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 496, height: 278 }}>
+      <Card title='Tooltip with tooltipValuesFunc'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              showLegend
+              tooltipFormat={defineMessage({
+                defaultMessage: `{name}<br></br>
+                  <space><b>{formattedValue}</b> ({customizedValue})</space>`
+              })}
+              tooltipValuesFunc={(name) => {
+                return {
+                  customizedValue: (<span key={name}>
+                    {`${name}: this is customized tooltip value`}
+                  </span>)
+                }
+              }}
+              size={'small'}
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+              data={data}/>
+          )}
+        </AutoSizer>
+      </Card>
+    </div>})

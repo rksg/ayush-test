@@ -56,8 +56,6 @@ const defaultSdLanPayload = {
 }
 
 export const EdgeSdLanDetail = () => {
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const { $t } = useIntl()
   const params = useParams()
 
@@ -100,7 +98,7 @@ export const EdgeSdLanDetail = () => {
         isLoading: isLoading,
         isFetching: isFetching
       }]}>
-        {(isEdgeCompatibilityEnabled && !!params.serviceId) && <Row>
+        {!!params.serviceId && <Row>
           <Col span={24}>
             <CompatibilityCheck
               serviceId={params.serviceId}
