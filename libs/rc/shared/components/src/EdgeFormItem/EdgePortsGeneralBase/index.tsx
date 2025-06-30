@@ -36,6 +36,7 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
+  serialNumber: string
   clusterInfo: EdgeClusterStatus
   statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
@@ -53,6 +54,7 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
   const {
+    serialNumber,
     statusData,
     lagData = [],
     isEdgeSdLanRun,
@@ -95,6 +97,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
       content: <Form.List name={fieldHeadPath.concat([innerPortFormID])}>
         {(fields) => fields.map(
           ({ key }) => <PortConfigForm
+            serialNumber={serialNumber}
             formListItemKey={key+''}
             fieldHeadPath={fieldHeadPath.concat([innerPortFormID, `${key}`])}
             key={`${innerPortFormID}_${key}`}
