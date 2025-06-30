@@ -11,8 +11,8 @@ const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate })
     <UI.Grid>
       <WifiClient filters={{ startDate, endDate }} />
       <WifiGeneration startDate={startDate} endDate={endDate} />
-      <ApplicationCategories filters={{ startDate, endDate }} />
       <TopApplications filters={{ startDate, endDate }} />
+      <ApplicationCategories filters={{ startDate, endDate }} />
     </UI.Grid>
   )
 }

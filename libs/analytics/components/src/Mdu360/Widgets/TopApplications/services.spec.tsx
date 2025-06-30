@@ -35,7 +35,7 @@ describe('TopApplications services', () => {
       api.endpoints.topNApplications.initiate(payload)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toEqual({ nodes: [] })
+    expect(data).toEqual({ topNApplicationByClient: [], topNApplicationByTraffic: [] })
     expect(error).toBeUndefined()
   })
 
