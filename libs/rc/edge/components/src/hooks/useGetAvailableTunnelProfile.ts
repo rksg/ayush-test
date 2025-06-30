@@ -54,7 +54,7 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       fields: [
         'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
         'type', 'mtuType', 'forceFragmentation', 'ageTimeMinutes', 'keepAliveInterval',
-        'keepAliveRetry'
+        'keepAliveRetry', 'natTraversalEnabled'
       ],
       sortField: 'name',
       sortOrder: 'ASC',
