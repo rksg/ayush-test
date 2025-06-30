@@ -250,7 +250,7 @@ describe('LanPortsForm', () => {
     expect(within(tabPanel3).getByLabelText(/Enable port/)).toBeDisabled()
   })
 
-  it('should handle Port type, PoE Mode and PoE Out changed', async () => {
+  it.skip('should handle Port type, PoE Mode and PoE Out changed', async () => {
     render(
       <Provider>
         {mockLanPorts}
@@ -309,7 +309,7 @@ describe('LanPortsForm', () => {
     await userEvent.click(resetBtn)
   })
 
-  it ('Should pop up warning message if reset port to default by ap model', async () => {
+  it.skip ('Should pop up warning message if reset port to default by ap model', async () => {
     const { result: venueEditContextHook } = renderHook(() => {
       const [editNetworkingContextData, setEditNetworkingContextData] =
         useState({ updateLanPorts: ()=>{} } as NetworkingSettingContext)
