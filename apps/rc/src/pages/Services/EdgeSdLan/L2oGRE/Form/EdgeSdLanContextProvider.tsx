@@ -1,9 +1,11 @@
 import { createContext, ReactNode, useContext } from 'react'
 
-import { Loader }                                                                                                                     from '@acx-ui/components'
-import { useGetAvailableTunnelProfile }                                                                                               from '@acx-ui/edge/components'
-import { Features }                                                                                                                   from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                      from '@acx-ui/rc/components'
+import { Loader }                                                           from '@acx-ui/components'
+import { useGetAvailableTunnelProfile }                                     from '@acx-ui/edge/components'
+import { Features }                                                         from '@acx-ui/feature-toggle'
+import {
+  SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap, useIsEdgeFeatureReady
+} from '@acx-ui/rc/components'
 import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeMvSdLanViewData, IncompatibilityFeatures, PersonalIdentityNetworksViewData, TunnelProfileViewData }   from '@acx-ui/rc/utils'
 
@@ -12,6 +14,7 @@ export interface EdgeSdLanContextType {
    | 'tunneledWlans' | 'tunneledGuestWlans'>[]
   allPins: Pick<PersonalIdentityNetworksViewData, 'id' | 'venueId' | 'edgeClusterInfo'
    | 'tunneledWlans'>[]
+  allSoftGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
   availableTunnelProfiles: TunnelProfileViewData[]
   associatedEdgeClusters?: EdgeClusterStatus[]
   requiredFwMap?: { [key: string]: string|undefined }
@@ -54,6 +57,8 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
     })
   })
 
+  const allSoftGreVenueMap = useGetSoftGreScopeVenueMap()
+
   const { associatedEdgeClusters, isAssociatedEdgeClustersLoading } = useGetEdgeClusterListQuery({
     payload: {
       fields: ['clusterId', 'hasCorePort', 'highAvailabilityMode', 'edgeList'],
@@ -94,6 +99,7 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
   return <EdgeSdLanContext.Provider value={{
     allSdLans,
     allPins,
+    allSoftGreVenueMap,
     availableTunnelProfiles,
     associatedEdgeClusters,
     requiredFwMap

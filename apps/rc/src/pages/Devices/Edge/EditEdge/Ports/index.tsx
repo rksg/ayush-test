@@ -200,6 +200,7 @@ const Ports = () => {
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
             <EdgePortsGeneralBase
+              serialNumber={serialNumber!}
               statusData={portStatus}
               lagData={lagData}
               isEdgeSdLanRun={!!edgeSdLanData}
