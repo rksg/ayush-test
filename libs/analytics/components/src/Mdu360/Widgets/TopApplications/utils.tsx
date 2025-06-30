@@ -27,6 +27,8 @@ const IconWrapper = ({ children, zoom = 0.3 }: { children: React.ReactNode; zoom
   <span style={{ zoom, paddingRight: '20px' }}>{children}</span>
 )
 
+const applicationsIcon = <IconWrapper zoom={0.25}><Applications /></IconWrapper>
+
 export const iconList = [
   { name: 'facebook', icon: <IconWrapper><FacebookColored /></IconWrapper> },
   { name: 'google', icon: <IconWrapper><GoogleColored /></IconWrapper> },
@@ -37,13 +39,11 @@ export const iconList = [
   { name: 'apple', icon: <IconWrapper zoom={0.35}><Apple /></IconWrapper> },
   { name: 'microsoft', icon: <IconWrapper zoom={0.35}><Microsoft /></IconWrapper> },
   { name: 'whatsapp', icon: <IconWrapper zoom={0.4}><Whatsapp /></IconWrapper> },
-  { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> },
-  { name: 'applications', icon: <IconWrapper zoom={0.25}><Applications /></IconWrapper> }
+  { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> }
 ]
 
 const getIconForApplication = (name: string) => {
-  return iconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
-    iconList.find(icon => icon.name === 'applications')?.icon
+  return iconList.find(icon => name.toLowerCase().includes(icon.name))?.icon || applicationsIcon
 }
 
 const renderApplicationItem = (item: ApplicationData) => {
@@ -60,24 +60,22 @@ const renderApplicationItem = (item: ApplicationData) => {
   )
 }
 
-const renderColumn = (items: ApplicationData[]) => (
-  <UI.ColumnHeaderWrapper>
-    {items.map(item => renderApplicationItem(item))}
-  </UI.ColumnHeaderWrapper>
-)
-
 export const renderContent = (data: ApplicationData[]) => {
   const leftColumn = data.slice(0, columnSize)
   const rightColumn = data.slice(columnSize)
 
   return (
     <UI.ColumnWrapper>
-      {renderColumn(leftColumn)}
+      <UI.ColumnHeaderWrapper itemCount={leftColumn.length}>
+        {leftColumn.map(item => renderApplicationItem(item))}
+      </UI.ColumnHeaderWrapper>
       <Divider
         type='vertical'
-        style={{ height: '135px', marginInline: 16 }}
+        style={{ height: '100%', marginInline: 16 }}
       />
-      {renderColumn(rightColumn)}
+      <UI.ColumnHeaderWrapper itemCount={rightColumn.length}>
+        {rightColumn.map(item => renderApplicationItem(item))}
+      </UI.ColumnHeaderWrapper>
     </UI.ColumnWrapper>
   )
 }

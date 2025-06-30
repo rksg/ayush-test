@@ -8,11 +8,12 @@ import {
   ContentSwitcher,
   Loader,
   ContentSwitcherProps,
-  HistoricalCard
+  HistoricalCard,
+  NoData
 } from '@acx-ui/components'
 import { formats } from '@acx-ui/formatter'
 
-import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
+import { ContentSwitcherWrapper } from '../../styledComponents'
 
 import { useTopNApplicationCategoriesQuery } from './services'
 
@@ -57,7 +58,7 @@ export const ApplicationCategories = ({
             )}
           </AutoSizer>
         ) : (
-          <StyledNoData />
+          <NoData />
         )
       },
       {
@@ -80,7 +81,7 @@ export const ApplicationCategories = ({
             )}
           </AutoSizer>
         ) : (
-          <StyledNoData />
+          <NoData />
         )
       }
     ],

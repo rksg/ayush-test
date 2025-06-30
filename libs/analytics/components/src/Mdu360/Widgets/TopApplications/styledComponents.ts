@@ -3,17 +3,27 @@ import styled from 'styled-components/macro'
 export const ContentSwitcherWrapper = styled.div`
   margin-top: -38px;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
 `
 
 export const ColumnWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
+  flex-direction: row;
+  height: 100%;
+  align-items: stretch;
 `
 
-export const ColumnHeaderWrapper = styled.div`
+export const ColumnHeaderWrapper = styled.div<{ itemCount?: number }>`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: ${({ itemCount }) =>
+    itemCount && itemCount < 5 ? 'flex-start' : 'space-between'};
+  gap: ${({ itemCount }) =>
+    itemCount && itemCount < 5 ? '25px' : 'auto'};
   flex: 1;
 `
 

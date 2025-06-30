@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { ContentSwitcher, Loader, NoData, HistoricalCard, ContentSwitcherProps } from '@acx-ui/components'
 import { formats }                                                               from '@acx-ui/formatter'
 
+import { ContentSwitcherWrapper } from '../../styledComponents'
+
 import { useTopNApplicationsQuery }       from './services'
-import * as UI                            from './styledComponents'
 import { ApplicationData, renderContent } from './utils'
 
 interface TopApplicationsFilters {
@@ -59,13 +61,21 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={title}>
-        <UI.ContentSwitcherWrapper>
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            size='small'
-            align='right'
-          />
-        </UI.ContentSwitcherWrapper>
+        <AutoSizer>
+          {({ height, width }) => (
+            <ContentSwitcherWrapper
+              height={height}
+              width={width}
+              style={{ paddingBottom: 30 }}
+            >
+              <ContentSwitcher
+                tabDetails={tabDetails}
+                size='small'
+                align='right'
+              />
+            </ContentSwitcherWrapper>
+          )}
+        </AutoSizer>
       </HistoricalCard>
     </Loader>
   )
