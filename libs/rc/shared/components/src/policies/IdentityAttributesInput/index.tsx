@@ -44,6 +44,9 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
   const [identityEmail, setIdentityEmail ] = useState<string|undefined>('')
   const [identityPhone, setIdentityPhone ] = useState<string|undefined>('')
 
+  const form = Form.useFormInstance()
+  const currentAttributeMappings = Form.useWatch('attributeMappings', form)
+
   const maxMappingCount =
     getIdentityAttributeMappingNameTypeOptions().length - excludedAttributeTypes.length
 
@@ -145,7 +148,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
 
                               if (excludedAttributeTypes.includes(value)) return false
 
-                              const selectedTypes = attributeMappings
+                              const selectedTypes = currentAttributeMappings
                                 ?.map((mapping: AttributeMapping, i: number) => {
                                   // Skip current row
                                   if (i === index) return null
