@@ -4,6 +4,8 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import {
+  GlobalSearchBar,
+  HeaderContext,
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
@@ -13,12 +15,10 @@ import {
   ActivityButton,
   AlarmsButton,
   FetchBot,
-  HeaderContext,
   HelpButton,
   UserButton,
   LicenseBanner,
-  RegionButton,
-  GlobalSearchBar
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList

@@ -4,6 +4,7 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
+import { HeaderContext }                                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
 import { useGetEntitlementsAttentionNotesQuery, useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
@@ -16,8 +17,6 @@ import {
   EntitlementUtil
 }                                    from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { HeaderContext } from '../HeaderContext'
 
 import {
   LicenseBannerRemindMapping,
