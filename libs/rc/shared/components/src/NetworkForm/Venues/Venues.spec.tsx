@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { networkApi }      from '@acx-ui/rc/services'
+import { networkApi } from '@acx-ui/rc/services'
 import {
   BasicServiceSetPriorityEnum,
   CommonUrlsInfo,
@@ -13,14 +13,15 @@ import {
   RfBandUsageEnum,
   ManagementFrameMinimumPhyRateEnum,
   BssMinimumPhyRateEnum,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  SoftGreUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { useSdLanScopedNetworkVenues }                     from '../../EdgeSdLan/useEdgeSdLanActions'
-import { list, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
-import NetworkFormContext                                  from '../NetworkFormContext'
+import { useSdLanScopedNetworkVenues }                                       from '../../EdgeSdLan/useEdgeSdLanActions'
+import { list, mockSoftGreTable, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
+import NetworkFormContext                                                    from '../NetworkFormContext'
 
 import { Venues } from './Venues'
 
@@ -86,7 +87,10 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
