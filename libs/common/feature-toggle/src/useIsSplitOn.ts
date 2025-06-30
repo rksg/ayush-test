@@ -15,7 +15,6 @@ enum FeatureFlag {
 
 export const useIsSplitOn = (splitName: string, tenantId?: string) => {
   const { values } = useTreatmentsValues(splitName, tenantId)
-
   return values[0] === FeatureFlag.ON
 }
 
