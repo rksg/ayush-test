@@ -1489,6 +1489,10 @@ function PolicyRoutes () {
           }
         />
         <Route
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })} />}
+        />
+        <Route
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
         />

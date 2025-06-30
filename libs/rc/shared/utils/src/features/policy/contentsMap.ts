@@ -47,7 +47,6 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
   [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'IPsec' }),
   [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Identity Provider' }),
-  // eslint-disable-next-line max-len
   [PolicyType.ADAPTIVE_POLICY_PROFILE]: defineMessage({ defaultMessage: 'Adaptive Policy' })
 }
 

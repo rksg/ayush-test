@@ -107,8 +107,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-        disabled: !cloudpathBetaEnabled,
-        route: '/policies/adaptivePolicy/list'
+        disabled: !cloudpathBetaEnabled
       },
       {
         type: PolicyType.CERTIFICATE_TEMPLATE,
