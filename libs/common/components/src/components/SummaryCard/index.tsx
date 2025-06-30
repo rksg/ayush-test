@@ -38,9 +38,9 @@ export const SummaryCard = (props: React.PropsWithChildren<SummaryCardoProps>) =
 const SummaryCardBase = (props: React.PropsWithChildren<SummaryCardoProps>) => {
   const{ className, isLoading = false, isFetching = false } = props
   return (
-    <Card>
+    <Card className={className}>
       <Loader states={[{ isLoading, isFetching }]} >
-        <UI.InfoMargin className={className} children={<SummaryCardContent {...props} />} />
+        <UI.InfoMargin children={<SummaryCardContent {...props} />} />
       </Loader>
     </Card>
   )
