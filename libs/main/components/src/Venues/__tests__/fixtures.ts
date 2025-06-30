@@ -32,7 +32,8 @@ import {
   MtuTypeEnum,
   SoftGreViewData,
   IsolatePacketsTypeEnum,
-  Persona
+  Persona,
+  PoeOutModeEnum
 } from '@acx-ui/rc/utils'
 
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
@@ -211,6 +212,65 @@ export const venueCaps = {
       '802.3bt-Class_6',
       '802.3bt-Class_7'
     ]
+  }, {
+    model: 'H670',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    canSupportPoeOutMode: true,
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5'
+    ],
+    poeOutModeCapabilities: [PoeOutModeEnum._802_3af, PoeOutModeEnum._802_3at],
+    defaultPoeOutMode: PoeOutModeEnum._802_3af,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h670.jpg',
+    lanPorts: [{
+      defaultType: 'Access',
+      id: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: true,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '2',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '3',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '4',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Trunk',
+      id: '5',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
   }],
   version: '6.0.0.x.xxx'
 }
@@ -254,6 +314,17 @@ export const venueLanPorts = [{
     { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
   ],
   model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '3', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '4', enabled: false },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '5', enabled: false }
+  ],
+  model: 'H670',
   poeMode: 'Auto',
   poeOut: false
 }]
@@ -1790,6 +1861,12 @@ export const mockDirectedMulticast = {
   wiredEnabled: true,
   wirelessEnabled: true,
   networkEnabled: true
+}
+
+export const mockSmartMonitor = {
+  enabled: true,
+  interval: 5,
+  threshold: 60
 }
 
 export const mockRadiusOptions = {
