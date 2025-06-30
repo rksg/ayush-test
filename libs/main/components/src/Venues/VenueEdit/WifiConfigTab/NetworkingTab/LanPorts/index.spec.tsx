@@ -521,4 +521,34 @@ describe('LanPortsForm', () => {
     await waitFor(() => expect(mockedUpdateEthernetPortSettingApiFn).toBeCalled())
     await waitFor(() => expect(mockedUpdateVenueLanPortSpecificSettingsApiFn).toBeCalled())
   })
+
+  it('should handle PoE Out Mode for H670', async () => {
+    render(
+      <Provider>
+        {mockLanPorts}
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_POE_OUT_MODE_SETTING_TOGGLE)
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const option = screen.getByText('H670')
+    await userEvent.click(option)
+    expect(await screen.findByAltText(/AP LAN port image - H670/)).toBeVisible()
+
+    fireEvent.mouseDown(screen.getByLabelText('PoE Operating Mode'))
+    await userEvent.click(screen.getAllByText('802.3at')[1])
+
+    expect(screen.getByLabelText('Enable PoE Out')).not.toBeChecked()
+    expect(screen.queryByLabelText('PoE Out Mode')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByLabelText('Enable PoE Out'))
+    expect(screen.getByLabelText('Enable PoE Out')).toBeChecked()
+    expect(screen.getByTestId('poeOutModeSelect')).toBeVisible()
+
+    await userEvent.click(screen.getAllByText('802.3af (15.4 W)')[1])
+  })
 })

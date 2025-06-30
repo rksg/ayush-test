@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { RadioCard, RadioCardProps }                                                         from '@acx-ui/components'
-import { getUnifiedServiceRoute, ExtendedUnifiedService, hasUnifiedServiceCreatePermission } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { RadioCard, RadioCardProps }                                                                                                                                      from '@acx-ui/components'
+import { getUnifiedServiceRoute, ExtendedUnifiedService, hasUnifiedServiceCreatePermission, UnifiedServiceSourceType, getServiceProfileLimitReachedMessage, ServiceType } from '@acx-ui/rc/utils'
+import { useLocation, useNavigate, useTenantLink }                                                                                                                        from '@acx-ui/react-router-dom'
 
 
 export type UnifiedServiceCardProps = Pick<RadioCardProps, 'type'> & {
@@ -43,6 +43,7 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
       : undefined
     }
     buttonProps={{ disabled: (unifiedService.readonly ?? false) || isLimitReached }}
+    disabledTooltip={isLimitReached && getUnifiedServiceProfileLimitReachedMessage(unifiedService)}
     key={unifiedService.type}
     value={unifiedService.type}
     title={formatServiceName()}
@@ -61,4 +62,11 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
     helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
     isBetaFeature={unifiedService.isBetaFeature}
   />
+}
+
+
+function getUnifiedServiceProfileLimitReachedMessage (unifiedService: ExtendedUnifiedService) {
+  return unifiedService.sourceType === UnifiedServiceSourceType.SERVICE
+    ? getServiceProfileLimitReachedMessage(unifiedService.type as ServiceType)
+    : null
 }

@@ -1,23 +1,19 @@
 import { ReactNode } from 'react'
 
-import { ButtonProps, RadioProps, Tooltip }          from 'antd'
+import { ButtonProps, RadioProps }                   from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { SmartEdgeSolid, SwitchSolid, WiFi } from '@acx-ui/icons'
+import { RadioCardCategory }                 from '@acx-ui/types'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
+import { Tooltip }               from '../Tooltip'
 
 import {
   Button, Radio, Card, Title, Description,
   Category, CategoryWrapper, CategoryIcon,
   RadioCardType
 } from './styledComponents'
-
-export enum RadioCardCategory {
-  WIFI = 'wifi',
-  SWITCH = 'switch',
-  EDGE = 'edge',
-}
 
 export type RadioCardProps = RadioProps & {
   type?: RadioCardType
@@ -31,6 +27,7 @@ export type RadioCardProps = RadioProps & {
   onClick?: () => void
   isBetaFeature?: boolean
   helpIcon?: React.ReactNode
+  disabledTooltip?: React.ReactNode
 }
 
 export const categoryMapping = {
@@ -56,25 +53,28 @@ const categoryIconMapping = {
 
 export function RadioCard ({
   type = 'default', title, description, value, categories = [], categoryDisplayMode = 'text',
-  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, ...rest
+  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, disabledTooltip, ...rest
 }: RadioCardProps) {
-  const { $t } = useIntl()
-  return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
+
+  const radioCard = <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
       { isBetaFeature ? getTitleWithIndicator(title as string) : title }
       { helpIcon }
     </Title>
     <Description>{description}</Description>
     <CategoryViewer categories={categories} categoryDisplayMode={categoryDisplayMode} />
-    {(type === 'button' && buttonText) &&
-      <Button
-        {...buttonProps}
-        onClick={onClick}
-        size='small'
-        type='primary'
-      >{$t(buttonText)}</Button>}
+    <ActionButton
+      type={type}
+      buttonText={buttonText}
+      buttonProps={buttonProps}
+      onClick={onClick}
+    />
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
+
+  return disabledTooltip
+    ? <Tooltip title={disabledTooltip} >{radioCard}</Tooltip>
+    : radioCard
 }
 
 function CategoryViewer (
@@ -98,6 +98,21 @@ function CategoryViewer (
     </CategoryIcon>
   })}
   </CategoryWrapper>
+}
+
+type ActionButtonProps = Pick<RadioCardProps, 'type' | 'buttonText' | 'buttonProps' | 'onClick'>
+function ActionButton (props: ActionButtonProps) {
+  const { type, buttonText, buttonProps, onClick } = props
+  const { $t } = useIntl()
+
+  if (type !== 'button' || !buttonText) return null
+
+  return <Button
+    {...buttonProps}
+    onClick={onClick}
+    size='small'
+    type='primary'
+  >{$t(buttonText)}</Button>
 }
 
 RadioCard.Radio = Radio
