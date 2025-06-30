@@ -200,6 +200,7 @@ const Ports = () => {
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
             <EdgePortsGeneralBase
+              serialNumber={serialNumber!}
               statusData={portStatus}
               lagData={lagData}
               isEdgeSdLanRun={!!edgeSdLanData}
@@ -210,6 +211,10 @@ const Ports = () => {
               clusterInfo={clusterInfo!}
               isSupportAccessPort={isSupportAccessPort}
               subInterfaceList={subInterfaceList}
+              originalInterfaceData={{
+                portSettings: portData,
+                lagSettings: lagData
+              }}
             />
           </StepsForm.StepForm>
         </StepsForm>

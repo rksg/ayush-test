@@ -111,7 +111,6 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
 
 const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
   const { isTemplate } = useConfigTemplate()
-  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
 
   const { lanPortsMap, isLoading } =
     useGetDefaultVenueLanPortsQuery({ params: { venueId } },
@@ -120,7 +119,7 @@ const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
           lanPortsMap: new Map(data?.map(l => [l.model, l])),
           isLoading: isLoading
         }
-      }, skip: isTemplate || !isLanPortResetEnabled })
+      }, skip: isTemplate })
 
   const { templateLanPortsMap, isTemplateLoading } =
   useGetDefaultVenueTemplateLanPortsQuery({ params: { venueId } },
@@ -129,7 +128,7 @@ const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
         templateLanPortsMap: new Map(data?.map(l => [l.model, l])),
         isTemplateLoading: isLoading
       }
-    }, skip: !isTemplate || !isLanPortResetEnabled })
+    }, skip: !isTemplate })
 
   return {
     defaultLanPortsByModelMap: isTemplate? templateLanPortsMap : lanPortsMap,
@@ -156,7 +155,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
@@ -380,7 +378,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       })
       const payload = data ?? lanPortData
       if (payload) {
-        if (isLanPortResetEnabled && isResetLanPort(payload)) {
+        if (isResetLanPort(payload)) {
           showActionModal({
             type: 'confirm',
             width: 450,
@@ -819,7 +817,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           onGUIChanged={handleGUIChanged}
         />
       </Col>
-      {!isTemplate && isLanPortResetEnabled && apModel &&
+      {!isTemplate && apModel &&
       <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
         <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
           <Button type='link' disabled={!isAllowEdit} onClick={handleResetDefaultSettings}>

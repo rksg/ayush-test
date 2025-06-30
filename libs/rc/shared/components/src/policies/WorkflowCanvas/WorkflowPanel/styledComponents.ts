@@ -1,7 +1,6 @@
 import { Card as AntCard } from 'antd'
 import styled              from 'styled-components/macro'
 
-
 export const WorkflowCard = styled(AntCard)`
   display: grid;
   flex-grow: 1;
@@ -14,26 +13,44 @@ export const WorkflowCard = styled(AntCard)`
   }
 `
 
-export const PublishReadinessProgress = styled('div')<{ progress: number }>`
+export const PublishReadinessProgress = styled('div')<{ ready: boolean }>`
 
-    width: 136px;
-    height: 30px;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    .progress-bar {
-      text-align: center;
-      line-height: 30px;
-      height: 100%;
-      background: ${props => props.progress < 100 ? 'var(--acx-semantics-green-40)'
-    : 'var(--acx-semantics-green-50)' };
+  width: 116px;
+  min-height: 30px;
+  padding: 2px 2px 2px 2px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--acx-primary-black);
+
+  text-align: center;
+  line-height: 30px;
+
+  color:  ${props => props.ready ? 'var(--acx-primary-white)' : 'var(--acx-primary-black)'};
+
+  background: ${props => props.ready ? 'var(--acx-semantics-green-50)' : 'rgba(0,0,0,0)' };
+
+  .readyIcon {
+    margin-right: 0.5rem;
+    path:nth-child(1) {
+      fill: ${props => props.ready ? 'var(--acx-primary-white)' : 'var(--acx-primary-black)'};
+    }    
+  }
+
+  .notReadyIcon {
+    margin-right: 0.5rem;
+    path:nth-child(2) {
+      fill: var(--acx-primary-black);
     }
-
-    .status-label {
-      display: inline-block;
-      width: 136px;
-      color:  ${props => props.progress < 100 ? 'var(--acx-primary-black)'
-    : 'var(--acx-primary-white)'};
+    path:nth-child(3) {
+      stroke: var(--acx-primary-white);
     }
+    path:nth-child(4) {
+      stroke: var(--acx-primary-white);
+    }
+    
+  }
 `

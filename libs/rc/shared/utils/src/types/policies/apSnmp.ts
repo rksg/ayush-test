@@ -118,7 +118,10 @@ export type RbacApSnmpViewModelData = {
   apNames: string[]
   venueIds: string[]
   venueNames: string[]
-  apActivations: string[]
+  apActivations: {
+    venueId: string,
+    apSerialNumber: string
+  }[]
 }
 
 export type ApSnmpViewModelData = {
@@ -130,7 +133,10 @@ export type ApSnmpViewModelData = {
   aps: CountAndNames
   tags?: string[]
   venueIds?: string[]
-  apActivations: string[]
+  apActivations?: {
+    venueId: string,
+    apSerialNumber: string
+  }[]
 }
 
 export enum ApSnmpActionType {

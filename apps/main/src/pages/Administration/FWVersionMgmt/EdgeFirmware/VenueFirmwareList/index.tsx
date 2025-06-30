@@ -9,26 +9,25 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { EdgeChangeScheduleDialog, EdgeUpdateNowDialog, useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
-  compareVersions,
+  EdgeChangeScheduleDialog, EdgeUpdateNowDialog, compareVersions,
   getNextScheduleTpl,
   isSwitchNextScheduleTooltipDisabled,
-  toUserDate
+  toUserDate, useSwitchFirmwareUtils
 } from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
   useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
+  useSkipEdgeFirmwareVenueScheduleMutation,
   useSkipEdgeUpgradeSchedulesMutation,
-  useUpdateEdgeFirmwareNowMutation,
-  useUpdateEdgeUpgradePreferencesMutation,
-  useUpdateEdgeVenueSchedulesMutation,
   useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeFirmwareVenueScheduleMutation,
-  useSkipEdgeFirmwareVenueScheduleMutation
+  useUpdateEdgeUpgradePreferencesMutation,
+  useUpdateEdgeVenueSchedulesMutation
 } from '@acx-ui/rc/services'
 import {
   EdgeFirmwareVersion,
@@ -60,7 +59,6 @@ export function VenueFirmwareList () {
   const params = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
 
-  const isScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -144,32 +142,28 @@ export function VenueFirmwareList () {
         return toUserDate(row.updatedDate || noDataDisplay)
       }
     },
-    ...(
-      isScheduleUpdateReady ? [
-        {
-          title: $t({ defaultMessage: 'Next Update Schedule' }),
-          key: 'nextSchedule',
-          dataIndex: 'nextSchedule',
-          sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
-          render: function (_: React.ReactNode, row: EdgeVenueFirmware) {
-            const rowData = row as unknown as FirmwareSwitchVenue
-            return (!isSwitchNextScheduleTooltipDisabled(rowData)
-              ? getNextScheduleTpl(intl, rowData)
-              : (
-                <Tooltip title={
-                  <UI.ScheduleTooltipText>
-                    {getSwitchNextScheduleTplTooltip(rowData)}
-                  </UI.ScheduleTooltipText>
-                }
-                placement='bottom'>
-                  <UI.WithTooltip>{getNextScheduleTpl(intl, rowData)}</UI.WithTooltip>
-                </Tooltip>
-              )
-            )
-          }
-        }
-      ] : []
-    )
+    {
+      title: $t({ defaultMessage: 'Next Update Schedule' }),
+      key: 'nextSchedule',
+      dataIndex: 'nextSchedule',
+      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
+      render: function (_: React.ReactNode, row: EdgeVenueFirmware) {
+        const rowData = row as unknown as FirmwareSwitchVenue
+        return (!isSwitchNextScheduleTooltipDisabled(rowData)
+          ? getNextScheduleTpl(intl, rowData)
+          : (
+            <Tooltip title={
+              <UI.ScheduleTooltipText>
+                {getSwitchNextScheduleTplTooltip(rowData)}
+              </UI.ScheduleTooltipText>
+            }
+            placement='bottom'>
+              <UI.WithTooltip>{getNextScheduleTpl(intl, rowData)}</UI.WithTooltip>
+            </Tooltip>
+          )
+        )
+      }
+    }
   ]
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
@@ -191,73 +185,68 @@ export function VenueFirmwareList () {
         setVenueIds(selectedRows.map(item => item.id))
         setUpdateModalVisible(true)
       }
+    },
+    {
+      scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: isBatchOperationEnable ?
+        [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
+        [getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
+      visible: (selectedRows: EdgeVenueFirmware[]) => {
+        return selectedRows.every(row => hasSchedule(row))
+      },
+      label: $t({ defaultMessage: 'Change Update Schedule' }),
+      onClick: (selectedRows: EdgeVenueFirmware[]) => {
+        const filteredAvailableVersions = availableVersions?.filter(availableVersion => {
+          return !selectedRows.some(row =>
+            row.versions.some(version => version.id === availableVersion.id))
+        })
+        setVenueIds(selectedRows.map(item => item.id))
+        setChangeScheduleAvailableVersions(filteredAvailableVersions)
+        setChangeScheduleModal(true)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: isBatchOperationEnable ?
+        [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
+        [getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
+      visible: (selectedRows: EdgeVenueFirmware[]) => {
+        return selectedRows.every(row => hasSchedule(row))
+      },
+      label: $t({ defaultMessage: 'Skip Update' }),
+      onClick: (selectedRows: EdgeVenueFirmware[], clearSelection: () => void) => {
+        showActionModal({
+          type: 'confirm',
+          width: 460,
+          title: $t({ defaultMessage: 'Skip This Update?' }),
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
+          okText: $t({ defaultMessage: 'Skip' }),
+          cancelText: $t({ defaultMessage: 'Cancel' }),
+          onOk () {
+            const requests = []
+            try {
+              if (isBatchOperationEnable) {
+                requests.push(skipEdgeFirmwareVenueSchedule({
+                  payload: { venueIds: selectedRows.map((row) => row.id) }
+                }))
+              } else {
+                for(let row of selectedRows) {
+                  requests.push(skipSchedule({
+                    params: { venueId: row.id }
+                  }))
+                }
+              }
+              Promise.all(requests).then(() => clearSelection())
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
+          },
+          onCancel () {}
+        })
+      }
     }
   ]
-
-  if(isScheduleUpdateReady) {
-    rowActions.push(...[
-      {
-        scopeKey: [EdgeScopes.UPDATE],
-        rbacOpsIds: isBatchOperationEnable ?
-          [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
-          [getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
-        visible: (selectedRows: EdgeVenueFirmware[]) => {
-          return selectedRows.every(row => hasSchedule(row))
-        },
-        label: $t({ defaultMessage: 'Change Update Schedule' }),
-        onClick: (selectedRows: EdgeVenueFirmware[]) => {
-          const filteredAvailableVersions = availableVersions?.filter(availableVersion => {
-            return !selectedRows.some(row =>
-              row.versions.some(version => version.id === availableVersion.id))
-          })
-          setVenueIds(selectedRows.map(item => item.id))
-          setChangeScheduleAvailableVersions(filteredAvailableVersions)
-          setChangeScheduleModal(true)
-        }
-      },
-      {
-        scopeKey: [EdgeScopes.UPDATE],
-        rbacOpsIds: isBatchOperationEnable ?
-          [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
-          [getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
-        visible: (selectedRows: EdgeVenueFirmware[]) => {
-          return selectedRows.every(row => hasSchedule(row))
-        },
-        label: $t({ defaultMessage: 'Skip Update' }),
-        onClick: (selectedRows: EdgeVenueFirmware[], clearSelection: () => void) => {
-          showActionModal({
-            type: 'confirm',
-            width: 460,
-            title: $t({ defaultMessage: 'Skip This Update?' }),
-            // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
-            okText: $t({ defaultMessage: 'Skip' }),
-            cancelText: $t({ defaultMessage: 'Cancel' }),
-            onOk () {
-              const requests = []
-              try {
-                if (isBatchOperationEnable) {
-                  requests.push(skipEdgeFirmwareVenueSchedule({
-                    payload: { venueIds: selectedRows.map((row) => row.id) }
-                  }))
-                } else {
-                  for(let row of selectedRows) {
-                    requests.push(skipSchedule({
-                      params: { venueId: row.id }
-                    }))
-                  }
-                }
-                Promise.all(requests).then(() => clearSelection())
-              } catch (error) {
-                console.log(error) // eslint-disable-line no-console
-              }
-            },
-            onCancel () {}
-          })
-        }
-      }
-    ])
-  }
 
   const handleUpdateModalCancel = () => {
     setUpdateModalVisible(false)
@@ -364,7 +353,7 @@ export function VenueFirmwareList () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
         actions={
-          isPreferencesVisible && isScheduleUpdateReady ? [{
+          isPreferencesVisible ? [{
             label: $t({ defaultMessage: 'Preferences' }),
             onClick: () => setPreferenceModalVisible(true)
           }]

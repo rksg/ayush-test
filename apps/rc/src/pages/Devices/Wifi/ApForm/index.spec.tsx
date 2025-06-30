@@ -3,7 +3,6 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { administrationApi, apApi, firmwareApi, venueApi } from '@acx-ui/rc/services'
 import {
   AdministrationUrlsInfo,
@@ -61,76 +60,6 @@ jest.mock('@acx-ui/rc/components', () => ({
     filters: { isDefault: [false] }
   }
 }))
-const venue = [
-  {
-    id: '0842f2133565438d85e1e46103889744',
-    name: 'Peter-Venue',
-    apCount: 1,
-    apModels: [
-      'R750'
-    ],
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ]
-  },
-  {
-    id: '8ee8acc996734a5dbe43777b72469857',
-    name: 'Ben-Venue-US',
-    apCount: 1,
-    apModels: [
-      'R610'
-    ],
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ],
-    eolApFirmwares: [
-      {
-        name: 'eol-ap-2021-05',
-        currentEolVersion: '6.1.0.10.413',
-        latestEolVersion: '6.1.0.10.453',
-        apCount: 1,
-        apModels: ['T300']
-      }
-    ],
-    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
-  },
-  {
-    id: '02b81f0e31e34921be5cf47e6dce1f3f',
-    name: 'My-Venue',
-    apCount: 0,
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ],
-    eolApFirmwares: [
-      {
-        name: 'eol-ap-2021-05',
-        currentEolVersion: '6.1.0.10.433',
-        latestEolVersion: '6.1.0.10.453',
-        apCount: 1,
-        apModels: ['R300', 'R500', 'R550']
-      },
-      {
-        name: 'eol-ap-2022-12',
-        currentEolVersion: '6.2.0.103.533',
-        latestEolVersion: '6.2.0.103.533',
-        apCount: 1,
-        apModels: ['R500']
-      }
-    ]
-  }
-]
 
 async function fillInForm () {
   fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'apname' } })
@@ -189,8 +118,6 @@ describe('AP Form - Add', () => {
     store.dispatch(venueApi.util.resetApiState())
     initialize()
     mockServer.use(
-      rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(venue))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getWifiCapabilities.url,
@@ -262,11 +189,6 @@ describe('AP Form - Add', () => {
   })
 
   describe('handle Add AP and Coordinates Modal', () => {
-    beforeEach(async () => {
-      jest.mocked(useIsSplitOn)
-        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
-    })
-
     it('should handle Add AP correctly', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
@@ -339,11 +261,6 @@ describe('AP Form - Add', () => {
   })
 
   describe('handle error occurred', () => {
-    beforeEach(async () => {
-      jest.mocked(useIsSplitOn)
-        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
-    })
-
     it('should handle error occurred', async () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.addAp.url,

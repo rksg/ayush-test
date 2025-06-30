@@ -5,7 +5,6 @@ import {
   categoryMapping,
   PageHeader,
   RadioCard,
-  RadioCardCategory,
   StepsForm
 }  from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
@@ -21,6 +20,7 @@ import {
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                       from '@acx-ui/types'
 import { hasAllowedOperations }                    from '@acx-ui/user'
 
 export default function CreatePortalProfile () {
