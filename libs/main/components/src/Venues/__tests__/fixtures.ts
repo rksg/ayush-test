@@ -1863,6 +1863,12 @@ export const mockDirectedMulticast = {
   networkEnabled: true
 }
 
+export const mockSmartMonitor = {
+  enabled: true,
+  interval: 5,
+  threshold: 60
+}
+
 export const mockRadiusOptions = {
   radiusOptions: {
     overrideEnabled: false,
