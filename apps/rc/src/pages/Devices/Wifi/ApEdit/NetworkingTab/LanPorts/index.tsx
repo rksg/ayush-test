@@ -381,7 +381,10 @@ export function LanPorts (props: ApEditItemProps) {
           ...apLanPorts,
           lanPorts: lan,
           //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
-          ...(poeOut && poeOutMode && { poeOutMode: poeOutMode }),
+          ...(poeOut !== undefined ? { poeOut } : {}),
+          ...(poeOut
+            ? (poeOutMode !== undefined ? { poeOutMode } : {})
+            : { poeOutMode: undefined }),
           useVenueSettings: false
         }
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
