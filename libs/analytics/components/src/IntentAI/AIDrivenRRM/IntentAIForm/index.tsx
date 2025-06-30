@@ -5,11 +5,11 @@ import { StepsForm }                from '@acx-ui/components'
 import { Features, useAnySplitsOn } from '@acx-ui/feature-toggle'
 import { useNavigate }              from '@acx-ui/react-router-dom'
 
-import { IntentWizardHeader } from '../../common/IntentWizardHeader'
-import { getScheduledAt }     from '../../common/ScheduleTiming'
-import { SettingsPage }       from '../../common/SettingsPage'
-import { useIntentContext }   from '../../IntentContext'
-import { Statuses }           from '../../states'
+import { IntentWizardHeader }      from '../../common/IntentWizardHeader'
+import { getScheduledAt }          from '../../common/ScheduleTiming'
+import { SettingsPage }            from '../../common/SettingsPage'
+import { useIntentContext }        from '../../IntentContext'
+import { Statuses, StatusReasons } from '../../states'
 import {
   createUseIntentTransition,
   FormValues,
@@ -28,7 +28,7 @@ type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences']
 
 function getFormDTO (values: CRRMFormValues): CRRMPayload {
   const shouldTransitionToScheduled =
-    values.status === Statuses.new || values.statusReason === 'verified'
+    values.status === Statuses.new || values.statusReason === StatusReasons.verified
   return {
     id: values.id,
     status: shouldTransitionToScheduled ? Statuses.scheduled : values.status,

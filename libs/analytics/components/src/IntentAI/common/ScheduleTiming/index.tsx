@@ -9,11 +9,11 @@ import { DatePicker, showToast, StepsForm, TimeDropdownPlain } from '@acx-ui/com
 import { DateFormatEnum, formatter }                           from '@acx-ui/formatter'
 import { getIntl }                                             from '@acx-ui/utils'
 
-import { useIntentContext }     from '../../IntentContext'
-import { Statuses }             from '../../states'
-import { getFutureTime }        from '../../useIntentAIActions'
-import { SettingsType }         from '../../useIntentTransition'
-import { richTextFormatValues } from '../richTextFormatValues'
+import { useIntentContext }        from '../../IntentContext'
+import { Statuses, StatusReasons } from '../../states'
+import { getFutureTime }           from '../../useIntentAIActions'
+import { SettingsType }            from '../../useIntentTransition'
+import { richTextFormatValues }    from '../richTextFormatValues'
 
 const fieldName = 'settings'
 const dateName = [fieldName, 'date']
@@ -194,7 +194,7 @@ function isDateVisible (status: Statuses, statusReason?: string) {
   return [
     Statuses.new,
     Statuses.scheduled
-  ].includes(status) || statusReason === 'verified'
+  ].includes(status) || statusReason === StatusReasons.verified
 }
 
 export function getScheduledAt (values: FormValues) {
