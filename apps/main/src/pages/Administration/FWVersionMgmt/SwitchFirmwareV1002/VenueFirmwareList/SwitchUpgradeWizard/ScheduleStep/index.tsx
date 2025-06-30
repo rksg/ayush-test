@@ -142,6 +142,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
     { payload: {
       ...payload,
       searchFilter: 'ICX7550-24XZP'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX7150-C08P'
     } } ]
     , { skip: upgradeVenueList.length === 0 })
 
@@ -174,6 +178,20 @@ export function ScheduleStep (props: ScheduleStepProps) {
     const switch75ZippyFirmwareList = getSwitchFirmwareList?.data.filter(s => is7550Zippy(s.model))
     if (upgradeVenueList.length === 0 || switch75ZippyFirmwareList) {
       const switchList = upgradeSwitchListOf75Zippy.concat(switch75ZippyFirmwareList || [])
+      const groupedObject = _.groupBy(switchList, 'venueId')
+      return Object.values(groupedObject)
+    } else {
+      return []
+    }
+  }
+
+  const icx71C08pGroupedData = (): SwitchFirmwareV1002[][] => {
+    const upgradeSwitchListOf71C08p = upgradeSwitchList.filter(s =>
+      s.model === 'ICX7150-C08P')
+    const switch71C08pFirmwareList = getSwitchFirmwareList?.data.filter(s =>
+      s.model === 'ICX7150-C08P')
+    if (upgradeVenueList.length === 0 || switch71C08pFirmwareList) {
+      const switchList = upgradeSwitchListOf71C08p.concat(switch71C08pFirmwareList || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
       return Object.values(groupedObject)
     } else {
@@ -305,6 +323,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
       return []
     }
+
+  const icx71hasVersionStartingWith100 =
+    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
 
   return (
     <div
@@ -454,6 +475,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
+            {icx71C08pGroupedData().length > 0 && icx71hasVersionStartingWith100 &&
+              <SwitchNote
+                type={NotesEnum.NOTE7150_1}
+                data={icx71C08pGroupedData()} />
+            }
           </>}
         </div>
 
