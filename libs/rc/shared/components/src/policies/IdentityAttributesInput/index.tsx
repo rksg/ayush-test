@@ -20,7 +20,8 @@ interface IdentityAttributesInputProps {
   fieldLabel: string
   attributeMappings?: AttributeMapping[]
   description?: string
-  readMode?: boolean
+  readMode?: boolean,
+  identityNameToolTip?: string
 }
 
 export const excludedAttributeTypes = [
@@ -30,8 +31,15 @@ export const excludedAttributeTypes = [
 ]
 
 export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => {
-  const { fieldLabel, attributeMappings, description, readMode = false } = props
   const { $t } = useIntl()
+
+  // eslint-disable-next-line max-len
+  const defaultIdentityNameToolTip = $t({ defaultMessage: 'If "Identity Name" is empty or does not match, it will default to the identity\'s username.' })
+
+  const {
+    fieldLabel, attributeMappings, description, readMode = false,
+    identityNameToolTip = defaultIdentityNameToolTip
+  } = props
   const [identityName, setIdentityName ] = useState<string|undefined>('')
   const [identityEmail, setIdentityEmail ] = useState<string|undefined>('')
   const [identityPhone, setIdentityPhone ] = useState<string|undefined>('')
@@ -73,7 +81,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
           {$t({ defaultMessage: 'Identity Name' })}
           <Tooltip.Question
             // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.' })}
+            title={identityNameToolTip}
             placement='bottom'
             iconStyle={{ width: 16, height: 16 }}
           />

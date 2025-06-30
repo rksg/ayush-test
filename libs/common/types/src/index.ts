@@ -103,3 +103,9 @@ export enum SchedulerDeviceTypeEnum {
   DEFAULT = 'DEFAULT',
   SWITCH = 'SWITCH'
 }
+
+export enum RadioCardCategory {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+  EDGE = 'edge',
+}

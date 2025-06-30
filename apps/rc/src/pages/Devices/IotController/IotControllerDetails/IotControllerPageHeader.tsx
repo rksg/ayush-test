@@ -3,12 +3,16 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader }           from '@acx-ui/components'
 import { useIotControllerActions }      from '@acx-ui/rc/components'
 import { useGetIotControllerListQuery } from '@acx-ui/rc/services'
-import { IotControllerSetting }         from '@acx-ui/rc/utils'
+import {
+  IotControllerSetting,
+  IotUrlsInfo
+} from '@acx-ui/rc/utils'
 import {
   useParams,
   TenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                             from '@acx-ui/utils'
 
 import IotControllerTabs from './IotControllerTabs'
 
@@ -76,6 +80,7 @@ function IotControllerPageHeader () {
             >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,
             <TenantLink
               to={`/devices/iotController/${iotControllerSettingData?.id}/edit`}
+              rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}
             >
               <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
             </TenantLink>])])
