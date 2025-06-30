@@ -1,6 +1,5 @@
 import { IntlShape } from 'react-intl'
 
-import { cssStr } from '@acx-ui/components'
 import {
   Amazon,
   Android,
@@ -161,17 +160,17 @@ export function getRssiStatus (intl: IntlShape, value?: number) {
   if (rssi < -80) {
     return {
       tooltip: intl.$t({ defaultMessage: 'Poor' }),
-      color: cssStr('--acx-semantics-red-50')
+      color: '--acx-semantics-red-50'
     }
   } else if (rssi <= -68 && rssi >= -80) {
     return {
       tooltip: intl.$t({ defaultMessage: 'Acceptable' }),
-      color: cssStr('--acx-semantics-yellow-40')
+      color: '--acx-semantics-yellow-40'
     }
   } else if (rssi && rssi > -68) {
     return {
       tooltip: intl.$t({ defaultMessage: 'Good' }),
-      color: cssStr('--acx-semantics-green-50')
+      color: '--acx-semantics-green-50'
     }
   }
   return {

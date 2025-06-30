@@ -29,8 +29,11 @@ export const CompatibilityWarningTriangleIcon = styled(WarningTriangleSolid)`
   path:nth-child(1) {
     fill: var(--acx-semantics-yellow-50);
   }
-  path:nth-child(3) {
-    stroke: var(--acx-semantics-orange-30);
+  path:nth-child(1), path:nth-child(3) {
+    stroke: var(--acx-semantics-orange-30) !important;
+  }
+  path:nth-child(2), path:nth-child(4) {
+    stroke: white !important;
   }
 `
 
