@@ -196,14 +196,12 @@ export enum Features {
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'removable-ff',
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
-  WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'removable-ff',
   RUCKUS_AI_JWT_TOGGLE = 'ruckus-ai-jwt-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE = 'wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
-  WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
@@ -309,7 +307,8 @@ export enum Features {
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
-  MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle'
+  MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -6,7 +6,6 @@ import {
   GridRow,
   PageHeader,
   RadioCard,
-  RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
 import {
@@ -32,7 +31,7 @@ import {
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }                    from '@acx-ui/types'
+import { RadioCardCategory, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, hasPermission, isCoreTier }   from '@acx-ui/user'
 
 export default function SelectPolicyForm () {

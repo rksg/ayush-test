@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { Form, Row, Col, Switch, Input, Space, FormItemProps } from 'antd'
-import { get, omit }                                           from 'lodash'
-import { useIntl }                                             from 'react-intl'
+import { Form, Row, Col, Switch, Input, FormItemProps } from 'antd'
+import { get, omit }                                    from 'lodash'
+import { useIntl }                                      from 'react-intl'
 
 import { cssStr, StepsFormLegacy } from '@acx-ui/components'
 import { Features }                from '@acx-ui/feature-toggle'
@@ -12,37 +12,38 @@ import {
   EdgeClusterStatus,
   EdgeLag, EdgeNatPool, EdgePort,
   getEdgeNatPools,
-  IncompatibilityFeatures,
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
-import { ApCompatibilityToolTip }                         from '../../../ApCompatibility/ApCompatibilityToolTip'
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../../Compatibility/Edge/EdgeCompatibilityDrawer'
-import { useIsEdgeFeatureReady }                          from '../../../useEdgeActions'
-import { StyledNoMarginFormItem }                         from '../styledComponents'
+import { useIsEdgeFeatureReady }  from '../../../useEdgeActions'
+import { StyledNoMarginFormItem } from '../styledComponents'
+
+import { NatPoolFormItemTitle } from './NatPoolFormItemTitle'
 
 export interface NatFormItemsProps {
-  parentNamePath: string[],
-  getFieldFullPath: (fieldName: string) => string[],
+  parentNamePath: string[]
+  getFieldFullPath: (fieldName: string) => string[]
   formFieldsProps?: EdgeFormFieldsPropsType
-  clusterInfo: EdgeClusterStatus,
-  portsData: EdgePort[],
-  lagData: EdgeLag[] | undefined,
+  serialNumber: string
+  clusterInfo: EdgeClusterStatus
+  portsData: EdgePort[]
+  lagData: EdgeLag[] | undefined
+  requiredFwMap: Record<string, string | undefined>
 }
 export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const { $t } = useIntl()
   const {
     parentNamePath, getFieldFullPath,
     formFieldsProps,
+    serialNumber,
     clusterInfo,
-    portsData, lagData
+    portsData, lagData,
+    requiredFwMap
   } = props
-
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
   const form = Form.useFormInstance()
-  // eslint-disable-next-line max-len
-  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   // eslint-disable-next-line max-len
@@ -144,18 +145,11 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     // eslint-disable-next-line max-len
     isMultiNatIpEnabled && natEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
      <Form.Item
-       label={
-         <Space size={3}>
-           {$t({ defaultMessage: 'NAT IP Addresses Range' })}
-           <ApCompatibilityToolTip
-             title=''
-             placement='bottom'
-             showDetailButton
-             // eslint-disable-next-line max-len
-             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.MULTI_NAT_IP)}
-           />
-         </Space>}
-     >
+       label={<NatPoolFormItemTitle
+         serialNumber={serialNumber}
+         clusterInfo={clusterInfo}
+         requiredFw={get(requiredFwMap, IncompatibilityFeatures.MULTI_NAT_IP)}
+       />}>
        <Form.List name={parentNamePath.concat('natPools')}>
          {(fields) => {
            return <>
@@ -213,14 +207,6 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
            </>
          }}
        </Form.List>
-
-       <EdgeCompatibilityDrawer
-         visible={!!edgeCompatibilityFeature}
-         type={EdgeCompatibilityType.ALONE}
-         title={$t({ defaultMessage: 'Compatibility Requirement' })}
-         featureName={edgeCompatibilityFeature}
-         onClose={() => setEdgeCompatibilityFeature(undefined)}
-       />
      </Form.Item>
   }
   </>
