@@ -89,14 +89,14 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   text-overflow: ellipsis;
 }
 
-.c4 .ant-radio-group {
+.c5 .ant-radio-group {
   border-radius: 20px;
   background-color: var(--acx-neutrals-20);
   vertical-align: top;
   overflow: hidden;
 }
 
-.c4 .ant-radio-button-wrapper {
+.c5 .ant-radio-button-wrapper {
   color: var(--acx-primary-black);
   background-color: transparent;
   border: none;
@@ -104,16 +104,16 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   border-radius: 20px;
 }
 
-.c4 .ant-radio-button-wrapper:not(:first-child)::before {
+.c5 .ant-radio-button-wrapper:not(:first-child)::before {
   display: none;
 }
 
-.c4 .ant-radio-button-wrapper-checked {
+.c5 .ant-radio-button-wrapper-checked {
   color: var(--acx-primary-white);
   background-color: var(--acx-primary-black);
 }
 
-.c4 .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-button-wrapper span:nth-child(2) {
   vertical-align: middle;
   display: -webkit-box;
   display: -webkit-flex;
@@ -125,58 +125,58 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   align-items: center;
 }
 
-.c4 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+.c5 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
   background-color: var(--acx-neutrals-30);
 }
 
-.c4 svg {
+.c5 svg {
   vertical-align: middle;
   margin-right: 8px;
 }
 
-.c4 path {
+.c5 path {
   stroke: var(--acx-primary-black);
 }
 
-.c4 .ant-radio-button-wrapper-checked path {
+.c5 .ant-radio-button-wrapper-checked path {
   stroke: var(--acx-primary-white);
 }
 
-.c4 .ant-radio-button-wrapper-checked {
+.c5 .ant-radio-button-wrapper-checked {
   cursor: default;
 }
 
-.c4 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+.c5 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
   color: var(--acx-primary-white);
 }
 
-.c4 .ant-radio-group-small svg {
+.c5 .ant-radio-group-small svg {
   width: var(--acx-body-4-font-size);
   height: var(--acx-body-4-font-size);
 }
 
-.c4 .ant-radio-group-small .ant-radio-button-wrapper {
+.c5 .ant-radio-group-small .ant-radio-button-wrapper {
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   height: 24px;
 }
 
-.c4 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
   margin: 4px 16px;
 }
 
-.c4 .ant-radio-group-large svg {
+.c5 .ant-radio-group-large svg {
   width: var(--acx-body-3-font-size);
   height: var(--acx-body-3-font-size);
 }
 
-.c4 .ant-radio-group-large .ant-radio-button-wrapper {
+.c5 .ant-radio-group-large .ant-radio-button-wrapper {
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
   height: 28px;
 }
 
-.c4 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
   margin: 4px 32px;
 }
 
@@ -193,6 +193,13 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   -ms-flex-direction: column;
   flex-direction: column;
   height: 100%;
+}
+
+.c4 {
+  display: block;
+  height: 800px;
+  width: 1280px;
+  margin-top: -38px;
 }
 
 <div>
@@ -254,13 +261,15 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+              class="c4"
+              height="800"
+              width="1280"
             >
               <div
                 style="text-align: right;"
               >
                 <div
-                  class="c4"
+                  class="c5"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -698,7 +707,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
 `;
 
 exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend widgets correctly: Trend 1`] = `
-.c5 {
+.c6 {
   position: relative;
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -793,14 +802,14 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   text-overflow: ellipsis;
 }
 
-.c4 .ant-radio-group {
+.c5 .ant-radio-group {
   border-radius: 20px;
   background-color: var(--acx-neutrals-20);
   vertical-align: top;
   overflow: hidden;
 }
 
-.c4 .ant-radio-button-wrapper {
+.c5 .ant-radio-button-wrapper {
   color: var(--acx-primary-black);
   background-color: transparent;
   border: none;
@@ -808,16 +817,16 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   border-radius: 20px;
 }
 
-.c4 .ant-radio-button-wrapper:not(:first-child)::before {
+.c5 .ant-radio-button-wrapper:not(:first-child)::before {
   display: none;
 }
 
-.c4 .ant-radio-button-wrapper-checked {
+.c5 .ant-radio-button-wrapper-checked {
   color: var(--acx-primary-white);
   background-color: var(--acx-primary-black);
 }
 
-.c4 .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-button-wrapper span:nth-child(2) {
   vertical-align: middle;
   display: -webkit-box;
   display: -webkit-flex;
@@ -829,58 +838,58 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   align-items: center;
 }
 
-.c4 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+.c5 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
   background-color: var(--acx-neutrals-30);
 }
 
-.c4 svg {
+.c5 svg {
   vertical-align: middle;
   margin-right: 8px;
 }
 
-.c4 path {
+.c5 path {
   stroke: var(--acx-primary-black);
 }
 
-.c4 .ant-radio-button-wrapper-checked path {
+.c5 .ant-radio-button-wrapper-checked path {
   stroke: var(--acx-primary-white);
 }
 
-.c4 .ant-radio-button-wrapper-checked {
+.c5 .ant-radio-button-wrapper-checked {
   cursor: default;
 }
 
-.c4 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+.c5 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
   color: var(--acx-primary-white);
 }
 
-.c4 .ant-radio-group-small svg {
+.c5 .ant-radio-group-small svg {
   width: var(--acx-body-4-font-size);
   height: var(--acx-body-4-font-size);
 }
 
-.c4 .ant-radio-group-small .ant-radio-button-wrapper {
+.c5 .ant-radio-group-small .ant-radio-button-wrapper {
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   height: 24px;
 }
 
-.c4 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
   margin: 4px 16px;
 }
 
-.c4 .ant-radio-group-large svg {
+.c5 .ant-radio-group-large svg {
   width: var(--acx-body-3-font-size);
   height: var(--acx-body-3-font-size);
 }
 
-.c4 .ant-radio-group-large .ant-radio-button-wrapper {
+.c5 .ant-radio-group-large .ant-radio-button-wrapper {
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
   height: 28px;
 }
 
-.c4 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+.c5 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
   margin: 4px 32px;
 }
 
@@ -899,11 +908,18 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   height: 100%;
 }
 
-.c6 svg path[stroke="#123456"] {
+.c7 svg path[stroke="#123456"] {
   stroke-dasharray: 2;
   stroke: var(--acx-accents-blue-50);
   -webkit-clip-path: inset(0 round 5px);
   clip-path: inset(0 round 5px);
+}
+
+.c4 {
+  display: block;
+  height: 800px;
+  width: 1280px;
+  margin-top: -38px;
 }
 
 <div>
@@ -965,13 +981,15 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+              class="c4"
+              height="800"
+              width="1280"
             >
               <div
                 style="text-align: right;"
               >
                 <div
-                  class="c4"
+                  class="c5"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -1022,7 +1040,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                 style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  class="c5 c6"
+                  class="c6 c7"
                 >
                   <div
                     class="echarts-for-react "

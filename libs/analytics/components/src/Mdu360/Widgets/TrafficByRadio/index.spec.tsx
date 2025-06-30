@@ -94,6 +94,9 @@ describe('TrafficByRadioWidget', () => {
 
     render(<TrafficByRadio filters={mockFilters} />, { wrapper: Provider })
     expect(await screen.findByText('No data to display')).toBeVisible()
+    const trafficTrendSwitch = await screen.findByRole('radio', { name: 'Trend' })
+    fireEvent.click(trafficTrendSwitch)
+    expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
   it('should return no data when query response data is empty', async () => {
@@ -102,6 +105,9 @@ describe('TrafficByRadioWidget', () => {
     })
 
     render(<TrafficByRadio filters={mockFilters} />, { wrapper: Provider })
+    expect(await screen.findByText('No data to display')).toBeVisible()
+    const trafficTrendSwitch = await screen.findByRole('radio', { name: 'Trend' })
+    fireEvent.click(trafficTrendSwitch)
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 })
