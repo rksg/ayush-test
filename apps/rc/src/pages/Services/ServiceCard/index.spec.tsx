@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }   from '@acx-ui/components'
 import {
   ServiceType,
   getServiceRoutePath,
@@ -14,6 +13,7 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RadioCardCategory }              from '@acx-ui/types'
 import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
