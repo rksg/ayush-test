@@ -586,36 +586,29 @@ function EdgeWidgets () {
 }
 
 function CoreDashboardWidgets () {
-  const { dashboardFilters } = useDashBoardUpdatedFilter()
-
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
   return (
-    <GridRow>
-      <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
-        <GridRow>
-          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <AlarmWidgetV2 />
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <VenuesDashboardWidgetV2 />
-          </GridCol>
-        </GridRow>
-        <GridRow style={{ marginTop: '10px' }}>
-          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <DevicesDashboardWidgetV2 />
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <ClientsWidgetV2 />
-          </GridCol>
-        </GridRow>
-      </GridCol>
-      <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
-        <DidYouKnow filters={dashboardFilters}/>
-      </GridCol>
-    </GridRow>
+    <>
+      <GridRow>
+        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+          <AlarmWidgetV2 />
+        </GridCol>
+        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+          <VenuesDashboardWidgetV2 />
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+          <DevicesDashboardWidgetV2 />
+        </GridCol>
+        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+          <ClientsWidgetV2 />
+        </GridCol>
+      </GridRow>
+    </>
   )
 }
 
