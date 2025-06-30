@@ -591,24 +591,20 @@ function CoreDashboardWidgets () {
   }, [])
 
   return (
-    <>
-      <GridRow>
-        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-          <AlarmWidgetV2 />
-        </GridCol>
-        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-          <VenuesDashboardWidgetV2 />
-        </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-          <DevicesDashboardWidgetV2 />
-        </GridCol>
-        <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-          <ClientsWidgetV2 />
-        </GridCol>
-      </GridRow>
-    </>
+    <GridRow>
+      <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+        <AlarmWidgetV2 />
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+        <VenuesDashboardWidgetV2 />
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+        <DevicesDashboardWidgetV2 />
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+        <ClientsWidgetV2 />
+      </GridCol>
+    </GridRow>
   )
 }
 
