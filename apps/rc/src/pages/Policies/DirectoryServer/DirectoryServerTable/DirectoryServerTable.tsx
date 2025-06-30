@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteDirectoryServerMutation,
   useGetDirectoryServerViewDataListQuery,
   useWifiNetworkListQuery
@@ -20,7 +19,8 @@ import {
   PolicyOperation,
   PolicyType,
   useTableQuery,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                           from '@acx-ui/utils'

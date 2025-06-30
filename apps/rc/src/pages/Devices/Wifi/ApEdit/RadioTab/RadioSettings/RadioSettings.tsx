@@ -242,8 +242,6 @@ export function RadioSettings (props: ApEditItemProps) {
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
-
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
@@ -268,8 +266,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: isUseRbacApi,
-    enableSeparation: is6gChannelSeparation
+    enableRbac: isUseRbacApi
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -364,7 +361,7 @@ export function RadioSettings (props: ApEditItemProps) {
     // 6G
     const availableCh6g = (availableChannels && availableChannels['6GChannels'])
     const supportCh6g =
-      (is6gChannelSeparation ? (availableCh6g && availableCh6g[apModelType]) : availableCh6g) || {}
+      (availableCh6g && availableCh6g[apModelType]) || {}
     const bandwidth6g = GetSupportBandwidth(channelBandwidth6GOptions, supportCh6g, {
       isSupport160Mhz: is6GHas160Mhz,
       isSupport320Mhz: is6GHas320Mhz
@@ -536,8 +533,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi,
-        enableSeparation: is6gChannelSeparation
+        enableRbac: isUseRbacApi
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)
