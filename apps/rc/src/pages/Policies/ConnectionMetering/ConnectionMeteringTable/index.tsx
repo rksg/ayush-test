@@ -16,7 +16,6 @@ import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
   useVenuesListQuery,
-  doProfileDelete,
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -32,7 +31,8 @@ import {
   PropertyConfigs,
   PropertyConfigQuery,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,

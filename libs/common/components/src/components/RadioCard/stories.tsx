@@ -81,6 +81,48 @@ storiesOf('RadioCard', module)
       </GridRow>
     </Radio.Group>
   )
+  .add('disabled radio with a tooltip', () =>
+    <Radio.Group
+      // eslint-disable-next-line no-console
+      onChange={(e: RadioChangeEvent) => console.log( e.target.value)}
+    >
+      <GridRow>
+        <GridCol col={{ span: 6 }}>
+          <RadioCard
+            type='radio'
+            value='service1'
+            title='Service1'
+            // eslint-disable-next-line max-len
+            description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
+            categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+          />
+        </GridCol>
+        <GridCol col={{ span: 6 }}>
+          <RadioCard
+            type='radio'
+            value='service2'
+            title='This is a disabled card with a tooltip'
+            // eslint-disable-next-line max-len
+            description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
+            categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+            disabledTooltip='Disabled tooltip'
+            disabled={true}
+          />
+        </GridCol>
+        <GridCol col={{ span: 6 }}>
+          <RadioCard
+            type='radio'
+            value='service3'
+            title='Service3'
+            // eslint-disable-next-line max-len
+            description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
+            categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+            disabled
+          />
+        </GridCol>
+      </GridRow>
+    </Radio.Group>
+  )
   .add('button', () =>
     <GridRow>
       <GridCol col={{ span: 6 }}>
@@ -95,6 +137,26 @@ storiesOf('RadioCard', module)
           buttonText={defineMessage({ defaultMessage: 'Add' })}
           // eslint-disable-next-line no-console
           onClick={()=>console.log('Button clicked!')}
+        />
+      </GridCol>
+    </GridRow>
+  )
+  .add('disabled button with a tooltip', () =>
+    <GridRow>
+      <GridCol col={{ span: 6 }}>
+        <RadioCard
+          type='button'
+          value='service'
+          title='This is a disabled card with a tooltip'
+          description={
+            'Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
+          }
+          categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+          buttonText={defineMessage({ defaultMessage: 'Add' })}
+          // eslint-disable-next-line no-console
+          onClick={()=>console.log('Button clicked!')}
+          disabledTooltip='Disabled tooltip'
+          buttonProps={{ disabled: true }}
         />
       </GridCol>
     </GridRow>
