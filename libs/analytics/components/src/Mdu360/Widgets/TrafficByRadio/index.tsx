@@ -7,6 +7,8 @@ import {
   ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
+import { ContentSwitcherWrapper } from '../../styledComponents'
+
 import { useTrafficByRadioQuery } from './services'
 import { TrafficSnapshot }        from './TrafficSnapshot'
 import { TrafficTrend }           from './TrafficTrend'
@@ -43,9 +45,9 @@ export function TrafficByRadio ({ filters }: { filters: TrafficByRadioFilters })
       <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
+            <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
-            </div>
+            </ContentSwitcherWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>

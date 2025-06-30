@@ -24,21 +24,17 @@ function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): Don
 
   for (const key in data) {
     if (key !== 'time' && key !== 'userTraffic_all') {
-      trafficSnapshotChartData.push({
-        name: nameMap[key as keyof TrafficData],
-        value: sumOfTraffic(data[key as keyof TrafficData])
-      })
+      const dataVolume : number = sumOfTraffic(data[key as keyof TrafficData])
+      if (dataVolume) {
+        trafficSnapshotChartData.push({
+          name: nameMap[key as keyof TrafficData],
+          value: dataVolume
+        })
+      }
     }
   }
 
   return trafficSnapshotChartData
-}
-
-function hasData (chartData: DonutChartData[]): boolean {
-  if (chartData[0].value === 0 && chartData[1].value === 0 && chartData[2].value === 0) {
-    return false
-  }
-  return true
 }
 
 export function TrafficSnapshot ({ queryResults }:
@@ -49,7 +45,7 @@ export function TrafficSnapshot ({ queryResults }:
   return (
     <AutoSizer>
       {({ height, width }) => (
-        queryResults.data?.time.length && hasData(chartData) ?
+        chartData.length ?
           <DonutChart
             style={{ width, height }}
             data={chartData}

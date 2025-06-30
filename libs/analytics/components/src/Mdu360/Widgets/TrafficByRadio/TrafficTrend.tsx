@@ -26,7 +26,7 @@ export function TrafficTrend ({
   return (
     <AutoSizer>
       {({ height, width }) => (
-        data.length ?
+        (data.length && data[0].data.length) ?
           <MultiLineTimeSeriesChart
             style={{ width, height }}
             data={data}
