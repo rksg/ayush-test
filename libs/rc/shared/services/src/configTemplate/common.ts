@@ -623,6 +623,7 @@ export const {
   useQueryDriftInstancesQuery,
   useLazyGetDriftReportQuery,
   useGetDriftReportByInstanceQuery,
+  useLazyGetDriftReportByInstanceQuery,
   usePatchDriftReportMutation,
   usePatchDriftReportByInstanceMutation,
   useCloneTemplateMutation,

@@ -9,11 +9,11 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
-import { ConfigTemplatePageUI, DriftInstance }                        from '@acx-ui/main/components'
-import { useGetDriftInstancesQuery, usePatchDriftReportMutation }     from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { hasAllowedOperations }                                       from '@acx-ui/user'
-import { getOpsApi }                                                  from '@acx-ui/utils'
+import { ConfigTemplatePageUI, DriftInstance }                                                from '@acx-ui/main/components'
+import { useGetDriftInstancesQuery, useLazyGetDriftReportQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }                         from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                               from '@acx-ui/user'
+import { getOpsApi }                                                                          from '@acx-ui/utils'
 
 import { MAX_SYNC_EC_TENANTS }      from '../../constants'
 import { useEcFilters }             from '../../utils'
@@ -38,6 +38,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       filters: { ...useEcFilters() }
     }
   })
+  const [ getDriftReport, { isLoading: isLoadingDriftReport } ] = useLazyGetDriftReportQuery()
   const [ patchDriftReport ] = usePatchDriftReportMutation()
 
   const hasReachedTheMaxRecord = (): boolean => {
@@ -130,6 +131,11 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
                 updateSelection={onInstanceSelecte}
                 selected={selectedInstances.includes(instance.id)}
                 disalbed={hasReachedTheMaxRecord()}
+                getDriftReport={(params: { templateId: string; instanceId: string }) => {
+                  // eslint-disable-next-line max-len
+                  return getDriftReport({ params: { templateId: params.templateId, tenantId: params.instanceId } })
+                }}
+                isLoading={isLoadingDriftReport}
               />
             </List.Item>
           )}

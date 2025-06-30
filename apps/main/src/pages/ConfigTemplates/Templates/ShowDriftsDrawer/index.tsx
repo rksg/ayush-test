@@ -9,11 +9,11 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
-import { ConfigTemplatePageUI, DriftComparisonSet, DriftInstance }                                              from '@acx-ui/main/components'
-import { useQueryDriftInstancesQuery, usePatchDriftReportByInstanceMutation, useGetDriftReportByInstanceQuery } from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }                                           from '@acx-ui/rc/utils'
-import { hasAllowedOperations }                                                                                 from '@acx-ui/user'
-import { getOpsApi }                                                                                            from '@acx-ui/utils'
+import { ConfigTemplatePageUI, DriftComparisonSet, DriftInstance }                                                                                    from '@acx-ui/main/components'
+import { useQueryDriftInstancesQuery, usePatchDriftReportByInstanceMutation, useGetDriftReportByInstanceQuery, useLazyGetDriftReportByInstanceQuery } from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }                                                                                 from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                                                                                       from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                  from '@acx-ui/utils'
 
 const MAX_SYNC_VENUES = 10
 
@@ -41,6 +41,9 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }, {
     skip: selectedTemplate.type === ConfigTemplateType.VENUE || driftInstances.length === 0
   })
+
+  // eslint-disable-next-line max-len
+  const [ getVenueDriftReport, { isLoading: isVenueDriftReportLoading } ] = useLazyGetDriftReportByInstanceQuery()
 
   const [ patchDriftReport ] = usePatchDriftReportByInstanceMutation()
 
@@ -136,6 +139,10 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
                   updateSelection={onInstanceSelecte}
                   selected={selectedInstances.includes(instance.id)}
                   disalbed={hasReachedTheMaxRecord()}
+                  getDriftReport={(params: { templateId: string; instanceId: string }) => {
+                    return getVenueDriftReport({ params })
+                  }}
+                  isLoading={isVenueDriftReportLoading}
                 />
               </List.Item>
             )}
