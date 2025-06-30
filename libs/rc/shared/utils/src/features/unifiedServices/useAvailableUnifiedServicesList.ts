@@ -114,8 +114,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-        disabled: !isCertificateTemplateEnabled,
-        route: '/policies/certificateTemplate/list'
+        disabled: !isCertificateTemplateEnabled
       },
       {
         type: PolicyType.CLIENT_ISOLATION,

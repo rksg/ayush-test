@@ -1589,6 +1589,10 @@ function PolicyRoutes () {
           }
         />
         <Route
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })} />}
+        />
+        <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>}
         />

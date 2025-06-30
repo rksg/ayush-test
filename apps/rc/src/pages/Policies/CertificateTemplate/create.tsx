@@ -3,17 +3,15 @@ import { useWatch }           from 'antd/lib/form/Form'
 import { useIntl }            from 'react-intl'
 import { Path }               from 'react-router-dom'
 
-import { PageHeader, StepsForm }        from '@acx-ui/components'
+import { PageHeader, StepsForm }                              from '@acx-ui/components'
 import {
-  getPolicyAllowedOperation,
   getPolicyRoutePath,
-  getSelectPolicyRoutePath,
+  getSelectServiceRoutePath, hasPolicyPermission,
   LocationExtended,
   PolicyOperation,
-  PolicyType, usePolicyListBreadcrumb
+  PolicyType, redirectPreviousPage, usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }                    from '@acx-ui/user'
 
 enum CertificateTypeEnum {
   DEVICE_CERTIFICATE = 'deviceCertificate',
@@ -55,23 +53,29 @@ export default function CreateCertificateProfile () {
       getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })
   }
 
-  const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
+  const pathMap: Record<CertificateTypeEnum, Path> = {
+    [CertificateTypeEnum.CERTIFICATE_TEMPLATE]: createTemplate,
+    [CertificateTypeEnum.CERTIFICATE]: createDeviceCert,
+    [CertificateTypeEnum.CERTIFICATE_AUTHORITY]: createCa,
+    [CertificateTypeEnum.SERVER_CERTIFICATE]: createServerCert,
+    [CertificateTypeEnum.DEVICE_CERTIFICATE]: createDeviceCert
+  }
+
+  const selectServicePageLink = useTenantLink(getSelectServiceRoutePath(true))
   const fromPage = (useLocation() as LocationExtended)?.state?.from
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.CERTIFICATE_TEMPLATE)
 
   const hasDeviceCertOperation =
-    // eslint-disable-next-line max-len
-    hasAllowedOperations(getPolicyAllowedOperation(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE) ?? []) || hasAllowedOperations(getPolicyAllowedOperation(PolicyType.CERTIFICATE, PolicyOperation.CREATE) ?? [])
+    hasPolicyPermission({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })
+    || hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })
 
   const handleCreation = async () => {
     const type = form.getFieldValue('templateInstanceType')
     if (type === CertificateTypeEnum.DEVICE_CERTIFICATE) {
       const subType = form.getFieldValue('deviceCertificateInstanceType')
-      navigate(subType === CertificateTypeEnum.CERTIFICATE
-        ? createDeviceCert : createTemplate, { state: { from: fromPage } })
+      navigate(pathMap[subType as CertificateTypeEnum], { state: { from: fromPage } })
     } else {
-      navigate(type === CertificateTypeEnum.CERTIFICATE_AUTHORITY
-        ? createCa : createServerCert, { state: { from: fromPage } })
+      navigate(pathMap[type as CertificateTypeEnum], { state: { from: fromPage } })
     }
   }
 
@@ -85,7 +89,7 @@ export default function CreateCertificateProfile () {
         form={form}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
         onFinish={handleCreation}
-        onCancel={() => navigate(policiesPageLink)}>
+        onCancel={() => redirectPreviousPage(navigate, fromPage?.pathname, selectServicePageLink)}>
         <StepsForm.StepForm>
           <Form.Item name='templateInstanceType'
             label={$t({ defaultMessage: 'Template Instance Type' })}
@@ -100,13 +104,13 @@ export default function CreateCertificateProfile () {
                 </Radio>
                 }
                 {/* eslint-disable-next-line max-len */}
-                { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.CERTIFICATE_AUTHORITY, PolicyOperation.CREATE) ?? []) &&
+                { hasPolicyPermission({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
                 <Radio value={CertificateTypeEnum.CERTIFICATE_AUTHORITY}>
                   {$t({ defaultMessage: 'Certificate Authorities (CA)' })}
                 </Radio>
                 }
                 {/* eslint-disable-next-line max-len */}
-                { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.SERVER_CERTIFICATES, PolicyOperation.CREATE) ?? []) &&
+                { hasPolicyPermission({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE }) &&
                 <Radio value={CertificateTypeEnum.SERVER_CERTIFICATE}>
                   {$t({ defaultMessage: 'Server & Client Certificate' })}
                 </Radio>
@@ -121,13 +125,13 @@ export default function CreateCertificateProfile () {
               <Radio.Group>
                 <Space direction='vertical'>
                   {/* eslint-disable-next-line max-len */}
-                  { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.CERTIFICATE, PolicyOperation.CREATE) ?? []) &&
+                  { hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) &&
                   <Radio value={CertificateTypeEnum.CERTIFICATE}>
                     {$t({ defaultMessage: 'Certificate' })}
                   </Radio>
                   }
                   {/* eslint-disable-next-line max-len */}
-                  { hasAllowedOperations(getPolicyAllowedOperation(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE) ?? []) &&
+                  { hasPolicyPermission({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
                   <Radio value={CertificateTypeEnum.CERTIFICATE_TEMPLATE}>
                     {$t({ defaultMessage: 'Template' })}
                   </Radio>
