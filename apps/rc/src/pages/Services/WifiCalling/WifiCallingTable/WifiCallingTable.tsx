@@ -6,7 +6,6 @@ import { Button, PageHeader, Table, TableProps, Loader, Tooltip }               
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteWifiCallingServicesMutation,
   useGetEnhancedWifiCallingServiceListQuery,
   useNetworkListQuery,
@@ -29,7 +28,8 @@ import {
   ConfigTemplateType,
   useServicesBreadcrumb,
   getServiceProfileMaximumNumber,
-  getServiceProfileLimitReachedMessage
+  getServiceProfileLimitReachedMessage,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 

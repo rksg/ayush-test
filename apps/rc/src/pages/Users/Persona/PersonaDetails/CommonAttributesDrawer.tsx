@@ -45,11 +45,6 @@ export function CommonAttributesDrawer (props:{
           label={$t({ defaultMessage: 'Display Name' })}
           children={externalData.displayName ?? noDataDisplay}
         />
-        <Descriptions.Item
-          key={'userPrincipalName'}
-          label={$t({ defaultMessage: 'User Principal Name' })}
-          children={externalData.userPrincipalName ?? noDataDisplay}
-        />
       </Descriptions>
       <Divider/>
       <Descriptions>
@@ -79,29 +74,9 @@ export function CommonAttributesDrawer (props:{
       <Divider/>
       <Descriptions>
         <Descriptions.Item
-          key={'organization'}
-          label={$t({ defaultMessage: 'Organization' })}
-          children={externalData.organization ?? noDataDisplay}
-        />
-        <Descriptions.Item
-          key={'department'}
-          label={$t({ defaultMessage: 'Department' })}
-          children={externalData.department ?? noDataDisplay}
-        />
-        <Descriptions.Item
-          key={'title'}
-          label={$t({ defaultMessage: 'Title' })}
-          children={externalData.title ?? noDataDisplay}
-        />
-        <Descriptions.Item
           key={'phone'}
           label={$t({ defaultMessage: 'Phone' })}
           children={externalData.phoneNumber ?? noDataDisplay}
-        />
-        <Descriptions.Item
-          key={'address'}
-          label={$t({ defaultMessage: 'Address' })}
-          children={externalData.address ?? noDataDisplay}
         />
       </Descriptions>
     </>

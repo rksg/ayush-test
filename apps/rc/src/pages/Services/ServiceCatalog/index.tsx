@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Typography }             from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                                         from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                                                            from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
 import {
@@ -18,6 +18,7 @@ import {
   useDhcpStateMap,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
+import { RadioCardCategory }          from '@acx-ui/types'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
