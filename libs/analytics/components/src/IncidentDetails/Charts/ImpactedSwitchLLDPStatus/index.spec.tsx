@@ -257,5 +257,130 @@ describe('ImpactedSwitchLLDP',()=>{
         expect.stringContaining('LLDP-Status-Impacted-Switch')
       )
     })
+
+    it('should export CSV with -- for falsy values (branch coverage)', async () => {
+      const falsyDataResponse = {
+        incident: {
+          impactedSwitches: [{
+            name: null,
+            mac: undefined,
+            serial: '',
+            reasonCodes: null,
+            ports: [
+              {
+                portNumber: '1/1/1'
+              }
+            ]
+          }]
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: falsyDataResponse })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      fireEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('LLDP-Status-Impacted-Switch')
+      )
+
+      // Verify CSV content contains -- for falsy values
+      const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
+      const csvContent = await new Response(blob).text()
+      const rows = csvContent.split('\n')
+      expect(rows[1]).toContain('--') // Should contain -- for falsy values
+    })
+
+    it('should export CSV with actual values for truthy values (branch coverage)', async () => {
+      const truthyDataResponse = {
+        incident: {
+          impactedSwitches: [{
+            name: 'Test Switch',
+            mac: 'AA:BB:CC:DD:EE:FF',
+            serial: 'TEST123',
+            reasonCodes: 'LLDP Enabled',
+            ports: [
+              {
+                portNumber: '1/1/1'
+              }
+            ]
+          }]
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: truthyDataResponse })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      fireEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('LLDP-Status-Impacted-Switch')
+      )
+
+      // Verify CSV content contains actual values
+      const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
+      const csvContent = await new Response(blob).text()
+      const rows = csvContent.split('\n')
+      expect(rows[1]).toContain('Test Switch') // Should contain actual name
+      expect(rows[1]).toContain('AA:BB:CC:DD:EE:FF') // Should contain actual MAC
+      expect(rows[1]).toContain('TEST123') // Should contain actual serial
+      expect(rows[1]).toContain('LLDP Enabled') // Should contain actual reason codes
+    })
+
+    it('should export CSV with mixed truthy and falsy values (branch coverage)', async () => {
+      const mixedDataResponse = {
+        incident: {
+          impactedSwitches: [{
+            name: 'Test Switch',
+            mac: null,
+            serial: 'TEST123',
+            reasonCodes: undefined,
+            ports: [
+              {
+                portNumber: '1/1/1'
+              }
+            ]
+          }]
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: mixedDataResponse })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      fireEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('LLDP-Status-Impacted-Switch')
+      )
+
+      // Verify CSV content contains both actual values and -- for falsy values
+      const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
+      const csvContent = await new Response(blob).text()
+      const rows = csvContent.split('\n')
+      expect(rows[1]).toContain('Test Switch') // Should contain actual name
+      expect(rows[1]).toContain('--') // Should contain -- for null/undefined values
+      expect(rows[1]).toContain('TEST123') // Should contain actual serial
+    })
   })
 })
