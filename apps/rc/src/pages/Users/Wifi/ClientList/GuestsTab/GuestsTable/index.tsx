@@ -81,7 +81,6 @@ export const GuestsTable = () => {
   const { rbacOpsApiEnabled } = getUserProfile()
   const params = useParams()
 
-  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = !hasCrossVenuesPermission() || hasRoles(RolesEnum.READ_ONLY)
   const addNetworkOpsApi = getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)
   const hasAddNetworkPermission = rbacOpsApiEnabled ?
@@ -505,11 +504,7 @@ export const GuestsTable = () => {
         maxSize={CsvSize['5MB']}
         maxEntries={250}
         acceptType={['csv']}
-        templateLink={
-          isGuestManualPasswordEnabled ?
-            'assets/templates/guests_import_template_with_guestpass.csv' :
-            'assets/templates/guests_import_template.csv'
-        }
+        templateLink={'assets/templates/guests_import_template_with_guestpass.csv'}
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
