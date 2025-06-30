@@ -60,12 +60,11 @@ import { RequestPayload, WifiScopes }                                     from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
-import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
-import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
-import { useApActions }                                                       from '../useApActions'
-import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
+import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
+import { seriesMappingAP }                                               from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }               from '../ImportFileDrawer'
+import { useApActions }                                                  from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -99,7 +98,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
@@ -719,19 +717,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           })
         }}
         onClose={() => setImportVisible(false)}/>
-      {!isEdgeCompatibilityEnabled &&
-        <ApCompatibilityDrawer
-          visible={compatibilitiesDrawerVisible}
-          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-          venueId={params.venueId}
-          networkId={params.networkId}
-          apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
-          apName={selectedApInfo?.name}
-          isMultiple
-          onClose={() => setCompatibilitiesDrawerVisible(false)}
-        />
-      }
-      {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+      <EnhancedApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         isMultiple
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
@@ -739,7 +725,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         networkId={params.networkId}
         apInfo={selectedApInfo}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />}
+      />
     </Loader>
   )
 })

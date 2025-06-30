@@ -132,7 +132,7 @@ interface ApCompatibilityDetailTableProps {
 }
 
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
-  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
 
   const { $t } = useIntl()
 
@@ -140,6 +140,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   const { model, firmwareVersion='' } = apInfo ?? {}
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
+    skip: !isSupportedFwModels,
     refetchOnMountOrArgChange: false
   })
 
@@ -150,7 +151,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
     ],
     filters: { id: [venueId] }
   } }, {
-    skip: requirementOnly || !isUpgradeByModelEnabled
+    skip: requirementOnly
   })
 
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
@@ -205,7 +206,6 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
 
   const showCheckbox = hasPermission({ scopes: [WifiScopes.UPDATE] })
     && !requirementOnly
-    && isUpgradeByModelEnabled
 
   return <>
     {requirementOnly ?

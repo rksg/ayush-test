@@ -45,10 +45,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   } = props
   const { isTemplate } = useConfigTemplate()
 
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const networkId = network?.id
 
@@ -142,7 +140,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         </Space>
       }
     }]
-    : [...(((isEdgeMvSdLanReady || isSoftGreEnabled) && !isEdgePinHaReady) ? [{
+    : [...(!isEdgePinHaReady ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',

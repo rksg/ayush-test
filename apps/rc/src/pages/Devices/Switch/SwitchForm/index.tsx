@@ -31,11 +31,13 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import {
+  getSwitchModel,
+  isOperationalSwitch
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
   Switch,
-  getSwitchModel,
   SwitchViewModel,
   IGMP_SNOOPING_TYPE,
   Vlan,
@@ -82,7 +84,6 @@ export enum FIRMWARE {
 }
 
 export function SwitchForm () {
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
@@ -295,7 +296,7 @@ export function SwitchForm () {
 
   const handleAddSwitch = async (values: Switch) => {
     const fw = getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
-    if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(fw)) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return

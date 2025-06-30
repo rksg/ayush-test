@@ -1,8 +1,7 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
@@ -22,9 +21,9 @@ import {
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
+  EdgeMvSdLanViewData,
   EdgePort,
   EdgePortInfo,
-  EdgeSdLanViewDataP2,
   EdgeStaticRouteConfig,
   EdgeStatusEnum,
   IncompatibilityFeatures,
@@ -44,7 +43,7 @@ export interface EditEdgeDataContextType {
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   isSupportAccessPort?: boolean
   isClusterFormed: boolean
   isGeneralSettingsLoading: boolean
@@ -76,7 +75,6 @@ type EditEdgeDataProviderProps = React.PropsWithChildren<{
 }>
 export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
   const { serialNumber } = props
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
   const { clusterId, venueId } = useGetEdgeListQuery(
     { payload: {
@@ -166,7 +164,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
       sortOrder: 'ASC'
     }
   },{
-    skip: !isEdgeLagEnabled || !serialNumber,
+    skip: !serialNumber,
     selectFromResult ({ data, isLoading, isFetching }) {
       return {
         lagStatus: data?.data,
@@ -220,7 +218,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterId)
 
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {

@@ -2,8 +2,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Button, Loader, NoData, Tabs }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { EdgeLagStatus, EdgePortStatus, EdgeUrlsInfo, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
 import { EdgeScopes }                                                          from '@acx-ui/types'
 import { hasPermission }                                                       from '@acx-ui/user'
@@ -24,39 +23,27 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   const { ports, lags, isLoading, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
 
-  let tabs: { title: string, id: string, ifName?: string, lagId?: number }[]
-
-  if(isEdgeLagEnabled) {
-    const normalPorts = ports.filter(port =>
-      !lags.some(lag =>
-        lag.lagMembers?.some(lagMember =>
-          lagMember.portId === port.portId)))
-      .map(item => ({
-        title: getEdgePortDisplayName(item),
-        id: item.portId,
-        ifName: item.interfaceName
-      }))
-    tabs = [
-      ...normalPorts,
-      ...lags.map(item => ({
-        title: item.name,
-        id: item.lagId.toString(),
-        ifName: item?.name ?? '',
-        lagId: item.lagId
-      }))
-    ]
-  } else {
-    tabs = ports.map(item => ({
+  const normalPorts = ports.filter(port =>
+    !lags.some(lag =>
+      lag.lagMembers?.some(lagMember =>
+        lagMember.portId === port.portId)))
+    .map(item => ({
       title: getEdgePortDisplayName(item),
       id: item.portId,
       ifName: item.interfaceName
     }))
-  }
-
+  const tabs = [
+    ...normalPorts,
+    ...lags.map(item => ({
+      title: item.name,
+      id: item.lagId.toString(),
+      ifName: item?.name ?? '',
+      lagId: item.lagId
+    }))
+  ] as { title: string, id: string, ifName?: string, lagId?: number }[]
 
 
   const handleClick = () => {

@@ -25,10 +25,10 @@ export function TopologyFloorPlanWidget (props: {
     {
       label: $t({ defaultMessage: 'Topology' }),
       value: 'topology',
-      children: <TopologyGraph
+      children: TopologyGraph ? <TopologyGraph
         showTopologyOn={showTopologyFloorplanOn}
         venueId={venueId}
-        deviceMac={currentDevice?.apMac || currentDevice?.switchMac}/>
+        deviceMac={currentDevice?.apMac || currentDevice?.switchMac}/> : null
     },
     {
       label: $t({ defaultMessage: 'Floor Plans' }),

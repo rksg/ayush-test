@@ -5,7 +5,6 @@ import {
   GridCol,
   GridRow,
   PageHeader,
-  RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -21,6 +20,7 @@ import {
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                from '@acx-ui/types'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard }     from '../ServiceCard'
@@ -38,8 +38,6 @@ export default function SelectServiceForm () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -90,8 +88,7 @@ export default function SelectServiceForm () {
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          categories: [RadioCardCategory.EDGE]
         },
         {
           type: ServiceType.EDGE_OLT,
@@ -136,7 +133,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WIFI_CALLING,
           categories: [RadioCardCategory.WIFI],
-          disabled: isWifiCallingLimitReached
+          isLimitReached: isWifiCallingLimitReached
         }
       ]
     },
@@ -215,6 +212,7 @@ export default function SelectServiceForm () {
                                 categories={item.categories}
                                 type={'radio'}
                                 isBetaFeature={item.isBetaFeature}
+                                isLimitReached={item.isLimitReached}
                               />
                             </GridCol>
                         })

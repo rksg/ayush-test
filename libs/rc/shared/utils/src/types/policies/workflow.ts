@@ -11,7 +11,6 @@ export interface Workflow {
   disallowedIps?: string[]
   startStepId?: string
   links?: { rel: string, href: string }[],
-  publishReadiness?: number,
   statusReasons?: StatusReason[]
 }
 
@@ -108,7 +107,8 @@ interface Step extends BaseStep {
 }
 
 interface SplitStep extends BaseStep {
-  splitOptionsList?: SplitOption[]
+  splitOptionsList?: SplitOption[],
+  attachCandidate?: boolean
 }
 
 export interface SplitOption {

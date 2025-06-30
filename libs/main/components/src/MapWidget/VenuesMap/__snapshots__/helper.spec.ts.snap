@@ -1,0 +1,166 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Venues Map Helper should test getVenueInfoMarkerIcon method 1`] = `
+Array [
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": 1215180708,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-1pxm71i-8",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-1pxm71i-8",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": 1215180708,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-1pxm71i-8",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-1pxm71i-8",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": -79831943,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1pxm71i-7",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1pxm71i-7",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": -18337849,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1pxm71i-10",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1pxm71i-10",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": -1624397892,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1pxm71i-9",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1pxm71i-9",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+]
+`;
+
+exports[`Venues Map Helper should test getVenueSeverityByStatus method 1`] = `
+Array [
+  3,
+  3,
+  4,
+  1,
+  2,
+]
+`;

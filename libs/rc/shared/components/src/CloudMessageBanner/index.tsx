@@ -4,33 +4,29 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }     from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useLazyGetVenueEdgeFirmwareListQuery,
   useLazyGetScheduledFirmwareQuery,
-  useLazyGetSwitchVenueVersionListV1001Query
+  useLazyGetSwitchVenueVersionListV1001Query,
+  useLazyGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import {
   CloudVersion,
   getUserSettingsByPath,
-  useGetPlmMessageBannerQuery,
+  hasRoles,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  UserSettingsUIModel,
-  hasRoles
+  useGetPlmMessageBannerQuery,
+  UserSettingsUIModel
 } from '@acx-ui/user'
-
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
-  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const layout = useLayoutContext()
 
@@ -62,15 +58,13 @@ export function CloudMessageBanner () {
       if(!isSpecialRole) {
         checkWifiScheduleExists()
         checkSwitchScheduleExists()
-        if(isEdgeScheduleUpdateReady) {
-          checkEdgeScheduleExists()
-        }
+        checkEdgeScheduleExists()
       }
     }
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
+    return await getCloudScheduleVersion({ params }).unwrap()
       .then(cloudScheduleVersion => {
         if (!cloudScheduleVersion) return
 

@@ -39,7 +39,8 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  legend: 'value' | 'name' | 'name-value',
+  showValue: boolean,
+  legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
@@ -48,6 +49,7 @@ const defaultProps: DonutChartOptionalProps = {
   animation: false,
   showLabel: false,
   showTotal: true,
+  showValue: false,
   legend: 'value',
   size: 'small'
 }
@@ -72,6 +74,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   subTitle?: string,
   subTitleBlockHeight?: number
   tooltipFormat?: MessageDescriptor
+  tooltipValuesFunc?: (name: string) => Record<string, React.ReactNode>
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
@@ -90,7 +93,8 @@ export const onChartClick = (onClick: DonutChartProps['onClick']) =>
 export const tooltipFormatter = (
   dataFormatter: ((value: unknown) => string | null),
   total: number,
-  format?: MessageDescriptor
+  format?: MessageDescriptor,
+  formatValuesFunc?: (name: string) => Record<string, React.ReactNode>
 ) => (
   parameters: TooltipFormatterParams
 ) => {
@@ -110,7 +114,8 @@ export const tooltipFormatter = (
     values={{
       ...defaultRichTextFormatValues,
       name, value, percent, total,
-      formattedPercent, formattedValue, formattedTotal
+      formattedPercent, formattedValue, formattedTotal,
+      ...(formatValuesFunc && formatValuesFunc(name))
     }}
   />
 
@@ -272,7 +277,7 @@ export function DonutChart ({
       subtext: props.value
         ? props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '28%' : 'center',
+      left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -296,7 +301,17 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle
+        ...props.labelTextStyle,
+        rich: {
+          legendBold: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight-bold')
+          },
+          legendNormal: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight')
+          }
+        }
       },
       itemStyle: {
         borderWidth: 0
@@ -304,11 +319,13 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return name
-          case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name': return `{legendNormal|${name}}`
+          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
+          case 'name-bold-value':
+            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
-            return `${dataFormatter(value)}`
+            return `{legendNormal|${dataFormatter(value)}}`
         }
       }
     },
@@ -324,7 +341,10 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label
+          ...styles.label,
+          formatter: (params) => {
+            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+          }
         },
         tooltip: {
           ...tooltipOptions(),
@@ -332,7 +352,8 @@ export function DonutChart ({
           formatter: tooltipFormatter(
             dataFormatter,
             sum,
-            props.tooltipFormat
+            props.tooltipFormat,
+            props.tooltipValuesFunc
           )
         },
         selectedMode: props.singleSelect ? 'single' : false,

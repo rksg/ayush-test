@@ -2,7 +2,7 @@ import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
 import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
-import { countryCodes, usePreference } from '@acx-ui/rc/components'
+import { countryCodes, usePreference } from '@acx-ui/rc/generic-features/components'
 import { AdministrationUrlsInfo }      from '@acx-ui/rc/utils'
 import {
   getUserProfile,
