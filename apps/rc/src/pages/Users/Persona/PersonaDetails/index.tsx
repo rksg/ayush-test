@@ -4,9 +4,9 @@ import { Tag }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { PersonaDrawer }                                             from '@acx-ui/rc/components'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { PersonaDrawer }                                                                                           from '@acx-ui/rc/components'
 import {
   useGetPersonaByIdQuery,
   useUpdatePersonaMutation,
@@ -22,10 +22,10 @@ import {
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
-import { RequestPayload }                               from '@acx-ui/types'
-import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi }                                    from '@acx-ui/utils'
+import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
+import { RequestPayload }                                                           from '@acx-ui/types'
+import { filterByOperations, getShowWithoutRbacCheckKey, hasCrossVenuesPermission } from '@acx-ui/user'
+import { DateRange, getOpsApi }                                                     from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -228,32 +228,42 @@ function PersonaDetails () {
     })
   }
 
-  const extra = hasCrossVenuesPermission({ needGlobalPermission: true }) ? [<Button
-    type='primary'
-    rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
-    onClick={showRevokedModal}
-    disabled={!!personaData?.identityId}
-  >
-    {$t({
-      defaultMessage: `{revokedStatus, select,
-        true {Unblock}
-        other {Block Identity}}`,
-      description: 'Translation strings - Unblock, Block Identity'
-    }, { revokedStatus })}
-  </Button>,
-  <Button
-    type={'primary'}
-    onClick={() => {
-      if (isIdentityRefactorEnabled) {
-        navigate(basePath.pathname.concat('/edit'))
-      } else {
-        setEditDrawerVisible(true)
-      }
-    }}
-    rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
-  >
-    {$t({ defaultMessage: 'Configure' })}
-  </Button>] : []
+  const extra = [
+    <TimeRangeDropDown key={getShowWithoutRbacCheckKey('time-range-dropdown')} />,
+    ...(hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [
+        <Button
+          type='primary'
+          rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
+          onClick={showRevokedModal}
+          disabled={!!personaData?.identityId}
+        >
+          {$t(
+            {
+              defaultMessage: `{revokedStatus, select,
+            true {Unblock}
+            other {Block Identity}}`,
+              description: 'Translation strings - Unblock, Block Identity'
+            },
+            { revokedStatus }
+          )}
+        </Button>,
+        <Button
+          type={'primary'}
+          onClick={() => {
+            if (isIdentityRefactorEnabled) {
+              navigate(basePath.pathname.concat('/edit'))
+            } else {
+              setEditDrawerVisible(true)
+            }
+          }}
+          rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
+        >
+          {$t({ defaultMessage: 'Configure' })}
+        </Button>
+      ]
+      : [])
+  ]
 
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/users/identity-management/identity-group/${personaGroupId}/identity/${personaId}/`)
@@ -297,7 +307,13 @@ function PersonaDetails () {
   }
 
   return (
-    <>
+    <TimeRangeDropDownProvider
+      availableRanges={[
+        DateRange.last1Hour,
+        DateRange.last24Hours,
+        DateRange.last30Days
+      ]}
+    >
       <PageHeader
         title={title}
         titleExtra={revokedStatus
@@ -398,8 +414,7 @@ function PersonaDetails () {
           data={personaData}
         />
       }
-
-    </>
+    </TimeRangeDropDownProvider>
   )
 }
 

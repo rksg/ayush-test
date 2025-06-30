@@ -5,8 +5,18 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Button, Card, cssStr, Descriptions, DonutChart, GridCol, GridRow, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
+import { Traffic } from '@acx-ui/analytics/components'
+import {
+  Button,
+  Card,
+  cssStr,
+  Descriptions,
+  DonutChart,
+  GridCol,
+  GridRow,
+  Subtitle
+} from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -34,12 +44,10 @@ import { getOpsApi, ignoreErrorModal, noDataDisplay }                           
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
 import { MAX_CLIENTS_PER_PAGE }   from './IdentityClientTable'
 
-
 const identityClientDefaultSorter = {
   sortField: 'username',
   sortOrder: 'ASC'
 }
-
 
 export function PersonaOverview (props:
    { personaData?: Persona, personaGroupData?: PersonaGroup }
@@ -54,6 +62,7 @@ export function PersonaOverview (props:
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
+  const isIdentityTrafficAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_TRAFFIC_ANALYTICS_TOGGLE)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)
@@ -359,8 +368,13 @@ export function PersonaOverview (props:
             </AutoSizer>
           </Card>
         </GridCol>
+        {isIdentityTrafficAnalyticsEnabled && (
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <Traffic />
+          </GridCol>
+        )}
       </GridRow>
-      {externalIdentityData !==undefined &&
+      {externalIdentityData !== undefined &&
       <CommonAttributesDrawer
         externalData={externalIdentityData}
         visible={attributesDrawerVisible}

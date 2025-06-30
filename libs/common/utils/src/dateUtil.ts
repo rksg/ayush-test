@@ -8,6 +8,7 @@ import { ITimeZone } from '@acx-ui/types'
 import { DateFilter } from './dateFilter'
 
 export enum DateRange {
+  last1Hour = 'Last 1 Hour',
   last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
@@ -62,6 +63,7 @@ export function defaultAllRanges (subRange?: DateRange[]) {
 
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()],
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
@@ -77,6 +79,7 @@ export function defaultRanges (subRange?: DateRange[]) {
 
 export function defaultCoreTierRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()],
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
@@ -120,6 +123,9 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.last1Hour]: defineMessage({
+    defaultMessage: 'Last 1 Hour'
+  }),
   [DateRange.last8Hours]: defineMessage({
     defaultMessage: 'Last 8 Hours'
   }),
