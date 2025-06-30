@@ -1,3 +1,4 @@
+import { within }       from '@testing-library/react'
 import userEvent        from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 
@@ -534,5 +535,76 @@ describe('ImpactedSwitchPortFlap', () => {
       expect(exportButton).not.toBeInTheDocument()
       expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
     })
+
+    it('should export CSV with -- for null flapVlans and Unknown poeOperState (branch coverage)',
+      async () => {
+        const mockData = {
+          data: {
+            incident: {
+              impactedSwitches: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+                ports: [{
+                  ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                  flapVlans: null,
+                  poeOperState: 'Unknown'
+                }]
+              }]
+            }
+          }
+        }
+        mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+        renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+        await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+        const exportButton = await screen.findByTestId('DownloadOutlined')
+        await userEvent.click(exportButton)
+
+        expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+          expect.any(Blob),
+          expect.stringContaining('Port-Flap-Impacted-Port')
+        )
+
+        // Verify CSV content contains -- for both branches
+        const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
+        const csvContent = await new Response(blob).text()
+        const rows = csvContent.split('\n')
+        expect(rows[1]).toContain('--') // Should contain -- for both vlanText and poeDetail
+      })
+
+    it('should export CSV with valid values for flapVlans and poeOperState (branch coverage)',
+      async () => {
+        const mockData = {
+          data: {
+            incident: {
+              impactedSwitches: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+                ports: [{
+                  ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                  flapVlans: '10,20,30',
+                  poeOperState: 'Enabled'
+                }]
+              }]
+            }
+          }
+        }
+        mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+        renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+        await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+        const exportButton = await screen.findByTestId('DownloadOutlined')
+        await userEvent.click(exportButton)
+
+        expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+          expect.any(Blob),
+          expect.stringContaining('Port-Flap-Impacted-Port')
+        )
+
+        // Verify CSV content contains actual values for both branches
+        const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
+        const csvContent = await new Response(blob).text()
+        const rows = csvContent.split('\n')
+        expect(rows[1]).toContain('10,20,30') // Should contain actual flapVlans
+        expect(rows[1]).toContain('Enabled') // Should contain actual poeOperState
+      })
   })
 })
