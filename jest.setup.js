@@ -80,26 +80,6 @@ beforeEach(async () => {
           userId: 'userId',
         })
       )
-    ),
-    rest.get('/venues/:venueId/apTlsKeyEnhancedSettings', (_req, res, ctx) =>
-      res(
-        ctx.json({
-          enabled: false,
-          keyType: 'RSA',
-          keySize: 2048,
-          certificateType: 'SELF_SIGNED'
-        })
-      )
-    ),
-    rest.put('/venues/:venueId/apTlsKeyEnhancedSettings', (_req, res, ctx) =>
-      res(
-        ctx.json({
-          enabled: false,
-          keyType: 'RSA',
-          keySize: 2048,
-          certificateType: 'SELF_SIGNED'
-        })
-      )
     )
   )
   await config.initialize()
