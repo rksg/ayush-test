@@ -148,7 +148,6 @@ export const GuestsTable = () => {
   const [importCsv, importResult] = useImportGuestPassMutation()
 
   const { handleGuestPassResponse } = useHandleGuestPassResponse()
-  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   const guestTypeFilterOptions = Object.values(GuestTypesEnum)
     .filter(gtype => gtype!==GuestTypesEnum.HOST_GUEST)
@@ -317,15 +316,13 @@ export const GuestsTable = () => {
           : guestStatus
       }
     },
-    ...( HAEmailList_FeatureFlag ? [
-      {
-        key: 'Approver',
-        title: $t({ defaultMessage: 'Approver' }),
-        dataIndex: 'hostApprovalEmail',
-        filterable: false,
-        show: false
-      }
-    ]: [])
+    {
+      key: 'Approver',
+      title: $t({ defaultMessage: 'Approver' }),
+      dataIndex: 'hostApprovalEmail',
+      filterable: false,
+      show: false
+    }
   ]
 
   const onClose = () => {
