@@ -137,6 +137,35 @@ describe('Drawer', () => {
       </Provider>, { route: true })
       await screen.findByText('Something went wrong.')
     })
+    it('should render drawer without limited text when impactedCount <= 500', async () => {
+      mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
+        data: { incident: { impactedClients: Array(140).fill(sample[0]) } } })
+      render(<Provider>
+        <ImpactedClientsDrawer
+          {...props}
+          startTime='start'
+          endTime='end'
+          impactedCount={140}
+        />
+      </Provider>, { route: true })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.getByText('140 Impacted Clients')).toBeVisible()
+    })
+
+    it('should render drawer with limited text when impactedCount > 500', async () => {
+      mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
+        data: { incident: { impactedClients: Array(501).fill(sample[0]) } } })
+      render(<Provider>
+        <ImpactedClientsDrawer
+          {...props}
+          startTime='start'
+          endTime='end'
+          impactedCount={501}
+        />
+      </Provider>, { route: true })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.getByText('501 Impacted Clients (showing 500 of 501 clients)')).toBeVisible()
+    })
   })
 })
 
