@@ -189,7 +189,6 @@ describe('IntentAI utils', () => {
           status: Statuses.scheduled,
           displayStatus: DisplayStates.scheduled,
           statusTrail: [
-            { status: Statuses.scheduled },
             { status: Statuses.na, statusReason: StatusReasons.verified }
           ]
         }
@@ -411,8 +410,6 @@ describe('IntentAI utils', () => {
             status: Statuses.paused,
             displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
-              { status: Statuses.scheduled },
               { status: Statuses.na, statusReason: StatusReasons.verified }
             ]
           }

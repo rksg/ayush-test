@@ -97,8 +97,9 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
 
 const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
-    const originalStatusTrail = item.statusTrail?.find(({ status }) => status === Statuses.na)
-    if (originalStatusTrail?.statusReason === StatusReasons.verified) {
+    const lastStatusTrail = item.statusTrail?.[0]
+    if (lastStatusTrail?.status === Statuses.na &&
+        lastStatusTrail?.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
     return { status: Statuses.new }
@@ -124,8 +125,9 @@ const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus
   ) {
     return { status: Statuses.active }
   } else if (preStatusTrail.status === Statuses.scheduled) {
-    const originalStatusTrail = item.statusTrail?.find(({ status }) => status === Statuses.na)
-    if (originalStatusTrail?.statusReason === StatusReasons.verified) {
+    const lastStatusTrail = item.statusTrail?.[0]
+    if (lastStatusTrail?.status === Statuses.na &&
+        lastStatusTrail?.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
     return { status: Statuses.new }
