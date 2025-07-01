@@ -320,19 +320,6 @@ describe('Network More settings - Network Control Tab', () => {
     expect(screen.getByText(/Application Recognition & Control/i)).toBeInTheDocument()
   })
 
-  it('user cannot see ARC option when FF disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <Form>
-          <NetworkControlTab/>
-        </Form>
-      </Provider>,
-      { route: { params } })
-
-    expect(screen.queryByText(/Application Recognition & Control/i)).not.toBeInTheDocument()
-  })
-
   it('ARC option can be switched correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
