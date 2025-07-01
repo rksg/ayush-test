@@ -1445,16 +1445,15 @@ export function EditPortDrawer ({
             </Space>
             }
           />
-          { !isMultipleEdit &&
-              <Form.Item name='name'
-                label={$t({ defaultMessage: 'Port Name' })}
-                rules={[
-                  { max: 255 }
-                ]}
-                initialValue=''
-                children={<Input />}
-              />
-          }
+          <Form.Item name='name'
+            label={$t({ defaultMessage: 'Port Name' })}
+            labelCol={{ span: 24 }}
+            rules={[
+              { max: 255 }
+            ]}
+            initialValue=''
+            children={<Input />}
+          />
         </UI.HorizontalFormItemLayout>
 
         <UI.ContentDivider />
