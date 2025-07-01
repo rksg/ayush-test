@@ -4,9 +4,9 @@ import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
-import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
-import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
+import { Button, Loader, showActionModal, Tooltip }                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
+import { DeleteOutlined, EditOutlined, EndFlag, ExclamationMark, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
 import {
@@ -14,7 +14,6 @@ import {
   ActionTypeTitle,
   DisablePreviewActionTypes,
   MaxAllowedSteps,
-  MaxTotalSteps,
   StepStatusCodes,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
@@ -36,7 +35,10 @@ export default function BaseStepNode (props: NodeProps
 
   const nodeId = useNodeId()
   const nodes = useNodes()
-  const isOverMaximumSteps = useMemo(() => nodes.length >= MaxTotalSteps, [nodes])
+  const isOverMaximumSteps = useMemo(() => {
+    const regularNodes = nodes.filter(n => n.type != 'START' && n.type != 'DISCONNECTED_BRANCH')
+    return regularNodes.length >= MaxAllowedSteps
+  }, [nodes])
   const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const {
     nodeState, actionDrawerState,
@@ -267,7 +269,7 @@ export default function BaseStepNode (props: NodeProps
           title={validationErrors?.map(reason =>
             <Row>{ reason.statusReason }</Row>)}>
           <UI.InvalidIcon>
-            <WarningCircleSolid />
+            <ExclamationMark />
           </UI.InvalidIcon>
         </Tooltip>
       }
