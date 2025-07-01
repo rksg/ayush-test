@@ -26,8 +26,8 @@ import {
 } from '../../types'
 
 export const InitialEmptyStepsCount = 2
+// MaxAllowedSteps - the total number of allowed steps, not including start and end steps
 export const MaxAllowedSteps = 20
-export const MaxTotalSteps = InitialEmptyStepsCount + MaxAllowedSteps
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -44,9 +44,7 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
 }
 
 export const findAllFirstSteps = (steps: WorkflowStep[]): WorkflowStep[] | undefined => {
-  return steps.filter(step =>
-    step.priorStepId === undefined && !step.splitOptionId
-  )
+  return steps.filter(step => step.priorStepId === undefined && !step.splitOptionId)
 }
 
 export const toStepMap = (steps: WorkflowStep[])
@@ -198,7 +196,7 @@ export const composeNext = (
       attachCandidate: false
     },
 
-    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
+    hidden: type === StepType.End || (type === StepType.Start && nextStep?.type !== StepType.End),
     deletable: false
   })
 

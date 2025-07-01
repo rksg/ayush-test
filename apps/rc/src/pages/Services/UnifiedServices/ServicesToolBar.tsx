@@ -4,9 +4,10 @@ import { Space }                                     from 'antd'
 import { debounce }                                  from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
-import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
-import { getIntl }                                   from '@acx-ui/utils'
+import { Table, categoryMapping } from '@acx-ui/components'
+import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
+import { RadioCardCategory }      from '@acx-ui/types'
+import { getIntl }                from '@acx-ui/utils'
 
 import { FilterSelect }              from './styledComponents'
 import { DefaultSearchFilterValues } from './useUnifiedServiceSearchFilter'

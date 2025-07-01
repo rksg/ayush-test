@@ -8,11 +8,37 @@ import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } fro
 import ReportsRoutes from './Routes'
 
 jest.mock('@acx-ui/reports/components', () => ({
-  ...jest.requireActual('@acx-ui/reports/components'),
+  ReportType: {
+    OVERVIEW: 'overview',
+    WIRELESS: 'wireless',
+    WIRED: 'wired',
+    AP: 'ap',
+    SWITCH: 'switch',
+    CLIENT: 'client',
+    APPLICATION: 'application',
+    EDGE_APPLICATION: 'edgeApp',
+    WLAN: 'wlan',
+    AIRTIME_UTILIZATION: 'airtimeUtilization',
+    AP_DETAIL: 'apDetail',
+    SWITCH_DETAIL: 'switchDetail',
+    CLIENT_DETAIL: 'clientDetail',
+    RSS_TRAFFIC: 'rssTraffic',
+    RSS_SESSION: 'rssSession',
+    WIRELESS_AIRTIME: 'wirelessAirtime',
+    TRAFFIC_APPLICATION: 'trafficApplications'
+  },
   Report: () => <div data-testid={'some-report-id'} id='acx-report' />,
+  ReportList: () => <div data-testid={'report-list-id'} />,
+  DataStudio: () => <div data-testid={'data-studio-id'} />,
   DataConnectorContent: () =>
     <div data-testid={'data-connector-id'} id='acx-data-connector' />,
+  ConnectorForm: () => <div data-testid={'connector-form-id'} />,
+  DataConnectorAuditLog: () => <div data-testid={'data-connector-audit-log-id'} />,
   CloudStorageForm: () => <div data-testid={'some-ds-cloud-form'} />
+}))
+
+jest.mock('@acx-ui/components', () => ({
+  PageNotFound: () => <div data-testid={'page-not-found'} />
 }))
 
 jest.mock('@acx-ui/config')

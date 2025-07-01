@@ -9,8 +9,8 @@ export const isEqualLanPort = (
     return false
   }
 
-  const poeProperties = ['poeMode']
-  if ('poeMode' in currentLan &&
+  const poeProperties = ['poeMode', 'poeOut', 'poeOutMode']
+  if (poeProperties.some(prop => prop in currentLan) &&
     !isEqual(pick(currentLan, poeProperties), pick(otherLan, poeProperties))) {
     return false
   }

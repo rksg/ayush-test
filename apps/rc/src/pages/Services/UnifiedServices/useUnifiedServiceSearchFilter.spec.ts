@@ -1,6 +1,6 @@
-import { RadioCardCategory }                                                         from '@acx-ui/components'
 import { PolicyType, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
 import { act, renderHook }                                                           from '@acx-ui/test-utils'
+import { RadioCardCategory }                                                         from '@acx-ui/types'
 
 import { mockedAvailableUnifiedServicesList } from './__tests__/fixtures'
 import { ServiceSortOrder }                   from './ServicesToolBar'
