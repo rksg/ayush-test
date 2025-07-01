@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Col, Divider, List, Row, Select, Space } from 'antd'
 import { CheckboxChangeEvent }                              from 'antd/lib/checkbox'
@@ -41,6 +41,12 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }, {
     skip: selectedTemplate.type === ConfigTemplateType.VENUE || driftInstances.length === 0
   })
+
+  useEffect(() => {
+    if (selectedTemplate.type !== ConfigTemplateType.VENUE && driftInstances.length > 0) {
+      setSelectedInstances(driftInstances.map(i => i.id))
+    }
+  }, [selectedTemplate.type, driftInstances])
 
   // eslint-disable-next-line max-len
   const [ getVenueDriftReport, { isLoading: isVenueDriftReportLoading } ] = useLazyGetDriftReportByInstanceQuery()
@@ -90,13 +96,15 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const footer = <div>
-    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.patchDriftReport)]) && <Button
-      disabled={selectedInstances.length === 0}
-      onClick={onSync}
-      type='primary'
-    >
-      <span>{$t({ defaultMessage: 'Sync' })}</span>
-    </Button>}
+    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.patchDriftReportByInstance)]) &&
+      <Button
+        disabled={selectedInstances.length === 0}
+        onClick={onSync}
+        type='primary'
+      >
+        <span>{$t({ defaultMessage: 'Sync' })}</span>
+      </Button>
+    }
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>

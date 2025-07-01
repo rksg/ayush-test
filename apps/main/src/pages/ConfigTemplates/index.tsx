@@ -2,13 +2,13 @@ import { ConfigTemplateView, ConfigTemplateViewProps, isTemplateTypeAllowed } fr
 import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }         from '@acx-ui/rc/utils'
 import { getIntl, getOpsApi }                                                 from '@acx-ui/utils'
 
-import { ApplyTemplateDrawer } from './Templates/ApplyTemplateDrawer'
-import { ShowDriftsDrawer }    from './Templates/ShowDriftsDrawer'
+import { ApplyTemplateModal } from './Templates/ApplyTemplateDrawer'
+import { ShowDriftsDrawer }   from './Templates/ShowDriftsDrawer'
 
 
 export function ConfigTemplatePage () {
   return <ConfigTemplateView
-    ApplyTemplateView={ApplyTemplateDrawer}
+    ApplyTemplateView={ApplyTemplateModal}
     ShowDriftsView={ShowDriftsDrawer}
     appliedToColumn={getAppliedToColumn()}
     canApplyTemplate={canApplyTemplate}

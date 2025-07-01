@@ -143,7 +143,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     {
       rbacOpsIds: actionRbacOpsIds.apply,
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => !selectedRows[0] || !canApplyTemplate(selectedRows[0]),
+      visible: (selectedRows) => selectedRows[0] && canApplyTemplate(selectedRows[0]),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateViewVisible(true)
@@ -152,7 +152,6 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     ...(driftsEnabled ? [{
       // eslint-disable-next-line max-len
       visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
-      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.getDriftReport)],
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)

@@ -13,7 +13,7 @@ import {
 import { useApplyRecConfigTemplateMutation } from '@acx-ui/rc/services'
 
 
-export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
+export const ApplyTemplateModal = (props: CommonConfigTemplateDrawerProps) => {
   const targetId = 'MOCKED-TARGET-ID'
   const { $t } = useIntl()
   const { setVisible, selectedTemplate } = props
@@ -54,7 +54,7 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
-    {canBeOverriden && <Button onClick={onOverride} type='primary' loading={isApplying}>
+    {canBeOverriden && <Button onClick={onOverride} type='primary'>
       {$t({ defaultMessage: 'Override Template' })}
     </Button>}
     <Button onClick={onApply} type='primary' loading={isApplying}>
