@@ -53,7 +53,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyGetSoftGreOptionsQuery: jest.fn().mockReturnValue([
     () => ({ unwrap: jest.fn().mockResolvedValue({
       options: mockSoftGreTable.data,
-      id: '', //mockSoftGreTable.data[0].id,
+      id: '',
       gatewayIps: [],
       activationProfiles: []
     }) })
@@ -110,12 +110,10 @@ describe('WifiSoftGreSelectOption', () => {
     await waitFor(() => expect(mockedSoftGreFn).toBeCalled())
     expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
     expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
-    // // softGRE and IPSec will invoke each other 1 time in their API endpoint
-    // expect(mockedSoftGreFn).toBeCalledTimes(2)
-    // expect(mockedIpSecFn).toBeCalledTimes(2)
 
     await userEvent.selectOptions(await screen.findByRole('combobox'),
       await screen.findByRole('option', { name: 'softGreProfileName1' }))
+
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
