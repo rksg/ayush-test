@@ -109,40 +109,6 @@ describe('Venue Marker Tooltip', () => {
     jest.clearAllMocks()
   })
 
-  it('should not render edge data if feature flag is off', async () => {
-    const venue: VenueMarkerOptions = {
-      ...common,
-      ...withCounts
-    }
-    const onNavigateMock = jest.fn()
-
-    const { asFragment } = render(
-      <VenueMarkerTooltip
-        venueMarker={venue}
-        onNavigate={onNavigateMock}
-        isEdgeEnabled={false} />)
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    expect(asFragment().querySelectorAll('svg').length).toEqual(2)
-
-    const venueTitle = screen.getByText('Aparna-Venue')
-    fireEvent.click(venueTitle)
-    expect(onNavigateMock).toHaveBeenCalledWith({
-      path: 'venue-details/overview',
-      venueId: '7ae27179b7b84de89eb7e56d9b15943d'
-    })
-
-    const links = screen.getAllByText('1234')
-    expect(links.length).toEqual(4)
-    links.forEach((link, i) => {
-      fireEvent.click(link)
-      expect(onNavigateMock).lastCalledWith({
-        path: paths[i],
-        venueId: '7ae27179b7b84de89eb7e56d9b15943d'
-      })
-    })
-
-    expect(onNavigateMock).toBeCalledTimes(5)
-  })
   it('should render all charts with counts clickable', async () => {
     const venue: VenueMarkerOptions = {
       ...common,
@@ -154,7 +120,7 @@ describe('Venue Marker Tooltip', () => {
       <VenueMarkerTooltip
         venueMarker={venue}
         onNavigate={onNavigateMock}
-        isEdgeEnabled={true} />)
+      />)
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelectorAll('svg').length).toEqual(3)
 
@@ -185,7 +151,7 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
     const { asFragment } = render(
-      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} isEdgeEnabled={true} />)
+      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} />)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render tooltip without padding', async () => {
@@ -199,7 +165,7 @@ describe('Venue Marker Tooltip', () => {
         venueMarker={venue}
         onNavigate={onNavigateMock}
         needPadding={false}
-        isEdgeEnabled={true} />)
+      />)
 
     expect(asFragment()).toMatchSnapshot()
   })
