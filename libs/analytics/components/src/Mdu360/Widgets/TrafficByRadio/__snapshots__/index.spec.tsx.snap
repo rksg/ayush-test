@@ -200,6 +200,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   height: 800px;
   width: 1280px;
   margin-top: -38px;
+  padding-bottom: 10px;
 }
 
 <div>
@@ -327,7 +328,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                   >
                     <div
                       class="echarts-for-react "
-                      style="height: 800px; width: 1280px; position: relative;"
+                      style="height: 790px; width: 1280px; position: relative;"
                     >
                       <div
                         style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
@@ -920,6 +921,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   height: 800px;
   width: 1280px;
   margin-top: -38px;
+  padding-bottom: 10px;
 }
 
 <div>
@@ -1044,7 +1046,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                 >
                   <div
                     class="echarts-for-react "
-                    style="height: 800px; width: 1280px; position: relative;"
+                    style="height: 790px; width: 1280px; position: relative;"
                   >
                     <div
                       style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
