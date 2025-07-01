@@ -646,6 +646,64 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 unicast route entries are within the threshold of the configured/supported capacity' })
     }
   },
+  switchArpUtilization: {
+    text: defineMessage({ defaultMessage: 'ARP Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchArpUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchArpUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where ARP table entries are within the threshold of the configured/supported capacity' })
+    }
+  },
+  switchMacUtilization: {
+    text: defineMessage({ defaultMessage: 'MAC Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMacUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchMacUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where Mac table entries are within the threshold of the configured/supported capacity' })
+    }
+  },
   switchCpuUtilization: {
     text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
@@ -937,7 +995,9 @@ export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
           'switchIpv4MulticastUtilization',
           'switchIpv6MulticastUtilization',
           'switchIpv4UnicastUtilization',
-          'switchIpv6UnicastUtilization'
+          'switchIpv6UnicastUtilization',
+          'switchArpUtilization',
+          'switchMacUtilization'
         ]
       }
     }

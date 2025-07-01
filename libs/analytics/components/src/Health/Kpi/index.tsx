@@ -55,6 +55,10 @@ export const defaultThreshold: KpiThresholdType = {
   switchIpv4UnicastUtilization: kpiConfig.switchIpv4UnicastUtilization
     .histogram.initialThreshold,
   switchIpv6UnicastUtilization: kpiConfig.switchIpv6UnicastUtilization
+    .histogram.initialThreshold,
+  switchArpUtilization: kpiConfig.switchArpUtilization
+    .histogram.initialThreshold,
+  switchMacUtilization: kpiConfig.switchMacUtilization
     .histogram.initialThreshold
 }
 
