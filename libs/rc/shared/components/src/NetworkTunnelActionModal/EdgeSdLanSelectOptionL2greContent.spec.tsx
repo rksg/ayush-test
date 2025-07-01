@@ -13,11 +13,13 @@ jest.mock('@acx-ui/edge/components', () => ({
     isDataLoading: false,
     availableTunnelProfiles: [
       { id: 'tunnel1', name: 'Tunnel 1', tunnelType: 'VXLAN_GPE',
-        destinationEdgeClusterId: 'edgeClusterId1' },
+        destinationEdgeClusterId: 'edgeClusterId1', type: 'VLAN_VXLAN', mtuType: 'MANUAL',
+        natTraversalEnabled: false },
       { id: 'tunnel2', name: 'Tunnel 2', tunnelType: 'VXLAN_GPE' ,
-        destinationEdgeClusterId: 'edgeClusterId2' },
+        destinationEdgeClusterId: 'edgeClusterId2', type: 'VLAN_VXLAN', mtuType: 'MANUAL',
+        natTraversalEnabled: false },
       { id: 'tunnel3', name: 'Tunnel 3', tunnelType: 'L2GRE' ,
-        destinationIpAddress: '10.206.11.11' }
+        destinationIpAddress: '10.206.11.11', type: 'VLAN_VXLAN' }
     ]
   })),
   transToOptions: jest.fn((profiles) =>
