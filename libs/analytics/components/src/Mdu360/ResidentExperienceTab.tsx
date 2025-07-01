@@ -11,7 +11,7 @@ import type { Mdu360TabProps } from '.'
 const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
   return (
     <UI.Grid>
-      {/* <WifiClient filters={{ startDate, endDate }} /> */}
+      <WifiClient filters={{ startDate, endDate }} />
       {/* <WifiGeneration startDate={startDate} endDate={endDate} /> */}
       <ApplicationCategories filters={{ startDate, endDate }} />
       <TrafficByRadio filters={{ startDate, endDate }}/>

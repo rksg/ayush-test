@@ -2,6 +2,8 @@ import styled from 'styled-components'
 
 import { NoData } from '@acx-ui/components'
 
+export const PADDING_BOTTOM = 10
+
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -20,4 +22,5 @@ export const ContentSwitcherWrapper = styled.div<{
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
   margin-top: -38px;
+  padding-bottom: ${PADDING_BOTTOM}px
 `
