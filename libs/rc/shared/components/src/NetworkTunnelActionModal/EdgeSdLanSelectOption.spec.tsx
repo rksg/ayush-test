@@ -66,7 +66,7 @@ describe('EdgeSdLanSelectOption', () => {
     expect(screen.getByText('EdgeSdLanSelectOptionL2greContent')).toBeInTheDocument()
     expect(EdgeSdLanSelectOptionL2greContent).toHaveBeenCalledWith(
       expect.objectContaining({
-        venueSdLan: undefined,
+        venueId: 'venue-1',
         networkType: NetworkTypeEnum.CAPTIVEPORTAL,
         hasVlanPool: false
       }),

@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { Form, Row, Select, Typography } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Form, Row, Typography } from 'antd'
+import { useIntl }               from 'react-intl'
 
+import { Select }                                                         from '@acx-ui/components'
 import { useGetEdgeFeatureSetsQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -45,9 +46,11 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     return sdLanOptions?.find(x => x.tunneledWlans?.some(t => t.venueId === venueId))
   }, [sdLanOptions, venueId])
 
-  // set initial venueSdLan ID
+  // set initial selected sdLan ID
   useEffect(() => {
-    form.setFieldValue(['sdLan', 'newProfileId'], originVenueSdLan?.id ?? '')
+    const originProfileId = originVenueSdLan?.id ?? ''
+    form.setFieldValue(['sdLan', 'oldProfileId'], originProfileId)
+    form.setFieldValue(['sdLan', 'newProfileId'], originProfileId)
   }, [originVenueSdLan])
 
   const selectedSdLan = useMemo(() =>
@@ -110,30 +113,27 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
                     value: item.id
                   })))
                 ]}
-                placeholder={$t({ defaultMessage: 'Select...' })} />
+              />
             </Form.Item>
           </Row>
 
-          {selectedSdLanId && <>
-            <Row>
-              <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })} >
-                <div>
-                  {tunnelProfileName}
-                </div>
-              </Form.Item>
-            </Row>
-            <Row>
-              <EdgeSdLanFwdDestination
-                venueSdLan={selectedSdLan}
-                requiredFw={requiredFw}
-                disabled={isFeatureSetsLoading}
-                networkType={networkType}
-                hasVlanPool={hasVlanPool}
-              />
-            </Row>
-          </>}
+          <Row>
+            <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })} >
+              <div>
+                {tunnelProfileName}
+              </div>
+            </Form.Item>
+          </Row>
+          <Row>
+            <EdgeSdLanFwdDestination
+              venueSdLan={selectedSdLan}
+              requiredFw={requiredFw}
+              disabled={isFeatureSetsLoading}
+              networkType={networkType}
+              hasVlanPool={hasVlanPool}
+            />
+          </Row>
         </div>
-
       }
     </Typography.Text>
   </Row>

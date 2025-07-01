@@ -121,10 +121,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
     }
   }
 
-  const getDisabledInfo = (_venueId: string,
-    row: Network,
-    isGuestSwitchBtn: boolean
-  ) => {
+  const getDisabledInfo = (_venueId: string, row: Network) => {
     // eslint-disable-next-line max-len
     const hasEdgeUpdatePermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
 
@@ -143,17 +140,8 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
       }
     }
 
-    const isSdLanLastNetwork = (tunneledWlans?.length ?? 0) <= 1
-    if (!tunneledWlans || isGuestSwitchBtn || !isSdLanLastNetwork) return
-
-    const isTheLastOne = tunneledWlans[0].networkId === row.id
-
     return {
-      isDisabled: isTheLastOne,
-      tooltip: isTheLastOne
-        // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
-        : undefined
+      isDisabled: false
     }
   }
 

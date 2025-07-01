@@ -93,7 +93,7 @@ const defaultApPayload = {
 
 export function ApForm () {
   const { $t } = useIntl()
-  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  // const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, serialNumber='' } = useParams()
   const isEditMode = action === 'edit'
@@ -217,13 +217,13 @@ export function ApForm () {
         if (afcEnabled) {
           setAfcEnabled(afcEnabled)
         }
-        if (supportTlsKeyEnhance) {
-          // eslint-disable-next-line
+        // if (supportTlsKeyEnhance) {
+        // eslint-disable-next-line
           const tlsEnhancedKeyEnabled = (await getVenueApEnhancedKey({ params: { venueId } })).data?.tlsKeyEnhancedModeEnabled
-          if (tlsEnhancedKeyEnabled) {
-            setTlsEnhancedKeyEnabled(tlsEnhancedKeyEnabled)
-          }
+        if (tlsEnhancedKeyEnabled) {
+          setTlsEnhancedKeyEnabled(tlsEnhancedKeyEnabled)
         }
+
       }
 
       setData(apDetails)
@@ -306,7 +306,7 @@ export function ApForm () {
   }
 
   const handleUpdateTlsKey = async (values: ApDeep) => {
-    if (supportTlsKeyEnhance && changeTlsEnhancedKey) {
+    if (changeTlsEnhancedKey) {
       showActionModal({
         type: 'confirm',
         width: 450,
@@ -485,12 +485,12 @@ export function ApForm () {
       setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
     }
 
-    if (supportTlsKeyEnhance) {
-      const targetVenueTlsKey = (await getVenueApEnhancedKey(
-        { params: { venueId: value } })).data
-      // eslint-disable-next-line max-len
-      setChangeTlsEnhancedKey(tlsEnhancedKeyEnabled !== targetVenueTlsKey?.tlsKeyEnhancedModeEnabled)
-    }
+    //if (supportTlsKeyEnhance) {
+    const targetVenueTlsKey = (await getVenueApEnhancedKey(
+      { params: { venueId: value } })).data
+    // eslint-disable-next-line max-len
+    setChangeTlsEnhancedKey(tlsEnhancedKeyEnabled !== targetVenueTlsKey?.tlsKeyEnhancedModeEnabled)
+
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {

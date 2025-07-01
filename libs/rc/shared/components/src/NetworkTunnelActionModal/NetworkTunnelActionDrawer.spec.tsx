@@ -400,7 +400,7 @@ describe('NetworkTunnelDrawer', () => {
     beforeEach(() => {
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({ isLoading: false })
     })
-    it('should correctly display when no SDLAN run on this venue', async () => {
+    it('should be able to select SD-LAN when no SDLAN run on this venue', async () => {
       const mockedNetworkData = {
         id: 'mocked-networkId',
         type: NetworkTypeEnum.CAPTIVEPORTAL,
@@ -423,7 +423,7 @@ describe('NetworkTunnelDrawer', () => {
       const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
       await userEvent.click(tunnelingMethod)
       const sdlanOption = await screen.findByTestId('sd-lan-option')
-      expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
+      expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
     })
 
 
