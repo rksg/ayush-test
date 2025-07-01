@@ -18,9 +18,8 @@ export const isEqualLanPort = (
   const lanPortProperties =
     ['enabled', 'portId', 'ethernetPortProfileId', 'untagId', 'vlanMembers']
   for (let i = 0; i < currentLan.lanPorts.length; i++) {
-    let current = pick(currentLan.lanPorts[i], lanPortProperties)
-    let other = pick(otherLan.lanPorts[i], lanPortProperties)
-    if (!isEqual(current, other)) {
+    if (!isEqual(pick(currentLan.lanPorts[i], lanPortProperties),
+      pick(otherLan.lanPorts[i], lanPortProperties))) {
       return false
     }
   }
