@@ -5,7 +5,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { DonutChart, ContentSwitcher, Loader, NoData, HistoricalCard } from '@acx-ui/components'
 
-import { ContentSwitcherWrapper, PADDING_BOTTOM } from '../../styledComponents'
+import { ContentSwitcherWrapper } from '../../styledComponents'
 
 import { useTopNWifiClientQuery } from './services'
 
@@ -49,17 +49,21 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
                 align='right'
                 noPadding
               />
-              {(chartData && chartData.length) > 0 ?
-                <DonutChart
-                  data={chartData}
-                  style={{ width, height: height - PADDING_BOTTOM }}
-                  legend='name-bold-value'
-                  size='large'
-                  showLegend
-                  showTotal
-                  showLabel
-                  showValue
-                /> : <NoData />}
+              <AutoSizer>
+                {({ height, width }) => (
+                  (chartData && chartData.length) > 0 ?
+                    <DonutChart
+                      data={chartData}
+                      style={{ width, height: height }}
+                      legend='name-bold-value'
+                      size='large'
+                      showLegend
+                      showTotal
+                      showLabel
+                      showValue
+                    /> : <NoData />
+                )}
+              </AutoSizer>
             </ContentSwitcherWrapper>
           )}
         </AutoSizer>

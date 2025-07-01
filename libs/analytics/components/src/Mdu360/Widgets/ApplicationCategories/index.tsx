@@ -8,11 +8,12 @@ import {
   ContentSwitcher,
   Loader,
   ContentSwitcherProps,
-  HistoricalCard
+  HistoricalCard,
+  NoData
 } from '@acx-ui/components'
 import { formats } from '@acx-ui/formatter'
 
-import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
+import { ContentSwitcherWrapper } from '../../styledComponents'
 
 import { useTopNApplicationCategoriesQuery } from './services'
 
@@ -41,47 +42,43 @@ export const ApplicationCategories = ({
       {
         label: $t({ defaultMessage: 'Client Count' }),
         value: 'clientCount',
-        children: results?.clientCount.length ? (
+        children:
           <AutoSizer>
             {({ height, width }) => (
-              <DonutChart
-                data={results.clientCount}
-                style={{ width, height }}
-                legend='name-bold-value'
-                size='medium'
-                showLegend
-                showTotal
-                showValue
-                showLabel
-              />
+              results?.clientCount.length ?
+                <DonutChart
+                  data={results.clientCount}
+                  style={{ width, height }}
+                  legend='name-bold-value'
+                  size='medium'
+                  showLegend
+                  showTotal
+                  showValue
+                  showLabel
+                /> : <NoData />
             )}
           </AutoSizer>
-        ) : (
-          <StyledNoData />
-        )
       },
       {
         label: $t({ defaultMessage: 'Data Usage' }),
         value: 'dataUsage',
-        children: results?.dataUsage.length ? (
+        children:
           <AutoSizer>
             {({ height, width }) => (
-              <DonutChart
-                data={results.dataUsage}
-                style={{ width, height }}
-                legend='name-bold-value'
-                size='medium'
-                showLegend
-                showTotal
-                showValue
-                showLabel
-                dataFormatter={(value) => formats.bytesFormat(value as number)}
-              />
+              results?.dataUsage.length ?
+                <DonutChart
+                  data={results.dataUsage}
+                  style={{ width, height }}
+                  legend='name-bold-value'
+                  size='medium'
+                  showLegend
+                  showTotal
+                  showValue
+                  showLabel
+                  dataFormatter={(value) => formats.bytesFormat(value as number)}
+                /> : <NoData />
             )}
           </AutoSizer>
-        ) : (
-          <StyledNoData />
-        )
       }
     ],
     [$t, results?.clientCount, results?.dataUsage]
