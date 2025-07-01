@@ -55,7 +55,9 @@ export enum Actions {
 export const isVisibleByAction = (rows: Intent[], action: Actions) => {
   switch (action) {
     case Actions.One_Click_Optimize:
-      return !rows.some(row => row.displayStatus !== DisplayStates.new)
+      return !rows.some(row =>
+        ![DisplayStates.new, DisplayStates.naVerified].includes(row.displayStatus)
+      )
     case Actions.Optimize:
       return rows.length === 1 && [
         DisplayStates.new,
