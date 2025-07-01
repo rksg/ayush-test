@@ -166,7 +166,6 @@ export enum Features {
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'removable-ff',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'removable-ff',
-  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'removable-ff',
   WIFI_EDA_WIFI7_320MHZ = 'removable-ff',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'removable-ff',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
