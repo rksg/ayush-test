@@ -22,9 +22,11 @@ describe('IntentAI utils', () => {
     it('should return true', () => {
       expect(isDataRetained(moment().subtract(100, 'days').toISOString())).toBeTruthy()
     })
+
     it('should return false', () => {
       expect(isDataRetained(moment().subtract(400, 'days').toISOString())).toBeFalsy()
     })
+
     it('should handle undefined', () => {
       expect(isDataRetained(undefined)).toBeTruthy()
     })
@@ -227,6 +229,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.new }
         )
       })
+
       it('should handle pausedApplyFailed', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -243,6 +246,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.active }
         )
       })
+
       it('should handle pausedFromActive', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -282,6 +286,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.active }
         )
       })
+
       it('should handle pausedReverted', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -298,6 +303,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
+
       it('should handle pausedRevertFailed', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -314,6 +320,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
+
       it('should handle StatusReasons.waitingForEtl', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -374,6 +381,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.new }
         )
       })
+
       it('should handle Invalid statusTrail(Resume)', () => {
         expect(() => {
           try{
@@ -394,6 +402,7 @@ describe('IntentAI utils', () => {
           }
         }).toThrow('Invalid statusTrail(Resume)')
       })
+
       it('should handle naVerified', () => {
         expect(getTransitionStatus(
           Actions.Resume,
