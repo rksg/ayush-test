@@ -21,10 +21,6 @@ export const cloudVersion = {
   versionUpgradeDate: null
 }
 
-export const scheduleVersion = {
-  scheduleVersionList: ['6.2.1.103.2573', '6.2.1.103.2550']
-}
-
 export const venueApModelFirmwareList = {
   totalCount: 1,
   page: 1,

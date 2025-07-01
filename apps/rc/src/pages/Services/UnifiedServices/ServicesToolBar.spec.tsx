@@ -1,9 +1,9 @@
 import { cleanup, waitFor } from '@testing-library/react'
 import userEvent            from '@testing-library/user-event'
 
-import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
 import { render, screen }         from '@acx-ui/test-utils'
+import { RadioCardCategory }      from '@acx-ui/types'
 
 import { ServicesToolBar, ServiceSortOrder, sortProductOptions, sortCategoryOptions } from './ServicesToolBar'
 

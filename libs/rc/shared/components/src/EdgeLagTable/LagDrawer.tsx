@@ -379,6 +379,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentLagData)
 
         return <EdgePortCommonForm
+          serialNumber={serialNumber}
           formRef={form}
           portsData={portList}
           lagData={updatedLagList}
