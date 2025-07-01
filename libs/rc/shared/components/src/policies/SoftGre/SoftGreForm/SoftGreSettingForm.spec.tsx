@@ -155,6 +155,13 @@ describe('SoftGreSettingForm', () => {
       </Provider>,
       { route: { path: createViewPath, params } }
     )
+
+    const primaryGatewayField = screen.getByRole('textbox', { name: /Primary Gateway/i })
+    await user.type(primaryGatewayField,'128.0.0.0')
+    // eslint-disable-next-line max-len
+    const secondaryGatewayField = screen.getByRole('textbox', { name: /Secondary Gateway/i })
+    await user.type(secondaryGatewayField,'128.0.0.1')
+
     const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
     await user.click(toggle)
     // eslint-disable-next-line max-len
@@ -194,6 +201,13 @@ describe('SoftGreSettingForm', () => {
       </Provider>,
       { route: { path: createViewPath, params } }
     )
+
+    const primaryGatewayField = screen.getByRole('textbox', { name: /Primary Gateway/i })
+    await user.type(primaryGatewayField,'128.0.0.0')
+    // eslint-disable-next-line max-len
+    const secondaryGatewayField = screen.getByRole('textbox', { name: /Secondary Gateway/i })
+    await user.type(secondaryGatewayField,'128.0.0.1')
+
     const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
     await user.click(toggle)
 

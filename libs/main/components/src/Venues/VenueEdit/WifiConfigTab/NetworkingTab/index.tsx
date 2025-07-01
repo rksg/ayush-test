@@ -55,7 +55,6 @@ export function NetworkingTab () {
   const { isTemplate } = useConfigTemplate()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
   const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
   const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
@@ -187,14 +186,15 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm isAllowEdit={isAllowEditCellular} />
     </> }] : []),
-  ...(isSmartMonitorFFEnabled? [{
+  {
     title: $t({ defaultMessage: 'Smart Monitor' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='smart-monitor'>
         { $t({ defaultMessage: 'Smart Monitor' }) }
       </StepsFormLegacy.SectionTitle>
       <SmartMonitor isAllowEdit={isAllowEditSmartMonitor} />
-    </> }] : []),
+    </>
+  },
   {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>

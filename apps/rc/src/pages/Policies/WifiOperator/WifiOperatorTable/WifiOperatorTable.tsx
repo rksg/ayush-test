@@ -8,7 +8,6 @@ import {
   WIFI_OPERATOR_MAX_COUNT
 } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteWifiOperatorMutation,
   useGetWifiOperatorListQuery,
   useWifiNetworkListQuery
@@ -25,7 +24,8 @@ import {
   PolicyType,
   useTableQuery,
   WifiNetwork,
-  WifiOperatorViewModel
+  WifiOperatorViewModel,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
