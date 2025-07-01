@@ -192,7 +192,6 @@ export enum Features {
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'removable-ff',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
-  GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'removable-ff',
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'removable-ff',
   RUCKUS_AI_JWT_TOGGLE = 'ruckus-ai-jwt-toggle',
