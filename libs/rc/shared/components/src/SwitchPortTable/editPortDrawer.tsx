@@ -973,6 +973,9 @@ export function EditPortDrawer ({
           overrideFields.push(...profileFields)
         }
       }
+      if(form.getFieldValue('name')!==''){
+        overrideFields.push('name')
+      }
       return isMultipleEdit
         ? allMultipleEditableFields.filter(f => !overrideFields.includes(f))
         : []
@@ -1190,6 +1193,7 @@ export function EditPortDrawer ({
       const isVlansInvalid
       = (!isMultipleEdit || isOverridePortVlans) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
+        && form.getFieldValue('name') === ''
 
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
     }
