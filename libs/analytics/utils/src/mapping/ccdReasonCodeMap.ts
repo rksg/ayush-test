@@ -168,6 +168,16 @@ export const ccdReasonCodes = [
   },
   {
     id: 33,
+    code: 'CCD_REASON_ASSOC_REJ_LOW_RSSI',
+    text: defineMessage({ defaultMessage: 'Association Reject due to low RSSI' })
+  },
+  {
+    id: 34,
+    code: 'CCD_REASON_CHAN_POOR_CONDITION',
+    text: defineMessage({ defaultMessage: 'Channel in poor condition' })
+  },
+  {
+    id: 35,
     code: 'CCD_REASON_MAX_VALUE',
     // This is a placeholder code use by AP team, no description for it
     text: defineMessage({ defaultMessage: 'CCD_REASON_MAX_VALUE' })
