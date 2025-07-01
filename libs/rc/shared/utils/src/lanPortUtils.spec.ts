@@ -82,6 +82,7 @@ describe('lanPortUtils', () => {
       {
         defaultType: 'TRUNK',
         type: 'TRUNK',
+        ethernetPortProfileId: 'test-id',
         untagId: 101,
         vlanMembers: '1-4094',
         portId: '1',
@@ -96,6 +97,7 @@ describe('lanPortUtils', () => {
       {
         defaultType: 'TRUNK',
         type: 'TRUNK',
+        ethernetPortProfileId: 'test-id',
         untagId: 1,
         vlanMembers: '1-4094',
         portId: '2',
@@ -113,6 +115,45 @@ describe('lanPortUtils', () => {
 
   const defaultApLanPorts: WifiApSetting = {
     poeMode: 'Auto',
+    poeOut: false,
+    lanPorts: [
+      {
+        defaultType: 'ACCESS',
+        type: 'ACCESS',
+        ethernetPortProfileId: 'tenant-id_ACCESS',
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '1',
+        enabled: true,
+        id: '1',
+        isPoeOutPort: false,
+        isPoePort: false,
+        trunkPortOnly: false,
+        supportDisable: true,
+        vni: 1
+      },
+      {
+        defaultType: 'TRUNK',
+        type: 'TRUNK',
+        ethernetPortProfileId: 'tenant-id_TRUNK',
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '2',
+        enabled: true,
+        id: '2',
+        isPoeOutPort: false,
+        isPoePort: true,
+        supportDisable: false,
+        trunkPortOnly: false,
+        vni: 1
+      }
+    ],
+    useVenueSettings: true
+  }
+
+  const customApLanPorts: WifiApSetting = {
+    poeMode: 'Auto',
+    poeOut: true,
     lanPorts: [
       {
         defaultType: 'ACCESS',
@@ -177,8 +218,16 @@ describe('lanPortUtils', () => {
   })
 
   it('check same default ap lan port equality should be true', () => {
+
     const eqDefaultLanPorts = isEqualLanPort(defaultApLanPorts, defaultApLanPorts)
 
     expect(eqDefaultLanPorts).toEqual(true)
+  })
+
+  it('check poe mode and poe out equality should be false', () => {
+
+    const eqDefaultLanPorts = isEqualLanPort(customApLanPorts, defaultApLanPorts)
+
+    expect(eqDefaultLanPorts).toEqual(false)
   })
 })
