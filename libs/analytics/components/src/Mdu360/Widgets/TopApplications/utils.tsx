@@ -23,23 +23,31 @@ export interface ApplicationData {
 
 const columnSize = 5
 
-const IconWrapper = ({ children, zoom = 0.3 }: { children: React.ReactNode; zoom?: number }) => (
-  <span style={{ zoom, paddingRight: '20px' }}>{children}</span>
+const IconWrapper = ({
+  children,
+  zoom = 0.4,
+  padding = '20px'
+}: {
+  children: React.ReactNode
+  zoom?: number
+  padding?: string
+}) => (
+  <span style={{ zoom, paddingRight: padding }}>{children}</span>
 )
 
-const applicationsIcon = <IconWrapper zoom={0.25}><Applications /></IconWrapper>
+const applicationsIcon = <IconWrapper zoom={0.25} padding='45px'><Applications /></IconWrapper>
 
 export const iconList = [
   { name: 'facebook', icon: <IconWrapper><FacebookColored /></IconWrapper> },
   { name: 'google', icon: <IconWrapper><GoogleColored /></IconWrapper> },
-  { name: 'twitter', icon: <IconWrapper zoom={0.33}><TwitterColored /></IconWrapper> },
+  { name: 'twitter', icon: <IconWrapper zoom={0.42}><TwitterColored /></IconWrapper> },
   { name: 'youtube', icon: <IconWrapper><YouTube /></IconWrapper> },
   { name: 'netflix', icon: <IconWrapper><Netflix /></IconWrapper> },
   { name: 'linkedin', icon: <IconWrapper><LinkedInColored /></IconWrapper> },
-  { name: 'apple', icon: <IconWrapper zoom={0.35}><Apple /></IconWrapper> },
-  { name: 'microsoft', icon: <IconWrapper zoom={0.35}><Microsoft /></IconWrapper> },
-  { name: 'whatsapp', icon: <IconWrapper zoom={0.4}><Whatsapp /></IconWrapper> },
-  { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> }
+  { name: 'apple', icon: <IconWrapper zoom={0.45}><Apple /></IconWrapper> },
+  { name: 'microsoft', icon: <IconWrapper zoom={0.45}><Microsoft /></IconWrapper> },
+  { name: 'whatsapp', icon: <IconWrapper zoom={0.52}><Whatsapp /></IconWrapper> },
+  { name: 'chrome', icon: <IconWrapper zoom={0.4}><ChromeColored /></IconWrapper> }
 ]
 
 const getIconForApplication = (name: string) => {
