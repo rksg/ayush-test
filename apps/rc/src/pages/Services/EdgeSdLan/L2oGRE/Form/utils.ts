@@ -1,6 +1,11 @@
-import { EdgeMvSdLanViewData, EdgeSdLanServiceProfile } from '@acx-ui/rc/utils'
+import { DefaultOptionType } from 'antd/lib/select'
+import { isNil }             from 'lodash'
+
+import { EdgeMvSdLanViewData, EdgeSdLanServiceProfile, MtuTypeEnum, Network, NetworkSegmentTypeEnum, NetworkTypeEnum, TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                                                            from '@acx-ui/utils'
 
 import { EdgeSdLanFormType } from '.'
+
 
 export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServiceProfile => {
   return {
@@ -46,4 +51,49 @@ export const transformToFormData = (viewData?: EdgeMvSdLanViewData): EdgeSdLanFo
         return acc
       }, {} as EdgeSdLanFormType['activatedNetworkTemplates']) ?? {}
   } : {} as EdgeSdLanFormType
+}
+
+export const getFilteredTunnelProfileOptions = (
+  row: Network,
+  tunnelProfileOptions: DefaultOptionType[],
+  availableTunnelProfiles: TunnelProfileViewData[]
+) => {
+  const { $t } = getIntl()
+  const isVlanPooling = !isNil(row.vlanPool)
+  const isCaptivePortal = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
+
+  return tunnelProfileOptions
+    .map(item => {
+      if(item.value) {
+        const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
+
+        // Skip none VLAN_VXLAN tunnel profile options
+        if(profile?.type !== NetworkSegmentTypeEnum.VLAN_VXLAN) {
+          return null
+        }
+
+        // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
+        if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+          return null
+        }
+
+        // Skip VXLAN-GPE options for captive portal networks with non-manual MTU or NAT traversal enabled
+        // eslint-disable-next-line max-len
+        if(isCaptivePortal && (profile?.mtuType !== MtuTypeEnum.MANUAL || profile?.natTraversalEnabled)) {
+          return null
+        }
+
+        // Disable VXLAN-GPE options for vlan pooling networks
+        if (isVlanPooling && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+          return {
+            ...item,
+            disabled: true,
+            title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+          }
+        }
+      }
+
+      return item
+    })
+    .filter((item): item is DefaultOptionType => item !== null)
 }
