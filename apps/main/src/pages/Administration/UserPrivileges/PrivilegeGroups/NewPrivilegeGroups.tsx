@@ -50,17 +50,18 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const [customRoleOption, setCustomRoleOption] = useState<string[] | RolesEnum[]>()
   const { rbacOpsApiEnabled } = getUserProfile()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
+  const isPtenantUsersPrivilegesEnabled = useIsSplitOn(
+    Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
+  )
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
-
-  //   const { data: privilegeGroupList, isLoading, isFetching }
-  //     = useGetPrivilegeGroupsQuery({ params })
 
   const settingsId = 'new-privilege-group-table'
 
   const payload = {
     page: 0,
     pageStartZero: true,
-    includeCounts: true
+    includeCounts: true,
+    includeSystemRoles: true
   }
   const tableQuery = useTableQuery({
     useQuery: useGetMspEcPrivilegeGroupsPaginatedQuery,
@@ -118,6 +119,7 @@ const NewPrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         title: $t({ defaultMessage: 'Name' }),
         key: 'name',
         dataIndex: 'name',
+        searchable: isPtenantUsersPrivilegesEnabled,
         defaultSortOrder: 'ascend',
         sorter: { compare: sortProp('name', defaultSort) },
         render: (_, row) => {

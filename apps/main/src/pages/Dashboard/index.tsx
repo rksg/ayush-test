@@ -41,13 +41,11 @@ import {
   LockOutlined,
   SettingsOutlined
 } from '@acx-ui/icons-new'
-import { VenueFilter }      from '@acx-ui/main/components'
+import { MapWidgetV2, VenueFilter } from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
-  MapWidgetV2,
-  useIsEdgeReady,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
@@ -229,7 +227,6 @@ function DashboardPageHeader (props: {
   const { startDate , endDate, range } = dashboardFilters
   const { rbacOpsApiEnabled } = getUserProfile()
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsEdgeReady()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
@@ -306,16 +303,15 @@ function DashboardPageHeader (props: {
                 {$t({ defaultMessage: 'Switch' })}
               </TenantLink>
             }] : []),
-          ...(isEdgeEnabled &&
-            hasPermission({
-              scopes: [EdgeScopes.CREATE],
-              rbacOpsIds: [
-                [
-                  getOpsApi(EdgeUrlsInfo.addEdge),
-                  getOpsApi(EdgeUrlsInfo.addEdgeCluster)
-                ]
+          ...(hasPermission({
+            scopes: [EdgeScopes.CREATE],
+            rbacOpsIds: [
+              [
+                getOpsApi(EdgeUrlsInfo.addEdge),
+                getOpsApi(EdgeUrlsInfo.addEdgeCluster)
               ]
-            })) ? [{
+            ]
+          })) ? [{
               key: 'add-edge',
               label: <TenantLink to='devices/edge/add'>{
                 $t({ defaultMessage: 'RUCKUS Edge' })
@@ -702,7 +698,6 @@ function DefaultDashboard () {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isEdgeEnabled = useIsEdgeReady()
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -716,13 +711,11 @@ function DefaultDashboard () {
       value: 'switch',
       children: <SwitchWidgets />
     },
-    ...(isEdgeEnabled ? [
-      {
-        label: $t({ defaultMessage: 'RUCKUS Edge' }),
-        value: 'edge',
-        children: <EdgeWidgets />
-      }
-    ] : [])
+    {
+      label: $t({ defaultMessage: 'RUCKUS Edge' }),
+      value: 'edge',
+      children: <EdgeWidgets />
+    }
   ]
 
   /**

@@ -42,11 +42,12 @@ export function ActivePluginsWidget () {
     <Loader states={[overviewQuery]}>
       <Card title={$t({ defaultMessage: 'Active Plugins' })}>
         {(data && data.length > 0)
-          ? <Row>
+          ? <Row style={{ paddingLeft: '22px' }}>
             { data.map((plugin) => (
               <Col span={12} key={plugin.name}>
                 <Badge
-                  color='rgb(45, 183, 245)'
+                  // eslint-disable-next-line max-len
+                  color={plugin.running ? 'var(--acx-semantics-green-50)' : 'var(--acx-neutrals-50)'}
                   text={plugin.name}
                 />
               </Col>

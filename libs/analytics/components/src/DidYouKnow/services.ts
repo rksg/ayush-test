@@ -3,8 +3,6 @@ import _       from 'lodash'
 import moment  from 'moment'
 
 import { getFilterPayload }                 from '@acx-ui/analytics/utils'
-import { get }                              from '@acx-ui/config'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { dataApi }                          from '@acx-ui/store'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
@@ -23,11 +21,11 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     customFacts: build.query<
       ReturnType<typeof getFactsData>,
-      (PathFilter | DashboardFilter) & { requestedList: string[], weekRange: boolean }
+      (PathFilter | DashboardFilter) & { requestedList: string[] }
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
-            const baseVariables = getBaseVariables(payload)
+            const timeRange = getWeekRange()
             const filterVariables = getFilterVariables(payload)
             return {
               document: gql`
@@ -48,7 +46,7 @@ export const api = dataApi.injectEndpoints({
                 }
               `,
               variables: {
-                ...baseVariables,
+                ...timeRange,
                 ...filterVariables,
                 requestedList: payload.requestedList
               }
@@ -57,13 +55,13 @@ export const api = dataApi.injectEndpoints({
           transformResponse: (response: Response<DidYouKnowData[]>) =>
             getFactsData(response.network.hierarchyNode.facts)
         }),
-    customAvailableFacts: build.query<
+    availableFacts: build.query<
       string[][],
-      (PathFilter | DashboardFilter) & { weekRange: boolean }
+      (PathFilter | DashboardFilter)
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
-            const baseVariables = getBaseVariables(payload)
+            const baseVariables = getWeekRange()
             const filterVariables = getFilterVariables(payload)
             return {
               document: gql`
@@ -92,36 +90,21 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useCustomFactsQuery, useCustomAvailableFactsQuery } = api
+export const { useCustomFactsQuery, useAvailableFactsQuery } = api
 
 export function useFactsQuery (
   factsSets: string[][] | undefined,
   loaded: string[],
   offset: number,
   filters: PathFilter | DashboardFilter) {
-  const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
-  const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
 
   const hasData = Boolean(factsSets?.length &&
     factsSets[offset].every(key => loaded.includes(key)))
 
   return useCustomFactsQuery(
-    { ...filters, requestedList: factsSets?.[offset] ?? [], weekRange },
+    { ...filters, requestedList: factsSets?.[offset] ?? [] },
     { skip: hasData || _.isEmpty(factsSets) }
   )
-}
-
-export function useAvailableFactsQuery (filters: PathFilter | DashboardFilter) {
-  const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
-  const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
-  return useCustomAvailableFactsQuery({ ...filters, weekRange })
-}
-
-const getBaseVariables = (payload: (PathFilter | DashboardFilter) & { weekRange: boolean }) => {
-  const { startDate, endDate } = payload.weekRange ?
-    getWeekRange() :
-    getRangeByFilter(payload)
-  return { startDate, endDate }
 }
 
 const getFilterVariables = (payload: (PathFilter | DashboardFilter)) => {
@@ -135,8 +118,3 @@ const getWeekRange = () => {
     endDate: today.format('YYYY-MM-DDTHH:mm:ssZ')
   }
 }
-
-const getRangeByFilter = (filters: PathFilter | DashboardFilter) => ({
-  startDate: filters.startDate,
-  endDate: filters.endDate
-})

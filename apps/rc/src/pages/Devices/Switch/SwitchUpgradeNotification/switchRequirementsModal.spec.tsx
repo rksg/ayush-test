@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   FirmwareRbacUrlsInfo,
   SwitchFirmwareFixtures
@@ -64,7 +63,6 @@ describe('Switch Requriements Modal', () => {
   })
 
   it('render 8200 correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <SwitchUpgradeNotification

@@ -196,7 +196,7 @@ export function VenueFirmwareList () {
       minWidth: 300,
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: true,
-      fitlerCustomOptions: versionFilterOptions || [],
+      filterCustomOptions: versionFilterOptions || [],
       filterMultiple: false,
       filterKey: 'filterModelVersion',
       onCell: () => ({

@@ -12,7 +12,7 @@ import {
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                           from '@acx-ui/rc/components'
 import {
-  doProfileDelete, useAdaptivePolicySetListByQueryQuery,
+  useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation, useGetVenuesQuery,
   useNetworkListQuery,
   useSearchMacRegListsQuery, useWifiNetworkListQuery
@@ -31,7 +31,8 @@ import {
   useTableQuery,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
-  MacRegListUrlsInfo
+  MacRegListUrlsInfo,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { getOpsApi }                                               from '@acx-ui/utils'

@@ -15,8 +15,7 @@ import { FieldData } from 'rc-field-form/lib/interface'
 import { useIntl }   from 'react-intl'
 import styled        from 'styled-components'
 
-import { Button, Drawer, Select, showToast, Subtitle } from '@acx-ui/components'
-import { PhoneInput }                                  from '@acx-ui/rc/components'
+import { Button, Drawer, PhoneInput, Select, showToast, Subtitle } from '@acx-ui/components'
 import {
   useAddRecipientMutation,
   useGetPrivilegeGroupsQuery,

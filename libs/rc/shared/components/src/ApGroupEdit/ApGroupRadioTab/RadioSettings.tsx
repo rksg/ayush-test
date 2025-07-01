@@ -117,7 +117,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
   const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
@@ -191,10 +190,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       useQueryFn: useGetVenueRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      extraParams: { venueId },
-      extraQueryArgs: {
-        enableSeparation: is6gChannelSeparation
-      }
+      extraParams: { venueId }
     })
 
   const { data: apGroupRadioData, isLoading: isLoadingApGroupData } =
@@ -260,9 +256,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     const bandwidthRadioOptions = {
       [ApRadioTypeEnum.Radio24G]: GetSupportBandwidth(channelBandwidth24GOptions, supportCh24g),
       [ApRadioTypeEnum.Radio5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportCh5g),
-      [ApRadioTypeEnum.Radio6G]: is6gChannelSeparation ?
-        GetSupportIndoorOutdoorBandwidth(radio6GBandwidth, supportCh6g) :
-        GetSupportBandwidth(radio6GBandwidth, supportCh6g),
+      [ApRadioTypeEnum.Radio6G]: GetSupportIndoorOutdoorBandwidth(radio6GBandwidth, supportCh6g),
       [ApRadioTypeEnum.RadioLower5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChLower5g),
       [ApRadioTypeEnum.RadioUpper5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChUpper5g)
     }
@@ -284,8 +278,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     const setData = async () => {
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi,
-        enableSeparation: is6gChannelSeparation
+        enableRbac: isUseRbacApi
       }, true).unwrap())
 
       const apGroupVenueData = convertVenueRadioSettingsToApGroupRadioSettings(venueRadioData)
@@ -578,14 +571,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     if (isSupport6GCountry) {
-      if (is6gChannelSeparation) {
-        radioParams6G.allowedIndoorChannels =
-          curForm?.getFieldValue(['radioParams6G', 'allowedIndoorChannels'])
-        radioParams6G.allowedOutdoorChannels =
-          curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels'])
-      } else {
-        radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
-      }
+      radioParams6G.allowedIndoorChannels =
+        curForm?.getFieldValue(['radioParams6G', 'allowedIndoorChannels'])
+      radioParams6G.allowedOutdoorChannels =
+        curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels'])
     } else {
       delete formData.radioParams6G
     }
@@ -652,13 +641,11 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
     const channelBandwidth6 = radioParams6G?.channelBandwidth
     const method6 = radioParams6G?.method
-    const indoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedIndoorChannels : radioParams6G?.allowedChannels
-    const indoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Indoor AP channel selection' }) :
-      $t({ defaultMessage: '6 GHz - Channel selection' })
+    const indoorChannel6 = radioParams6G?.allowedIndoorChannels
+    const indoorTitle6 = $t({ defaultMessage: '6 GHz - Indoor AP channel selection' })
     if (!validateChannels(indoorChannel6, method6, indoorTitle6)) return false
-    const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
-    const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
-      ''
+    const outdoorChannel6 = radioParams6G?.allowedOutdoorChannels
+    const outdoorTitle6 = $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' })
     if (isVenueChannelSelectionManualEnabled) {
       const supportCh6G = supportRadioChannels[ApRadioTypeEnum.Radio6G]
       const isSupportOutdoor6G = !isEmpty(supportCh6G.outdoor)

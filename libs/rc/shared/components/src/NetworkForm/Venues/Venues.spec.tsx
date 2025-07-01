@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }             from '@acx-ui/rc/services'
+import { networkApi }      from '@acx-ui/rc/services'
 import {
   BasicServiceSetPriorityEnum,
   CommonUrlsInfo,
@@ -309,8 +308,6 @@ describe('Create Network: Venues Step', () => {
   })
 
   it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
       sdLansVenueMap: {},
       networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],
@@ -334,8 +331,6 @@ describe('Create Network: Venues Step', () => {
   })
 
   it('should greyout when the WLAN is the last one in SDLAN', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
       sdLansVenueMap: {},
       networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],

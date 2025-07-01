@@ -114,29 +114,6 @@ describe('Edge Details Tabs', () => {
     expect(screen.queryByText('DHCP')).toBeFalsy()
   })
 
-  it('should not display troubleshooting tab when FF is disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <EdgeDetailsDataContext.Provider
-          value={{
-            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            currentCluster: mockEdgeCluster,
-            isEdgeStatusLoading: false,
-            isClusterLoading: false
-          }}
-        >
-          <EdgeDetailsTabs
-            isOperational={true}
-          />
-        </EdgeDetailsDataContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
-  })
-
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>

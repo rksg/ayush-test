@@ -6,7 +6,6 @@ import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
 import { StepsForm, StepsFormProps }                                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
 import { venueApi }                                                                                                                          from '@acx-ui/rc/services'
 import { APCompatibilityFixtures, CommonUrlsInfo, EdgePinFixtures, EdgeSdLanFixtures, IncompatibilityFeatures, VenueFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                   from '@acx-ui/store'
@@ -37,6 +36,7 @@ mockedOverlapSdLans[0].tunneledGuestWlans?.forEach(wlan => {
 const edgeMvSdlanContextValues = {
   allSdLans: mockedMvSdLanDataList,
   allPins: [],
+  allSoftGreVenueMap: {},
   availableTunnelProfiles: []
 } as EdgeSdLanContextType
 
@@ -86,7 +86,10 @@ describe('Tunneled Venue Networks Table', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueList))
-      )
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json(APCompatibilityFixtures.mockApCompatibilitiesVenue)))
     )
   })
 
@@ -155,8 +158,13 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should filter venues which has been tied with other SDLAN on add mode', async () => {
-    render(<MockedTargetComponent ctxValues={{ allSdLans: mockedOverlapSdLans, allPins: [], availableTunnelProfiles: [] }} />,
-      { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent ctxValues={{
+      allSdLans: mockedOverlapSdLans,
+      allPins: [],
+      allSoftGreVenueMap: {},
+      availableTunnelProfiles: []
+    }} />,
+    { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
     expect(screen.queryByRole('row', { name: /Mocked-Venue-2/i })).toBeNull()
@@ -182,7 +190,11 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: mockedOverlapSdLansForEdit , allPins: [], availableTunnelProfiles: [] }}
+      ctxValues={{
+        allSdLans: mockedOverlapSdLansForEdit,
+        allPins: [],
+        allSoftGreVenueMap: {},
+        availableTunnelProfiles: [] }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
@@ -195,8 +207,13 @@ describe('Tunneled Venue Networks Table', () => {
 
   it('should filter venues which has been tied with PIN on add mode', async () => {
     mockPinListForMutullyExclusive.data[0].venueId = targetVenue.id
-    render(<MockedTargetComponent ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]], availableTunnelProfiles: [] }} />,
-      { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent ctxValues={{
+      allSdLans: [],
+      allPins: [mockPinListForMutullyExclusive.data[0]],
+      allSoftGreVenueMap: {},
+      availableTunnelProfiles: []
+    }} />,
+    { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
     expect(screen.queryByRole('row', { name: /Mocked-Venue-2/i })).toBeNull()
@@ -218,7 +235,12 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]], availableTunnelProfiles: [] }}
+      ctxValues={{
+        allSdLans: [],
+        allPins: [mockPinListForMutullyExclusive.data[0]],
+        allSoftGreVenueMap: {},
+        availableTunnelProfiles: []
+      }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
@@ -230,7 +252,6 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should have compatible warning', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     const mockApCompatibilitiesVenue = cloneDeep(APCompatibilityFixtures.mockApCompatibilitiesVenue)
     mockApCompatibilitiesVenue.apCompatibilities= [{
       ...mockApCompatibilitiesVenue.apCompatibilities[0],

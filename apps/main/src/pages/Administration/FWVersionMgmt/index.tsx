@@ -2,23 +2,16 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
-import { useIsEdgeReady }         from '@acx-ui/rc/components'
-import {
-  compareVersions,
-  getApVersion
-} from '@acx-ui/rc/components'
+import { Tabs, Tooltip }             from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { InformationSolid }          from '@acx-ui/icons'
 import {
   useGetLatestEdgeFirmwareQuery,
-  useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
   useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchVenueVersionListV1001Query,
   useGetVenueApModelFirmwareListQuery,
-  useGetVenueEdgeFirmwareListQuery,
-  useGetVenueVersionListQuery
+  useGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { compareSwitchVersion, SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
@@ -37,7 +30,6 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsEdgeReady()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isCore = isCoreTier(accountTier)
@@ -48,11 +40,8 @@ const FWVersionMgmt = () => {
   const { data: switchVenueVersionListV1001 } =
     useGetSwitchVenueVersionListV1001Query( { params })
 
-  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
-    skip: !isEdgeEnabled
-  })
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
   const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
-    skip: !isEdgeEnabled,
     selectFromResult: ({ data }) => ({
       latestEdgeReleaseVersion: data?.[0]
     })
@@ -139,7 +128,7 @@ const FWVersionMgmt = () => {
         }
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: true
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}
@@ -183,29 +172,13 @@ export default FWVersionMgmt
 
 function useIsApFirmwareAvailable () {
   const params = useParams()
-  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const [ isApFirmwareAvailable, setIsApFirmwareAvailable ] = useState(false)
   const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery(
     { params, payload: {
       fields: ['name', 'id', 'isApFirmwareUpToDate'],
       page: 1, pageSize: 10000
-    } },
-    { skip: !isUpgradeByModelEnabled }
+    } }
   )
-  // eslint-disable-next-line max-len
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params }, { skip: isUpgradeByModelEnabled })
-  // eslint-disable-next-line max-len
-  const { data: venueVersionList } = useGetVenueVersionListQuery({ params }, { skip: isUpgradeByModelEnabled })
-
-  useEffect(() => {
-    if (!latestReleaseVersions || !venueVersionList) return
-
-    // As long as one of the venues' version smaller than the latest release version, it would be the available
-    const latest = [...latestReleaseVersions].sort((a, b) => compareVersions(a.id, b.id)).pop()
-    // eslint-disable-next-line max-len
-    const hasOutdated = venueVersionList.data.some(fv => compareVersions(getApVersion(fv), latest?.id) < 0)
-    setIsApFirmwareAvailable(hasOutdated)
-  }, [latestReleaseVersions, venueVersionList])
 
   useEffect(() => {
     if (!venueApModelFirmwareList?.data) return
