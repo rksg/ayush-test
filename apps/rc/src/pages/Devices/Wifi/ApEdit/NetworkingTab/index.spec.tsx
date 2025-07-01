@@ -73,13 +73,13 @@ describe('AP Networking Tab', () => {
     expect(dMulicastLink).toBeVisible()
     expect(await screen.findByTestId('directedMulticast')).toBeVisible()
 
-    expect(smartMonitorLink).not.toBeInTheDocument()
+    expect(smartMonitorLink).toBeVisible()
+    expect(await screen.findByTestId('smartMonitor')).toBeVisible()
   })
 
   it('should render smart monitor with ap capabilities correctly',async () => {
     jest.mocked(useIsSplitOn).mockImplementation(
-      ff => ff === Features.WIFI_R370_TOGGLE
-      || ff === Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
+      ff => ff === Features.WIFI_R370_TOGGLE)
     render(
       <Provider>
         <ApDataContext.Provider value={defaultT750SeApCtxData}>
