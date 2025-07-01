@@ -24,16 +24,15 @@ export function TrafficTrend ({
   const data = getSeriesData(queryResults.data!, seriesMapping)
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        (data.length && data[0].data.length) ?
+    (data.length && data[0].data.length) ?
+      <AutoSizer>
+        {({ height, width }) => (
           <MultiLineTimeSeriesChart
             style={{ width, height }}
             data={data}
             dataFormatter={formatter('bytesFormat')}
           />
-          : <NoData/>
-      )}
-    </AutoSizer>
+        )}
+      </AutoSizer> : <NoData/>
   )
 }

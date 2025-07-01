@@ -42,43 +42,41 @@ export const ApplicationCategories = ({
       {
         label: $t({ defaultMessage: 'Client Count' }),
         value: 'clientCount',
-        children:
+        children: results?.clientCount.length ?
           <AutoSizer>
             {({ height, width }) => (
-              results?.clientCount.length ?
-                <DonutChart
-                  data={results.clientCount}
-                  style={{ width, height }}
-                  legend='name-bold-value'
-                  size='medium'
-                  showLegend
-                  showTotal
-                  showValue
-                  showLabel
-                /> : <NoData />
+              <DonutChart
+                data={results.clientCount}
+                style={{ width, height }}
+                legend='name-bold-value'
+                size='medium'
+                showLegend
+                showTotal
+                showValue
+                showLabel
+              />
             )}
-          </AutoSizer>
+          </AutoSizer> : <NoData />
       },
       {
         label: $t({ defaultMessage: 'Data Usage' }),
         value: 'dataUsage',
-        children:
+        children: results?.dataUsage.length ?
           <AutoSizer>
             {({ height, width }) => (
-              results?.dataUsage.length ?
-                <DonutChart
-                  data={results.dataUsage}
-                  style={{ width, height }}
-                  legend='name-bold-value'
-                  size='medium'
-                  showLegend
-                  showTotal
-                  showValue
-                  showLabel
-                  dataFormatter={(value) => formats.bytesFormat(value as number)}
-                /> : <NoData />
+              <DonutChart
+                data={results.dataUsage}
+                style={{ width, height }}
+                legend='name-bold-value'
+                size='medium'
+                showLegend
+                showTotal
+                showValue
+                showLabel
+                dataFormatter={(value) => formats.bytesFormat(value as number)}
+              />
             )}
-          </AutoSizer>
+          </AutoSizer> : <NoData />
       }
     ],
     [$t, results?.clientCount, results?.dataUsage]

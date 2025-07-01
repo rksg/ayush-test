@@ -43,9 +43,9 @@ export function TrafficSnapshot ({ queryResults }:
   const chartData = getTrafficSnapshotChartData(queryResults?.data)
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        chartData.length ?
+    chartData.length ?
+      <AutoSizer>
+        {({ height, width }) => (
           <DonutChart
             style={{ width, height }}
             data={chartData}
@@ -57,8 +57,7 @@ export function TrafficSnapshot ({ queryResults }:
             dataFormatter={formatter('bytesFormat')}
             size={'large'}
           />
-          : <NoData />
-      )}
-    </AutoSizer>
+        )}
+      </AutoSizer> : <NoData/>
   )
 }

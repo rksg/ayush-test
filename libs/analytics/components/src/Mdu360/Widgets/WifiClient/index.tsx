@@ -49,9 +49,9 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
                 align='right'
                 noPadding
               />
-              <AutoSizer>
-                {({ height, width }) => (
-                  (chartData && chartData.length) > 0 ?
+              {(chartData && chartData.length) > 0 ?
+                <AutoSizer>
+                  {({ height, width }) => (
                     <DonutChart
                       data={chartData}
                       style={{ width, height: height }}
@@ -61,9 +61,9 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
                       showTotal
                       showLabel
                       showValue
-                    /> : <NoData />
-                )}
-              </AutoSizer>
+                    />
+                  )}
+                </AutoSizer> : <NoData />}
             </ContentSwitcherWrapper>
           )}
         </AutoSizer>
