@@ -325,7 +325,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
     }
 
   const icx71hasVersionStartingWith100 =
-    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('090'))
+    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
 
   return (
     <div
