@@ -310,7 +310,8 @@ export enum Features {
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
-  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle'
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
+  WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
