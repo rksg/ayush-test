@@ -1,8 +1,7 @@
 import { MessageDescriptor } from 'react-intl'
 
-import { RadioCardCategory }                                      from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { RolesEnum }                                              from '@acx-ui/types'
+import { RadioCardCategory, RolesEnum }                           from '@acx-ui/types'
 import { getIntl }                                                from '@acx-ui/utils'
 
 import { LocationExtended }                                                         from '../../common'

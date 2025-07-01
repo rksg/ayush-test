@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, categoryMapping, PageHeader, RadioCardCategory, Tabs } from '@acx-ui/components'
+import { Button, categoryMapping, PageHeader, Tabs } from '@acx-ui/components'
 import {
   ServiceType,
   ServiceOperation,
@@ -12,6 +12,7 @@ import {
   serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                                 from '@acx-ui/types'
 
 import DHCPTable     from '../DHCP/DHCPTable/DHCPTable'
 import EdgeDhcpTable from '../DHCP/Edge/DHCPTable'

@@ -133,7 +133,6 @@ const GMap: React.FC<MapProps> = ({
               <VenueMarkerTooltip
                 venueMarker={venueMarker}
                 onNavigate={onNavigate}
-                isEdgeEnabled={true}
               />
             </RawIntlProvider>
           )
@@ -171,7 +170,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers: visibleMarkers,
-            renderer: new VenueClusterRenderer(map, intl, true, onNavigate),
+            renderer: new VenueClusterRenderer(map, intl, onNavigate),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
             onClusterClick: onClusterClick
           }))

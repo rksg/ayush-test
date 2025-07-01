@@ -1,11 +1,10 @@
 import _ from 'lodash'
 
-import { Filter }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { useDownloadApsCSVMutation } from '@acx-ui/rc/services'
-import { TableQuery }                from '@acx-ui/rc/utils'
-import { RequestPayload }            from '@acx-ui/types'
-import { useTenantId }               from '@acx-ui/utils'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { useDownloadApsCSVMutation }   from '@acx-ui/rc/services'
+import { TableQuery }                  from '@acx-ui/rc/utils'
+import type { Filter, RequestPayload } from '@acx-ui/types'
+import { useTenantId }                 from '@acx-ui/utils'
 
 export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>
