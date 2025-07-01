@@ -44,6 +44,7 @@ describe('lanPortUtils', () => {
       {
         defaultType: 'TRUNK',
         type: 'TRUNK',
+        ethernetPortProfileId: 'tenant-id_TRUNK',
         untagId: 1,
         vlanMembers: '1-4094',
         portId: '1',
@@ -56,10 +57,11 @@ describe('lanPortUtils', () => {
         vni: 1
       },
       {
-        defaultType: 'TRUNK',
-        type: 'TRUNK',
+        defaultType: 'ACCESS',
+        type: 'ACCESS',
+        ethernetPortProfileId: 'tenant-id_ACCESS',
         untagId: 1,
-        vlanMembers: '1-4094',
+        vlanMembers: '1',
         portId: '2',
         enabled: true,
         id: '2',
@@ -113,10 +115,11 @@ describe('lanPortUtils', () => {
     poeMode: 'Auto',
     lanPorts: [
       {
-        defaultType: 'TRUNK',
-        type: 'TRUNK',
+        defaultType: 'ACCESS',
+        type: 'ACCESS',
+        ethernetPortProfileId: 'tenant-id_ACCESS',
         untagId: 1,
-        vlanMembers: '1-4094',
+        vlanMembers: '1',
         portId: '1',
         enabled: true,
         id: '1',
@@ -129,6 +132,7 @@ describe('lanPortUtils', () => {
       {
         defaultType: 'TRUNK',
         type: 'TRUNK',
+        ethernetPortProfileId: 'tenant-id_TRUNK',
         untagId: 1,
         vlanMembers: '1-4094',
         portId: '2',
@@ -144,9 +148,9 @@ describe('lanPortUtils', () => {
     useVenueSettings: true
   }
 
-  it('check same venue lan port equality should be true', () => {
+  it('check same default venue lan port equality should be true', () => {
 
-    const eqOriginLanPorts = isEqualLanPort(originalVenueLanPort, originalVenueLanPort)
+    const eqOriginLanPorts = isEqualLanPort(defaultVenueLanPort, defaultVenueLanPort)
 
     expect(eqOriginLanPorts).toEqual(true)
   })
@@ -170,5 +174,11 @@ describe('lanPortUtils', () => {
     const eqDefaultLanPorts = isEqualLanPort(originApLanPorts, defaultApLanPorts)
 
     expect(eqDefaultLanPorts).toEqual(false)
+  })
+
+  it('check same default ap lan port equality should be true', () => {
+    const eqDefaultLanPorts = isEqualLanPort(defaultApLanPorts, defaultApLanPorts)
+
+    expect(eqDefaultLanPorts).toEqual(true)
   })
 })
