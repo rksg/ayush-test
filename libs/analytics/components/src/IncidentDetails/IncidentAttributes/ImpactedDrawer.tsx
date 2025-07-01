@@ -100,7 +100,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
-    n: 100,
+    n: 500,
     impactedStart: props.impactedStart,
     impactedEnd: props.impactedEnd
   }, { selectFromResult: (states) => ({
