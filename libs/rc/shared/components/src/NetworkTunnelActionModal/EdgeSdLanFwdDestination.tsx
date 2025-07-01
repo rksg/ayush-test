@@ -10,7 +10,9 @@ import { useGetEdgeClusterListQuery }                   from '@acx-ui/rc/service
 import {
   isEdgeMatchedRequiredFirmware, TunnelProfileViewData,
   NetworkTypeEnum, TunnelTypeEnum, getServiceRoutePath, ServiceOperation,
-  ServiceType, useHelpPageLink, EdgeMvSdLanViewData
+  ServiceType, useHelpPageLink, EdgeMvSdLanViewData,
+  NetworkSegmentTypeEnum,
+  MtuTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { messageMappings } from './messageMappings'
@@ -86,23 +88,36 @@ export const EdgeSdLanFwdDestination = (props: EdgeSdLanFwdDestinationProps) => 
     const isLower = isLowerSdLanEdgeFw()
     return tunnelProfileOptions
       .map(item => {
-        const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
+        if(item.value) {
+          const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
 
-        // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
-        if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-          return null
-        }
+          // Skip none VLAN_VXLAN tunnel profile options
+          if(profile?.type !== NetworkSegmentTypeEnum.VLAN_VXLAN) {
+            return null
+          }
 
-        if(isLower && profile?.tunnelType === TunnelTypeEnum.L2GRE) {
-          return null
-        }
+          // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
+          if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+            return null
+          }
 
-        // Disable VXLAN-GPE options for vlan pooling networks
-        if (hasVlanPool && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-          return {
-            ...item,
-            disabled: true,
-            title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+          // Skip VXLAN-GPE options for captive portal networks with non-manual MTU or NAT traversal enabled
+          // eslint-disable-next-line max-len
+          if(isCaptivePortal && (profile?.mtuType !== MtuTypeEnum.MANUAL || profile.natTraversalEnabled)) {
+            return null
+          }
+
+          if(isLower && profile?.tunnelType === TunnelTypeEnum.L2GRE) {
+            return null
+          }
+
+          // Disable VXLAN-GPE options for vlan pooling networks
+          if (hasVlanPool && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+            return {
+              ...item,
+              disabled: true,
+              title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+            }
           }
         }
 

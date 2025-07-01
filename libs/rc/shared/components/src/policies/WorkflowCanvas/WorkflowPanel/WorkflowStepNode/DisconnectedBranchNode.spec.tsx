@@ -53,8 +53,8 @@ describe('DisconnectedBranchNode', () => {
     )
 
     // default style
-    expect(screen.queryByTestId('Plus')).toBeVisible()
-    expect(screen.queryByTestId('WarningCircleSolid')).toBeVisible()
+    expect(screen.queryByTestId('DragArrow')).toBeVisible()
+    expect(screen.queryByTestId('ExclamationMark')).toBeVisible()
   })
 
   it('should render DisconnectedBranchNode without warning icon if ff is off', async () => {
@@ -76,8 +76,8 @@ describe('DisconnectedBranchNode', () => {
     )
 
     // default style
-    expect(screen.queryByTestId('Plus')).toBeVisible()
-    expect(screen.queryByTestId('WarningCircleSolid')).toBeNull()
+    expect(screen.queryByTestId('DragArrow')).toBeVisible()
+    expect(screen.queryByTestId('ExclamationMark')).toBeNull()
   })
 
 })

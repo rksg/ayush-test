@@ -69,6 +69,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
   const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
   const showNavigator = !step && ! actionData
+
   const fetchImage = async (imageType: string) => {
     if (imageType === 'logoImages')
       return getUIConfigLogoImage({ params: { id: workflowId } } ).unwrap()
@@ -116,7 +117,8 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     const { nodes } = toReactFlowData(stepsData?.content)
     setNodes(nodes as Node<WorkflowStep, ActionType>[])
     setStepMap(new Map<string, WorkflowStep>(stepsData?.content.map(v => [v.id, v])))
-    setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType)?.data.id)
+    setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType
+      && node.type !== 'DISCONNECTED_BRANCH' as ActionType)?.data.id)
   }, [stepsData])
 
   useEffect(()=>{

@@ -4,7 +4,6 @@ import { Path, useNavigate, useParams } from 'react-router-dom'
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteIpsecMutation,
   useGetIpsecViewDataListQuery,
   useGetVenuesQuery
@@ -24,7 +23,8 @@ import {
   IpSecAuthEnum,
   IpSecProposalTypeEnum,
   getPolicyAllowedOperation,
-  IpSecEncryptionAlgorithmEnum
+  IpSecEncryptionAlgorithmEnum,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 

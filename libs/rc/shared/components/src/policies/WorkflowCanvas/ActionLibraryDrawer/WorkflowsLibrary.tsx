@@ -15,10 +15,11 @@ import {
   FILTER,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getScopeKeyByPolicy, InitialEmptyStepsCount, MaxTotalSteps,
+  getScopeKeyByPolicy, InitialEmptyStepsCount, MaxAllowedSteps,
   PolicyOperation,
   PolicyType,
   SEARCH,
+  StepType,
   useTableQuery,
   Workflow,
   WorkflowDetailsTabKey
@@ -65,15 +66,17 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
         getWorkflowStepsById({
           params: {
             policyId: referencedWorkflowId,
-            pageSize: '1',
+            pageSize: '100',
             page: '0',
             sort: 'id,ASC',
-            excludeContent: 'true'
+            excludeContent: 'false'
           }
         }).unwrap()
           .then((result) => {
-            const totalCount = result?.paging?.totalCount ?? 0
-            if (totalCount <= InitialEmptyStepsCount) {
+            // eslint-disable-next-line max-len
+            const allRegularSteps = result?.content?.filter(s => s.type !== StepType.Start && s.type !== StepType.End)
+            const totalStepCount = allRegularSteps.length
+            if (totalStepCount <= 0) {
               showActionModal({
                 type: 'warning',
                 // eslint-disable-next-line max-len
@@ -83,9 +86,7 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
                 }
               })
             } else {
-              if ((stepsData?.paging?.totalCount ?? 0)
-                + (totalCount - InitialEmptyStepsCount ?? 0) // start and end steps will not be cloned
-                > MaxTotalSteps) {
+              if ((stepsData?.paging?.totalCount ?? 0) + totalStepCount > MaxAllowedSteps) {
                 showActionModal({
                   type: 'warning',
                   // eslint-disable-next-line max-len

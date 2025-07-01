@@ -90,7 +90,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         render: function (_, row) {
           return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
           //eslint-disable-next-line max-len
-            $t({ defaultMessage: '{category, select, identity {Identity Name/} other {}}{name} (Regex)' },
+            $t({ defaultMessage: '{category, select, identity {Identity/} other {}}{name} (Regex)' },
               { name: row.name, category: row.templateAttribute?.category })
         }
       },

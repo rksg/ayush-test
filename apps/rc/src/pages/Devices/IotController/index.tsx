@@ -16,10 +16,12 @@ import {
   transformDisplayText,
   IotControllerStatus,
   IotControllerStatusEnum,
+  IotUrlsInfo,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                             from '@acx-ui/utils'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 
@@ -142,7 +144,7 @@ export function IotController () {
 
   const rowActions: TableProps<IotControllerStatus>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
-    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
+    rbacOpsIds: [getOpsApi(IotUrlsInfo.updateIotController)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit`, { replace: false })
@@ -150,7 +152,7 @@ export function IotController () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
+    rbacOpsIds: [getOpsApi(IotUrlsInfo.deleteIotController)],
     onClick: (rows, clearSelection) => {
       iotControllerActions.deleteIotController(rows, undefined, clearSelection)
     }
@@ -173,7 +175,7 @@ export function IotController () {
         title={$t({ defaultMessage: 'IoT Controllers ({count})' }, { count })}
         extra={!isCustomRole && filterByAccess([
           <TenantLink to='/devices/iotController/add'
-            // rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}
+            rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add IoT Controller' }) }</Button>
           </TenantLink>
