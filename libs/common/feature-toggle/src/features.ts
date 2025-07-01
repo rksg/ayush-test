@@ -308,7 +308,7 @@ export enum Features {
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
   PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
-  IDENTITY_TRAFFIC_ANALYTICS_TOGGLE = 'acx-ui-identity-traffic-analytics-toggle'
+  IDENTITY_TRAFFIC_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

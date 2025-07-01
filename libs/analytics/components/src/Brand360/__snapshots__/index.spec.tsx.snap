@@ -327,7 +327,7 @@ exports[`Brand360 resets SLAs 1`] = `
   border-radius: 4px 0 0 4px;
 }
 
-.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges li:nth-child(2) {
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges li:nth-child(1) {
   font-weight: var(--acx-body-font-weight-bold);
 }
 

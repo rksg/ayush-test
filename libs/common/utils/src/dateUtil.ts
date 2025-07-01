@@ -53,9 +53,10 @@ export function getDatePickerValues (state: DateFilter) {
 }
 
 export function defaultAllRanges (subRange?: DateRange[]) {
-  const merged = {
+  const merged: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     ...defaultRanges(),
-    ...defaultCoreTierRanges()
+    ...defaultCoreTierRanges(),
+    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()]
   }
 
   return subRange ? pick(merged, subRange) : merged
@@ -63,7 +64,6 @@ export function defaultAllRanges (subRange?: DateRange[]) {
 
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()],
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
@@ -79,7 +79,6 @@ export function defaultRanges (subRange?: DateRange[]) {
 
 export function defaultCoreTierRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()],
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
