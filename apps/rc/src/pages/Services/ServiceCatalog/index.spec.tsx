@@ -14,7 +14,7 @@ import ServiceCatalog from '.'
 
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ApCompatibilityToolTip: (props: { onClick: () => void }) =>
+  ApCompatibilityToolTip: (props: { title: string,onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={props.onClick}/>,
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
@@ -74,7 +74,6 @@ describe('ServiceCatalog', () => {
     expect(await screen.findByText('mDNS Proxy')).toBeVisible()
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
-    expect(screen.queryByText('SD-LAN')).toBeNull()
     expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
     expect(screen.queryByText('Thirdparty Network Management')).toBeNull()
   })
@@ -95,11 +94,14 @@ describe('ServiceCatalog', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByText('SD-LAN')).toBeVisible()
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
+
+    jest.mocked(useIsSplitOn).mockReset()
+    jest.mocked(useIsTierAllowed).mockReset()
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
   })
 
   it('should not render edge-firewall service with the FIREWALL-HA-FF OFF', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(
       <ServiceCatalog />, {
@@ -111,8 +113,7 @@ describe('ServiceCatalog', () => {
   })
 
   it('should not render edge-dhcp service with the dhcp-HA-FF OFF', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(<Provider>
       <ServiceCatalog />
@@ -124,11 +125,6 @@ describe('ServiceCatalog', () => {
   })
 
   describe('Edge SD-LAN', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-    })
-
     it('should render Edge SD-LAN', async () => {
       render(<Provider>
         <ServiceCatalog />
@@ -183,7 +179,7 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
@@ -216,7 +212,7 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
       await userEvent.click(toolTips[0])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
@@ -253,13 +249,14 @@ describe('ServiceCatalog', () => {
       })
 
       const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
-      expect(toolTips.length).toBe(1)
+      expect(toolTips.length).toBe(2)
       toolTips.forEach(t => expect(t).toBeVisible())
-      await userEvent.click(toolTips[0])
+      await userEvent.click(toolTips[1])
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       await waitFor(() =>
         expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY))
+      jest.mocked(useMdnsProxyStateMap).mockReset()
     })
 
     it('should show BetaIndicator when Edge mDNS is beta feature', async () => {
@@ -303,7 +300,7 @@ describe('ServiceCatalog', () => {
     })
   })
 
-  it('should render DHCP Consolidation corredectly when FF is ON', async () => {
+  it('should render DHCP Consolidation correctly when FF is ON', async () => {
     jest.mocked(useDhcpStateMap).mockReturnValue({
       [ServiceType.DHCP]: false,
       [ServiceType.EDGE_DHCP]: false,

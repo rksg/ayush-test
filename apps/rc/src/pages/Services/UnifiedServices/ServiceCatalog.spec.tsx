@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }                                                                      from '@acx-ui/components'
 import { IncompatibilityFeatures, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
 import { Provider }                                                                               from '@acx-ui/store'
 import { render, screen }                                                                         from '@acx-ui/test-utils'
+import { RadioCardCategory }                                                                      from '@acx-ui/types'
 
 import { mockedAvailableUnifiedServicesList } from './__tests__/fixtures'
 
@@ -36,7 +36,14 @@ jest.mock('./useUnifiedServiceSearchFilter', () => ({
     setFilters: jest.fn(),
     setSortOrder: jest.fn(),
     filteredServices: list
-  })
+  }),
+  getDefaultSearchFilterValues: jest.fn(() => ({
+    filters: {
+      products: [],
+      categories: []
+    },
+    sortOrder: 0
+  }))
 }))
 jest.mock('../UnifiedServiceCard', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

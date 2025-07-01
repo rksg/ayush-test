@@ -2,7 +2,7 @@ import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }      from 'react-intl'
 import ReactFlow, {
   Panel,
   Background,
@@ -15,8 +15,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   useReactFlow,
-  NodeDimensionChange,
-  getNodesBounds
+  NodeDimensionChange
 } from 'reactflow'
 
 import { showActionModal }                                          from '@acx-ui/components'
@@ -126,80 +125,69 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
   }
 
+  const onNodeDrag = useCallback((event:React.MouseEvent, node:Node) => {
+    const mousePosition = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY
+    })
+
+    const intersectedNodes = reactFlowInstance.getIntersectingNodes(
+      { x: mousePosition.x, y: mousePosition.y, height: 1, width: 1 })
+
+    let highestZIndex = -1
+    let intersectedNode:Node | undefined = undefined
+    intersectedNodes.forEach(n => {
+      const nodeZIndex = n.zIndex ?? 0
+
+      if(nodeZIndex > highestZIndex) {
+        intersectedNode = nodeZIndex > highestZIndex ? n : intersectedNode
+        highestZIndex = nodeZIndex
+      }
+    })
+
+    // update nodes to have hover effect if intersected
+    const updatedNodes:Node[] = []
+    nodes.forEach(n => {
+      if(n.id === node.id) {
+        updatedNodes.push({ ...node, data: {
+          ...node.data,
+          attachCandidate: n.id === intersectedNode?.id
+        } })
+      } else {
+        updatedNodes.push({ ...n, data: {
+          ...n.data,
+          attachCandidate: n.id === intersectedNode?.id
+        } })
+      }
+    })
+
+
+    setNodes(updatedNodes)
+
+  }, [nodes])
 
   const onNodeDragStop = useCallback((event:React.MouseEvent, node:Node) => {
-    // get intersecting nodes of the dragged node
-    const currentBranchBounds = getNodesBounds([node])
-    const allIntersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
 
-    let otherBranchIntersectingNodes = undefined
-    if(allIntersectingNodes) {
-      otherBranchIntersectingNodes =
-        allIntersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
-    }
+    const mousePosition = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY
+    })
 
-    // if no intersecting nodes were found then look for nodes that the plus drag handle is covering
-    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
-      // calculate bounding box for plus drag handle
-      // (plus is 16 pixels wide and 30 pixels from the top of the subflow)
-      const topPlusBounds = { x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8),
-        y: currentBranchBounds.y - 30, height: 30, width: 16 }
-      const topPlusIntersectingNodes = reactFlowInstance.getIntersectingNodes(topPlusBounds)
-      otherBranchIntersectingNodes = topPlusIntersectingNodes
-    }
+    const intersectedNodes = reactFlowInstance.getIntersectingNodes(
+      { x: mousePosition.x, y: mousePosition.y, height: 1, width: 1 })
 
-    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
-      // we are not intersecting other nodes
-      return
-    }
+    let highestZIndex = -1
+    let intersectedNode:Node | undefined = undefined
+    for(const n of intersectedNodes) {
+      const nodeZIndex = n.zIndex ?? 0
 
-    // find the final node of the branch we are intersecting with
-    let idsInIntersectedBranch = new Set()
-
-    let startingNode = undefined
-    startingNode = otherBranchIntersectingNodes[0]
-    // check if this node is a parent node (subflow) and get it's child if so
-    if(startingNode.type === 'DISCONNECTED_BRANCH') {
-      idsInIntersectedBranch.add(startingNode.id)
-      let firstMemberId = startingNode.id.split('parent')[0]
-      startingNode = nodeMap.get(firstMemberId)
-      if(!startingNode) { return }
-    }
-
-
-    // find the top node from the current node
-    // (this is necessary so we can determine if we are overlapping multiple branches)
-    idsInIntersectedBranch.add(startingNode.id)
-    let currentNode:undefined | Node = startingNode
-    while(currentNode?.data?.priorStepId) {
-      const previousNode = nodeMap.get(currentNode.data.priorStepId)
-      if(previousNode && previousNode.data.type !== StepType.Start) {
-        idsInIntersectedBranch.add(previousNode.id)
-        currentNode = previousNode
-      } else {
-        currentNode = undefined
+      if(nodeZIndex > highestZIndex) {
+        intersectedNode = nodeZIndex > highestZIndex ? n : intersectedNode
+        highestZIndex = nodeZIndex
       }
     }
 
-    // get the final node of the branch that was intersected with so we can attach to it
-    let finalIntersectedNode = startingNode
-    if (finalIntersectedNode.data?.nextStepId) {
-      let nextNode = nodeMap.get(finalIntersectedNode.data.nextStepId)
-      while(nextNode) {
-        if(nextNode.data.type === StepType.End) {
-          nextNode = undefined
-        } else {
-          idsInIntersectedBranch.add(nextNode.id)
-          finalIntersectedNode = nextNode
-          nextNode = nextNode.data.nextStepId ? nodeMap.get(nextNode.data.nextStepId) : undefined
-        }
-      }
-    }
-
-    // if we are intersecting multiple branches do nothing
-    let isMultipleBranches = (otherBranchIntersectingNodes.length > idsInIntersectedBranch.size
-      || otherBranchIntersectingNodes.filter(n => !idsInIntersectedBranch.has(n.id)).length > 0)
-    if(isMultipleBranches) {
+    if(intersectedNode === undefined || intersectedNode.type === 'START') {
       return
     }
 
@@ -210,8 +198,8 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
 
     const title = $t(
-      { defaultMessage: 'Attach to Action "{formattedName}"?' },
-      { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }
+      { defaultMessage: 'Attach to Step "{formattedName}"?' },
+      { formattedName: $t(ActionTypeTitle[intersectedNode.type as ActionType]) }
     )
 
     showActionModal({
@@ -220,10 +208,10 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       content: $t({
         defaultMessage:
           'Are you sure you want to attach the branch below the step of type "{formattedName}"'
-      }, { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }),
-      okText: $t({ defaultMessage: 'Attach Actions' }),
+      }, { formattedName: $t(ActionTypeTitle[intersectedNode.type as ActionType]) }),
+      okText: $t({ defaultMessage: 'Attach Steps' }),
       onOk: () => {
-        attachSteps({ params: { policyId: workflowId, stepId: finalIntersectedNode.id,
+        attachSteps({ params: { policyId: workflowId, stepId: intersectedNode?.id,
           detachedStepId: stepIdToAttach } }).unwrap()
       }
     })
@@ -330,6 +318,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
       nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
+      onNodeDrag={workflowValidationEnhancementFFToggle ? onNodeDrag : undefined}
       onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
       nodesConnectable={false}
       minZoom={0.1}

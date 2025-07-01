@@ -95,7 +95,7 @@ export const newDefaultApPayload = {
     'switchName', 'meshRole', 'clientCount', 'apWiredClientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
-    'powerSavingStatus'
+    'powerSavingStatus', 'supportSecureBoot'
   ]
 }
 

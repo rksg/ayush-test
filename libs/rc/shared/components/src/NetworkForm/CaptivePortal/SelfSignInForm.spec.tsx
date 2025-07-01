@@ -4,13 +4,13 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy, StepsFormLegacyInstance }             from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { venueApi }                                             from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store, userApi }                             from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor }       from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                         from '@acx-ui/user'
+import { StepsFormLegacy, StepsFormLegacyInstance }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { venueApi }                                                      from '@acx-ui/rc/services'
+import { AaaUrls, AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store, userApi }                                      from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor }                from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                  from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -96,7 +96,10 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       rest.get(AdministrationUrlsInfo.getNotificationSmsProvider.url,
         (req, res, ctx) => res(ctx.json(twilioData))),
       rest.post(AdministrationUrlsInfo.getTwiliosWhatsappServices.url,
-        (req, res, ctx) => res(ctx.json(twilioWhatsAppData)))
+        (req, res, ctx) => res(ctx.json(twilioWhatsAppData))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 

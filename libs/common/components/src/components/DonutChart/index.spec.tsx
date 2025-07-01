@@ -252,6 +252,29 @@ describe('tooltipFormatter', () => {
     )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(2)
   })
+
+  it('should handle custom tooltip values', async () => {
+    const formatter = jest.fn(value => `formatted-${value}`)
+    const format = defineMessage({
+      defaultMessage: 'custom<br></br>{customizedValue}'
+    })
+
+    const tooltipValuesFunc= (name:string) => {
+      return {
+        customizedValue: (<span data-testid={name}>
+          {'customized tooltip value'}
+        </span>)
+      }
+    }
+
+    expect(tooltipFormatter(
+      formatter,
+      100,
+      format,
+      tooltipValuesFunc
+    )(singleparameters))
+      .toContain('<span data-testid="name">customized tooltip value</span>')
+  })
 })
 
 describe('Donut Chart - medium', () => {

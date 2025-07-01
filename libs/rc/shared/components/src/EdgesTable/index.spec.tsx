@@ -2,7 +2,6 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }                                                from '@acx-ui/feature-toggle'
 import { edgeApi, venueApi }                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                         from '@acx-ui/store'
@@ -13,8 +12,6 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { mockEdgeList } from './__tests__/fixtures'
 
@@ -312,9 +309,6 @@ describe('Edge Table', () => {
   })
 
   it('should shutdown the selected SmartEdge', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-
     const user = userEvent.setup()
     render(
       <Provider>
