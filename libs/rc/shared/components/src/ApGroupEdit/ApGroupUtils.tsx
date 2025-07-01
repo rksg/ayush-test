@@ -41,7 +41,7 @@ export const convertVenueRadioSettingsToApGroupRadioSettings = (data: VenueRadio
       return undefined
     }
 
-    const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc } = radioParams
+    const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc, enableMulticastDownlinkRateLimiting, enableMulticastRateLimiting, enableMulticastUplinkRateLimiting, multicastDownlinkRateLimiting, multicastUplinkRateLimiting, scanInterval } = radioParams
     return {
       allowedIndoorChannels,
       allowedOutdoorChannels,
@@ -52,7 +52,13 @@ export const convertVenueRadioSettingsToApGroupRadioSettings = (data: VenueRadio
       bssMinRate6G,
       mgmtTxRate6G,
       channelBandwidth320MhzGroup,
-      enableAfc
+      enableAfc,
+      enableMulticastDownlinkRateLimiting,
+      enableMulticastRateLimiting,
+      enableMulticastUplinkRateLimiting,
+      multicastDownlinkRateLimiting,
+      multicastUplinkRateLimiting,
+      scanInterval
     }
   }
 
