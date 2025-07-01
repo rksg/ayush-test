@@ -323,7 +323,15 @@ export function LanPorts (props: ApEditItemProps) {
     const eqOriginLan = isEqualLanPort(currentLanPorts!, apLanPortsData!)
     if (eqOriginLan) return false
 
-    return isEqualLanPort(currentLanPorts!, defaultLanPorts!)
+    if (defaultLanPorts === undefined) return false
+    if (apCaps === undefined) return false
+
+    const defaultLan = cloneDeep(defaultLanPorts)
+    defaultLan.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+      defaultLanPorts.lanPorts ?? [], apCaps.lanPorts, tenantId
+    )
+
+    return isEqualLanPort(currentLanPorts!, defaultLan!)
   }
 
   const processUpdateLanPorts = async (values: WifiApSetting) => {
