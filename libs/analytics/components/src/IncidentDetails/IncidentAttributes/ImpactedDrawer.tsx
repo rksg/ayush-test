@@ -92,7 +92,7 @@ const tooltips = {
 
 const titleText =
   '{count} Impacted {count, plural, one {Client} other {Clients}}' +
-  '{isLimited, select, true { (showing 500 of {totalCount} clients)} other {}}'
+  '{isLimited, select, true { (Showing 500 of {totalCount} clients)} other {}}'
 
 export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (props) => {
   const { $t, formatList } = useIntl()

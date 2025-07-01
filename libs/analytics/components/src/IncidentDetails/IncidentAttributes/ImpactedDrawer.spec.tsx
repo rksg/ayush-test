@@ -164,7 +164,7 @@ describe('Drawer', () => {
         />
       </Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      expect(screen.getByText('501 Impacted Clients (showing 500 of 501 clients)')).toBeVisible()
+      expect(screen.getByText('501 Impacted Clients (Showing 500 of 501 clients)')).toBeVisible()
     })
   })
 })
