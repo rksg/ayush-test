@@ -207,8 +207,7 @@ export const RangePicker = ({
             startDate: restrictRange.startDate || null,
             endDate: restrictRange.endDate || null
           }))
-          setCalChanged(calChanged ||
-            !restrictRange.startDate?.isSame(restrictRange.endDate, 'day'))
+          setCalChanged(true)
         }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
