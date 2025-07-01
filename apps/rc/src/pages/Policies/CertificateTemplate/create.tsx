@@ -97,7 +97,6 @@ export default function CreateCertificateProfile () {
               CertificateTypeEnum.DEVICE_CERTIFICATE : CertificateTypeEnum.CERTIFICATE_AUTHORITY}>
             <Radio.Group>
               <Space direction='vertical'>
-                {/* eslint-disable-next-line max-len */}
                 { hasDeviceCertOperation &&
                 <Radio value={CertificateTypeEnum.DEVICE_CERTIFICATE}>
                   {$t({ defaultMessage: 'Device Certificate' })}
