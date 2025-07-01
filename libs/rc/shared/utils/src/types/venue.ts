@@ -13,6 +13,7 @@ import {
   BandModeEnum,
   DenialOfServiceProtection,
   Mesh,
+  PoeOutModeEnum,
   VenueDhcpServiceSetting,
   VenueRadioCustomization,
   VenueRogueAp,
@@ -287,6 +288,7 @@ export interface VenueLanPorts {
 	lanPorts: LanPort[],
 	poeMode?: string,
 	poeOut?: boolean,
+	poeOutMode?: PoeOutModeEnum,
 	isSettingsLoaded?: boolean
 }
 

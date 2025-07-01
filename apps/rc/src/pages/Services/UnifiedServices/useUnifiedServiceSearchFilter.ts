@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
-import { RadioCardCategory } from '@acx-ui/components'
 import { UnifiedService }    from '@acx-ui/rc/utils'
+import { RadioCardCategory } from '@acx-ui/types'
 
 import { ServiceFiltersConfig, ServiceSortOrder } from './ServicesToolBar'
 
