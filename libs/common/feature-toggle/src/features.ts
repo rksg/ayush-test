@@ -172,7 +172,6 @@ export enum Features {
   WIFI_EDA_WIFI7_320MHZ = 'removable-ff',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'removable-ff',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
-  WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'removable-ff',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
