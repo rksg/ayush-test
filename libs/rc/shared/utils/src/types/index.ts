@@ -1,7 +1,5 @@
 import { defineMessage } from 'react-intl'
 
-import { TimeStamp } from '@acx-ui/types'
-
 import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
