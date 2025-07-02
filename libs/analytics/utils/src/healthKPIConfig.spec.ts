@@ -2,7 +2,7 @@ import { getUserProfile, setUserProfile } from '@acx-ui/user'
 import { AccountTier }                    from '@acx-ui/utils'
 
 import { multipleBy1000, divideBy100, noFormat,
-  kpisForTab, wiredKPIsForTab,
+  kpisForTab, wiredKPIsForTab, wiredKPIsForTabPhase2,
   numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
 
 describe('Health KPI', () => {
@@ -219,6 +219,50 @@ describe('Health KPI', () => {
         ]
       }
     })
+  })
+  it('should return correct config for wired phase 2 in RA', () => {
+    expect(wiredKPIsForTabPhase2()).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization'
+        ]
+      },
+      infrastructure: {
+        kpis: {
+          System: [
+            'switchMemoryUtilization',
+            'switchCpuUtilization',
+            'switchesTemperature',
+            'switchPoeUtilization'
+          ],
+          Table: [
+            'switchIpv4MulticastUtilization',
+            'switchIpv6MulticastUtilization',
+            'switchIpv4UnicastUtilization',
+            'switchIpv6UnicastUtilization',
+            'switchArpUtilization',
+            'switchMacUtilization'
+          ]
+        }
+      }
+    })
+  })
+  it('should add 10010e KPIs when is10010eKPIsEnabled is true in wiredKPIsForTabPhase2', () => {
+    const result = wiredKPIsForTabPhase2(true)
+    expect(result.performance.kpis).toContain('switchInterfaceAnomalies')
+    expect(result.performance.kpis).toContain('switchStormControl')
+    expect(result.connection.kpis).toContain('switchDhcp')
   })
   describe('shouldAddFirmwareFilter', () => {
     const mockPathname = jest.fn()
