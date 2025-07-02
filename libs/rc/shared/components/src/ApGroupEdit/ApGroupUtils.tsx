@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 
-import { isEmpty, uniq } from 'lodash'
+import { isEmpty, uniq, set } from 'lodash'
 
 import { useLazyApListQuery } from '@acx-ui/rc/services'
 import {
@@ -289,4 +289,15 @@ export const mergeRadioData = (data: ApGroupRadioCustomization, apGroupData: ApG
       }
     }
   } as ApGroupRadioCustomization
+}
+
+export const setValidatedManulChannel = (
+  data: ApGroupRadioCustomization,
+  path: string,
+  channel: number | undefined,
+  method: string
+) => {
+  if (channel && method === 'MANUAL') {
+    set(data, path, [channel.toString()])
+  }
 }
