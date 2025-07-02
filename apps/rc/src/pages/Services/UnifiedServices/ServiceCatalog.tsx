@@ -13,8 +13,8 @@ import {
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
-import { ServiceSortOrder, ServicesToolBar } from './ServicesToolBar'
-import { useUnifiedServiceSearchFilter }     from './useUnifiedServiceSearchFilter'
+import { ServicesToolBar }                                             from './ServicesToolBar'
+import { getDefaultSearchFilterValues, useUnifiedServiceSearchFilter } from './useUnifiedServiceSearchFilter'
 
 const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, IncompatibilityFeatures>> = {
   [ServiceType.EDGE_DHCP]: IncompatibilityFeatures.DHCP,
@@ -25,15 +25,22 @@ const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, Incompatibilit
   [PolicyType.HQOS_BANDWIDTH]: IncompatibilityFeatures.HQOS
 }
 
+const serviceCatalogSettingsId = 'service-catalog'
+
 export function ServiceCatalog () {
   const { $t } = useIntl()
   const rawUnifiedServiceList = useAvailableUnifiedServicesList()
-  const defaultSortOrder = ServiceSortOrder.ASC
   const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
+
+  // The function passed to useState will only run once on the initial render.
+  // This ensures getDefaultSearchFilterValues is called only once for initialization and not on every render.
+  // eslint-disable-next-line max-len
+  const [defaultSearchFilterValues] = useState(() => getDefaultSearchFilterValues(serviceCatalogSettingsId))
 
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
-  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
+  // eslint-disable-next-line max-len
+  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSearchFilterValues, serviceCatalogSettingsId)
 
   const [
     edgeCompatibilityFeature,
@@ -64,8 +71,8 @@ export function ServiceCatalog () {
       <ServicesToolBar
         setSearchTerm={setSearchTerm}
         setFilters={setFilters}
-        defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
+        defaultValues={defaultSearchFilterValues}
         availableFilters={{ products, categories }}
       />
       <GridRow>

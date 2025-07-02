@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {  TableProps,
   showToast,
   Tooltip } from '@acx-ui/components'
-import { get }          from '@acx-ui/config'
-import { CopyOutlined } from '@acx-ui/icons-new'
-import { TenantLink }   from '@acx-ui/react-router-dom'
+import { get }                            from '@acx-ui/config'
+import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { handleBlobDownloadFile }         from '@acx-ui/utils'
 
 import { ImpactedSwitchesTable } from '../ImpactedSwitchesTable'
 import {
@@ -20,6 +22,25 @@ import type { ChartProps } from '../types'
 export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const isMLISA = get('IS_MLISA_SA')
+
+  const handleExportCSV = (data: ImpactedSwitchPortRow[]) => {
+    const csvContent = [
+      ['Switch Name', 'Switch MAC', 'Switch Serial', 'Port Numbers'].join(','),
+      ...data!.map(row => [
+        `"${row.name}"`,
+        `"${row.mac}"`,
+        `"${row.serial}"`,
+        `"${row.portNumbers}"`
+      ].join(','))
+    ].join('\n')
+
+    const switchText = data.length === 1 ? 'Switch' : 'Switches'
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
+    handleBlobDownloadFile(
+      new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
+      `TCP-SYN-DDoS-Impacted-${switchText}-${timestamp}.csv`
+    )
+  }
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
@@ -90,10 +111,16 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ],[])
+
   return (
     <ImpactedSwitchesTable
       incident={incident}
       columns={columns}
+      iconButton={{
+        icon: <DownloadOutlined />,
+        onClick: handleExportCSV,
+        tooltip: $t({ defaultMessage: 'Export to CSV' })
+      }}
     />
   )
 }
