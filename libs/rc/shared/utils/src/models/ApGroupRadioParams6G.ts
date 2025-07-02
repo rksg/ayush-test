@@ -43,6 +43,10 @@ export class ApGroupRadioParams6G {
 
   useVenueSettings?: boolean
 
+  indoorChannel?: number
+
+  outdoorChannel?: number
+
   enabled?: boolean
 
   constructor () {
