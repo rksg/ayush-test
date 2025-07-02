@@ -473,7 +473,6 @@ describe('NetworkTunnelModal', () => {
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({ isLoading: false })
       mockedGetFn.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
-      // eslint-disable-next-line max-len
       mockServer.use(
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,

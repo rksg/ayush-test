@@ -124,8 +124,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
       }
     }
 
-  // eslint-disable-next-line max-len
-  }, [visible, tunnelType, isEdgePinHaEnabled, venueSdLanInfo])
+  }, [visible, tunnelType, isEdgePinHaEnabled, venueSdLanInfo, softGreProfileId])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
