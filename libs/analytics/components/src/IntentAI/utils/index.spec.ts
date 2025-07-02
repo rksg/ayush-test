@@ -217,7 +217,7 @@ describe('IntentAI utils', () => {
           status: Statuses.scheduled,
           displayStatus: DisplayStates.scheduled,
           statusTrail: [
-            { status: Statuses.na, statusReason: StatusReasons.verified },
+            { status: Statuses.na, statusReason: StatusReasons.verified }
           ]
         }
       )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
