@@ -3,30 +3,23 @@ import '@testing-library/jest-dom'
 
 import { Input } from 'antd'
 
-import { DeviceConnectionStatus }                                                         from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
-import { MacAclRule }                                                                     from '../../types/switch'
+import { DeviceConnectionStatus }                           from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient } from '../../types'
+import { MacAclRule }                                       from '../../types/switch'
 
 import { macAclRulesParser } from './switch.utils'
 
 import {
-  getSwitchModel,
-  getSwitchName,
   isStrictOperationalSwitch,
   transformSwitchStatus,
   getSwitchStatusString,
-  getPoeUsage,
   getStackMemberStatus,
   getClientIpAddr,
   getAdminPassword,
   transformSwitchUnitStatus,
-  isRouter,
-  isEmpty,
   getSwitchPortLabel,
   sortPortFunction,
-  isSameModelFamily,
   convertInputToUppercase,
-  isL3FunctionSupported,
   isFirmwareVersionAbove10,
   isFirmwareSupportAdminPassword,
   isFirmwareVersionAbove10010f,
@@ -60,39 +53,9 @@ const switchRow ={
 }
 
 describe('switch.utils', () => {
-  describe('Test getSwitchModel function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchModel('FJN4312T00C')).toBe('ICX7150-48ZP')
-      expect(getSwitchModel('EZC4312T00C')).toBe('ICX7650-48ZP')
-      expect(getSwitchModel('')).toBe('Unknown')
-    })
-    it('should check model family correctly', async () => {
-      expect(isSameModelFamily('', '')).toBe(true)
-      expect(isSameModelFamily('xxxx', '----')).toBe(true)
-      expect(isSameModelFamily('FEK3230S0DA', 'FEK3230S3DA')).toBe(true)
-      expect(isSameModelFamily('FJN3226U73C', 'FNC3333R015')).toBe(false)
-    })
-  })
-
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
-    })
-  })
-
-  describe('Test isRouter function', () => {
-    it('should render correctly', async () => {
-      expect(isRouter(SWITCH_TYPE.ROUTER)).toBeTruthy()
-    })
-  })
-
-  describe('Test isEmpty function', () => {
-    it('should render correctly', async () => {
-      expect(isEmpty(null)).toBeTruthy()
-      expect(isEmpty(undefined)).toBeTruthy()
-      expect(isEmpty('undefined')).toBeTruthy()
-      expect(isEmpty('')).toBeTruthy()
-      expect(isEmpty(1)).toBeFalsy()
     })
   })
 
@@ -228,12 +191,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test getSwitchName function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchName(switchRow)).toBe('FMF2249Q0JT')
-    })
-  })
-
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
       expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
@@ -248,31 +205,6 @@ describe('switch.utils', () => {
         operationalWarning: true
       }
       expect(getSwitchStatusString(data)).toBe('Synchronizing')
-    })
-  })
-
-  describe('Test getPoeUsage function', () => {
-    it('should render correctly', async () => {
-      const switchDetail_1 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT'
-      }
-      const switchDetail_2 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT',
-        poeTotal: 2000,
-        poeUtilization: 1000
-      }
-      expect(getPoeUsage(switchDetail_1 as SwitchViewModel)).toStrictEqual({
-        used: 0,
-        total: 0,
-        percentage: '0%'
-      })
-      expect(getPoeUsage(switchDetail_2 as unknown as SwitchViewModel)).toStrictEqual({
-        used: 1,
-        total: 2,
-        percentage: '50%'
-      })
     })
   })
 
@@ -327,8 +259,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -339,8 +270,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -351,8 +281,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -364,7 +293,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.OPERATIONAL
       },
-      { isSupport8200AV: false,
+      {
         isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
@@ -379,8 +308,7 @@ describe('switch.utils', () => {
         adminPassword: 'test123',
         deviceStatus: SwitchStatusEnum.OPERATIONAL
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       }, Input.Password)).not.toBe('Custom')
@@ -392,8 +320,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.DISCONNECTED
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('Custom')
@@ -405,8 +332,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('Custom')
@@ -452,27 +378,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test isL3FunctionSupported function', () => {
-    it('returns false for undefined switchType', () => {
-      const result = isL3FunctionSupported(undefined)
-      expect(result).toBe(false)
-    })
-
-    it('returns false for empty string switchType', () => {
-      const result = isL3FunctionSupported('')
-      expect(result).toBe(false)
-    })
-
-    it('returns true for ROUTER switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.ROUTER)
-      expect(result).toBe(true)
-    })
-
-    it('returns treu for SWITCH switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.SWITCH)
-      expect(result).toBe(false)
-    })
-  })
 })
 
 describe('Test isFirmwareVersionAbove10010f function', () => {
@@ -569,7 +474,6 @@ describe('Test vlanPortsParser function', () => {
 describe('Test createSwitchSerialPattern function', () => {
   it('support all models', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: true,
       isSupport7550Zippy: true
@@ -600,28 +504,8 @@ describe('Test createSwitchSerialPattern function', () => {
     expect(patten.test('FPA4899W00E')).toBe(false)
   })
 
-  it('ICX8200-AV not supported', async () => {
-    const supportModels = {
-      isSupport8200AV: false,
-      isSupport8100: true,
-      isSupport8100X: true,
-      isSupport7550Zippy: true
-    }
-    const patten = createSwitchSerialPattern(supportModels)
-
-    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
-    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
-    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
-    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
-    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
-    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
-
-    expect(patten.test('FPG4324V00H')).toBe(false) //ICX8200-AV
-  })
-
   it('ICX8100 not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: false,
       isSupport8100X: true,
       isSupport7550Zippy: true
@@ -640,7 +524,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX8100-X not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: false,
       isSupport7550Zippy: true
@@ -659,7 +542,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX8100 and ICX8100-X not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: false,
       isSupport8100X: false,
       isSupport7550Zippy: true
@@ -678,7 +560,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX7550 Zippy not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: true,
       isSupport7550Zippy: false

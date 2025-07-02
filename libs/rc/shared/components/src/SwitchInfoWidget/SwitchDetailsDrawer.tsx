@@ -4,12 +4,14 @@ import { Divider, Form, Select } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }   from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
 import {
   SwitchViewModel,
   getAdminPassword,
-  getSwitchModel,
   getStackMemberStatus,
   isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/utils'
@@ -36,7 +38,6 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
   const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
@@ -94,7 +95,6 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           children={getAdminPassword(
             switchDetail,
             {
-              isSupport8200AV: isSupport8200AV,
               isSupport8100: isSupport8100,
               isSupport8100X: isSupport8100X,
               isSupport7550Zippy: isSupport7550Zippy

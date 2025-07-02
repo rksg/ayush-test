@@ -6,12 +6,12 @@ import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
-import { FilterValue } from 'antd/lib/table/interface'
-import _               from 'lodash'
-import moment          from 'moment'
-import { IntlShape }   from 'react-intl'
+import _             from 'lodash'
+import moment        from 'moment'
+import { IntlShape } from 'react-intl'
 
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import type { Filter }                                                    from '@acx-ui/types'
 import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
@@ -20,7 +20,6 @@ import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
 
-export interface Filter extends Record<string, FilterValue|null> {}
 
 export const MIN_SEARCH_LENGTH = 2
 
@@ -34,12 +33,13 @@ interface RangePickerProps {
   filterValues: Filter,
   setFilterValues: Function,
   settingsId?: string,
-  filterPersistence?: boolean
+  filterPersistence?: boolean,
+  filterLabel?: string
 }
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { filterValues, setFilterValues, settingsId, filterPersistence } = props
+  const { filterValues, setFilterValues, settingsId, filterPersistence, filterLabel } = props
 
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.allTime)
@@ -65,6 +65,7 @@ function RangePickerComp (props: RangePickerProps) {
       }}
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
       maxMonthRange={isDateRangeLimit ? 1 : 3}
+      filterLabel={filterLabel}
       showAllTime
     />
   </UI.FilterRangePicker>
@@ -75,13 +76,29 @@ export function getFilteredData <RecordType> (
   filterValues: Filter,
   activeFilters: TableColumn<RecordType, 'text'>[],
   searchables: TableColumn<RecordType, 'text'>[],
-  searchValue: string
+  searchValue: string,
+  /**
+   * In a nested table, when columns in this array is used to filter parent rows, and
+   * parent row does not match, all children rows will be filtered out as well
+   * When column is not in array, default behavior is to show parent regardless of whether it matches
+   * when at least 1 child matches
+   */
+  columnsToFilterChildrenRowBasedOnParentRow?: (keyof RecordType)[]
 ): RecordType[] | undefined {
-  const isRowMatching = (row: RecordType): Boolean => {
+  const isRowMatching = (row: RecordType, isParentRowNotMatching?: boolean): boolean => {
     for (const column of activeFilters) {
       const key = (column.filterKey || column.dataIndex) as keyof RecordType
+      if (
+        columnsToFilterChildrenRowBasedOnParentRow?.includes(key) &&
+        isParentRowNotMatching
+      ) {
+        return false
+      }
+
       const filteredValue = filterValues[key as keyof Filter]!
-      if (!filteredValue.includes(_.get(row, key) as unknown as string)) {
+      const value = _.get(row, key, '') as unknown as string
+      const valueStr = value.toString()
+      if (!filteredValue.includes(valueStr)) {
         return false
       }
     }
@@ -100,10 +117,13 @@ export function getFilteredData <RecordType> (
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
   ) => {
-    const children = hasChildrenColumn(row) ? row.children?.filter(isRowMatching) : undefined
+    const isParentRowMatching = isRowMatching(row)
+    const children = hasChildrenColumn(row)
+      ? row.children?.filter((childRow) => isRowMatching(childRow, !isParentRowMatching))
+      : undefined
     if (children?.length) {
       rows.push({ ...row, children })
-    } else if (isRowMatching(row)) {
+    } else if (isParentRowMatching) {
       rows.push({ ...row, children: undefined })
     }
     return rows
@@ -156,7 +176,8 @@ export function renderFilter <RecordType> (
   enableApiFilter: boolean,
   width: number,
   settingsId?: string,
-  filterPersistence?: boolean
+  filterPersistence?: boolean,
+  optionLabelProp?: string
 ) {
   const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
     return <Checkbox
@@ -186,6 +207,7 @@ export function renderFilter <RecordType> (
       setFilterValues={setFilterValues}
       settingsId={settingsId}
       filterPersistence={filterPersistence}
+      filterLabel={column.title as string}
     />
   }
   type Type = keyof typeof filterTypeComp
@@ -220,6 +242,7 @@ export function renderFilter <RecordType> (
   }
 
   return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
+    optionLabelProp={optionLabelProp}
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
@@ -254,15 +277,20 @@ export function renderFilter <RecordType> (
     showArrow
     allowClear
     style={{ width }}
-    options={column.fitlerCustomOptions}
+    options={column.filterCustomOptions}
   >
-    {!Array.isArray(column.fitlerCustomOptions) && options?.map((option, index) =>
+    {!Array.isArray(column.filterCustomOptions) && options?.map((option, index) =>
       <Select.Option
         value={option.key}
         key={`key-${index}-${option.key}`}
         data-testid={`option-${option.key}`}
         title={option.value}
-        children={option.label ?? option.value}
+        children={
+          optionLabelProp === 'label'
+            ? option.value
+            : option.label ?? option.value
+        }
+        label={option.label ?? option.value}
       />
     )}
   </UI.FilterSelect>

@@ -53,7 +53,6 @@ interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   filterColumns?: string[];
   // custom column is optional
   columns?: TableProps<EdgeStatus>['columns']
-  incompatibleCheck?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
@@ -86,15 +85,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
     tableQuery: customTableQuery,
     columns,
     filterColumns,
-    incompatibleCheck,
     filterables,
     ...otherProps
   } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -104,13 +100,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
-    defaultPayload: incompatibleCheck
-      ? {
-        ...defaultEdgeTablePayload,
-        fields: (defaultEdgeTablePayload.fields as string[]).concat(
-          isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
-      }
-      : defaultEdgeTablePayload,
+    defaultPayload: {
+      ...defaultEdgeTablePayload,
+      fields: (defaultEdgeTablePayload.fields as string[]).concat(
+        isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
+    },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
@@ -137,10 +131,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
 
   const handleColumnStateChange = (state: ColumnState) => {
-    if (isEdgeCompatibilityEnabled) {
-      if (showFeatureCompatibilitiy !== state['incompatible']) {
-        setShowFeatureCompatibilitiy(state['incompatible'])
-      }
+    if (showFeatureCompatibilitiy !== state['incompatible']) {
+      setShowFeatureCompatibilitiy(state['incompatible'])
     }
   }
 
@@ -250,7 +242,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       show: false
     },
-    ...(isEdgeCompatibilityEnabled && incompatibleCheck ? [{
+    {
       key: 'incompatible',
       // eslint-disable-next-line max-len
       tooltip: $t({ defaultMessage: 'Check for the RUCKUS Edge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
@@ -275,8 +267,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
           }} />
         )
       }
-    }] : [])
-  ], [showFeatureCompatibilitiy, statusFilterOptions, venueOptions, incompatibleCheck])
+    }
+  ], [showFeatureCompatibilitiy, statusFilterOptions, venueOptions])
 
   if (filterColumns) {
     filterColumns.forEach((columnTofilter) => {
@@ -319,7 +311,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
-      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+      visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (rows, clearSelection) => {
@@ -359,11 +351,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
-        columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
+        columnState={{ onChange: handleColumnStateChange }}
         enableApiFilter
         {...otherProps}
       />
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+      <EdgeCompatibilityDrawer
         visible={!!compatibilitiesDrawerEdgeId}
         title={$t({ defaultMessage: 'Incompatibility Details: {edgeName}' },
           { edgeName:
@@ -374,7 +366,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         // eslint-disable-next-line max-len
         venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}
         edgeId={compatibilitiesDrawerEdgeId}
-      />}
+      />
     </Loader>
   )
 }

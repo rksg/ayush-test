@@ -12,7 +12,6 @@ import {
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  SWITCH_TYPE,
   MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
@@ -184,30 +183,6 @@ export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:
   return isStrictOperational || isUpgradeFail
 }
 
-export const getSwitchModel = (serial: string) => {
-  if (!serial || serial.length < 3) {
-    return 'Unknown'
-  }
-
-  const productCode = serial.slice(0, 3)
-  return modelMap.get(productCode)
-}
-
-
-export const isSameModelFamily = (sn1: string, sn2: string) => {
-  const model1 = getSwitchModel(sn1) || ''
-  const model2 = getSwitchModel(sn2) || ''
-
-  const family1 = model1.split('-')[0]
-  const family2 = model2.split('-')[0]
-
-  return family1 === family2
-}
-
-export const isRouter = (switchType: SWITCH_TYPE) => {
-  return switchType === SWITCH_TYPE.ROUTER
-}
-
 export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
   syncedSwitchConfig = true, suspendingDeployTime = '') => {
   const { $t } = getIntl()
@@ -334,27 +309,6 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
 }
 
-export const getSwitchName = (row: SwitchRow) => {
-  return row.name || row.switchName || row.serialNumber
-}
-
-export const convertPoeUsage = (rawUsage: number) => {
-  return Math.round(rawUsage / 1000)
-}
-
-export const getPoeUsage = (data: SwitchViewModel) => {
-  const tmpTotal = _.get(data, 'poeUsage.poeTotal', 0) || _.get(data, 'poeTotal', 0)
-  const tmpUsage = _.get(data, 'poeUsage.poeUtilization', 0) || _.get(data, 'poeUtilization', 0)
-  const poeTotal = Math.round(convertPoeUsage(tmpTotal))
-  const poeUsage = Math.round(convertPoeUsage(tmpUsage))
-  const poePercentage = (poeUsage === 0 || poeTotal === 0) ? 0 : Math.round(poeUsage / poeTotal * 100)
-  return {
-    used: poeUsage,
-    total: poeTotal,
-    percentage: poePercentage + '%'
-  }
-}
-
 export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
   const { $t } = getIntl()
   if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
@@ -369,19 +323,6 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
-}
-
-export const isEmpty = (params?: unknown) => {
-  if (params == null) {
-    return true
-  } else if (params === undefined) {
-    return true
-  } else if (params === 'undefined') {
-    return true
-  } else if (params === '') {
-    return true
-  }
-  return false
 }
 
 export const getSwitchModelInfo = (switchModel: string) => {
@@ -427,14 +368,6 @@ export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string 
 export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
   return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
-
-export const isL3FunctionSupported = (switchType: string | undefined) => {
-  if (!switchType) {
-    return false
-  }
-  return isRouter(switchType as SWITCH_TYPE)
-}
-
 
 export const getDhcpOptionList = () => {
   const { $t } = getIntl()
@@ -714,7 +647,6 @@ export const getClientIpAddr = (data?: SwitchClient) => {
 }
 
 export interface SupportModels {
-  isSupport8200AV: boolean,
   isSupport8100: boolean,
   isSupport8100X: boolean,
   isSupport7550Zippy: boolean
@@ -722,9 +654,10 @@ export interface SupportModels {
 
 export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   let pattern = SWITCH_SERIAL_BASE
-  if (supportModels.isSupport8200AV) {
-    pattern += '|' + SWITCH_SERIAL_8200AV
-  }
+
+  //isSupport8200AV always be true
+  pattern += '|' + SWITCH_SERIAL_8200AV
+
   if (supportModels.isSupport8100) {
     pattern += '|' + SWITCH_SERIAL_8100
   }
@@ -919,16 +852,6 @@ export const isBabyRodanX = (model: string) => {
 
 export const is7550Zippy = (model: string) => {
   return model === 'ICX7550-24XZP'
-}
-
-export const isRodanAvSubModel = (model: string) => {
-  switch(model) {
-    case '24PV':
-    case 'C08PFV':
-      return true
-    default:
-      return false
-  }
 }
 
 export const isBabyRodanXSubModel = (model: string) => {

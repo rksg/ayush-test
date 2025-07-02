@@ -14,7 +14,8 @@ import {
   NetworkTypeEnum,
   PersonaUrls,
   DpskUrls,
-  AccessControlUrls } from '@acx-ui/rc/utils'
+  AccessControlUrls,
+  TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
@@ -117,7 +118,20 @@ describe('CaptiveNetworkForm-Directory', () => {
       rest.get(
         WifiUrlsInfo.queryDpskService.url,
         (_req, res, ctx) => res(ctx.json({}))
-      )
+      ),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.get(DirectoryServerUrls.getDirectoryServer.url, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            id: req.params.id,
+            name: 'Mock Directory Profile',
+            type: 'LDAP',
+            wifiNetworkIds: []
+          })
+        )
+      })
     )
   })
 
@@ -158,6 +172,9 @@ describe('CaptiveNetworkForm-Directory', () => {
     const comboboxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboboxes[0])
     expect(await screen.findByRole('option', { name: /ldap-profile1/ })).toBeInTheDocument()
+
+    const profileDetailLink = screen.getByRole('button', { name: 'Profile Detail' })
+    await userEvent.click(profileDetailLink)
   })
   it('should render and interact with Identity Group in create mode', async () => {
     // Arrange: Setup ref and context for create mode
@@ -382,5 +399,38 @@ describe('CaptiveNetworkForm-Directory', () => {
     // Check if the redirectCheckbox is not checked
     const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
     expect(checkbox).not.toBeChecked()
+  })
+
+  it('should render with Accounting service successfully when FF enabled', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+    )
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <DirectoryServerForm
+                  directoryServerDataRef={directoryServerDataRef}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+    await waitFor(() => expect(directoryServerAPI).toBeCalled())
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
   })
 })

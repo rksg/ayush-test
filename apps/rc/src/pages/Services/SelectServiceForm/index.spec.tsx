@@ -11,8 +11,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }    from '@acx-ui/react-router-dom'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }            from '@acx-ui/react-router-dom'
+import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import SelectServiceForm from '.'
 
@@ -125,11 +125,10 @@ describe('Select Service Form', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
   })
 
-  it('should not render edge-dhcp with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+  it('should not render edge-dhcp with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-              || ff !== Features.EDGE_DHCP_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -138,11 +137,10 @@ describe('Select Service Form', () => {
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
 
-  it('should not render edge-pin with the HA-FF ON and pin-HA-FF OFF', async () => {
+  it('should not render edge-pin with the pin-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-              || ff !== Features.EDGE_PIN_HA_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_PIN_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -183,8 +181,7 @@ describe('Select Service Form', () => {
 
   it('should display Edge TNM service when its FF ON', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE
-        || ff === Features.EDGES_TOGGLE)
+      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
     render(<SelectServiceForm />, {
       route: { params, path }
     })
@@ -216,14 +213,17 @@ describe('Select Service Form', () => {
   })
 
   describe('Wi-Fi Calling', () => {
-    it('should not render Wi-Fi calling when limit is reached', () => {
+    it('should not render Wi-Fi calling when limit is reached', async () => {
       mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: true })
 
       render(<SelectServiceForm />, {
         route: { params, path }
       })
 
-      expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
+      const wifiCallingCard = await screen.findByText('Wi-Fi Calling')
+      // eslint-disable-next-line testing-library/no-node-access
+      const radio = within(wifiCallingCard.parentElement!).getByRole('radio')
+      expect(radio).toBeDisabled()
     })
   })
 

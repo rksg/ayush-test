@@ -387,6 +387,144 @@ describe('EditEdge ports - sub-interface', () => {
       await userEvent.click(await screen.findByText('Static IP'))
       expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
     })
+
+    it('should disable access checkbox when edge is not support access port', async () => {
+      render(
+        <Provider>
+          <StepsForm
+            initialValues={mockSubInterfaceSettingsFormType}
+          >
+            <StepsForm.StepForm>
+              <SubInterfaceDrawer
+                serialNumber='edge-id'
+                visible={true}
+                setVisible={mockedSetVisible}
+                data={undefined}
+                handleAdd={mockedHandleAddFn}
+                handleUpdate={mockedHandleUpdateFn}
+                allSubInterfaceVlans={[]}
+                allInterface={[{
+                  serialNumber: 'edge-id',
+                  portName: 'port1',
+                  portType: EdgePortTypeEnum.LAN,
+                  portEnabled: true
+                }] as EdgePortInfo[]}
+                currentInterfaceName='port1'
+                isSupportAccessPort={false}
+              />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Provider>
+      )
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).not.toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    it('should disable core/access checkbox when SD-LAN is running', async () => {
+      render(
+        <Provider>
+          <StepsForm
+            initialValues={mockSubInterfaceSettingsFormType}
+          >
+            <StepsForm.StepForm>
+              <SubInterfaceDrawer
+                serialNumber='edge-id'
+                visible={true}
+                setVisible={mockedSetVisible}
+                data={undefined}
+                handleAdd={mockedHandleAddFn}
+                handleUpdate={mockedHandleUpdateFn}
+                allSubInterfaceVlans={[]}
+                allInterface={[{
+                  serialNumber: 'edge-id',
+                  portName: 'port1',
+                  portType: EdgePortTypeEnum.LAN,
+                  portEnabled: true,
+                  isCorePort: true,
+                  isAccessPort: true
+                }] as EdgePortInfo[]}
+                currentInterfaceName='port1'
+                isSupportAccessPort={true}
+                isSdLanRun
+              />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Provider>
+      )
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    it('should disable core/access checkbox when port is disabled', async () => {
+      render(
+        <Provider>
+          <StepsForm
+            initialValues={mockSubInterfaceSettingsFormType}
+          >
+            <StepsForm.StepForm>
+              <SubInterfaceDrawer
+                serialNumber='edge-id'
+                visible={true}
+                setVisible={mockedSetVisible}
+                data={undefined}
+                handleAdd={mockedHandleAddFn}
+                handleUpdate={mockedHandleUpdateFn}
+                allSubInterfaceVlans={[]}
+                allInterface={[{
+                  serialNumber: 'edge-id',
+                  portName: 'port1',
+                  portType: EdgePortTypeEnum.LAN,
+                  portEnabled: false
+                }] as EdgePortInfo[]}
+                currentInterfaceName='port1'
+                isSupportAccessPort={true}
+              />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Provider>
+      )
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should disable core/access checkbox when the core/access port has been configured on other interface', async () => {
+      render(
+        <Provider>
+          <StepsForm
+            initialValues={mockSubInterfaceSettingsFormType}
+          >
+            <StepsForm.StepForm>
+              <SubInterfaceDrawer
+                serialNumber='edge-id'
+                visible={true}
+                setVisible={mockedSetVisible}
+                data={undefined}
+                handleAdd={mockedHandleAddFn}
+                handleUpdate={mockedHandleUpdateFn}
+                allSubInterfaceVlans={[]}
+                allInterface={[{
+                  serialNumber: 'edge-id',
+                  portName: 'port1',
+                  portType: EdgePortTypeEnum.LAN,
+                  portEnabled: true,
+                  isCorePort: true,
+                  isAccessPort: true
+                }] as EdgePortInfo[]}
+                currentInterfaceName='port1'
+                isSupportAccessPort={true}
+              />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Provider>
+      )
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeDisabled()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeDisabled()
+    })
   })
 })
 

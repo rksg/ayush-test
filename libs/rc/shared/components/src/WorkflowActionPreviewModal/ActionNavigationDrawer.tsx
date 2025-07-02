@@ -23,7 +23,8 @@ function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedI
   const dataNodes:DataNode[] = []
   const { $t } = getIntl()
   nodes.filter(node => node.type !== 'START' as ActionType
-  && !DisablePreviewActionTypes.has(node.type as ActionType))
+    && node.type !== 'DISCONNECTED_BRANCH' as ActionType
+    && !DisablePreviewActionTypes.has(node.type as ActionType))
     .forEach(node => {
       dataNodes.push(
         {

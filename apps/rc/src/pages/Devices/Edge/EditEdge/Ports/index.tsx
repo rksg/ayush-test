@@ -15,7 +15,7 @@ import {
   EdgeEditContext,
   getFieldFullPath,
   transformApiDataToFormListData,
-  useGetEdgeSdLanByEdgeOrClusterId,
+  useGetEdgeSdLanByClusterId,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import { useUpdatePortConfigMutation }     from '@acx-ui/rc/services'
@@ -56,7 +56,7 @@ const Ports = () => {
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo?.clusterId)
 
   const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces) ?? []
 
@@ -200,6 +200,7 @@ const Ports = () => {
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
             <EdgePortsGeneralBase
+              serialNumber={serialNumber!}
               statusData={portStatus}
               lagData={lagData}
               isEdgeSdLanRun={!!edgeSdLanData}
@@ -210,6 +211,10 @@ const Ports = () => {
               clusterInfo={clusterInfo!}
               isSupportAccessPort={isSupportAccessPort}
               subInterfaceList={subInterfaceList}
+              originalInterfaceData={{
+                portSettings: portData,
+                lagSettings: lagData
+              }}
             />
           </StepsForm.StepForm>
         </StepsForm>

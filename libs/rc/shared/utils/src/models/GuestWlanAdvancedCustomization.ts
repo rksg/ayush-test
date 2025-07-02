@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { FastRoamingOptions }          from './FastRoamingOptions'
 import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
@@ -173,6 +174,8 @@ export class GuestWlanAdvancedCustomization {
 
   applicationVisibilityEnabled?: boolean
 
+  fastRoamingOptions?: FastRoamingOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -298,5 +301,6 @@ export class GuestWlanAdvancedCustomization {
     this.qosMapSetOptions = new QosMapSetOptions()
 
     this.applicationVisibilityEnabled = true
+
   }
 }

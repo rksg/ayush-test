@@ -95,6 +95,7 @@ exports[`Brand360 resets SLAs 1`] = `
 
 .c10 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
+  z-index: 1;
 }
 
 .c10 .ant-card-head-wrapper {
@@ -268,6 +269,10 @@ exports[`Brand360 resets SLAs 1`] = `
   transition: width 1ms linear 500ms;
 }
 
+.c6 > .ant-picker:not(.ant-picker-focused) .ant-picker-input > input {
+  color: var(--acx-primary-black);
+}
+
 .c6 > .ant-picker .ant-picker-range-separator,
 .c6 > .ant-picker .ant-picker-input:nth-child(3) {
   display: none;
@@ -279,8 +284,8 @@ exports[`Brand360 resets SLAs 1`] = `
 
 .c6 > .ant-picker > .ant-picker-suffix {
   position: absolute;
-  left: 8px;
   width: 16px;
+  left: 8px;
 }
 
 .c6 > .ant-picker .ant-picker-active-bar {

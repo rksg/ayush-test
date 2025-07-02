@@ -7,8 +7,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { IncidentTableRow } from './services'
-import * as UI              from './styledComponents'
+import * as UI from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
   severityLabel: string,
@@ -43,15 +42,4 @@ export const ShortIncidentDescription = (
       {props.highlightFn(shortDesc)}
     </UI.DescriptionSpan>
   )
-}
-
-export const filterMutedIncidents = (data?: IncidentTableRow[]) => {
-  if (!data) return []
-  const unmutedIncidents = data
-    .filter(incident => !incident.isMuted)
-    .map(datum => ({
-      ...datum,
-      children: datum.children?.filter(child => !child.isMuted)
-    }))
-  return unmutedIncidents
 }

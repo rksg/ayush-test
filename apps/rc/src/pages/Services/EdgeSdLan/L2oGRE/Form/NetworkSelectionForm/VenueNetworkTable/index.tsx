@@ -6,7 +6,6 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Button, Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { EditOutlined }                                                   from '@acx-ui/icons-new'
 import { transformSdLanScopedVenueMap }                                   from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                             from '@acx-ui/rc/services'
@@ -34,12 +33,10 @@ export interface VenueNetworksTableProps {
 }
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans, allPins } = useEdgeSdLanContext()
+  const { allSdLans, allPins, allSoftGreVenueMap } = useEdgeSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
@@ -88,12 +85,10 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     fixed: 'left',
     sorter: { compare: sortProp('name', defaultSort) },
     render: (_, row) => {
-      return isEdgeCompatibilityEnabled
-        ? <Space align='center'>
-          {row.name}
-          <CompatibilityCheck venueId={row.id} venueName={row.name} />
-        </Space>
-        : row.name
+      return <Space align='center'>
+        {row.name}
+        <CompatibilityCheck venueId={row.id} venueName={row.name} />
+      </Space>
     }
   }, {
     title: $t({ defaultMessage: 'Address' }),
@@ -167,6 +162,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         venueName={availableVenues.find(item => item.id === networkDrawerVenueId)?.name}
         activatedNetworks={formRef.getFieldValue('activatedNetworks')}
         pinNetworkIds={pinNetworkIds}
+        softGreNetworkIds={(allSoftGreVenueMap?.[networkDrawerVenueId!] ?? [])
+          .flatMap(sg => sg.networkIds)}
       />}
     </>
   )

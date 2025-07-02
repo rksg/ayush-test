@@ -81,7 +81,7 @@ describe('BaseStepNode', () => {
         }
       ),
       rest.delete(
-        WorkflowUrls.deleteWorkflowStepDescendants.url,
+        WorkflowUrls.deleteWorkflowStepDescendants.url.split('?')[0],
         (_, res, ctx) => {
           spyDeleteStepChildrenFn()
           return res(ctx.json({}))
@@ -138,7 +138,7 @@ describe('BaseStepNode', () => {
     expect(screen.getByTestId('expectedChild')).toBeVisible()
     expect(screen.getByTestId('StartFlag')).toBeVisible()
     expect(screen.getByTestId('EndFlag')).toBeVisible()
-    expect(screen.getByTestId('WarningCircleSolid')).toBeVisible()
+    expect(screen.getByTestId('ExclamationMark')).toBeVisible()
 
     // selected style would not show up
     expect(screen.queryByTestId('Plus')).toBeNull()
@@ -218,12 +218,12 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: /Delete Action Only/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: /Delete Step Only/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
 
     await waitFor(() => expect(spyDeleteIndividualStepFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Action' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
     })
   })
 
@@ -247,12 +247,12 @@ describe('BaseStepNode', () => {
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
     await userEvent.click(await screen.findByRole('menuitem',
-      { name: /Delete Action and Children/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action and Children' }))
+      { name: /Delete Step and Children/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step and Children' }))
 
     await waitFor(() => expect(spyDeleteStepChildrenFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Action\'s Children' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Step\'s Children' })).toBeNull()
     })
   })
 

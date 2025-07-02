@@ -3,15 +3,18 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                                                                                        from '@acx-ui/components'
-import { Features }                                                                                                                                                            from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached }                                                         from '@acx-ui/rc/components'
-import { collectAvailableProductsAndCategories, IncompatibilityFeatures, PolicyType, ServiceType, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, PageHeader }                                                                                from '@acx-ui/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
+import {
+  collectAvailableProductsAndCategories, IncompatibilityFeatures,
+  PolicyType, ServiceType, UnifiedServiceType,
+  useAvailableUnifiedServicesList
+} from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
-import { ServiceSortOrder, ServicesToolBar } from './ServicesToolBar'
-import { useUnifiedServiceSearchFilter }     from './useUnifiedServiceSearchFilter'
+import { ServicesToolBar }                                             from './ServicesToolBar'
+import { getDefaultSearchFilterValues, useUnifiedServiceSearchFilter } from './useUnifiedServiceSearchFilter'
 
 const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, IncompatibilityFeatures>> = {
   [ServiceType.EDGE_DHCP]: IncompatibilityFeatures.DHCP,
@@ -22,17 +25,23 @@ const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, Incompatibilit
   [PolicyType.HQOS_BANDWIDTH]: IncompatibilityFeatures.HQOS
 }
 
+const serviceCatalogSettingsId = 'service-catalog'
+
 export function ServiceCatalog () {
   const { $t } = useIntl()
   const rawUnifiedServiceList = useAvailableUnifiedServicesList()
-  const defaultSortOrder = ServiceSortOrder.ASC
   const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
+
+  // The function passed to useState will only run once on the initial render.
+  // This ensures getDefaultSearchFilterValues is called only once for initialization and not on every render.
+  // eslint-disable-next-line max-len
+  const [defaultSearchFilterValues] = useState(() => getDefaultSearchFilterValues(serviceCatalogSettingsId))
 
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
-  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
+  // eslint-disable-next-line max-len
+  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSearchFilterValues, serviceCatalogSettingsId)
 
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const [
     edgeCompatibilityFeature,
     setEdgeCompatibilityFeature
@@ -42,7 +51,7 @@ export function ServiceCatalog () {
 
   const buildHelpIcon = (type: UnifiedServiceType): React.ReactNode | null => {
     const edgeIncompatibilityType = edgeServicesHelpIconMap[type]
-    if (isEdgeCompatibilityEnabled && edgeIncompatibilityType) {
+    if (edgeIncompatibilityType) {
       return <ApCompatibilityToolTip
         title={''}
         showDetailButton
@@ -62,8 +71,8 @@ export function ServiceCatalog () {
       <ServicesToolBar
         setSearchTerm={setSearchTerm}
         setFilters={setFilters}
-        defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
+        defaultValues={defaultSearchFilterValues}
         availableFilters={{ products, categories }}
       />
       <GridRow>
@@ -82,12 +91,12 @@ export function ServiceCatalog () {
         ))}
       </GridRow>
     </Space>
-    {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+    <EdgeCompatibilityDrawer
       visible={!!edgeCompatibilityFeature}
       type={EdgeCompatibilityType.ALONE}
       title={$t({ defaultMessage: 'Compatibility Requirement' })}
       featureName={edgeCompatibilityFeature}
       onClose={() => setEdgeCompatibilityFeature(undefined)}
-    />}
+    />
   </>
 }

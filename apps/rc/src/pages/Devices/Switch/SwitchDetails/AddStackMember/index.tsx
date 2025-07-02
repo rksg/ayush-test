@@ -17,9 +17,11 @@ import {
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
+import {
   Switch,
   SwitchTable,
-  getSwitchModel,
   checkVersionAtLeast09010h,
   SwitchViewModel,
   convertInputToUppercase
@@ -124,9 +126,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
@@ -157,7 +157,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
             { validator: (_, value) => {
               const switchModelParams: SwitchModelParams = {
                 serialNumber: value,
-                isSupport8200AV: isSupport8200AV,
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,
@@ -234,7 +233,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (!checkVersionAtLeast09010h(venueFirmwareVersion) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(venueFirmwareVersion)) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return

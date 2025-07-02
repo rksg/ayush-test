@@ -1,10 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                                                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                      from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                                                            from '@acx-ui/test-utils'
+import { useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { edgeDhcpApi }                                                from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeDhcpUrls, EdgeGeneralFixtures,
+  EdgeUrlsInfo,
+  getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
@@ -22,6 +27,9 @@ describe('EdgeDhcpDetail', () => {
   })
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    store.dispatch(edgeDhcpApi.util.resetApiState())
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: '1'
@@ -58,7 +66,15 @@ describe('EdgeDhcpDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+
+    const clusterNames = await screen.findAllByRole('row', { name: /Edge Cluster/i })
+    expect(clusterNames.length).toBe(2)
+
+    const venueNames = await screen.findAllByRole('row', { name: /Mock Venue/i })
+    expect(venueNames.length).toBe(2)
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -77,29 +93,6 @@ describe('EdgeDhcpDetail', () => {
     })).toBeVisible()
   })
 
-  it('edge cluster name in table should be correct', async () => {
-    render(
-      <Provider>
-        <EdgeDHCPDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-
-    const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
-    expect(rows.length).toBe(2)
-  })
-
-  it('venue name in table should be correct', async () => {
-    render(
-      <Provider>
-        <EdgeDHCPDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    const rows = await screen.findAllByRole('row', { name: /Mock Venue/i })
-    expect(rows.length).toBe(2)
-  })
-
   it('should have compatible warning', async () => {
     render(
       <Provider>
@@ -109,6 +102,7 @@ describe('EdgeDhcpDetail', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const compatibleWarning = await screen.findByText(/DHCP is not able to be brought up on/)
     // eslint-disable-next-line testing-library/no-node-access
     const detailBtn = within(compatibleWarning.closest('.ant-space') as HTMLElement)

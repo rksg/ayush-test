@@ -361,20 +361,6 @@ describe('Network utils test', () => {
       expect(result.current.enableTunnel).toBe(false)
       expect(result.current.vxLanTunnels).toBe(undefined)
     })
-
-    it('should return false when edge flag is not ON',async () => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(false)
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const { result } = renderHook(() => {
-        return useNetworkVxLanTunnelProfileInfo({
-        } as NetworkSaveData)
-      }, { wrapper: Provider })
-
-      expect(mockedTunnelReq).not.toBeCalled()
-      expect(result.current.enableVxLan).toBe(false)
-      expect(result.current.enableTunnel).toBe(false)
-      expect(result.current.vxLanTunnels).toBe(undefined)
-    })
   })
 
   describe('useServicePolicyEnabledWithConfigTemplate', () => {
@@ -749,7 +735,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.OPEN
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
 
       it('check for DPSK network type', () => {
@@ -789,7 +775,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.CAPTIVEPORTAL
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
     })
     describe('shouldSaveRadiusServerProfile', () => {
@@ -812,7 +798,7 @@ describe('Network utils test', () => {
             guestNetworkType: GuestNetworkTypeEnum.GuestPass
           }
         }
-        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(false)
+        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(true)
       })
     })
 

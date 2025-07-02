@@ -7,12 +7,10 @@ import {
   useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
-import { TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }                               from '@acx-ui/utils'
+import { TunnelProfileViewData, TunnelTypeEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { getIntl }                                                      from '@acx-ui/utils'
 
 import { getTunnelTypeDisplayName } from '../utils'
-
-import { useIsEdgeFeatureReady } from './useIsEdgeFeatureReady'
 
 interface GetAvailableTunnelProfileProps {
   serviceIds?: (string|undefined)[]
@@ -56,7 +54,7 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       fields: [
         'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
         'type', 'mtuType', 'forceFragmentation', 'ageTimeMinutes', 'keepAliveInterval',
-        'keepAliveRetry'
+        'keepAliveRetry', 'natTraversalEnabled'
       ],
       sortField: 'name',
       sortOrder: 'ASC',

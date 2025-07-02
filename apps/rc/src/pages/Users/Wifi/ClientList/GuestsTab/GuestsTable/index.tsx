@@ -231,7 +231,7 @@ export const GuestsTable = () => {
   const columns: TableProps<Guest>['columns'] = [
     {
       key: 'creationDate',
-      title: $t({ defaultMessage: 'Created' }),
+      title: $t({ defaultMessage: 'Created Time' }),
       dataIndex: 'creationDate',
       sorter: true,
       defaultSortOrder: 'ascend',
@@ -412,7 +412,7 @@ export const GuestsTable = () => {
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestType?.includes('SelfSign')) {
-      customFilters.guestType.push('HostGuest')
+      customFilters.guestType = [...customFilters.guestType, 'HostGuest']
     }
     if(customFilters?.includeExpired){
       customFilters = {

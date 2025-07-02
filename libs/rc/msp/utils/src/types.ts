@@ -142,6 +142,8 @@ export interface EcDeviceInventory {
   model: string;
   customerName: string;
   deviceStatus: string;
+  fwVersion: string;
+  firmwareVersion: string;
 }
 
 export enum DateSelectionEnum {
@@ -465,6 +467,7 @@ export interface RecommendFirmwareUpgradeByApModel {
 
 export interface MspRecData {
   account_id?: string;
+  propertyCode?: string;
   name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];

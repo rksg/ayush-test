@@ -81,12 +81,16 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       let editData = {}
       // eslint-disable-next-line max-len
       if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category) {
+        const { attributeType, attributeValue } = toEvaluationRuleForm(editCondition.evaluationRule)
         editData = {
           conditionId: editCondition.id,
           templateAttributeId: attributes.find(p => p.category)?.id,
           subTemplateAttributeId: editCondition.templateAttributeId,
           name: editCondition.name ?? editCondition.templateAttribute?.name,
-          ...toEvaluationRuleForm(editCondition.evaluationRule)
+          subName: editCondition.name ?? editCondition.templateAttribute?.name,
+          attributeType: attributeType,
+          subAttributeType: attributeType,
+          attributeValue: attributeValue
         }
         setShowSubType(true)
       } else {
@@ -115,9 +119,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       name: data.subName,
       templateAttributeId: data.subTemplateAttributeId,
       evaluationRule: toEvaluationRuleData({ ...data, attributeType: data.subAttributeType }),
-      templateAttribute: {
-        attributeType: data.subAttributeType
-      }
+      templateAttribute: editCondition?.templateAttribute
     } as AccessCondition :
     {
       id: data.conditionId,
@@ -204,7 +206,9 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
             disabled={isEdit}
             options={attributes.map(p => {
               const label = p.attributeType === 'DATE_RANGE' ? p.name :
-                $t({ defaultMessage: '{name} (Regex)' }, { name: p.name })
+                // eslint-disable-next-line max-len
+                $t({ defaultMessage: '{category, select, identity {Identity} other {{name}}} (Regex)' },
+                  { name: p.name, category: p.category })
               return ({ label, value: p.id })
             })}
             onChange={(value) => {

@@ -11,6 +11,7 @@ import {
   AccessControlUrls,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  EdgeSdLanUrls,
   SoftGreUrls,
   VlanPoolRbacUrls,
   WifiNetworkFixtures,
@@ -52,9 +53,6 @@ const { mockedRbacWifiNetworkList } = WifiNetworkFixtures
 // isMapEnabled = false && SD-LAN not enabled
 const disabledFFs = [
   Features.G_MAP,
-  Features.EDGES_SD_LAN_TOGGLE,
-  Features.EDGES_SD_LAN_HA_TOGGLE,
-  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
@@ -202,6 +200,10 @@ describe.skip('NetworkVenuesTab', () => {
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockNetworkViewModelData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

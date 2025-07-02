@@ -4,7 +4,6 @@ import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/component
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDelSyslogPoliciesMutation,
   useGetVenuesQuery,
   useSyslogPolicyListQuery
@@ -22,7 +21,8 @@ import {
   PolicyOperation,
   PolicyType,
   SyslogPolicyListType,
-  useTableQuery
+  useTableQuery,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 

@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { renderFilter, filterOption } from './filters'
+import { renderFilter, filterOption, getFilteredData } from './filters'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
@@ -141,6 +141,7 @@ describe('Table Filters', () => {
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
@@ -152,8 +153,13 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByPlaceholderText('Start date')
-      await userEvent.click(calenderSelect)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
       await userEvent.click(dateSelect[0])
@@ -163,12 +169,81 @@ describe('Table Filters', () => {
       const applyButton = await screen.findByRole('button', { name: 'Apply' })
       await userEvent.click(applyButton)
     })
+    it('should render with range picker component and close when click on cancel', async () => {
+      const filterableCol = jest.fn()
+      render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
+        {
+          key: 'fromTime',
+          dataIndex: 'fromTime',
+          title: 'From Time',
+          filterable: true,
+          filterKey: 'fromTime',
+          filterComponent: { type: 'rangepicker' }
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      )}</BrowserRouter>)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
+      const yesterday = moment().subtract(1, 'day')
+      const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
+      await userEvent.click(dateSelect[0])
+      const today = formatter(DateFormatEnum.DateFormat)(moment())
+      const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
+      expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
+      const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
+      await userEvent.click(cancelButton)
+    })
+    it('should render with range picker component and close when click on All Time', async () => {
+      const filterableCol = jest.fn()
+      render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
+        {
+          key: 'fromTime',
+          dataIndex: 'fromTime',
+          title: 'From Time',
+          filterable: true,
+          filterKey: 'fromTime',
+          filterComponent: { type: 'rangepicker' }
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      )}</BrowserRouter>)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
+      const yesterday = moment().subtract(1, 'day')
+      const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
+      await userEvent.click(dateSelect[0])
+      const today = formatter(DateFormatEnum.DateFormat)(moment())
+      const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
+      expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
+      const option = await screen.findByText('All Time')
+      await userEvent.click(option)
+    })
     it('should render undefined value with range picker component', async () => {
       const filterableCol = jest.fn()
       render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
@@ -180,6 +255,190 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
+    })
+  })
+
+  describe('getFilteredData', () => {
+    describe('columns with string values', () => {
+      const activeFilters = [
+        {
+          key: 'name',
+          dataIndex: 'name',
+          filterable: true,
+          filterMultiple: false
+        },
+        {
+          key: 'value',
+          dataIndex: 'value',
+          filterable: true,
+          filterMultiple: false
+        }
+      ]
+
+      it('should return filtered data without children', () => {
+        const dataSource = [
+          { name: 'john', value: 'apples' },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['john'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: 'apples',
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return filtered data with children', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' },
+              { name: 'john', value: 'carrot' }
+            ]
+          },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['jack'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' }
+            ]
+          }
+        ])
+      })
+
+      it('should return no children when parent is filtered', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: 'carrot',
+            children: [
+              { name: 'jack', value: 'apples' },
+              { name: 'jack', value: 'banana' },
+              { name: 'john', value: 'carrot' }
+            ]
+          },
+          { name: 'jane', value: 'banana' }
+        ]
+        const filterValues = { name: ['jack'], value: ['apples', 'banana'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'name'
+          ])
+        ).toEqual([])
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'value'
+          ])
+        ).toEqual([])
+      })
+    })
+
+    describe('columns with boolean values', () => {
+      const activeFilters = [
+        {
+          key: 'value',
+          dataIndex: 'value',
+          filterable: true,
+          filterMultiple: false
+        }
+      ]
+
+      it('should return filtered data without children', () => {
+        const dataSource = [
+          { name: 'john', value: true },
+          { name: 'jane', value: false }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return filtered data with children', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'jack', value: false },
+              { name: 'john', value: true }
+            ]
+          },
+          { name: 'jane', value: true }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '')
+        ).toEqual([
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'john', value: true }
+            ]
+          },
+          {
+            name: 'jane',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
+
+      it('should return no children when parent is filtered', () => {
+        const dataSource = [
+          {
+            name: 'john',
+            value: false,
+            children: [
+              { name: 'jack', value: true },
+              { name: 'jack', value: false },
+              { name: 'john', value: true }
+            ]
+          },
+          { name: 'jane', value: true }
+        ]
+        const filterValues = { value: ['true'] }
+
+        expect(
+          getFilteredData(dataSource, filterValues, activeFilters, [], '', [
+            'value'
+          ])
+        ).toEqual([
+          {
+            name: 'jane',
+            value: true,
+            children: undefined
+          }
+        ])
+      })
     })
   })
 })
