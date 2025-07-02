@@ -108,6 +108,9 @@ export const PendingSwitch = () => {
             serials: selectedRows.map((row) => row.serialNumber)
           } as HideProvisionsPayload
         })
+      },
+      visible: (selectedRows: DeviceProvision[]) => {
+        return !selectedRows.some((row: DeviceProvision) => row.visibleStatus === 'Hidden')
       }
     }
   ]
@@ -164,7 +167,7 @@ export const PendingSwitch = () => {
         onFilterChange={handleFilterChange}
         rowActions={rowActions}
         rowSelection={
-          rowActions.length > 0 && { type: 'checkbox' }
+          rowActions?.length > 0 && { type: 'checkbox' }
         }
         rowKey='serialNumber'
       />

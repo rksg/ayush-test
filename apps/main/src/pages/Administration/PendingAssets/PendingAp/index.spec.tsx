@@ -28,42 +28,42 @@ const mockDeviceProvisions = [
     model: 'R770',
     shipDate: '2024-01-15T00:00:00.000Z',
     createdDate: '2024-01-20T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'RUCKUS-AP-002',
     model: 'R760',
     shipDate: '2024-01-16T00:00:00.000Z',
     createdDate: '2024-01-21T00:00:00.000Z',
-    visibleStatus: 'hidden'
+    visibleStatus: 'Hidden'
   },
   {
     serialNumber: 'RUCKUS-AP-003',
     model: 'R770',
     shipDate: '2024-01-17T00:00:00.000Z',
     createdDate: '2024-01-22T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'RUCKUS-AP-004',
     model: 'R760',
     shipDate: '2024-01-18T00:00:00.000Z',
     createdDate: '2024-01-23T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'RUCKUS-AP-005',
     model: 'R770',
     shipDate: '2024-01-19T00:00:00.000Z',
     createdDate: '2024-01-24T00:00:00.000Z',
-    visibleStatus: 'hidden'
+    visibleStatus: 'Hidden'
   },
   {
     serialNumber: 'RUCKUS-AP-006',
     model: 'R760',
     shipDate: '2024-01-20T00:00:00.000Z',
     createdDate: '2024-01-25T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   }
 ]
 

@@ -28,42 +28,42 @@ const mockDeviceProvisions = [
     model: 'ICX7550-48',
     shipDate: '2024-01-15T00:00:00.000Z',
     createdDate: '2024-01-20T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'SWITCH-002',
     model: 'ICX7150-C12P',
     shipDate: '2024-01-16T00:00:00.000Z',
     createdDate: '2024-01-21T00:00:00.000Z',
-    visibleStatus: 'hidden'
+    visibleStatus: 'Hidden'
   },
   {
     serialNumber: 'SWITCH-003',
     model: 'ICX7550-48',
     shipDate: '2024-01-17T00:00:00.000Z',
     createdDate: '2024-01-22T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'SWITCH-004',
     model: 'ICX7150-C12P',
     shipDate: '2024-01-18T00:00:00.000Z',
     createdDate: '2024-01-23T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   },
   {
     serialNumber: 'SWITCH-005',
     model: 'ICX7550-48',
     shipDate: '2024-01-19T00:00:00.000Z',
     createdDate: '2024-01-24T00:00:00.000Z',
-    visibleStatus: 'hidden'
+    visibleStatus: 'Hidden'
   },
   {
     serialNumber: 'SWITCH-006',
     model: 'ICX7150-C12P',
     shipDate: '2024-01-20T00:00:00.000Z',
     createdDate: '2024-01-25T00:00:00.000Z',
-    visibleStatus: 'visible'
+    visibleStatus: 'Visible'
   }
 ]
 
