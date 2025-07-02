@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback } from 'react'
 
-import { stringify }                                           from 'csv-stringify/browser/esm/sync'
-import { omit }                                                from 'lodash'
-import { useIntl, defineMessage, FormattedMessage, IntlShape } from 'react-intl'
+import { stringify }                                from 'csv-stringify/browser/esm/sync'
+import { omit }                                     from 'lodash'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   productNames,
