@@ -7,20 +7,20 @@ import { UseQueryResult }      from '@acx-ui/types'
 
 import { TrafficByRadioData } from './services'
 
+function sumOfTraffic (trafficData: number[]) {
+  return trafficData.reduce((accumulator, current) => accumulator + current, 0)
+}
+
+type TrafficData = Omit<TrafficByRadioData, 'time' | 'userTraffic_all'>
+
+const nameMap = {
+  userTraffic_24: '2.4 GHz',
+  userTraffic_5: '5 GHz',
+  userTraffic_6: '6 GHz'
+}
+
 function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): DonutChartData[]{
   const trafficSnapshotChartData: DonutChartData[] = []
-
-  function sumOfTraffic (trafficData: number[]) {
-    return trafficData.reduce((accumulator, current) => accumulator + current, 0)
-  }
-
-  type TrafficData = Omit<TrafficByRadioData, 'time' | 'userTraffic_all'>
-
-  const nameMap = {
-    userTraffic_24: '2.4 GHz',
-    userTraffic_5: '5 GHz',
-    userTraffic_6: '6 GHz'
-  }
 
   for (const key in data) {
     if (key !== 'time' && key !== 'userTraffic_all') {

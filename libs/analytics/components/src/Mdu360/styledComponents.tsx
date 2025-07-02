@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { NoData } from '@acx-ui/components'
 
-export const PADDING_BOTTOM = 10
+const paddingBottom = 10
 
 export const Grid = styled.div`
   display: grid;
@@ -22,5 +22,5 @@ export const ContentSwitcherWrapper = styled.div<{
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
   margin-top: -38px;
-  padding-bottom: ${PADDING_BOTTOM}px
+  padding-bottom: ${paddingBottom}px
 `
