@@ -101,7 +101,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: isSwitchMacAclEnabled
       },
       {
-        type: PolicyType.ADAPTIVE_POLICY,
+        type: PolicyType.ADAPTIVE_POLICY_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
