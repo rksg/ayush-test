@@ -14,18 +14,14 @@ import {
 import { formats } from '@acx-ui/formatter'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTopNApplicationCategoriesQuery } from './services'
-
-export interface ApplicationCategoriesFilters {
-  startDate: string;
-  endDate: string;
-}
 
 export const ApplicationCategories = ({
   filters
 }: {
-  filters: ApplicationCategoriesFilters;
+  filters: Mdu360TabProps;
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters

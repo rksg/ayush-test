@@ -7,16 +7,13 @@ import { ContentSwitcher, Loader, NoData, HistoricalCard, ContentSwitcherProps }
 import { formats }                                                               from '@acx-ui/formatter'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTopNApplicationsQuery }       from './services'
 import { ApplicationData, renderContent } from './utils'
 
-interface TopApplicationsFilters {
-  startDate: string;
-  endDate: string;
-}
 
-export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
+export const TopApplications = ({ filters }: { filters: Mdu360TabProps }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
   const queryResults = useTopNApplicationsQuery({

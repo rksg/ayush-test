@@ -6,15 +6,12 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { DonutChart, ContentSwitcher, Loader, NoData, HistoricalCard } from '@acx-ui/components'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTopNWifiClientQuery } from './services'
 
-interface WifiClientFilters {
-  startDate: string;
-  endDate: string;
-}
 
-export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
+export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
   const { $t } = useIntl()
   const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
 
