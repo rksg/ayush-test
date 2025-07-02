@@ -40,7 +40,6 @@ export function AdvancedTab () {
           children={<Slider
             tooltipVisible={false}
             style={{ width: '240px' }}
-            defaultValue={1}
             min={1}
             max={255}
             marks={{ 1: 'Lower latency', 255: 'Longer client battery life' }}

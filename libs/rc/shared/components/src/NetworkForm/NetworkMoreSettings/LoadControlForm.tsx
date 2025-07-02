@@ -54,9 +54,10 @@ export function LoadControlForm (props: { labelWidth?: string }) {
     <>
       <Form.Item
         label={$t({ defaultMessage: 'Max Rate:' })}
-        name='maxRate'>
+        name='maxRate'
+        initialValue={MaxRateEnum.UNLIMITED}
+      >
         <Select
-          defaultValue={MaxRateEnum.UNLIMITED}
           style={{ width: '240px' }}
           onChange={function (value: string) {
             if (value === MaxRateEnum.PER_AP) {
@@ -80,11 +81,11 @@ export function LoadControlForm (props: { labelWidth?: string }) {
       <Form.Item
         label={$t({ defaultMessage: 'Max clients per radio:' })}
         name={['wlan', 'advancedCustomization', 'maxClientsOnWlanPerRadio']}
+        initialValue={100}
       >
         <Slider
           tooltipVisible={false}
           style={{ width: '240px' }}
-          defaultValue={100}
           min={1}
           max={512}
           marks={{ 1: '1', 512: '512' }}
@@ -153,11 +154,12 @@ function PerApForm () {
         {
           totalUplinkLimited ?
             <UI.FormItemNoLabel
-              name={['wlan', 'advancedCustomization', 'totalUplinkRateLimiting']} >
+              name={['wlan', 'advancedCustomization', 'totalUplinkRateLimiting']}
+              initialValue={500}
+            >
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={500}
                 min={1}
                 max={500}
                 marks={{
@@ -196,11 +198,12 @@ function PerApForm () {
         {
           totalDownlinkLimited ?
             <UI.FormItemNoLabel
-              name={['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting']} >
+              name={['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting']}
+              initialValue={20}
+            >
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={20}
                 min={1}
                 max={500}
                 marks={{
