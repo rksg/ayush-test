@@ -14,7 +14,6 @@ import {
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip, useEnforcedStatus }     from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteDpskMutation,
   useGetEnhancedDpskListQuery,
   useNetworkListQuery,
@@ -37,7 +36,8 @@ import {
   filterDpskOperationsByPermission,
   getServiceAllowedOperation,
   ConfigTemplateType,
-  useServicesBreadcrumb
+  useServicesBreadcrumb,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'

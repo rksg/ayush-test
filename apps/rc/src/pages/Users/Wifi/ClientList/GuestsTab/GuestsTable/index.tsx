@@ -228,7 +228,7 @@ export const GuestsTable = () => {
   const columns: TableProps<Guest>['columns'] = [
     {
       key: 'creationDate',
-      title: $t({ defaultMessage: 'Created' }),
+      title: $t({ defaultMessage: 'Created Time' }),
       dataIndex: 'creationDate',
       sorter: true,
       defaultSortOrder: 'ascend',

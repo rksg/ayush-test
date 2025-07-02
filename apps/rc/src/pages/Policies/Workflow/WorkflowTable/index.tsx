@@ -17,7 +17,7 @@ import {
   useDeleteWorkflowsMutation,
   useSearchInProgressWorkflowListQuery,
   useLazySearchWorkflowsVersionListQuery,
-  useCloneWorkflowMutation, doProfileDelete,
+  useCloneWorkflowMutation,
   useLazyGetWorkflowStepsByIdQuery
 } from '@acx-ui/rc/services'
 import {
@@ -31,7 +31,8 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation, InitialEmptyStepsCount,
-  StatusReason
+  StatusReason,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
@@ -91,7 +92,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: ['publishedDetails', 'version'],
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
-        return row.publishedDetails?.version
+        return workflowMap.get(row.id!)?.publishedDetails?.version
           ? <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.WORKFLOW,
@@ -99,7 +100,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
               policyId: row.id!!,
               activeTab: WorkflowDetailsTabKey.OVERVIEW
             })}
-          >{row.publishedDetails?.version}</TenantLink>
+          >{workflowMap.get(row.id!)?.publishedDetails?.version}</TenantLink>
           : noDataDisplay
       }
     },
@@ -109,10 +110,24 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: 'publishReadiness',
       align: 'center' as AlignType,
       sorter: false,
-      render: (_: React.ReactNode, row: Workflow) => {
-        return <PublishReadinessProgress
-          publishReadiness={row.publishReadiness as number}
-          reasons={row?.statusReasons as StatusReason[]}/>
+      width: 50,
+      render: (node: React.ReactNode, record:Workflow) => {
+        return {
+          props: {
+            style: {
+              background: record?.statusReasons && record.statusReasons.length > 0
+                ? 'var(--acx-semantics-red-10)' : '',
+              padding: '0px'
+            }
+          },
+          children:
+              <div style={{ alignItems: 'center', justifyContent: 'center',
+                display: 'flex', width: '100%', height: '100%' }}>
+                <PublishReadinessProgress
+                  variant='short'
+                  reasons={record?.statusReasons as StatusReason[]}/>
+              </div>
+        }
       }
     }] : []),
     {

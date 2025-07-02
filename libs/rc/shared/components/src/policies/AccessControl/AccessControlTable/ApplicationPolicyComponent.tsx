@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete,
   useDelAppPoliciesMutation,
   useGetEnhancedApplicationProfileListQuery,
   useNetworkListQuery,
@@ -17,7 +16,7 @@ import {
   ApplicationPolicy, AclOptionType, Network,
   WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
   filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation, doProfileDelete
 } from '@acx-ui/rc/utils'
 import { useTableQuery } from '@acx-ui/utils'
 

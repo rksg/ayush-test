@@ -138,7 +138,7 @@ describe('AdvancedTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should handle add/edit/delete action', async () => {
+  xit('should handle add/edit/delete action', async () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',

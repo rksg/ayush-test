@@ -30,7 +30,8 @@ import {
   MtuTypeEnum,
   SoftGreViewData,
   IsolatePacketsTypeEnum,
-  Persona
+  Persona,
+  PoeOutModeEnum
 } from '@acx-ui/rc/utils'
 import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
@@ -176,6 +177,7 @@ export const venueCaps = {
     lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
     lanPorts: [{
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '1',
       isPoeOutPort: true,
       isPoePort: false,
@@ -185,6 +187,7 @@ export const venueCaps = {
       vlanMembers: '1-4094'
     }, {
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '2',
       isPoeOutPort: false,
       isPoePort: false,
@@ -194,6 +197,7 @@ export const venueCaps = {
       vlanMembers: '1-4094'
     }, {
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '3',
       isPoeOutPort: false,
       isPoePort: true,
@@ -209,6 +213,65 @@ export const venueCaps = {
       '802.3bt-Class_6',
       '802.3bt-Class_7'
     ]
+  }, {
+    model: 'H670',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    canSupportPoeOutMode: true,
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5'
+    ],
+    poeOutModeCapabilities: [PoeOutModeEnum._802_3af, PoeOutModeEnum._802_3at],
+    defaultPoeOutMode: PoeOutModeEnum._802_3af,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h670.jpg',
+    lanPorts: [{
+      defaultType: 'Access',
+      id: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: true,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '2',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '3',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Access',
+      id: '4',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'Trunk',
+      id: '5',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
   }],
   version: '6.0.0.x.xxx'
 }
@@ -247,11 +310,43 @@ export const venueLanPorts = [{
   model: 'H320'
 }, {
   lanPorts: [
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '3',
+      enabled: true
+    }
   ],
   model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '3', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '4', enabled: false },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '5', enabled: false }
+  ],
+  model: 'H670',
   poeMode: 'Auto',
   poeOut: false
 }]
@@ -271,7 +366,7 @@ export const mockEthProfiles = {
   page: 1,
   data: [
     {
-      id: 'ed4b396d848e465d8044064ff3da9d33',
+      id: 'tenant-id_TRUNK',
       name: 'Default Trunk',
       type: 'TRUNK',
       untagId: 1,
@@ -287,7 +382,7 @@ export const mockEthProfiles = {
       ]
     },
     {
-      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
+      id: 'tenant-id_ACCESS',
       name: 'Default Access',
       type: 'ACCESS',
       untagId: 1,
@@ -1788,6 +1883,12 @@ export const mockDirectedMulticast = {
   wiredEnabled: true,
   wirelessEnabled: true,
   networkEnabled: true
+}
+
+export const mockSmartMonitor = {
+  enabled: true,
+  interval: 5,
+  threshold: 60
 }
 
 export const mockRadiusOptions = {

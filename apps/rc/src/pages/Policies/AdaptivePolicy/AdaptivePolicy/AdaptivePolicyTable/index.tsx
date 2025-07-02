@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useAdaptivePolicyListByQueryQuery,
   useDeleteAdaptivePolicyMutation,
   usePolicyTemplateListByQueryQuery
@@ -14,7 +13,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType, getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation, RulesManagementUrlsInfo, getPolicyAllowedOperation
+  filterByAccessForServicePolicyMutation, RulesManagementUrlsInfo, getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getOpsApi, FILTER, SEARCH, useTableQuery }     from '@acx-ui/utils'

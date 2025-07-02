@@ -3,6 +3,7 @@ import { rest }  from 'msw'
 
 import {
   ActionType,
+  StepType,
   Workflow,
   WorkflowStep,
   WorkflowUrls
@@ -54,12 +55,14 @@ const steps: NewAPITableResult<WorkflowStep> = {
     {
       id: 'step-1',
       enrollmentActionId: 'step-1-action-id',
-      nextStepId: 'step-2'
+      nextStepId: 'step-2',
+      type: StepType.Basic
     },
     {
       id: 'step-2',
       enrollmentActionId: 'step-2-action-id',
-      nextStepId: 'step-3'
+      nextStepId: 'step-3',
+      type: StepType.Basic
     }
   ],
   paging: {

@@ -6,9 +6,10 @@ import { useIntl } from 'react-intl'
 import { Loader, TableProps, Table }                                                                         from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                         from '@acx-ui/formatter'
 import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, issuedByLabel, ServerCertificateDetailDrawer } from '@acx-ui/rc/components'
-import { doProfileDelete, useDeleteServerCertificateMutation, useGetServerCertificatesQuery }                from '@acx-ui/rc/services'
+import { useDeleteServerCertificateMutation, useGetServerCertificatesQuery }                                 from '@acx-ui/rc/services'
 import {
   CertificateStatusType,
+  doProfileDelete,
   EnrollmentType,
   ExtendedKeyUsages,
   PolicyOperation,

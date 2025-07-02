@@ -77,8 +77,8 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
   const { rbacOpsApiEnabled } = getUserProfile()
@@ -93,7 +93,11 @@ export const EventTable = ({
   }
 
   const excludeEventType = [
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+    ...(!isIotEnabled ? ['IOT'] : [])
+  ]
+
+  const excludeProductType = [
+    ...(!isIotEnabled ? ['IOT'] : [])
   ]
 
   const supportedEventTypes =
@@ -211,7 +215,7 @@ export const EventTable = ({
       dataIndex: 'product',
       sorter: true,
       render: (_, row) => valueFrom(productMapping, row.product),
-      filterable: filtersFrom(productMapping, filterables, 'product')
+      filterable: filtersFrom(omit(productMapping, excludeProductType), filterables, 'product')
     },
     {
       key: 'source',
@@ -315,3 +319,5 @@ export const EventTable = ({
     }
   </Loader>
 }
+
+

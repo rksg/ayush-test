@@ -2,7 +2,6 @@
 import { useMemo } from 'react'
 
 import { FormInstance, Input } from 'antd'
-import { DefaultOptionType }   from 'antd/es/cascader'
 import { NamePath }            from 'antd/lib/form/interface'
 import { find, isNil, merge }  from 'lodash'
 import { AlignType }           from 'rc-table/lib/interface'
@@ -21,16 +20,17 @@ import {
   NetworkType,
   NetworkTypeEnum,
   sortProp,
-  TunnelProfileViewData,
   TunnelTypeEnum,
-  useHelpPageLink } from '@acx-ui/rc/utils'
+  useHelpPageLink
+} from '@acx-ui/rc/utils'
 import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }      from '../../..'
-import { useEdgeSdLanContext }    from '../../../EdgeSdLanContextProvider'
-import { messageMappings }        from '../../../messageMappings'
-import { ValidationMessageField } from '../../styledComponents'
-import { NetworkActivationType }  from '../../VenueNetworkTable/NetworksDrawer'
+import { EdgeSdLanFormType }               from '../../..'
+import { useEdgeSdLanContext }             from '../../../EdgeSdLanContextProvider'
+import { messageMappings }                 from '../../../messageMappings'
+import { getFilteredTunnelProfileOptions } from '../../../utils'
+import { ValidationMessageField }          from '../../styledComponents'
+import { NetworkActivationType }           from '../../VenueNetworkTable/NetworksDrawer'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
 
@@ -274,36 +274,4 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       />
     </Loader>
   )
-}
-
-export const getFilteredTunnelProfileOptions = (
-  row: Network,
-  tunnelProfileOptions: DefaultOptionType[],
-  availableTunnelProfiles: TunnelProfileViewData[]
-) => {
-  const { $t } = getIntl()
-  const isVlanPooling = !isNil(row.vlanPool)
-  const isCaptivePortal = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
-
-  return tunnelProfileOptions
-    .map(item => {
-      const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
-
-      // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
-      if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-        return null
-      }
-
-      // Disable VXLAN-GPE options for vlan pooling networks
-      if (isVlanPooling && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-        return {
-          ...item,
-          disabled: true,
-          title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
-        }
-      }
-
-      return item
-    })
-    .filter((item): item is DefaultOptionType => item !== null)
 }

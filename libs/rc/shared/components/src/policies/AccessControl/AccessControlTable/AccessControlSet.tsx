@@ -11,7 +11,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete,
   useDeleteAccessControlProfilesMutation,
   useGetEnhancedAccessControlProfileListQuery,
   useNetworkListQuery,
@@ -24,7 +23,8 @@ import {
   getPolicyDetailsLink, getScopeKeyByPolicy, Network,
   PolicyOperation,
   PolicyType,
-  WifiNetwork
+  WifiNetwork,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }                              from '@acx-ui/user'

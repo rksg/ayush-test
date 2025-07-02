@@ -2,7 +2,6 @@
 import { useMemo, useState } from 'react'
 
 import { FormInstance, Input } from 'antd'
-import { DefaultOptionType }   from 'antd/es/cascader'
 import { NamePath }            from 'antd/lib/form/interface'
 import { find, isNil, merge }  from 'lodash'
 import { AlignType }           from 'rc-table/lib/interface'
@@ -22,7 +21,6 @@ import {
   NetworkType,
   NetworkTypeEnum,
   sortProp,
-  TunnelProfileViewData,
   TunnelTypeEnum,
   useHelpPageLink,
   WifiRbacUrlsInfo
@@ -31,11 +29,12 @@ import { WifiScopes }                                         from '@acx-ui/type
 import { filterByAccess }                                     from '@acx-ui/user'
 import { compareVersions, getIntl, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }      from '../../..'
-import { useEdgeSdLanContext }    from '../../../EdgeSdLanContextProvider'
-import { messageMappings }        from '../../../messageMappings'
-import { ValidationMessageField } from '../../styledComponents'
-import { NetworkActivationType }  from '../../VenueNetworkTable/NetworksDrawer'
+import { EdgeSdLanFormType }               from '../../..'
+import { useEdgeSdLanContext }             from '../../../EdgeSdLanContextProvider'
+import { messageMappings }                 from '../../../messageMappings'
+import { getFilteredTunnelProfileOptions } from '../../../utils'
+import { ValidationMessageField }          from '../../styledComponents'
+import { NetworkActivationType }           from '../../VenueNetworkTable/NetworksDrawer'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
 
@@ -44,7 +43,8 @@ import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from '.
 const getRowDisabledInfo = (
   row: Network,
   dsaeOnboardNetworkIds?: string[],
-  pinNetworkIds?: string[]
+  pinNetworkIds?: string[],
+  softGreNetworkIds?: string[]
 ) => {
   const { $t } = getIntl()
   let disabled = false
@@ -61,7 +61,11 @@ const getRowDisabledInfo = (
   } else if (pinNetworkIds?.includes(row.id)) {
     disabled = true
     // eslint-disable-next-line max-len
-    tooltip = $t({ defaultMessage: 'This network already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+    tooltip = $t({ defaultMessage: 'This network is already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+  } else if (softGreNetworkIds?.includes(row.id)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This network already has SoftGRE enabled and cannot be used for SD-LAN traffic.' })
   }
 
   return { disabled, tooltip }
@@ -77,6 +81,7 @@ export interface ActivatedNetworksTableProps {
   onTunnelProfileChange?: (data: Network, tunnelProfileId: string) => void
   isUpdating?: boolean
   pinNetworkIds?: string[]
+  softGreNetworkIds?: string[]
   validationFormRef?: FormInstance
 }
 
@@ -91,6 +96,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onTunnelProfileChange,
     isUpdating,
     pinNetworkIds,
+    softGreNetworkIds,
     validationFormRef
   } = props
 
@@ -218,7 +224,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds)
+      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds, softGreNetworkIds)
       let isDisabled = disabled
       let tooltip = toggleButtonTooltip
 
@@ -260,7 +266,8 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onActivateChange,
     disabled,
     dsaeOnboardNetworkIds,
-    pinNetworkIds
+    pinNetworkIds,
+    softGreNetworkIds
   ])
 
   const actions: TableProps<Network>['actions'] = [{
@@ -298,36 +305,4 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       />
     </>
   )
-}
-
-export const getFilteredTunnelProfileOptions = (
-  row: Network,
-  tunnelProfileOptions: DefaultOptionType[],
-  availableTunnelProfiles: TunnelProfileViewData[]
-) => {
-  const { $t } = getIntl()
-  const isVlanPooling = !isNil(row.vlanPool)
-  const isCaptivePortal = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
-
-  return tunnelProfileOptions
-    .map(item => {
-      const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
-
-      // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
-      if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-        return null
-      }
-
-      // Disable VXLAN-GPE options for vlan pooling networks
-      if (isVlanPooling && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
-        return {
-          ...item,
-          disabled: true,
-          title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
-        }
-      }
-
-      return item
-    })
-    .filter((item): item is DefaultOptionType => item !== null)
 }

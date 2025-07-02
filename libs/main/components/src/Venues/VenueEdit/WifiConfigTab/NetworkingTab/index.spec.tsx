@@ -15,7 +15,8 @@ import {
   venueLanPorts,
   mockCellularSettings,
   mockRadiusOptions,
-  mockDirectedMulticast
+  mockDirectedMulticast,
+  mockSmartMonitor
 } from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
@@ -105,6 +106,10 @@ describe('NetworkingTab', () => {
       rest.get(
         WifiRbacUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_req, res, ctx) => res(ctx.json(mockSmartMonitor))
       )
     )
   })

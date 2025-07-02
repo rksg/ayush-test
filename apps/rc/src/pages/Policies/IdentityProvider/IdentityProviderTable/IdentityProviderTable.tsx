@@ -5,7 +5,6 @@ import { Table, TableProps, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteIdentityProviderMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetIdentityProviderListQuery,
@@ -22,7 +21,8 @@ import {
   AAAViewModalType,
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useTableQuery }                                           from '@acx-ui/utils'

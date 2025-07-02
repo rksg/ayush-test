@@ -4,7 +4,6 @@ import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
   useSearchMacRegListsQuery
@@ -14,7 +13,7 @@ import {
   getPolicyDetailsLink,
   getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RulesManagementUrlsInfo
+  PolicyType, RulesManagementUrlsInfo, doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getOpsApi, useTableQuery, SEARCH, FILTER }     from '@acx-ui/utils'

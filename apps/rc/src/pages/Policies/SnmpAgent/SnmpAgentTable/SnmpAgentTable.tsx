@@ -13,7 +13,6 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { CountAndNamesTooltip }   from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteApSnmpPolicyMutation,
   useGetApSnmpViewModelQuery
 } from '@acx-ui/rc/services'
@@ -28,7 +27,8 @@ import {
   PolicyType,
   GetApiVersionHeader,
   ApiVersionEnum,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { useTableQuery }             from '@acx-ui/utils'

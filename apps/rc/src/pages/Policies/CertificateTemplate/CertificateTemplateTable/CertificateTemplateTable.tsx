@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel, deleteDescription }                                                                                                                                                                                             from '@acx-ui/rc/components'
-import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery, useSearchPersonaGroupListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate, CertificateUrls, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy }                                                                                                                  from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
-import { getOpsApi, noDataDisplay, useTableQuery }                                                                                                                                                                                                                                        from '@acx-ui/utils'
+import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel, deleteDescription }                                                                                                                                       from '@acx-ui/rc/components'
+import { useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery, useSearchPersonaGroupListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
+import { CertificateTemplate, CertificateUrls, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy, getDisabledActionMessage, showAppliedInstanceMessage }      from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                             from '@acx-ui/react-router-dom'
+import { getOpsApi, noDataDisplay, useTableQuery }                                                                                                                                                                                  from '@acx-ui/utils'
 
 
 export default function CertificateTemplateTable () {
