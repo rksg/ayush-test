@@ -5,6 +5,16 @@ import { RadioCardCategory as Category } from '@acx-ui/types'
 
 import { RadioCard } from '.'
 
+jest.mock('../Tooltip', () => ({
+  // eslint-disable-next-line max-len
+  Tooltip: ({ children, title }: { children: React.ReactNode; title: React.ReactNode }) => {
+    return <>
+      <div>{title}</div>
+      <div>{children}</div>
+    </>
+  }
+}))
+
 describe('RadioCard', () => {
   describe('type = default', () => {
     it('should render', async () => {
@@ -80,6 +90,20 @@ describe('RadioCard', () => {
       fireEvent.click(await screen.findByText('title'))
       expect(onClick).not.toBeCalled()
     })
+
+    it('should render disabled radio with a tooltip', async () => {
+      render(<RadioCard
+        type='radio'
+        value='value'
+        title='title'
+        description='description'
+        disabled={true}
+        disabledTooltip='Disabled tooltip'
+      />)
+
+      expect(await screen.findByRole('radio')).toBeDisabled()
+      expect(await screen.findByText('Disabled tooltip')).toBeVisible()
+    })
   })
   describe('type = button', () => {
     it('should render', async () => {
@@ -108,6 +132,20 @@ describe('RadioCard', () => {
       />)
       fireEvent.click(await screen.findByText('Add'))
       expect(onClick).toBeCalledTimes(1)
+    })
+    it('should render disabled button with a tooltip', async () => {
+      render(<RadioCard
+        type='button'
+        value='value'
+        title='title'
+        description='description'
+        buttonText={defineMessage({ defaultMessage: 'Add' })}
+        buttonProps={{ disabled: true }}
+        disabledTooltip='Disabled tooltip'
+      />)
+
+      expect(await screen.findByRole('button', { name: 'Add' })).toBeDisabled()
+      expect(await screen.findByText('Disabled tooltip')).toBeVisible()
     })
   })
   describe('type = disabled', () => {

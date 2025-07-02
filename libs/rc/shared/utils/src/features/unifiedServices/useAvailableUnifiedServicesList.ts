@@ -100,14 +100,14 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: isSwitchMacAclEnabled
       },
       {
-        type: PolicyType.ADAPTIVE_POLICY,
+        type: PolicyType.ADAPTIVE_POLICY_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
         disabled: !cloudpathBetaEnabled
       },
       {
-        type: PolicyType.CERTIFICATE_TEMPLATE,
+        type: PolicyType.CERTIFICATE_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
