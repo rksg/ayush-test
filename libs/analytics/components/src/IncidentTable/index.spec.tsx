@@ -825,6 +825,7 @@ it('should render download button', async () => {
   fireEvent.click(await screen.findByTestId('DownloadOutlined'))
   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
 })
+
 describe('CSV Functions', () => {
   const data = [{
     severity: 1,
@@ -843,6 +844,7 @@ describe('CSV Functions', () => {
     severityLabel: 'P2',
     endTime: '2023-08-21T05:39:30.000Z'
   }]
+
   const columns: TableProps<IncidentTableRow>['columns'] = [
     {
       title: 'Severity',
@@ -863,30 +865,155 @@ describe('CSV Functions', () => {
       defaultSortOrder: 'descend',
       fixed: 'left',
       filterable: true
+    },
+    {
+      title: 'Visibility',
+      width: 80,
+      dataIndex: 'isMuted',
+      key: 'isMuted',
+      align: 'center',
+      filterValueNullable: true,
+      filterValueArray: true,
+      filterMultiple: false
     }
   ]
+
+  const allColumns: TableProps<IncidentTableRow>['columns'] = [
+    ...columns,
+    {
+      title: 'Date',
+      width: 130,
+      dataIndex: 'endTime',
+      valueType: 'dateTime',
+      key: 'endTime',
+      sorter: { },
+      fixed: 'left'
+    },
+    {
+      title: 'Duration',
+      width: 100,
+      dataIndex: 'duration',
+      key: 'duration',
+      sorter: { }
+    },
+    {
+      title: 'Description',
+      width: 200,
+      dataIndex: 'description',
+      key: 'description',
+      sorter: { },
+      searchable: true
+    },
+    {
+      title: 'Category',
+      width: 100,
+      dataIndex: 'category',
+      key: 'category',
+      sorter: { },
+      filterable: true
+    },
+    {
+      title: 'Sub-Category',
+      width: 130,
+      dataIndex: 'subCategory',
+      key: 'subCategory',
+      sorter: { },
+      filterable: true,
+      filterableWidth: 130
+    },
+    {
+      title: 'Client Impact',
+      width: 130,
+      dataIndex: 'clientImpact',
+      key: 'clientImpact',
+      sorter: { },
+      sortDirections: ['descend', 'ascend', 'descend']
+    },
+    {
+      title: 'Impacted Clients',
+      width: 160,
+      dataIndex: 'impactedClients',
+      key: 'impactedClients',
+      sorter: { },
+      sortDirections: ['descend', 'ascend', 'descend'],
+      align: 'center'
+    },
+    {
+      title: 'Scope',
+      width: 200,
+      dataIndex: 'scope',
+      key: 'scope',
+      sorter: { },
+      searchable: true
+    },
+    {
+      title: 'Type',
+      width: 90,
+      dataIndex: 'type',
+      key: 'type',
+      sorter: { },
+      show: false,
+      filterable: true
+    }
+  ]
+
   const originalBlob = global.Blob
+
   beforeEach(() => {
     global.Blob = jest.fn(() => ({
       type: 'text/csv;charset=utf-8;',
       arrayBuffer: jest.fn()
     } as unknown as Blob))
   })
+
   afterEach(() => {
     global.Blob = originalBlob
   })
-  it('downloadIncidentList triggers download correctly', () => {
+
+  it('downloadIncidentList triggers download with correct Severity, Date, Visibility values',
+    () => {
+      const downloadSpy = jest.fn()
+      const anchorMock = document.createElement('a')
+      jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
+      anchorMock.click = downloadSpy
+      downloadIncidentList(data as IncidentNodeData, columns, {
+        startDate: '2023-08-22T10:19:00+08:00',
+        endDate: '2023-08-23T10:19:00+08:00'
+      } as IncidentFilter)
+      expect(global.Blob).toHaveBeenCalledWith(
+        // eslint-disable-next-line max-len
+        ['"Severity","Date","Visibility"\n"P1","2023-08-21T05:37:30.000Z","Unmuted"\n"P3","2023-08-21T05:40:30.000Z","Unmuted"\n"P2","2023-08-21T05:39:30.000Z","Muted"\n'],
+        { type: 'text/csv;charset=utf-8;' }
+      )
+    })
+
+  it ('downloadIncidentList triggers download with correct columns', () => {
     const downloadSpy = jest.fn()
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
     anchorMock.click = downloadSpy
-    downloadIncidentList(data as IncidentNodeData, columns, {
+    downloadIncidentList(data as IncidentNodeData, allColumns, {
       startDate: '2023-08-22T10:19:00+08:00',
       endDate: '2023-08-23T10:19:00+08:00'
     } as IncidentFilter)
+
+    const expectedColumns = [
+      'Severity',
+      'Date',
+      'Visibility',
+      'Duration',
+      'Description',
+      'Category',
+      'Sub-Category',
+      'Client Impact',
+      'Impacted Clients',
+      'Scope',
+      'Type'
+    ]
+    const regexPattern = new RegExp(expectedColumns.join('.*'))
+
     expect(global.Blob).toHaveBeenCalledWith(
-      // eslint-disable-next-line max-len
-      ['"Severity","Date","Muted"\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"\n'],
+      [expect.stringMatching(regexPattern)],
       { type: 'text/csv;charset=utf-8;' }
     )
   })
