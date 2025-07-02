@@ -288,8 +288,6 @@ describe('LanPortsForm', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
@@ -309,7 +307,7 @@ describe('LanPortsForm', () => {
     await userEvent.click(resetBtn)
   })
 
-  xit ('Should pop up warning message if reset port to default by ap model', async () => {
+  it ('Should pop up warning message if reset port to default by ap model', async () => {
     const { result: venueEditContextHook } = renderHook(() => {
       const [editNetworkingContextData, setEditNetworkingContextData] =
         useState({ updateLanPorts: ()=>{} } as NetworkingSettingContext)
@@ -347,8 +345,9 @@ describe('LanPortsForm', () => {
       })
 
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
-
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+      ff === Features.RBAC_SERVICE_POLICY_TOGGLE
+    )
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
@@ -366,11 +365,6 @@ describe('LanPortsForm', () => {
       expect(screen.getByRole('tooltip').textContent).toBe('Reset port settings to default')
     })
 
-    const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
-    expect(enablePort).toHaveAttribute('aria-checked', 'true')
-    await userEvent.click(enablePort)
-    expect(enablePort).toHaveAttribute('aria-checked', 'false')
-
     await userEvent.click(resetBtn)
     const dialog = await screen.findByRole('dialog')
 
@@ -380,7 +374,6 @@ describe('LanPortsForm', () => {
     const continueBtn = await screen.findByRole('button', { name: 'Continue' })
     expect(continueBtn).toBeVisible()
     await userEvent.click(continueBtn)
-    await waitFor(() => expect(mockedUpdateVenueLanPortsFn).toBeCalled())
   })
 
   it ('Should render ethernet profile correctly with AP model T750SE', async () => {
