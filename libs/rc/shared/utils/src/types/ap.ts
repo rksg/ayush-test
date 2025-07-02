@@ -12,6 +12,7 @@ import {
   DhcpApInfo,
   ExternalAntenna,
   PoeModeEnum,
+  PoeOutModeEnum,
   VenueLanPort
 } from '../models'
 import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
@@ -522,6 +523,7 @@ export interface CapabilitiesApModel {
   canSupportLacp: boolean,
   canSupportPoeMode: boolean,
   canSupportPoeOut: boolean,
+  canSupportPoeOutMode: boolean,
   capabilityScore: number,
   has160MHzChannelBandwidth: boolean,
   isOutdoor: boolean,
@@ -535,6 +537,8 @@ export interface CapabilitiesApModel {
   model: string,
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
+  poeOutModeCapabilities?: PoeOutModeEnum[],
+  defaultPoeOutMode?: PoeOutModeEnum,
   requireOneEnabledTrunkPort: boolean,
   simCardPrimaryEnabled?: boolean,
   simCardPrimaryRoaming?: boolean,
@@ -724,6 +728,7 @@ export interface WifiApSetting {
   externalAntenna?: ExternalAntenna;
   poeOut?: boolean | boolean[];
   poeMode?: string;
+  poeOutMode?: PoeOutModeEnum;
   lanPorts?: LanPort[];
   lan?: LanPort[];
 }
