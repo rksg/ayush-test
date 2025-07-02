@@ -973,6 +973,9 @@ export function EditPortDrawer ({
           overrideFields.push(...profileFields)
         }
       }
+      if(form.getFieldValue('name')!==''){
+        overrideFields.push('name')
+      }
       return isMultipleEdit
         ? allMultipleEditableFields.filter(f => !overrideFields.includes(f))
         : []
@@ -1190,6 +1193,7 @@ export function EditPortDrawer ({
       const isVlansInvalid
       = (!isMultipleEdit || isOverridePortVlans) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
+        && form.getFieldValue('name') === ''
 
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
     }
@@ -1445,16 +1449,15 @@ export function EditPortDrawer ({
             </Space>
             }
           />
-          { !isMultipleEdit &&
-              <Form.Item name='name'
-                label={$t({ defaultMessage: 'Port Name' })}
-                rules={[
-                  { max: 255 }
-                ]}
-                initialValue=''
-                children={<Input />}
-              />
-          }
+          <Form.Item name='name'
+            label={$t({ defaultMessage: 'Port Name' })}
+            labelCol={{ span: 24 }}
+            rules={[
+              { max: 255 }
+            ]}
+            initialValue=''
+            children={<Input />}
+          />
         </UI.HorizontalFormItemLayout>
 
         <UI.ContentDivider />
