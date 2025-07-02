@@ -1,81 +1,53 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { now }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
-import { Sync }                                      from '@acx-ui/icons'
-import { FILTER, GROUPBY, DeviceProvision, SEARCH }  from '@acx-ui/rc/utils'
-import { TimeStamp }                                 from '@acx-ui/types'
+import { Button, cssStr, Loader, Table, TableProps }                                                                             from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
+import { Sync }                                                                                                                  from '@acx-ui/icons'
+import { useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
+import { FILTER, DeviceProvision, SEARCH, useTableQuery, HideProvisionsPayload }                                                 from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                                             from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
 
 export const PendingSwitch = () => {
-  const [ refreshAt, setRefreshAt ] = useState<TimeStamp>(now() - 1000 * 60 * 5)
-  const [ tableData ] = useState([{
-    serialNumber: '309862154862',
-    model: 'ICX7550-48',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    visibleStatus: 'Visible'
-  }, {
-    serialNumber: '309862154841',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    visibleStatus: 'Visible'
-  },{
-    serialNumber: '309862154842',
-    model: 'ICX7150-C12P',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    visibleStatus: 'Visible'
-  }, {
-    serialNumber: '309862154843',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    visibleStatus: 'Visible'
-  },{
-    serialNumber: '309862154844',
-    model: 'ICX7150-C12P',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    visibleStatus: 'Visible'
-  }, {
-    serialNumber: '309862154863',
-    model: 'ICX7550-48',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    visibleStatus: 'Visible'
-  },{
-    serialNumber: '309862154864',
-    model: 'ICX7550-48',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    visibleStatus: 'Visible'
-  }, {
-    serialNumber: '309862154865',
-    model: 'ICX7550-48',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    visibleStatus: 'Visible'
-  }] as (DeviceProvision)[])
-
-  const tableQuery = {
-    data: tableData,
-    pagination: {
-      page: 1,
-      pageSize: 5,
-      defaultPageSize: 5,
-      total: 8
-    },
-    handleTableChange: () => {},
-    handleFilterChange: (filters: FILTER, search: SEARCH, groupBy?: GROUPBY) => {}
-  }
-
   const { $t } = useIntl()
+  const params = useParams()
+  const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
+  const [ isLoading, setIsLoading ] = useState(false)
+
+  const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
+    { params },
+    { refetchOnMountOrArgChange: true })
+
+  const [ refreshSwitchStatus ] = useRefreshSwitchStatusMutation()
+
+  const [ hideSwitchProvisions ] = useHideSwitchProvisionsMutation()
+
+  const tableQuery = useTableQuery<DeviceProvision>({
+    useQuery: useGetSwitchProvisionsQuery,
+    defaultPayload: {
+      page: 0,
+      pageSize: 10,
+      filters: {}
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['serialNumber', 'model']
+    },
+    sorter: {
+      sortField: 'serialNumber',
+      sortOrder: 'asc'
+    }
+  })
+
+  useEffect(() => {
+    setRefreshAt(
+      formatter(DateFormatEnum.DateTimeFormatWithSeconds)(switchStatus?.refreshedAt) ?? null
+    )
+  }, [switchStatus])
 
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
@@ -91,8 +63,7 @@ export const PendingSwitch = () => {
       dataIndex: 'model',
       sorter: true,
       searchable: true,
-      filterable: [{ key: 'ICX7550-48', label: 'ICX7550-48' },
-        { key: 'ICX7150-C12P', label: 'ICX7150-C12P' }]
+      filterable: true
     },
     {
       key: 'shipDate',
@@ -116,10 +87,9 @@ export const PendingSwitch = () => {
       title: 'Visibility',
       dataIndex: 'visibleStatus',
       sorter: true,
-      filterComponent: { type: 'checkbox', label: 'Show hidden devices' },
+      filterKey: 'includeHidden',
       filterable: true,
-      filterKey: 'includeIgnored',
-      defaultFilteredValue: [false]
+      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) }
     }
   ]
 
@@ -132,21 +102,46 @@ export const PendingSwitch = () => {
     {
       label: $t({ defaultMessage: 'Hide Device' }),
       tooltip: $t(MessageMapping.hide_devive_tooltip),
-      onClick: () => {
+      onClick: (selectedRows) => {
+        hideSwitchProvisions({
+          payload: {
+            serials: selectedRows.map((row) => row.serialNumber)
+          } as HideProvisionsPayload
+        })
       }
     }
   ]
 
-  const handleRefresh = () => {
-    setRefreshAt(now())
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters?.includeHidden && customFilters.includeHidden[0] === true) {
+      customFilters = {
+        ...customFilters,
+        includeHidden: [customFilters.includeHidden[0].toString()]
+      }
+    } else {
+      delete customFilters.includeHidden
+    }
+
+    tableQuery.handleFilterChange(customFilters, customSearch)
+  }
+
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    await refreshSwitchStatus({})
+    const { data: latestSwitchStatus } = await refetchSwitchStatus()
+    setRefreshAt(
+      formatter(DateFormatEnum.DateTimeFormatWithSeconds)(latestSwitchStatus?.refreshedAt) ?? null)
+    setIsLoading(false)
   }
 
   return (
-    <Loader>
+    <Loader states={[{ isLoading: tableQuery.isLoading || isLoading,
+      isFetching: tableQuery.isFetching }]}>
       <div
         className={'ant-space-align-center'}
         style={{ textAlign: 'right' }}>
-        <span style={{ fontSize: '12px', marginRight: '6px', color: cssStr('--acx-neutrals-60') }}>
+        <span style={{ fontSize: '12px', marginRight: '6px',
+          color: cssStr('--acx-neutrals-60') }}>
           {$t({ defaultMessage: 'Updated at' })}
         </span>
         <span data-testid='test-refresh-time' style={{ fontSize: '12px', marginRight: '6px' }}>
@@ -158,12 +153,15 @@ export const PendingSwitch = () => {
           size='small'
           onClick={handleRefresh}>{$t({ defaultMessage: 'Refresh' })}</Button>
       </div>
+
       <Table<DeviceProvision>
-        settingsId={'pending-aps-table'}
+        settingsId={'pending-switches-tab'}
+        loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
-        dataSource={tableData}
+        dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
         rowActions={rowActions}
         rowSelection={
           rowActions.length > 0 && { type: 'checkbox' }
