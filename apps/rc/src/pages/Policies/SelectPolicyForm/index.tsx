@@ -51,7 +51,6 @@ export default function SelectPolicyForm () {
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
-  // eslint-disable-next-line
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
