@@ -62,11 +62,7 @@ import {
   SoftGreDuplicationChangeState,
   Voter,
   mergeLanPortSettings,
-  IpsecOptionChangeState,
-  DhcpOption82SubOption151Enum,
-  DhcpOption82SubOption2Enum,
-  DhcpOption82SubOption1Enum,
-  DhcpOption82MacEnum
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
