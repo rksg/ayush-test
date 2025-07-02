@@ -588,14 +588,20 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should generate correct CSV content when exporting', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)
 
       expect(mockDownloadSpy).toHaveBeenCalledWith(
         expect.any(Blob),
-        expect.stringContaining('impacted-switch-vlans')
+        expect.stringContaining('VLAN-Mismatch-Impacted-Switch')
       )
       // Check the content of the Blob
       const blobArg = mockDownloadSpy.mock.calls[0][0]
@@ -603,7 +609,13 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should include all required columns in CSV', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)
@@ -635,7 +647,13 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should format data correctly in CSV', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)
@@ -661,6 +679,37 @@ describe('ImpactedSwitchVLANsTable', () => {
           expect(value).toMatch(/^".*"$/) // Each value should be quoted
         })
       })
+    })
+
+    it('should use plural filename when exporting multiple switches', async () => {
+      const pluralMockData = [
+        { ...mockData[0], name: 'Switch 1', key: 'test-key-1', index: 0 },
+        { ...mockData[0], name: 'Switch 2', key: 'test-key-2', index: 1 }
+      ]
+      jest.spyOn(require('./services'), 'useImpactedSwitchVLANsQuery')
+        .mockReturnValue({
+          data: pluralMockData,
+          isLoading: false,
+          isFetching: false,
+          isError: false,
+          error: null
+        })
+
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await click(exportButton)
+
+      expect(mockDownloadSpy).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('VLAN-Mismatch-Impacted-Switches')
+      )
     })
   })
 })
