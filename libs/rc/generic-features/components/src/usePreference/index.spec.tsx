@@ -23,8 +23,8 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
 }))
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
