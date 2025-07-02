@@ -17,8 +17,8 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetEdgePinByIdQuery: jest.fn()
 }))
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   useTableQuery: jest.fn().mockReturnValue({
     data: {},
     payload: {}
