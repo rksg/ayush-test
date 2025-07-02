@@ -96,14 +96,22 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
 }
 
 const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
-  if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
-    const lastStatusTrail = item.statusTrail?.[0]
-    if (lastStatusTrail?.status === Statuses.na &&
-        lastStatusTrail?.statusReason === StatusReasons.verified) {
+  const { displayStatus, statusTrail = [] } = item
+
+  const isScheduled = [DisplayStates.scheduled, DisplayStates.scheduledOneClick]
+    .includes(displayStatus)
+
+  if (isScheduled) {
+    const scheduledIndex = statusTrail.findIndex(s => s.status === Statuses.scheduled)
+    const nextStatus = scheduledIndex >= 0 ? statusTrail[scheduledIndex + 1] : statusTrail[0]
+
+    if (nextStatus?.status === Statuses.na && nextStatus.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
+
     return { status: Statuses.new }
   }
+
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
 
@@ -111,6 +119,7 @@ const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus
    moment().isAfter(moment(item.metadata?.applyScheduledAt)) ?
     { status: Statuses.active } : preStatusTrail
 }
+
 
 const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
@@ -125,9 +134,11 @@ const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus
   ) {
     return { status: Statuses.active }
   } else if (preStatusTrail.status === Statuses.scheduled) {
-    const lastStatusTrail = item.statusTrail?.[0]
-    if (lastStatusTrail?.status === Statuses.na &&
-        lastStatusTrail?.statusReason === StatusReasons.verified) {
+    const statusTrail = item.statusTrail || []
+    const scheduledIndex = statusTrail.findIndex(s => s.status === Statuses.scheduled)
+    const nextStatus = scheduledIndex >= 0 ? statusTrail[scheduledIndex + 1] : statusTrail[0]
+
+    if (nextStatus?.status === Statuses.na && nextStatus.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
     return { status: Statuses.new }

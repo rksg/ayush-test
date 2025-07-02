@@ -189,6 +189,7 @@ describe('IntentAI utils', () => {
           status: Statuses.scheduled,
           displayStatus: DisplayStates.scheduled,
           statusTrail: [
+            { status: Statuses.scheduled },
             { status: Statuses.na, statusReason: StatusReasons.verified },
             { status: Statuses.new }
           ]
@@ -202,11 +203,24 @@ describe('IntentAI utils', () => {
           status: Statuses.scheduled,
           displayStatus: DisplayStates.scheduled,
           statusTrail: [
+            { status: Statuses.scheduled },
             { status: Statuses.new },
-            { status: Statuses.na, statusReason: StatusReasons.verified },
+            { status: Statuses.na, statusReason: StatusReasons.verified }
           ]
         }
       )).toEqual({ status: Statuses.new })
+
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.na, statusReason: StatusReasons.verified },
+          ]
+        }
+      )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
 
       expect(() => {
         try{
@@ -414,6 +428,22 @@ describe('IntentAI utils', () => {
             throw error
           }
         }).toThrow('Invalid statusTrail(Resume)')
+      })
+
+      it('should handle naVerified with other statusTrail', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.scheduled },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
+            ]
+          }
+        )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
       })
 
       it('should handle naVerified', () => {
