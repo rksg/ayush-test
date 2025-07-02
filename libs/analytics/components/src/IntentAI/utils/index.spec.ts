@@ -189,10 +189,24 @@ describe('IntentAI utils', () => {
           status: Statuses.scheduled,
           displayStatus: DisplayStates.scheduled,
           statusTrail: [
-            { status: Statuses.na, statusReason: StatusReasons.verified }
+            { status: Statuses.na, statusReason: StatusReasons.verified },
+            { status: Statuses.new }
           ]
         }
       )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.new },
+            { status: Statuses.na, statusReason: StatusReasons.verified },
+          ]
+        }
+      )).toEqual({ status: Statuses.new })
 
       expect(() => {
         try{
