@@ -7,8 +7,6 @@ export const TagsContainer = styled.div`
   border: 1px solid var(--acx-neutrals-50);
   border-radius: 4px;
   overflow: hidden;
-  white-space: normal;
-  word-break: break-word;
   transition: all 0.3s;
 
   &.error {
@@ -62,7 +60,6 @@ export const TagSelector = styled.div`
   }
   .ant-select-selection-search,
   .ant-select-selection-search-input {
-    width: 80px;
     height: 18px !important;
     line-height: 18px;
   }
