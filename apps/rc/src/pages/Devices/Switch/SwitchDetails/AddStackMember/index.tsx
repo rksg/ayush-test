@@ -126,7 +126,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
@@ -236,7 +235,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (!checkVersionAtLeast09010h(venueFirmwareVersion) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(venueFirmwareVersion)) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return

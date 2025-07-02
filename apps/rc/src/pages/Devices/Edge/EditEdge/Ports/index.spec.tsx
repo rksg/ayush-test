@@ -18,7 +18,7 @@ import Ports from './index'
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -60,7 +60,12 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgePortsGeneralBase: (props: MockedPortsFormProps) => {
     return <MockedPortsForm {...props} />
-  }
+  },
+  useGetEdgeSdLanByClusterId: jest.fn().mockReturnValue({
+    edgeSdLanData: undefined,
+    isLoading: false,
+    isFetching: false
+  })
 }))
 
 const defaultContextData = {
@@ -119,7 +124,7 @@ describe('EditEdge - Ports', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,
@@ -187,6 +192,7 @@ describe('EditEdge - Ports', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     expect(screen.queryByTestId('ClusterNavigateWarning')).toBe(null)
     expect(screen.getByTestId('rc-EdgePortsGeneralBase')).toBeVisible()
     result.current[0].setFieldsValue({

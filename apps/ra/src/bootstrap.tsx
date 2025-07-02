@@ -50,7 +50,7 @@ export async function init (root: Root) {
   dynamicMiddleware.addMiddleware(errorMiddleware)
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile',
     { headers: { ...getJwtHeaders() } })
-  if (user.status === 401) {
+  if (user.status >= 400 && user.status <= 599) {
     window.location.hostname === 'localhost'
       ? showExpiredSessionModal()
       : userLogout()

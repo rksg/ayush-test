@@ -34,6 +34,12 @@ export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
     }, {
       featureName: 'Core/Access Ports Separation',
       requiredFw: '2.4.0.1'
+    }, {
+      featureName: 'Dual WAN',
+      requiredFw: '2.4.0.1'
+    }, {
+      featureName: 'Multi NAT IP',
+      requiredFw: '2.4.0.1'
     }
   ]
 }

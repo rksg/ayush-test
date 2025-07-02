@@ -1,4 +1,5 @@
-import { Params } from 'react-router-dom'
+import { FilterValue } from 'antd/lib/table/interface'
+import { Params }      from 'react-router-dom'
 export * from './RTKQuery'
 
 export type TimeStamp = string | number
@@ -6,7 +7,11 @@ export type TimeStampRange = [TimeStamp, TimeStamp]
 
 export type TimelineStatus = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL'
 
+export type RadioBand = '6' | '5' | '2.4'
+
 export interface StatusIconProps { status: TimelineStatus, description?: string }
+
+export interface Filter extends Record<string, FilterValue|null> {}
 
 export enum RolesEnum {
   PRIME_ADMIN = 'PRIME_ADMIN',
@@ -97,4 +102,10 @@ export interface Scheduler extends Record<string, string[]> {}
 export enum SchedulerDeviceTypeEnum {
   DEFAULT = 'DEFAULT',
   SWITCH = 'SWITCH'
+}
+
+export enum RadioCardCategory {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+  EDGE = 'edge',
 }

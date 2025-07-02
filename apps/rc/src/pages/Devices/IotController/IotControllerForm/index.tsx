@@ -29,6 +29,8 @@ import {
 import {
   checkObjectNotExists,
   redirectPreviousPage,
+  whitespaceOnlyRegExp,
+  trailingNorLeadingSpaces,
   IotControllerSetting,
   IotControllerStatus,
   excludeSpaceRegExp,
@@ -255,9 +257,13 @@ export function IotControllerForm () {
                     label={$t({ defaultMessage: 'IoT Controller Name' })}
                     rules={[
                       { type: 'string', required: true },
+                      { min: 2, transform: (value) => value.trim() },
+                      { max: 32, transform: (value) => value.trim() },
+                      { validator: (_, value) => whitespaceOnlyRegExp(value) },
                       {
                         validator: (_, value) => nameValidator(value)
-                      }
+                      },
+                      { validator: (_, value) => trailingNorLeadingSpaces(value) }
                     ]}
                     validateFirst
                     children={<Input />}
@@ -402,6 +408,7 @@ export function IotControllerForm () {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Serial Number' })
                       },
+                      { validator: (_, value) => excludeSpaceRegExp(value) },
                       {
                         // eslint-disable-next-line max-len
                         validator: (_, value) => isEditMode ? Promise.resolve() : serialNumberValidator(value)

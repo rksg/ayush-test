@@ -326,7 +326,7 @@ export const policyAllowedOperationMap = {
   },
   [PolicyType.CERTIFICATE]: {
     /* eslint-disable max-len */
-    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.generateCertificate), getOpsApi(CertificateUrls.generateCertificatesToIdentity), getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.generateCertificate), getOpsApi(CertificateUrls.generateCertificatesToIdentity)],
     /* eslint-disable max-len */
     [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate)],
     [PolicyOperation.DELETE]: [],
@@ -371,6 +371,16 @@ export const policyAllowedOperationMap = {
     ]],
     [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
     [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
+  },
+  [PolicyType.CERTIFICATE_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.addCertificateTemplate),
+      getOpsApi(CertificateUrls.addCA),
+      getOpsApi(CertificateUrls.addSubCA),
+      getOpsApi(CertificateUrls.generateCertificate),
+      getOpsApi(CertificateUrls.generateCertificatesToIdentity),
+      getOpsApi(CertificateUrls.uploadCertificate),
+      getOpsApi(CertificateUrls.generateClientServerCertificate)
+    ]
   },
   [PolicyType.ADAPTIVE_POLICY_PROFILE]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup),

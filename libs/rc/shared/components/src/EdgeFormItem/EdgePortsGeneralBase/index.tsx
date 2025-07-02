@@ -36,6 +36,7 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
+  serialNumber: string
   clusterInfo: EdgeClusterStatus
   statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
@@ -48,10 +49,12 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
   isSupportAccessPort?: boolean
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
   const {
+    serialNumber,
     statusData,
     lagData = [],
     isEdgeSdLanRun,
@@ -64,7 +67,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     subInterfaceList = [],
     isClusterWizard,
     clusterInfo,
-    isSupportAccessPort
+    isSupportAccessPort,
+    originalInterfaceData
   } = props
   const { $t } = useIntl()
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
@@ -93,6 +97,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
       content: <Form.List name={fieldHeadPath.concat([innerPortFormID])}>
         {(fields) => fields.map(
           ({ key }) => <PortConfigForm
+            serialNumber={serialNumber}
             formListItemKey={key+''}
             fieldHeadPath={fieldHeadPath.concat([innerPortFormID, `${key}`])}
             key={`${innerPortFormID}_${key}`}
@@ -117,6 +122,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             }
             subInterfaceList={subInterfaceList}
             isSupportAccessPort={isSupportAccessPort}
+            originalInterfaceData={originalInterfaceData}
           />
         )}
       </Form.List>,

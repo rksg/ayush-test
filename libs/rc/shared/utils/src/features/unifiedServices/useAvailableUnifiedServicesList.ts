@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { MessageDescriptor } from 'react-intl'
 
-import { RadioCardCategory }                                                        from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { RadioCardCategory }                                                        from '@acx-ui/types'
 import { getUserProfile, isCoreTier }                                               from '@acx-ui/user'
 
 import { ServiceType }                           from '../../constants'
@@ -34,8 +34,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -110,7 +108,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !cloudpathBetaEnabled
       },
       {
-        type: PolicyType.CERTIFICATE_TEMPLATE,
+        type: PolicyType.CERTIFICATE_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
@@ -299,8 +297,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.EDGE_SD_LAN,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: ServiceType.EDGE_TNM_SERVICE,
@@ -362,7 +359,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: ServiceType.PORTAL_PROFILE,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS,
         disabled: !isPortalProfileEnabled
       },
