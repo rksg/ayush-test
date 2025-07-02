@@ -10,7 +10,8 @@ export const useCasesToRefreshNetworkTemplateList = [
 export const useCasesToRefreshRecNetworkTemplateList = [
   'AddWifiNetworkRecTemplate',
   'UpdateWifiNetworkRecTemplate',
-  'DeleteWifiNetworkRecTemplate'
+  'DeleteWifiNetworkRecTemplate',
+  'CloneWifiNetworkRecTemplate'
 ]
 
 export const useCasesToRefreshVenueTemplateList = [
@@ -22,7 +23,8 @@ export const useCasesToRefreshVenueTemplateList = [
 export const useCasesToRefreshRecVenueTemplateList = [
   'AddVenueRecTemplate',
   'UpdateVenueRecTemplate',
-  'DeleteVenueRecTemplate'
+  'DeleteVenueRecTemplate',
+  'CloneVenueRecTemplate'
 ]
 
 export const useCasesToRefreshDhcpTemplateList = [
@@ -40,7 +42,8 @@ export const useCasesToRefreshDpskTemplateList = [
 export const useCasesToRefreshRecDpskTemplateList = [
   'CREATE_POOL_REC_TEMPLATE',
   'UPDATE_POOL_REC_TEMPLATE',
-  'DELETE_POOL_REC_TEMPLATE'
+  'DELETE_POOL_REC_TEMPLATE',
+  'CLONE_POOL_REC_TEMPLATE'
 ]
 
 export const useCasesToRefreshIdentityGroupTemplateList = [

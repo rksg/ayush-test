@@ -10,8 +10,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                  from '@acx-ui/feature-toggle'
-import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                  from '@acx-ui/feature-toggle'
+import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible, useConfigTemplateVisibilityMap } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
@@ -143,7 +143,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     {
       rbacOpsIds: actionRbacOpsIds.apply,
       label: $t({ defaultMessage: 'Apply Template' }),
-      visible: (selectedRows) => selectedRows[0] && canApplyTemplate(selectedRows[0]),
+      disabled: (selectedRows) => !selectedRows[0] || !canApplyTemplate(selectedRows[0]),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateViewVisible(true)
@@ -272,8 +272,9 @@ function useColumns (props: TemplateColumnProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType)
-    .map((type => ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })))
+  const typeFilterOptions = Object.entries(useConfigTemplateVisibilityMap())
+    .filter(([, visible]) => visible)
+    .map(([type]) => ({ key: type, value: getConfigTemplateTypeLabel(type as ConfigTemplateType) }))
     .sort((a, b) => a.value.localeCompare(b.value))
 
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
