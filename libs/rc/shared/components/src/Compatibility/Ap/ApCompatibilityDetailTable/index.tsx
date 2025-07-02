@@ -6,7 +6,6 @@ import { sumBy }             from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { Table, TableProps, Tooltip }   from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueApModelFirmwareListQuery
@@ -132,15 +131,12 @@ interface ApCompatibilityDetailTableProps {
 }
 
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
-  const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
-
   const { $t } = useIntl()
 
   const { data, requirementOnly = false, venueId, apInfo } = props
   const { model, firmwareVersion='' } = apInfo ?? {}
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
-    skip: !isSupportedFwModels,
     refetchOnMountOrArgChange: false
   })
 

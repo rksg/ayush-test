@@ -25,8 +25,11 @@ import {
 import { ApNetworkingContext }          from '..'
 import { ApDataContext, ApEditContext } from '../..'
 import {
+  ApCap_H670,
   ApCap_T750SE,
+  ApData_H670,
   ApData_T750SE,
+  ApLanPorts_H670,
   ApLanPorts_has_vni,
   ApLanPorts_T750SE,
   mockDefaultTunkEthertnetPortProfile,
@@ -160,7 +163,6 @@ describe('Lan Port', () => {
       // T750SE have 3 Lan ports
       expect(tabs.length).toBe(3)
       await userEvent.click(tabs[1])
-
       await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
 
       const poeCombobox = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
@@ -412,6 +414,152 @@ describe('Lan Port', () => {
       expect(screen.queryByRole('button', { name: 'Use Venue Settings' })).not.toBeInTheDocument()
       expect(screen.getByRole('combobox', { name: 'Ethernet Port Profile' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Profile Details' })).toBeInTheDocument()
+    })
+  })
+})
+
+describe('H670', () => {
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_H670))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_H670))),
+      rest.put(WifiUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedAPLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedAPLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedAPLanPortSettings3))
+          }
+
+          if(_.params.portId === '4') {
+            return res(ctx.json(mockedAPLanPortSettings1))
+          }
+
+          if(_.params.portId === '5') {
+            return res(ctx.json(mockedAPLanPortSettings1))
+          }
+
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedVenueLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedVenueLanPortSettings3))
+          }
+
+          if(_.params.portId === '4') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          if(_.params.portId === '5') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          return res(ctx.json({}))
+        }
+      ),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+  describe('AP Lan port settings', () => {
+
+    const defaultH670ApCtxData = {
+      apData: ApData_H670,
+      apCapabilities: ApCap_H670,
+      venueData
+    }
+
+    describe('AP Lan port settings for H670', () => {
+      it('Should render PoE Out and PoE Out Mode with AP model H670', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.WIFI_POE_OUT_MODE_SETTING_TOGGLE ||
+          ff === Features.WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE
+        )
+        render(
+          <Provider>
+            <ApEditContext.Provider value={{
+              editContextData: {
+                tabTitle: '',
+                isDirty: false,
+                hasError: false,
+                updateChanges: jest.fn(),
+                discardChanges: jest.fn()
+              },
+              setEditContextData: jest.fn(),
+              editNetworkingContextData: {} as ApNetworkingContext,
+              setEditNetworkingContextData: jest.fn()
+            }}>
+              <ApDataContext.Provider value={defaultH670ApCtxData}>
+                <LanPorts />
+              </ApDataContext.Provider>
+            </ApEditContext.Provider>
+          </Provider>, {
+            route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+          }
+        )
+
+        await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+        const tabs = await screen.findAllByRole('tab')
+
+        expect(tabs.length).toBe(5)
+        await userEvent.click(tabs[1])
+        await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+
+        expect(screen.getByLabelText('Enable PoE Out')).not.toBeChecked()
+        expect(screen.queryByLabelText('PoE Out Mode')).not.toBeInTheDocument()
+        await userEvent.click(screen.getByLabelText('Enable PoE Out'))
+        expect(screen.getByLabelText('Enable PoE Out')).toBeChecked()
+        expect(screen.getByTestId('poeOutModeSelect')).toBeVisible()
+        const poeOutModeCombobox = await screen.findByRole('combobox', { name: /PoE Out Mode/i })
+        expect(poeOutModeCombobox).toBeInTheDocument()
+        await userEvent.click(poeOutModeCombobox)
+
+        expect(screen.queryAllByText('802.3af (15.4 W)').length).toBeGreaterThan(0)
+        expect(screen.queryAllByText('802.3at (30 W)').length).toBeGreaterThan(0)
+      })
     })
   })
 })
