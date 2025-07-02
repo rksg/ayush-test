@@ -55,8 +55,7 @@ export function getDatePickerValues (state: DateFilter) {
 export function defaultAllRanges (subRange?: DateRange[]) {
   const merged: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     ...defaultRanges(),
-    ...defaultCoreTierRanges(),
-    [DateRange.last1Hour]: [ceilMinute().subtract(1, 'hours'), ceilMinute()]
+    ...defaultCoreTierRanges()
   }
 
   return subRange ? pick(merged, subRange) : merged

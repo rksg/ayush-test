@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react'
 
 import { Tag }       from 'antd'
+import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -73,7 +74,7 @@ function PersonaDetails () {
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
-  const isIdentityTrafficAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_TRAFFIC_ANALYTICS_TOGGLE)
+  const isIdentityAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_ANALYTICS_TOGGLE)
 
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
@@ -230,7 +231,7 @@ function PersonaDetails () {
   }
 
   const extra = [
-    ...(isIdentityTrafficAnalyticsEnabled
+    ...(isIdentityAnalyticsEnabled
       ? [<TimeRangeDropDown key={getShowWithoutRbacCheckKey('time-range-dropdown')}/>]
       : []),
     ...(hasCrossVenuesPermission({ needGlobalPermission: true })
@@ -311,11 +312,15 @@ function PersonaDetails () {
 
   return (
     <TimeRangeDropDownProvider
+      defaultSelectedRange={DateRange.last24Hours}
       availableRanges={[
         DateRange.last1Hour,
         DateRange.last24Hours,
         DateRange.last30Days
       ]}
+      additionalDefaultTimeRanges={{
+        [DateRange.last1Hour]: [moment().subtract(1, 'hours'), moment()]
+      }}
     >
       <PageHeader
         title={title}
