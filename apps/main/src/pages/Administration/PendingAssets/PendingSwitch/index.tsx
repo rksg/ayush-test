@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { Button, cssStr, Loader, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
 import { Sync }                                      from '@acx-ui/icons'
-import { PendingAsset }                              from '@acx-ui/rc/utils'
+import { FILTER, GROUPBY, DeviceProvision, SEARCH }  from '@acx-ui/rc/utils'
 import { TimeStamp }                                 from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
@@ -14,54 +14,54 @@ import { MessageMapping } from '../messageMapping'
 export const PendingSwitch = () => {
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp>(now() - 1000 * 60 * 5)
   const [ tableData ] = useState([{
-    serial: '309862154862',
+    serialNumber: '309862154862',
     model: 'ICX7550-48',
     shipDate: '2025-05-21',
     createdDate: '2025-05-20',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   }, {
-    serial: '309862154841',
+    serialNumber: '309862154841',
     model: 'ICX7150-C12P',
     shipDate: '2024-05-01',
     createdDate: '2024-05-05',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   },{
-    serial: '309862154842',
+    serialNumber: '309862154842',
     model: 'ICX7150-C12P',
     shipDate: '2025-05-21',
     createdDate: '2025-05-20',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   }, {
-    serial: '309862154843',
+    serialNumber: '309862154843',
     model: 'ICX7150-C12P',
     shipDate: '2024-05-01',
     createdDate: '2024-05-05',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   },{
-    serial: '309862154844',
+    serialNumber: '309862154844',
     model: 'ICX7150-C12P',
     shipDate: '2025-05-21',
     createdDate: '2025-05-20',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   }, {
-    serial: '309862154863',
+    serialNumber: '309862154863',
     model: 'ICX7550-48',
     shipDate: '2024-05-01',
     createdDate: '2024-05-05',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   },{
-    serial: '309862154864',
+    serialNumber: '309862154864',
     model: 'ICX7550-48',
     shipDate: '2025-05-21',
     createdDate: '2025-05-20',
-    status: 'Ready'
+    visibleStatus: 'Visible'
   }, {
-    serial: '309862154865',
+    serialNumber: '309862154865',
     model: 'ICX7550-48',
     shipDate: '2024-05-01',
     createdDate: '2024-05-05',
-    status: 'Ready'
-  }] as (PendingAsset)[])
+    visibleStatus: 'Visible'
+  }] as (DeviceProvision)[])
 
   const tableQuery = {
     data: tableData,
@@ -71,16 +71,17 @@ export const PendingSwitch = () => {
       defaultPageSize: 5,
       total: 8
     },
-    handleTableChange: () => {}
+    handleTableChange: () => {},
+    handleFilterChange: (filters: FILTER, search: SEARCH, groupBy?: GROUPBY) => {}
   }
 
   const { $t } = useIntl()
 
-  const columns: TableProps<PendingAsset>['columns'] = [
+  const columns: TableProps<DeviceProvision>['columns'] = [
     {
-      key: 'serial',
-      title: 'Serial',
-      dataIndex: 'serial',
+      key: 'serialNumber',
+      title: 'Serial #',
+      dataIndex: 'serialNumber',
       sorter: true,
       searchable: true
     },
@@ -98,7 +99,6 @@ export const PendingSwitch = () => {
       title: 'Ship Date',
       dataIndex: 'shipDate',
       sorter: true,
-      searchable: true,
       render: (value) => formatter(DateFormatEnum.DateFormat)(value)
     },
     {
@@ -106,32 +106,32 @@ export const PendingSwitch = () => {
       title: 'Created Date',
       dataIndex: 'createdDate',
       sorter: true,
-      searchable: true,
+      filterable: true,
+      filterKey: 'fromDate',
+      filterComponent: { type: 'rangepicker' },
       render: (value) => formatter(DateFormatEnum.DateFormat)(value)
     },
     {
-      key: 'status',
-      title: 'Status',
-      dataIndex: 'status',
+      key: 'visibleStatus',
+      title: 'Visibility',
+      dataIndex: 'visibleStatus',
       sorter: true,
-      searchable: true,
-      filterComponent: { type: 'checkbox', label: 'Show ignored devices' },
+      filterComponent: { type: 'checkbox', label: 'Show hidden devices' },
       filterable: true,
-      filterKey: 'status',
-      filterValueArray: true,
-      fitlerCustomOptions: [{ key: 'Ready', label: 'Ready' }, { key: 'Ignored', label: 'Ignored' }]
+      filterKey: 'includeIgnored',
+      defaultFilteredValue: [false]
     }
   ]
 
-  const rowActions: TableProps<PendingAsset>['rowActions'] = [
+  const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
       onClick: () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Ignore Device' }),
-      tooltip: $t(MessageMapping.ignore_devive_tooltip),
+      label: $t({ defaultMessage: 'Hide Device' }),
+      tooltip: $t(MessageMapping.hide_devive_tooltip),
       onClick: () => {
       }
     }
@@ -158,7 +158,7 @@ export const PendingSwitch = () => {
           size='small'
           onClick={handleRefresh}>{$t({ defaultMessage: 'Refresh' })}</Button>
       </div>
-      <Table<PendingAsset>
+      <Table<DeviceProvision>
         settingsId={'pending-aps-table'}
         columns={columns}
         dataSource={tableData}
@@ -168,7 +168,7 @@ export const PendingSwitch = () => {
         rowSelection={
           rowActions.length > 0 && { type: 'checkbox' }
         }
-        rowKey='serial'
+        rowKey='serialNumber'
       />
     </Loader>
   )

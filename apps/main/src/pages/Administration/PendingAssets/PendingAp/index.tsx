@@ -1,86 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { now }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
-import { Sync }                                      from '@acx-ui/icons'
-import { PendingAsset }                              from '@acx-ui/rc/utils'
-import { TimeStamp }                                 from '@acx-ui/types'
+import { Button, cssStr, Loader, Table, TableProps }                                                             from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                             from '@acx-ui/formatter'
+import { Sync }                                                                                                  from '@acx-ui/icons'
+import { useGetApProvisionsQuery, useGetApStatusQuery, useHideApProvisionsMutation, useRefreshApStatusMutation } from '@acx-ui/rc/services'
+import { FILTER, DeviceProvision, SEARCH, useTableQuery, HideProvisionsPayload }                                 from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                             from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
 
 export const PendingAp = () => {
-  const [ refreshAt, setRefreshAt ] = useState<TimeStamp>(now() - 1000 * 60 * 5)
-  const [ tableData ] = useState([{
-    serial: '152339012345',
-    model: 'R770',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '152339012346',
-    model: 'R760',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '152339012347',
-    model: 'R770',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '152339012348',
-    model: 'R760',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '152339012349',
-    model: 'R770',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '152339012350',
-    model: 'R760',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '152339012351',
-    model: 'R770',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '152339012352',
-    model: 'R760',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  }] as (PendingAsset)[])
-
-  const tableQuery = {
-    data: tableData,
-    pagination: {
-      page: 1,
-      pageSize: 5,
-      defaultPageSize: 5,
-      total: 8
-    },
-    handleTableChange: () => {}
-  }
-
   const { $t } = useIntl()
+  const params = useParams()
+  const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
+  const [ isLoading, setIsLoading ] = useState(false)
 
-  const columns: TableProps<PendingAsset>['columns'] = [
+  const { data: apStatus, refetch: refetchApStatus } = useGetApStatusQuery(
+    { params },
+    { refetchOnMountOrArgChange: true })
+
+  const [ refreshApStatus ] = useRefreshApStatusMutation()
+
+  const [ hideApProvisions ] = useHideApProvisionsMutation()
+
+  const tableQuery = useTableQuery<DeviceProvision>({
+    useQuery: useGetApProvisionsQuery,
+    defaultPayload: {
+      page: 0,
+      pageSize: 10,
+      filters: {}
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['serialNumber', 'model']
+    },
+    sorter: {
+      sortField: 'serialNumber',
+      sortOrder: 'asc'
+    }
+  })
+
+  useEffect(() => {
+    setRefreshAt(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(apStatus?.refreshedAt) ?? null)
+  }, [apStatus])
+
+  const columns: TableProps<DeviceProvision>['columns'] = [
     {
-      key: 'serial',
-      title: 'Serial',
-      dataIndex: 'serial',
+      key: 'serialNumber',
+      title: 'Serial #',
+      dataIndex: 'serialNumber',
       sorter: true,
       searchable: true
     },
@@ -90,14 +61,13 @@ export const PendingAp = () => {
       dataIndex: 'model',
       sorter: true,
       searchable: true,
-      filterable: [{ key: 'R770', label: 'R770' }, { key: 'R760', label: 'R760' }]
+      filterable: true
     },
     {
       key: 'shipDate',
       title: 'Ship Date',
       dataIndex: 'shipDate',
       sorter: true,
-      searchable: true,
       render: (value) => formatter(DateFormatEnum.DateFormat)(value)
     },
     {
@@ -105,43 +75,64 @@ export const PendingAp = () => {
       title: 'Created Date',
       dataIndex: 'createdDate',
       sorter: true,
-      searchable: true,
+      filterable: true,
+      filterKey: 'fromDate',
+      filterComponent: { type: 'rangepicker' },
       render: (value) => formatter(DateFormatEnum.DateFormat)(value)
     },
     {
-      key: 'status',
-      title: 'Status',
-      dataIndex: 'status',
+      key: 'visibleStatus',
+      title: 'Visibility',
+      dataIndex: 'visibleStatus',
       sorter: true,
-      searchable: true,
-      filterComponent: { type: 'checkbox', label: 'Show ignored devices' },
+      filterKey: 'includeHidden',
       filterable: true,
-      filterKey: 'status',
-      filterValueArray: true,
-      fitlerCustomOptions: [{ key: 'Ready', label: 'Ready' }, { key: 'Ignored', label: 'Ignored' }]
+      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) },
+      defaultFilteredValue: [false]
     }
   ]
 
-  const rowActions: TableProps<PendingAsset>['rowActions'] = [
+  const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
       onClick: () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Ignore Device' }),
-      tooltip: $t(MessageMapping.ignore_devive_tooltip),
-      onClick: () => {
+      label: $t({ defaultMessage: 'Hide Device' }),
+      tooltip: $t(MessageMapping.hide_devive_tooltip),
+      onClick: (selectedRows) => {
+        hideApProvisions({
+          payload: {
+            serials: selectedRows.map((row) => row.serialNumber)
+          } as HideProvisionsPayload
+        })
       }
     }
   ]
 
-  const handleRefresh = () => {
-    setRefreshAt(now())
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters?.includeHidden && customFilters.includeHidden.length > 0) {
+      customFilters = {
+        ...customFilters,
+        includeHidden: [customFilters.includeHidden[0] as boolean]
+      }
+    }
+
+    tableQuery.handleFilterChange(customFilters, customSearch)
+  }
+
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    await refreshApStatus({})
+    const { data: latestApStatus } = await refetchApStatus()
+    setRefreshAt(
+      formatter(DateFormatEnum.DateTimeFormatWithSeconds)(latestApStatus?.refreshedAt) ?? null)
+    setIsLoading(false)
   }
 
   return (
-    <Loader>
+    <Loader states={[{ isLoading: tableQuery.isLoading }]}>
       <div
         className={'ant-space-align-center'}
         style={{ textAlign: 'right' }}>
@@ -157,17 +148,19 @@ export const PendingAp = () => {
           size='small'
           onClick={handleRefresh}>{$t({ defaultMessage: 'Refresh' })}</Button>
       </div>
-      <Table<PendingAsset>
-        settingsId={'pending-aps-table'}
+      <Table<DeviceProvision>
+        settingsId={'pending-aps-tab'}
+        loading={tableQuery.isLoading}
         columns={columns}
-        dataSource={tableData}
+        dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
         rowActions={rowActions}
         rowSelection={
           rowActions.length > 0 && { type: 'checkbox' }
         }
-        rowKey='serial'
+        rowKey='serialNumber'
       />
     </Loader>
   )
