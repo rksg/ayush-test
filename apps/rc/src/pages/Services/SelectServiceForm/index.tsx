@@ -133,7 +133,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WIFI_CALLING,
           categories: [RadioCardCategory.WIFI],
-          disabled: isWifiCallingLimitReached
+          isLimitReached: isWifiCallingLimitReached
         }
       ]
     },
@@ -212,6 +212,7 @@ export default function SelectServiceForm () {
                                 categories={item.categories}
                                 type={'radio'}
                                 isBetaFeature={item.isBetaFeature}
+                                isLimitReached={item.isLimitReached}
                               />
                             </GridCol>
                         })
