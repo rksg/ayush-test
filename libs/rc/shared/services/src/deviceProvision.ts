@@ -19,7 +19,7 @@ interface TableQueryPayload {
   sortOrder?: string
   filters?: {
     includeHidden?: boolean[],
-    models?: string[]
+    model?: string[]
   }
 }
 const sortableFields = ['serialNumber', 'model', 'shipDate', 'createdDate', 'visibleStatus']
@@ -88,11 +88,11 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
           queryParams.append('order', tablePayload.sortOrder)
         }
         if (tablePayload?.filters?.includeHidden !== undefined) {
-          queryParams.append('includeHidden', tablePayload.filters.includeHidden[0].toString())
+          queryParams.append('includeHidden', 'true')
         }
-        if (tablePayload?.filters?.models !== undefined) {
-          tablePayload.filters.models.forEach((model) => {
-            queryParams.append('filterModels', model)
+        if (tablePayload?.filters?.model !== undefined) {
+          tablePayload.filters.model.forEach((m) => {
+            queryParams.append('filterModels', m)
           })
         }
 
@@ -111,13 +111,14 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
         }
       },
       transformResponse: (response: unknown) => {
-        // eslint-disable-next-line no-console
-        console.log('response: ', response)
         const responseData = response as Record<string, unknown>
         const items = (responseData.content || responseData.data || []) as DeviceProvision[]
         const pageable = responseData.pageable as Record<string, unknown>
         const currentPage = (pageable?.pageNumber as number || responseData.page as number || 1)
         const totalItems = (responseData.totalElements || responseData.totalCount || 0) as number
+        items.forEach((item) => {
+          item.includeHidden = true
+        })
 
         return {
           data: items,
@@ -147,12 +148,13 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
         if (tablePayload?.sortOrder) {
           queryParams.append('order', tablePayload.sortOrder)
         }
-        if (tablePayload?.filters?.includeHidden !== undefined) {
-          queryParams.append('includeHidden', tablePayload.filters.includeHidden[0].toString())
+        if (tablePayload?.filters?.includeHidden !== undefined
+          && tablePayload.filters.includeHidden[0] === true) {
+          queryParams.append('includeHidden', 'true')
         }
-        if (tablePayload?.filters?.models !== undefined) {
-          tablePayload.filters.models.forEach((model) => {
-            queryParams.append('filterModels', model)
+        if (tablePayload?.filters?.model !== undefined) {
+          tablePayload.filters.model.forEach((m) => {
+            queryParams.append('filterModels', m)
           })
         }
 
@@ -176,6 +178,9 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
         const pageable = responseData.pageable as Record<string, unknown>
         const currentPage = (pageable?.pageNumber as number || responseData.page as number || 1)
         const totalItems = (responseData.totalElements || responseData.totalCount || 0) as number
+        items.forEach((item) => {
+          item.includeHidden = true
+        })
 
         return {
           data: items,

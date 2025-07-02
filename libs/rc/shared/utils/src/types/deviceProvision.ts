@@ -5,7 +5,8 @@ export interface DeviceProvision {
   model: string,
   shipDate: string,
   createdDate: string,
-  visibleStatus: string
+  visibleStatus: string | boolean
+  includeHidden?: boolean
 }
 
 export interface DeviceProvisionStatus {

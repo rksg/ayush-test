@@ -87,8 +87,7 @@ export const PendingAp = () => {
       sorter: true,
       filterKey: 'includeHidden',
       filterable: true,
-      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) },
-      defaultFilteredValue: [false]
+      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) }
     }
   ]
 
@@ -112,11 +111,13 @@ export const PendingAp = () => {
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    if (customFilters?.includeHidden && customFilters.includeHidden.length > 0) {
+    if (customFilters?.includeHidden && customFilters.includeHidden[0] === true) {
       customFilters = {
         ...customFilters,
-        includeHidden: [customFilters.includeHidden[0] as boolean]
+        includeHidden: [customFilters.includeHidden[0].toString()]
       }
+    } else {
+      delete customFilters.includeHidden
     }
 
     tableQuery.handleFilterChange(customFilters, customSearch)
@@ -132,11 +133,13 @@ export const PendingAp = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: tableQuery.isLoading }]}>
+    <Loader states={[{ isLoading: tableQuery.isLoading || isLoading,
+      isFetching: tableQuery.isFetching }]}>
       <div
         className={'ant-space-align-center'}
         style={{ textAlign: 'right' }}>
-        <span style={{ fontSize: '12px', marginRight: '6px', color: cssStr('--acx-neutrals-60') }}>
+        <span style={{ fontSize: '12px', marginRight: '6px',
+          color: cssStr('--acx-neutrals-60') }}>
           {$t({ defaultMessage: 'Updated at' })}
         </span>
         <span data-testid='test-refresh-time' style={{ fontSize: '12px', marginRight: '6px' }}>
@@ -148,9 +151,10 @@ export const PendingAp = () => {
           size='small'
           onClick={handleRefresh}>{$t({ defaultMessage: 'Refresh' })}</Button>
       </div>
+
       <Table<DeviceProvision>
         settingsId={'pending-aps-tab'}
-        loading={tableQuery.isLoading}
+        loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}

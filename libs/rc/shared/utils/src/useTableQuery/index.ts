@@ -219,8 +219,6 @@ export function useTableQuery <
   }, [api.data])
 
   const getAllPagesData = (() => {
-    // eslint-disable-next-line no-console
-    console.log('getAllDataApi: ', getAllDataApi)
     return getAllDataApi && getAllDataApi.data ? getAllDataApi.data.data : []
   })
 
