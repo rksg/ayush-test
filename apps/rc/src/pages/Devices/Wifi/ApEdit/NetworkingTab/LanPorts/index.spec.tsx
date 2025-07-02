@@ -191,8 +191,6 @@ describe('Lan Port', () => {
 
     it ('Should render LAN ports reset to default correctly with AP', async () => {
       // Given
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
       render(
         <Provider>
           <ApEditContext.Provider value={{

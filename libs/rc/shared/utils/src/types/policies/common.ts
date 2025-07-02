@@ -41,6 +41,7 @@ export enum PolicyType {
   IPSEC = 'IPsec',
   SAML_IDP = 'SAML IDP',
   CERTIFICATE_PROFILE = 'Certificate Profile',
+  ADAPTIVE_POLICY_PROFILE = 'Adaptive Policy Profile'
 }
 
 export enum PolicyOperation {
@@ -102,7 +103,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
   [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'Secures IP communications through encryption and authentication' }),
   [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' }),
-  [PolicyType.CERTIFICATE_PROFILE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' })
+  [PolicyType.CERTIFICATE_PROFILE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
+  [PolicyType.ADAPTIVE_POLICY_PROFILE]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

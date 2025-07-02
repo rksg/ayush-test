@@ -381,5 +381,11 @@ export const policyAllowedOperationMap = {
       getOpsApi(CertificateUrls.uploadCertificate),
       getOpsApi(CertificateUrls.generateClientServerCertificate)
     ]
+  },
+  [PolicyType.ADAPTIVE_POLICY_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup),
+      [getOpsApi(RulesManagementUrlsInfo.createPolicy), getOpsApi(RulesManagementUrlsInfo.addConditions)],
+      [getOpsApi(RulesManagementUrlsInfo.createPolicySet), getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority)]
+    ]
   }
 }
