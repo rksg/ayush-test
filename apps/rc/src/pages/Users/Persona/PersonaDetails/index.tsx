@@ -73,6 +73,7 @@ function PersonaDetails () {
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isIdentityTrafficAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_TRAFFIC_ANALYTICS_TOGGLE)
 
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
@@ -229,7 +230,9 @@ function PersonaDetails () {
   }
 
   const extra = [
-    <TimeRangeDropDown key={getShowWithoutRbacCheckKey('time-range-dropdown')} />,
+    ...(isIdentityTrafficAnalyticsEnabled
+      ? [<TimeRangeDropDown key={getShowWithoutRbacCheckKey('time-range-dropdown')}/>]
+      : []),
     ...(hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [
         <Button
