@@ -92,7 +92,7 @@ describe('useAvailableUnifiedServicesList', () => {
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== Features.CLOUDPATH_BETA)
 
     const { result } = renderHook(() => useAvailableUnifiedServicesList())
-    const adaptivePolicy = result.current.find(s => s.type === PolicyType.ADAPTIVE_POLICY)
+    const adaptivePolicy = result.current.find(s => s.type === PolicyType.ADAPTIVE_POLICY_PROFILE)
     expect(adaptivePolicy?.disabled).toBe(true)
   })
 
