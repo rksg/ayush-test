@@ -113,7 +113,6 @@ const AsyncLoadingInColumn = (
 }
 
 export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boolean) {
-  const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const identityClientToggle = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
@@ -198,7 +197,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
         </Tooltip>
       }
     },
-    ...(wifi7MLOToggle ? [{
+    {
       key: 'mldMacAddress',
       title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
       dataIndex: 'mldMacAddress',
@@ -213,7 +212,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
           </Tooltip>
         }, (row) => row.mldMacAddress !== undefined || !!row.apInformation?.name || !!row.venueInformation?.name)
       }
-    }] : []),
+    },
     {
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
