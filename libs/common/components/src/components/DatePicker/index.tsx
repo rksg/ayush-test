@@ -171,9 +171,7 @@ export const RangePicker = ({
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
 
   const hasFilterLabel = Boolean(filterLabel)
-  const isAllTimeAndClosed = rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]` &&
-    !isCalendarOpen
-  const shouldShowLabel = hasFilterLabel && ((!calChanged && !isCalendarOpen) || isAllTimeAndClosed)
+  const shouldShowLabel = hasFilterLabel && (!calChanged && !isCalendarOpen)
 
   return (
     <UI.RangePickerWrapper
@@ -198,9 +196,8 @@ export const RangePicker = ({
           setIsCalendarOpen(true)
         }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={!hasFilterLabel ||
-          ((calChanged && rangeText !== `[${$t(dateRangeMap[DateRange.allTime])}]`)
-          || isCalendarOpen) ? <ClockOutlined /> : <CaretDownSolid />}
+        suffixIcon={!hasFilterLabel || isCalendarOpen || calChanged
+          ? <ClockOutlined /> : <CaretDownSolid />}
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
           const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
@@ -210,7 +207,7 @@ export const RangePicker = ({
             startDate: restrictRange.startDate || null,
             endDate: restrictRange.endDate || null
           }))
-          setCalChanged(!restrictRange.startDate?.isSame(restrictRange.endDate, 'day'))
+          setCalChanged(true)
         }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
@@ -232,9 +229,7 @@ export const RangePicker = ({
             return formatter(formatType)
           }
 
-          const isAllTimeWithLabel = hasFilterLabel && (!calChanged || !isCalendarOpen) &&
-            rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]`
-
+          const isAllTimeWithLabel = hasFilterLabel && !calChanged
           if (isAllTimeWithLabel) {
             return `[${filterLabel}]`
           }

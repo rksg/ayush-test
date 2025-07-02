@@ -112,7 +112,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const excludedFlags = [
-  Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
   Features.WIFI_RBAC_API
 ]
 describe('ApEdit', () => {
