@@ -141,6 +141,7 @@ describe('Table Filters', () => {
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
@@ -152,8 +153,13 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByPlaceholderText('Start date')
-      await userEvent.click(calenderSelect)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
       await userEvent.click(dateSelect[0])
@@ -163,12 +169,81 @@ describe('Table Filters', () => {
       const applyButton = await screen.findByRole('button', { name: 'Apply' })
       await userEvent.click(applyButton)
     })
+    it('should render with range picker component and close when click on cancel', async () => {
+      const filterableCol = jest.fn()
+      render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
+        {
+          key: 'fromTime',
+          dataIndex: 'fromTime',
+          title: 'From Time',
+          filterable: true,
+          filterKey: 'fromTime',
+          filterComponent: { type: 'rangepicker' }
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      )}</BrowserRouter>)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
+      const yesterday = moment().subtract(1, 'day')
+      const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
+      await userEvent.click(dateSelect[0])
+      const today = formatter(DateFormatEnum.DateFormat)(moment())
+      const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
+      expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
+      const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
+      await userEvent.click(cancelButton)
+    })
+    it('should render with range picker component and close when click on All Time', async () => {
+      const filterableCol = jest.fn()
+      render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
+        {
+          key: 'fromTime',
+          dataIndex: 'fromTime',
+          title: 'From Time',
+          filterable: true,
+          filterKey: 'fromTime',
+          filterComponent: { type: 'rangepicker' }
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      )}</BrowserRouter>)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
+      const yesterday = moment().subtract(1, 'day')
+      const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
+      await userEvent.click(dateSelect[0])
+      const today = formatter(DateFormatEnum.DateFormat)(moment())
+      const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
+      expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
+      const option = await screen.findByText('All Time')
+      await userEvent.click(option)
+    })
     it('should render undefined value with range picker component', async () => {
       const filterableCol = jest.fn()
       render(<BrowserRouter>{renderFilter<{ fromTime: string }>(
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
