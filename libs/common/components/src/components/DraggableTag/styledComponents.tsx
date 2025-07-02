@@ -4,7 +4,7 @@ import styled  from 'styled-components/macro'
 export const TagsContainer = styled.div`
   min-height: 100px;
   padding: 8px;
-  border: 1px solid #ACAEB0;
+  border: 1px solid var(--acx-neutrals-50);
   border-radius: 4px;
   overflow: hidden;
   white-space: normal;
@@ -12,7 +12,7 @@ export const TagsContainer = styled.div`
   transition: all 0.3s;
 
   &.error {
-    border: 1px solid red;
+    border: 1px solid var(--acx-semantics-red-50);
   }
   &.active {
     border: 1px solid var(--acx-primary-black);
@@ -69,10 +69,10 @@ export const TagSelector = styled.div`
 `
 
 export const Placeholder = styled.span`
-  font-size: 12px;
-  color: var(--acx-neutrals-60);
   padding: 4px;
-  line-height: 16px;
+  color: var(--acx-neutrals-60);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
 `
 
 export const AddTag = styled(Tag)`
