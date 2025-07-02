@@ -8,17 +8,19 @@ import {
   ContentSwitcher } from '@acx-ui/components'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTrafficByRadioQuery } from './services'
 import { TrafficSnapshot }        from './TrafficSnapshot'
 import { TrafficTrend }           from './TrafficTrend'
+
 
 export interface TrafficByRadioFilters {
   startDate: string,
   endDate: string
 }
 
-export function TrafficByRadio ({ filters }: { filters: TrafficByRadioFilters }) {
+export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
   const { $t } = useIntl()
 
   const queryResults = useTrafficByRadioQuery({

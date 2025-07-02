@@ -2,9 +2,11 @@ import { formats }                   from '@acx-ui/formatter'
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
+import { Mdu360TabProps } from '../../types'
+
 import { TrafficByRadioData, useTrafficByRadioQuery } from './services'
 
-import { TrafficByRadio, TrafficByRadioFilters } from '.'
+import { TrafficByRadio } from '.'
 
 const mockUseTrafficByRadioQuery = useTrafficByRadioQuery as jest.Mock
 
@@ -12,7 +14,7 @@ jest.mock('./services', () => ({
   useTrafficByRadioQuery: jest.fn()
 }))
 
-const mockFilters: TrafficByRadioFilters = {
+const mockFilters: Mdu360TabProps = {
   startDate: '2025-06-16T07:23:00+05:30',
   endDate: '2025-06-17T07:23:00+05:30'
 }
