@@ -99,7 +99,6 @@ export function SecurityTab () {
   const isCore = isCoreTier(accountTier)
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
-  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
@@ -187,7 +186,7 @@ export function SecurityTab () {
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
   // eslint-disable-next-line max-len
-  const { data: venueApEnhancedKeyData } = useGetVenueApEnhancedKeyQuery({ params }, { skip: isTemplate || !supportTlsKeyEnhance })
+  const { data: venueApEnhancedKeyData } = useGetVenueApEnhancedKeyQuery({ params }, { skip: isTemplate })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
   const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
@@ -517,7 +516,7 @@ export function SecurityTab () {
           </FieldsetItem>
           }
 
-          { !isTemplate && supportTlsKeyEnhance && <Space align='start'>
+          { !isTemplate && <Space align='start'>
             <StepsFormLegacy.FieldLabel
               width='max-content'
               style={{ height: '32px', display: 'flex', alignItems: 'center', paddingLeft: '8px' }}
