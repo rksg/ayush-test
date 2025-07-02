@@ -36,7 +36,14 @@ jest.mock('./useUnifiedServiceSearchFilter', () => ({
     setFilters: jest.fn(),
     setSortOrder: jest.fn(),
     filteredServices: list
-  })
+  }),
+  getDefaultSearchFilterValues: jest.fn(() => ({
+    filters: {
+      products: [],
+      categories: []
+    },
+    sortOrder: 0
+  }))
 }))
 jest.mock('../UnifiedServiceCard', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -83,7 +83,7 @@ describe('VenueClusterRenderer', () => {
   it('should call render for the markercluster', ()=>{
     const map = new google.maps.Map(document.createElement('div'))
     const { result } = renderHook(() => {
-      return new VenueClusterRenderer(map, useIntl(), true)
+      return new VenueClusterRenderer(map, useIntl())
     })
     const spyRender = jest.spyOn(result.current, 'render')
 
@@ -133,21 +133,7 @@ describe('VenueClusterRenderer', () => {
       return marker
     })
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow, true)
-    expect(infoDiv).toMatchSnapshot()
-  })
-  it('should match with snapshot for venue cluster tooltip when edge disabled',() => {
-    const markers = Array.from(Array(15).keys()).map(index => {
-      const marker = new google.maps.Marker()
-      marker.get = jest.fn().mockImplementation(() => ({
-        ...venueMarker,
-        venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
-        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueMarker.status
-      }))
-      return marker
-    })
-    const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow, false)
+    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for venue cluster tooltip for more than 20 venues',()=>{
@@ -162,7 +148,7 @@ describe('VenueClusterRenderer', () => {
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow, true)
+    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for venue cluster tooltip without pagination',()=>{
@@ -176,7 +162,7 @@ describe('VenueClusterRenderer', () => {
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow, true)
+    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for renderItemForList',()=>{
