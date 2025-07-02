@@ -63,7 +63,11 @@ import {
   SoftGreDuplicationChangeState,
   Voter,
   mergeLanPortSettings,
-  IpsecOptionChangeState
+  IpsecOptionChangeState,
+  DhcpOption82SubOption151Enum,
+  DhcpOption82SubOption2Enum,
+  DhcpOption82SubOption1Enum,
+  DhcpOption82MacEnum
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -254,7 +258,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   }, [setReadyToScroll, venueLanPorts?.data])
 
   useEffect(() => {
-    const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
+    const { model, lan, poeOut, poeMode } = form?.getFieldsValue(true)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -342,20 +346,19 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const newLanPortData = cloneDeep(lanPortData)
     const newLanPortOrinData = cloneDeep(lanPortOrinData)
 
-    newLanPortData?.forEach((item, index) => {
-      if(item.model === selected.model) {
-        newLanPortData[index] = selected
-      }
-    })
+    const updateArrayItem = (
+      array: VenueLanPorts[] | undefined,
+      targetModel: string,
+      newData: VenueLanPorts
+    ) => {
+      return array?.map(item => item.model === targetModel ? newData : item)
+    }
 
-    newLanPortOrinData?.forEach((item, index) => {
-      if(item.model === selected.model) {
-        newLanPortOrinData[index] = selected
-      }
-    })
+    const updatedLanPortData = updateArrayItem(newLanPortData, selected.model, selected)
+    const updatedLanPortOrinData = updateArrayItem(newLanPortOrinData, selected.model, selected)
 
-    setLanPortData(newLanPortData)
-    setLanPortOrinData(newLanPortOrinData)
+    setLanPortData(updatedLanPortData)
+    setLanPortOrinData(updatedLanPortOrinData)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
@@ -619,11 +622,18 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => ({
-    enabled: lanPortData.enabled,
-    clientIsolationEnabled: lanPortData.clientIsolationEnabled,
-    clientIsolationSettings: lanPortData.clientIsolationSettings
-  })
+  const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => {
+    const dhcpOption82Enabled = lanPortData.dhcpOption82?.dhcpOption82Enabled ?? false
+
+    return {
+      enabled: lanPortData.enabled,
+      dhcpOption82Enabled,
+      dhcpOption82Settings: dhcpOption82Enabled ?
+        lanPortData.dhcpOption82?.dhcpOption82Settings : undefined,
+      clientIsolationEnabled: lanPortData.clientIsolationEnabled,
+      clientIsolationSettings: lanPortData.clientIsolationSettings
+    }
+  }
 
   const handleUpdateLanPortSpecificSettings = async (
     model:string,
