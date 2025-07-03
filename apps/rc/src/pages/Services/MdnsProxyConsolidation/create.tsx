@@ -6,7 +6,6 @@ import { useIntl }            from 'react-intl'
 import {
   categoryMapping,
   PageHeader,
-  RadioCardCategory,
   StepsForm
 }  from '@acx-ui/components'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
@@ -22,6 +21,7 @@ import {
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RadioCardCategory }                       from '@acx-ui/types'
 
 import { MdnsProxyConsolidationTabKey } from '.'
 

@@ -166,6 +166,11 @@ export function IotControllerForm () {
   const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
 
   const serialNumberValidator = async (value: string) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{16,30}$/
+    if (!alphanumericRegex.test(value)) {
+      // eslint-disable-next-line max-len
+      return Promise.reject($t({ defaultMessage: 'Serial number must be 16-30 alphanumeric characters (a-z, A-Z, 0-9)' }))
+    }
     try {
       const serialNumberData = (await getSerialNumber({
         params: { serialNumber: value }

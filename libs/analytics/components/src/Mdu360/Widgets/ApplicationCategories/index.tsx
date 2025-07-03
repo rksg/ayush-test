@@ -14,18 +14,14 @@ import {
 import { formats } from '@acx-ui/formatter'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTopNApplicationCategoriesQuery } from './services'
-
-export interface ApplicationCategoriesFilters {
-  startDate: string;
-  endDate: string;
-}
 
 export const ApplicationCategories = ({
   filters
 }: {
-  filters: ApplicationCategoriesFilters;
+  filters: Mdu360TabProps;
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
@@ -42,7 +38,7 @@ export const ApplicationCategories = ({
       {
         label: $t({ defaultMessage: 'Client Count' }),
         value: 'clientCount',
-        children: results?.clientCount.length ?
+        children: results?.clientCount.length ? (
           <AutoSizer>
             {({ height, width }) => (
               <DonutChart
@@ -56,12 +52,15 @@ export const ApplicationCategories = ({
                 showLabel
               />
             )}
-          </AutoSizer> : <NoData />
+          </AutoSizer>
+        ) : (
+          <NoData />
+        )
       },
       {
         label: $t({ defaultMessage: 'Data Usage' }),
         value: 'dataUsage',
-        children: results?.dataUsage.length ?
+        children: results?.dataUsage.length ? (
           <AutoSizer>
             {({ height, width }) => (
               <DonutChart
@@ -76,7 +75,10 @@ export const ApplicationCategories = ({
                 dataFormatter={(value) => formats.bytesFormat(value as number)}
               />
             )}
-          </AutoSizer> : <NoData />
+          </AutoSizer>
+        ) : (
+          <NoData />
+        )
       }
     ],
     [$t, results?.clientCount, results?.dataUsage]

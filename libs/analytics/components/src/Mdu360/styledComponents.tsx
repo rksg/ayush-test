@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-import { NoData } from '@acx-ui/components'
-
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -9,8 +7,6 @@ export const Grid = styled.div`
   grid-gap: var(--acx-content-vertical-space);
   margin-top: var(--acx-content-vertical-space);
 `
-
-export const StyledNoData = styled(NoData).attrs({ style: { marginTop: '38px' } })``
 
 export const ContentSwitcherWrapper = styled.div<{
   height: number;

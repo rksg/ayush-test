@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { MessageDescriptor } from 'react-intl'
 
-import { RadioCardCategory }                                                        from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { RadioCardCategory }                                                        from '@acx-ui/types'
 import { getUserProfile, isCoreTier }                                               from '@acx-ui/user'
 
 import { ServiceType }                           from '../../constants'
@@ -101,14 +101,14 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: isSwitchMacAclEnabled
       },
       {
-        type: PolicyType.ADAPTIVE_POLICY,
+        type: PolicyType.ADAPTIVE_POLICY_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
         disabled: !cloudpathBetaEnabled
       },
       {
-        type: PolicyType.CERTIFICATE_TEMPLATE,
+        type: PolicyType.CERTIFICATE_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,

@@ -76,7 +76,6 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
@@ -93,7 +92,6 @@ export const EventTable = ({
   }
 
   const excludeEventType = [
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : []),
     ...(!isIotEnabled ? ['IOT'] : [])
   ]
 
