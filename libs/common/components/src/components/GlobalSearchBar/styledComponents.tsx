@@ -1,10 +1,9 @@
 import { Input as AntInput } from 'antd'
 import styled                from 'styled-components/macro'
 
-import { LayoutUI }     from '@acx-ui/components'
-import {
-  SendMessageOutlined
-}                          from '@acx-ui/icons'
+import { SendMessageOutlined } from '@acx-ui/icons'
+
+import { LayoutUI } from '../Layout/styledComponents'
 
 export const Home = styled(LayoutUI.DropdownText)`
   color: var(--acx-primary-white);
