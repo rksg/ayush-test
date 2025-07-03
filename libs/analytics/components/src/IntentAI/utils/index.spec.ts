@@ -22,9 +22,11 @@ describe('IntentAI utils', () => {
     it('should return true', () => {
       expect(isDataRetained(moment().subtract(100, 'days').toISOString())).toBeTruthy()
     })
+
     it('should return false', () => {
       expect(isDataRetained(moment().subtract(400, 'days').toISOString())).toBeFalsy()
     })
+
     it('should handle undefined', () => {
       expect(isDataRetained(undefined)).toBeTruthy()
     })
@@ -68,6 +70,15 @@ describe('IntentAI utils', () => {
           displayStatus: DisplayStates.applyScheduled
         }
       )).toEqual({ status: Statuses.active })
+
+      expect(getTransitionStatus(
+        Actions.Optimize,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.na,
+          displayStatus: DisplayStates.naVerified
+        }
+      )).toEqual({ status: Statuses.scheduled })
     })
 
     it('should handle (Actions.Revert)', () => {
@@ -171,6 +182,46 @@ describe('IntentAI utils', () => {
         }
       )).toEqual({ status: Statuses.active })
 
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.scheduled },
+            { status: Statuses.na, statusReason: StatusReasons.verified },
+            { status: Statuses.new }
+          ]
+        }
+      )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.scheduled },
+            { status: Statuses.new },
+            { status: Statuses.na, statusReason: StatusReasons.verified }
+          ]
+        }
+      )).toEqual({ status: Statuses.new })
+
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        {
+          ...defaultTransitionIntentItem,
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled,
+          statusTrail: [
+            { status: Statuses.na, statusReason: StatusReasons.verified }
+          ]
+        }
+      )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+
       expect(() => {
         try{
           getTransitionStatus(
@@ -205,6 +256,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.new }
         )
       })
+
       it('should handle pausedApplyFailed', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -261,6 +313,7 @@ describe('IntentAI utils', () => {
           { status: Statuses.active }
         )
       })
+
       it('should handle pausedReverted', () => {
         expect(getTransitionStatus(
           Actions.Resume,
@@ -375,6 +428,50 @@ describe('IntentAI utils', () => {
             throw error
           }
         }).toThrow('Invalid statusTrail(Resume)')
+      })
+
+      it('should handle naVerified with other statusTrail', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.scheduled },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
+            ]
+          }
+        )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+      })
+
+      it('should handle naVerified', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.na, statusReason: StatusReasons.verified }
+            ]
+          }
+        )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
+      })
+
+      it('should handle only scheduled', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.scheduled }
+            ]
+          }
+        )).toEqual({ status: Statuses.new })
       })
     })
   })
