@@ -1,14 +1,25 @@
 import React, { ReactNode, SetStateAction, useEffect, useRef, useState } from 'react'
 
-import { Form, FormItemProps, Input, Select, Tag } from 'antd'
-import TextArea                                    from 'antd/lib/input/TextArea'
-import _                                           from 'lodash'
-import { useIntl }                                 from 'react-intl'
-import styled                                      from 'styled-components/macro'
+import { Form, Input, Select, Tag } from 'antd'
+import TextArea                     from 'antd/lib/input/TextArea'
+import _                            from 'lodash'
+import { useIntl }                  from 'react-intl'
+import styled                       from 'styled-components/macro'
 
-import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { DeleteSolid, DownloadOutlined }                                  from '@acx-ui/icons'
+import {
+  Button,
+  Drawer,
+  GridCol,
+  GridRow,
+  Loader,
+  PageHeader,
+  showToast,
+  StepsForm,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
   useAddL2AclPolicyTemplateMutation,
@@ -31,7 +42,7 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -42,6 +53,7 @@ import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessCont
 
 import { AddModeProps, editModeProps }                            from './AccessControlForm'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import PolicyFormItem                                             from './PolicyFormItem'
 import { useScrollLock }                                          from './ScrollLock'
 
 
@@ -55,6 +67,7 @@ export interface Layer2DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  isComponentMode?: boolean,
   drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
@@ -67,16 +80,6 @@ const RuleContentWrapper = styled.div`
   padding: 10px;
   border-radius: 4px;
 `
-
-const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
-}
 
 const AclGridCol = ({ children }: { children: ReactNode }) => {
   return (
@@ -93,6 +96,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
+    isComponentMode = false,
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     drawerViewModeId = '',
@@ -114,10 +118,14 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
+  const [policyId, setPolicyId] = useState<string | null>(null)
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
+  const breadcrumb = usePoliciesBreadcrumb()
+  const pageTitle = usePolicyPageHeaderTitle(editMode.isEdit, PolicyType.LAYER_2_POLICY)
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -149,11 +157,20 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
+  useEffect(() => {
+    if (isOnlyViewMode) {
+      setPolicyId(onlyViewMode.id)
+    }
+    if (isComponentMode) {
+      setPolicyId(params.policyId || null)
+    }
+  }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
+
   const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL2AclPolicyQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
-    skip: !visible || skipFetch,
-    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId },
+    skip: !isComponentMode && (!visible || skipFetch),
+    extraParams: { l2AclPolicyId: policyId || l2AclPolicyId },
     enableRbac: resolvedRbacEnabled
   })
 
@@ -297,8 +314,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     setAddressTags([])
   }
 
-  const handleLayer2DrawerClose = () => {
-    setDrawerVisible(false)
+  const handleContentClose = () => {
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -311,7 +327,22 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (!isComponentMode) {
+      setDrawerVisible(false)
+    }
     callBack()
+  }
+
+  const handleContentFinish = async () => {
+    try {
+      await contentForm.validateFields()
+      if (!isViewMode()) {
+        await handleL2AclPolicy(editMode.isEdit || localEditMode.isEdit)
+      }
+      handleContentClose()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
   }
 
   const handleTagClose = (removedTag: string) => {
@@ -429,11 +460,6 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
           payload: convertToPayload(),
           enableRbac: resolvedRbacEnabled
         }).unwrap()
-        // let responseData = l2AclRes.response as {
-        //   [key: string]: string
-        // }
-        // form.setFieldValue('l2AclPolicyId', responseData.id)
-        // setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
         setQueryPolicyName(policyName)
       } else {
@@ -449,8 +475,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const content = <>
-    <Form layout='horizontal' form={contentForm}>
-      <DrawerFormItem
+    <Form layout={isComponentMode ? 'vertical' : 'horizontal'} form={contentForm}>
+      <PolicyFormItem
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
@@ -470,7 +496,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         ]}
         children={<Input disabled={isViewMode()}/>}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
@@ -478,7 +504,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='layer2Access'
         label={$t({ defaultMessage: 'Access' })}
         rules={[
@@ -542,7 +568,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
             </div>
           </Button>
         </div>
-      </DrawerFormItem>
+      </PolicyFormItem>
     </Form>
     <Form layout='vertical' form={contentForm}>
       <Form.Item
@@ -607,7 +633,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   )
 
   const modeContent = () => {
-    if (onlyAddMode.enable || drawerViewModeId !== '') {
+    if (isComponentMode || onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -679,32 +705,43 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   return (
     <>
       {modeContent()}
-      <Drawer
+      {isComponentMode && <>
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
+        <Loader states={[{ isLoading: false, isFetching: false }]}>
+          <StepsForm
+            form={form}
+            editMode={editMode.isEdit || localEditMode.isEdit}
+            onCancel={handleContentClose}
+            onFinish={handleContentFinish}
+          >
+            <StepsForm.StepForm
+              name='settings'
+              title={$t({ defaultMessage: 'Settings' })}
+            >
+              {content}
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Loader>
+      </>}
+      {!isComponentMode &&<Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={() => handleLayer2DrawerClose()}
+        onClose={() => handleContentClose()}
         destroyOnClose={true}
         children={content}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
             showSaveButton={!isViewMode()}
-            onCancel={handleLayer2DrawerClose}
-            onSave={async () => {
-              try {
-                await contentForm.validateFields()
-                if (!isViewMode()) {
-                  await handleL2AclPolicy(editMode.isEdit || localEditMode.isEdit)
-                }
-                handleLayer2DrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
+            onCancel={handleContentClose}
+            onSave={handleContentFinish}
           />
         }
         width={'730px'}
-      />
+      />}
       <Drawer
         title={$t({ defaultMessage: 'Add MAC Address' })}
         visible={ruleDrawerVisible}

@@ -51,7 +51,8 @@ import {
   SamlIdpDetail,
   IdentityGroupForm,
   IdentityForm,
-  PersonaGroupDetails
+  PersonaGroupDetails,
+  Layer2Drawer
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -1185,6 +1186,24 @@ function PolicyRoutes () {
         element={
           <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
             <AccessControlForm editMode={false}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_2_POLICY} oper={PolicyOperation.CREATE}>
+            <Layer2Drawer editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.EDIT })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_2_POLICY} oper={PolicyOperation.EDIT}>
+            <Layer2Drawer editMode={{ isEdit: true, id: '' }} isComponentMode={true}/>
           </PolicyAuthRoute>
         }
       />
