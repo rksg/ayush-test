@@ -25,6 +25,22 @@ export const mockTopApplications = {
         {
           name: 'Slack',
           applicationTraffic: 536870912
+        },
+        {
+          name: 'WhatsApp',
+          applicationTraffic: 268435456
+        },
+        {
+          name: 'Spotify',
+          applicationTraffic: 134217728
+        },
+        {
+          name: 'Telegram',
+          applicationTraffic: 67108864
+        },
+        {
+          name: 'Discord',
+          applicationTraffic: 33554432
         }
       ]
     }

@@ -14,7 +14,7 @@ describe('TopApplications services', () => {
   const payload: ApplicationsPayload = {
     startDate: '2025-05-31T00:00:00+00:00',
     endDate: '2025-06-01T00:00:00+00:00',
-    n: 6,
+    n: 10,
     range: DateRange.last24Hours,
     filter: {}
   }

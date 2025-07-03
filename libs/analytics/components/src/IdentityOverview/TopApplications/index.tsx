@@ -18,7 +18,7 @@ export const TopApplications = () => {
   const queryResults = useTopNApplicationsQuery({
     startDate: timeRange[0].format(),
     endDate: timeRange[1].format(),
-    n: 6,
+    n: 10,
     range: selectedRange,
     filter: {}
   })
