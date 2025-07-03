@@ -1457,7 +1457,9 @@ export function EditPortDrawer ({
             rules={[
               { max: 255 }
             ]}
-            children={<Input disabled={getFieldDisabled('name')} />}
+            children={shouldRenderMultipleText({
+              field: 'name', ...commonRequiredProps
+            }) ? <MultipleText /> : <Input disabled={getFieldDisabled('name')} />}
           />
         })}
 
