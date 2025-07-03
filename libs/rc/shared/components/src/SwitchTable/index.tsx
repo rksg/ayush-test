@@ -144,7 +144,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isNewSwitchMemberApiEnabled = useIsSplitOn(Features.SWUTCH_MENBERS_QUERY_OPTIMIZATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
@@ -333,7 +332,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             <Tooltip title={getPasswordTooltip(row)}>{
               getAdminPassword(row,
                 {
-                  isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
                   isSupport8100X: isSupport8100X,
                   isSupport7550Zippy: isSupport7550Zippy

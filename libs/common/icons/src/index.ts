@@ -401,6 +401,7 @@ export { ReactComponent as WarningCircleOutlined } from './icons/WarningCircleOu
 export { ReactComponent as WarningCircleSolid } from './icons/WarningCircleSolid.svg'
 export { ReactComponent as WarningTriangleOutlined } from './icons/WarningTriangleOutlined.svg'
 export { ReactComponent as WarningTriangleSolid } from './icons/WarningTriangleSolid.svg'
+export { ReactComponent as WarningTriangleBold } from './icons/WarningTriangleBold.svg'
 export { ReactComponent as WavinghandWawingHandOutlined } from './icons/WavinghandWawingHandOutlined.svg'
 export { ReactComponent as WdsOutlined } from './icons/WdsOutlined.svg'
 export { ReactComponent as Wemo } from './icons/Wemo.svg'
