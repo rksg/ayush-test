@@ -19,7 +19,9 @@ interface TableQueryPayload {
   sortOrder?: string
   filters?: {
     includeHidden?: boolean[],
-    model?: string[]
+    model?: string[],
+    fromTime?: string,
+    toTime?: string
   }
 }
 const sortableFields = ['serialNumber', 'model', 'shipDate', 'createdDate', 'visibleStatus']
@@ -95,6 +97,14 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
             queryParams.append('filterModels', m)
           })
         }
+        if (tablePayload?.filters?.fromTime !== undefined) {
+          queryParams.append('createdDateFrom',
+            tablePayload.filters.fromTime.slice(0, 10))
+        }
+        if (tablePayload?.filters?.toTime !== undefined) {
+          queryParams.append('createdDateTo',
+            tablePayload.filters.toTime.slice(0, 10))
+        }
 
         const queryString = queryParams.toString()
         const url = queryString
@@ -105,7 +115,6 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
           ...DeviceProvisionUrlsInfo.getApProvisions,
           url
         }, params)
-
         return {
           ...req
         }
@@ -156,6 +165,14 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
           tablePayload.filters.model.forEach((m) => {
             queryParams.append('filterModels', m)
           })
+        }
+        if (tablePayload?.filters?.fromTime !== undefined) {
+          queryParams.append('createdDateFrom',
+            tablePayload.filters.fromTime.slice(0, 10))
+        }
+        if (tablePayload?.filters?.toTime !== undefined) {
+          queryParams.append('createdDateTo',
+            tablePayload.filters.toTime.slice(0, 10))
         }
 
         const queryString = queryParams.toString()

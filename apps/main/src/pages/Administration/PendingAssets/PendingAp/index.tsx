@@ -68,7 +68,9 @@ export const PendingAp = () => {
       title: 'Ship Date',
       dataIndex: 'shipDate',
       sorter: true,
-      render: (value) => formatter(DateFormatEnum.DateFormat)(value)
+      render: (_, row) => {
+        return formatter(DateFormatEnum.DateFormat)(row.shipDate)
+      }
     },
     {
       key: 'createdDate',
@@ -78,7 +80,9 @@ export const PendingAp = () => {
       filterable: true,
       filterKey: 'fromDate',
       filterComponent: { type: 'rangepicker' },
-      render: (value) => formatter(DateFormatEnum.DateFormat)(value)
+      render: (_, row) => {
+        return formatter(DateFormatEnum.DateFormat)(row.createdDate)
+      }
     },
     {
       key: 'visibleStatus',
@@ -87,6 +91,7 @@ export const PendingAp = () => {
       sorter: true,
       filterKey: 'includeHidden',
       filterable: true,
+      defaultFilteredValue: [false],
       filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) }
     }
   ]
@@ -136,11 +141,10 @@ export const PendingAp = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: tableQuery.isLoading || isLoading,
-      isFetching: tableQuery.isFetching }]}>
+    <Loader states={[{ isLoading }]}>
       <div
         className={'ant-space-align-center'}
-        style={{ textAlign: 'right' }}>
+        style={{ textAlign: 'right', paddingBottom: '20px' }}>
         <span style={{ fontSize: '12px', marginRight: '6px',
           color: cssStr('--acx-neutrals-60') }}>
           {$t({ defaultMessage: 'Updated at' })}
