@@ -352,25 +352,23 @@ export function PersonaOverview (props:
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
           <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
             <Card title={$t({ defaultMessage: 'Associated Devices' })}>
-              {identityDeviceCount > 0 ? (
-                <AutoSizer>
-                  {({ width, height }) => (
+              <AutoSizer>
+                {({ width, height }) =>
+                  identityDeviceCount > 0 ? (
                     <DonutChart
                       style={{ width, height }}
                       title={$t({ defaultMessage: 'Wi-Fi' })}
-                      data={[
-                        {
-                          value: identityDeviceCount,
-                          name: $t({ defaultMessage: 'Wi-Fi' }),
-                          color: cssStr('--acx-semantics-green-50'),
-                        }
-                      ]}
+                      data={[{
+                        value: identityDeviceCount,
+                        name: $t({ defaultMessage: 'Wi-Fi' }),
+                        color: cssStr('--acx-semantics-green-50')
+                      }]}
                     />
-                  )}
-                </AutoSizer>
-              ) : (
-                <NoData />
-              )}
+                  ) : (
+                    <NoData />
+                  )
+                }
+              </AutoSizer>
             </Card>
           </Loader>
         </GridCol>
