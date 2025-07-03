@@ -6,7 +6,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart, DonutChartData, Loader, NoData, useDateRange } from '@acx-ui/components'
 import { formats }                                                        from '@acx-ui/formatter'
 
-import { useTrafficQuery } from '../services'
+import { useTrafficQuery } from './services'
 
 export const Traffic = () => {
   const { $t } = useIntl()
