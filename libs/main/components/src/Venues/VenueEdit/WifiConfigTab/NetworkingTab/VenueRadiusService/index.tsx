@@ -6,7 +6,7 @@ import { DefaultOptionType }   from 'antd/lib/select'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm, Tooltip } from '@acx-ui/components'
+import { Loader, StepsForm, Tooltip } from '@acx-ui/components'
 import {
   useActivateVenueRadiusServiceMutation,
   useActivateVenueTemplateRadiusServiceMutation,
@@ -51,7 +51,6 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
-  const { setReadyToScroll } = useContext(AnchorContext)
 
   const [ authRadiusOptions, setAuthRadiusOptions ] = useState<DefaultOptionType[]>([])
   const [ accountingOptions, setAccountingOptions ] = useState<DefaultOptionType[]>([])
@@ -125,11 +124,9 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
       if (hasIncludedAccountingOptions) {
         createAccountingRadiusIdRef.current = undefined
       }
-
-      setReadyToScroll?.(r => [...(new Set(r.concat('RADIUS-Options')))])
     }
 
-  }, [form, getRadiusServerProfiles, setReadyToScroll, venueId])
+  }, [form, getRadiusServerProfiles, venueId])
 
   const handleUpdateRadiusService = async () => {
     const curAuthId = form.getFieldValue('authServiceId')
@@ -190,8 +187,10 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     handleChanged()
   }
 
-  const authTooltipTitle = $t({ defaultMessage: '....' })
-  const accTooltipTitle = $t({ defaultMessage: '....' })
+  // eslint-disable-next-line max-len
+  const authTooltipTitle =$t({ defaultMessage: 'Only non-proxy authentication servers from active networks will be overridden' })
+  // eslint-disable-next-line max-len
+  const acctTooltipTitle = $t({ defaultMessage: 'Only non-proxy accounting servers from active networks will be overridden' })
 
   return (<Loader states={[{
     isLoading: getRadiusServerProfiles.isLoading,
@@ -224,7 +223,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     <StepsForm.FieldLabel width={'330px'}>
       <Space>
         {$t({ defaultMessage: 'Override Accounting service in active networks' })}
-        <Tooltip.Question title={accTooltipTitle}
+        <Tooltip.Question title={acctTooltipTitle}
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-4px' }} />
       </Space>
       <Form.Item
