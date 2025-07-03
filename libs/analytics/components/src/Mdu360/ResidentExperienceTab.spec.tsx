@@ -19,7 +19,7 @@ jest.mock('./Widgets/WifiGeneration', () => ({
 }))
 
 jest.mock('./Widgets/TopApplications', () => ({
-  TopApplications: jest.fn(() => <div>Top Applications</div>)
+  TopApplications: jest.fn(() => <div>Top 10 Applications</div>)
 }))
 jest.mock('./Widgets/TrafficByRadio/services', () => ({
   useTrafficByRadioQuery: jest.fn().mockReturnValue({ isLoading: false })
