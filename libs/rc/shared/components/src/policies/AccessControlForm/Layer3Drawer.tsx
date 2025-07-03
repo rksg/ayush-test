@@ -873,12 +873,14 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
               ? <FormItemsWrapper>
                 <Form.Item
                   name='destNetworkAddress'
+                  validateFirst
                   rules={[
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
                     },
-                    { validator: (_, value) => networkAddressValidator(value) }
+                    { validator: (_, value) => networkAddressValidator(value) },
+                    { validator: (_, value) => sourceDestIpModeValidator(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -908,11 +910,13 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
           <GridCol col={{ span: 19 }}>
             {destValue === 3 ? <Form.Item
               name='destIp'
+              validateFirst
               rules={[
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
                 }) },
-                { validator: (_, value) => networkAddressValidator(value) }
+                { validator: (_, value) => networkAddressValidator(value) },
+                { validator: (_, value) => sourceDestIpModeValidator(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
@@ -1084,6 +1088,22 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (isApIpModeFFEnabled && !isTemplate) {
       const address = drawerForm.getFieldValue('destNetworkAddress')
       return ipModeValidator(address, value)
+    }
+    return Promise.resolve()
+  }
+
+  const sourceDestIpModeValidator = (destIp: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      const sourceNetworkAddress = drawerForm.getFieldValue('sourceNetworkAddress')
+      const sourceIp = drawerForm.getFieldValue('sourceIp')
+      if (sourceNetworkAddress !== undefined || sourceIp !== undefined) {
+        const source = (sourceNetworkAddress !== undefined) ? sourceNetworkAddress : sourceIp
+        return customizePromiseAny([
+          Promise.all([networkWifiIpRegExp(destIp), networkWifiIpRegExp(source)]),
+          Promise.all([ipv6RegExp(destIp), ipv6RegExp(source)])],
+        new Error($t({ defaultMessage: 'Ip mode must same between source and destination.' })))
+      }
+      return Promise.resolve()
     }
     return Promise.resolve()
   }
