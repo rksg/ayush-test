@@ -96,25 +96,15 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
 }
 
 const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
-  const { displayStatus, statusTrail = [] } = item
-
-  const isScheduled = [DisplayStates.scheduled, DisplayStates.scheduledOneClick]
-    .includes(displayStatus)
-
-  if (isScheduled) {
-    const scheduledIndex = statusTrail.findIndex(s => s.status === Statuses.scheduled)
-    const nextStatus = scheduledIndex >= 0 ? statusTrail[scheduledIndex + 1] : statusTrail[0]
-
-    if (nextStatus?.status === Statuses.na && nextStatus.statusReason === StatusReasons.verified) {
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
+  if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
+    if (preStatusTrail?.status === Statuses.na
+      && preStatusTrail.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
-
     return { status: Statuses.new }
   }
-
-  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
-
   return preStatusTrail?.status === Statuses.applyScheduled &&
    moment().isAfter(moment(item.metadata?.applyScheduledAt)) ?
     { status: Statuses.active } : preStatusTrail
