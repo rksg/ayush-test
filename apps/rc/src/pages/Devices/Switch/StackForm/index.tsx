@@ -102,8 +102,7 @@ import {
 
 const modelNotSupportStack =
 ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
-  'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
-  'ICX8100-48P-X', 'ICX8100-C08PF-X']
+  'ICX8100-48P', 'ICX8100-C08PF']
 
 export type SwitchModelParams = {
   serialNumber: string;
