@@ -706,7 +706,11 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       if (eqOriginLan) continue
 
       const defaultLan = defaultLanPortsByModelMap.get(model)
-      const resetToDefault = isEqualLanPort(currentLan!, defaultLan!)
+      if (defaultLan === undefined) return false
+
+      const defaultLanPortsData =
+        getModelWithDefaultEthernetPortProfile(defaultLan, selectedModelCaps.lanPorts, tenantId, isTemplate)
+      const resetToDefault = isEqualLanPort(currentLan!, defaultLanPortsData!)
       if (resetToDefault) {
         return true
       }
