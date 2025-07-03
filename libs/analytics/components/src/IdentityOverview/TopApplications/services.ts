@@ -11,13 +11,13 @@ interface HierarchyNodeData {
   }[]
 }
 
-type Payload = AnalyticsFilter & {
+export type ApplicationsPayload = AnalyticsFilter & {
   n: number
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    topNApplications: build.query<HierarchyNodeData, Payload>({
+    topNApplications: build.query<HierarchyNodeData, ApplicationsPayload>({
       query: (payload) => ({
         document: gql`
           query Network(
