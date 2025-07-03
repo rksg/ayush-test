@@ -13,18 +13,12 @@ import {
   SoftGreViewData,
   VenueConfigTemplateUrlsInfo,
   VenueLanPorts,
-  WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-interface RequestPayloadWith6gChannelEnableSeparation extends RequestPayload {
-  enableSeparation?: boolean
-}
-
-// eslint-disable-next-line max-len
-export type QueryFnFor6GChannelSeparation = ({ params, enableRbac, enableSeparation }: RequestPayloadWith6gChannelEnableSeparation) => FetchArgs
+export type QueryFnForRadio = ({ params, enableRbac }: RequestPayload) => FetchArgs
 
 type ApiInfoType =
   'getVenueDefaultRegulatoryChannels' |
@@ -39,13 +33,12 @@ type TemplateRbacApiInfoType =
   'updateVenueRadioCustomizationRbac'
 
 // eslint-disable-next-line max-len
-function createVenueRadioRelatedFetchArgs (apiType: ApiInfoType, templateRbacApiType: TemplateRbacApiInfoType, isTemplate = false): QueryFnFor6GChannelSeparation {
-  return ({ params, payload, enableRbac, enableSeparation = false }) => {
-    const useRbacApi = enableSeparation || enableRbac
-    const regularApiInfo = (useRbacApi ? WifiRbacUrlsInfo : WifiUrlsInfo)[apiType]
-    const templateApiInfo = VenueConfigTemplateUrlsInfo[useRbacApi ? templateRbacApiType : apiType]
+function createVenueRadioRelatedFetchArgs (apiType: ApiInfoType, templateRbacApiType: TemplateRbacApiInfoType, isTemplate = false): QueryFnForRadio {
+  return ({ params, payload }) => {
+    const regularApiInfo = WifiRbacUrlsInfo[apiType]
+    const templateApiInfo = VenueConfigTemplateUrlsInfo[templateRbacApiType]
     // eslint-disable-next-line max-len
-    const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 : (enableRbac ? ApiVersionEnum.v1 : undefined)
+    const rbacApiVersion = ApiVersionEnum.v1_1
     const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
     return {
@@ -56,25 +49,25 @@ function createVenueRadioRelatedFetchArgs (apiType: ApiInfoType, templateRbacApi
 }
 
 // eslint-disable-next-line max-len
-export function createVenueDefaultRegulatoryChannelsFetchArgs (isTemplate = false): QueryFnFor6GChannelSeparation {
+export function createVenueDefaultRegulatoryChannelsFetchArgs (isTemplate = false): QueryFnForRadio {
   // eslint-disable-next-line max-len
   return createVenueRadioRelatedFetchArgs('getVenueDefaultRegulatoryChannels', 'getVenueDefaultRegulatoryChannelsRbac', isTemplate)
 }
 
 // eslint-disable-next-line max-len
-export function createVenueDefaultRadioCustomizationFetchArgs (isTemplate = false): QueryFnFor6GChannelSeparation {
+export function createVenueDefaultRadioCustomizationFetchArgs (isTemplate = false): QueryFnForRadio {
   // eslint-disable-next-line max-len
   return createVenueRadioRelatedFetchArgs('getDefaultRadioCustomization', 'getDefaultRadioCustomizationRbac', isTemplate)
 }
 
 // eslint-disable-next-line max-len
-export function createVenueRadioCustomizationFetchArgs (isTemplate = false): QueryFnFor6GChannelSeparation {
+export function createVenueRadioCustomizationFetchArgs (isTemplate = false): QueryFnForRadio {
   // eslint-disable-next-line max-len
   return createVenueRadioRelatedFetchArgs('getVenueRadioCustomization', 'getVenueRadioCustomizationRbac', isTemplate)
 }
 
 // eslint-disable-next-line max-len
-export function createVenueUpdateRadioCustomizationFetchArgs (isTemplate = false): QueryFnFor6GChannelSeparation {
+export function createVenueUpdateRadioCustomizationFetchArgs (isTemplate = false): QueryFnForRadio {
   // eslint-disable-next-line max-len
   return createVenueRadioRelatedFetchArgs('updateVenueRadioCustomization', 'updateVenueRadioCustomizationRbac', isTemplate)
 }

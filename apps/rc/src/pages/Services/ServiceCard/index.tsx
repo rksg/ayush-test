@@ -4,6 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
+  getServiceProfileLimitReachedMessage,
   getServiceRoutePath,
   hasServicePermission,
   ServiceOperation,
@@ -17,12 +18,20 @@ export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories' | 'isB
   serviceType: ServiceType
   count?: number
   helpIcon?: ReactNode
+  isLimitReached?: boolean
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories = [], count, helpIcon } = props
+  const {
+    serviceType,
+    type: cardType,
+    categories = [],
+    count,
+    helpIcon,
+    isLimitReached = false
+  } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
@@ -53,6 +62,12 @@ export function ServiceCard (props: ServiceCardProps) {
       type={cardType}
       buttonText={isAddButtonAllowed()
         ? defineMessage({ defaultMessage: 'Add' })
+        : undefined
+      }
+      buttonProps={{ disabled: isLimitReached }}
+      disabled={isLimitReached}
+      disabledTooltip={isLimitReached
+        ? getServiceProfileLimitReachedMessage(serviceType)
         : undefined
       }
       key={serviceType}

@@ -11,6 +11,18 @@ jest.mock('./Widgets/WifiClient/services', () => ({
   useTopNWifiClientQuery: jest.fn().mockReturnValue({ isLoading: false })
 }))
 
+jest.mock('./Widgets/WifiClient', () => ({
+  WifiClient: jest.fn(() => <div>Wi-Fi Client</div>)
+}))
+
+jest.mock('./Widgets/WifiGeneration', () => ({
+  WifiGeneration: jest.fn(() => <div>Wi-Fi Generation</div>)
+}))
+
+jest.mock('./Widgets/TopApplications', () => ({
+  TopApplications: jest.fn(() => <div>Top Applications</div>)
+}))
+
 describe('ResidentExperienceTab', () => {
   afterEach(() => jest.restoreAllMocks())
 
@@ -25,5 +37,7 @@ describe('ResidentExperienceTab', () => {
 
     expect(await screen.findByText('Wi-Fi Client')).toBeVisible()
     expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Generation')).toBeVisible()
+    expect(await screen.findByText('Top Applications')).toBeVisible()
   })
 })

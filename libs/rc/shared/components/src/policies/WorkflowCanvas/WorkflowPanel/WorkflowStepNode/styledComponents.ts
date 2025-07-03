@@ -136,15 +136,9 @@ export const InvalidIcon = styled.div`
   width: 16px;
   height: 16px;
 
-  svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--acx-semantics-red-70);
-    path:nth-child(2) {
-      fill: var(--acx-semantics-red-70);
-      stroke: var(--acx-semantics-red-70);
-    }
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export const EditButton = styled.div`
@@ -215,7 +209,7 @@ export const PlusButton = styled.div<{ disabled?: boolean }>`
   }
 `
 
-export const DisconnectedBranchPlusButton = styled.div<{ disabled?: boolean }>`
+export const DisconnectedBranchDragHandle = styled.div<{ disabled?: boolean }>`
   position: absolute;
   top: -31px;
   right: 125px;
@@ -246,13 +240,9 @@ export const DisconnectedBranchPlusButton = styled.div<{ disabled?: boolean }>`
     border: 1px solid var(--acx-accents-orange-50) !important;
     background-color: var(--acx-accents-orange-10) !important;
 
-    path {
-      stroke: var(--acx-accents-orange-50) !important;
-    }
-
-    ::after {
-      height: 17px;
-      background-color: var(--acx-accents-orange-50);
+    ::before {
+      height: 16px;
+      background-color: var(--acx-accents-orange-50) !important;
     }
   }
 `

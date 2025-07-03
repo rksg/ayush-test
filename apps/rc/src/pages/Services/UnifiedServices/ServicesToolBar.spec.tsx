@@ -1,24 +1,27 @@
 import { cleanup, waitFor } from '@testing-library/react'
 import userEvent            from '@testing-library/user-event'
 
-import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
 import { render, screen }         from '@acx-ui/test-utils'
+import { RadioCardCategory }      from '@acx-ui/types'
 
-import { ServicesToolBar, ServiceSortOrder, sortProductOptions, sortCategoryOptions } from './ServicesToolBar'
+import { ServicesToolBar, ServiceSortOrder, sortProductOptions, sortCategoryOptions, ServicesToolBarProps } from './ServicesToolBar'
 
 describe('ServicesToolBar', () => {
   const mockedSetSearchTerm = jest.fn()
   const mockedSetFilters = jest.fn()
   const mockedSetSortOrder = jest.fn()
 
-  const renderToolbar = () => {
+  const renderToolbar = (props?: Partial<ServicesToolBarProps>) => {
     render(
       <ServicesToolBar
         setSearchTerm={mockedSetSearchTerm}
         setFilters={mockedSetFilters}
         setSortOrder={mockedSetSortOrder}
-        defaultSortOrder={ServiceSortOrder.ASC}
+        defaultValues={{
+          sortOrder: ServiceSortOrder.ASC
+        }}
+        {...props}
       />
     )
   }
@@ -98,21 +101,16 @@ describe('ServicesToolBar', () => {
   })
 
   it('should render correctly when availableFilters is given', async () => {
-    render(
-      <ServicesToolBar
-        setSearchTerm={mockedSetSearchTerm}
-        setFilters={mockedSetFilters}
-        setSortOrder={mockedSetSortOrder}
-        availableFilters={{
-          products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          categories: [
-            UnifiedServiceCategory.NETWORK_SERVICES,
-            UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-            UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
-          ]
-        }}
-      />
-    )
+    renderToolbar({
+      availableFilters: {
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        categories: [
+          UnifiedServiceCategory.NETWORK_SERVICES,
+          UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+          UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
+        ]
+      }
+    })
 
     await userEvent.click(screen.getByText('Product'))
     expect(screen.getByText('Wi-Fi')).toBeInTheDocument()
@@ -125,6 +123,20 @@ describe('ServicesToolBar', () => {
     expect(screen.getByText('User Experience & Portals')).toBeInTheDocument()
     expect(screen.queryByText('Security & Access Control')).toBeNull()
     expect(screen.queryByText('Monitoring & Troubleshooting')).toBeNull()
+  })
+
+  it('should correctly apply defaultValues.filters for products and categories', async () => {
+    renderToolbar({
+      defaultValues: {
+        filters: {
+          products: [RadioCardCategory.WIFI],
+          categories: [UnifiedServiceCategory.NETWORK_SERVICES]
+        }
+      }
+    })
+
+    expect(screen.getByText('Wi-Fi')).toBeVisible()
+    expect(screen.getByText('Network Configuration & Services')).toBeVisible()
   })
 
   describe('filter options sorting', () => {

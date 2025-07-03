@@ -26,6 +26,11 @@ export const getCarouselFactsMap = (facts: string[]) => {
   return map
 }
 
+const nonCoreTierFacts = [
+  'topIncidentsZones',
+  'topIncidentsApGroups',
+  'l3AuthFailure'
+]
 function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const [offset, setOffset] = useState(0)
@@ -39,7 +44,7 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const factListQuery = useAvailableFactsQuery(filters)
   const factsList = (factListQuery.data ?? []).filter(factArray =>
-    !isCore || !factArray.includes('topApplicationsByClients')
+    !isCore || _.isEmpty(_.intersection(nonCoreTierFacts, factArray))
   )
   const factsQuery = useFactsQuery(factsList, loaded, offset, filters)
 

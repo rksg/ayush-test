@@ -81,19 +81,19 @@ describe('getRssiStatus', () => {
   it('Should take care of poor value correctly', async () => {
     expect(renderHook(() => getRssiStatus(useIntl(), -90)).result.current).toEqual({
       tooltip: 'Poor',
-      color: '#ED1C24'
+      color: '--acx-semantics-red-50'
     })
   })
   it('Should take care of acceptable value correctly', async () => {
     expect(renderHook(() => getRssiStatus(useIntl(), -78)).result.current).toEqual({
       tooltip: 'Acceptable',
-      color: '#F9C34B'
+      color: '--acx-semantics-yellow-40'
     })
   })
   it('Should take care of good value correctly', async () => {
     expect(renderHook(() => getRssiStatus(useIntl(), -30)).result.current).toEqual({
       tooltip: 'Good',
-      color: '#23AB36'
+      color: '--acx-semantics-green-50'
     })
   })
   it('Should take care of empty value correctly', async () => {

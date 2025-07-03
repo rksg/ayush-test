@@ -1,12 +1,10 @@
-import { render, screen }                                  from '@acx-ui/test-utils'
 import { EdgeScopes, ScopeKeys, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                  from '@acx-ui/user'
 
 import { ServiceType, ServiceOperation } from '../../constants'
 import { PolicyType, PolicyOperation }   from '../../types'
 
-import { hasSomeServicesPermission }                                                                                                 from './allowedOperationUtils'
-import { AddProfileButton, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
+import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
 
 const mockedFilterByAccess = jest.fn().mockImplementation(items => items)
 jest.mock('@acx-ui/user', () => ({
@@ -152,70 +150,6 @@ describe('servicePolicyAbacUtils', () => {
       const items = [{ id: 1 }, { id: 2 }]
       filterByAccessForServicePolicyMutation(items)
       expect(mockedFilterByAccess).toHaveBeenCalledWith(items)
-    })
-  })
-
-  describe('AddProfileButton', () => {
-    it('renders the link when permission is allowed and operation check is enabled', () => {
-      setUserProfile({
-        ...getUserProfile(),
-        allowedOperations: ['POST:/wifiCallingServiceProfiles'],
-        rbacOpsApiEnabled: true
-      })
-
-      render(
-        <AddProfileButton
-          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
-          linkText={'Add Service'}
-          targetPath={'/add-service'}
-        />,{
-          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
-        }
-      )
-
-      expect(screen.getByText('Add Service')).toBeInTheDocument()
-      expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
-    })
-
-    it('returns null when no permission and operation check is enabled', () => {
-      setUserProfile({
-        ...getUserProfile(),
-        allowedOperations: [],
-        rbacOpsApiEnabled: true
-      })
-
-      render(
-        <AddProfileButton
-          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
-          linkText={'Add Service'}
-          targetPath={'/add-service'}
-        />,{
-          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
-        }
-      )
-
-      expect(screen.queryByText('Add Service')).toBeNull()
-    })
-
-    it('renders the link when operation check is disabled', () => {
-      setUserProfile({
-        ...getUserProfile(),
-        allowedOperations: [],
-        rbacOpsApiEnabled: false
-      })
-
-      render(
-        <AddProfileButton
-          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
-          linkText={'Add Service'}
-          targetPath={'/add-service'}
-        />,{
-          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
-        }
-      )
-
-      expect(screen.getByText('Add Service')).toBeInTheDocument()
-      expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
     })
   })
 })

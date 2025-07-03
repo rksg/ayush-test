@@ -45,7 +45,6 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const { availableVersions, hasVenue, setShowSubTitle,
     upgradeVenueList, upgradeSwitchList } = props
   const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport81Or81X = isSupport8100 || isSupport8100X
@@ -180,9 +179,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     setShowSubTitle(false)
 
     setVersionFieldValue()
-    if (isSupport8200AV) {
-      updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
-    }
+    updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
     if (isSupport8100X) {
       updateSwitch81XNoteEnable(form.getFieldValue('selectedICX81Version'))
     }
@@ -216,9 +213,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     setSelecteedICX82Version(value.target.value)
     form.setFieldValue('selectedICX82Version', value.target.value)
     form.validateFields()
-    if (isSupport8200AV) {
-      updateSwitch82AvNoteEnable(value.target.value)
-    }
+    updateSwitch82AvNoteEnable(value.target.value)
   }
 
   const getAvailableVersions =
@@ -278,7 +273,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </Subtitle>
           <Radio.Group
             style={{
-              margin: (isSupport8200AV && switch82AvNoteEnable) ? '5px 0 12px 0' : '5px 0 40px 0',
+              margin: (switch82AvNoteEnable) ? '5px 0 12px 0' : '5px 0 40px 0',
               fontSize: 'var(--acx-body-3-font-size)'
             }}
             onChange={handleICX82Change}
@@ -288,7 +283,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     {getVersionOptionV1002(intl, v,
-                      (isSupport8200AV && exist82AvAndInvalidVersion(v.id) ? ' *' : null))}
+                      (exist82AvAndInvalidVersion(v.id) ? ' *' : null))}
                   </Radio>)}
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -297,7 +292,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </Radio.Group>
         </>}
 
-        {isSupport8200AV && switch82AvNoteEnable && <SwitchNote
+        {switch82AvNoteEnable && <SwitchNote
           type={NotesEnum.NOTE8200_1}
           data={icxRodanAvGroupedData()} />}
 

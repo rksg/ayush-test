@@ -1,7 +1,5 @@
 import { ReactElement } from 'react'
 
-import { Button }                                                                                                         from '@acx-ui/components'
-import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
 import { RbacOpsIds, RolesEnum, ScopeKeys }                                                                               from '@acx-ui/types'
 import { AuthRoute, filterByAccess, getUserProfile, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
@@ -155,25 +153,6 @@ export function PolicyAuthRoute (props: {
     requireCrossVenuesPermission={{ needGlobalPermission: true }}
     children={children}
   />
-}
-
-interface AddProfileButtonProps {
-  targetPath: string
-  linkText: string
-  hasSomeProfilesPermission: () => boolean
-}
-
-export function AddProfileButton (props: AddProfileButtonProps) {
-  const { targetPath, linkText, hasSomeProfilesPermission } = props
-
-  const AddButton = <TenantLink to={targetPath}>
-    <Button type='primary'>{linkText}</Button>
-  </TenantLink>
-
-  if (getUserProfile().rbacOpsApiEnabled) {
-    return hasSomeProfilesPermission() ? AddButton : null
-  }
-  return filterByAccessForServicePolicyMutation([AddButton])[0]
 }
 
 function isCardEnabled<T, U> (
