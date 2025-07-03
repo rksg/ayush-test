@@ -85,12 +85,10 @@ describe('TopApplications', () => {
   it('should handle when the data is empty', async () => {
     (useTopNApplicationsQuery as jest.Mock).mockReturnValue({
       loading: false,
-      data: { nodes: [
-        {
-          manufacturer: [],
-          deviceType: []
-        }
-      ] }
+      data: {
+        topNApplicationByClient: [],
+        topNApplicationByTraffic: []
+      }
     })
     render(<TopApplications filters={mockFilters} />, { wrapper: Provider })
     expect(await screen.findByText('No data to display')).toBeVisible()
