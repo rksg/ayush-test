@@ -459,6 +459,20 @@ describe('IntentAI utils', () => {
           }
         )).toEqual({ status: Statuses.na, statusReason: StatusReasons.verified })
       })
+
+      it('should handle only scheduled', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
+            statusTrail: [
+              { status: Statuses.scheduled }
+            ]
+          }
+        )).toEqual({ status: Statuses.new })
+      })
     })
   })
 })

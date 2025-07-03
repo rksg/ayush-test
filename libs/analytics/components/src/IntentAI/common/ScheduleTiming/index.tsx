@@ -75,7 +75,7 @@ export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
 
   return <>
     {summary}
-    {isDateVisible(intent.status, intent.statusReason) && <ScheduleDate disabled={disabled} />}
+    {showDate && <ScheduleDate disabled={disabled} />}
     <ScheduleTime disabled={disabled}/>
   </>
 }

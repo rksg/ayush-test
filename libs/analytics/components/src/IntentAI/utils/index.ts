@@ -124,11 +124,15 @@ const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus
   ) {
     return { status: Statuses.active }
   } else if (preStatusTrail.status === Statuses.scheduled) {
-    const statusTrail = item.statusTrail || []
-    const scheduledIndex = statusTrail.findIndex(s => s.status === Statuses.scheduled)
-    const nextStatus = scheduledIndex >= 0 ? statusTrail[scheduledIndex + 1] : statusTrail[0]
+    const scheduledIndex = item.statusTrail?.findIndex(
+      ({ status }) => status === Statuses.scheduled
+    )
+    const previousTrail = scheduledIndex !== undefined && scheduledIndex >= 0
+      ? item.statusTrail?.[scheduledIndex + 1]
+      : undefined
 
-    if (nextStatus?.status === Statuses.na && nextStatus.statusReason === StatusReasons.verified) {
+    if (previousTrail?.status === Statuses.na &&
+        previousTrail.statusReason === StatusReasons.verified) {
       return { status: Statuses.na, statusReason: StatusReasons.verified }
     }
     return { status: Statuses.new }
