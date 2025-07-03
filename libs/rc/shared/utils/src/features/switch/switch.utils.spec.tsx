@@ -259,8 +259,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -271,8 +270,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -283,8 +281,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('--')
@@ -296,7 +293,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.OPERATIONAL
       },
-      { isSupport8200AV: false,
+      {
         isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
@@ -311,8 +308,7 @@ describe('switch.utils', () => {
         adminPassword: 'test123',
         deviceStatus: SwitchStatusEnum.OPERATIONAL
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       }, Input.Password)).not.toBe('Custom')
@@ -324,8 +320,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.DISCONNECTED
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('Custom')
@@ -337,8 +332,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
       },
-      { isSupport8200AV: false,
-        isSupport8100: false,
+      { isSupport8100: false,
         isSupport8100X: false,
         isSupport7550Zippy: false
       })).toBe('Custom')
@@ -480,7 +474,6 @@ describe('Test vlanPortsParser function', () => {
 describe('Test createSwitchSerialPattern function', () => {
   it('support all models', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: true,
       isSupport7550Zippy: true
@@ -511,28 +504,8 @@ describe('Test createSwitchSerialPattern function', () => {
     expect(patten.test('FPA4899W00E')).toBe(false)
   })
 
-  it('ICX8200-AV not supported', async () => {
-    const supportModels = {
-      isSupport8200AV: false,
-      isSupport8100: true,
-      isSupport8100X: true,
-      isSupport7550Zippy: true
-    }
-    const patten = createSwitchSerialPattern(supportModels)
-
-    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
-    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
-    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
-    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
-    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
-    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
-
-    expect(patten.test('FPG4324V00H')).toBe(false) //ICX8200-AV
-  })
-
   it('ICX8100 not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: false,
       isSupport8100X: true,
       isSupport7550Zippy: true
@@ -551,7 +524,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX8100-X not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: false,
       isSupport7550Zippy: true
@@ -570,7 +542,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX8100 and ICX8100-X not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: false,
       isSupport8100X: false,
       isSupport7550Zippy: true
@@ -589,7 +560,6 @@ describe('Test createSwitchSerialPattern function', () => {
 
   it('ICX7550 Zippy not supported', async () => {
     const supportModels = {
-      isSupport8200AV: true,
       isSupport8100: true,
       isSupport8100X: true,
       isSupport7550Zippy: false
