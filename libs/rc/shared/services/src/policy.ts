@@ -2718,9 +2718,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddApSnmpAgentProfile',
-            'UpdateApSnmpAgentProfile',
-            'DeleteApSnmpAgentProfile',
+            'UpdateSnmpAgentProfileV1_1',
+            'UpdateSnmpAgentProfileV1_1',
+            'DeleteSnmpAgentProfile',
             'UpdateVenueApSnmpAgent',
             'UpdateApSnmpAgent',
             'ResetApSnmpAgent'

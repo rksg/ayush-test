@@ -1,4 +1,4 @@
-import { isEqual, pick } from 'lodash'
+import { isEqual, isMatch, pick } from 'lodash'
 
 import { WifiApSetting } from './types/ap'
 import { VenueLanPorts } from './types/venue'
@@ -9,13 +9,14 @@ export const isEqualLanPort = (
     return false
   }
 
-  const poeProperties = ['poeMode']
-  if ('poeMode' in currentLan &&
-    !isEqual(pick(currentLan, poeProperties), pick(otherLan, poeProperties))) {
+  const poeProperties = ['poeMode', 'poeOut', 'poeOutMode']
+  if (poeProperties.some(prop => prop in otherLan) &&
+    !isMatch(pick(currentLan, poeProperties), pick(otherLan, poeProperties))) {
     return false
   }
 
-  const lanPortProperties = ['enabled', 'portId', 'type', 'untagId', 'vlanMembers']
+  const lanPortProperties =
+    ['enabled', 'portId', 'ethernetPortProfileId', 'untagId', 'vlanMembers']
   for (let i = 0; i < currentLan.lanPorts.length; i++) {
     if (!isEqual(pick(currentLan.lanPorts[i], lanPortProperties),
       pick(otherLan.lanPorts[i], lanPortProperties))) {

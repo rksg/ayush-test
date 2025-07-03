@@ -9,7 +9,6 @@ import { useIsSplitOn, Features }                                       from '@a
 import { CodeDocument }                                                 from '@acx-ui/icons'
 import { CertificateInfoItem, SamlIdpMetadataModal, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteSamlIdpProfileMutation,
   useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileViewDataListQuery,
@@ -30,8 +29,9 @@ import {
   Network,
   KeyValue,
   ServerCertificate,
-  SamlIdpProfileFormType
-}                                                                  from '@acx-ui/rc/utils'
+  SamlIdpProfileFormType,
+  doProfileDelete
+} from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const SamlIdpTable = () => {
