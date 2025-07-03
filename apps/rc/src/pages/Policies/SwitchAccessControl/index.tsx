@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { useAccessControlsCountQuery }           from '@acx-ui/rc/services'
+import { useSwitchAclTotalCount }                from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchAccessControlSet } from './SwitchAccessControlSet'
@@ -12,10 +12,9 @@ export function SwitchAccessControl () {
 
   const AccessControlTabs = () => {
     const { $t } = useIntl()
-    const params = useParams()
     const navigate = useNavigate()
     const basePath = useTenantLink('/policies/accessControl/switch')
-    const accessControlCount = useAccessControlsCountQuery({ params }).data?.toString() || '0'
+    const { switchMacAclCount, switchL2AclCount } = useSwitchAclTotalCount(false)
 
     const onCategoryTabChange = (tab: string) => {
       navigate({
@@ -32,10 +31,10 @@ export function SwitchAccessControl () {
         defaultActiveKey='list'>
         <Tabs.TabPane
           tab={$t({
-            defaultMessage: 'Access Control Set ({accessControlCount})' }, { accessControlCount })}
+            defaultMessage: 'Access Control Set ({count})' }, { count: switchMacAclCount })}
           key='list' />
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Layer 2' })}
+          tab={$t({ defaultMessage: 'Layer 2 ({count})' }, { count: switchL2AclCount })}
           key='layer2' />
       </Tabs>
     )

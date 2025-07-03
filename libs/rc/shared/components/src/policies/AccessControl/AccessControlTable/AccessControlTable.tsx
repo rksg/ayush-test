@@ -2,50 +2,34 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader }        from '@acx-ui/components'
 import {
   PolicyType,
   PolicyOperation,
   usePoliciesBreadcrumb,
-  getPolicyRoutePath, useTableQuery, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation
+  getPolicyRoutePath, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
+  policyTypeLabelWithCountMapping
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
+import { useWifiAclTotalCount }             from '../counterUtils'
 
 import AccessControlTabs from './AccessControlTabs'
-
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name'
-  ]
-}
 
 export function AccessControlTable () {
   const { $t } = useIntl()
 
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload: {
-      ...defaultPayload,
-      noDetails: true
-    },
-    enableRbac
-  })
+  const { data, aclCount, isFetching } = useWifiAclTotalCount(false)
 
   return (<>
     <PageHeader
       title={
-        $t({
-          defaultMessage: 'Access Control'
-        })
+        $t(
+          policyTypeLabelWithCountMapping[PolicyType.ACCESS_CONTROL],
+          { count: isFetching ? '' : data?.totalCount }
+        )
       }
       breadcrumb={usePoliciesBreadcrumb()}
       extra={filterByAccessForServicePolicyMutation([
@@ -59,7 +43,7 @@ export function AccessControlTable () {
         >
           <Button
             type='primary'
-            disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>
+            disabled={isFetching || aclCount >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>
             {$t({ defaultMessage: 'Add Access Control Set' })}
           </Button>
         </TenantLink>

@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                   from '@acx-ui/components'
-import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
-import { AccessControlTabs as WifiAccessControlTabs } from '@acx-ui/rc/components'
+import { Button, PageHeader, Tabs }                                                                                   from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                                                     from '@acx-ui/feature-toggle'
+import { useAclTotalCount, useSwitchAclTotalCount, useWifiAclTotalCount, AccessControlTabs as WifiAccessControlTabs } from '@acx-ui/rc/components'
 import {
   filterByAccessForServicePolicyMutation,
   PortProfileTabsEnum,
@@ -11,7 +11,8 @@ import {
   PolicyOperation,
   PolicyType,
   usePoliciesBreadcrumb,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  policyTypeLabelWithCountMapping
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -22,6 +23,8 @@ const AccessControlTabs = () => {
   const { activeTab } = useParams()
   const basePath = useTenantLink('/policies/accessControl')
   const navigate = useNavigate()
+  const { data: wifiAclData } = useWifiAclTotalCount(false)
+  const { data: switchAclData } = useSwitchAclTotalCount(false)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -33,10 +36,10 @@ const AccessControlTabs = () => {
   return (
     <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Wi-Fi' })}
+        tab={$t({ defaultMessage: 'Wi-Fi ({count})' }, { count: wifiAclData?.totalCount })}
         key='wifi' />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Switch' })}
+        tab={$t({ defaultMessage: 'Switch ({count})' }, { count: switchAclData?.totalCount })}
         key='switch' />
     </Tabs>
   )
@@ -52,6 +55,7 @@ export default function AccessControl () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const aclTotalCountData = useAclTotalCount(false)
 
   const getAddButton = () => {
     return activeTab === PortProfileTabsEnum.WIFI
@@ -90,7 +94,8 @@ export default function AccessControl () {
       <PageHeader
         title={
           $t(
-            { defaultMessage: 'Access Control' }
+            policyTypeLabelWithCountMapping[PolicyType.ACCESS_CONTROL_CONSOLIDATION],
+            { count: aclTotalCountData.data?.totalCount }
           )
         }
         breadcrumb={usePoliciesBreadcrumb()}

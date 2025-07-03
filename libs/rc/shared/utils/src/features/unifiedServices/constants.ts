@@ -36,3 +36,5 @@ export interface UnifiedService<ContentType = string> {
 export interface ExtendedUnifiedService extends UnifiedService {
   totalCount?: number
 }
+
+export type TotalCountQueryResult = { data?: { totalCount?: number }, isFetching: boolean }

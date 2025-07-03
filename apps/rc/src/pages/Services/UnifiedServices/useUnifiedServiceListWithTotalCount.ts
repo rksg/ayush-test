@@ -5,37 +5,33 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { useAclTotalCount }                                                        from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery, useGetConnectionMeteringListQuery,
-  useGetEdgeHqosProfileViewDataListQuery, useGetEnhancedAccessControlProfileListQuery,
+  useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedClientIsolationListQuery, useGetEthernetPortProfileViewDataListQuery,
   useGetFlexAuthenticationProfilesQuery, useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery, useGetSoftGreViewDataListQuery,
   useGetTunnelProfileViewDataListQuery, useGetVLANPoolPolicyViewModelListQuery,
   useSearchInProgressWorkflowListQuery,  useMacRegListsQuery, useGetDirectoryServerViewDataListQuery,
   useSyslogPolicyListQuery, useSwitchPortProfilesCountQuery, useGetWifiOperatorListQuery,
-  useGetIpsecViewDataListQuery, useGetSamlIdpProfileViewDataListQuery, useAccessControlsCountQuery,
+  useGetIpsecViewDataListQuery, useGetSamlIdpProfileViewDataListQuery,
   useGetDHCPProfileListViewModelQuery, useGetDhcpStatsQuery, useGetDpskListQuery,
   useGetEdgeFirewallViewDataListQuery, useGetEdgeMdnsProxyViewDataListQuery,
   useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgeTnmServiceListQuery, useGetEnhancedMdnsProxyListQuery,
   useGetEnhancedPortalProfileListQuery, useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery,
-  useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery,
   useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery,
   useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
-import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                       from '@acx-ui/types'
-import { getUserProfile, isCoreTier }                                                                                           from '@acx-ui/user'
+import { ExtendedUnifiedService, PolicyType, ServiceType, TotalCountQueryResult, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                              from '@acx-ui/types'
 
 const defaultPayload = { fields: ['id'] }
-
-type TotalCountQueryResult = { data?: { totalCount?: number }, isFetching: boolean }
 
 export function useUnifiedServiceListWithTotalCount (): {
   unifiedServiceListWithTotalCount: Array<ExtendedUnifiedService>,
@@ -131,81 +127,6 @@ function useUnifiedServiceTotalCountMap (
   return {
     typeToTotalCountQuery,
     isFetching: Object.values(typeToTotalCountQuery).some(({ isFetching }) => isFetching)
-  }
-}
-
-function useAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
-
-  const { data: aclData, isFetching: aclIsFetching } = useWifiAclTotalCount(isDisabled)
-
-  const { data: switchMacAclData, isFetching: switchMacAclIsFetching } = useSwitchAclTotalCount(
-    isDisabled || !isSwitchMacAclEnabled
-  )
-
-  const aclTotalCount = Number(aclData?.totalCount ?? 0)
-  const switchMacAclTotalCount = Number(switchMacAclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: aclTotalCount + switchMacAclTotalCount },
-    isFetching: aclIsFetching || switchMacAclIsFetching
-  }
-}
-
-function useWifiAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const params = useParams()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
-  const requestArgs = {
-    params,
-    payload: { ...defaultPayload, noDetails: true },
-    enableRbac
-  }
-  const requestOptions = {
-    skip: isDisabled,
-    refetchOnMountOrArgChange: false,
-    keepUnusedDataFor: 180
-  }
-
-  const { data: aclData, isFetching: aclIsFetching } = useGetEnhancedAccessControlProfileListQuery(requestArgs, requestOptions)
-  const { data: l2AclData, isFetching: l2AclIsFetching } = useGetEnhancedL2AclProfileListQuery(requestArgs, requestOptions)
-  const { data: l3AclData, isFetching: l3AclIsFetching } = useGetEnhancedL3AclProfileListQuery(requestArgs, requestOptions)
-  const { data: deviceAclData, isFetching: deviceAclIsFetching } = useGetEnhancedDeviceProfileListQuery(requestArgs, requestOptions)
-  const { data: appAclData, isFetching: appAclIsFetching } = useGetEnhancedApplicationProfileListQuery(requestArgs, {
-    ...requestOptions,
-    skip: isCore || isDisabled
-  })
-
-  const aclTotalCount = Number(aclData?.totalCount ?? 0)
-  const l2AclTotalCount = Number(l2AclData?.totalCount ?? 0)
-  const l3AclTotalCount = Number(l3AclData?.totalCount ?? 0)
-  const deviceAclTotalCount = Number(deviceAclData?.totalCount ?? 0)
-  const appAclTotalCount = Number(appAclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: aclTotalCount + l2AclTotalCount + l3AclTotalCount + deviceAclTotalCount + appAclTotalCount },
-    isFetching: aclIsFetching || l2AclIsFetching || l3AclIsFetching || deviceAclIsFetching || appAclIsFetching
-  }
-}
-
-function useSwitchAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const params = useParams()
-  const { data: switchMacAclData, isFetching: switchMacAclIsFetching } = useAccessControlsCountQuery(
-    { params },
-    { skip: isDisabled }
-  )
-  const { data: switchL2AclData, isFetching: switchL2AclIsFetching } = useGetLayer2AclsQuery(
-    { params, payload: { ...defaultPayload } },
-    { skip: isDisabled }
-  )
-
-  const switchMacAclTotalCount = Number(switchMacAclData ?? 0)
-  const switchL2AclTotalCount = Number(switchL2AclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: switchMacAclTotalCount + switchL2AclTotalCount },
-    isFetching: switchMacAclIsFetching || switchL2AclIsFetching
   }
 }
 
