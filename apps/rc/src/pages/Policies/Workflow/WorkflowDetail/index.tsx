@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, GridCol, GridRow, Loader, PageHeader }                                                                                                                                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                                                                                                                                from '@acx-ui/formatter'
-import { WarningTriangleSolid }                                                                                                                                                                                                     from '@acx-ui/icons'
+import { WarningTriangleBold }                                                                                                                                                                                                      from '@acx-ui/icons'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                                    from '@acx-ui/rc/components'
 import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                                          from '@acx-ui/rc/services'
 import { usePolicyListBreadcrumb, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls, StatusReason } from '@acx-ui/rc/utils'
@@ -134,7 +134,7 @@ export default function WorkflowDetails () {
         status: published?.publishedDetails?.status
       })}
       {published?.publishedDetails?.status === 'PUBLISHED' && data?.statusReasons?.length
-            && workflowValidationEnhancementFFToggle ? <WarningTriangleSolid/> : ''}
+            && workflowValidationEnhancementFFToggle ? <WarningTriangleBold/> : ''}
       </UI.PublicationStatus>,
       colSpan: 3
     },
