@@ -7,7 +7,7 @@ import { Button, cssStr, Loader, Table, TableProps }                            
 import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
 import { Sync }                                                                                                                  from '@acx-ui/icons'
 import { useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
-import { FILTER, DeviceProvision, SEARCH, useTableQuery, HideProvisionsPayload }                                                 from '@acx-ui/rc/utils'
+import {  DeviceProvision,  useTableQuery, HideProvisionsPayload }                                                               from '@acx-ui/rc/utils'
 import { TimeStamp }                                                                                                             from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
@@ -121,19 +121,6 @@ export const PendingSwitch = () => {
     }
   ]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    if (customFilters?.includeHidden && customFilters.includeHidden[0] === true) {
-      customFilters = {
-        ...customFilters,
-        includeHidden: [customFilters.includeHidden[0].toString()]
-      }
-    } else {
-      delete customFilters.includeHidden
-    }
-
-    tableQuery.handleFilterChange(customFilters, customSearch)
-  }
-
   const handleRefresh = async () => {
     setIsLoading(true)
     await refreshSwitchStatus({})
@@ -169,7 +156,7 @@ export const PendingSwitch = () => {
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={handleFilterChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowActions={rowActions}
         enableApiFilter={true}
         rowSelection={

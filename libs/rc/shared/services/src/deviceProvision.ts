@@ -50,7 +50,8 @@ const buildQueryParams = (tablePayload: TableQueryPayload): URLSearchParams => {
   if (tablePayload?.sortOrder) {
     queryParams.append('order', tablePayload.sortOrder)
   }
-  if (tablePayload?.filters?.includeHidden !== undefined) {
+  if (tablePayload?.filters?.includeHidden !== undefined
+    && tablePayload.filters.includeHidden[0] === true) {
     queryParams.append('includeHidden', 'true')
   }
   if (tablePayload?.filters?.model !== undefined) {
