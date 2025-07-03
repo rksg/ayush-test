@@ -105,11 +105,13 @@ export const PendingAp = () => {
     {
       label: $t({ defaultMessage: 'Hide Device' }),
       tooltip: $t(MessageMapping.hide_devive_tooltip),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         hideApProvisions({
           payload: {
             serials: selectedRows.map((row) => row.serialNumber)
           } as HideProvisionsPayload
+        }).then(() => {
+          clearSelection()
         })
       },
       visible: (selectedRows: DeviceProvision[]) => {
@@ -168,6 +170,7 @@ export const PendingAp = () => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         rowActions={rowActions}
+        enableApiFilter={true}
         rowSelection={
           rowActions?.length > 0 && { type: 'checkbox' }
         }

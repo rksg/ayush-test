@@ -25,6 +25,18 @@ export const DeviceProvisionUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'GET:/deviceProvisions/statusReport/switches'
   },
+  getApModels: {
+    method: 'GET',
+    url: '/deviceProvisions/aps/models',
+    newApi: true,
+    opsApi: 'GET:/deviceProvisions/aps/models'
+  },
+  getSwitchModels: {
+    method: 'GET',
+    url: '/deviceProvisions/switches/models',
+    newApi: true,
+    opsApi: 'GET:/deviceProvisions/switches/models'
+  },
   getApProvisions: {
     method: 'GET',
     url: '/deviceProvisions/aps',
