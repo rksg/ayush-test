@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import { Typography } from 'antd'
-import { AlignType }  from 'rc-table/lib/interface'
-import { useIntl }    from 'react-intl'
+import { Typography }  from 'antd'
+import { FilterValue } from 'antd/lib/table/interface'
+import { AlignType }   from 'rc-table/lib/interface'
+import { useIntl }     from 'react-intl'
 
 import {
   Button,
@@ -48,7 +49,12 @@ import PublishReadinessProgress from '../PublishReadinessProgress'
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
   const workflowValidationEnhancementFFToggle =
-      useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
+  const publicationStatusFilterOptions = [{ key: 'DRAFT', label: $t({ defaultMessage: 'Draft' }) },
+    { key: 'PUBLISHED', value: 'Published' }]
+  const publishReadinessFilterOptions = [{ key: 'VALID', label: $t({ defaultMessage: 'Ready' }) },
+    { key: 'INVALID', label: $t({ defaultMessage: 'Not Ready' }) }]
 
   const columns: TableProps<Workflow>['columns'] = [
     {
@@ -76,6 +82,9 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       sorter: false,
+      filterKey: workflowValidationEnhancementFFToggle ? 'status' : undefined,
+      filterable:
+        workflowValidationEnhancementFFToggle ? publicationStatusFilterOptions : undefined,
       render: (_, row) => $t({ defaultMessage: `{
         status, select,
         PUBLISHED {Published}
@@ -114,6 +123,8 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       align: 'center' as AlignType,
       sorter: false,
       width: 50,
+      filterKey: 'validationStatus',
+      filterable: publishReadinessFilterOptions,
       render: (node: React.ReactNode, record:Workflow) => {
         return {
           props: {
@@ -303,9 +314,24 @@ export default function WorkflowTable () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
-      filters: customSearch?.searchString ? { name: customSearch?.searchString } : undefined
+      filters: {
+        name: customSearch?.searchString ? customSearch?.searchString : undefined,
+        status: customFilters?.validationStatus ? customFilters?.validationStatus : undefined,
+        publishedChildren: getPublishedChildrenFilter(customFilters?.status)
+      }
     }
     tableQuery.setPayload(payload)
+  }
+
+  const getPublishedChildrenFilter = (statusFilter:FilterValue | null) => {
+    if(statusFilter && statusFilter.length === 1) {
+      if(statusFilter[0] === 'PUBLISHED') {
+        return true
+      } else {
+        return false
+      }
+    }
+    return undefined
   }
 
   return (

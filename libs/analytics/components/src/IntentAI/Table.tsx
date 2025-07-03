@@ -187,8 +187,10 @@ export function IntentAITable (
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
-      label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
-        $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
+      label: [DisplayStates.new, DisplayStates.naVerified]
+        .includes(selectedRows?.[0]?.displayStatus)
+        ? $t({ defaultMessage: 'Optimize' })
+        : $t({ defaultMessage: 'Edit' }),
       visible: rows => isVisibleByAction(rows, Actions.Optimize),
       onClick: (rows) => {
         const row = rows[0]
