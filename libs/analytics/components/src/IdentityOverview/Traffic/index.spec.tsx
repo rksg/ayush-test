@@ -1,7 +1,7 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { useTrafficQuery } from '../services'
+import { useTrafficQuery } from './services'
 
 import { Traffic } from '.'
 
