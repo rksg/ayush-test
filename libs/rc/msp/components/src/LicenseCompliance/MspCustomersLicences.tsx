@@ -7,8 +7,8 @@ import { DateFormatEnum, formatter }                                            
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
 import { useGetTenantDetailsQuery }                                              from '@acx-ui/rc/services'
-import { EntitlementUtil, useTableQuery }                                        from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                         from '@acx-ui/utils'
+import { EntitlementUtil }                                                       from '@acx-ui/rc/utils'
+import { noDataDisplay, useTableQuery }                                          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

@@ -6,7 +6,8 @@ import { useIdentityListQuery }                                                 
 import { Loader, Tabs }                                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { PersonalIdentityNetworkApiVersion, useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
-import { Persona, TableQuery, transformDisplayNumber, useTableQuery }                from '@acx-ui/rc/utils'
+import { Persona, transformDisplayNumber }                                           from '@acx-ui/rc/utils'
+import { TableQuery, useTableQuery }                                                 from '@acx-ui/utils'
 
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'

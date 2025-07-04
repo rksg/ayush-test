@@ -2,14 +2,14 @@ import React, { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { LayoutUI }                                           from '@acx-ui/components'
 import { SearchOutlined, Close }                              from '@acx-ui/icons'
 import { useNavigate, useParams, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
 import { fixedEncodeURIComponent }                            from '@acx-ui/utils'
 
-import { HeaderContext } from '../HeaderContext'
+import { LayoutUI } from '../Layout/styledComponents'
 
-import * as UI from './styledComponents'
+import { HeaderContext } from './HeaderContext'
+import * as UI           from './styledComponents'
 
 export function GlobalSearchBar () {
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })

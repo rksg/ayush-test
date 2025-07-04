@@ -63,12 +63,8 @@ import {
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
-  RequestFormData,
-  SEARCH,
-  SORTER,
   SupportCcdApGroup,
   SupportCcdVenue,
-  TableResult,
   Venue,
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
@@ -112,7 +108,11 @@ import {
   batchApi,
   createHttpRequest,
   getEnabledDialogImproved,
-  ignoreErrorModal
+  ignoreErrorModal,
+  RequestFormData,
+  SEARCH,
+  SORTER,
+  TableResult
 } from '@acx-ui/utils'
 
 

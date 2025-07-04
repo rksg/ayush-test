@@ -1,4 +1,5 @@
 export * from './apiService'
+export * from './useTableQuery'
 export * from './dateFilter'
 export * from './locales'
 export * from './stringUtil'

@@ -9,9 +9,10 @@ import {
 import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                    from '@acx-ui/utils'
 
 import { AdaptivePolicyTabKey } from './index'
 

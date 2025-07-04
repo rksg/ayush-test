@@ -14,8 +14,8 @@ import {
 import type { DonutChartData } from '@acx-ui/components'
 import { intlFormats }         from '@acx-ui/formatter'
 
-import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
-import { Mdu360TabProps }                       from '../../types'
+import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
 interface DistributionData {
@@ -127,7 +127,7 @@ export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate })
           })}
           tooltipValuesFunc={tooltipValuesFunc(data.distributionData)}
         />
-        : <StyledNoData />
+        : <NoData style={{ marginTop: '37px' }}/>
     )}
   </AutoSizer>
 

@@ -13,11 +13,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
-  EdgeDhcpHostStatus,
-  useTableQuery
+  EdgeDhcpHostStatus
 } from '@acx-ui/rc/utils'
 import { useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 

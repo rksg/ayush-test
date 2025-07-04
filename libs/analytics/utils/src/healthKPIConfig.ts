@@ -469,9 +469,9 @@ export const kpiConfig = {
   energySavingAPs: {
     text: defineMessage({ defaultMessage: 'Energy Saving APs' }),
     timeseries: {
-      apiMetric: 'onlineAPCountAndTotalAPCount'
+      apiMetric: 'energySavingAPCountAndTotalAPCount'
     },
-    barChart: createBarChartConfig('onlineAPCountAndTotalAPCount'),
+    barChart: createBarChartConfig('energySavingAPCountAndTotalAPCount'),
     pill: {
       description: '',
       thresholdDesc: [],
@@ -481,7 +481,7 @@ export const kpiConfig = {
     },
     configChange: {
       text: defineMessage({ defaultMessage: 'Energy Saving APs Count' }),
-      apiMetric: 'onlineAPCount',
+      apiMetric: 'energySavingAPCount',
       format: formatter('countFormat'),
       deltaSign: '+'
     }

@@ -7,7 +7,6 @@ import { v4 as uuidv4 }                            from 'uuid'
 import {
   CommonUrlsInfo,
   DHCPUrls,
-  TableResult,
   Service,
   CommonResult,
   MdnsProxyFormData,
@@ -21,9 +20,7 @@ import {
   DpskUrls,
   Portal,
   PortalUrlsInfo,
-  NewTableResult,
   NewDpskPassphrase,
-  transferToTableResult,
   DpskPassphrasesSaveData,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
@@ -32,12 +29,7 @@ import {
   onActivityMessageReceived,
   MdnsProxyAp,
   UploadUrlResponse,
-  TableChangePayload,
-  RequestFormData,
-  createNewTableHttpRequest,
   downloadFile,
-  NewAPITableResult,
-  transferNewResToTableResult,
   MdnsProxyViewModel,
   PortalTablePayload,
   IpUtilsService,
@@ -57,9 +49,12 @@ import {
   APExtended,
   CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseServiceApi }                       from '@acx-ui/store'
-import { RequestPayload }                       from '@acx-ui/types'
-import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseServiceApi }                            from '@acx-ui/store'
+import { RequestPayload }                            from '@acx-ui/types'
+import { ApiInfo, batchApi, createHttpRequest, NewTableResult, NewAPITableResult,
+  transferNewResToTableResult,  TableChangePayload,
+  RequestFormData, TableResult,
+  createNewTableHttpRequest, transferToTableResult } from '@acx-ui/utils'
 
 import {
   commonQueryFn,

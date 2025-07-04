@@ -11362,7 +11362,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/ai/videoCallQoe"
+                  href="/tenant-id/t/analytics/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -12289,7 +12289,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                       style="margin-right: 8px;"
                                     >
                                       <a
-                                        href="/ai/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                        href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
                                         F0:81:73:20:84:39
                                       </a>
@@ -12351,7 +12351,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
                                 <a
-                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
