@@ -67,7 +67,7 @@ describe('Delete Account Form Item', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should delete correctly', async () => {
+  it('should delete fail', async () => {
     mockedUnwrap.mockRejectedValueOnce(new Error('Mocked error'))
     const mockUserLogout = require('@acx-ui/utils').userLogout
     render(
@@ -88,7 +88,7 @@ describe('Delete Account Form Item', () => {
   })
 
 
- 
+
   it('should close modal when cancel button clicked', async () => {
     render(
       <Provider>
