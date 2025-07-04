@@ -5,11 +5,11 @@ import { CheckboxChangeEvent }                               from 'antd/lib/chec
 import { useWatch }                                          from 'antd/lib/form/Form'
 import { useIntl }                                           from 'react-intl'
 
-import { Alert, Drawer }                                                                                                                                                                                  from '@acx-ui/components'
-import { Features }                                                                                                                                                                                       from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady }                                                                                                  from '@acx-ui/rc/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, IncompatibilityFeatures, SubInterface, edgePortIpValidator, generalSubnetMskRegExp, getEdgeWanInterfaceCount, serverIpAddressRegExp, validateGatewayInSubnet } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                                                                                                                    from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                                                                                                                                     from '@acx-ui/components'
+import { Features }                                                                                                                                                                                                          from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady }                                                                                                                     from '@acx-ui/rc/components'
+import { EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortTypeEnum, IncompatibilityFeatures, SubInterface, edgePortIpValidator, generalSubnetMskRegExp, getEdgeWanInterfaceCount, serverIpAddressRegExp, validateGatewayInSubnet } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                                                                                       from '@acx-ui/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -24,6 +24,10 @@ interface SubInterfaceDrawerProps {
   lagId?: number
   allSubInterfaces?: SubInterface[]
   isSupportAccessPort?: boolean
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 const getPortTypeOptions = () => {
@@ -46,7 +50,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const { $t } = useIntl()
   const {
     mac, visible, setVisible, data, handleAdd, handleUpdate, portId, lagId, allSubInterfaces,
-    isSupportAccessPort
+    isSupportAccessPort, originalInterfaceData
   } = props
   const [formRef] = Form.useForm()
   // eslint-disable-next-line max-len
@@ -63,17 +67,24 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
     }
   }, [visible, formRef, data])
 
+  const isNewNode = useMemo(() => {
+    const hasPortSetting = originalInterfaceData?.portSettings?.some(item =>
+      item.portType !== EdgePortTypeEnum.UNCONFIGURED)
+    const hasLagSetting = originalInterfaceData?.lagSettings?.some(item =>
+      item.lagEnabled && item.lagMembers.length > 0)
+    return !hasPortSetting && !hasLagSetting
+  }, [originalInterfaceData])
+
   const { isPortEnabled, hasCorePort, hasAccessPort } = useMemo(() => {
     let isPortEnabled = false
-    const allSubInterfacesWithoutCurrent = allSubInterfaces?.filter(s => s.id !== data?.id)
 
     const hasCorePort = portData?.some(p => p.corePortEnabled) ||
       lagData?.some(l => l.corePortEnabled) ||
-      allSubInterfacesWithoutCurrent?.some(s => s.corePortEnabled)
+      allSubInterfaces?.some(s => s.corePortEnabled)
 
     const hasAccessPort = portData?.some(p => p.accessPortEnabled) ||
       lagData?.some(l => l.accessPortEnabled) ||
-      allSubInterfacesWithoutCurrent?.some(s => s.accessPortEnabled)
+      allSubInterfaces?.some(s => s.accessPortEnabled)
 
     if(portId !== undefined) {
       const port = portData?.find(p => p.id === portId)
@@ -191,7 +202,11 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 onChange={handleCorePortChange}
                 disabled={
                   !isPortEnabled || hasWanPort || (
-                    isSdLanRun ? hasCorePort : hasCorePortOnOthers
+                    isSdLanRun ?
+                      (isNewNode ?
+                        hasCorePortOnOthers :
+                        hasCorePort) :
+                      hasCorePortOnOthers
                   )
                 }
               />
@@ -206,7 +221,11 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
                     !isSupportAccessPort || !isPortEnabled || hasWanPort || (
-                      isSdLanRun ? hasAccessPort : hasAccessPortOnOthers
+                      isSdLanRun ?
+                        (isNewNode ?
+                          hasAccessPortOnOthers :
+                          hasAccessPort) :
+                        hasAccessPortOnOthers
                     )
                   }
                 />
