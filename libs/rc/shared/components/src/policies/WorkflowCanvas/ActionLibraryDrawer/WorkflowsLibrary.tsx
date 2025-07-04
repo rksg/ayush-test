@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import {  Menu, MenuProps, Space } from 'antd'
 import { useIntl }                 from 'react-intl'
@@ -49,9 +49,17 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
 
   const { data: stepsData } = useGetWorkflowStepsByIdQuery({
     params: {
-      policyId: workflowId, pageSize: '1', page: '0', sort: 'id,ASC', excludeContent: 'true'
+      policyId: workflowId, pageSize: '1000', page: '0', sort: 'id,ASC', excludeContent: 'false'
     }
   })
+
+  const totalRegularStepCount = useMemo(() => {
+    if(stepsData && stepsData.content) {
+      return stepsData.content
+        .filter(s => s.type === StepType.Basic || s.type === StepType.Split).length
+    }
+    return 0
+  }, [stepsData])
 
   const handlePreview = (workflowId: string) => {
     setPreviewId(workflowId)
@@ -84,7 +92,7 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
                 }
               })
             } else {
-              if ((stepsData?.paging?.totalCount ?? 0) + totalStepCount > MaxAllowedSteps) {
+              if (totalRegularStepCount + totalStepCount > MaxAllowedSteps) {
                 showActionModal({
                   type: 'warning',
                   // eslint-disable-next-line max-len

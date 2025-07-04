@@ -6,7 +6,7 @@ import { useLocation }               from '@acx-ui/react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { HeaderContext } from '../HeaderContext'
+import { HeaderContext } from './HeaderContext'
 
 import { GlobalSearchBar } from './index'
 
