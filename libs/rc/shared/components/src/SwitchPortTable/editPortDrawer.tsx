@@ -238,6 +238,7 @@ export function EditPortDrawer ({
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
+  const isEditMultiPortNamesEnabled = useIsSplitOn(Features.ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -1445,9 +1446,19 @@ export function EditPortDrawer ({
             </Space>
             }
           />
+          { !isMultipleEdit && !isEditMultiPortNamesEnabled &&
+              <Form.Item name='name'
+                label={$t({ defaultMessage: 'Port Name' })}
+                rules={[
+                  { max: 255 }
+                ]}
+                initialValue=''
+                children={<Input />}
+              />
+          }
         </UI.HorizontalFormItemLayout>
 
-        { getFieldTemplate({
+        { isEditMultiPortNamesEnabled && getFieldTemplate({
           field: 'name',
           content: <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
