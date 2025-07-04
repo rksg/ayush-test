@@ -96,6 +96,10 @@ export default function MspRoutes () {
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
   const newDeviceInventory =
     useIsSplitOn(Features.VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE)
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -162,7 +166,7 @@ export default function MspRoutes () {
           : <DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
-      <Route path='brand360' element={<Brand360 />} />
+      {isBrand360Enabled && <Route path='brand360' element={<Brand360 />} />}
       <Route path='mdu360/*' element={<Mdu360 />} />
       {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
