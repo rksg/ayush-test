@@ -14,15 +14,13 @@ import {
 import { mock_payload }   from './__test__/WlanDetailStepFixtures'
 import { WlanDetailStep } from './WlanDetailStep'
 
-
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useLocation: () => jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
 }))
-describe('WlanDetailStep', () => {
 
+describe('WlanDetailStep', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -49,7 +47,12 @@ describe('WlanDetailStep', () => {
             setIsRegenWlan={jest.fn()}
           />
         </Form>
-      </Provider>)
+      </Provider>, {
+        route: {
+          path: '/test',
+          params: { tenantId: 'test-tenant' }
+        }
+      })
     expect(await screen.findByText('Recommended Network Configuration')).toBeVisible()
   })
   it('should change ssid type correctly', async () => {
@@ -70,7 +73,12 @@ describe('WlanDetailStep', () => {
             setIsRegenWlan={jest.fn()}
           />
         </Form>
-      </Provider>)
+      </Provider>, {
+        route: {
+          path: '/test',
+          params: { tenantId: 'test-tenant' }
+        }
+      })
     expect(await screen.findByText('Recommended Network Configuration')).toBeVisible()
 
     const selectElement = await screen.findByText('Captive Portal')
@@ -97,7 +105,12 @@ describe('WlanDetailStep', () => {
             setIsRegenWlan={jest.fn()}
           />
         </Form>
-      </Provider>)
+      </Provider>, {
+        route: {
+          path: '/test',
+          params: { tenantId: 'test-tenant' }
+        }
+      })
     expect(await screen.findByText('Recommended Network Configuration')).toBeVisible()
     await userEvent.click(screen.getByTestId('wlan-configuration-0'))
   })
@@ -120,7 +133,12 @@ describe('WlanDetailStep', () => {
             setIsRegenWlan={jest.fn()}
           />
         </Form>
-      </Provider>)
+      </Provider>, {
+        route: {
+          path: '/test',
+          params: { tenantId: 'test-tenant' }
+        }
+      })
     expect(await screen.findByText('Recommended Network Configuration')).toBeVisible()
     formRef.current.validateFields()
     // eslint-disable-next-line max-len

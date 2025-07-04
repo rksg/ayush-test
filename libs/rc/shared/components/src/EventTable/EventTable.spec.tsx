@@ -3,11 +3,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { findTBody, mockServer, render, screen, within }           from '@acx-ui/test-utils'
-import { RequestPayload }                                          from '@acx-ui/types'
+import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, EventBase, EventMeta }   from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { findTBody, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { RequestPayload }                                from '@acx-ui/types'
+import { TableQuery }                                    from '@acx-ui/utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 

@@ -14,12 +14,12 @@ import {
   checkObjectNotExists,
   CliTemplateVariable,
   SwitchProfileModel,
-  TableResult,
   useConfigTemplateQueryFnSwitcher,
   whitespaceOnlyRegExp,
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

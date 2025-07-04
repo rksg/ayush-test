@@ -3,22 +3,22 @@ import { Params } from 'react-router-dom'
 import {
   PersonaUrls,
   PersonaGroup,
-  TableResult,
   Persona,
   PersonaDevice,
-  NewTableResult,
-  transferToTableResult,
-  createNewTableHttpRequest,
-  TableChangePayload,
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
   TxStatus, IdentityClient,
   ExternalIdentity
 } from '@acx-ui/rc/utils'
-import { basePersonaApi }                               from '@acx-ui/store'
-import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { basePersonaApi } from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal,
+  NewTableResult,
+  transferToTableResult,
+  createNewTableHttpRequest,
+  TableChangePayload,
+  TableResult } from '@acx-ui/utils'
 
 import { CommonAsyncCallback, CommonAsyncResponse } from './common'
 
