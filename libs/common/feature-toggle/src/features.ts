@@ -147,7 +147,7 @@ export enum Features {
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
-  SWITCH_RBAC_API = 'removable-ff',
+  SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle', //'removable-ff',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
