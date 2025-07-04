@@ -10,35 +10,12 @@ const CANDIDATE = 'candidate'
 const IS_DEV_FIRMWARE = 'isDevVersion'
 const IS_RELEASE_FIRMWARE = 'isReleaseVersion'
 
-export const checkVersionAtLeast10010b = (version: string): boolean => {
-  if (_.isString(version) && version.includes('10010b')) {
-    return true
-  } else {
-    return compareSwitchVersion(version, '10010b') > 0
-  }
-}
-
-export const checkVersionAtLeast10010c = (version: string): boolean => {
-  if (_.isString(version) && version.includes('10010c')) {
-    return true
-  } else {
-    return compareSwitchVersion(version, '10010c') > 0
-  }
-}
-
 export const checkVersionAtLeast09010h = (version: string): boolean => {
   if (_.isString(version) && version.includes('09010h')) {
     return true
   } else {
     return compareSwitchVersion(version, '09010h') > 0
   }
-}
-
-export const checkVersionAtLeast10010gCd1= (version: string): boolean => {
-  if (_.isString(version)) {
-    return isVerGEVer(version, '10010g_cd1', true)
-  }
-  return false
 }
 
 export const invalidVersionFor82Av = (version: string): boolean => {
@@ -76,26 +53,6 @@ export const invalidVersionFor75Zippy = (version: string): boolean => {
 
 export const versionAbove10020a = (version: string): boolean => {
   return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
-}
-
-export const getStackUnitsMinLimitationV1002 = (
-  switchModel: string,
-  currentFirmware: string): number => {
-
-  if (switchModel?.includes('ICX8200')) {
-    return checkVersionAtLeast10010b(currentFirmware) ? 12 : 4
-  } else if (switchModel?.includes('ICX7150')) {
-    if(checkVersionAtLeast10010gCd1(currentFirmware)){
-      return 8
-    }
-    return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
-  } else { // 7550, 7650, 7850
-    if (checkVersionAtLeast10010c(currentFirmware)) {
-      // For the switch's own firmware, this field contains the value '10010'.
-      return 12
-    }
-    return (checkVersionAtLeast09010h(currentFirmware) ? 8 : 4)
-  }
 }
 
 //The function will be deprecated in the future; please use the isVerGEVer function instead.
