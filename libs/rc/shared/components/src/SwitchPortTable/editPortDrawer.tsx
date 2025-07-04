@@ -66,7 +66,8 @@ import {
   PoeSchedulerType,
   allMultipleEditableFields,
   PolicyType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { store }                             from '@acx-ui/store'
@@ -1450,7 +1451,8 @@ export function EditPortDrawer ({
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
                 rules={[
-                  { max: 255 }
+                  { max: 255 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) }
                 ]}
                 initialValue=''
                 children={<Input />}
@@ -1466,7 +1468,8 @@ export function EditPortDrawer ({
             label={$t(FIELD_LABEL.portName)}
             initialValue=''
             rules={[
-              { max: 255 }
+              { max: 255 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
             ]}
             children={shouldRenderMultipleText({
               field: 'name', ...commonRequiredProps
