@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 import { GridCol, GridRow, Loader, Table, TableProps } from '@acx-ui/components'
 import { useGetLayer2AclRulesQuery }                   from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   MacAclRule
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 export default function Layer2ACLRules () {
   const { $t } = useIntl()

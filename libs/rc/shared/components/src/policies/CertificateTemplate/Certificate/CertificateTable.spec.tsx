@@ -1,12 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useGetSpecificTemplateCertificatesQuery }                    from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateUrls, PersonaUrls, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor, within }    from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }                                      from '@acx-ui/types'
-import { setUserProfile, getUserProfile }                             from '@acx-ui/user'
+import { useGetSpecificTemplateCertificatesQuery }                 from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateUrls, PersonaUrls }             from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }                                   from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                          from '@acx-ui/user'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { certificateList, certificateTemplate } from '../__test__/fixtures'
 

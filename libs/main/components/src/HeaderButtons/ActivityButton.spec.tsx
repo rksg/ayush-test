@@ -17,8 +17,8 @@ import ActivityButton from './ActivityButton'
 
 const mockUseNavigate = jest.fn()
 const mockedSaveFn = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockUseNavigate
 }))
 

@@ -63,7 +63,6 @@ import {
   emailRegExp,
   roleDisplayText,
   EntitlementUtil,
-  useTableQuery,
   EntitlementDeviceType,
   whitespaceOnlyRegExp,
   PrivilegeGroup,
@@ -75,9 +74,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                    from '@acx-ui/types'
-import { isCoreTier, useUserProfileContext, getUserProfile }                            from '@acx-ui/user'
-import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                                                   from '@acx-ui/types'
+import { isCoreTier, useUserProfileContext, getUserProfile }                                           from '@acx-ui/user'
+import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
