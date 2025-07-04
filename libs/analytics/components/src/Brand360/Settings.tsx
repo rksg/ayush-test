@@ -97,10 +97,8 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
   ].some(hasChanged => hasChanged)
   const isReadOnly = !(
     hasCrossVenuesPermission() &&
-    hasPermission({
-      scopes: [WifiScopes.UPDATE],
-      rbacOpsIds: [aiOpsApis.updateBrand360Dashboard]
-    })
+    hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.updateBrand360Dashboard] })
   )
   const isDisabled = isInvalid || !hasChanged || isReadOnly
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
