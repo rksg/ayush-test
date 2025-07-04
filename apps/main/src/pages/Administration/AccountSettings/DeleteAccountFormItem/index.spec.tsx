@@ -14,7 +14,6 @@ const mockMutation = jest.fn().mockImplementation(() => ({
   unwrap: mockedUnwrap
 }))
 jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
   useGetTenantDetailsQuery: () => ({ data: { name: 'JohnSmith' } }),
   useDeleteTenantMutation: () => ([mockMutation])
 }))
@@ -67,6 +66,29 @@ describe('Delete Account Form Item', () => {
     await waitFor(() => expect(mockUserLogout).toHaveBeenCalled())
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
+
+  it('should delete correctly', async () => {
+    mockedUnwrap.mockRejectedValueOnce(new Error('Mocked error'))
+    const mockUserLogout = require('@acx-ui/utils').userLogout
+    render(
+      <Provider>
+        <DeleteAccountFormItem />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Account' }))
+    expect(await screen.findByRole('button', { name: 'Delete Customer' })).toBeDisabled()
+    await userEvent.type(screen.getByRole('textbox'), 'delete')
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Delete Customer' })).toBeEnabled())
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Customer' }))
+    await waitFor(() => expect(mockMutation).toHaveBeenCalled())
+    await waitFor(() => expect(mockUserLogout).not.toHaveBeenCalled())
+  })
+
+
+ 
   it('should close modal when cancel button clicked', async () => {
     render(
       <Provider>
