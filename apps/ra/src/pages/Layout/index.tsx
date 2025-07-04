@@ -3,13 +3,11 @@ import { useState } from 'react'
 import { HelpButton, UserButton, MelissaBot } from '@acx-ui/analytics/components'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import {
+  GlobalSearchBar,
+  HeaderContext,
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import {
-  GlobalSearchBar,
-  HeaderContext
-} from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                 from '@acx-ui/user'
 

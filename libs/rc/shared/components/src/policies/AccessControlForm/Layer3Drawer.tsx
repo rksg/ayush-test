@@ -49,13 +49,13 @@ import {
   subnetMaskIpRegExp,
   ipv6RegExp,
   ipv6PrefixRegExp,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TableResult }               from '@acx-ui/utils'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'

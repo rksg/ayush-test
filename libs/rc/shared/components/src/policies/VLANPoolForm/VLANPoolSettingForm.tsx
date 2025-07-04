@@ -7,12 +7,12 @@ import { Features, useIsSplitOn }                                               
 import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
-  TableResult,
   VLANPoolViewModelType,
   checkObjectNotExists,
   checkVlanPoolMembers, policyTypeLabelMapping, servicePolicyNameRegExp,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 
 type VLANPoolSettingFormProps = {
