@@ -22,10 +22,10 @@ import {
   ConfigTemplateType,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
-  useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useTableQuery }                 from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../configTemplates'
 

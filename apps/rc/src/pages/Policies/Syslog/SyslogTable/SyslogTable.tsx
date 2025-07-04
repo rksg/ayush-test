@@ -21,10 +21,10 @@ import {
   PolicyOperation,
   PolicyType,
   SyslogPolicyListType,
-  useTableQuery,
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { PROFILE_MAX_COUNT } from '../constants'
 

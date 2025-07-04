@@ -17,11 +17,10 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
+import { useTableQuery }                                           from '@acx-ui/utils'
 export default function ClientIsolationTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()

@@ -213,7 +213,7 @@ const settings = {
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
-const utils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),

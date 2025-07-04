@@ -8,11 +8,10 @@ import {
   RogueApSettingsRequest,
   RogueApUrls,
   RoguePolicyRequest,
-  TableResult,
   VenueRogueAp,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { batchApi, createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

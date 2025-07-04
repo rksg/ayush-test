@@ -30,13 +30,12 @@ import {
 import {
   AdminRbacUrlsInfo,
   EntitlementNetworkDeviceType,
-  EntitlementUtil,
-  useTableQuery
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
-import { Link, TenantLink, useParams }                 from '@acx-ui/react-router-dom'
-import { RolesEnum }                                   from '@acx-ui/types'
-import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi, isDelegationMode, noDataDisplay }  from '@acx-ui/utils'
+import { Link, TenantLink, useParams }                               from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                 from '@acx-ui/types'
+import { hasAllowedOperations, useUserProfileContext }               from '@acx-ui/user'
+import { getOpsApi, isDelegationMode, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
