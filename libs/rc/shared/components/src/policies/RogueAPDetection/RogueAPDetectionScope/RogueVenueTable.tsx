@@ -10,10 +10,10 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes, RogueApUrls, useActivativationPermission, useConfigTemplate,
-  useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { useEnforcedStatus }          from '../../../configTemplates'
 import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'

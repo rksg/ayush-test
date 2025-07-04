@@ -1,4 +1,5 @@
-import { AAAPolicyType, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, EthernetPortType, TableResult } from '@acx-ui/rc/utils'
+import { AAAPolicyType, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, EthernetPortType } from '@acx-ui/rc/utils'
+import { TableResult }                                                                                            from '@acx-ui/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockedPolicyId = '__Policy_ID__'

@@ -9,10 +9,9 @@ import { usePortProfilesListBySwitchIdQuery } from '@acx-ui/rc/services'
 import {
   SwitchPortProfiles,
   SwitchViewModel,
-  useTableQuery,
   vlanPortsParser
 } from '@acx-ui/rc/utils'
-
+import { useTableQuery } from '@acx-ui/utils'
 export default function SwitchOverviewPortProfiles (props: {
     switchDetail?: SwitchViewModel
 }) {

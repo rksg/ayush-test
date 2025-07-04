@@ -44,13 +44,13 @@ import {
   PolicyType,
   portRegExp,
   subnetMaskIpRegExp,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TableResult }               from '@acx-ui/utils'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
