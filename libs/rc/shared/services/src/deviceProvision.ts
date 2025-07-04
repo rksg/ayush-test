@@ -1,6 +1,5 @@
 import {
   CommonResult,
-  TableResult,
   DeviceProvision,
   DeviceProvisionStatus,
   DeviceProvisionUrlsInfo
@@ -9,7 +8,8 @@ import { baseDeviceProvisionApi } from '@acx-ui/store'
 import { RequestPayload }         from '@acx-ui/types'
 import {
   createHttpRequest,
-  ApiInfo
+  ApiInfo,
+  TableResult
 } from '@acx-ui/utils'
 
 interface TableQueryPayload {
