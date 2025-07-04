@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, Table, TableProps }                                                                             from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
-import { Sync }                                                                                                                  from '@acx-ui/icons'
-import { useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
-import {  DeviceProvision,  useTableQuery, HideProvisionsPayload }                                                               from '@acx-ui/rc/utils'
-import { TimeStamp }                                                                                                             from '@acx-ui/types'
+import { Button, cssStr, Loader, Table, TableProps }                                                                                                      from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
+import { Sync }                                                                                                                                           from '@acx-ui/icons'
+import { useGetSwitchModelsQuery, useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
+import {  DeviceProvision,  useTableQuery, HideProvisionsPayload }                                                                                        from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                                                                      from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
 
@@ -17,6 +17,7 @@ export const PendingSwitch = () => {
   const params = useParams()
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
+  const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
 
   const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
     { params },
@@ -25,6 +26,25 @@ export const PendingSwitch = () => {
   const [ refreshSwitchStatus ] = useRefreshSwitchStatusMutation()
 
   const [ hideSwitchProvisions ] = useHideSwitchProvisionsMutation()
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const { modelFilterMap } = useGetSwitchModelsQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10_000
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map(model =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
+    }
+  })
 
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetSwitchProvisionsQuery,
@@ -44,10 +64,21 @@ export const PendingSwitch = () => {
   })
 
   useEffect(() => {
+    // Set refreshAt from switchStatus
     setRefreshAt(
       formatter(DateFormatEnum.DateTimeFormatWithSeconds)(switchStatus?.refreshedAt) ?? null
     )
-  }, [switchStatus])
+
+    // Auto refresh when switchStatus?.refreshedAt is null
+    const autoRefresh = async () => {
+      if (switchStatus && switchStatus.refreshedAt === null && !hasAutoRefreshed) {
+        setHasAutoRefreshed(true)
+        await handleRefresh()
+      }
+    }
+
+    autoRefresh()
+  }, [switchStatus, hasAutoRefreshed])
 
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
@@ -63,7 +94,7 @@ export const PendingSwitch = () => {
       dataIndex: 'model',
       sorter: true,
       searchable: true,
-      filterable: true
+      filterable: modelFilterMap
     },
     {
       key: 'shipDate',

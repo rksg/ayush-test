@@ -71,6 +71,8 @@ const mockSwitchStatus = {
   refreshedAt: '2024-01-25T10:30:00.000Z'
 }
 
+const mockSwitchModels = ['ICX7550-48', 'ICX7650-48', 'ICX7150-48', 'ICX7250-48']
+
 const mockApiResponse = {
   content: mockDeviceProvisions,
   pageable: {
@@ -103,6 +105,9 @@ describe('PendingSwitch component', () => {
     mockServer.use(
       rest.get(DeviceProvisionUrlsInfo.getSwitchStatus.url, (req, res, ctx) => {
         return res(ctx.json(mockSwitchStatus))
+      }),
+      rest.get(DeviceProvisionUrlsInfo.getSwitchModels.url, (req, res, ctx) => {
+        return res(ctx.json(mockSwitchModels))
       }),
       rest.get(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockApiResponse))

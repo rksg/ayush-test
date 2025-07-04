@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, Table, TableProps }                                                             from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                             from '@acx-ui/formatter'
-import { Sync }                                                                                                  from '@acx-ui/icons'
-import { useGetApProvisionsQuery, useGetApStatusQuery, useHideApProvisionsMutation, useRefreshApStatusMutation } from '@acx-ui/rc/services'
-import { DeviceProvision, useTableQuery, HideProvisionsPayload }                                                 from '@acx-ui/rc/utils'
-import { TimeStamp }                                                                                             from '@acx-ui/types'
+import { Button, cssStr, Loader, Table, TableProps }                                                                                  from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                  from '@acx-ui/formatter'
+import { Sync }                                                                                                                       from '@acx-ui/icons'
+import { useGetApModelsQuery, useGetApProvisionsQuery, useGetApStatusQuery, useHideApProvisionsMutation, useRefreshApStatusMutation } from '@acx-ui/rc/services'
+import { DeviceProvision, useTableQuery, HideProvisionsPayload }                                                                      from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                                                  from '@acx-ui/types'
 
 import { MessageMapping } from '../messageMapping'
 
@@ -17,6 +17,7 @@ export const PendingAp = () => {
   const params = useParams()
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
+  const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
 
   const { data: apStatus, refetch: refetchApStatus } = useGetApStatusQuery(
     { params },
@@ -25,6 +26,25 @@ export const PendingAp = () => {
   const [ refreshApStatus ] = useRefreshApStatusMutation()
 
   const [ hideApProvisions ] = useHideApProvisionsMutation()
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const { modelFilterMap } = useGetApModelsQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10_000
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map(model =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
+    }
+  })
 
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetApProvisionsQuery,
@@ -45,7 +65,16 @@ export const PendingAp = () => {
 
   useEffect(() => {
     setRefreshAt(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(apStatus?.refreshedAt) ?? null)
-  }, [apStatus])
+
+    const autoRefresh = async () => {
+      if (apStatus && apStatus.refreshedAt === null && !hasAutoRefreshed) {
+        setHasAutoRefreshed(true)
+        await handleRefresh()
+      }
+    }
+
+    autoRefresh()
+  }, [apStatus, hasAutoRefreshed])
 
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
@@ -61,7 +90,7 @@ export const PendingAp = () => {
       dataIndex: 'model',
       sorter: true,
       searchable: true,
-      filterable: true
+      filterable: modelFilterMap
     },
     {
       key: 'shipDate',

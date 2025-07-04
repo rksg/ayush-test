@@ -71,6 +71,8 @@ const mockApStatus = {
   refreshedAt: '2024-01-25T10:30:00.000Z'
 }
 
+const mockApModels = ['R770', 'R760', 'R750', 'R730']
+
 const mockApiResponse = {
   content: mockDeviceProvisions,
   pageable: {
@@ -103,6 +105,9 @@ describe('PendingAp component', () => {
     mockServer.use(
       rest.get(DeviceProvisionUrlsInfo.getApStatus.url, (req, res, ctx) => {
         return res(ctx.json(mockApStatus))
+      }),
+      rest.get(DeviceProvisionUrlsInfo.getApModels.url, (req, res, ctx) => {
+        return res(ctx.json(mockApModels))
       }),
       rest.get(DeviceProvisionUrlsInfo.getApProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockApiResponse))
