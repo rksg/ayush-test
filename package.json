@@ -32,6 +32,7 @@
     "@smartesting/flaky-test-detector": "1.0.3",
     "@splitsoftware/splitio-react": "1.4.1",
     "@superset-ui/embedded-sdk": "0.1.0-alpha.8",
+    "@superset-ui/switchboard": "0.20.3",
     "@types/react-highlight-words": "0.16.4",
     "antd": "4.22.7",
     "buffer": "6.0.3",
