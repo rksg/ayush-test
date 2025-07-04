@@ -189,9 +189,7 @@ export const slaKpiConfig = {
     order: 'asc'
   },
   experience: {
-    getTitle: (isMDU: boolean) => isMDU // istanbul ignore next
-      ? defineMessage({ defaultMessage: 'Resident Experience' })
-      : defineMessage({ defaultMessage: 'Guest Experience' }),
+    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
     dataKey: 'guestExp',
     avg: true,
     formatter: formatter('percentFormat'),
@@ -236,8 +234,7 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
 
 export const transformVenuesData = (
   venuesData: { data: BrandVenuesSLA[] },
-  lookupAndMappingData: TransformedMap,
-  isMDU: boolean
+  lookupAndMappingData: TransformedMap
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
@@ -258,15 +255,10 @@ export const transformVenuesData = (
         : ['-'],
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
-      ssidCompliance: isMDU
-        ? [0, 0]
-        : sumData(
-          tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
-        ) as [number, number],
-      prospectCountSLA: isMDU
-        ? tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.prospectCountSLA || 0), 0) : 0
-        : 0,
+      ssidCompliance: sumData(
+        tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
+      ) as [number, number],
+      prospectCountSLA: 0,
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
         (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,

@@ -36,7 +36,6 @@ interface SlaTileProps {
   sliceType: SliceType
   lsp: string
   property: string
-  isMDU: boolean
 }
 
 const { Text } = Typography
@@ -162,7 +161,6 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  isMDU,
   lsp,
   property
 }: SlaTileProps) {
@@ -188,7 +186,7 @@ export function SlaTile ({
   }
 
   return <Card title={{
-    title: ($t(getTitle(isMDU), { name })),
+    title: ($t(getTitle(), { name })),
     icon: getTooltip(chartKey) }}
   >
     <UI.Spacer />
@@ -201,7 +199,7 @@ export function SlaTile ({
         currData={currData} />
     </UI.ValueWrapper>
     <UI.Spacer />
-    <SlaChart isMDU={isMDU} chartData={chartData} chartKey={chartKey} />
+    <SlaChart chartData={chartData} chartKey={chartKey} />
     <UI.Spacer />
     <TopElementsSwitcher data={listData} chartKey={chartKey} />
   </Card>
