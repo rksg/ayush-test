@@ -1,7 +1,6 @@
-import { Navigate, useSearchParams } from 'react-router-dom'
-
 import { getUserProfile }                                        from '@acx-ui/analytics/utils'
 import { get }                                                   from '@acx-ui/config'
+import { Navigate, useSearchParams }                             from '@acx-ui/react-router-dom'
 import { Provider }                                              from '@acx-ui/store'
 import { render, screen }                                        from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions, raiPermissionsList } from '@acx-ui/user'
@@ -30,8 +29,8 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   Navigate: jest.fn(() => <div />),
   useSearchParams: jest.fn(() => [new URLSearchParams()])
 }))

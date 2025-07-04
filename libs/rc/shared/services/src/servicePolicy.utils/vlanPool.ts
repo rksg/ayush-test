@@ -4,12 +4,12 @@ import { Params }              from 'react-router-dom'
 import {
   ApiVersionEnum, CommonRbacUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo, GetApiVersionHeader,
   PoliciesConfigTemplateUrlsInfo,
-  TableResult, Venue, VenueAPGroup, VenueApGroupRbacType, VLANPoolNetworkType, VlanPoolRbacUrls,
+  Venue, VenueAPGroup, VenueApGroupRbacType, VLANPoolNetworkType, VlanPoolRbacUrls,
   VlanPoolUrls, VLANPoolVenues, VLANPoolViewModelRbacType,
   VLANPoolViewModelType,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { createHttpRequest } from '@acx-ui/utils'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

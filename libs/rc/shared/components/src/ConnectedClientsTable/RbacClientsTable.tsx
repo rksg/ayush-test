@@ -20,7 +20,6 @@ import {
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
-  usePollingTableQuery,
   networkTypes,
   ClientInfo,
   getClientHealthClass,
@@ -35,7 +34,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping, usePollingTableQuery } from '@acx-ui/utils'
 
 import { ClientHealthIcon }    from '../ClientHealthIcon'
 import { IdentityDetailsLink } from '../CommonLinkHelper'

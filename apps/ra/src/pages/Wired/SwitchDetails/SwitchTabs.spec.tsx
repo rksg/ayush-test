@@ -8,10 +8,15 @@ import SwitchTabs from './SwitchTabs'
 
 const params= { switchId: 'switch-id', serial: 'serial-number' }
 const mockedUsedNavigate = jest.fn()
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai/devices/switch/switch-id/serial-number/details',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 
 describe('SwitchTabs', () => {

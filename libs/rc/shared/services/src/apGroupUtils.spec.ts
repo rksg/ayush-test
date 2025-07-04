@@ -7,12 +7,11 @@ import {
   ApGroupViewModel,
   NewAPModel,
   NewApGroupViewModelResponseType,
-  TableResult,
   Venue,
   WifiNetwork,
   ApGroupConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { createHttpRequest } from '@acx-ui/utils'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import {
   addApGroupFn,
