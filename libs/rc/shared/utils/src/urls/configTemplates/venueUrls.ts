@@ -319,7 +319,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deactivateVenueRadiusServiceRbac: {
     method: 'delete',
-    url: '/templates//venues/:venueId/radiusServerProfiles/:radiusId',
+    url: '/templates/venues/:venueId/radiusServerProfiles/:radiusId',
     newApi: true,
     opsApi: 'DELETE:/templates/venues/{id}/radiusServerProfiles/{id}',
     defaultHeaders: {
