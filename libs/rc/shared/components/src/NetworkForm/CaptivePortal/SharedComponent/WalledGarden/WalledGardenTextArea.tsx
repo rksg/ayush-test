@@ -98,7 +98,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * It does NOT perform any side effects (such as setting form values),
    * ensuring that React's render phase is pure and free from state updates.
    */
-  function actionRunnder (currentState: WalledGardenState, IncomingState: WalledGardenState) {
+  function actionRunner (currentState: WalledGardenState, IncomingState: WalledGardenState) {
     switch (IncomingState.action) {
       case WallGardenAction.Clear:
         // Reset to initial empty state
@@ -120,7 +120,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-  const [state, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
+  const [state, dispatch] = useReducer(actionRunner, statesCollection.initialState)
 
   /**
    * Initialize the component state based on the current mode and props.
