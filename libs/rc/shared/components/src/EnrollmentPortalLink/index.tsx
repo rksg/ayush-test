@@ -68,58 +68,82 @@ export function EnrollmentPortalLink (props: { url: string }) {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Tooltip title={copyButtonTooltip}>
-        <Button
-          ghost
-          icon={<CopyOutlined />}
-          style={{ top: '-9px' }}
-          onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
-          onClick={() => {
-            navigator.clipboard.writeText(url)
-            setCopyTooltip(copyButtonTooltipCopiedText)
-          }}
-        />
-      </Tooltip>
-      <Link id={id} ellipsis={true} href={url} target='_blank' rel='noreferrer'></Link>
-      <Button
-        ghost
-        icon={<ChatbotLink />}
-        style={{ top: '-9px' }}
-        onClick={() => { document.getElementById(id)?.click() }}
-      />
-      {workFlowQrCodeGenerate && (
-        <>
-          <Button
-            ghost
-            icon={<QrCodeSmallIcon />}
-            style={{ top: '-9px' }}
-            onClick={handleDownloadQr}
-            title={$t({ defaultMessage: 'Download QR' })}
-          />
-          {/* Hidden QR code for download */}
-          <div
-            ref={qrRef}
-            style={{
-              position: 'absolute',
-              left: -9999,
-              top: -9999,
-              height: 0,
-              width: 0,
-              overflow: 'hidden'
-            }}
-            aria-hidden='true'
-          >
-            <QRCodeSVG
-              value={url}
-              size={240}
-              bgColor='#ffffff'
-              fgColor='#000000'
-              level='L'
-              includeMargin={false}
+      {
+        !workFlowQrCodeGenerate && (
+          <>
+            <Link id={id} ellipsis={true} href={url} target='_blank' rel='noreferrer'>{url}</Link>
+            <div style={{ cursor: 'pointer' }} onClick={()=>document.getElementById(id)?.click()}>
+              <ChatbotLink/>
+            </div>
+            <Tooltip title={copyButtonTooltip}>
+              <Button
+                ghost
+                icon={<CopyOutlined />}
+                style={{ top: '-9px' }}
+                onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+                onClick={() => {
+                  navigator.clipboard.writeText(url)
+                  setCopyTooltip(copyButtonTooltipCopiedText)
+                }}
+              />
+            </Tooltip>
+          </>
+        )
+      }
+      {
+        workFlowQrCodeGenerate && (
+          <div>
+            <Tooltip title={copyButtonTooltip}>
+              <Button
+                ghost
+                icon={<CopyOutlined />}
+                style={{ top: '-9px' }}
+                onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+                onClick={() => {
+                  navigator.clipboard.writeText(url)
+                  setCopyTooltip(copyButtonTooltipCopiedText)
+                }}
+              />
+            </Tooltip>
+            <Link id={id} ellipsis={true} href={url} target='_blank' rel='noreferrer'></Link>
+            <Button
+              ghost
+              icon={<ChatbotLink />}
+              style={{ top: '-9px' }}
+              onClick={() => { document.getElementById(id)?.click() }}
             />
+            <Button
+              ghost
+              icon={<QrCodeSmallIcon />}
+              style={{ top: '-9px' }}
+              onClick={handleDownloadQr}
+              title={$t({ defaultMessage: 'Download QR' })}
+            />
+            {/* Hidden QR code for download */}
+            <div
+              ref={qrRef}
+              style={{
+                position: 'absolute',
+                left: -9999,
+                top: -9999,
+                height: 0,
+                width: 0,
+                overflow: 'hidden'
+              }}
+              aria-hidden='true'
+            >
+              <QRCodeSVG
+                value={url}
+                size={240}
+                bgColor='#ffffff'
+                fgColor='#000000'
+                level='L'
+                includeMargin={false}
+              />
+            </div>
           </div>
-        </>
-      )}
+        )
+      }
     </div>
   )
 }
