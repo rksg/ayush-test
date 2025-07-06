@@ -2,12 +2,11 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import {
   ServicesConfigTemplateUrlsInfo,
-  TableResult,
   WifiCallingFormContextType, WifiCallingSetting,
   WifiCallingUrls
 } from '@acx-ui/rc/utils'
-import { CommonResult }                from '@acx-ui/user'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { CommonResult }                             from '@acx-ui/user'
+import { batchApi, createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

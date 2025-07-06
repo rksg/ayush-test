@@ -10,10 +10,10 @@ import {
   defaultSort,
   sortProp,
   useConfigTemplate,
-  useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { renderConfigTemplateDetailsComponent } from '../../../configTemplates/ConfigTemplateLink'
 

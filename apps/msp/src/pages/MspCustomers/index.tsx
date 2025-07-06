@@ -39,15 +39,12 @@ import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
-  EntitlementUtil,
-  FILTER,
-  SEARCH,
-  useTableQuery
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
+import { AccountType, getOpsApi, isDelegationMode, noDataDisplay, useTableQuery, FILTER, SEARCH }           from '@acx-ui/utils'
 
 import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
 import HspContext                    from '../../HspContext'
