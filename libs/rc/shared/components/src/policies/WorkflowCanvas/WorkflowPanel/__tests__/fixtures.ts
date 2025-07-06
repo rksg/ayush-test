@@ -1,7 +1,8 @@
 import { MessageDescriptor } from 'react-intl'
 import { Edge, Node }        from 'reactflow'
 
-import { ActionType, NewAPITableResult, WorkflowActionDefinition, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionType, WorkflowActionDefinition, WorkflowStep } from '@acx-ui/rc/utils'
+import { NewAPITableResult }                                  from '@acx-ui/utils'
 
 // To make sure that the tests are working, it's important that you are using
 // this implementation of ResizeObserver and DOMMatrixReadOnly

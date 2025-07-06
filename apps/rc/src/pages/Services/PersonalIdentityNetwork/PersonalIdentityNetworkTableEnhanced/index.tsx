@@ -44,11 +44,10 @@ import {
   PolicyType,
   ServiceOperation,
   ServiceType,
-  useTableQuery,
   VenueLink
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                       from '@acx-ui/utils'
+import { noDataDisplay, useTableQuery }                        from '@acx-ui/utils'
 
 const getEdgePinPayload = {
   fields: [

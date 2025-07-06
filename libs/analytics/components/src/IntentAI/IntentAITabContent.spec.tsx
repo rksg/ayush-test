@@ -7,6 +7,7 @@ import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/anal
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
 import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { useTenantLink }                                      from '@acx-ui/react-router-dom'
 import { intentAIUrl, Provider, store }                       from '@acx-ui/store'
 import {
   findTBody,
@@ -63,9 +64,10 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: jest.fn()
 }))
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -103,6 +105,18 @@ describe('IntentAITabContent', () => {
     mockFetchWlans.mockClear()
     mockHandleTransitionIntent.mockClear()
     mockRevert.mockClear()
+
+    // Mock useTenantLink to return the correct path object based on IS_MLISA_SA
+    jest.mocked(useTenantLink).mockImplementation(() => {
+      const isRai = jest.mocked(get)('IS_MLISA_SA') === 'true'
+      let pathname
+      if (isRai) {
+        pathname = '/ai/intentAI'
+      } else {
+        pathname = '/tenant-id/t/analytics/intentAI'
+      }
+      return { pathname, search: '?intentTableFilters=%257B%257D', hash: '' }
+    })
   })
 
   afterEach(() => {

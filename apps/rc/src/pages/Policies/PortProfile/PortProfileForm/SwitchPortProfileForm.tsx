@@ -29,7 +29,6 @@ import {
   redirectPreviousPage,
   SwitchPortProfileMessages,
   SwitchPortProfiles,
-  useTableQuery,
   validateDuplicateVlanId,
   validateVlanExcludingReserved,
   usePoliciesBreadcrumb,
@@ -37,6 +36,7 @@ import {
   excludeSpaceRegExp
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                      from '@acx-ui/utils'
 
 import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
 

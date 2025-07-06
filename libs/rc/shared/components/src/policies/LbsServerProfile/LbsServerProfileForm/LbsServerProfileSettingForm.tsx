@@ -8,10 +8,10 @@ import {
   servicePolicyNameRegExp,
   networkWifiSecretRegExp,
   domainNameRegExp,
-  TableResult,
   LbsServerProfileViewModel
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { LbsServerConnectionProtocolInfo } from '../LbsServerConnectionProtocolInfo/LbsServerConnectionProtocolInfo'
 

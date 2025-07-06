@@ -43,10 +43,12 @@ const mockUseLocationValue = {
 }
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
-  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
+  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue),
+  useTenantLink: jest.fn()
 }))
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -77,6 +79,12 @@ describe('DataConnectorContent', () => {
     beforeEach(() => {
       jest.clearAllMocks()
       jest.mocked(get).mockReturnValue('true')
+      const { useTenantLink } = require('@acx-ui/react-router-dom')
+      jest.mocked(useTenantLink).mockReturnValue({
+        hash: '',
+        pathname: '/ai/dataConnector',
+        search: ''
+      })
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: true,
@@ -206,6 +214,12 @@ describe('DataConnectorContent', () => {
     beforeEach(() => {
       jest.clearAllMocks()
       jest.mocked(get).mockReturnValue('') //R1
+      const { useTenantLink } = require('@acx-ui/react-router-dom')
+      jest.mocked(useTenantLink).mockReturnValue({
+        hash: '',
+        pathname: `/${params.tenantId}/t/dataConnector`,
+        search: ''
+      })
       setRole({ role: RolesEnum.PRIME_ADMIN })
       mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {})

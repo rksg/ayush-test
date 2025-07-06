@@ -214,18 +214,14 @@ jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-20T12:33:37.101+00:00').getTime()
 })
-const utils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 
 describe('AssignMspLicense', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string }
