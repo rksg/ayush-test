@@ -294,7 +294,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             || i.apActivations.find(a => a.venueId === venueId)
             || i.venueActivations.find(a => a.venueId === venueId))
           if (ipsec) {
-            console.log('ipsecInSoftGreAPI:',ipsec) // eslint-disable-line no-console
             bindSoftGreId = ipsec.activations
               .find(a => a.venueId === venueId)?.softGreProfileId || ''
             if (bindSoftGreId.length === 0) {
