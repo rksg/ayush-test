@@ -34,13 +34,18 @@ import {
   validateVlanId,
   validateVlanExcludingReserved,
   validateVlanRangeFormat,
+  subnetMaskIpRegExp,
+  dualModeSubnetMaskIpRegExp,
   ipv6RegExp,
+  ipv6PrefixRegExp,
   validateTags,
   multicastIpAddressRegExp,
   URLProtocolRegExp,
   radiusIpAddressRegExp,
   checkTaggedVlan,
-  validateDuplicateName
+  validateDuplicateName,
+  generalIpAddressRegExp,
+  dualModeGeneralIpAddressRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -605,6 +610,36 @@ describe('validator', () => {
     })
   })
 
+  describe('subnetMaskIpRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = subnetMaskIpRegExp('224.0.0.0')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = subnetMaskIpRegExp('111.0.0.0')
+      await expect(result1).rejects.toEqual('Please enter a valid subnet mask')
+    })
+  })
+
+  describe('dualModeSubnetMaskIpRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = dualModeSubnetMaskIpRegExp('224.0.0.0')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of IPv6 value correctly', async () => {
+      const result = dualModeSubnetMaskIpRegExp('2001:db8:3333::7777:8888/60')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = dualModeSubnetMaskIpRegExp('111.0.0.0')
+      await expect(result1).rejects.toEqual('Please enter a valid subnet mask')
+    })
+    it('Should display error message if IPv6 value incorrectly', async () => {
+      const result1 = dualModeSubnetMaskIpRegExp('2001:db8:3333:::/60')
+      await expect(result1).rejects.toEqual('Please enter a valid subnet mask')
+    })
+  })
+
   describe('ipv6RegExp', () => {
     it('Should take care of IP value correctly', async () => {
       const result = ipv6RegExp('2001:db8:3333:4444:5555:6666:7777:8888')
@@ -616,6 +651,46 @@ describe('validator', () => {
     })
   })
 
+  describe('ipv6PrefixRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = ipv6PrefixRegExp('2001:db8:3333:4444:5555:6666:7777:8888/60')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = ipv6PrefixRegExp('224.0.0.0/60')
+      await expect(result1).rejects.toEqual('Please enter a valid subnet mask')
+    })
+  })
+
+  describe('generalIpAddressRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = generalIpAddressRegExp('225.225.1.1')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = generalIpAddressRegExp('300.211.0.1')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('dualModeGeneralIpAddressRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = dualModeGeneralIpAddressRegExp('225.225.1.1')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of IPv6 value correctly', async () => {
+      const result = dualModeGeneralIpAddressRegExp('2001:db8::8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = dualModeGeneralIpAddressRegExp('300.211.0.1')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+    it('Should display error message if IPv6 value incorrectly', async () => {
+      const result1 = dualModeGeneralIpAddressRegExp('2001:db8::ijkl')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
 
   describe('validateTags', () => {
     it('Should take care of tags value correctly', async () => {

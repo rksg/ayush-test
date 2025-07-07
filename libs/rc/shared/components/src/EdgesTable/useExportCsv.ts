@@ -1,9 +1,8 @@
 import _ from 'lodash'
 
 import { useDownloadEdgesCSVMutation } from '@acx-ui/rc/services'
-import { TableQuery }                  from '@acx-ui/rc/utils'
 import type { Filter, RequestPayload } from '@acx-ui/types'
-import { useTenantId }                 from '@acx-ui/utils'
+import { TableQuery, useTenantId }     from '@acx-ui/utils'
 
 export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>

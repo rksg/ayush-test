@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Drawer, Table, TableProps }            from '@acx-ui/components'
-import { APStatus }                                     from '@acx-ui/rc/components'
-import { useApListQuery }                               from '@acx-ui/rc/services'
-import { AP, ApDeviceStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { TenantLink }                                   from '@acx-ui/react-router-dom'
+import { Loader, Drawer, Table, TableProps } from '@acx-ui/components'
+import { APStatus }                          from '@acx-ui/rc/components'
+import { useApListQuery }                    from '@acx-ui/rc/services'
+import { AP, ApDeviceStatusEnum, Venue }     from '@acx-ui/rc/utils'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { useTableQuery }                     from '@acx-ui/utils'
 
 export interface LbsServerVenueApsDrawerProps {
   venue: Venue,

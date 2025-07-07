@@ -2,10 +2,11 @@ import { configureStore }                           from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery }                from '@reduxjs/toolkit/query/react'
 import { Provider as ReduxProvider, ProviderProps } from 'react-redux'
 
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import { TableResult } from '..'
+import { TableResult }       from '..'
+import { createHttpRequest } from '../../apiService'
+
 // import { createHttpRequest }           from '../../apiService'
 
 interface TestData { name: string }

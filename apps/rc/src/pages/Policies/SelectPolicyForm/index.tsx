@@ -84,7 +84,6 @@ export default function SelectPolicyForm () {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
@@ -176,7 +175,7 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.SOFTGRE,
       categories: [RadioCardCategory.WIFI],
-      disabled: !(isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
+      disabled: !hasPermission({ scopes: [WifiScopes.CREATE] })
     },
     {
       type: PolicyType.HQOS_BANDWIDTH,

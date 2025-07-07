@@ -14,7 +14,6 @@ import {
   ServiceType,
   ServiceOperation,
   getServiceRoutePath,
-  useTableQuery,
   ResidentPortal,
   getServiceDetailsLink,
   getScopeKeyByService,
@@ -23,6 +22,7 @@ import {
   useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                from '@acx-ui/utils'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()

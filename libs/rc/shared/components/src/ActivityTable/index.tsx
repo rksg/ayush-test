@@ -13,12 +13,11 @@ import {
   getActivityDescription,
   productMapping,
   severityMapping,
-  statusMapping,
-  TableQuery,
-  useTableQuery
+  statusMapping
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                  from '@acx-ui/types'
-import { noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter } from '@acx-ui/utils'
+import { RequestPayload }     from '@acx-ui/types'
+import { noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter,
+  TableQuery, useTableQuery } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

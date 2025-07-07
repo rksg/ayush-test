@@ -25,7 +25,6 @@ import {
 import {
   Alarm,
   CommonUrlsInfo,
-  useTableQuery,
   EventSeverityEnum,
   EventTypeEnum,
   CommonRbacUrlsInfo
@@ -34,7 +33,7 @@ import { useParams, TenantLink }                          from '@acx-ui/react-ro
 import { store }                                          from '@acx-ui/store'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { getOpsApi }                                      from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }                       from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

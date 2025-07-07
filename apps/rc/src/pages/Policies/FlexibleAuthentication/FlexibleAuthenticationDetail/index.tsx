@@ -28,13 +28,12 @@ import {
   PolicyType,
   getPolicyDetailsLink,
   usePolicyListBreadcrumb,
-  getPolicyAllowedOperation,
-  useTableQuery
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }                            from '@acx-ui/utils'
+import { noDataDisplay, useTableQuery }             from '@acx-ui/utils'
 
 import { getItemTooltip } from '../FlexibleAuthenticationTable'
 

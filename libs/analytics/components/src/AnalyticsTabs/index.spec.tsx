@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import * as router from 'react-router-dom'
-
+import * as router                   from '@acx-ui/react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import type { AnalyticsFilter }      from '@acx-ui/utils'
@@ -9,8 +8,8 @@ import { AnalyticsTabs } from '.'
 
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useParams: jest.fn()
 }))
