@@ -16,9 +16,10 @@ import {
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
-  usePolicyListBreadcrumb, useTableQuery,
+  usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 

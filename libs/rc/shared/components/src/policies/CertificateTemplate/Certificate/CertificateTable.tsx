@@ -11,7 +11,6 @@ import {
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
-  TableQuery,
   Certificate,
   CertificateCategoryType,
   CertificateStatusType,
@@ -19,17 +18,15 @@ import {
   EXPIRATION_DATE_FORMAT,
   EXPIRATION_TIME_FORMAT,
   EnrollmentType,
-  FILTER,
   PolicyOperation,
   PolicyType,
-  SEARCH,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   IdentityDetailsLink,
   CertificateUrls
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                    from '@acx-ui/types'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { RequestPayload }                                                from '@acx-ui/types'
+import { TableQuery, SEARCH, FILTER, getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 

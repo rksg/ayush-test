@@ -6,7 +6,6 @@ import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                           
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetDHCPProfileListViewModelWithModeQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
-  useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
@@ -22,6 +21,7 @@ import {
   useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
