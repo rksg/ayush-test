@@ -179,7 +179,6 @@ export function Venues (props: VenuesProps) {
 
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
@@ -683,8 +682,7 @@ export function Venues (props: VenuesProps) {
         networkInfo: otherData.network,
         otherData
       }
-      if (isSoftGreEnabled
-        && modalFormValues.tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+      if (modalFormValues.tunnelType === NetworkTunnelTypeEnum.SoftGre) {
         handleSoftGreTunnelAction(args)
         if (isIpSecEnabled) {
           handleIpsecAction(args)
@@ -768,8 +766,8 @@ export function Venues (props: VenuesProps) {
         </Loader>
       </Form.Item>
       {isEdgePinEnabled && <Form.Item hidden name={['sdLanAssociationUpdate']}></Form.Item>}
-      {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
-      {isSoftGreEnabled && isIpSecEnabled &&
+      <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>
+      {isIpSecEnabled &&
         <Form.Item hidden name={['ipsecAssociationUpdate']}></Form.Item>}
     </>
   )
