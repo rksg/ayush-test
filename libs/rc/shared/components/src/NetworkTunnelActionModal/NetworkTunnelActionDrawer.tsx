@@ -6,7 +6,6 @@ import { Drawer, Loader }             from '@acx-ui/components'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  EdgeMvSdLanViewData,
   EdgePinUrls,
   getServiceDetailsLink,
   NetworkTypeEnum,
@@ -20,7 +19,6 @@ import { getIntl, getOpsApi } from '@acx-ui/utils'
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
 import { SpaceWrapper }                                                                                from '../SpaceWrapper'
 import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
-
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
 import { messageMappings }                                from './messageMappings'
@@ -62,7 +60,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
   const {
     tunnelType: tunnelTypeInitVal,
-    venueSdLanInfo,
+    venueSdLanInfo: initialVenueSdLanInfo,
     networkVlanPool,
     venuePinInfo,
     isLoading
@@ -74,8 +72,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
+      const venueSdLan = formValues.sdLan.newProfileId ? formValues.sdLan.newProfile : undefined
 
-      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
+      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
@@ -89,7 +88,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     }
   }, [visible, tunnelTypeInitVal])
 
-  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
+  const isDisabledAll = false //getIsDisabledAll(venueSdLanInfo, networkId)
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
   return (<Drawer
@@ -192,7 +191,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             networkId={networkId!}
             networkVenueId={networkVenueId!}
             networkType={networkType!}
-            venueSdLan={venueSdLanInfo}
+            venueSdLan={initialVenueSdLanInfo}
             networkVlanPool={networkVlanPool}
             disabledInfo={(isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork)
               ? {
@@ -242,15 +241,4 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
       />
     }
   />)
-}
-
-// eslint-disable-next-line max-len
-const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
-  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
-  if(dcNetworkCount === 0 || !currentNetworkId) return false
-
-  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
-  if (!isSdLanLastNetwork) return false
-
-  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }
