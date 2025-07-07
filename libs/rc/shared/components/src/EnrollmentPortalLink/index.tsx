@@ -4,10 +4,12 @@ import { Typography } from 'antd'
 import { QRCodeSVG }  from 'qrcode.react'
 import { useIntl }    from 'react-intl'
 
-import { Button, Tooltip }              from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { ChatbotLink, QrCodeSmallIcon } from '@acx-ui/icons'
-import { CopyOutlined }                 from '@acx-ui/icons-new'
+import { Button, Tooltip }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ChatbotLink }            from '@acx-ui/icons'
+import { CopyOutlined }           from '@acx-ui/icons-new'
+
+import { StyledChatbotLink, StyledQRLink } from './styledComponents'
 
 export function EnrollmentPortalLink (props: { url: string }) {
   const { Link } = Typography
@@ -18,6 +20,10 @@ export function EnrollmentPortalLink (props: { url: string }) {
   const copyButtonTooltipDefaultText = $t({ defaultMessage: 'Copy URL' })
   const copyButtonTooltipCopiedText = $t({ defaultMessage: 'URL Copied' })
   const [copyButtonTooltip, setCopyTooltip] = useState(copyButtonTooltipDefaultText)
+  const qrCodeTooltipDefaultText = $t({ defaultMessage: 'Download a QR code with the URL' })
+  const [qrCodeTooltip, setQrCodeTooltip] = useState(qrCodeTooltipDefaultText)
+  const openUrlTooltipDefaultText = $t({ defaultMessage: 'Open the URL in a new tab or window' })
+  const [openUrlTooltip, setOpenUrlTooltip] = useState(qrCodeTooltipDefaultText)
   const qrRef = useRef<HTMLDivElement | null>(null)
 
   const handleDownloadQr = () => {
@@ -47,12 +53,12 @@ export function EnrollmentPortalLink (props: { url: string }) {
           if (blob) {
             const pngUrl = URL.createObjectURL(blob)
             // Download
-            const a = document.createElement('a')
-            a.href = pngUrl
-            a.download = 'qr-code.png'
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
+            const link = document.createElement('a')
+            link.href = pngUrl
+            link.download = 'qr-code.png'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
             // Open in new tab after download
             setTimeout(() => {
               window.open(pngUrl, '_blank')
@@ -68,82 +74,92 @@ export function EnrollmentPortalLink (props: { url: string }) {
 
   return (
     <div style={{ display: 'flex' }}>
-      {
-        !workFlowQrCodeGenerate && (
-          <>
-            <Link id={id} ellipsis={true} href={url} target='_blank' rel='noreferrer'>{url}</Link>
-            <div style={{ cursor: 'pointer' }} onClick={()=>document.getElementById(id)?.click()}>
-              <ChatbotLink/>
-            </div>
-            <Tooltip title={copyButtonTooltip}>
-              <Button
-                ghost
-                icon={<CopyOutlined />}
-                style={{ top: '-9px' }}
-                onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
-                onClick={() => {
-                  navigator.clipboard.writeText(url)
-                  setCopyTooltip(copyButtonTooltipCopiedText)
-                }}
-              />
-            </Tooltip>
-          </>
-        )
-      }
-      {
-        workFlowQrCodeGenerate && (
-          <div>
-            <Tooltip title={copyButtonTooltip}>
-              <Button
-                ghost
-                icon={<CopyOutlined />}
-                style={{ top: '-9px' }}
-                onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
-                onClick={() => {
-                  navigator.clipboard.writeText(url)
-                  setCopyTooltip(copyButtonTooltipCopiedText)
-                }}
-              />
-            </Tooltip>
-            <Link id={id} ellipsis={true} href={url} target='_blank' rel='noreferrer'></Link>
-            <Button
-              ghost
-              icon={<ChatbotLink />}
-              style={{ top: '-9px' }}
-              onClick={() => { document.getElementById(id)?.click() }}
-            />
-            <Button
-              ghost
-              icon={<QrCodeSmallIcon />}
-              style={{ top: '-9px' }}
-              onClick={handleDownloadQr}
-              title={$t({ defaultMessage: 'Download QR' })}
-            />
-            {/* Hidden QR code for download */}
-            <div
-              ref={qrRef}
-              style={{
-                position: 'absolute',
-                left: -9999,
-                top: -9999,
-                height: 0,
-                width: 0,
-                overflow: 'hidden'
-              }}
-              aria-hidden='true'
-            >
-              <QRCodeSVG
-                value={url}
-                size={240}
-                bgColor='#ffffff'
-                fgColor='#000000'
-                level='L'
-                includeMargin={false}
-              />
-            </div>
+      {!workFlowQrCodeGenerate && (
+        <>
+          <Link id={id} ellipsis={true} href={url} target={'_blank'} rel={'noreferrer'}>{url}</Link>
+          <div
+            style={{ cursor: 'pointer' }}
+            onClick={() => document.getElementById(id)?.click()}
+          >
+            <ChatbotLink />
           </div>
-        )
-      }
+          <Tooltip title={copyButtonTooltip}>
+            <Button
+              ghost
+              icon={<CopyOutlined />}
+              style={{ top: '-9px' }}
+              onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+              onClick={() => {
+                navigator.clipboard.writeText(url)
+                setCopyTooltip(copyButtonTooltipCopiedText)
+              }}
+            />
+          </Tooltip>
+        </>
+      )}
+      {workFlowQrCodeGenerate && (
+        <div>
+          <Tooltip title={copyButtonTooltip}>
+            <Button
+              ghost
+              type={'link'}
+              icon={
+                <CopyOutlined style={{ color: 'var(--acx-accents-blue-50)' }} />
+              }
+              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
+              onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+              onClick={(event) => {
+                navigator.clipboard.writeText(url)
+                setCopyTooltip(copyButtonTooltipCopiedText)
+                event.stopPropagation()
+              }}
+            />
+          </Tooltip>
+          <Link id={id} ellipsis={true} href={url} target={'_blank'} rel={'noreferrer'}></Link>
+          <Tooltip title={openUrlTooltip}>
+            <Button
+              ghost
+              type={'link'}
+              icon={
+                <StyledChatbotLink
+                  style={{ color: 'var(--acx-accents-blue-50)' }}
+                />
+              }
+              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
+              onMouseOut={() => setOpenUrlTooltip(openUrlTooltipDefaultText)}
+              onClick={(event) => {
+                document.getElementById(id)?.click()
+                event.stopPropagation()
+              }}
+            />
+          </Tooltip>
+          <Tooltip title={qrCodeTooltip}>
+            <Button
+              ghost
+              type={'link'}
+              icon={
+                <StyledQRLink
+                  style={{ color: 'var(--acx-accents-blue-50)' }}
+                />
+              }
+              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
+              onMouseOut={() => setQrCodeTooltip(qrCodeTooltipDefaultText)}
+              onClick={handleDownloadQr}
+            />
+          </Tooltip>
+          {/* Hidden QR code for download */}
+          <div ref={qrRef} style={{ display: 'none' }} aria-hidden='true'>
+            <QRCodeSVG
+              value={url}
+              size={240}
+              bgColor={'#ffffff'}
+              fgColor={'#000000'}
+              level={'L'}
+              includeMargin={false}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
