@@ -23,9 +23,9 @@ import { api, IncidentTableRow, IncidentNodeData } from './services'
 import { IncidentVisibility, IncidentTable, downloadIncidentList, getIncidentsMutedStatus } from './index'
 
 const mockedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigateToPath: (path: string) => () => mockedNavigate({ pathname: path })
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -804,7 +804,7 @@ describe('IncidentTable', () => {
 
     await userEvent.click(button)
     expect(mockedNavigate).lastCalledWith(expect.objectContaining({
-      pathname: `/1/t/analytics/incidents/${incidentTests[0].id}`
+      pathname: `/analytics/incidents/${incidentTests[0].id}`
     }))
   })
 })

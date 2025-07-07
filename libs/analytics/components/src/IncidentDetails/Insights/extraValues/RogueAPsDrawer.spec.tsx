@@ -15,6 +15,11 @@ import { drawerApi }                          from './services'
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
+const mockTenantLink = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  TenantLink: (props: { to: string, children: React.ReactNode }) => mockTenantLink(props)
+}))
 
 beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
 afterAll(() => jest.resetAllMocks())
@@ -27,7 +32,16 @@ describe('RogueAPsDrawer', () => {
     visible: true,
     onClose: jest.fn()
   }
-  beforeEach(() => store.dispatch(drawerApi.util.resetApiState()))
+  beforeEach(() => {
+    store.dispatch(drawerApi.util.resetApiState())
+    get.mockReturnValue('')
+    mockTenantLink.mockImplementation(({ to, children, ...props }) => {
+      const isRai = get('IS_MLISA_SA') === 'true'
+      const prefix = isRai ? '/ai' : '/tenant-id/t'
+      const href = `${prefix}${to.startsWith('/') ? '' : '/'}${to}`
+      return <a href={href} {...props}>{children}</a>
+    })
+  })
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'rogueAPs', {
       data: { incident: { rogueAPs: mockRogueAPs, rogueAPCount: mockRogueAPs.length } } })
@@ -52,7 +66,7 @@ describe('RogueAPsDrawer', () => {
     expect(screen.getAllByRole('link')[0].textContent).toBe(mockRogueAPs[0].apName)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/undefined/t/devices/wifi/70:CA:97:01:9D:F0/details/overview')
+      'http://localhost/tenant-id/t/devices/wifi/70:CA:97:01:9D:F0/details/overview')
   })
   it('should render correct url for RAI', async () => {
     get.mockReturnValue('true')

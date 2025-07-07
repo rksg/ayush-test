@@ -3,8 +3,9 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                                  from '@acx-ui/components'
 import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, genExpireTimeString, useTableQuery }      from '@acx-ui/rc/utils'
+import { DhcpHostStats, EdgeDhcpHostStatus, genExpireTimeString }                     from '@acx-ui/rc/utils'
 import { RequestPayload }                                                             from '@acx-ui/types'
+import { useTableQuery }                                                              from '@acx-ui/utils'
 
 interface EdgeDhcpLeaseTableProps {
   isInfinite?: boolean

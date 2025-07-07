@@ -22,11 +22,10 @@ import {
   IncompatibilityFeatures,
   ServiceOperation,
   ServiceType,
-  useServicesBreadcrumb,
-  useTableQuery
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { compareVersions }                        from '@acx-ui/utils'
+import { compareVersions, useTableQuery }         from '@acx-ui/utils'
 
 
 const EdgeDhcpTable = ({ hideHeader = false } : { hideHeader?: boolean }) => {

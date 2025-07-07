@@ -16,9 +16,9 @@ import {
   AclTypeEnum,
   SwitchViewModel,
   transformIPv6,
-  transformTitleCase,
-  useTableQuery
+  transformTitleCase
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { AclDetail } from './aclDetail'
 

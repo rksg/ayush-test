@@ -253,5 +253,40 @@ describe('SubInterfaceTable', () => {
       expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
     })
+
+    it('should disable delete button when SD-LAN is applied and core port is enabled', async () => {
+      const { result: formRef } = renderHook(() => {
+        const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+        const [form] = Form.useForm()
+        form.setFieldValue('subInterfaces', [{
+          ...mockSubInterface4,
+          corePortEnabled: true
+        }])
+        return form
+      })
+      renderTable(mockProps, formRef.current)
+
+      const subInterface = await screen.findByRole('row', { name: /1 LAN STATIC/i })
+      await userEvent.click(subInterface)
+      expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should disable delete button when SD-LAN is applied and access port is enabled', async () => {
+      const { result: formRef } = renderHook(() => {
+        const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+        const [form] = Form.useForm()
+        form.setFieldValue('subInterfaces', [{
+          ...mockSubInterface4,
+          accessPortEnabled: true
+        }])
+        return form
+      })
+      renderTable(mockProps, formRef.current)
+
+      const subInterface = await screen.findByRole('row', { name: /1 LAN STATIC/i })
+      await userEvent.click(subInterface)
+      expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
+    })
   })
 })

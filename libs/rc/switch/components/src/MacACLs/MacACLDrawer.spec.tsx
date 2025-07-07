@@ -571,7 +571,7 @@ describe('MacACLDrawer', () => {
       ]
     }
 
-    jest.spyOn(require('@acx-ui/rc/utils'), 'useTableQuery')
+    jest.spyOn(require('@acx-ui/utils'), 'useTableQuery')
       .mockReturnValue({ data: mockTableQueryData, isLoading: false })
 
     render(
