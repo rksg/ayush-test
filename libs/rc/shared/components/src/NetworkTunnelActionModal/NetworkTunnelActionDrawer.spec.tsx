@@ -431,8 +431,7 @@ describe('NetworkTunnelDrawer', () => {
       store.dispatch(softGreApi.util.resetApiState())
       // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-        || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+        ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
         || ff === Features.WIFI_R370_TOGGLE)
       mockServer.use(
