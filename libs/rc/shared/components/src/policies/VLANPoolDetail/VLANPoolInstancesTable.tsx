@@ -4,8 +4,9 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Card, Loader }                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetVLANPoolVenuesQuery, useGetVlanPoolTemplateVenuesQuery } from '@acx-ui/rc/services'
-import { VLANPoolVenues, useConfigTemplate, useTableQuery }             from '@acx-ui/rc/utils'
+import { VLANPoolVenues, useConfigTemplate }                            from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                        from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                from '@acx-ui/utils'
 
 
 export default function VLANPoolInstancesTable (){

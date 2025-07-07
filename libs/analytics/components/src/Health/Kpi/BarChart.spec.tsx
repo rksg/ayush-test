@@ -1,3 +1,4 @@
+import moment from 'moment'
 
 import { healthApi }                        from '@acx-ui/analytics/services'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
@@ -5,7 +6,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import BarChart, { formatYDataPoint } from './BarChart'
+import BarChart, { formatTimeForXAxis, formatYDataPoint } from './BarChart'
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -91,5 +92,12 @@ describe('Threshold barchart', () => {
   it('should format y value for barChart', async () => {
     expect(formatYDataPoint(null)).toStrictEqual('--')
     expect(formatYDataPoint(0.1)).toStrictEqual('0.1%')
+  })
+  it('should format x value to local timezone', async () => {
+    moment.tz.setDefault('Asia/Taipei')
+    const time = '2025-06-09T16:00:00.000Z'
+    expect(moment(time, 'YYYY/MM/DD').date()).toStrictEqual(9)
+    expect(moment(time).date()).toStrictEqual(10)
+    expect(formatTimeForXAxis(time)).toStrictEqual(10)
   })
 })

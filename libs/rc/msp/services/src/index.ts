@@ -36,7 +36,6 @@ import {
   SolutionTokenSettings
 } from '@acx-ui/msp/utils'
 import {
-  TableResult,
   CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -47,10 +46,10 @@ import {
   CommonUrlsInfo,
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                          from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }           from '@acx-ui/user'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseMspApi }                                       from '@acx-ui/store'
+import { RequestPayload }                                   from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }                        from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal, TableResult } from '@acx-ui/utils'
 
 const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo

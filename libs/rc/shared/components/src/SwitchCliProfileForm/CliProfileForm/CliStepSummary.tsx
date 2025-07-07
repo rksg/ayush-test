@@ -3,9 +3,10 @@ import { useRef } from 'react'
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm, useStepFormContext }                            from '@acx-ui/components'
-import { useGetVenuesTemplateListQuery, useVenuesListQuery }                      from '@acx-ui/rc/services'
-import { CliConfiguration, TableResult, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { Descriptions, StepsForm, useStepFormContext }               from '@acx-ui/components'
+import { useGetVenuesTemplateListQuery, useVenuesListQuery }         from '@acx-ui/rc/services'
+import { CliConfiguration, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { TableResult }                                               from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../../CodeMirrorWidget'
 

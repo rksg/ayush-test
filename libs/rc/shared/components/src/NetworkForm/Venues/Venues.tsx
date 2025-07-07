@@ -33,11 +33,11 @@ import {
   SchedulerTypeEnum,
   SchedulingModalState,
   useConfigTemplate,
-  useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { useEnforcedStatus }                                                    from '../../configTemplates'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
