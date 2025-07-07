@@ -16,7 +16,6 @@ import {
 import {
   SwitchProfileModel,
   ProfileTypeEnum,
-  usePollingTableQuery,
   SwitchUrlsInfo,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -32,7 +31,7 @@ import {
   hasPermission
 
 }   from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery } from '@acx-ui/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()

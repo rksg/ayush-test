@@ -18,7 +18,6 @@ import {
   CapabilitiesApModel,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
-  FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
   LanPort,
@@ -32,13 +31,12 @@ import {
   SwitchClient,
   SwitchInformation,
   SwitchRbacUrlsInfo,
-  TableResult,
   Venue,
   WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload, MaybePromise } from '@acx-ui/types'
-import { createHttpRequest, getIntl }   from '@acx-ui/utils'
+import { RequestPayload, MaybePromise }                    from '@acx-ui/types'
+import { FILTER, TableResult, createHttpRequest, getIntl } from '@acx-ui/utils'
 
 import { isFulfilled, isPayloadHasField } from './utils'
 

@@ -9,6 +9,7 @@ import { Provider, intentAIUrl, store, intentAIApi }                            
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext }                                                                   from '../../__tests__/fixtures'
+import { Statuses, StatusReasons, DisplayStates }                                              from '../../states'
 import { mockedApPowerDistribution, mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs } from '../__tests__/fixtures'
 import { kpis }                                                                                from '../common'
 
@@ -195,5 +196,51 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     await click(await screen.findByText('View'))
     expect(mockNavigate).toBeCalled()
+  })
+
+  it('should transition to scheduled when statusReason is verified', async () => {
+    const verifiedStatusIntent = {
+      ...mockedIntentCRRM,
+      status: Statuses.na,
+      statusReason: StatusReasons.verified,
+      displayStatus: DisplayStates.naVerified
+    } as typeof mockedIntentCRRM
+    mockIntentContext({ intent: verifiedStatusIntent, kpis })
+
+    const params = {
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+      code: verifiedStatusIntent.code
+    }
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByText('Benefits')).toBeVisible()
+    expect(await screen.findByText('Projection')).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Intent Priority' })
+    expect(await screen.findByText('Potential trade-off')).toBeVisible()
+    await click(screen.getByRole('radio', {
+      name: 'High client throughput in sparse network'
+    }))
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Settings' })
+    await selectOptions(
+      await screen.findByPlaceholderText('Select time'),
+      '12:30 (UTC+08)'
+    )
+    expect(await screen.findByPlaceholderText('Select time')).toHaveValue('12.5')
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Summary' })
+    expect(await screen.findByText('Selected Intent Priority')).toBeVisible()
+
+    await click(actions.getByRole('button', { name: 'Apply' }))
+
+    expect(await screen.findByText(/has been updated/)).toBeVisible()
+    expect(mockNavigateToPath).toBeCalled()
   })
 })

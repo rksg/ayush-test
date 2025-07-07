@@ -11,15 +11,14 @@ import {
   EdgeNokiaOltData,
   EdgeNokiaCageData,
   EdgeNokiaOnuData,
-  TableResult,
   EdgeUrlsInfo,
   EdgeClusterStatus,
   EdgeNokiaOltCreatePayload,
   EdgeNokiaCageStateEnum
 } from '@acx-ui/rc/utils'
-import { baseEdgeTnmServiceApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseEdgeTnmServiceApi }          from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { isFulfilled } from './utils'
 

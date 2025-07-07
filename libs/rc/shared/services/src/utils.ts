@@ -2,7 +2,6 @@ import { find, isEqual, omit } from 'lodash'
 
 import {
   CommonResult,
-  TableResult,
   Transaction,
   TxStatus,
   onSocketActivityChanged,
@@ -10,8 +9,8 @@ import {
   NetworkApGroup,
   EventBase
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
+import { RequestPayload }                                            from '@acx-ui/types'
+import { ApiInfo, DateRangeFilter, computeRangeFilter, TableResult } from '@acx-ui/utils'
 
 
 type MetaBase = { id: string }

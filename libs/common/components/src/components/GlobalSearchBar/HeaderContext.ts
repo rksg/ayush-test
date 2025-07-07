@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-export interface HeaderContextType {
+interface HeaderContextType {
   setSearchExpanded?: (isExpanded: boolean) => void,
   setLicenseExpanded: (isExpanded: boolean) => void,
   searchExpanded?: boolean,

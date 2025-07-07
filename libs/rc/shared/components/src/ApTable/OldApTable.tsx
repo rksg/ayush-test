@@ -44,21 +44,21 @@ import {
   ApExtraParams,
   CommonResult,
   CompatibilitySelectedApInfo,
-  FILTER,
   ImportErrorRes,
   PowerSavingStatusEnum,
-  SEARCH,
-  TableQuery,
-  TableResult,
   getFilters,
   transformDisplayNumber,
-  transformDisplayText,
-  usePollingTableQuery
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
-import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
+import { AccountVertical, exportMessageMapping, getJwtTokenPayload, usePollingTableQuery,
+  SEARCH,
+  TableQuery,
+  TableResult,
+  FILTER
+}      from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'

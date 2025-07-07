@@ -4,13 +4,12 @@ import { useIdentityListQuery } from '@acx-ui/cloudpath/components'
 import { useApListQuery }       from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
-  useTableQuery,
   PersonalIdentityNetworks,
-  Persona,
-  TableQuery
+  Persona
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { TableQuery, useTableQuery }  from '@acx-ui/utils'
 
 
 

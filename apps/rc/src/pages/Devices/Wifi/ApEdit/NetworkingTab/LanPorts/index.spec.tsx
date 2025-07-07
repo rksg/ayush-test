@@ -50,8 +50,8 @@ import { LanPorts } from '.'
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 describe('Lan Port', () => {
@@ -191,8 +191,6 @@ describe('Lan Port', () => {
 
     it ('Should render LAN ports reset to default correctly with AP', async () => {
       // Given
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
       render(
         <Provider>
           <ApEditContext.Provider value={{

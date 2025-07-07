@@ -12,10 +12,10 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  useServiceListBreadcrumb,
-  useTableQuery
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useTableQuery }         from '@acx-ui/utils'
 
 import { CompatibilityCheck }    from './CompatibilityCheck'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'

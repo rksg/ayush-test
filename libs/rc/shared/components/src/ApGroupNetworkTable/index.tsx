@@ -16,11 +16,11 @@ import {
   NetworkExtended,
   NetworkType,
   NetworkTypeEnum,
-  useTableQuery,
   useConfigTemplate,
   ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { useGetVLANPoolPolicyInstance }                 from '../ApGroupEdit/ApGroupVlanRadioTab'
 import { renderConfigTemplateDetailsComponent }         from '../configTemplates'

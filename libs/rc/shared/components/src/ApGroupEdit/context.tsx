@@ -10,11 +10,11 @@ import {
 import {
   ApGroupRadioCustomization,
   ApGroupViewModel, Capabilities,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher, VenueExtended
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 export type ApGroupEditContextType = {
   tabTitle: string
