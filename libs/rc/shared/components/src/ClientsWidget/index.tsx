@@ -118,6 +118,8 @@ export function ClientsWidgetV2 () {
       filters: {},
       fields: [ 'macAddress']
     }
+  }, {
+    skip: !isSupportWifiWiredClient
   })
   const apWiredClientCount = apWiredClientTableQuery.data?.totalCount || 0
   const apWiredData = getApWiredClientStackedBarChartData(apWiredClientCount, intl)
