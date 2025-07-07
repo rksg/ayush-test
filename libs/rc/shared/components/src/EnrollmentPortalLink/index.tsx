@@ -101,7 +101,6 @@ export function EnrollmentPortalLink (props: { url: string }) {
         <div>
           <Tooltip title={copyButtonTooltip}>
             <Button
-              ghost
               type={'link'}
               icon={
                 <CopyOutlined style={{ color: 'var(--acx-accents-blue-50)' }} />
@@ -118,7 +117,6 @@ export function EnrollmentPortalLink (props: { url: string }) {
           <Link id={id} ellipsis={true} href={url} target={'_blank'} rel={'noreferrer'}></Link>
           <Tooltip title={openUrlTooltip}>
             <Button
-              ghost
               type={'link'}
               icon={
                 <StyledChatbotLink
@@ -135,7 +133,6 @@ export function EnrollmentPortalLink (props: { url: string }) {
           </Tooltip>
           <Tooltip title={qrCodeTooltip}>
             <Button
-              ghost
               type={'link'}
               icon={
                 <StyledQRLink
