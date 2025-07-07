@@ -33,15 +33,14 @@ import {
 } from '@acx-ui/msp/utils'
 import {
   EntitlementDeviceType,
-  EntitlementUtil,
-  useTableQuery
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { CatchErrorDetails } from '@acx-ui/utils'
+import { CatchErrorDetails, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from '../styledComponent'
 

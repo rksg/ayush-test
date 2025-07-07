@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import * as router from 'react-router-dom'
-
+import * as router                                     from '@acx-ui/react-router-dom'
 import { Provider, dataApiURL, store }                 from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
 
@@ -11,11 +10,16 @@ import { HealthTabs } from '.'
 
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useParams: jest.fn(),
-  useLocation: jest.fn()
+  useLocation: jest.fn(),
+  useTenantLink: () => ({
+    hash: '',
+    pathname: '/t1/t/analytics/health',
+    search: ''
+  })
 }))
 
 jest.mock('../Health', () => ({

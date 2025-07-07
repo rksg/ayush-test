@@ -24,7 +24,6 @@ import {
   getServiceDetailsLink,
   useServicesBreadcrumb,
   getServiceRoutePath,
-  useTableQuery,
   DdosAttackType,
   getDDoSAttackTypeString,
   getACLDirectionString,
@@ -37,6 +36,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
