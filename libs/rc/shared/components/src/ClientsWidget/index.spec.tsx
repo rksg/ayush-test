@@ -95,11 +95,11 @@ describe('Clients widget v2', () => {
           summary: {
             switchClients: {
               summary: {},
-              totalCount: 2
+              totalCount: 1
             },
             clients: {
-              summary: { Good: 2, Poor: 1, Unknown: 1 },
-              totalCount: 4
+              summary: { Good: 1, Poor: 1, Unknown: 1 },
+              totalCount: 3
             }
           }
         }))
@@ -110,7 +110,7 @@ describe('Clients widget v2', () => {
           fields: [
             'macAddress'
           ],
-          totalCount: 3,
+          totalCount: 2,
           page: 1,
           data: [
             {
@@ -118,9 +118,6 @@ describe('Clients widget v2', () => {
             },
             {
               macAddress: '54:10:33:b7:df:00'
-            },
-            {
-              macAddress: 'C0:6C:52:05:C3:00'
             }
           ]
         }))
