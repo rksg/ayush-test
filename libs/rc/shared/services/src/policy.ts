@@ -883,7 +883,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRadius',
             'UpdateRadius',
             'DeleteRadius',
-            'DeleteRadiuses'
+            'DeleteRadiuses',
+            'ActivateRadiusServerProfileOnVenue',
+            'DeactivateRadiusServerProfileOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
