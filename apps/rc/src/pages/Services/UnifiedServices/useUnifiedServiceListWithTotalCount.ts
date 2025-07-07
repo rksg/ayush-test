@@ -80,7 +80,6 @@ function useUnifiedServiceTotalCountMap (
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const defaultQueryArgs = { params, payload: defaultPayload, enableRbac }
 
@@ -121,7 +120,7 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.DPSK]: useGetDpskListQuery({}, { skip: !typeSet.has(ServiceType.DPSK) }),
     [ServiceType.WIFI_CALLING]: useGetEnhancedWifiCallingServiceListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.WIFI_CALLING) }),
     [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.PORTAL) }),
-    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
+    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: true }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
     [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
     [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }),
     [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
@@ -256,7 +255,6 @@ function useGetEdgeTnmServiceTotalCount (isDisabled?: boolean): TotalCountQueryR
 
 function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
@@ -268,7 +266,7 @@ function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisable
 
   const { data: pinPortal, isFetching: pinPortalIsFetching } =
     useWebAuthTemplateListQuery(
-      { params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled },
+      { params, payload: { ...defaultPayload }, enableRbac: true },
       { skip: isDisabled || !isEdgePinReady || !networkSegmentationSwitchEnabled }
     )
 

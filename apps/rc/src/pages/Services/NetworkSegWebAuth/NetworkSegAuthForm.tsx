@@ -39,6 +39,7 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+import { TrustedPortsModal } from 'libs/rc/shared/components/src/SwitchRegularProfileForm/TrustedPorts/TrustedPortsModal'
 
 export default function NetworkSegAuthForm (
   { editMode = false, modalMode = false, modalCallBack = ()=>{} }:
@@ -54,12 +55,10 @@ export default function NetworkSegAuthForm (
     oper: ServiceOperation.LIST
   }))
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
   const { data } = useGetWebAuthTemplateQuery(
-    { params, enableRbac: isSwitchRbacEnabled }, { skip: !editMode }
+    { params, enableRbac: true }, { skip: !editMode }
   )
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
@@ -81,11 +80,11 @@ export default function NetworkSegAuthForm (
       let results = {} as CommonResult
       if (editMode) {
         await updateWebAuthTemplate({
-          params, payload: value, enableRbac: isSwitchRbacEnabled
+          params, payload: value, enableRbac: true
         }).unwrap()
       } else {
         results = await createWebAuthTemplate({
-          params, payload: _.omit(value, 'id'), enableRbac: isSwitchRbacEnabled
+          params, payload: _.omit(value, 'id'), enableRbac: true
         }).unwrap()
       }
 

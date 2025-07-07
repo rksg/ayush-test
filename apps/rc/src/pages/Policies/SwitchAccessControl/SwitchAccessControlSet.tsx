@@ -8,7 +8,6 @@ import {
   Loader,
   showActionModal,
   Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
@@ -37,7 +36,6 @@ export function SwitchAccessControlSet () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const settingsId = 'switch-access-control-set'
 
   const [deleteAccessControl] = useDeleteSwitchAccessControlSetMutation()
@@ -57,7 +55,7 @@ export function SwitchAccessControlSet () {
       ],
       pagination: { settingsId }
     },
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     sorter: {
       sortField: 'policyName',
       sortOrder: 'ASC'

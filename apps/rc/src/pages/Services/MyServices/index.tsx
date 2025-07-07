@@ -51,7 +51,6 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const dhcpStateMap = useDhcpStateMap()
@@ -166,7 +165,7 @@ export default function MyServices () {
       totalCount: (useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
       }).data?.totalCount ?? 0) + (useWebAuthTemplateListQuery({
-        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+        params, payload: { ...defaultPayload }, enableRbac: true
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount ?? 0),
@@ -184,7 +183,7 @@ export default function MyServices () {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.EDGE],
       totalCount: useWebAuthTemplateListQuery({
-        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+        params, payload: { ...defaultPayload }, enableRbac: true
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount,

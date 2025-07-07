@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 
 import { switchApi, venueApi } from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }      from '@acx-ui/rc/utils'
 import { Provider, store }     from '@acx-ui/store'
 import {
   fireEvent,
@@ -14,6 +13,7 @@ import {
 import { staticRoutes } from '../../__tests__/fixtures'
 
 import StaticRoutes from '.'
+import { SwitchRbacUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -21,38 +21,45 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedSwitchDetail = {
+  id: 'switch-id',
+  venueId: 'venue-id',
+  name: 'switch-name'
+} as SwitchViewModel
+
 describe('edit switch/stack form', () => {
-  const params = { tenantId: 'tenant-id', switchId: 'switch-id', serialNumber: 'serial-number' }
+  const params = { tenantId: 'tenant-id', switchId: 'switch-id', 
+  serialNumber: 'serial-number', venueId: 'venue-id' }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+      rest.get(SwitchRbacUrlsInfo.getStaticRoutes.url,
         (_, res, ctx) => res(ctx.json(staticRoutes))),
-      rest.delete(SwitchUrlsInfo.deleteStaticRoutes.url,
+      rest.delete(SwitchRbacUrlsInfo.deleteStaticRoutes.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       )
     )
   })
 
   it('should render correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
+    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
     })
     expect(await screen.findByText(/static routes/i)).toBeVisible()
   })
 
   it('should render readonly is true correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={true} /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
+    render(<Provider><StaticRoutes readOnly={true} switchDetail={mockedSwitchDetail} /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
     })
     expect(await screen.findByText(/static routes/i)).toBeVisible()
   })
 
 
   it('should render add static route page correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
+    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
     const addButton = await screen.findAllByRole('button', { name: /add route/i })
@@ -62,8 +69,8 @@ describe('edit switch/stack form', () => {
   })
 
   it('should render edit static route page correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
+    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
@@ -74,8 +81,8 @@ describe('edit switch/stack form', () => {
   })
 
   it('should delete static route correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
+    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
