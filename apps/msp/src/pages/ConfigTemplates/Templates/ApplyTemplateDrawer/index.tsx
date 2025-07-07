@@ -11,12 +11,12 @@ import {
   useConfigTemplateOverride, CommonConfigTemplateDrawerProps,
   ConfigTemplatePageUI
 } from '@acx-ui/main/components'
-import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
-import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                         from '@acx-ui/user'
-import { AccountTier, AccountType }                          from '@acx-ui/utils'
+import { useMspCustomerListQuery }                 from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                         from '@acx-ui/msp/utils'
+import { useApplyConfigTemplateMutation }          from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType }      from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { AccountTier, AccountType, useTableQuery } from '@acx-ui/utils'
 
 import HspContext                    from '../../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS } from '../../constants'

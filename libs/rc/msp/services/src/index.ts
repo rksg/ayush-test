@@ -36,7 +36,6 @@ import {
   SolutionTokenSettings
 } from '@acx-ui/msp/utils'
 import {
-  TableResult,
   CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -47,10 +46,10 @@ import {
   CommonUrlsInfo,
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                          from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }           from '@acx-ui/user'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseMspApi }                                       from '@acx-ui/store'
+import { RequestPayload }                                   from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }                        from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal, TableResult } from '@acx-ui/utils'
 
 const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo
@@ -185,13 +184,25 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
         const deviceInventoryListReq =
           createHttpRequest(mspUrlsInfo.getMspDeviceInventory, params)
+        // eslint-disable-next-line max-len
+        const deviceInventoryList = await fetchWithBQ({ ...deviceInventoryListReq, body: JSON.stringify(payload) })
+        const deviceInventoryListData = deviceInventoryList.data as TableResult<EcDeviceInventory>
         return {
-          ...deviceInventoryListReq,
-          body: payload
+          data: {
+            ...deviceInventoryListData,
+            data: [
+              ...deviceInventoryListData.data.map(item => {
+                return {
+                  ...item,
+                  fwVersion: item.fwVersion || item.firmwareVersion
+                }
+              })
+            ]
+          }
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }],

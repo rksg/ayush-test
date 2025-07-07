@@ -12,6 +12,7 @@ import {
   DhcpApInfo,
   ExternalAntenna,
   PoeModeEnum,
+  PoeOutModeEnum,
   VenueLanPort
 } from '../models'
 import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
@@ -522,6 +523,7 @@ export interface CapabilitiesApModel {
   canSupportLacp: boolean,
   canSupportPoeMode: boolean,
   canSupportPoeOut: boolean,
+  canSupportPoeOutMode: boolean,
   capabilityScore: number,
   has160MHzChannelBandwidth: boolean,
   isOutdoor: boolean,
@@ -535,6 +537,8 @@ export interface CapabilitiesApModel {
   model: string,
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
+  poeOutModeCapabilities?: PoeOutModeEnum[],
+  defaultPoeOutMode?: PoeOutModeEnum,
   requireOneEnabledTrunkPort: boolean,
   simCardPrimaryEnabled?: boolean,
   simCardPrimaryRoaming?: boolean,
@@ -724,6 +728,7 @@ export interface WifiApSetting {
   externalAntenna?: ExternalAntenna;
   poeOut?: boolean | boolean[];
   poeMode?: string;
+  poeOutMode?: PoeOutModeEnum;
   lanPorts?: LanPort[];
   lan?: LanPort[];
 }
@@ -1047,18 +1052,6 @@ export interface SoftGreChanges {
   lanPorts: SoftGreLanPortChange[]
 }
 
-export enum SoftGreState {
-  Init,
-  TurnOffSoftGre,
-  TurnOnSoftGre,
-  ModifySoftGreProfile,
-  TurnOffDHCPOption82,
-  TurnOnAndModifyDHCPOption82Settings,
-  TurnOnLanPort,
-  TurnOffLanPort,
-  ResetToDefault
-}
-
 export enum SoftGreDuplicationChangeState {
   Init,
   OnChangeSoftGreProfile,
@@ -1085,13 +1078,6 @@ export interface SoftGreDuplicationChangeDispatcher {
 export interface SoftGreOptionCandidate {
   option: DefaultOptionType
   gatewayIps:string[]
-}
-
-export interface SoftGreProfileDispatcher {
-  portId?: string,
-  state: SoftGreState,
-  index: number,
-  softGreProfileId?: string
 }
 
 export interface Voter {
@@ -1125,6 +1111,8 @@ export interface VenueLanPortSettings {
   enabled?: boolean
   softGreEnabled?: boolean
   softGreSettings?: LanPortSoftGreProfileSettings
+  dhcpOption82Enabled?: boolean
+  dhcpOption82Settings?: DhcpOption82Settings
   clientIsolationEnabled?: boolean
   clientIsolationSettings?: LanPortClientIsolationSettings
 }

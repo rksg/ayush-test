@@ -6,7 +6,8 @@ import { useParams } from 'react-router-dom'
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { CertificateTable, CertTemplateLink, ResourceBanner }                  from '@acx-ui/rc/components'
 import { useGetCertificatesByIdentityIdQuery, useGetCertificateTemplateQuery } from '@acx-ui/rc/services'
-import { Persona, PersonaGroup, useTableQuery }                                from '@acx-ui/rc/utils'
+import { Persona, PersonaGroup }                                               from '@acx-ui/rc/utils'
+import { useTableQuery }                                                       from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 

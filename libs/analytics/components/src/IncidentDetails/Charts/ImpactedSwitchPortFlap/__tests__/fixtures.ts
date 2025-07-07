@@ -6,6 +6,7 @@ export const mockImpactedSwitches = {
         mac: '38:45:3B:3C:F1:20',
         model: 'ICX8200-24P',
         firmware: 'RDR10020_b237',
+        serial: 'SN123456',
         ports: [{
           portNumber: 'LAG1',
           type: 'LAG',
@@ -41,6 +42,7 @@ export const mockImpactedSwitchesWithUnknown = {
         mac: '38:45:3B:3C:F1:20',
         model: 'ICX8200-24P',
         firmware: 'RDR10020_b237',
+        serial: 'SN123456',
         ports: [{
           portNumber: 'LAG1',
           type: 'LAG',

@@ -3,14 +3,12 @@ import _                       from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  RequestFormData,
   SaveSwitchProfile,
   SwitchViewModel,
   SwitchVlans,
   Acl,
   Vlan,
   SwitchPortViewModel,
-  TableResult,
   SwitchDefaultVlan,
   SwitchProfile,
   SwitchVlanUnion,
@@ -53,8 +51,6 @@ import {
   Lag,
   SwitchVlan,
   downloadFile,
-  SEARCH,
-  SORTER,
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse,
   FlexibleAuthentication,
@@ -77,7 +73,11 @@ import {
   createHttpRequest,
   batchApi,
   ignoreErrorModal,
-  APT_QUERY_CACHE_TIME
+  APT_QUERY_CACHE_TIME,
+  SEARCH,
+  SORTER,
+  TableResult,
+  RequestFormData
 } from '@acx-ui/utils'
 
 import { SwitchRbacUrlsInfo } from './switchRbacUrls'

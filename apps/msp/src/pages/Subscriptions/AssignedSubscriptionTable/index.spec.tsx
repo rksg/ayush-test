@@ -142,7 +142,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-const utils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 
 describe('AssignedSubscriptionTable', () => {
   let params: { tenantId: string }

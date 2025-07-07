@@ -35,7 +35,6 @@ import {
   useDeleteIdentityGroupTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
@@ -46,7 +45,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { resolveTenantTypeFromPath, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                     from '@acx-ui/user'
-import { getOpsApi }                                                          from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }                                           from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
 
@@ -92,7 +91,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<ConfigTemplate>({
     useQuery: useGetConfigTemplateListQuery,
     defaultPayload: {},
     search: {

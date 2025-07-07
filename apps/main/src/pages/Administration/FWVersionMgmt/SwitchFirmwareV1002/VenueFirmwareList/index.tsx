@@ -30,7 +30,6 @@ import {
   UpgradePreferences,
   sortProp,
   defaultSort,
-  usePollingTableQuery,
   SwitchFirmwareStatusType,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
@@ -45,7 +44,7 @@ import {
   filterByAccess, getUserProfile, hasAllowedOperations,
   hasRoles
 } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay, usePollingTableQuery } from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 

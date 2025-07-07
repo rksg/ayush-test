@@ -19,7 +19,6 @@ import {
   SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   policyTypeLabelWithCountMapping
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -31,7 +30,7 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 }                from '@acx-ui/user'
-import { noDataDisplay, getOpsApi } from '@acx-ui/utils'
+import { noDataDisplay, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 export const getItemTooltip = (items: string[]) => {
   return items?.length ? <FormattedMessage

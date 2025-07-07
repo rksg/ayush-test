@@ -85,7 +85,6 @@ export enum FIRMWARE {
 
 export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -433,7 +432,6 @@ export function SwitchForm () {
     const re = (isSupport8100 && isSpecific8100Model(value))
       ? createSwitchSerialPatternForSpecific8100Model()
       : createSwitchSerialPattern({
-        isSupport8200AV: isSupport8200AV,
         isSupport8100: isSupport8100,
         isSupport8100X: isSupport8100X,
         isSupport7550Zippy: isSupport7550Zippy

@@ -13,7 +13,6 @@ import {
   ConfigTemplateUrlsInfo,
   Network,
   NetworkSaveData,
-  TableResult,
   WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -29,12 +28,12 @@ import {
   ApiVersionEnum,
   ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { isRecSite }                   from '@acx-ui/react-router-dom'
-import { baseConfigTemplateApi }       from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { isRecSite }                                from '@acx-ui/react-router-dom'
+import { baseConfigTemplateApi }                    from '@acx-ui/store'
+import { RequestPayload }                           from '@acx-ui/types'
+import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { networkApi }    from '../network'
+import { networkApi }     from '../network'
 import {
   fetchEnhanceRbacNetworkVenueList,
   fetchNetworkVlanPoolList,

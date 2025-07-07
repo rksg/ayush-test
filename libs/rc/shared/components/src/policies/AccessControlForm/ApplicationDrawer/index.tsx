@@ -30,13 +30,13 @@ import {
   PolicyOperation,
   PolicyType,
   sortProp,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TableResult }               from '@acx-ui/utils'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES }                  from '../../AccessControl/constants'
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'

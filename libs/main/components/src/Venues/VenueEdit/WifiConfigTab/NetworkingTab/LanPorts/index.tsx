@@ -2,7 +2,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { isEqual, clone, cloneDeep, isObject }           from 'lodash'
+import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import {
@@ -16,7 +16,6 @@ import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData,
   useSoftGreProfileLimitedSelection,
   useIpsecProfileLimitedSelection
 }
@@ -111,7 +110,6 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
 
 const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
   const { isTemplate } = useConfigTemplate()
-  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
 
   const { lanPortsMap, isLoading } =
     useGetDefaultVenueLanPortsQuery({ params: { venueId } },
@@ -120,7 +118,7 @@ const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
           lanPortsMap: new Map(data?.map(l => [l.model, l])),
           isLoading: isLoading
         }
-      }, skip: isTemplate || !isLanPortResetEnabled })
+      }, skip: isTemplate })
 
   const { templateLanPortsMap, isTemplateLoading } =
   useGetDefaultVenueTemplateLanPortsQuery({ params: { venueId } },
@@ -129,7 +127,7 @@ const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
         templateLanPortsMap: new Map(data?.map(l => [l.model, l])),
         isTemplateLoading: isLoading
       }
-    }, skip: !isTemplate || !isLanPortResetEnabled })
+    }, skip: !isTemplate })
 
   return {
     defaultLanPortsByModelMap: isTemplate? templateLanPortsMap : lanPortsMap,
@@ -156,7 +154,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
@@ -237,10 +234,11 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     duplicationChangeDispatch: duplicationChangeDispatch })
 
   const form = Form.useFormInstance()
-  const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
+  const [apModel, apPoeMode, apPoeOut, apPoeOutMode, lanPorts] = [
     useWatch('model'),
     useWatch('poeMode'),
     useWatch('poeOut'),
+    useWatch('poeOutMode'),
     useWatch('lan')
   ]
 
@@ -254,7 +252,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   }, [setReadyToScroll, venueLanPorts?.data])
 
   useEffect(() => {
-    const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
+    const { model, lan, poeOut, poeOutMode, poeMode } = form?.getFieldsValue(true)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -263,8 +261,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             ...item,
             lanPorts: lan,
             ...(poeMode && { poeMode: poeMode }),
-            ...(poeOut && isObject(poeOut) &&
-                 { poeOut: Object.values(poeOut).some(item => item === true) })
+            ...(poeOut !== undefined ? { poeOut } : {}),
+            ...(poeOut
+              ? (poeOutMode !== undefined ? { poeOutMode } : {})
+              : { poeOutMode: undefined })
           } : item
       }) as VenueLanPorts[]
 
@@ -285,7 +285,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
       customGuiChangedRef.current = false
     }
-  }, [apPoeMode, lanPoeOut, lanPorts])
+  }, [apPoeMode, apPoeOut, apPoeOutMode, lanPorts])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -298,7 +298,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
-    const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
     const selectedModel = cloneDeep(selected)
     if(selectedModel && !selectedModel.isSettingsLoaded) {
@@ -323,7 +322,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
     form?.setFieldsValue({
       ...selectedModelWithDefault,
-      poeOut: poeOutFormData,
+      poeOutMode: lanPortData?.find(item => item.model === value)?.poeOutMode ?? modelCaps?.defaultPoeOutMode,
       lan: selectedModelWithDefault?.lanPorts
     })
   }
@@ -342,20 +341,19 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const newLanPortData = cloneDeep(lanPortData)
     const newLanPortOrinData = cloneDeep(lanPortOrinData)
 
-    newLanPortData?.forEach((item, index) => {
-      if(item.model === selected.model) {
-        newLanPortData[index] = selected
-      }
-    })
+    const updateArrayItem = (
+      array: VenueLanPorts[] | undefined,
+      targetModel: string,
+      newData: VenueLanPorts
+    ) => {
+      return array?.map(item => item.model === targetModel ? newData : item)
+    }
 
-    newLanPortOrinData?.forEach((item, index) => {
-      if(item.model === selected.model) {
-        newLanPortOrinData[index] = selected
-      }
-    })
+    const updatedLanPortData = updateArrayItem(newLanPortData, selected.model, selected)
+    const updatedLanPortOrinData = updateArrayItem(newLanPortOrinData, selected.model, selected)
 
-    setLanPortData(newLanPortData)
-    setLanPortOrinData(newLanPortOrinData)
+    setLanPortData(updatedLanPortData)
+    setLanPortOrinData(updatedLanPortOrinData)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
@@ -380,7 +378,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       })
       const payload = data ?? lanPortData
       if (payload) {
-        if (isLanPortResetEnabled && isResetLanPort(payload)) {
+        if (isResetLanPort(payload)) {
           showActionModal({
             type: 'confirm',
             width: 450,
@@ -619,11 +617,18 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => ({
-    enabled: lanPortData.enabled,
-    clientIsolationEnabled: lanPortData.clientIsolationEnabled,
-    clientIsolationSettings: lanPortData.clientIsolationSettings
-  })
+  const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => {
+    const dhcpOption82Enabled = lanPortData.dhcpOption82?.dhcpOption82Enabled ?? false
+
+    return {
+      enabled: lanPortData.enabled,
+      dhcpOption82Enabled,
+      dhcpOption82Settings: dhcpOption82Enabled ?
+        lanPortData.dhcpOption82?.dhcpOption82Settings : undefined,
+      clientIsolationEnabled: lanPortData.clientIsolationEnabled,
+      clientIsolationSettings: lanPortData.clientIsolationSettings
+    }
+  }
 
   const handleUpdateLanPortSpecificSettings = async (
     model:string,
@@ -642,7 +647,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
         },
         payload: {
           poeMode: venueLanPorts.poeMode,
-          poeOut: venueLanPorts.poeOut
+          poeOut: venueLanPorts.poeOut,
+          poeOutMode: venueLanPorts.poeOutMode
         }
       }).unwrap()
     }
@@ -667,7 +673,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     setSelectedModel(defaultLanPortsData as VenueLanPorts)
     form?.setFieldsValue({
       ...defaultLanPortsData,
-      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPortsData?.poeOut),
       lan: defaultLanPortsData?.lanPorts
     })
     let records = clone(resetModels)
@@ -707,7 +712,11 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       if (eqOriginLan) continue
 
       const defaultLan = defaultLanPortsByModelMap.get(model)
-      const resetToDefault = isEqualLanPort(currentLan!, defaultLan!)
+      if (defaultLan === undefined) return false
+
+      const defaultLanPortsData =
+        getModelWithDefaultEthernetPortProfile(defaultLan, selectedModelCaps.lanPorts, tenantId, isTemplate)
+      const resetToDefault = isEqualLanPort(currentLan!, defaultLanPortsData!)
       if (resetToDefault) {
         return true
       }
@@ -819,7 +828,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           onGUIChanged={handleGUIChanged}
         />
       </Col>
-      {!isTemplate && isLanPortResetEnabled && apModel &&
+      {!isTemplate && apModel &&
       <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
         <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
           <Button type='link' disabled={!isAllowEdit} onClick={handleResetDefaultSettings}>

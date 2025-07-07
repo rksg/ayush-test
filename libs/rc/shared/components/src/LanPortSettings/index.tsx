@@ -104,8 +104,6 @@ export function LanPortSettings (props: {
   const hasVni = lan?.vni > 0
   const { isTemplate } = useConfigTemplate()
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
-  const softGreTunnelFieldName = ['lan', index, 'softGreEnabled']
-  const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
 
@@ -173,15 +171,6 @@ export function LanPortSettings (props: {
   }, [currentEthernetPortData])
 
   return (<>
-    {selectedPortCaps?.isPoeOutPort && <Form.Item
-      name={['poeOut', index]}
-      label={$t({ defaultMessage: 'Enable PoE Out' })}
-      valuePropName='checked'
-      children={<Switch
-        disabled={readOnly}
-        onChange={() => onChangedByCustom('poeOut')}
-      />}
-    />}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
@@ -280,7 +269,7 @@ export function LanPortSettings (props: {
             ipsecOptionList={ipsecOptionList}
             ipsecOptionDispatch={ipsecOptionDispatch}
           />
-          {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
+          {isDhcpOption82Enabled &&
             <DhcpOption82Settings
               readonly={readOnly ?? false}
               index={index}
@@ -290,6 +279,7 @@ export function LanPortSettings (props: {
               venueId={venueId}
               portId={selectedModel.lanPorts![index].portId}
               apModel={selectedModelCaps.model}
+              sourceData={selectedModel.lanPorts?.[index].dhcpOption82}
             />
           }
         </>

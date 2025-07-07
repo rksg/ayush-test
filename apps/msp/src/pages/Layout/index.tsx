@@ -6,6 +6,7 @@ import { useIntl }    from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
 import {
+  HeaderContext,
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
@@ -19,7 +20,6 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'

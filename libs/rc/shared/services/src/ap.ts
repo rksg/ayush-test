@@ -63,12 +63,8 @@ import {
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
-  RequestFormData,
-  SEARCH,
-  SORTER,
   SupportCcdApGroup,
   SupportCcdVenue,
-  TableResult,
   Venue,
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
@@ -112,7 +108,11 @@ import {
   batchApi,
   createHttpRequest,
   getEnabledDialogImproved,
-  ignoreErrorModal
+  ignoreErrorModal,
+  RequestFormData,
+  SEARCH,
+  SORTER,
+  TableResult
 } from '@acx-ui/utils'
 
 
@@ -1387,6 +1387,7 @@ export const apApi = baseApApi.injectEndpoints({
             payload: {
               poeMode: apSettings.poeMode,
               poeOut: apSettings.poeOut,
+              poeOutMode: apSettings.poeOutMode,
               useVenueSettings: apSettings.useVenueSettings
             }
           }

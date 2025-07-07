@@ -19,8 +19,8 @@ const { mockEdgeSubInterfacesStatus, mockEdgeLagSubInterfacesStatus } = EdgeSubI
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 

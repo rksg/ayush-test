@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { Card, GridCol, GridRow, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { useGetLayer2AclOverviewQuery, useVenuesListQuery }           from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   MacAclOverview
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 export default function Layer2ACLOverview () {
   const { $t } = useIntl()
