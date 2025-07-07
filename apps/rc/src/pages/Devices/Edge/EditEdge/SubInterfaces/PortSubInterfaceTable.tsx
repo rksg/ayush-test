@@ -6,7 +6,7 @@ import {
   useImportSubInterfacesCSVMutation,
   useUpdateSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { convertEdgeSubInterfaceToApiPayload, SubInterface } from '@acx-ui/rc/utils'
+import { convertEdgeSubInterfaceToApiPayload, EdgePort, EdgeLag, SubInterface } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -20,6 +20,10 @@ interface PortSubInterfaceTableProps {
   portId: string
   isSupportAccessPort?: boolean
   data?: SubInterface[]
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {

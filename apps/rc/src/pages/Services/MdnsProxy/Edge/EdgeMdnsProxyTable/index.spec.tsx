@@ -31,8 +31,8 @@ const mockMdns2 = mockEdgeMdnsViewDataList[1]
 
 const mockedUsedNavigate = jest.fn()
 const mockedDeleteReq = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 

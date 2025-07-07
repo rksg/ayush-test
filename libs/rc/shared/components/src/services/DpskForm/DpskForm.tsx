@@ -35,7 +35,6 @@ import {
   useServicePageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   useServicePreviousPath,
   useConfigTemplate,
   ConfigTemplateType,
@@ -45,6 +44,7 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../../configTemplates'
 

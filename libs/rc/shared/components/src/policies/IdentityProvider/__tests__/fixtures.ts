@@ -9,9 +9,9 @@ import {
   NaiRealmEapMethodEnum,
   NaiRealmEcodingEnum,
   NaiRealmType,
-  Network,
-  TableResult
+  Network
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockedPolicyId = '__Policy_ID__'

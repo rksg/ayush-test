@@ -6,9 +6,15 @@ import { render, screen } from '@acx-ui/test-utils'
 import { WiFiNetworksPage, NetworkTabsEnum } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai/networks',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 jest.mock('./NetworksTable', () => ({
   NetworkList: () => <div>Network list content</div>

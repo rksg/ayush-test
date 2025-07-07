@@ -6,9 +6,15 @@ import { render, screen } from '@acx-ui/test-utils'
 import Clients, { AIClientsTabEnum } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 jest.mock('./ClientsList', () => ({
   ClientsList: () => <div>Client list content</div>

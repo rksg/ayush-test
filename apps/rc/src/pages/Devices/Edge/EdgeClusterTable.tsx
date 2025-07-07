@@ -19,7 +19,6 @@ import {
   allowSendOtpForStatus,
   allowSendFactoryResetStatus,
   getUrl,
-  usePollingTableQuery,
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
@@ -30,7 +29,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
-import { getOpsApi }                              from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery }        from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 

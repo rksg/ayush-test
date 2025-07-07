@@ -121,7 +121,17 @@ describe('CaptiveNetworkForm-Directory', () => {
       ),
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
-      )
+      ),
+      rest.get(DirectoryServerUrls.getDirectoryServer.url, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            id: req.params.id,
+            name: 'Mock Directory Profile',
+            type: 'LDAP',
+            wifiNetworkIds: []
+          })
+        )
+      })
     )
   })
 

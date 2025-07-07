@@ -22,12 +22,12 @@ import {
   KeyValue,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   WifiNetwork,
   WifiOperatorViewModel,
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 
 const defaultPayload = {

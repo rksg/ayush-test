@@ -15,7 +15,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ServiceType,
-  useTableQuery,
   useConfigTemplate,
   getServiceDetailsLink,
   ServiceOperation,
@@ -30,7 +29,7 @@ import {
   useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getImageDownloadUrl }                                     from '@acx-ui/utils'
+import { getImageDownloadUrl, useTableQuery }                      from '@acx-ui/utils'
 
 const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
 const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')

@@ -8,7 +8,7 @@ import { Table, TableProps, showActionModal }                                   
 import { Features }                                                               from '@acx-ui/feature-toggle'
 import { CheckMark }                                                              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgeUrlsInfo, SubInterface }                                             from '@acx-ui/rc/utils'
+import { EdgePort, EdgeLag, EdgeUrlsInfo, SubInterface }                          from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                          from '@acx-ui/user'
 import { getOpsApi }                                                              from '@acx-ui/utils'
@@ -31,6 +31,10 @@ interface SubInterfaceTableProps {
   lagId?: number
   isSupportAccessPort?: boolean
   data?: SubInterface[]
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 interface UploadResultType {
@@ -55,15 +59,17 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     handleUpload,
     uploadResult,
     portId,
-    lagId
+    lagId,
+    originalInterfaceData
   } = props
-  const { subInterfaceData } = useContext(EditEdgeDataContext)
+  const { subInterfaceData, edgeSdLanData } = useContext(EditEdgeDataContext)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<SubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
 
   const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces)
+  const isSdLanRun = !!edgeSdLanData
 
   const closeDrawers = () => {
     setDrawerVisible(false)
@@ -157,6 +163,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (selectedRows) => (
+        isSdLanRun && selectedRows.some(item => item.corePortEnabled || item.accessPortEnabled)
+      ),
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteSubInterfaces)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
@@ -228,6 +237,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             portId={portId}
             lagId={lagId}
             allSubInterfaces={subInterfaceList}
+            originalInterfaceData={originalInterfaceData}
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}
