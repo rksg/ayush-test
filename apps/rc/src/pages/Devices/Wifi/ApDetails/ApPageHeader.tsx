@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Menu,
   MenuProps,
@@ -9,7 +11,7 @@ import { useIntl } from 'react-intl'
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
 import { get }                                                                                    from '@acx-ui/config'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { APStatus, LowPowerBannerAndModal }                                                       from '@acx-ui/rc/components'
+import { ApCliSession, APStatus, LowPowerBannerAndModal }                                         from '@acx-ui/rc/components'
 import { useApActions }                                                                           from '@acx-ui/rc/components'
 import {
   useApDetailHeaderQuery,
@@ -22,7 +24,8 @@ import {
   useApContext,
   ApStatus,
   PowerSavingStatusEnum,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ApCliRequest
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -42,6 +45,7 @@ function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  // const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
@@ -56,6 +60,12 @@ function ApPageHeader () {
     modelName: model,
     enableRbac: isUseRbacApi
   })
+  const [cliModalState, setCliModalOpen] = useState(false)
+  const [cliData, setCliData] = useState({
+    token: '',
+    serialNumber: '',
+    apName: ''
+  } as ApCliRequest)
 
   const isOutdoorAp = apCapabilities?.isOutdoor
 
@@ -87,6 +97,7 @@ function ApPageHeader () {
     if (!serialNumber) return
 
     const actionMap = {
+      cliSession: apAction.showAccessApCli,
       reboot: apAction.showRebootAp,
       downloadLog: apAction.showDownloadApLog,
       blinkLed: apAction.showBlinkLedAp,
@@ -95,6 +106,15 @@ function ApPageHeader () {
 
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
+    } else if (e.key === 'cliSession') {
+      actionMap['cliSession'](
+        tenantId || '', venueId || '', serialNumber, data?.title || serialNumber,
+        (req: ApCliRequest) => {
+          setCliData(req)
+          setTimeout(() => {
+            setCliModalOpen(true)
+          }, 1000)
+        })
     } else {
       // eslint-disable-next-line max-len
       (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
@@ -114,32 +134,39 @@ function ApPageHeader () {
         key: 'blinkLed',
         scopeKey: [WifiScopes.READ],
         roles: [RolesEnum.READ_ONLY]
-      }] : [{
-        label: $t({ defaultMessage: 'Reboot' }),
-        key: 'reboot',
-        scopeKey: [WifiScopes.UPDATE],
-        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-        roles: operationRoles
-      }, {
-        label: $t({ defaultMessage: 'Download Log' }),
-        key: 'downloadLog',
-        scopeKey: [WifiScopes.READ],
-        roles: [RolesEnum.READ_ONLY, ...operationRoles]
-      }, {
-        label: $t({ defaultMessage: 'Blink LEDs' }),
-        key: 'blinkLed',
-        scopeKey: [WifiScopes.READ],
-        roles: [RolesEnum.READ_ONLY, ...operationRoles]
-      }, {
-        type: 'divider',
-        key: 'divider'
-      }, {
-        label: $t({ defaultMessage: 'Delete AP' }),
-        key: 'delete',
-        scopeKey: [WifiScopes.DELETE],
-        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
-        roles: operationRoles
-      }]).filter(item => {
+      }] :
+        [{
+          label: $t({ defaultMessage: 'CLI Session' }),
+          key: 'cliSession',
+          scopeKey: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
+          roles: operationRoles
+        }, {
+          label: $t({ defaultMessage: 'Reboot' }),
+          key: 'reboot',
+          scopeKey: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
+          roles: operationRoles
+        }, {
+          label: $t({ defaultMessage: 'Download Log' }),
+          key: 'downloadLog',
+          scopeKey: [WifiScopes.READ],
+          roles: [RolesEnum.READ_ONLY, ...operationRoles]
+        }, {
+          label: $t({ defaultMessage: 'Blink LEDs' }),
+          key: 'blinkLed',
+          scopeKey: [WifiScopes.READ],
+          roles: [RolesEnum.READ_ONLY, ...operationRoles]
+        }, {
+          type: 'divider',
+          key: 'divider'
+        }, {
+          label: $t({ defaultMessage: 'Delete AP' }),
+          key: 'delete',
+          scopeKey: [WifiScopes.DELETE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
+          roles: operationRoles
+        }]).filter(item => {
         const { scopeKey: scopes, rbacOpsIds, roles } = item
         const isHasPermission = hasPermission({ scopes, rbacOpsIds, roles })
         return (
@@ -166,62 +193,71 @@ function ApPageHeader () {
   </Dropdown>]
 
   return (
-    <PageHeader
-      title={data?.title || ''}
-      titleExtra={
-        <APStatus
-          status={status}
-          showText={!currentApOperational}
-          powerSavingStatus={powerSavingStatus}
-        />
-      }
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }) },
-        { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ]}
-      extra={[
-        enableTimeFilter()
-          ? <RangePicker
-            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-            onDateApply={setDateFilter as CallableFunction}
-            showTimePicker
-            selectionType={range}
-            maxMonthRange={isDateRangeLimit ? 1 : 3}
+    <>
+      <PageHeader
+        title={data?.title || ''}
+        titleExtra={
+          <APStatus
+            status={status}
+            showText={!currentApOperational}
+            powerSavingStatus={powerSavingStatus}
           />
-          : <></>,
-        ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
-        ...filterByAccess([
-          <Button
-            type='primary'
-            scopeKey={[WifiScopes.UPDATE]}
-            rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.updateAp)]}
-            onClick={() => {
-              navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}/edit/general`
-              }, {
-                state: {
-                  from: location
-                }
-              })
-            }}
-          >{$t({ defaultMessage: 'Configure' })}</Button>
-        ])
-      ]}
-      footer={<>
-        {
-          AFC_Featureflag && afcEnabled &&
+        }
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Wi-Fi' }) },
+          { text: $t({ defaultMessage: 'Access Points' }) },
+          { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
+        ]}
+        extra={[
+          enableTimeFilter()
+            ? <RangePicker
+              selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+              onDateApply={setDateFilter as CallableFunction}
+              showTimePicker
+              selectionType={range}
+              maxMonthRange={isDateRangeLimit ? 1 : 3}
+            />
+            : <></>,
+          ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
+          ...filterByAccess([
+            <Button
+              type='primary'
+              scopeKey={[WifiScopes.UPDATE]}
+              rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.updateAp)]}
+              onClick={() => {
+                navigate({
+                  ...basePath,
+                  pathname: `${basePath.pathname}/edit/general`
+                }, {
+                  state: {
+                    from: location
+                  }
+                })
+              }}
+            >{$t({ defaultMessage: 'Configure' })}</Button>
+          ])
+        ]}
+        footer={<>
+          {
+            AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
           <LowPowerBannerAndModal
             afcInfo={ApStatusData.afcInfo}
             from={'ap'}
             isOutdoor={isOutdoorAp}
           />
-        }
-        <ApTabs apDetail={data as ApDetailHeader} />
-      </>}
-    />
+          }
+          <ApTabs apDetail={data as ApDetailHeader} />
+        </>}
+      />
+      <ApCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={cliData.serialNumber}
+        jwtToken={cliData.token}
+        apName={cliData.apName}
+      />
+    </>
   )
 }
 
