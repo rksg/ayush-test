@@ -25,7 +25,6 @@ import {
   useImportGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   Guest,
   GuestTypesEnum,
   transformDisplayText,
@@ -33,8 +32,6 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  FILTER,
-  SEARCH,
   ClientInfo,
   ClientUrlsInfo,
   CommonRbacUrlsInfo,
@@ -49,7 +46,7 @@ import {
   hasAllowedOperations,
   getUserProfile
 } from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+import { getIntl, getOpsApi, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail, isEnabledGeneratePassword } from '../GuestsDetail'
 import { GenerateNewPasswordModal }                                     from '../GuestsDetail/generateNewPasswordModal'
@@ -230,7 +227,7 @@ export const GuestsTable = () => {
   const columns: TableProps<Guest>['columns'] = [
     {
       key: 'creationDate',
-      title: $t({ defaultMessage: 'Created' }),
+      title: $t({ defaultMessage: 'Created Time' }),
       dataIndex: 'creationDate',
       sorter: true,
       defaultSortOrder: 'ascend',

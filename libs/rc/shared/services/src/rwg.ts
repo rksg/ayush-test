@@ -3,7 +3,6 @@ import { isArray } from 'lodash'
 import {
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TableResult,
   RWG,
   GatewayAlarms,
   GatewayDashboard,
@@ -14,9 +13,9 @@ import {
   RWGRow,
   RWGClusterNode
 } from '@acx-ui/rc/utils'
-import { baseRWGApi }                  from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseRWGApi }                               from '@acx-ui/store'
+import { RequestPayload }                           from '@acx-ui/types'
+import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 export const rwgApi = baseRWGApi.injectEndpoints({
   endpoints: (build) => ({

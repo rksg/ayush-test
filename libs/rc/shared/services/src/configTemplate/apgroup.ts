@@ -3,13 +3,13 @@ import {
   AddApGroup,
   ApGroup,
   ApGroupConfigTemplateUrlsInfo,
-  TableResult,
   ApGroupViewModel,
   onSocketActivityChanged,
   onActivityMessageReceived, ConfigTemplateUrlsInfo, CommonResult
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { TableResult }           from '@acx-ui/utils'
 
 import {
   addApGroupFn, deleteApGroupsTemplateFn,

@@ -2,7 +2,6 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { groupBy }             from 'lodash'
 
 import {
-  TableResult,
   CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -15,9 +14,9 @@ import {
   EdgeMvSdLanResponseType,
   isEdgeWlanTemplate
 } from '@acx-ui/rc/utils'
-import { baseEdgeSdLanApi }  from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeSdLanApi }               from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import { serviceApi }                                                        from './service'
 import { handleCallbackWhenActivityDone, handleCallbackWhenActivitySuccess } from './utils'

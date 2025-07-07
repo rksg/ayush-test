@@ -13,8 +13,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { DateFormatEnum, formats, formatter } from '@acx-ui/formatter'
-import { useTableQuery }                      from '@acx-ui/rc/utils'
-import { getIntl }                            from '@acx-ui/utils'
+import { getIntl, useTableQuery }             from '@acx-ui/utils'
 
 import { useGetAuditsQuery, useRetryAuditMutation, useGetQuotaUsageQuery } from './services'
 import { AuditDto, AuditStatusEnum }                                       from './types'

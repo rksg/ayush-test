@@ -107,18 +107,28 @@ const SubInterfaceSettingView = () => {
     />
     <NodesTabs
       nodeList={clusterInfo?.edgeList}
-      content={(serialNumber) => (
-        <SubInterfaceSettingsForm
-          serialNumber={serialNumber}
-          ports={clusterNetworkSettings?.portSettings
-            ?.find(settings => settings.serialNumber === serialNumber)
-            ?.ports ?? []
-          }
-          portStatus={allInterface[serialNumber]?.filter(item => !item.isLag)}
-          lagStatus={allInterface[serialNumber]?.filter(item => item.isLag)}
-          isSupportAccessPort={isSupportAccessPort}
-        />
-      )}
+      content={
+        (serialNumber) => {
+          // eslint-disable-next-line max-len
+          const originalPortData = clusterNetworkSettings?.portSettings.find(item => item.serialNumber === serialNumber)?.ports
+          // eslint-disable-next-line max-len
+          const originalLagData = clusterNetworkSettings?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+          return <SubInterfaceSettingsForm
+            serialNumber={serialNumber}
+            ports={clusterNetworkSettings?.portSettings
+              ?.find(settings => settings.serialNumber === serialNumber)
+              ?.ports ?? []
+            }
+            portStatus={allInterface[serialNumber]?.filter(item => !item.isLag)}
+            lagStatus={allInterface[serialNumber]?.filter(item => item.isLag)}
+            isSupportAccessPort={isSupportAccessPort}
+            originalInterfaceData={{
+              portSettings: originalPortData,
+              lagSettings: originalLagData
+            }}
+          />
+        }
+      }
     />
   </>
 }

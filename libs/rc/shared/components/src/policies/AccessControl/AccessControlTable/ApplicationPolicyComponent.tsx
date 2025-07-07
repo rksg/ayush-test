@@ -13,11 +13,12 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery, ApplicationPolicy, AclOptionType, Network,
+  ApplicationPolicy, AclOptionType, Network,
   WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation, doProfileDelete
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { defaultNetworkPayload }                from '../../../NetworkTable'
 import { AddModeProps }                         from '../../AccessControlForm'
