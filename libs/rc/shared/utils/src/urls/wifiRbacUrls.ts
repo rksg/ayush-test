@@ -431,6 +431,26 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  activateVenueRadiusService: {
+    method: 'put',
+    url: '/venues/:venueId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    opsApi: 'PUT:/venues/{id}/radiusServerProfiles/{id}',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVenueRadiusService: {
+    method: 'delete',
+    url: '/venues/:venueId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    opsApi: 'DELETE:/venues/{id}/radiusServerProfiles/{id}',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   activateVlanPool: {
     method: 'put',
     url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
