@@ -26,7 +26,7 @@ export const opsApis = {
   updateBrand360Dashboard: 'PATCH:/brand360Dashboard/{id}'
 }
 
-// Operations available for each scope
+// Operations available for each scope / role
 const aiOperations = [
   {
     scope: ['ai.incidents-u'],
@@ -76,6 +76,7 @@ const aiOperations = [
     ]
   },
   {
+    role: [Role.READ_ONLY],
     scope: ['brand360.dashboard-r'],
     uri: [
       opsApis.readBrand360Dashboard
@@ -92,6 +93,7 @@ const aiOperations = [
 export function getAIAllowedOperations (profile: UserProfile | undefined) {
   return aiOperations.filter(op => {
     if (hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])) return true
+    if (op.role && hasRoles(op.role)) return true
     return op.scope.some(scope => profile?.scopes?.includes(scope) || false)
   })
 }
