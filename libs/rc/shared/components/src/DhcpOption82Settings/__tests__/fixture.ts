@@ -1,3 +1,10 @@
+import {
+  DhcpOption82SubOption151Enum,
+  DhcpOption82SubOption2Enum,
+  DhcpOption82SubOption1Enum,
+  DhcpOption82MacEnum
+} from '@acx-ui/rc/utils'
+
 export const mockDHCP82OptionSetting = {
   softGreEnabled: true,
   softGreSettings: {
@@ -12,4 +19,23 @@ export const mockDHCP82OptionSetting = {
     }
   },
   enabled: true
+}
+
+export const mockSourceDataEnabled = {
+  dhcpOption82Enabled: true,
+  dhcpOption82Settings: {
+    subOption151Input: 'test-area',
+    subOption151Format: DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME,
+    subOption2Format: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC,
+    subOption1Format: DhcpOption82SubOption1Enum.SUBOPT1_ESSID,
+    macFormat: DhcpOption82MacEnum.NODELIMITER,
+    subOption1Enabled: true,
+    subOption2Enabled: false,
+    subOption150Enabled: true,
+    subOption151Enabled: false
+  }
+}
+
+export const mockSourceDataDisabled = {
+  dhcpOption82Enabled: false
 }

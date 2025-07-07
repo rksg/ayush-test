@@ -16,9 +16,7 @@ import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }       from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
-  Client,
-  TableQuery,
-  useTableQuery
+  Client
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload }             from '@acx-ui/types'
@@ -27,7 +25,9 @@ import { encodeParameter,
   getDatePickerValues,
   getDateRangeFilter,
   DateFilter,
-  DateRange
+  DateRange,
+  TableQuery,
+  useTableQuery
 } from '@acx-ui/utils'
 
 function GetCols (intl: ReturnType<typeof useIntl>) {

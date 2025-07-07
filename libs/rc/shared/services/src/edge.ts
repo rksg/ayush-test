@@ -46,9 +46,6 @@ import {
   GetApiVersionHeader,
   PaginationQueryResult,
   PingEdge,
-  SEARCH,
-  SORTER,
-  TableResult,
   TraceRouteEdge,
   VenueEdgeCompatibilitiesResponse,
   VenueEdgeCompatibilitiesResponseV1_1,
@@ -62,7 +59,10 @@ import type { Filter, RequestPayload } from '@acx-ui/types'
 import {
   createHttpRequest,
   getEnabledDialogImproved,
-  ignoreErrorModal
+  ignoreErrorModal,
+  SEARCH,
+  SORTER,
+  TableResult
 } from '@acx-ui/utils'
 
 import { isPayloadHasField } from './utils'

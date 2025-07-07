@@ -1,4 +1,5 @@
-import { AAAViewModalType, AAARbacViewModalType, TableResult } from '@acx-ui/rc/utils'
+import { AAAViewModalType, AAARbacViewModalType } from '@acx-ui/rc/utils'
+import { TableResult }                            from '@acx-ui/utils'
 
 import { convertRbacDataToAAAViewModelPolicyList } from '.'
 
