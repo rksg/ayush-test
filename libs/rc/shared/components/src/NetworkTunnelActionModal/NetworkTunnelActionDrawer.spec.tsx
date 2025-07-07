@@ -327,30 +327,29 @@ describe('NetworkTunnelDrawer', () => {
         })
       })
 
+      // eslint-disable-next-line max-len
+      it('should NOT greyout all option when the network is not the last one network in SDLAN', async () => {
+        render(
+          <Provider>
+            <NetworkTunnelActionDrawer
+              visible={true}
+              onClose={jest.fn()}
+              network={{
+                id: 'tmpNetworkId',
+                type: NetworkTypeEnum.DPSK,
+                venueId: defaultNetworkData.venueId,
+                venueName: defaultNetworkData.venueName
+              }}
+              onFinish={mockedOnFinish}
+            />
+          </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-      // // eslint-disable-next-line max-len
-      // it('should NOT greyout all option when the network is not the last one network in SDLAN', async () => {
-      //   render(
-      //     <Provider>
-      //       <NetworkTunnelActionDrawer
-      //         visible={true}
-      //         onClose={jest.fn()}
-      //         network={{
-      //           id: 'tmpNetworkId',
-      //           type: NetworkTypeEnum.CAPTIVEPORTAL,
-      //           venueId: defaultNetworkData.venueId,
-      //           venueName: defaultNetworkData.venueName
-      //         }}
-      //         onFinish={mockedOnFinish}
-      //       />
-      //     </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-      //   await checkPageLoaded(sdlanVenueName)
-      //   const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-      //   await userEvent.click(tunnelingMethod)
-      //   const sdlanOption = await screen.findByTestId('sd-lan-option')
-      //   expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
-      // })
+        await checkPageLoaded(sdlanVenueName)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
+        const sdlanOption = await screen.findByTestId('sd-lan-option')
+        expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
+      })
     })
   })
 
@@ -383,7 +382,6 @@ describe('NetworkTunnelDrawer', () => {
       const sdlanOption = await screen.findByTestId('sd-lan-option')
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
-
 
     it('should do nothing when given network data is undefined', async () => {
       render(
@@ -632,7 +630,6 @@ describe('NetworkTunnelDrawer', () => {
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
   })
-
 })
 
 const checkPageLoaded = async (venueName: string) => {

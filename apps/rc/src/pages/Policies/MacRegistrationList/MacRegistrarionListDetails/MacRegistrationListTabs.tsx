@@ -6,7 +6,7 @@ import {
   getPolicyDetailsLink,
   MacRegistrationDetailsTabKey,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -14,6 +14,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 function MacRegistrationListTabs () {
   const { $t } = useIntl()

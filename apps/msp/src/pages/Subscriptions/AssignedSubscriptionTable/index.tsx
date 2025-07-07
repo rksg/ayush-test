@@ -19,11 +19,10 @@ import {
   defaultSort,
   EntitlementDeviceType,
   EntitlementUtil,
-  sortProp,
-  useTableQuery
+  sortProp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, useTableQuery } from '@acx-ui/utils'
 
 import { entitlementAssignmentPayload } from '../AssignMspLicense'
 import * as UI                          from '../styledComponent'

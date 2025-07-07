@@ -19,6 +19,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
+import { ApCompatibilityDrawer }                        from '../../../ApCompatibility/ApCompatibilityDrawer'
+import { ApCompatibilityToolTip }                       from '../../../ApCompatibility/ApCompatibilityToolTip'
+import { ApCompatibilityType, InCompatibilityFeatures } from '../../../ApCompatibility/constants'
+
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
 
@@ -67,6 +71,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const params = useParams()
   const isGatewayFailbackEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE)
   const form = Form.useFormInstance()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const mtuType = Form.useWatch('mtuType')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
@@ -238,8 +243,19 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }}>
               <UI.FormItemWrapper>
                 <Form.Item
-                  label={$t({ defaultMessage: 'Fallback to Primary Gateway' })}
-                  tooltip={readMode ? null : $t(messageMapping.fallback_tooltip)}
+                  label={
+                    <>
+                      {$t({ defaultMessage: 'Fallback to Primary Gateway' })}
+                      {!readMode && (
+                        <ApCompatibilityToolTip
+                          title={$t(messageMapping.fallback_tooltip)}
+                          showDetailButton
+                          placement='bottom'
+                          onClick={() => setDrawerVisible(true)}
+                        />
+                      )}
+                    </>
+                  }
                 />
               </UI.FormItemWrapper>
               <Form.Item
@@ -480,6 +496,12 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
           </UI.StyledSpace>
         </Col>
       </Row>
+      <ApCompatibilityDrawer
+        visible={drawerVisible}
+        type={ApCompatibilityType.ALONE}
+        featureNames={[InCompatibilityFeatures.SOTGRE_GATEWAY_FALLBACK]}
+        onClose={() => setDrawerVisible(false)}
+      />
     </Loader>
   )
 }
