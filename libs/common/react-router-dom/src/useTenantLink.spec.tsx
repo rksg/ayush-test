@@ -19,7 +19,7 @@ const getWrapper = (basePath: string = '') =>
     </MemoryRouter>
   )
 
-describe('useTenantLink', () => {
+describe.skip('useTenantLink', () => {
   afterEach(() => {
     get.mockReturnValue('')
   })

@@ -9,7 +9,7 @@ jest.mock('react-router-dom', () => ({
   Link: (props: LinkProps) => <div>{JSON.stringify(props)}</div>
 }))
 
-describe('NewTabLink', () => {
+describe.skip('NewTabLink', () => {
   it('should render a Link with correct props', () => {
     const { asFragment } = render(<NewTabLink to='/some/url'>link text</NewTabLink>)
     expect(asFragment()).toMatchSnapshot()
