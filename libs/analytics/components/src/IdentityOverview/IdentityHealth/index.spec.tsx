@@ -28,6 +28,25 @@ const mockIdentityHealthData = [
   }
 ]
 
+const mockIdentityHealthNoData = [
+  {
+    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
+    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+  },
+  {
+    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
+    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+  },
+  {
+    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
+    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+  },
+  {
+    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
+    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+  }
+]
+
 describe('Identity Health widget', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -39,7 +58,7 @@ describe('Identity Health widget', () => {
     })
 
     render(<IdentityHealth />, { wrapper: Provider })
-    expect(await screen.findByText('IdentityHealth')).toBeVisible()
+    expect(await screen.findByText('Identity Health')).toBeVisible()
     expect(await screen.findByText('Time to Connect')).toBeVisible()
     expect(await screen.findByText('63.97%')).toBeVisible()
     expect(await screen.findByText('Client Throughput')).toBeVisible()
@@ -56,13 +75,10 @@ describe('Identity Health widget', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
-  it('should render no data when data returns null or 0', async () => {
+  it('should render no data when data returns null', async () => {
     (useIdentityHealthQuery as jest.Mock).mockReturnValue({
       isLoading: false,
-      data: {
-        userRxTraffic: null,
-        userTxTraffic: 0
-      }
+      data: mockIdentityHealthNoData
     })
 
     render(<IdentityHealth />, { wrapper: Provider })

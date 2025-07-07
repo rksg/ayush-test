@@ -23,7 +23,7 @@ const getIdentityHealthData = (identityHealthData: IdentityHealthData[] | undefi
   const timeToConnect : number[] = []
   const clientThroughput : number[] = []
 
-  if (identityHealthData !== undefined) {
+  if (identityHealthData !== undefined && identityHealthData !== null) {
     identityHealthData.forEach((row) => {
       const { timeToConnectSLA, clientThroughputSLA } = row
       const timeToConnectPercent = calcPercent(timeToConnectSLA)
