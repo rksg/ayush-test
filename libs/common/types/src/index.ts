@@ -75,8 +75,16 @@ export enum EdgeScopes {
   UPDATE = 'edge-u',
   DELETE = 'edge-d'
 }
+
+export enum IotControllerScopes {
+  READ = 'iotctrlr-r',
+  CREATE = 'iotctrlr-c',
+  UPDATE = 'iotctrlr-u',
+  DELETE = 'iotctrlr-d'
+}
+
 // eslint-disable-next-line max-len
-export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|string|(WifiScopes|SwitchScopes|EdgeScopes|string)[])[]
+export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|IotControllerScopes|string|(WifiScopes|SwitchScopes|EdgeScopes|IotControllerScopes|string)[])[]
 
 export type RbacOpsIds = (string | string[])[]
 
