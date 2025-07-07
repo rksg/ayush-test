@@ -33,12 +33,12 @@ import { ApTable } from '.'
 const { mockAPList } = APGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
-const rcUtils = require('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
 
 jest.mock('../ApCompatibility', () => ({
   ...jest.requireActual('../ApCompatibility'),
@@ -101,7 +101,7 @@ describe('Aps', () => {
       store.dispatch(networkApi.util.resetApiState())
     })
 
-    jest.spyOn(rcUtils, 'usePollingTableQuery').mockImplementation(() => {
+    jest.spyOn(utils, 'usePollingTableQuery').mockImplementation(() => {
       return { data: mockAPList }
     })
 

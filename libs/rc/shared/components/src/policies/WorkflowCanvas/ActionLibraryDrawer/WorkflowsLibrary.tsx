@@ -12,19 +12,17 @@ import {
   useSearchInProgressWorkflowListQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getScopeKeyByPolicy, InitialEmptyStepsCount, MaxAllowedSteps,
   PolicyOperation,
   PolicyType,
-  SEARCH,
   StepType,
-  useTableQuery,
   Workflow,
   WorkflowDetailsTabKey
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }                    from '@acx-ui/react-router-dom'
+import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 

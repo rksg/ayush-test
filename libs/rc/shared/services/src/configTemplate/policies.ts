@@ -15,7 +15,6 @@ import {
   L2AclPolicy,
   L3AclPolicy,
   ApplicationPolicy,
-  TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
   SyslogPolicyDetailType,
@@ -35,9 +34,9 @@ import {
   EthernetPortProfileViewData,
   EthernetPortType
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseConfigTemplateApi }          from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { createDefaultEthPort }      from '../ethernetPortProfile'
 import {

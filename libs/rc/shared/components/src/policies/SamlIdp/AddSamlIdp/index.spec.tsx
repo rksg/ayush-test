@@ -15,8 +15,8 @@ import { certList, mockCertId2, mockCertId3, mockCertName2, mockCertName3, mocke
 import { AddSamlIdp } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
