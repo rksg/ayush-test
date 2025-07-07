@@ -380,9 +380,6 @@ export function PersonaOverview (props:
           <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
             <IdentityHealth />
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-            <Traffic />
-          </GridCol>
         </GridRow>
       )}
       {externalIdentityData !== undefined &&
