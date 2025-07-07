@@ -6,9 +6,15 @@ import { render, screen } from '@acx-ui/test-utils'
 import Wired, { AISwitchTabsEnum } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 jest.mock('./SwitchList', () => ({
   SwitchList: () => <div>Switch list content</div>

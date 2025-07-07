@@ -59,8 +59,8 @@ const emptyData = [{ name: '1', authenticationType: TenantAuthenticationType.lda
 const xmlText = '<note><to>Me</to><from>You</from><heading>Reminder</heading><body></body></note>'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 const services = require('@acx-ui/rc/services')

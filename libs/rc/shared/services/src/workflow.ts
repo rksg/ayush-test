@@ -6,21 +6,13 @@ import {
   ActionType,
   ApiVersionEnum,
   CommonResult,
-  createNewTableHttpRequest,
   FileDto,
   GenericActionData,
   GetApiVersionHeader,
   ImageUrl,
-  NewAPITableResult,
-  NewTableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  RequestFormData,
   SplitOption,
-  TableChangePayload,
-  TableResult,
-  transferNewResToTableResult,
-  transferToNewTablePaginationParams,
   TxStatus,
   UIConfiguration,
   Workflow,
@@ -30,10 +22,14 @@ import {
   FileDownloadResponse,
   WorkflowAssignment
 } from '@acx-ui/rc/utils'
-import { baseWorkflowApi }                               from '@acx-ui/store'
-import { MaybePromise }                                  from '@acx-ui/types'
-import { RequestPayload }                                from '@acx-ui/types'
-import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseWorkflowApi }             from '@acx-ui/store'
+import { MaybePromise }                from '@acx-ui/types'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal, NewAPITableResult,
+  NewTableResult, TableChangePayload, createNewTableHttpRequest,
+  TableResult, RequestFormData,
+  transferNewResToTableResult,
+  transferToNewTablePaginationParams } from '@acx-ui/utils'
 
 import { CommonAsyncResponse } from './common'
 import { commonQueryFn }       from './servicePolicy.utils'
@@ -122,6 +118,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UPDATE_WORKFLOW',
+            'UPDATE_WORKFLOW_ACTION',
             'INITIATE_PUBLISH_WORKFLOW',
             'DELETE_WORKFLOW',
             'ATTACH_STEP',
@@ -478,7 +475,8 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'ATTACH_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
-            'IMPORT_WORKFLOW'
+            'IMPORT_WORKFLOW',
+            'UPDATE_WORKFLOW_ACTION'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([

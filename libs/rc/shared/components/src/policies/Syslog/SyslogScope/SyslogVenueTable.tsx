@@ -14,11 +14,11 @@ import {
   SyslogUrls,
   useActivativationPermission,
   useConfigTemplate,
-  useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useTableQuery }                 from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../../../configTemplates'
 import SyslogContext         from '../SyslogContext'

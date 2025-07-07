@@ -1,9 +1,9 @@
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { TableQuery }              from '@acx-ui/rc/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
 import { renderHook }              from '@acx-ui/test-utils'
 import { RequestPayload }          from '@acx-ui/types'
+import { TableQuery }              from '@acx-ui/utils'
 
 import { useExportCsv } from './useExportCsv'
 

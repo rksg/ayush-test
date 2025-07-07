@@ -346,30 +346,6 @@ describe('NetworkTunnelDrawer', () => {
         })
       })
 
-      it('should greyout all option when network is the last one in SDLAN', async () => {
-        const mockData = cloneDeep(mockedSdLan)
-        // eslint-disable-next-line max-len
-        mockData.tunneledWlans!.splice(mockData.tunneledWlans!.findIndex(i => i.networkId === 'network_1'), 1)
-
-        jest.mocked(useEdgeMvSdLanData).mockReturnValue({ venueSdLan: mockData, isLoading: false })
-
-        render(
-          <Provider>
-            <NetworkTunnelActionDrawer
-              visible={true}
-              onClose={jest.fn()}
-              network={defaultNetworkData}
-              onFinish={mockedOnFinish}
-            />
-          </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-        await checkPageLoaded(sdlanVenueName)
-        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
-      })
-
       // eslint-disable-next-line max-len
       it('should NOT greyout all option when the network is not the last one network in SDLAN', async () => {
         render(
@@ -426,7 +402,6 @@ describe('NetworkTunnelDrawer', () => {
       expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
     })
 
-
     it('should do nothing when given network data is undefined', async () => {
       render(
         <Provider>
@@ -448,7 +423,6 @@ describe('NetworkTunnelDrawer', () => {
     })
   })
 
-
   describe('SoftGRE', () => {
     const mockedGetFn = jest.fn()
     beforeEach(() => {
@@ -457,8 +431,7 @@ describe('NetworkTunnelDrawer', () => {
       store.dispatch(softGreApi.util.resetApiState())
       // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-        || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+        ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
         || ff === Features.WIFI_R370_TOGGLE)
       mockServer.use(

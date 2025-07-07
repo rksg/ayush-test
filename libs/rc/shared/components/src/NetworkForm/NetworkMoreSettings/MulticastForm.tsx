@@ -169,11 +169,11 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                 enableMulticastUpLimit ?
                   <UI.FormItemNoLabel
                     name={['wlan', 'advancedCustomization', 'multicastUplinkRateLimiting']}
+                    initialValue={20}
                     children={
                       <Slider
                         tooltipVisible={false}
                         style={{ width: '245px', marginRight: '10px' }}
-                        defaultValue={20}
                         min={1}
                         max={100}
                         marks={{
@@ -209,11 +209,11 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                 enableMulticastDownLimit ?
                   <UI.FormItemNoLabel
                     name={['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting']}
+                    initialValue={getDownloadMaxValue()}
                     children={
                       <Slider
                         tooltipVisible={false}
                         style={{ width: '245px', marginRight: '10px' }}
-                        defaultValue={getDownloadMaxValue()}
                         min={1}
                         max={getDownloadMaxValue()}
                         marks={{

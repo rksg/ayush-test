@@ -10,7 +10,8 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { useGetLayer2AclRulesQuery } from '@acx-ui/rc/services'
-import { MacAclRule, useTableQuery } from '@acx-ui/rc/utils'
+import { MacAclRule }                from '@acx-ui/rc/utils'
+import { useTableQuery }             from '@acx-ui/utils'
 
 interface MacACLDrawerProps {
   visible: boolean

@@ -10,11 +10,13 @@ import {
   EdgeSdLanFixtures,
   Venue,
   NetworkTypeEnum,
-  EdgePinFixtures
+  EdgePinFixtures,
+  SoftGreUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
+  mockServer,
   render,
   renderHook,
   screen,
@@ -36,7 +38,6 @@ const disabledFFs = [
   Features.WIFI_RBAC_API,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
   Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
@@ -81,6 +82,11 @@ describe('VenueNetworksTab - PIN enabled', () => {
     })
 
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
+
+    mockServer.use(
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
   })
 
   describe('multi-venue SD-LAN', () => {
@@ -88,7 +94,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE
         && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
     })

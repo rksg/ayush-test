@@ -6,7 +6,8 @@ import { useIntl }    from 'react-intl'
 import { Alert, Button }                                                                    from '@acx-ui/components'
 import { DpskPassphraseManagement, DpskPoolLink, ResourceBanner }                           from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery, useUpdatePersonaMutation } from '@acx-ui/rc/services'
-import { Persona, PersonaGroup, useTableQuery }                                             from '@acx-ui/rc/utils'
+import { Persona, PersonaGroup }                                                            from '@acx-ui/rc/utils'
+import { useTableQuery }                                                                    from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 

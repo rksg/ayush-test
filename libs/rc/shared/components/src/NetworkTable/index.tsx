@@ -16,7 +16,6 @@ import {
   NetworkTypeEnum,
   Network,
   NetworkType,
-  TableQuery,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetwork,
@@ -35,7 +34,8 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime,
+  widgetsMapping, TableQuery } from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../configTemplates'
 

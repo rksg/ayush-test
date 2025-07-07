@@ -1,6 +1,7 @@
-import { NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }        from '@acx-ui/store'
+import { render, screen }  from '@acx-ui/test-utils'
+import { useTableQuery }   from '@acx-ui/utils'
 
 import { NetworksTable } from './NetworksTable'
 
@@ -10,8 +11,8 @@ jest.mock('@acx-ui/rc/services', () => ({
   useWifiNetworkListQuery: jest.fn()
 }))
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   useTableQuery: jest.fn().mockReturnValue({
     data: {},
     setPayload: (params: unknown) => mockedTableSetPayload(params)
