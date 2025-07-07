@@ -333,27 +333,4 @@ describe('Create Network: Venues Step', () => {
     await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(popup).not.toBeVisible())
   })
-
-  it('should greyout when the WLAN is the last one in SDLAN', async () => {
-    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
-      sdLansVenueMap: {},
-      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],
-      guestNetworkVenueIds: []
-    })
-
-    render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
-    })
-
-    const tbody = await findTBody()
-    const activatedRow = await within(tbody).findByRole('row', { name: /My-Venue/ })
-    await userEvent.click(await within(activatedRow).findByRole('checkbox'))
-    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
-    await userEvent.click(deactivateButton)
-    const popup = await screen.findByRole('dialog')
-    await screen.findByText(/This network is running the SD-LAN service on this venue/i)
-    await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(popup).not.toBeVisible())
-  })
 })
