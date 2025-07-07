@@ -5,14 +5,13 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { DonutChart, ContentSwitcher, Loader, NoData, HistoricalCard } from '@acx-ui/components'
 
+import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
+
 import { useTopNWifiClientQuery } from './services'
 
-interface WifiClientFilters {
-  startDate: string;
-  endDate: string;
-}
 
-export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
+export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
   const { $t } = useIntl()
   const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
 
@@ -36,34 +35,37 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard type='default' title={title}>
-        <div style={{ marginTop: -38 }}>
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            value={selectedTab}
-            onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
-            size='small'
-            align='right'
-            noPadding
-          />
-        </div>
-        {chartData && chartData.length > 0 ? (
-          <AutoSizer>
-            {({ height, width }) => (
-              <DonutChart
-                data={chartData}
-                style={{ width: width, height: height }}
-                legend='name-bold-value'
-                size='large'
-                showLegend
-                showTotal
-                showLabel
-                showValue
+        <AutoSizer>
+          {({ height, width }) => (
+            <ContentSwitcherWrapper height={height} width={width}>
+              <ContentSwitcher
+                tabDetails={tabDetails}
+                value={selectedTab}
+                onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+                size='small'
+                align='right'
               />
-            )}
-          </AutoSizer>
-        ) : (
-          <NoData />
-        )}
+              {chartData && chartData.length > 0 ? (
+                <AutoSizer>
+                  {({ height, width }) => (
+                    <DonutChart
+                      data={chartData}
+                      style={{ width: width, height: height }}
+                      legend='name-bold-value'
+                      size='large'
+                      showLegend
+                      showTotal
+                      showLabel
+                      showValue
+                    />
+                  )}
+                </AutoSizer>
+              ) : (
+                <NoData />
+              )}
+            </ContentSwitcherWrapper>
+          )}
+        </AutoSizer>
       </HistoricalCard>
     </Loader>
   )

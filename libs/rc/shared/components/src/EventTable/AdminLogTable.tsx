@@ -6,9 +6,9 @@ import { Loader, Table, TableProps, Button, TableHighlightFnArgs } from '@acx-ui
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
 import { DownloadOutlined }                                        from '@acx-ui/icons'
-import { AdminLog, TableQuery }                                    from '@acx-ui/rc/utils'
+import { AdminLog }                                                from '@acx-ui/rc/utils'
 import { RequestPayload }                                          from '@acx-ui/types'
-import { exportMessageMapping, noDataDisplay }                     from '@acx-ui/utils'
+import { exportMessageMapping, noDataDisplay, TableQuery }         from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

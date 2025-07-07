@@ -205,4 +205,31 @@ describe('bootstrap.init', () => {
       expect(userLogout).toHaveBeenCalled()
     })
   })
+  describe('if fetching user profile fails', () => {
+    const { location } = window
+    beforeEach(() => {
+      jest.clearAllMocks()
+      mockServer.use(
+        rest.get(
+          '/analytics/api/rsa-mlisa-rbac/users/profile',
+          (_, res, ctx) => res(ctx.status(500))
+        )
+      )
+    })
+    afterAll(() => {
+      Object.defineProperty(window, 'location', { writable: true, value: { location } })
+    })
+    it('logs out if not dev mode', async () => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { ...location, hostname: 'not.localhost' }
+      })
+      const rootEl = document.createElement('div')
+      rootEl.id = 'root'
+      document.body.appendChild(rootEl)
+      const root = createRoot(rootEl)
+      await act(() => init(root))
+      expect(userLogout).toHaveBeenCalled()
+    })
+  })
 })

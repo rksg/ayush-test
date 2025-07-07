@@ -10,8 +10,9 @@ import {
   useGetAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery,
   useGetVenueTemplateSwitchAaaSettingQuery, useVenueSwitchAAAServerListQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                                                         from '@acx-ui/react-router-dom'
+import { AAAServerTypeEnum, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                                          from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                      from '@acx-ui/utils'
 
 import { AAAServerTable }  from './AAAServerTable'
 import { AAANotification } from './contentsMap'
