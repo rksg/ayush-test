@@ -74,18 +74,14 @@ import {
   ServiceType,
   IdentityProviderTabType,
   PersonaUrls,
+  IotUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useDhcpStateMap,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
-import {
-  EdgeScopes,
-  IotControllerScopes,
-  SwitchScopes,
-  WifiScopes
-} from '@acx-ui/types'
+import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
 import { AccountTier, getOpsApi }                      from '@acx-ui/utils'
 
@@ -407,14 +403,16 @@ function DeviceRoutes () {
       <Route path='devices/iotController' element={<IotController />} />
       <Route
         path='devices/iotController/add'
-        element={<AuthRoute scopes={[IotControllerScopes.CREATE]}>
-          <IotControllerForm />
-        </AuthRoute>}/>
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/:action'
-        element={<AuthRoute scopes={[IotControllerScopes.UPDATE]}>
-          <IotControllerForm />
-        </AuthRoute>}/>
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/details/:activeTab'
         element={<IotControllerDetails />} />
