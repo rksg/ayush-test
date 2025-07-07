@@ -12,12 +12,12 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   GetApiVersionHeader,
   ApiVersionEnum,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import SnmpAgentInstancesTable from './SnmpAgentInstancesTable'
 import SnmpAgentOverview       from './SnmpAgentOverview'

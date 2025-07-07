@@ -12,12 +12,11 @@ import { Features, useIsSplitOn }                                               
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
-  SwitchUrlsInfo,
-  useTableQuery } from '@acx-ui/rc/utils'
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
 import { filterByAccess }             from '@acx-ui/user'
-import { getOpsApi }                  from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }   from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDetail } from './SwitchLayer2/SwitchLayer2ACLDetail'
 

@@ -15,9 +15,15 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 const mockedUsedNavigate = jest.fn()
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/users/wifi/clients/mockClientId/details',
+  search: ''
+}
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 
 jest.mock('./ClientTroubleshooting', () => ({

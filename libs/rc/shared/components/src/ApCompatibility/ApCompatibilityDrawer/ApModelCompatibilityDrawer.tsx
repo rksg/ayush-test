@@ -5,7 +5,6 @@ import { Divider, Form }             from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Drawer,  Loader }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueQuery,
@@ -71,8 +70,6 @@ Sample 2: Display data on drawer
 */
 
 export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProps) => {
-  const isBranchLevelSupportedModelsEnabled = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
-
   const {
     visible, type=ApCompatibilityType.VENUE, isMultiple=false,
     isRequirement=false,
@@ -88,7 +85,6 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const [ apCompatibilities, setApCompatibilities ] = useState<Compatibility[] | Compatibility[]>(data)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
-    skip: !isBranchLevelSupportedModelsEnabled,
     refetchOnMountOrArgChange: false
   })
 

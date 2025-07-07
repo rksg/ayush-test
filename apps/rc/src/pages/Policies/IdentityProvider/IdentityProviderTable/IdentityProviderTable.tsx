@@ -14,7 +14,6 @@ import {
 import {
   KeyValue,
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   IdentityProviderViewModel,
@@ -26,6 +25,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: ['id', 'name',

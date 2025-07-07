@@ -41,6 +41,11 @@ export const mergeLanPortSettings = (
       if (venueLanSetting.clientIsolationEnabled) {
         lanPort.clientIsolationSettings = venueLanSetting.clientIsolationSettings
       }
+
+      lanPort.dhcpOption82 = {
+        dhcpOption82Enabled: venueLanSetting.dhcpOption82Enabled,
+        dhcpOption82Settings: venueLanSetting.dhcpOption82Settings || undefined
+      }
     }
   })
 

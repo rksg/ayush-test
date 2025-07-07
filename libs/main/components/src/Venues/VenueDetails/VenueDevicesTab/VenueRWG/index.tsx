@@ -1,12 +1,13 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ColumnType, Loader, Table, TableProps }                                                              from '@acx-ui/components'
-import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
-import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
+import { ColumnType, Loader, Table, TableProps }                                               from '@acx-ui/components'
+import { useRwgActions }                                                                       from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                  from '@acx-ui/rc/services'
+import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess, useUserProfileContext }                                    from '@acx-ui/user'
+import { useTableQuery }                                                                       from '@acx-ui/utils'
 
 
 function useColumns (

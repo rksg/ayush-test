@@ -16,9 +16,13 @@ const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })
 }
 
+export const formatTimeForXAxis = (time: string) => {
+  return moment(time).date()
+}
+
 const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
-    moment(time[index], 'YYYY/MM/DD').date(),
+    formatTimeForXAxis(time[index]),
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
       ? datum[1] === 0 ? 0 : (limitRange(datum[0] / datum[1])) * 100
       : null
