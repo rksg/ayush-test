@@ -22,6 +22,10 @@ jest.mock('./EdgeSdLanSelectOptionL2greContent', () => ({
   EdgeSdLanSelectOptionL2greContent: jest.fn(() => <div>EdgeSdLanSelectOptionL2greContent</div>)
 }))
 
+jest.mock('./EdgeSdLanSelectOptionEnhanced', () => ({
+  EdgeSdLanSelectOptionEnhanced: jest.fn(() => <div>EdgeSdLanSelectOptionEnhanced</div>)
+}))
+
 describe('EdgeSdLanSelectOption', () => {
   const defaultProps = {
     tunnelTypeInitVal: NetworkTunnelTypeEnum.SdLan,
