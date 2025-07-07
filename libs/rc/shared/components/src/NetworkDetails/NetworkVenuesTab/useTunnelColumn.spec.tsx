@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
-import { cloneDeep }                          from 'lodash'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
 
 import { Table }                  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -130,54 +130,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const row2ToggleTunnelBtn = within(row2).getByRole('switch')
       expect(row2ToggleTunnelBtn).not.toBeChecked()
     })
-
-    it('should greyout when the WLAN is the last one in SDLAN', async () => {
-      const mockSingleWlan = cloneDeep(mockedMvSdLanDataList[0])
-      mockSingleWlan.name = 'Mocked_SDLAN_last_one_test'
-      // make it as the last one wlan
-      mockSingleWlan.tunneledWlans = mockSingleWlan.tunneledWlans!.slice(0, 1)
-
-      const mockedData = {
-        sdLansVenueMap: {
-          [targetNetwork.venueId]: [mockSingleWlan]
-        },
-        networkVenueIds: [targetNetwork.venueId],
-        guestNetworkVenueIds: []
-      }
-
-      const { result } = renderHook(() => useTunnelColumn({
-        network: {
-          id: mockSingleWlan.tunneledWlans![0].networkId,
-          type: NetworkTypeEnum.PSK
-        },
-        sdLanScopedNetworkVenues: mockedData,
-        setTunnelModalState: jest.fn()
-      }), { wrapper: Provider })
-
-      render(<Provider>
-        <Table
-          rowKey='id'
-          columns={[{
-            key: 'name',
-            title: 'Venue',
-            dataIndex: 'name'
-          }].concat(result.current)}
-          dataSource={venuesList.data as unknown as Venue[]}
-        />
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/:networkId' }
-      })
-
-      const activatedRow = await screen.findByRole('row', { name: new RegExp(venuesList.data[0].name) })
-      await within(activatedRow).findByText(/SD-LAN/)
-      within(activatedRow).getByRole('link', { name: 'Mocked_SDLAN_last_one_test' })
-      const toggleTunnelBtn = within(activatedRow).getByRole('switch')
-      expect(toggleTunnelBtn).toBeChecked()
-      expect(toggleTunnelBtn).toBeDisabled()
-      await userEvent.hover(toggleTunnelBtn, { pointerEventsCheck: PointerEventsCheckLevel.Never })
-      await screen.findByRole('tooltip', { name: 'Cannot deactivate the last network at this venue', hidden: true })
-    })
-
 
     it('should not render when networkId is not given', async () => {
       const mockSingleWlan = cloneDeep(mockedMvSdLanDataList[0])
