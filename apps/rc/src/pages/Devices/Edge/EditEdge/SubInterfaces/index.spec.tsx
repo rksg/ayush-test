@@ -6,8 +6,10 @@ import { EdgeEditContext, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { edgeApi }                                from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
+  EdgeIpModeEnum,
   EdgeLagFixtures,
   EdgePortConfigFixtures,
+  EdgePortTypeEnum,
   EdgeSubInterface,
   EdgeSubInterfaceFixtures,
   EdgeUrlsInfo,
@@ -516,6 +518,81 @@ describe('EditEdge ports - sub-interface', () => {
       await screen.findAllByRole('row')
       expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
+
+    it('should disable delete button when SD-LAN is applied and core port is enabled', async () => {
+      render(
+        <Provider>
+          <EdgeEditContext.EditContext.Provider
+            value={defaultContextData}
+          >
+            <EditEdgeDataContext.Provider
+              value={{
+                ...defaultEditEdgeSingleNodeCtxData,
+                edgeSdLanData: {},
+                subInterfaceData: [{
+                  portId: '6ab895d4-cb8a-4664-b3f9-c4d6e0c8b8c1',
+                  subInterfaces: [{
+                    id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
+                    corePortEnabled: true,
+                    portType: EdgePortTypeEnum.LAN,
+                    ipMode: EdgeIpModeEnum.DHCP,
+                    ip: '',
+                    subnet: '',
+                    gateway: '',
+                    vlan: 2
+                  }]
+                }]
+              }}
+            >
+              <SubInterfaces />
+            </EditEdgeDataContext.Provider>
+          </EdgeEditContext.EditContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+        })
+
+      const subInterface = await screen.findByRole('row', { name: /1 LAN DHCP/i })
+      await userEvent.click(subInterface)
+      expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should disable delete button when SD-LAN is applied and access port is enabled', async () => {
+      render(
+        <Provider>
+          <EdgeEditContext.EditContext.Provider
+            value={defaultContextData}
+          >
+            <EditEdgeDataContext.Provider
+              value={{
+                ...defaultEditEdgeSingleNodeCtxData,
+                edgeSdLanData: {},
+                subInterfaceData: [{
+                  portId: '6ab895d4-cb8a-4664-b3f9-c4d6e0c8b8c1',
+                  subInterfaces: [{
+                    id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
+                    accessPortEnabled: true,
+                    portType: EdgePortTypeEnum.LAN,
+                    ipMode: EdgeIpModeEnum.DHCP,
+                    ip: '',
+                    subnet: '',
+                    gateway: '',
+                    vlan: 2
+                  }]
+                }]
+              }}
+            >
+              <SubInterfaces />
+            </EditEdgeDataContext.Provider>
+          </EdgeEditContext.EditContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+        })
+
+      const subInterface = await screen.findByRole('row', { name: /1 LAN DHCP/i })
+      await userEvent.click(subInterface)
+      expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
     })
   })
 })

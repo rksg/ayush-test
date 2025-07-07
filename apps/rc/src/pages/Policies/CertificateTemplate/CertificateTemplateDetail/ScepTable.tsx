@@ -5,10 +5,10 @@ import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                                    from '@acx-ui/components'
-import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                                                from '@acx-ui/rc/services'
-import { CertificateUrls, ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { getOpsApi }                                                                                                                                                    from '@acx-ui/utils'
+import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                     from '@acx-ui/components'
+import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                                 from '@acx-ui/rc/services'
+import { CertificateUrls, ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
+import { getOpsApi, useTableQuery }                                                                                                                      from '@acx-ui/utils'
 
 import ScepDrawer from './ScepDrawer'
 

@@ -1,4 +1,5 @@
-import { TableResult, VLANPoolPolicyType, VLANPoolViewModelRbacType, VLANPoolViewModelType } from '@acx-ui/rc/utils'
+import { VLANPoolPolicyType, VLANPoolViewModelRbacType, VLANPoolViewModelType } from '@acx-ui/rc/utils'
+import { TableResult }                                                          from '@acx-ui/utils'
 
 export const vlanData: VLANPoolPolicyType = {
   id: 'policy-id',

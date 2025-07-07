@@ -15,9 +15,10 @@ import {
   getAdaptivePolicyDetailLink, getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
+  PolicyType, useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()

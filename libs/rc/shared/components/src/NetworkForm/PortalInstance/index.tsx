@@ -20,10 +20,9 @@ import {
   Portal,
   PortalDetail,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { getImageDownloadUrl } from '@acx-ui/utils'
+import { getImageDownloadUrl, TableResult } from '@acx-ui/utils'
 
 import { PortalDemo }        from '../../services/PortalDemo'
 import { initialPortalData } from '../../services/PortalForm'

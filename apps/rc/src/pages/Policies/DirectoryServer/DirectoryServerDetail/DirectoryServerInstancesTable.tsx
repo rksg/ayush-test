@@ -6,9 +6,10 @@ import { Table, TableProps, Card, Loader }                                 from 
 import { useGetDirectoryServerViewDataListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   captiveNetworkTypes, GuestNetworkTypeEnum, Network,
-  NetworkTypeEnum, networkTypes, useTableQuery
+  NetworkTypeEnum, networkTypes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useTableQuery }         from '@acx-ui/utils'
 
 export function DirectoryServerInstancesTable () {
   const { $t } = useIntl()

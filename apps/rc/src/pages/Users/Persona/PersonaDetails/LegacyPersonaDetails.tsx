@@ -32,9 +32,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup, PersonaUrls, useTableQuery } from '@acx-ui/rc/utils'
-import { getUserProfile, hasAllowedOperations, isCoreTier }             from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                     from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup, PersonaUrls }    from '@acx-ui/rc/utils'
+import { getUserProfile, hasAllowedOperations, isCoreTier } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, useTableQuery }          from '@acx-ui/utils'
 
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'

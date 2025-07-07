@@ -104,8 +104,6 @@ export function LanPortSettings (props: {
   const hasVni = lan?.vni > 0
   const { isTemplate } = useConfigTemplate()
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
-  const softGreTunnelFieldName = ['lan', index, 'softGreEnabled']
-  const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
 
@@ -271,7 +269,7 @@ export function LanPortSettings (props: {
             ipsecOptionList={ipsecOptionList}
             ipsecOptionDispatch={ipsecOptionDispatch}
           />
-          {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
+          {isDhcpOption82Enabled &&
             <DhcpOption82Settings
               readonly={readOnly ?? false}
               index={index}
@@ -281,6 +279,7 @@ export function LanPortSettings (props: {
               venueId={venueId}
               portId={selectedModel.lanPorts![index].portId}
               apModel={selectedModelCaps.model}
+              sourceData={selectedModel.lanPorts?.[index].dhcpOption82}
             />
           }
         </>

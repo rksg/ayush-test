@@ -11,11 +11,10 @@ import {
   EdgeHqosViewData,
   EdgeStatus,
   defaultSort,
-  sortProp,
-  useTableQuery
+  sortProp
 } from '@acx-ui/rc/utils'
-import { TenantLink }      from '@acx-ui/react-router-dom'
-import { compareVersions } from '@acx-ui/utils'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { compareVersions, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 

@@ -18,11 +18,11 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   VLAN_LIMIT_NUMBER,
   VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 export default function VLANPoolTable () {
   const { $t } = useIntl()

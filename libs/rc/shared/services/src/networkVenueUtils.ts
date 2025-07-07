@@ -10,14 +10,12 @@ import {
   CommonRbacUrlsInfo, CommonResult,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
-  FILTER,
   GetApiVersionHeader,
   KeyValue,
   Network,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
   PoliciesConfigTemplateUrlsInfo, RadioEnum,
-  TableResult,
   Venue,
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
@@ -27,8 +25,8 @@ import {
   NetworkApGroup,
   VlanPool
 } from '@acx-ui/rc/utils'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { RequestPayload }                                  from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, FILTER, TableResult } from '@acx-ui/utils'
 
 import { QueryFn }                        from './servicePolicy.utils'
 import { apGroupsChangeSet, isFulfilled } from './utils'
