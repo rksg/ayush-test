@@ -38,7 +38,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     cachedActs, cachedSoftGre
   } = props
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
@@ -170,7 +169,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             </Select>
           }
         />
-        {isSoftGreEnabled && !hiddenSoftGre && visible
+        {!hiddenSoftGre && visible
           && tunnelType===NetworkTunnelTypeEnum.SoftGre &&
           <WifiSoftGreSelectOption currentTunnelType={tunnelType}
             venueId={networkVenueId!}

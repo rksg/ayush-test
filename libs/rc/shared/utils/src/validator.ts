@@ -32,7 +32,7 @@ export function networkWifiIpRegExp (value: string) {
 }
 
 export function networkWifiDualModeIpRegExp (value: string) {
-  return promiseAnyIpRegexPass([networkWifiIpRegExp(value), ipv6RegExp(value)])
+  return customizePromiseAny([networkWifiIpRegExp(value), ipv6RegExp(value)])
     .catch((err: Error) => {
       return Promise.reject(err)
     })
@@ -47,7 +47,7 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
-function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
+export function customizePromiseAny<T> (promises: Promise<T>[], defaultErr: Error | null = null): Promise<T> {
   if (promises.length === 0) {
     return Promise.reject(new Error('No promises found'))
   }
@@ -59,7 +59,11 @@ function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
         errorsMsg.push(error)
         rejectedCount++
         if (rejectedCount === promises.length) {
-          reject(errorsMsg[0])
+          if (defaultErr === null){
+            reject(errorsMsg[0])
+          } else {
+            reject(defaultErr)
+          }
         }
       })
     })
@@ -67,7 +71,7 @@ function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
 }
 
 export async function dualModeServerIpAddressRegExp (value: string) {
-  return promiseAnyIpRegexPass([serverIpAddressRegExp(value), ipv6RegExp(value)])
+  return customizePromiseAny([serverIpAddressRegExp(value), ipv6RegExp(value)])
     .catch((err) => {
       return Promise.reject(err)
     })
@@ -80,6 +84,13 @@ export function generalIpAddressRegExp (value: string) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
+}
+
+export function dualModeGeneralIpAddressRegExp (value: string) {
+  return customizePromiseAny([generalIpAddressRegExp(value), ipv6RegExp(value)])
+    .catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
 export function multicastIpAddressRegExp (value: string, isInverted?: boolean) {
@@ -158,7 +169,7 @@ export function domainNameRegExp (value: string) {
 }
 
 export async function domainNameWithIPv6RegExp (value: string) {
-  return promiseAnyIpRegexPass([domainNameRegExp(value), ipv6RegExp(value)])
+  return customizePromiseAny([domainNameRegExp(value), ipv6RegExp(value)])
     .catch((err) => {
       return Promise.reject(err)
     })
@@ -405,6 +416,13 @@ export function subnetMaskIpRegExp (value: string) {
     return Promise.reject($t(validationMessages.subnetMask))
   }
   return Promise.resolve()
+}
+
+export function dualModeSubnetMaskIpRegExp (value: string) {
+  return customizePromiseAny([subnetMaskIpRegExp(value), ipv6PrefixRegExp(value)])
+    .catch((err: Error) => {
+      return Promise.reject(err)
+    })
 }
 
 export function validateNetworkBaseIp (value: string, subnetMask: string) {
@@ -1229,6 +1247,17 @@ export function ipv6RegExp (value: string) {
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function ipv6PrefixRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(\\/([1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
   }
   return Promise.resolve()
 }
