@@ -20,9 +20,9 @@ import {
   SwitchViewModel,
   Venue,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher,
-  useTableQuery
-}            from '@acx-ui/rc/utils'
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { useEnforcedStatus }         from '../../configTemplates'
 import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'

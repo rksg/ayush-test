@@ -4,13 +4,12 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientList,
-  TableQuery,
   ClientInfo,
   NetworkTypeEnum,
   networkTypes
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { RequestPayload }            from '@acx-ui/types'
+import { TableQuery, noDataDisplay } from '@acx-ui/utils'
 
 import { ClientsTable }     from './ClientsTable'
 import { RbacClientsTable } from './RbacClientsTable'

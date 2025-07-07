@@ -14,6 +14,8 @@ import {
   DonutChart,
   GridCol,
   GridRow,
+  Loader,
+  NoData,
   Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -348,25 +350,27 @@ export function PersonaOverview (props:
       <GridRow>
         <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-          <Card
-            title={$t({ defaultMessage: 'Associated Devices' })}>
-            <AutoSizer>
-              {({ width, height }) => (
-                <DonutChart
-                  style={{ width, height }}
-                  title={$t({ defaultMessage: 'Wi-Fi' })}
-                  showLoading={isClientsLoading || isClientsFetching}
-                  data={[{
-                    value: identityDeviceCount,
-                    name: $t({ defaultMessage: 'Wi-Fi' }),
-                    color: identityDeviceCount > 0
-                      ? cssStr('--acx-semantics-green-50')
-                      : cssStr('--acx-neutrals-50')
-                  }]}
-                />
-              )}
-            </AutoSizer>
-          </Card>
+          <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
+            <Card title={$t({ defaultMessage: 'Associated Devices' })}>
+              <AutoSizer>
+                {({ width, height }) =>
+                  identityDeviceCount > 0 ? (
+                    <DonutChart
+                      style={{ width, height }}
+                      title={$t({ defaultMessage: 'Wi-Fi' })}
+                      data={[{
+                        value: identityDeviceCount,
+                        name: $t({ defaultMessage: 'Wi-Fi' }),
+                        color: cssStr('--acx-semantics-green-50')
+                      }]}
+                    />
+                  ) : (
+                    <NoData />
+                  )
+                }
+              </AutoSizer>
+            </Card>
+          </Loader>
         </GridCol>
         {isIdentityAnalyticsEnabled && (
           <>

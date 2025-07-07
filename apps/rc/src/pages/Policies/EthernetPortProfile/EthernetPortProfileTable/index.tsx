@@ -24,10 +24,10 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  transformDisplayOnOff,
-  useTableQuery
+  transformDisplayOnOff
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 interface EthernetPortProfileTableProps {
   setTableTotalCount?: (totalCount: number) => void;

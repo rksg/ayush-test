@@ -1,16 +1,18 @@
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
+import { Mdu360TabProps } from '../../types'
+
 import { ApplicationCategoriesData, useTopNApplicationCategoriesQuery } from './services'
 
-import { ApplicationCategories, ApplicationCategoriesFilters } from './index'
+import { ApplicationCategories } from './index'
 
 const mockUseTopNApplicationCategoriesQuery = useTopNApplicationCategoriesQuery as jest.Mock
 jest.mock('./services', () => ({
   useTopNApplicationCategoriesQuery: jest.fn()
 }))
 
-const mockFilters: ApplicationCategoriesFilters = {
+const mockFilters: Mdu360TabProps = {
   startDate: '2024-03-23T07:23:00+05:30',
   endDate: '2025-05-24T07:23:00+05:30'
 }

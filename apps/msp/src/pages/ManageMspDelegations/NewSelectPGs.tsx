@@ -13,10 +13,9 @@ import { useGetMspEcPrivilegeGroupsPaginatedQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
   PrivilegeGroup,
-  sortProp,
-  useTableQuery
+  sortProp
 } from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

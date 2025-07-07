@@ -11,11 +11,21 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import {
-  HeaderContext
-} from '../HeaderContext'
-
 import { LicenseBanner } from './index'
+
+jest.mock('@acx-ui/components', () => ({
+  LayoutUI: {
+    Icon: () => <div data-testid='layout-ui-icon' />
+  },
+  HeaderContext: require('react').createContext({
+    setSearchExpanded: jest.fn(),
+    setLicenseExpanded: jest.fn(),
+    searchExpanded: true,
+    licenseExpanded: false
+  })
+}))
+
+const MockHeaderContext = jest.requireMock('@acx-ui/components').HeaderContext
 
 const list = [
   {
@@ -148,11 +158,11 @@ describe('License Banner Component', () => {
   it('should render License Banner', async () => {
     render(
       <Provider>
-        <HeaderContext.Provider value={{
+        <MockHeaderContext.Provider value={{
           searchExpanded: false,
           licenseExpanded: true, setSearchExpanded: jest.fn(), setLicenseExpanded: jest.fn() }}>
           <LicenseBanner />
-        </HeaderContext.Provider>
+        </MockHeaderContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })
@@ -164,11 +174,11 @@ describe('License Banner Component', () => {
   it('should render License Banner for MSP', async () => {
     render(
       <Provider>
-        <HeaderContext.Provider value={{
+        <MockHeaderContext.Provider value={{
           searchExpanded: false,
           licenseExpanded: true, setSearchExpanded: jest.fn(), setLicenseExpanded: jest.fn() }}>
           <LicenseBanner isMSPUser={true}/>
-        </HeaderContext.Provider>
+        </MockHeaderContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })

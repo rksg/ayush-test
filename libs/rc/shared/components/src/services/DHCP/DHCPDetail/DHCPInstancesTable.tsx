@@ -4,11 +4,12 @@ import { useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card }                                                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
-import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
-import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplate, ConfigTemplateType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                             from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card }                                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }      from '@acx-ui/rc/services'
+import { Venue, DHCPUsage, DHCPSaveData, useConfigTemplate, ConfigTemplateType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                              from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                                           from '@acx-ui/utils'
 
 import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
 

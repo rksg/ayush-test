@@ -10,10 +10,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActivityApCompatibilityExtraParams,
-  ActivityIncompatibleFeatures,
-  useTableQuery
+  ActivityIncompatibleFeatures
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 

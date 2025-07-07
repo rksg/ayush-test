@@ -18,13 +18,12 @@ import {
   EventSeverityEnum,
   SwitchViewModel,
   SwitchStatusEnum,
-  SWITCH_DISCONNECTED,
-  useTableQuery
+  SWITCH_DISCONNECTED
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }      from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 import type { AnalyticsFilter }       from '@acx-ui/utils'
-
+import { useTableQuery }              from '@acx-ui/utils'
 
 import * as UI                 from './styledComponents'
 import { SwitchDetailsDrawer } from './SwitchDetailsDrawer'

@@ -1,4 +1,3 @@
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -40,8 +39,8 @@ const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 const replacePagination = (url: string) => url.replace(paginationPattern, '')
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 

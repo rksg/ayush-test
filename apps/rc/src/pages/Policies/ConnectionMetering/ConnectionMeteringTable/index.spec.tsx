@@ -8,8 +8,6 @@ import {
   CommonUrlsInfo,
   ConnectionMetering,
   ConnectionMeteringUrls,
-  NewTablePageable,
-  NewTableResult,
   BillingCycleType,
   PropertyUrlsInfo,
   PropertyConfigs,
@@ -21,6 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { NewTableResult, NewTablePageable }                                       from '@acx-ui/utils'
 
 import ConnectionMeteringTable from './index'
 
