@@ -304,6 +304,7 @@ function PersonaDetails () {
         return <PersonaOverview
           personaData={personaData}
           personaGroupData={personaGroupData}
+          isIdentityAnalyticsEnabled={isIdentityAnalyticsEnabled}
         />
     }
   }
