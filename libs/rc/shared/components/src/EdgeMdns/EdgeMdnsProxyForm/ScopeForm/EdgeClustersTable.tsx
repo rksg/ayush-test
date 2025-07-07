@@ -3,9 +3,10 @@ import { useEffect } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }        from '@acx-ui/components'
-import { useGetEdgeClusterListQuery }       from '@acx-ui/rc/services'
-import { EdgeClusterStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }  from '@acx-ui/components'
+import { useGetEdgeClusterListQuery } from '@acx-ui/rc/services'
+import { EdgeClusterStatus }          from '@acx-ui/rc/utils'
+import { useTableQuery }              from '@acx-ui/utils'
 
 import { EdgeClusterStatusLabel } from '../../../EdgeCluster/ClusterStatusText'
 

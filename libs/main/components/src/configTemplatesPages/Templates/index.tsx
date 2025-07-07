@@ -36,7 +36,6 @@ import {
   useDeleteIdentityGroupTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
@@ -47,7 +46,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                          from '@acx-ui/user'
-import { getOpsApi }                               from '@acx-ui/utils'
+import { useTableQuery, getOpsApi }                from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
 

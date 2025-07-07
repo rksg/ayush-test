@@ -18,18 +18,23 @@ import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
 import { AddPrivilegeGroup } from './AddPrivilegeGroup'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/8c36a0a9ab9d4806b060e112205add6f/t/administration/userPrivileges/privilegeGroups',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockReturnValue({ state: {
     isOnboardedMsp: true
   } }),
-  useTenantLink: () => jest.fn()
+  useTenantLink: () => mockedTenantLink
 }))
-const router = require('react-router-dom')
 
 const mspServices = require('@acx-ui/msp/services')
 const services = require('@acx-ui/rc/services')
+const router = require('@acx-ui/react-router-dom')
 
 const venueList = {
   totalCount: 3,

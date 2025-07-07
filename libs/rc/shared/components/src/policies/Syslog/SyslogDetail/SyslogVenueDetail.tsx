@@ -11,8 +11,9 @@ import {
   useGetSyslogPolicyTemplateQuery,
   useGetVenueSyslogListQuery
 } from '@acx-ui/rc/services'
-import { ConfigTemplateType, SyslogPolicyDetailType, SyslogVenue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                         from '@acx-ui/react-router-dom'
+import { ConfigTemplateType, SyslogPolicyDetailType, SyslogVenue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                          from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                                                                                       from '@acx-ui/utils'
 
 import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
 
