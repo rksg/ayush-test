@@ -12,10 +12,10 @@ import {
   DpskNetworkType,
   DpskSaveData,
   transformAdvancedDpskExpirationText,
-  TableResult,
   useConfigTemplateQueryFnSwitcher,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 import { AaaSummary } from './AaaSummary'
 

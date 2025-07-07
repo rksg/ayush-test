@@ -61,19 +61,18 @@ import {
   SwitchUrlsInfo,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  useTableQuery,
   SchedulerTypeEnum,
   PoeSchedulerType,
   allMultipleEditableFields,
   PolicyType,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { store }                             from '@acx-ui/store'
-import { MacACLDrawer, PoeSchedule }         from '@acx-ui/switch/components'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { hasPermission }                     from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { store }                                            from '@acx-ui/store'
+import { MacACLDrawer, PoeSchedule }                        from '@acx-ui/switch/components'
+import { SwitchScopes }                                     from '@acx-ui/types'
+import { hasPermission }                                    from '@acx-ui/user'
+import { getIntl, getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import {
   AuthenticationType,

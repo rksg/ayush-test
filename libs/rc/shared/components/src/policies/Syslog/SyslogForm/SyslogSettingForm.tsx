@@ -34,10 +34,11 @@ import {
   policyTypeLabelMapping,
   useConfigTemplateQueryFnSwitcher,
   SyslogPolicyDetailType,
-  TableResult,
   SyslogPolicyListType,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
+
 
 import { PROFILE_MAX_COUNT } from '../constants'
 import SyslogContext         from '../SyslogContext'

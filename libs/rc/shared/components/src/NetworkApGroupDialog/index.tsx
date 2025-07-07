@@ -38,11 +38,10 @@ import {
   IsNetworkSupport6g,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   VLANPoolViewModelType,
   validateRadioBandForDsaeNetwork
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { TableResult, getIntl } from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
 

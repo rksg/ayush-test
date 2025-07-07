@@ -17,11 +17,11 @@ import {
   ConfigTemplateType,
   Network, NetworkTypeEnum, networkTypes, ServicesConfigTemplateUrlsInfo,
   useActivativationPermission, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
-  useTableQuery,
   WifiCallingActionPayload,
   WifiCallingActionTypes, WifiCallingUrls, WifiNetwork
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useTableQuery }             from '@acx-ui/utils'
 
 import { useEnforcedStatus }  from '../../../configTemplates'
 import WifiCallingFormContext from '../WifiCallingFormContext'

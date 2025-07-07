@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkListQuery }          from '@acx-ui/rc/services'
-import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useTableQuery, WifiNetwork } from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
+import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, WifiNetwork }       from '@acx-ui/rc/utils'
+import { useTableQuery }                                                                from '@acx-ui/utils'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 

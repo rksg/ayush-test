@@ -1052,18 +1052,6 @@ export interface SoftGreChanges {
   lanPorts: SoftGreLanPortChange[]
 }
 
-export enum SoftGreState {
-  Init,
-  TurnOffSoftGre,
-  TurnOnSoftGre,
-  ModifySoftGreProfile,
-  TurnOffDHCPOption82,
-  TurnOnAndModifyDHCPOption82Settings,
-  TurnOnLanPort,
-  TurnOffLanPort,
-  ResetToDefault
-}
-
 export enum SoftGreDuplicationChangeState {
   Init,
   OnChangeSoftGreProfile,
@@ -1090,13 +1078,6 @@ export interface SoftGreDuplicationChangeDispatcher {
 export interface SoftGreOptionCandidate {
   option: DefaultOptionType
   gatewayIps:string[]
-}
-
-export interface SoftGreProfileDispatcher {
-  portId?: string,
-  state: SoftGreState,
-  index: number,
-  softGreProfileId?: string
 }
 
 export interface Voter {
@@ -1130,6 +1111,8 @@ export interface VenueLanPortSettings {
   enabled?: boolean
   softGreEnabled?: boolean
   softGreSettings?: LanPortSoftGreProfileSettings
+  dhcpOption82Enabled?: boolean
+  dhcpOption82Settings?: DhcpOption82Settings
   clientIsolationEnabled?: boolean
   clientIsolationSettings?: LanPortClientIsolationSettings
 }

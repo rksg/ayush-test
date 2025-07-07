@@ -11,7 +11,6 @@ import {
   ServiceOperation,
   getServiceRoutePath,
   useServicesBreadcrumb,
-  useTableQuery,
   WebAuthTemplateTableData,
   isDefaultWebAuth,
   getScopeKeyByService,
@@ -19,6 +18,7 @@ import {
   getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                       from '@acx-ui/utils'
 
 const getNetworkSegAuthPayload = {
   fields: [

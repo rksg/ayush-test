@@ -25,13 +25,13 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   GetApiVersionHeader,
   ApiVersionEnum,
   getPolicyAllowedOperation,
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }             from '@acx-ui/utils'
 
 const rbacSnmpFields = [
   'id',

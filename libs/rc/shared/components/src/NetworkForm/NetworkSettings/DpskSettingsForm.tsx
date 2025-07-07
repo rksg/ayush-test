@@ -20,12 +20,12 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   ServiceType,
   ServiceOperation,
   useTemplateAwareServicePermission,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
