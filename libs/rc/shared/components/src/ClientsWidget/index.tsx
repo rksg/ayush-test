@@ -4,12 +4,12 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { useClientSummariesQuery, useGetApWiredClientsQuery }                         from '@acx-ui/rc/services'
-import { ChartData, Dashboard }                                                       from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams, TenantLink }                                   from '@acx-ui/react-router-dom'
-import { useDashboardFilter, usePollingTableQuery, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { DonutChartData }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useClientSummariesQuery, useGetApWiredClientsQuery }   from '@acx-ui/rc/services'
+import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
+import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
@@ -113,10 +113,8 @@ export function ClientsWidgetV2 () {
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
 
-  const apWiredClientTableQuery = usePollingTableQuery({
-    useQuery: useGetApWiredClientsQuery,
-    defaultPayload: {
-      searchString: '',
+  const apWiredClientTableQuery = useGetApWiredClientsQuery({
+    payload: {
       filters: {},
       fields: [ 'macAddress']
     }
