@@ -10,7 +10,7 @@ jest.mock('react-router-dom', () => ({
   NavLink: ({ to, children }) => <div>{to} - {children}</div>
 }))
 
-describe.skip('TenantNavLink', () => {
+describe('TenantNavLink', () => {
   it('should render a NavLink with correct path', () => {
     render(<TenantNavLink to='some/url'>link text</TenantNavLink>)
     expect(screen.getByText('prefixed/some/url - link text')).toBeVisible()

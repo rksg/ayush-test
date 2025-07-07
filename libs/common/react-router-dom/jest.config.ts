@@ -12,10 +12,10 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/common/react-router-dom',
   coverageThreshold: {
     global: {
-      statements: 21,
-      branches: 0,
-      functions: 23,
-      lines: 20
+      statements: 97,
+      branches: 100,
+      functions: 90,
+      lines: 100
     }
   }
 }
