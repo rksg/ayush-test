@@ -164,6 +164,7 @@ describe('switch.firmware.utils', () => {
     expect(getStackUnitsMinLimitationV1002('ICX7550-48', '10010f_cd2')).toBe(12)
     expect(getStackUnitsMinLimitationV1002('ICX7650-48ZP', '10010a_b3')).toBe(8)
     expect(getStackUnitsMinLimitationV1002('ICX7850-48FS', '09010f_b401')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-C12P', '10010g_cd1')).toBe(8)
   })
 
   it('should convert switch version format correctly', () => {
