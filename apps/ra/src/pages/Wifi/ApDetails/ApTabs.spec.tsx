@@ -8,9 +8,15 @@ import ApTabs from './ApTabs'
 const params= { apId: 'ap-id' }
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai/devices/wifi/ap-id/details',
+  search: ''
+}
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 
 describe('ApTabs', () => {

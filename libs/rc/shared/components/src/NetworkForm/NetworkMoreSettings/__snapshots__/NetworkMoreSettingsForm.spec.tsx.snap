@@ -933,6 +933,65 @@ fieldset:disabled .ant-form .c8 > label {
             </div>
           </div>
         </div>
+        <div
+          class="c3"
+          width="250px"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-start"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              Application Recognition & Control
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <svg
+                data-testid="QuestionMarkCircleOutlined"
+                style="height: 16px; width: 16px; margin-bottom: -3px;"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+              data-testid="arcForm"
+            >
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <button
+                      aria-checked="true"
+                      class="ant-switch ant-switch-checked"
+                      id="wlan_advancedCustomization_applicationVisibilityEnabled"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <h4
           class="ant-typography c5 c6"
         >

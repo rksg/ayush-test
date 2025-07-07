@@ -9,11 +9,11 @@ import {
   IpsecViewData,
   IpsecWiredActivation,
   IpsecWiredApActivation,
-  useTableQuery,
   VenueTableIpsecActivation,
   VenueTableUsageByIpsec
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 
 const defaultVenuePayload = {

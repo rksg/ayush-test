@@ -8,13 +8,13 @@ import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
-  TableQuery,
-  usePollingTableQuery,
   ApWiredClientInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { TableQuery,
+  usePollingTableQuery,
+  noDataDisplay }  from '@acx-ui/utils'
 
 import { LanPortProfileDetailsDrawer } from '../LanPortProfileDetailDrawer'
 

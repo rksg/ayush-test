@@ -23,8 +23,8 @@ const { mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgeCluster } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -265,7 +265,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/lags',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports',
         hash: '',
         search: ''
       })

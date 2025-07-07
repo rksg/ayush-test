@@ -34,8 +34,8 @@ jest.mock('@acx-ui/rc/services', () => ({
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils')
 }))
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useLocation: () => jest.fn()
 }))
 const wrapData = (value: unknown) => ({

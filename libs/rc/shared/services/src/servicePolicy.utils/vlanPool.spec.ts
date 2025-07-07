@@ -1,7 +1,8 @@
 import {
-  TableResult, VlanPoolRbacUrls,
+  VlanPoolRbacUrls,
   VlanPoolUrls, VLANPoolViewModelRbacType, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 import { mockQueryApi }                                   from './__tests__/fixtures'
 import {

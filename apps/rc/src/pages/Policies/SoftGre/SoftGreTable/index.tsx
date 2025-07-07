@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteSoftGreMutation,
   useGetSoftGreViewDataListQuery,
   useGetVenuesQuery
@@ -16,12 +15,13 @@ import {
   SoftGreViewData,
   getPolicyDetailsLink,
   MtuTypeEnum,
-  useTableQuery,
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: [

@@ -1,7 +1,8 @@
 import { Loader }                                    from '@acx-ui/components'
 import { useGetEdgeLagSubInterfacesStatusListQuery } from '@acx-ui/rc/services'
-import { EdgePortInfo, useTableQuery }               from '@acx-ui/rc/utils'
+import { EdgePortInfo }                              from '@acx-ui/rc/utils'
 import { RequestPayload }                            from '@acx-ui/types'
+import { useTableQuery }                             from '@acx-ui/utils'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 

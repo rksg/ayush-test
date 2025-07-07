@@ -3,8 +3,9 @@ import { useIntl } from 'react-intl'
 import { PageHeader }                                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetCliTemplatesQuery, useGetProfilesQuery } from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { SwitchCliTemplateModel }                       from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
+import { usePollingTableQuery }                         from '@acx-ui/utils'
 
 import WiredTabs from './WiredTabs'
 
