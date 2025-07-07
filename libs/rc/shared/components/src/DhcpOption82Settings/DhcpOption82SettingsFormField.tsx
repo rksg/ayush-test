@@ -8,8 +8,8 @@ import {
 import { NamePath } from 'antd/lib/form/interface'
 import { useIntl }  from 'react-intl'
 
-import { Tooltip }                    from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { DraggableTagField, Tooltip, cssStr } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
@@ -206,6 +206,26 @@ export const DhcpOption82SettingsFormField = (props: {
           }
         </div>
       </UI.FieldLabel>
+      <UI.AsteriskFormTitle>
+        {$t({ defaultMessage: 'Custom Attributes' })}
+      </UI.AsteriskFormTitle>
+      <div style={{
+        fontSize: '12px',
+        color: cssStr('--acx-neutrals-60')
+      }}>
+        {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
+      </div>
+      <UI.FieldLabelFullWidth>
+        <DraggableTagField
+          name='tags'
+          options={['Option1', 'Option2', 'Option3']}
+          maxTags={5}
+          customTags={{
+            maxLength: 20,
+            customRules: []
+          }}
+        />
+      </UI.FieldLabelFullWidth>
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
           {$t({ defaultMessage: 'Agent Remote ID (#2)' })}

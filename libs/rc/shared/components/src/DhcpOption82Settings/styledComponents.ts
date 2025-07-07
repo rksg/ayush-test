@@ -12,6 +12,29 @@ export const FieldLabel = styled.div<{ width: string }>`
   align-items: baseline;
 `
 
+export const AsteriskFormTitle = styled.div`
+  color: var(--acx-primary-black);
+  font-size: 12px;
+  &::after {
+      content: "*";
+      margin-right: 0;
+      margin-left: 3px;
+      color: var(--acx-accents-orange-50);
+      font-family: var(--acx-neutral-brand-font);
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      display: inline-block;
+      box-sizing: border-box;
+  }
+`
+
+export const FieldLabelFullWidth = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  line-height: 32px;
+  align-items: baseline;
+`
+
 export const FormItemNoLabel = styled(Form.Item)`
   margin-bottom: 5px;
 `
