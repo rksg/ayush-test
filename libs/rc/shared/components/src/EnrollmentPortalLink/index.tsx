@@ -87,7 +87,6 @@ export function EnrollmentPortalLink (props: { url: string }) {
             <Button
               ghost
               icon={<CopyOutlined />}
-              style={{ top: '-9px' }}
               onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
               onClick={() => {
                 navigator.clipboard.writeText(url)
@@ -103,9 +102,8 @@ export function EnrollmentPortalLink (props: { url: string }) {
             <Button
               type={'link'}
               icon={
-                <CopyOutlined style={{ color: 'var(--acx-accents-blue-50)' }} />
+                <CopyOutlined />
               }
-              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
               onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
               onClick={(event) => {
                 navigator.clipboard.writeText(url)
@@ -119,11 +117,8 @@ export function EnrollmentPortalLink (props: { url: string }) {
             <Button
               type={'link'}
               icon={
-                <StyledChatbotLink
-                  style={{ color: 'var(--acx-accents-blue-50)' }}
-                />
+                <StyledChatbotLink />
               }
-              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
               onMouseOut={() => setOpenUrlTooltip(openUrlTooltipDefaultText)}
               onClick={(event) => {
                 document.getElementById(id)?.click()
@@ -135,11 +130,8 @@ export function EnrollmentPortalLink (props: { url: string }) {
             <Button
               type={'link'}
               icon={
-                <StyledQRLink
-                  style={{ color: 'var(--acx-accents-blue-50)' }}
-                />
+                <StyledQRLink />
               }
-              style={{ top: '-9px', color: 'var(--acx-accents-blue-50)' }}
               onMouseOut={() => setQrCodeTooltip(qrCodeTooltipDefaultText)}
               onClick={handleDownloadQr}
             />
