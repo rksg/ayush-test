@@ -1,4 +1,23 @@
-import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType, IsolatePacketsTypeEnum } from '@acx-ui/rc/utils'
+import {
+  ApStateEnum,
+  AFCPowerMode,
+  AFCStatus,
+  ApRadioBands,
+  ApSubStateEnum,
+  ApVenueStatusEnum,
+  ApViewModel,
+  BssMinRate6GEnum,
+  ChannelBandwidth24GEnum,
+  ChannelBandwidth5GEnum,
+  Channel320MHzGroupEnum,
+  ChannelBandwidth6GEnum,
+  EthernetPortType,
+  MgmtTxRate6GEnum,
+  IsolatePacketsTypeEnum,
+  TxPowerEnum,
+  ScanMethodEnum,
+  PoeOutModeEnum
+} from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
@@ -778,44 +797,53 @@ export const t670Ap = {
   serialNumber: '922406000185',
   apGroupId: '59181904e1224ff884b77a4c363d7cbf',
   venueId: '4910e33b100d42da97fba46d89a8fc0f',
+  lastContacted: '',
+  lastUpdated: '',
+  firmware: '7.1.1.2.3',
+  state: ApStateEnum.Operational,
+  subState: ApSubStateEnum.Operational,
+  mac: 'aa:bb:cc:dd:ee:ff',
+  ip: '1.2.3.4',
+  externalIp: '1.2.3.4',
+  meshRole: 'Root',
   radio: {
     apRadioParams24G: {
-      method: 'CHANNELFLY',
+      method: ScanMethodEnum.BACKGROUND_SCANNING,
       manualChannel: 0,
       operativeTxPower: 'max',
       operativeChannel: 10,
       snr_dB: 32,
       useVenueSettings: true,
-      channelBandwidth: 'AUTO',
-      txPower: 'MAX',
+      channelBandwidth: ChannelBandwidth24GEnum.AUTO,
+      txPower: TxPowerEnum.MAX,
       changeInterval: 33
     },
     apRadioParams50G: {
-      method: 'CHANNELFLY',
-      channelBandwidth: 'AUTO',
+      method: ScanMethodEnum.BACKGROUND_SCANNING,
+      channelBandwidth: ChannelBandwidth5GEnum.AUTO,
       manualChannel: 0,
       operativeTxPower: 'max',
       operativeChannel: 36,
       snr_dB: 24,
-      txPower: 'MAX',
+      txPower: TxPowerEnum.MAX,
       useVenueSettings: true,
       changeInterval: 33
     },
     apRadioParamsDual5G: {
       enabled: false,
       radioParamsLower5G: {
-        method: 'BACKGROUND_SCANNING',
-        channelBandwidth: 'AUTO',
+        method: ScanMethodEnum.BACKGROUND_SCANNING,
+        channelBandwidth: ChannelBandwidth5GEnum.AUTO,
         manualChannel: 0,
-        txPower: 'MAX',
+        txPower: TxPowerEnum.MAX,
         useVenueSettings: true,
         changeInterval: 33
       },
       radioParamsUpper5G: {
-        method: 'BACKGROUND_SCANNING',
-        channelBandwidth: 'AUTO',
+        method: ScanMethodEnum.BACKGROUND_SCANNING,
+        channelBandwidth: ChannelBandwidth5GEnum.AUTO,
         manualChannel: 0,
-        txPower: 'MAX',
+        txPower: TxPowerEnum.MAX,
         useVenueSettings: true,
         changeInterval: 33
       },
@@ -826,9 +854,9 @@ export const t670Ap = {
       operativeTxPower: 'max',
       operativeChannel: 1,
       snr_dB: 5,
-      channelBandwidth320MhzGroup: 'AUTO',
+      channelBandwidth320MhzGroup: Channel320MHzGroupEnum.AUTO,
       useVenueSettings: false,
-      method: 'CHANNELFLY',
+      method: ScanMethodEnum.CHANNELFLY,
       allowedChannels: [
         '1',
         '5',
@@ -855,16 +883,17 @@ export const t670Ap = {
         '89',
         '93'
       ],
-      channelBandwidth: 'AUTO',
-      bssMinRate6G: 'HE_MCS_0',
-      mgmtTxRate6G: '6',
-      txPower: 'MAX',
+      channelBandwidth: ChannelBandwidth6GEnum.AUTO,
+      bssMinRate6G: BssMinRate6GEnum.HE_MCS_0,
+      mgmtTxRate6G: MgmtTxRate6GEnum._6,
+      txPower: TxPowerEnum.MAX,
       enableMulticastUplinkRateLimiting: false,
       multicastUplinkRateLimiting: 1,
       enableMulticastDownlinkRateLimiting: false,
       multicastDownlinkRateLimiting: 1,
       enableAfc: true,
-      changeInterval: 33
+      changeInterval: 33,
+      enable6G: true
     },
     useVenueSettings: true,
     enable24G: true,
@@ -1305,10 +1334,10 @@ export const triBandApCap = {
   ]
 }
 
-export const tripleBandMode = {
+export const tripleBandMode = [{
   bandMode: 'TRIPLE',
-  useVenueSettings: true
-}
+  model: 'T670'
+}]
 
 export const apRadio = {
   apRadioParams24G: {
@@ -1796,6 +1825,47 @@ export const venueLanPorts = [
     model: 'T750SE',
     poeMode: 'Auto',
     poeOut: false
+  }, {
+    lanPorts: [
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '1',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '2',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '3',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '4',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.TRUNK,
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '5',
+        enabled: true
+      }
+    ],
+    model: 'H670',
+    poeMode: 'Auto',
+    poeOut: false
   }
 ]
 
@@ -1839,6 +1909,49 @@ export const ApLanPorts_T750SE = {
       untagId: 1,
       vlanMembers: '1',
       portId: '3',
+      enabled: true
+    }
+  ],
+  useVenueSettings: true
+}
+
+export const ApLanPorts_H670 = {
+  poeMode: 'Auto',
+  poeOut: false,
+  lanPorts: [
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '3',
+      enabled: true
+    },
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '4',
+      enabled: true
+    },
+    {
+      type: EthernetPortType.TRUNK,
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '5',
       enabled: true
     }
   ],
@@ -2014,6 +2127,129 @@ export const ApCap_T750SE = {
   maxChannelization5G: 160,
   supportMesh: true,
   supportSmartMonitor: true
+}
+
+export const ApData_H670 = {
+  apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
+  venueId: mockVenue.id,
+  name: 'H670',
+  softDeleted: false,
+  model: 'H670',
+  poeMode: 'Auto',
+  poeOut: false,
+  poeOutMode: PoeOutModeEnum._802_3af
+}
+
+export const ApCap_H670 = {
+  model: 'H670',
+  version: '7.0.0.103.390',
+  lanPorts: [
+    {
+      id: '1',
+      defaultType: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: true
+    },
+    {
+      id: '2',
+      defaultType: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false
+    },
+    {
+      id: '3',
+      defaultType: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    },
+    {
+      id: '4',
+      defaultType: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    },
+    {
+      id: '5',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    }
+  ],
+  allowDfsCountry: ['US', 'SG'],
+  allowCbandCountry: [
+    'GB', 'DE', 'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE',
+    'FI', 'FR', 'GR', 'HU', 'IT', 'LV', 'LU', 'MT', 'NL', 'NO',
+    'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'LT', 'IE', 'ME', 'CH'
+  ],
+  lldpEnable: true,
+  lldpAdInterval: 30,
+  lldpHoldTime: 120,
+  lldpMgmtEnable: true,
+  ledOn: true,
+  isOutdoor: false,
+  has160MHzChannelBandwidth: true,
+  canSupportPoeOut: true,
+  canSupportPoeMode: true,
+  canSupportPoeOutMode: true,
+  canSupportLacp: false,
+  requireOneEnabledTrunkPort: true,
+  poeModeCapabilities: [
+    'Auto',
+    '802.3at',
+    '802.3bt-Class_5'
+  ],
+  poeOutModeCapabilities: [
+    PoeOutModeEnum._802_3af,
+    PoeOutModeEnum._802_3at
+  ],
+  defaultPoeOutMode: PoeOutModeEnum._802_3af,
+  lanPortPictureDownloadUrl: 'https://fakeURL/7.1.1.520.544/h670.jpg',
+  pictureDownloadUrl: 'https://fakeUrl/7.1.1.520.544/appearance-h670.jpg',
+  canSupportCellular: false,
+  simCardPrimaryEnabled: true,
+  simCardPrimaryRoaming: true,
+  simCardSecondaryEnabled: true,
+  simCardSecondaryRoaming: true,
+  capabilityScore: 160,
+  supportTriRadio: true,
+  supportDual5gMode: false,
+  supportChannel144: true,
+  support11AX: true,
+  support11BE: true,
+  maxChannelization24G: 40,
+  maxChannelization5G: 160,
+  maxChannelization6G: 160,
+  supportMesh: true,
+  supportBandCombination: false,
+  supportAntennaType: false,
+  supportApStickyClientSteering: true,
+  supportAutoCellSizing: true,
+  supportAggressiveTxPower: true,
+  supportMesh5GOnly6GOnly: true,
+  supportSmartMonitor: true,
+  supportSoftGre: true,
+  usbPowerEnable: true,
+  supportIoT: true
 }
 
 export const apDeviceRadio = {

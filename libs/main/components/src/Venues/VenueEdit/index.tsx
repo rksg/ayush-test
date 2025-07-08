@@ -254,12 +254,14 @@ function processWifiTab (props: VenueEditContextProps) {
       editAdvancedContextData?.updateBssColoring?.()
       editAdvancedContextData?.updateApManagementVlan?.()
       editAdvancedContextData?.updateRebootTimeout?.()
+      editAdvancedContextData?.updateApIpMode?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
+      editNetworkingContextData?.updateRadiusService?.()
       editNetworkingContextData?.updateRadiusOptions?.()
       editNetworkingContextData?.updateSmartMonitor?.()
       break

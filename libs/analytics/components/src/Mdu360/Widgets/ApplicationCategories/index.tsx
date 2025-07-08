@@ -8,23 +8,20 @@ import {
   ContentSwitcher,
   Loader,
   ContentSwitcherProps,
-  HistoricalCard
+  HistoricalCard,
+  NoData
 } from '@acx-ui/components'
 import { formats } from '@acx-ui/formatter'
 
-import { ContentSwitcherWrapper, StyledNoData } from '../../styledComponents'
+import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTopNApplicationCategoriesQuery } from './services'
-
-export interface ApplicationCategoriesFilters {
-  startDate: string;
-  endDate: string;
-}
 
 export const ApplicationCategories = ({
   filters
 }: {
-  filters: ApplicationCategoriesFilters;
+  filters: Mdu360TabProps;
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
@@ -57,7 +54,7 @@ export const ApplicationCategories = ({
             )}
           </AutoSizer>
         ) : (
-          <StyledNoData />
+          <NoData />
         )
       },
       {
@@ -80,7 +77,7 @@ export const ApplicationCategories = ({
             )}
           </AutoSizer>
         ) : (
-          <StyledNoData />
+          <NoData />
         )
       }
     ],

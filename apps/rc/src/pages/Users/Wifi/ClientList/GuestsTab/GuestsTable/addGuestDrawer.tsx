@@ -266,7 +266,6 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
     { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
-  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
@@ -487,7 +486,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
       />}
     />
     {/* Only display Guest Pass when render from AddGuestDrawer*/}
-    {isGuestManualPasswordEnabled && (from === 'add') &&
+    {(from === 'add') &&
     <Form.Item
       label={$t({ defaultMessage: 'Guest Pass' })}
       valuePropName={'checked'}

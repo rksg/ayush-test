@@ -4,20 +4,19 @@ import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
+  AdaptivePolicySet, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RulesManagementUrlsInfo, SEARCH, useTableQuery
+  PolicyType, RulesManagementUrlsInfo, doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }                                    from '@acx-ui/utils'
+import { getOpsApi, useTableQuery, SEARCH, FILTER }     from '@acx-ui/utils'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()

@@ -45,7 +45,6 @@ function getCols ({ $t }: ReturnType<typeof useIntl>): TableProps<VenueData>['co
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
   needPadding?: boolean;
-  isEdgeEnabled: boolean;
 }
 
 export function VenueMarkerTooltip (
@@ -64,7 +63,7 @@ export function VenueMarkerTooltip (
     edgesCount
   } = props.venueMarker
 
-  const { onNavigate, needPadding = true, isEdgeEnabled } = props
+  const { onNavigate, needPadding = true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
   const commonProps = {
     animation: false,
@@ -131,11 +130,8 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switch clients' })}
         </UI.TextWrapper>
-    }
-  ]
-
-  if (isEdgeEnabled) {
-    data.push({
+    },
+    {
       key: '3',
       name: $t({ defaultMessage: 'RUCKUS Edge' }),
       networkDevices: edgesCount > 0
@@ -153,8 +149,8 @@ export function VenueMarkerTooltip (
         </UI.TextWrapper>,
       clients: <></>
 
-    })
-  }
+    }
+  ]
 
   return (
     <UI.Wrapper needPadding={needPadding}>

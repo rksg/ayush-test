@@ -3,12 +3,16 @@ import { useContext, useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }          from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   domainNameRegExp,
+  domainNameWithIPv6RegExp,
   serverIpAddressRegExp,
+  dualModeServerIpAddressRegExp,
   WifiCallingActionPayload,
-  WifiCallingActionTypes
+  WifiCallingActionTypes,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
@@ -24,6 +28,7 @@ interface WifiCallingDrawerProps {
 
 const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
 
   const { visible, setVisible, isEditMode, serviceIndex } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
@@ -32,8 +37,24 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
     ? $t({ defaultMessage: 'Edit ePDG' })
     : $t({ defaultMessage: 'Add ePDG' })
 
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
+
   const onClose = () => {
     setVisible(false)
+  }
+
+  const domainValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return domainNameWithIPv6RegExp(value)
+    }
+    return domainNameRegExp(value)
+  }
+
+  const serverIpValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return dualModeServerIpAddressRegExp(value)
+    }
+    return serverIpAddressRegExp(value)
   }
 
   useEffect(() => {
@@ -59,7 +80,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
             .findIndex((epdg) => epdg.domain === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'The domain name already exists' }))
           }
-          return domainNameRegExp(value)
+          return domainValidator(value)
         }
         }
       ]}
@@ -71,7 +92,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
       name='ip'
       label={$t({ defaultMessage: 'IP Address' })}
       rules={[
-        { validator: (_, value) => serverIpAddressRegExp(value) }
+        { validator: (_, value) => serverIpValidator(value) }
       ]}
       initialValue={serviceIndex !== undefined ? state.ePDG[serviceIndex].ip : ''}
       children={<Input

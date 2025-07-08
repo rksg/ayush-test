@@ -25,7 +25,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
   const policyMenuItems = usePolicyMenuItems()
   const serviceMenuItems = useServiceMenuItems()
   const servicePolicyMenuItems = isNewServiceCatalogEnabled
-    ? [cosolidateServicePolicyMenuItems(serviceMenuItems, policyMenuItems)]
+    ? [consolidateServicePolicyMenuItems(serviceMenuItems, policyMenuItems)]
     : [policyMenuItems, serviceMenuItems]
 
   const menuItems = [
@@ -45,13 +45,14 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
   }
 }
 
-type ServicePolicyMenuItemType = Exclude<ItemType, null> & { labelText: string }
+export type ServicePolicyMenuItemType = Exclude<ItemType, null> & { labelText: string }
 
 function isServicePolicyMenuItem (item: ItemType): item is ServicePolicyMenuItemType {
   return !!item && 'labelText' in item
 }
 
-function cosolidateServicePolicyMenuItems (serviceMenu: ItemType, policyMenu: ItemType): ItemType {
+// eslint-disable-next-line max-len
+export function consolidateServicePolicyMenuItems (serviceMenu: ItemType, policyMenu: ItemType): ItemType {
   const { $t } = getIntl()
 
   const allItems = [serviceMenu, policyMenu]
@@ -62,6 +63,8 @@ function cosolidateServicePolicyMenuItems (serviceMenu: ItemType, policyMenu: It
     )
     .filter(isServicePolicyMenuItem)
     .sort((a, b) => a.labelText.localeCompare(b.labelText))
+
+  if (allItems.length === 0) return null
 
   return {
     key: 'add-unified-services',

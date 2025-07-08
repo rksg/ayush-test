@@ -46,15 +46,10 @@ import {
   ApDeviceStatusEnum,
   ApExtraParams,
   CommonResult,
-  FILTER,
   ImportErrorRes,
   NewAPExtendedGrouped,
   NewAPModelExtended,
-  SEARCH,
-  TableQuery,
-  TableResult,
   transformDisplayText,
-  usePollingTableQuery,
   PowerSavingStatusEnum,
   IncompatibleFeatureLevelEnum,
   CompatibilityResponse,
@@ -65,10 +60,14 @@ import {
   ApGroupViewModel,
   NewAPModel
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping, usePollingTableQuery, FILTER,
+  SEARCH,
+  TableQuery,
+  TableResult
+} from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
@@ -95,7 +94,7 @@ export const newDefaultApPayload = {
     'switchName', 'meshRole', 'clientCount', 'apWiredClientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
-    'powerSavingStatus'
+    'powerSavingStatus', 'supportSecureBoot'
   ]
 }
 

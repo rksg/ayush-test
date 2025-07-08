@@ -3,8 +3,6 @@ import moment from 'moment-timezone'
 import {
   DpskSaveData,
   MacRegistrationPool,
-  NewTablePageable,
-  NewTableResult,
   PassphraseFormatEnum,
   Persona,
   PersonaGroup,
@@ -14,6 +12,7 @@ import {
   BillingCycleType,
   DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
+import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')

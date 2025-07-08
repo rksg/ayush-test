@@ -10,15 +10,11 @@ import {
   useVenuesListQuery
 }from '@acx-ui/rc/services'
 import {
-  FILTER,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation,
-  GROUPBY,
   PolicyOperation,
   PolicyType,
-  SEARCH,
   SwitchPortProfiles,
-  useTableQuery,
   vlanPortsParser
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -26,6 +22,7 @@ import {
   filterByAccess,
   hasCrossVenuesPermission
 } from '@acx-ui/user'
+import { FILTER, GROUPBY, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 export default function SwitchPortProfileTable () {
   const { $t } = useIntl()

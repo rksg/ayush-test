@@ -173,6 +173,7 @@ export function SummaryForm (props: {
           }
           { summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Workflow &&
+            summaryData.enableAccountingService &&
             summaryData.accountingRadius &&
             <Form.Item
               label={$t({ defaultMessage: 'Accounting Service' })}

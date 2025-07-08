@@ -13,11 +13,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
-  AssignEcDrawer,
-  ResendInviteModal,
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  ManageMspDelegationDrawer
+  ResendInviteModal
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -28,16 +24,19 @@ import {
   MspEc,
   MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
-import { useTableQuery }                                                                                    from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import {
-  AccountType, getOpsApi, isDelegationMode
+  AccountType, getOpsApi, isDelegationMode, useTableQuery
 } from '@acx-ui/utils'
 
-import { useCheckDelegateAdmin } from '../../hooks/useCheckDelegateAdmin'
-import HspContext                from '../../HspContext'
+import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
+import HspContext                    from '../../HspContext'
+import { AssignEcDrawer }            from '../AssignEcDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
