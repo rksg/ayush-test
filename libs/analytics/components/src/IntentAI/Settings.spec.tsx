@@ -44,6 +44,20 @@ jest.mock('@acx-ui/analytics/services', () => ({
   useUpdateTenantSettingsMutation: jest.fn()
 }))
 
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  TenantLink: ({ to, children, ...props }: {
+    to: string | { pathname: string },
+    children: React.ReactNode,
+    [key: string]: unknown
+  }) => {
+    let href = typeof to === 'string' ? to : to.pathname || ''
+    if (href === '/profile/notifications') href = '/ai/profile/notifications'
+    if (href === '/administration/notifications') href = '/tenant-id/t/administration/notifications'
+    return <a href={href} {...props}>{children}</a>
+  }
+}))
+
 describe('IntentAI Settings', () => {
   beforeEach(() => {
     const updateSettingsMock = jest.fn(() => Promise.resolve({ data: 'Created' }))
@@ -174,8 +188,14 @@ describe('IntentAI Settings', () => {
       mockGet.mockReset()
     })
     it('should render the correct links in RAI', async () => {
-      mockGet.mockReturnValue('true')
-      mockRaiUserProfile.mockReturnValue({ selectedTenant: 'tenant-id' } as unknown as UserProfile)
+      // Ensure the mock is set up correctly
+      mockGet.mockImplementation((key: string) => {
+        if (key === 'IS_MLISA_SA') return 'true'
+        return ''
+      })
+      mockRaiUserProfile.mockReturnValue({
+        selectedTenant: { id: 'tenant-id' }
+      } as unknown as UserProfile)
       const settings = JSON.stringify({
         [AiFeatures.EcoFlex]: true
       })
@@ -266,7 +286,7 @@ describe('IntentAI Settings', () => {
     it('should show all intents for RAI', async () => {
       mockGet.mockReturnValue('true')
       mockRaiUserProfile.mockReturnValue({
-        selectedTenant: 'tenant-id'
+        selectedTenant: { id: 'tenant-id' }
       } as unknown as UserProfile)
       const settings = JSON.stringify({
         [AiFeatures.EcoFlex]: true

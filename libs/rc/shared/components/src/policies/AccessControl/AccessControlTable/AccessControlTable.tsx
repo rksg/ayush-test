@@ -9,10 +9,11 @@ import {
   PolicyType,
   PolicyOperation,
   usePoliciesBreadcrumb,
-  getPolicyRoutePath, useTableQuery, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
+  getPolicyRoutePath, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
 

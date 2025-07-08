@@ -7,11 +7,11 @@ import { Loader, Table, TableProps }                             from '@acx-ui/c
 import { defaultRbacClientPayload, useRbacClientTableColumns }   from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
-  ClientInfo, defaultSort,
-  IdentityClient, SORTER, sortProp,
-  usePollingTableQuery
+  ClientInfo, defaultSort, sortProp,
+  IdentityClient
 } from '@acx-ui/rc/utils'
-import { TABLE_MAX_PAGE_SIZE } from '@acx-ui/utils'
+import { TABLE_MAX_PAGE_SIZE, SORTER,
+  usePollingTableQuery  } from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 

@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, Table, TableProps }                    from '@acx-ui/components'
 import {
   APExtended,
   APExtendedGrouped,
-  ApExtraParams, arraySizeSort, defaultSort, sortProp,
-  TableQuery
+  ApExtraParams, arraySizeSort, defaultSort, sortProp
 } from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 
 export const defaultApPayload = {
   fields: [

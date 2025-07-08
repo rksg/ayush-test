@@ -38,7 +38,7 @@ export const mockSnmpV3Agents = [
     targetAddr: '192.168.0.100',
     targetPort: 162,
     authProtocol: SnmpAuthProtocolEnum.SHA,
-    authPassword: '1234567890',
+    authPassword: '1234567aB+',
     privacyProtocol: SnmpPrivacyProtocolEnum.None
   },
   {
@@ -48,7 +48,7 @@ export const mockSnmpV3Agents = [
     notificationType: SnmpNotificationTypeEnum.Inform,
     targetPort: 162,
     authProtocol: SnmpAuthProtocolEnum.MD5,
-    authPassword: '123456789',
+    authPassword: '123456aB+',
     privacyProtocol: SnmpPrivacyProtocolEnum.AES,
     privacyPassword: '12345678'
   }

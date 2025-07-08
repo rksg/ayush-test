@@ -15,15 +15,14 @@ import {
   useGetIotControllerListQuery
 }                            from '@acx-ui/rc/services'
 import {
-  IotControllerStatus,
-  useTableQuery
+  IotControllerStatus
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-// import { getOpsApi }                     from '@acx-ui/utils'
+import { useTableQuery }  from '@acx-ui/utils'
 
 interface IotControllerDrawerProps {
   visible: boolean

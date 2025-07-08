@@ -9,12 +9,12 @@ import {
   usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy, FILTER, filterByAccessForServicePolicyMutation,
+  AdaptivePolicy, filterByAccessForServicePolicyMutation,
   getAdaptivePolicyDetailLink, getPolicyAllowedOperation, getScopeKeyByPolicy,
-  PolicyOperation, PolicyType, SEARCH,
-  useTableQuery
+  PolicyOperation, PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import {  FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 

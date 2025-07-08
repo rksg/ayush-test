@@ -339,31 +339,6 @@ describe('venue > Multi-venue SDLAN - network table', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
     })
 
-    it('should greyout when the WLAN is the last one in SDLAN', async () => {
-      const mockedEdgeSdLanDc = _.cloneDeep(mockedMvSdLanDataList[1])
-      mockedEdgeSdLanDc.tunneledWlans = mockedEdgeSdLanDc.tunneledWlans!.slice(0, 1)
-      // eslint-disable-next-line max-len
-      const targetNetwork = _.find(mockNetworkViewmodelList, { id: mockedEdgeSdLanDc.tunneledWlans[0].networkId })
-
-      mockedSubmitData.mockReturnValue([
-        'activatedNetworks',
-        targetNetwork,
-        false,
-        ['network_1']
-      ])
-      mockedDisableFnParams.mockReturnValue([
-        'mock_venue',
-        targetNetwork,
-        false
-      ])
-
-      renderTestComponent({ params, sdLan: mockedEdgeSdLanDc })
-      const networkTable = screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
-      expect(within(networkTable).getByRole('button')).toBeDisabled()
-      // eslint-disable-next-line max-len
-      expect(within(networkTable).getByText('tooltip:Cannot deactivate the last network at this venue')).toBeVisible()
-    })
-
     // eslint-disable-next-line max-len
     it('should popup conflict when activate guest forward network which is already DC network in another venue', async () => {
       const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)

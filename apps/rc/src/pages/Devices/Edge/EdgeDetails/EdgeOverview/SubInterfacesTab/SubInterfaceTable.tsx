@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                 from '@acx-ui/components'
-import { EdgePortInfo, getEdgePortIpModeString, TableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                                    from '@acx-ui/types'
+import { Table, TableProps }                     from '@acx-ui/components'
+import { EdgePortInfo, getEdgePortIpModeString } from '@acx-ui/rc/utils'
+import { RequestPayload }                        from '@acx-ui/types'
+import { TableQuery }                            from '@acx-ui/utils'
 
 interface SubInterfaceTableProps {
   settingsId?: string

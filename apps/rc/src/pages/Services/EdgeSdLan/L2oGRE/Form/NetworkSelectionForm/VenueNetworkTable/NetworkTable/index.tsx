@@ -23,12 +23,11 @@ import {
   sortProp,
   TunnelTypeEnum,
   useHelpPageLink,
-  useTableQuery,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                          from '@acx-ui/types'
-import { filterByAccess }                      from '@acx-ui/user'
-import { compareVersions, getIntl, getOpsApi } from '@acx-ui/utils'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { filterByAccess }                                     from '@acx-ui/user'
+import { compareVersions, getIntl, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import { EdgeSdLanFormType }               from '../../..'
 import { useEdgeSdLanContext }             from '../../../EdgeSdLanContextProvider'
