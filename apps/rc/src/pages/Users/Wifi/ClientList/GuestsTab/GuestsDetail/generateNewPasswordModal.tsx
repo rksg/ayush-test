@@ -14,7 +14,6 @@ import moment, { LocaleSpecifier } from 'moment-timezone'
 import { useParams }               from 'react-router-dom'
 
 import { cssStr, Modal, PasswordInput }       from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   useGenerateGuestPasswordMutation,
@@ -163,7 +162,6 @@ export function GenerateNewPasswordModal (props: {
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
-  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const [ validateGuestPassword ] = useValidateGuestPasswordByGuestIdMutation()
   const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const guestPasswordOptionChange = (event: RadioChangeEvent) => {
@@ -187,7 +185,6 @@ export function GenerateNewPasswordModal (props: {
           form.getFieldsError().some((field) => field.errors.length > 0)
         )
       }>
-      {isGuestManualPasswordEnabled &&
       <Form.Item
         label={$t({ defaultMessage: 'Guest Pass' })}
         valuePropName={'checked'}
@@ -245,7 +242,6 @@ export function GenerateNewPasswordModal (props: {
           </FullWidthSpace>
         </Radio.Group>
       </Form.Item>
-      }
       <Typography.Text style={{
         display: 'block', marginBottom: '20px',
         color: cssStr('--acx-neutrals-60')
