@@ -20,7 +20,7 @@ import { SkeletonLoaderCard }                                          from './S
 import { useUnifiedServiceListWithTotalCount }                         from './useUnifiedServiceListWithTotalCount'
 import { getDefaultSearchFilterValues, useUnifiedServiceSearchFilter } from './useUnifiedServiceSearchFilter'
 
-const myServicesSettingsId = 'my-services'
+const myServicesSettingsId = 'my-services-filter'
 
 export function MyServices () {
   const { $t } = useIntl()
@@ -56,7 +56,7 @@ export function MyServices () {
         setSearchTerm={setSearchTerm}
         setFilters={setFilters}
         setSortOrder={setSortOrder}
-        availableFilters={{ products, categories }}
+        availableFilters={isFetching ? undefined : { products, categories }}
         defaultValues={defaultSearchFilterValues}
       />
       {isFetching
