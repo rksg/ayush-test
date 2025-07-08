@@ -18,6 +18,8 @@ export class ApGroupRadioParams24G {
 
   useVenueSettings?: boolean
 
+  channel?: number
+
   enabled?: boolean
 
   constructor () {

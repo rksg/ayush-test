@@ -11,14 +11,13 @@ import {
   ConfigTemplateUrlsInfo,
   Network,
   useConfigTemplate,
-  usePollingTableQuery,
   WifiNetwork,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }                                                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                     from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi }                                                      from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery }                                from '@acx-ui/utils'
 
 export default function useNetworksTable () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)

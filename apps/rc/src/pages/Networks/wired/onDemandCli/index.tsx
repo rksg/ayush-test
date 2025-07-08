@@ -16,8 +16,7 @@ import {
 }  from '@acx-ui/rc/services'
 import {
   SwitchCliTemplateModel,
-  SwitchUrlsInfo,
-  usePollingTableQuery
+  SwitchUrlsInfo
 }            from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { useNavigate }  from '@acx-ui/react-router-dom'
@@ -26,9 +25,8 @@ import {
   hasCrossVenuesPermission,
   filterByAccess,
   hasPermission
-
 } from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery } from '@acx-ui/utils'
 
 import { Notification  } from './styledComponents'
 

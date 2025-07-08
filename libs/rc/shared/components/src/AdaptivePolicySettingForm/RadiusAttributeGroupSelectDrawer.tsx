@@ -9,9 +9,9 @@ import {
   AttributeAssignment,
   filterByAccessForServicePolicyMutation, getPolicyAllowedOperation, getScopeKeyByPolicy,
   PolicyOperation, PolicyType,
-  RadiusAttributeGroup,
-  useTableQuery
+  RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 

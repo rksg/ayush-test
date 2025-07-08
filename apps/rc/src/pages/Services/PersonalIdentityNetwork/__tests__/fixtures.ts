@@ -3,9 +3,9 @@ import {
   EdgeGeneralFixtures,
   EdgePinFixtures,
   EdgeTunnelProfileFixtures,
-  NewTablePageable,
   VenueFixtures
 } from '@acx-ui/rc/utils'
+import { NewTablePageable } from '@acx-ui/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')

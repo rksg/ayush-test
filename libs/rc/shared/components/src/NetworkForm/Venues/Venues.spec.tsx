@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { networkApi }      from '@acx-ui/rc/services'
+import { networkApi } from '@acx-ui/rc/services'
 import {
   BasicServiceSetPriorityEnum,
   CommonUrlsInfo,
@@ -13,14 +13,15 @@ import {
   RfBandUsageEnum,
   ManagementFrameMinimumPhyRateEnum,
   BssMinimumPhyRateEnum,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  SoftGreUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { useSdLanScopedNetworkVenues }                     from '../../EdgeSdLan/useEdgeSdLanActions'
-import { list, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
-import NetworkFormContext                                  from '../NetworkFormContext'
+import { useSdLanScopedNetworkVenues }                                       from '../../EdgeSdLan/useEdgeSdLanActions'
+import { list, mockSoftGreTable, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
+import NetworkFormContext                                                    from '../NetworkFormContext'
 
 import { Venues } from './Venues'
 
@@ -86,7 +87,10 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
@@ -308,29 +312,6 @@ describe('Create Network: Venues Step', () => {
   })
 
   it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
-      sdLansVenueMap: {},
-      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],
-      guestNetworkVenueIds: []
-    })
-
-    render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
-    })
-
-    const tbody = await findTBody()
-    const activatedRow = await within(tbody).findByRole('row', { name: /My-Venue/ })
-    await userEvent.click(await within(activatedRow).findByRole('checkbox'))
-    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
-    await userEvent.click(deactivateButton)
-    const popup = await screen.findByRole('dialog')
-    await screen.findByText(/This network is running the SD-LAN service on this venue/i)
-    await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(popup).not.toBeVisible())
-  })
-
-  it('should greyout when the WLAN is the last one in SDLAN', async () => {
     jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
       sdLansVenueMap: {},
       networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],

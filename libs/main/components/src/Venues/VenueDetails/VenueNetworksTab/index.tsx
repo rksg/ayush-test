@@ -48,7 +48,6 @@ import {
   useEnhanceVenueNetworkTableV2Query
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkType,
   NetworkTypeEnum,
   RadioTypeEnum,
@@ -68,7 +67,6 @@ import {
   VLANPoolViewModelType,
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   WifiRbacUrlsInfo,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -81,7 +79,7 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { TableResult, useTableQuery, getOpsApi } from '@acx-ui/utils'
 
 import { useTunnelColumn } from './useTunnelColumn'
 

@@ -67,7 +67,9 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.PORT_PROFILE]: 'portProfile',
   [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile',
   [PolicyType.IPSEC]: 'ipsec',
-  [PolicyType.SAML_IDP]: 'samlIdp'
+  [PolicyType.SAML_IDP]: 'samlIdp',
+  [PolicyType.CERTIFICATE_PROFILE]: 'certificateProfile',
+  [PolicyType.ADAPTIVE_POLICY_PROFILE]: 'adaptivePolicyProfile'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
