@@ -21,7 +21,6 @@ export function PortalSummaryForm (props: {
   const isCloudPath = summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath
   const hostDomains = summaryData.guestPortal?.hostGuestConfig?.hostDomains
   const hostEmails = summaryData.guestPortal?.hostGuestConfig?.hostEmails
-  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
   // eslint-disable-next-line max-len
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
@@ -55,42 +54,34 @@ export function PortalSummaryForm (props: {
       />
       }
       { summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.HostApproval && <>
-        {
-          !HAEmailList_FeatureFlag && hostDomains && <Form.Item
-            label={$t({ defaultMessage: 'Host Domains:' })}
-            children={hostDomains.map((domain)=> <div key={domain}>{domain}</div>)}
-          />
-        }
-        {
-          HAEmailList_FeatureFlag && <Form.Item
-            label={$t({ defaultMessage: 'Host Contacts:' })}
-          >
-            {hostDomains && <>
-              {$t({ defaultMessage: 'Entire Domain(s)' }) + ` (${hostDomains.length})`}
-              {hostDomains.map((domain)=> {
-                return (
-                  <div style={{ color: '#808284', fontSize: '12px' }} key={domain}>
-                    {domain}
-                  </div>
-                )
-              })}
-            </>}
-            {hostEmails && <>
-              {$t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})`}
-              <div>
-                {
-                  hostEmails.map((email) => {
-                    return (
-                      <div style={{ color: '#808284', fontSize: '12px' }} key={email}>
-                        {email}
-                      </div>)
-                  })
-                }
-              </div>
-            </>}
+        <Form.Item
+          label={$t({ defaultMessage: 'Host Contacts:' })}
+        >
+          {hostDomains && <>
+            {$t({ defaultMessage: 'Entire Domain(s)' }) + ` (${hostDomains.length})`}
+            {hostDomains.map((domain)=> {
+              return (
+                <div style={{ color: '#808284', fontSize: '12px' }} key={domain}>
+                  {domain}
+                </div>
+              )
+            })}
+          </>}
+          {hostEmails && <>
+            {$t({ defaultMessage: 'Specific E-mail Contacts' }) + ` (${hostEmails.length})`}
+            <div>
+              {
+                hostEmails.map((email) => {
+                  return (
+                    <div style={{ color: '#808284', fontSize: '12px' }} key={email}>
+                      {email}
+                    </div>)
+                })
+              }
+            </div>
+          </>}
 
-          </Form.Item>
-        }
+        </Form.Item>
 
         <Form.Item
           label={$t({ defaultMessage: 'Password Expiration Options:' })}
