@@ -77,7 +77,6 @@ export enum Features {
   G_MAP = 'acx-ui-maps-api-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
-  HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'removable-ff',
   I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
