@@ -276,7 +276,6 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.WIFI_RBAC_API
       && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
-      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
       && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
     mockServer.use(

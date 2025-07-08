@@ -2246,6 +2246,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     }),
+    activateVenueRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiRbacUrlsInfo.activateVenueRadiusService, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateVenueRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiRbacUrlsInfo.deactivateVenueRadiusService, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVenueClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -2647,6 +2665,8 @@ export const {
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueRadiusOptionsQuery,
   useUpdateVenueRadiusOptionsMutation,
+  useActivateVenueRadiusServiceMutation,
+  useDeactivateVenueRadiusServiceMutation,
   useGetVenueClientAdmissionControlQuery,
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,

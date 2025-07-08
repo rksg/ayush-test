@@ -267,8 +267,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: true,
-    enableSeparation: true
+    enableRbac: true
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -581,8 +580,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: true,
-        enableSeparation: true
+        enableRbac: true
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)
