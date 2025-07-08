@@ -16,7 +16,6 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
