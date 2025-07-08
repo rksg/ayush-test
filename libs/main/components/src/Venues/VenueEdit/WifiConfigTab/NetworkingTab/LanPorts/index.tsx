@@ -253,11 +253,17 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
   useEffect(() => {
     const { model, lan, poeOut, poeOutMode, poeMode } = form?.getFieldsValue(true)
+    // eslint-disable-next-line no-console
     console.log('change current:')
+    // eslint-disable-next-line no-console
     console.log(customGuiChangedRef.current)
+    // eslint-disable-next-line no-console
     console.log('lan:')
+    // eslint-disable-next-line no-console
     console.log(lan)
+    // eslint-disable-next-line no-console
     console.log('lanPorts:')
+    // eslint-disable-next-line no-console
     console.log(lanPorts)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
