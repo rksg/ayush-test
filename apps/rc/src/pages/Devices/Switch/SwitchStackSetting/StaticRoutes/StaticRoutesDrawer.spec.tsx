@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { venueApi }        from '@acx-ui/rc/services'
-import { SwitchRbacUrlsInfo, SwitchUrlsInfo, SwitchViewModel }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { venueApi }                                            from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider, store }                                     from '@acx-ui/store'
 import {
   act,
   fireEvent,

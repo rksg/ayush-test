@@ -19,7 +19,6 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useParams,
   useTenantLink
 }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
@@ -33,7 +32,6 @@ import { getOpsApi, usePollingTableQuery } from '@acx-ui/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const navigate = useNavigate()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
 

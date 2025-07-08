@@ -16,10 +16,6 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  Features,
-  useIsSplitOn
-}    from '@acx-ui/feature-toggle'
-import {
   useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
   useUpdateWebAuthTemplateMutation
@@ -39,7 +35,6 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-import { TrustedPortsModal } from 'libs/rc/shared/components/src/SwitchRegularProfileForm/TrustedPorts/TrustedPortsModal'
 
 export default function NetworkSegAuthForm (
   { editMode = false, modalMode = false, modalCallBack = ()=>{} }:

@@ -1,7 +1,8 @@
 import { rest } from 'msw'
 
-import { switchApi, venueApi } from '@acx-ui/rc/services'
-import { Provider, store }     from '@acx-ui/store'
+import { switchApi, venueApi }                 from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -13,7 +14,6 @@ import {
 import { staticRoutes } from '../../__tests__/fixtures'
 
 import StaticRoutes from '.'
-import { SwitchRbacUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -28,8 +28,8 @@ const mockedSwitchDetail = {
 } as SwitchViewModel
 
 describe('edit switch/stack form', () => {
-  const params = { tenantId: 'tenant-id', switchId: 'switch-id', 
-  serialNumber: 'serial-number', venueId: 'venue-id' }
+  const params = { tenantId: 'tenant-id', switchId: 'switch-id',
+    serialNumber: 'serial-number', venueId: 'venue-id' }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -43,24 +43,33 @@ describe('edit switch/stack form', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
-    })
+    render(
+      <Provider>
+        <StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
+      })
     expect(await screen.findByText(/static routes/i)).toBeVisible()
   })
 
   it('should render readonly is true correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={true} switchDetail={mockedSwitchDetail} /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
-    })
+    render(
+      <Provider>
+        <StaticRoutes readOnly={true} switchDetail={mockedSwitchDetail} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
+      })
     expect(await screen.findByText(/static routes/i)).toBeVisible()
   })
 
 
   it('should render add static route page correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
-    })
+    render(
+      <Provider>
+        <StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
+      })
 
     const addButton = await screen.findAllByRole('button', { name: /add route/i })
     fireEvent.click(addButton[0])
@@ -69,9 +78,12 @@ describe('edit switch/stack form', () => {
   })
 
   it('should render edit static route page correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
-    })
+    render(
+      <Provider>
+        <StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
+      })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
     fireEvent.click(await within(row1).findByRole('checkbox'))
@@ -81,9 +93,12 @@ describe('edit switch/stack form', () => {
   })
 
   it('should delete static route correctly', async () => {
-    render(<Provider><StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
-    })
+    render(
+      <Provider>
+        <StaticRoutes readOnly={false} switchDetail={mockedSwitchDetail} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId/devices/switch/:switchId/:serialNumber/edit' }
+      })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
     fireEvent.click(await within(row1).findByRole('checkbox'))
