@@ -12,8 +12,7 @@ import {
 import {
   MacOuis,
   SwitchPortProfiles,
-  SwitchUrlsInfo,
-  useTableQuery
+  SwitchUrlsInfo
 }                                                                  from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
@@ -24,7 +23,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import { MacOuiDrawer } from '../PortProfileForm/MacOuiDrawer'
 

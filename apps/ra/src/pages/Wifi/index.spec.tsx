@@ -13,10 +13,16 @@ import {
 import { WifiTabsEnum } from '.'
 import { WiFiPage }     from '.'
 
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/ai',
+  search: ''
+}
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => mockedTenantLink
 }))
 
 jest.mock('@acx-ui/analytics/components', () => ({

@@ -56,7 +56,6 @@ import {
   emailRegExp,
   roleDisplayText,
   EntitlementUtil,
-  useTableQuery,
   EntitlementDeviceType,
   whitespaceOnlyRegExp,
   PrivilegeGroup,
@@ -68,9 +67,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                   from '@acx-ui/types'
-import { useUserProfileContext }       from '@acx-ui/user'
-import { AccountType, noDataDisplay  } from '@acx-ui/utils'
+import { RolesEnum }                                 from '@acx-ui/types'
+import { useUserProfileContext }                     from '@acx-ui/user'
+import { AccountType, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'

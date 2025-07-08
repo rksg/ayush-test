@@ -28,11 +28,10 @@ import {
   PolicyType,
   transformDisplayOnOff,
   TunnelProfileViewData,
-  TunnelTypeEnum,
-  useTableQuery
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                from '@acx-ui/utils'
+import { noDataDisplay, useTableQuery }                 from '@acx-ui/utils'
 
 const defaultTunnelProfileTablePayload = {}
 

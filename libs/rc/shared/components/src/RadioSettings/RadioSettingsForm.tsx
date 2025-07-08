@@ -251,7 +251,7 @@ export function RadioSettingsForm (props:{
                 /> :
                 <Tooltip title={
                   <div style={{ textAlign: 'center' }}>
-                    <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                    <p>{$t({ defaultMessage: 'Your country or Your <VenueSingular></VenueSingular> firmware version does not support AFC.' })}</p>
                   </div>
                 }>
                   <Switch disabled={disabled || !isAFCEnabled || isUseVenueSettings} />

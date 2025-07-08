@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                   from '@acx-ui/components'
-import { EdgeServiceStatusLight }                      from '@acx-ui/rc/components'
-import { useGetEdgeListQuery }                         from '@acx-ui/rc/services'
-import { EdgeAlarmSummary, EdgeStatus, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                  from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps }    from '@acx-ui/components'
+import { EdgeServiceStatusLight }       from '@acx-ui/rc/components'
+import { useGetEdgeListQuery }          from '@acx-ui/rc/services'
+import { EdgeAlarmSummary, EdgeStatus } from '@acx-ui/rc/utils'
+import { TenantLink }                   from '@acx-ui/react-router-dom'
+import { useTableQuery }                from '@acx-ui/utils'
 
 interface EdgeTableProps {
   edgeIds: string[]

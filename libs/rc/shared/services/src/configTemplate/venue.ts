@@ -8,7 +8,6 @@ import {
   LocalUser,
   Mesh,
   RadiusServer,
-  TableResult,
   TacacsServer,
   TriBandSettings,
   Venue,
@@ -40,9 +39,9 @@ import {
   EthernetPortProfileViewData,
   VenueLanPortSettings
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseConfigTemplateApi }          from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                        from '../utils'
@@ -419,6 +418,24 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'RADIUS_OPTIONS' }]
     }),
+    activateVenueTemplateRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          VenueConfigTemplateUrlsInfo.activateVenueRadiusServiceRbac, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateVenueTemplateRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          VenueConfigTemplateUrlsInfo.deactivateVenueRadiusServiceRbac, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVenueTemplateDoSProtection: build.query<VenueDosProtection, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection,
@@ -734,6 +751,8 @@ export const {
   useUpdateVenueTemplateDirectedMulticastMutation,
   useGetVenueTemplateRadiusOptionsQuery,
   useUpdateVenueTemplateRadiusOptionsMutation,
+  useActivateVenueTemplateRadiusServiceMutation,
+  useDeactivateVenueTemplateRadiusServiceMutation,
   useGetVenueTemplateDoSProtectionQuery,
   useUpdateVenueTemplateDoSProtectionMutation,
   useGetVenueTemplateMdnsFencingQuery,

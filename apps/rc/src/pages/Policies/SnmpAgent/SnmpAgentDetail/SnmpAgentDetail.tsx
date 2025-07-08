@@ -12,12 +12,12 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   GetApiVersionHeader,
   ApiVersionEnum,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import SnmpAgentInstancesTable from './SnmpAgentInstancesTable'
 import SnmpAgentOverview       from './SnmpAgentOverview'
@@ -34,7 +34,6 @@ export default function SnmpAgentDetail () {
   const params = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
   const defaultPayload = {
     searchString: '',
@@ -56,8 +55,7 @@ export default function SnmpAgentDetail () {
     enableRbac: isUseRbacApi,
     customHeaders:
     ( isUseRbacApi ?
-      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
-      undefined)
+      GetApiVersionHeader(ApiVersionEnum.v1_1):undefined)
   })
 
   const basicData = tableQuery.data?.data?.[0]

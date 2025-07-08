@@ -14,8 +14,6 @@ import {
   PriorityEnum,
   ProtocolEnum,
   PersonaGroup,
-  NewTableResult,
-  NewTablePageable,
   ResidentPortal,
   ConnectionMetering,
   BillingCycleType,
@@ -35,7 +33,7 @@ import {
   Persona,
   PoeOutModeEnum
 } from '@acx-ui/rc/utils'
-
+import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
 
 export const successResponse = {
@@ -179,6 +177,7 @@ export const venueCaps = {
     lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
     lanPorts: [{
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '1',
       isPoeOutPort: true,
       isPoePort: false,
@@ -188,6 +187,7 @@ export const venueCaps = {
       vlanMembers: '1-4094'
     }, {
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '2',
       isPoeOutPort: false,
       isPoePort: false,
@@ -197,6 +197,7 @@ export const venueCaps = {
       vlanMembers: '1-4094'
     }, {
       defaultType: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
       id: '3',
       isPoeOutPort: false,
       isPoePort: true,
@@ -309,9 +310,30 @@ export const venueLanPorts = [{
   model: 'H320'
 }, {
   lanPorts: [
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
-    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      ethernetPortProfileId: 'tenant-id_TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '3',
+      enabled: true
+    }
   ],
   model: 'T750',
   poeMode: 'Auto',
@@ -344,7 +366,7 @@ export const mockEthProfiles = {
   page: 1,
   data: [
     {
-      id: 'ed4b396d848e465d8044064ff3da9d33',
+      id: 'tenant-id_TRUNK',
       name: 'Default Trunk',
       type: 'TRUNK',
       untagId: 1,
@@ -360,7 +382,7 @@ export const mockEthProfiles = {
       ]
     },
     {
-      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
+      id: 'tenant-id_ACCESS',
       name: 'Default Access',
       type: 'ACCESS',
       untagId: 1,
