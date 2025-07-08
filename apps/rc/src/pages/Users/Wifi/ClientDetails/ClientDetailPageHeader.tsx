@@ -96,7 +96,6 @@ function ClientDetailPageHeader () {
   const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -164,8 +163,7 @@ function ClientDetailPageHeader () {
           key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len
-        ...((wifiEDAClientRevokeToggle &&
-            (status === ClientStatusEnum.CONNECTED) &&
+        ...(((status === ClientStatusEnum.CONNECTED) &&
             isEqualCaptivePortal(networkType)) ?
           [{
             label: $t({ defaultMessage: 'Revoke Network Access' }),
