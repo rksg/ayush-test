@@ -23,6 +23,7 @@ export interface AAAViewModalType extends EnforceableFields {
   type: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[],
   hotspot20IdentityProviderIds?: string[],
+  venueIds?: string[],
   radSecOptions?: RadSecOptionsType
 }
 export interface RadSecOptionsType {
