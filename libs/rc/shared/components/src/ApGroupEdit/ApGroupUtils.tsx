@@ -54,7 +54,7 @@ export const convertVenueRadioSettingsToApGroupRadioSettings = (data: VenueRadio
       channelBandwidth320MhzGroup,
       enableAfc,
       enableMulticastDownlinkRateLimiting,
-      enableMulticastRateLimiting,
+      enableMulticastRateLimiting: enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting,
       enableMulticastUplinkRateLimiting,
       multicastDownlinkRateLimiting,
       multicastUplinkRateLimiting,
