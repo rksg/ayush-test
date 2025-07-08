@@ -58,8 +58,9 @@ import {
   BandModeEnum,
   ApBandModeSettingsV1Dot1
 } from '@acx-ui/rc/utils'
-import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { ApGroupViewModel, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                              from '@acx-ui/react-router-dom'
+import { TableResult }                                        from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
@@ -266,8 +267,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: true,
-    enableSeparation: true
+    enableRbac: true
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -580,8 +580,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: true,
-        enableSeparation: true
+        enableRbac: true
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)

@@ -63,12 +63,8 @@ import {
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
-  RequestFormData,
-  SEARCH,
-  SORTER,
   SupportCcdApGroup,
   SupportCcdVenue,
-  TableResult,
   Venue,
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
@@ -112,7 +108,11 @@ import {
   batchApi,
   createHttpRequest,
   getEnabledDialogImproved,
-  ignoreErrorModal
+  ignoreErrorModal,
+  RequestFormData,
+  SEARCH,
+  SORTER,
+  TableResult
 } from '@acx-ui/utils'
 
 
@@ -1703,10 +1703,9 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
-      query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac ? ApiVersionEnum.v1 : undefined)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = ApiVersionEnum.v1_1
 
         const apiCustomHeader = rbacApiVersion? {
           ...GetApiVersionHeader(rbacApiVersion),

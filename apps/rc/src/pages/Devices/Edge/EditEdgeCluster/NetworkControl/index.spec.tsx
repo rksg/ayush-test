@@ -17,8 +17,8 @@ const mockedHandleApplyDhcp = jest.fn()
 const mockedHandleApplyHqos = jest.fn()
 const mockedHandleApplyMdns = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({

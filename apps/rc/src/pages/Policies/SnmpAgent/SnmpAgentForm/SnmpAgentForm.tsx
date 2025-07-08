@@ -36,7 +36,6 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const navigate = useNavigate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
 
   const params = useParams()
@@ -47,7 +46,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const previousPath = usePolicyPreviousPath(PolicyType.SNMP_AGENT, PolicyOperation.LIST)
   const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SNMP_AGENT)
   //eslint-disable-next-line
-  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn }, { skip: !editMode })
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
@@ -108,11 +107,11 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
         if (!editMode) {
           await createApSnmpPolicy({
-            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+            params, payload, enableRbac: isUseRbacApi
           }).unwrap()
         } else {
           await updateApSnmpPolicy({
-            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+            params, payload, enableRbac: isUseRbacApi
           }).unwrap()
         }
 

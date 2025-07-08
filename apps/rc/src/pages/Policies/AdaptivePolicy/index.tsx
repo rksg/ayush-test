@@ -37,7 +37,7 @@ export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKe
   return <>
     <PageHeader
       breadcrumb={breadcrumb}
-      title={$t(tabsName[props.tabKey])}
+      title={$t(tabsName[AdaptivePolicyTabKey.ADAPTIVE_POLICY])}
       footer={<AdaptivePolicyTabs activeTab={props.tabKey}/>}
     />
     { Tab && <Tab /> }

@@ -103,7 +103,6 @@ export function SelfSignInForm () {
       'Please switch to “Sign In with LinkedIn using OpenID Connect”' +
       ' to ensure that your service is not interrupted.'
   })
-  const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
@@ -294,7 +293,7 @@ export function SelfSignInForm () {
                   {$t({ defaultMessage: 'LinkedIn' })}
                 </UI.Checkbox>
                 {linkedin && <LinkedInSetting redirectURL={redirectURL}/>}
-                {editMode && linkedin && isEnabledLinkedInOIDC &&
+                {editMode && linkedin &&
                   <Tooltip title={
                     <FormattedMessage
                       defaultMessage={

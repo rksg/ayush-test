@@ -18,13 +18,13 @@ import {
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo, SEARCH } from '@acx-ui/rc/utils'
+import { Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, filterByOperations } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
+import { filterByAccess, filterByOperations }       from '@acx-ui/user'
+import { FILTER, SEARCH, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'

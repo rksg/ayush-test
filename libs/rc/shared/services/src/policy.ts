@@ -9,13 +9,13 @@ import {
   SyslogUrls, SyslogPolicyDetailType, SyslogPolicyListType,
   VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
-  TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
-  devicePolicyInfoType, DevicePolicy, NewTableResult,
-  transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
+  onSocketActivityChanged, onActivityMessageReceived, CommonResult,
+  devicePolicyInfoType, DevicePolicy,
+  AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
   AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
+  ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
   WifiOperatorUrls,
@@ -43,8 +43,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult,
-  transferToNewTablePaginationParams,
+
   CertificateUrls,
   CertificateTemplate,
   CertificateAuthority,
@@ -81,7 +80,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { batchApi, createHttpRequest, NewTableResult, NewAPITableResult, transferNewResToTableResult,
+  transferToNewTablePaginationParams, createNewTableHttpRequest, TableChangePayload,
+  TableResult, transferToTableResult } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -882,7 +883,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRadius',
             'UpdateRadius',
             'DeleteRadius',
-            'DeleteRadiuses'
+            'DeleteRadiuses',
+            'ActivateRadiusServerProfileOnVenue',
+            'DeactivateRadiusServerProfileOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
@@ -2406,10 +2409,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
           const viewModelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1_1)
           // eslint-disable-next-line max-len
           const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewModelHeader),
             body: enableRbac? JSON.stringify({}) : {}
@@ -2452,14 +2455,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
-      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.getApSnmpPolicy, customParams, apiCustomHeader)
         const res = await fetchWithBQ(req)
@@ -2481,14 +2484,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
@@ -2500,14 +2503,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)

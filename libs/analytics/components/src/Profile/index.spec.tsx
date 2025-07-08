@@ -27,7 +27,12 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
-  useLocation: () => ({ state: { from: '/test' } })
+  useLocation: () => ({ state: { from: '/test' } }),
+  useTenantLink: () => ({
+    hash: '',
+    pathname: '/',
+    search: ''
+  })
 }))
 
 

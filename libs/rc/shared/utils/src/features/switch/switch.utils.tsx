@@ -647,7 +647,6 @@ export const getClientIpAddr = (data?: SwitchClient) => {
 }
 
 export interface SupportModels {
-  isSupport8200AV: boolean,
   isSupport8100: boolean,
   isSupport8100X: boolean,
   isSupport7550Zippy: boolean
@@ -655,9 +654,10 @@ export interface SupportModels {
 
 export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   let pattern = SWITCH_SERIAL_BASE
-  if (supportModels.isSupport8200AV) {
-    pattern += '|' + SWITCH_SERIAL_8200AV
-  }
+
+  //isSupport8200AV always be true
+  pattern += '|' + SWITCH_SERIAL_8200AV
+
   if (supportModels.isSupport8100) {
     pattern += '|' + SWITCH_SERIAL_8100
   }
@@ -852,16 +852,6 @@ export const isBabyRodanX = (model: string) => {
 
 export const is7550Zippy = (model: string) => {
   return model === 'ICX7550-24XZP'
-}
-
-export const isRodanAvSubModel = (model: string) => {
-  switch(model) {
-    case '24PV':
-    case 'C08PFV':
-      return true
-    default:
-      return false
-  }
 }
 
 export const isBabyRodanXSubModel = (model: string) => {

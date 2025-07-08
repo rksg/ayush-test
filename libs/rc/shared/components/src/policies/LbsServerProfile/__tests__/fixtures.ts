@@ -1,7 +1,7 @@
 import {
-  LbsServerProfileViewModel,
-  TableResult
+  LbsServerProfileViewModel
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockedPolicyId1 = '__Policy_ID_1__'

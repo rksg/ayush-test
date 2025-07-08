@@ -13,8 +13,8 @@ import { fakeMspEcProfile, mockedEtitlementsList, mockedSummary } from './__test
 import { SubscriptionTabs }                                       from './SubscriptionsTab'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 

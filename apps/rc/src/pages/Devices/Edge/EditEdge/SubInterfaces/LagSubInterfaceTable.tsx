@@ -6,7 +6,7 @@ import {
   useImportLagSubInterfacesCSVMutation,
   useUpdateLagSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { SubInterface, convertEdgeSubInterfaceToApiPayload } from '@acx-ui/rc/utils'
+import { EdgeLag, EdgePort, SubInterface, convertEdgeSubInterfaceToApiPayload } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -20,6 +20,10 @@ interface LagSubInterfaceTableProps {
   lagId: number
   isSupportAccessPort?: boolean
   data?: SubInterface[]
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {

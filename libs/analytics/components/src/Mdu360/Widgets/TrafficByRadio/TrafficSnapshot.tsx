@@ -1,0 +1,63 @@
+import AutoSizer from 'react-virtualized-auto-sizer'
+
+import { DonutChart, NoData }  from '@acx-ui/components'
+import type { DonutChartData } from '@acx-ui/components'
+import { formatter }           from '@acx-ui/formatter'
+import { UseQueryResult }      from '@acx-ui/types'
+
+import { TrafficByRadioData } from './services'
+
+function sumOfTraffic (trafficData: number[]) {
+  return trafficData.reduce((accumulator, current) => accumulator + current, 0)
+}
+
+type TrafficData = Omit<TrafficByRadioData, 'time' | 'userTraffic_all'>
+
+const nameMap = {
+  userTraffic_24: '2.4 GHz',
+  userTraffic_5: '5 GHz',
+  userTraffic_6: '6 GHz'
+}
+
+function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): DonutChartData[]{
+  const trafficSnapshotChartData: DonutChartData[] = []
+
+  for (const key in data) {
+    if (key !== 'time' && key !== 'userTraffic_all') {
+      const dataVolume : number = sumOfTraffic(data[key as keyof TrafficData])
+      if (dataVolume) {
+        trafficSnapshotChartData.push({
+          name: nameMap[key as keyof TrafficData],
+          value: dataVolume
+        })
+      }
+    }
+  }
+
+  return trafficSnapshotChartData
+}
+
+export function TrafficSnapshot ({ queryResults }:
+  { queryResults: UseQueryResult<TrafficByRadioData> }) {
+
+  const chartData = getTrafficSnapshotChartData(queryResults?.data)
+
+  return (
+    chartData.length ?
+      <AutoSizer>
+        {({ height, width }) => (
+          <DonutChart
+            style={{ width, height }}
+            data={chartData}
+            showLegend={true}
+            showTotal={true}
+            showValue={true}
+            showLabel={true}
+            legend='name-bold-value'
+            dataFormatter={formatter('bytesFormat')}
+            size={'large'}
+          />
+        )}
+      </AutoSizer> : <NoData/>
+  )
+}
