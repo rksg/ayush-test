@@ -5,8 +5,8 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { useAclTotalCount }                                                        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
+import { useAclTotalCount, useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
@@ -29,7 +29,6 @@ import {
   useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import { ExtendedUnifiedService, PolicyType, ServiceType, TotalCountQueryResult, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                              from '@acx-ui/types'
 
 const defaultPayload = { fields: ['id'] }
 
@@ -120,8 +119,8 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
     [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
     [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }),
-    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
-    [ServiceType.MDNS_PROXY_CONSOLIDATION]: useMdnsProxyConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.MDNS_PROXY_CONSOLIDATION))
+    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(!typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
+    [ServiceType.MDNS_PROXY_CONSOLIDATION]: useMdnsProxyConsolidationTotalCount(!typeSet.has(ServiceType.MDNS_PROXY_CONSOLIDATION))
   }
 
   return {
@@ -196,40 +195,6 @@ function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisable
   return {
     data: { totalCount: Number(guestPortal?.totalCount ?? 0) + Number(pinPortal?.totalCount ?? 0) },
     isFetching: guestPortalIsFetching || pinPortalIsFetching
-  }
-}
-
-export function useDhcpConsolidationTotalCount (
-  defaultQueryArgs: RequestPayload,
-  isDisabled?: boolean
-) : TotalCountQueryResult {
-
-  const { data: dhcpData, isFetching: dhcpIsFetching } =
-    useGetDHCPProfileListViewModelQuery(defaultQueryArgs, { skip: isDisabled })
-
-  const { data: edgeDhcpData, isFetching: edgeDhcpIsFetching } =
-    useGetDhcpStatsQuery(defaultQueryArgs,{ skip: isDisabled })
-
-
-  return {
-    data: { totalCount: Number(dhcpData?.totalCount ?? 0) + Number(edgeDhcpData?.totalCount ?? 0) },
-    isFetching: dhcpIsFetching || edgeDhcpIsFetching
-  }
-}
-export function useMdnsProxyConsolidationTotalCount (
-  defaultQueryArgs: RequestPayload,
-  isDisabled?: boolean
-) : TotalCountQueryResult {
-
-  const { data: mdnsProxyData, isFetching: mdnsProxyFetching } =
-    useGetEnhancedMdnsProxyListQuery(defaultQueryArgs, { skip: isDisabled })
-
-  const { data: edgeMdnsProxyData, isFetching: edgeMdnsProxyIsFetching } =
-    useGetEdgeMdnsProxyViewDataListQuery(defaultQueryArgs, { skip: isDisabled })
-
-  return {
-    data: { totalCount: Number(mdnsProxyData?.totalCount ?? 0) + Number(edgeMdnsProxyData?.totalCount ?? 0) },
-    isFetching: mdnsProxyFetching || edgeMdnsProxyIsFetching
   }
 }
 

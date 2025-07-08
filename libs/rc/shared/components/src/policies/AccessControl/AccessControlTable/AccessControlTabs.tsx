@@ -23,8 +23,15 @@ export function AccessControlTabs () {
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
 
-  // eslint-disable-next-line max-len
-  const { aclCount, l2AclCount, l3AclCount, deviceAclCount, appAclCount } = useWifiAclTotalCount(false)
+  const { data: countData } = useWifiAclTotalCount(false)
+
+  const {
+    aclCount = 0,
+    l2AclCount = 0,
+    l3AclCount = 0,
+    deviceAclCount = 0,
+    appAclCount = 0
+  } = countData ?? {}
 
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)

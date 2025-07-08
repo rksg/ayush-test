@@ -19,12 +19,12 @@ import MyServices from '.'
 
 jest.mock('../UnifiedServices/useUnifiedServiceListWithTotalCount', () => ({
   ...jest.requireActual('../UnifiedServices/useUnifiedServiceListWithTotalCount'),
-  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false }),
-  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
+  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false })
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
 }))
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),

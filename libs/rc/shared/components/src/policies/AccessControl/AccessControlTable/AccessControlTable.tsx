@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }        from '@acx-ui/components'
+import { Button, PageHeader }       from '@acx-ui/components'
 import {
   PolicyType,
   PolicyOperation,
@@ -9,7 +9,7 @@ import {
   getPolicyAllowedOperation,
   policyTypeLabelWithCountMapping
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
 import { useWifiAclTotalCount }             from '../counterUtils'
@@ -19,7 +19,8 @@ import AccessControlTabs from './AccessControlTabs'
 export function AccessControlTable () {
   const { $t } = useIntl()
 
-  const { data, aclCount, isFetching } = useWifiAclTotalCount(false)
+  const { data, isFetching } = useWifiAclTotalCount(false)
+  const { aclCount = 0 } = data ?? {}
 
   return (<>
     <PageHeader

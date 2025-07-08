@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard }                                                       from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                                         from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useAclTotalCount, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -30,8 +30,7 @@ import {
   useGetDirectoryServerViewDataListQuery,
   useSwitchPortProfilesCountQuery,
   useGetIpsecViewDataListQuery,
-  useGetSamlIdpProfileViewDataListQuery,
-  useAccessControlsCountQuery
+  useGetSamlIdpProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -199,14 +198,7 @@ function useCardData (): PolicyCardData[] {
     {
       type: PolicyType.ACCESS_CONTROL,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
-      totalCount: Number(useGetEnhancedAccessControlProfileListQuery({
-        params, payload: {
-          ...defaultPayload,
-          noDetails: true
-        }, enableRbac
-      }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
-        params }, { skip: !isSwitchMacAclEnabled }).data ?? 0),
-      // eslint-disable-next-line max-len
+      totalCount: useAclTotalCount(!isSwitchMacAclEnabled).data?.totalCount,
       listViewPath: useTenantLink('/policies/accessControl/wifi'),
       disabled: !isSwitchMacAclEnabled
     },

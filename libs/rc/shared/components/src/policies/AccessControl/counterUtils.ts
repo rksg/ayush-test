@@ -1,7 +1,12 @@
-import { Features, useIsSplitOn }                                                                                                                                                                                                                                     from '@acx-ui/feature-toggle'
-import { useAccessControlsCountQuery, useGetEnhancedAccessControlProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetEnhancedDeviceProfileListQuery, useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
-import { TotalCountQueryResult }                                                                                                                                                                                                                                      from '@acx-ui/rc/utils'
-import { getUserProfile, isCoreTier }                                                                                                                                                                                                                                 from '@acx-ui/user'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useAccessControlsCountQuery, useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery, useGetEnhancedDeviceProfileListQuery,
+  useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
+  useGetLayer2AclsQuery
+} from '@acx-ui/rc/services'
+import { TotalCountQueryResult }      from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 const defaultPayload = { fields: ['id'] }
 
@@ -23,13 +28,13 @@ export function useAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
   }
 }
 
-export function useWifiAclTotalCount (isDisabled?: boolean): TotalCountQueryResult & {
+export function useWifiAclTotalCount (isDisabled?: boolean): TotalCountQueryResult<{
   aclCount: number,
   l2AclCount: number,
   l3AclCount: number,
   deviceAclCount: number,
   appAclCount: number
-} {
+}> {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
@@ -58,29 +63,30 @@ export function useWifiAclTotalCount (isDisabled?: boolean): TotalCountQueryResu
     skip: isCore || isDisabled
   })
 
-  const aclTotalCount = Number(aclData?.totalCount ?? 0)
-  const l2AclTotalCount = Number(l2AclData?.totalCount ?? 0)
-  const l3AclTotalCount = Number(l3AclData?.totalCount ?? 0)
-  const deviceAclTotalCount = Number(deviceAclData?.totalCount ?? 0)
-  const appAclTotalCount = Number(appAclData?.totalCount ?? 0)
+  const aclCount = Number(aclData?.totalCount ?? 0)
+  const l2AclCount = Number(l2AclData?.totalCount ?? 0)
+  const l3AclCount = Number(l3AclData?.totalCount ?? 0)
+  const deviceAclCount = Number(deviceAclData?.totalCount ?? 0)
+  const appAclCount = Number(appAclData?.totalCount ?? 0)
 
   return {
+    data: {
+      totalCount: aclCount + l2AclCount + l3AclCount + deviceAclCount + appAclCount,
+      aclCount,
+      l2AclCount,
+      l3AclCount,
+      deviceAclCount,
+      appAclCount
+    },
     // eslint-disable-next-line max-len
-    data: { totalCount: aclTotalCount + l2AclTotalCount + l3AclTotalCount + deviceAclTotalCount + appAclTotalCount },
-    // eslint-disable-next-line max-len
-    isFetching: aclIsFetching || l2AclIsFetching || l3AclIsFetching || deviceAclIsFetching || appAclIsFetching,
-    aclCount: aclTotalCount,
-    l2AclCount: l2AclTotalCount,
-    l3AclCount: l3AclTotalCount,
-    deviceAclCount: deviceAclTotalCount,
-    appAclCount: appAclTotalCount
+    isFetching: aclIsFetching || l2AclIsFetching || l3AclIsFetching || deviceAclIsFetching || appAclIsFetching
   }
 }
 
-export function useSwitchAclTotalCount (isDisabled?: boolean): TotalCountQueryResult & {
+export function useSwitchAclTotalCount (isDisabled?: boolean): TotalCountQueryResult<{
   switchMacAclCount: number,
   switchL2AclCount: number
-} {
+}> {
   const requestOptions = {
     skip: isDisabled,
     refetchOnMountOrArgChange: false,
@@ -97,13 +103,15 @@ export function useSwitchAclTotalCount (isDisabled?: boolean): TotalCountQueryRe
     requestOptions
   )
 
-  const switchMacAclTotalCount = Number(switchMacAclData ?? 0)
-  const switchL2AclTotalCount = Number(switchL2AclData?.totalCount ?? 0)
+  const switchMacAclCount = Number(switchMacAclData ?? 0)
+  const switchL2AclCount = Number(switchL2AclData?.totalCount ?? 0)
 
   return {
-    data: { totalCount: switchMacAclTotalCount + switchL2AclTotalCount },
-    isFetching: switchMacAclIsFetching || switchL2AclIsFetching,
-    switchMacAclCount: switchMacAclTotalCount,
-    switchL2AclCount: switchL2AclTotalCount
+    data: {
+      totalCount: switchMacAclCount + switchL2AclCount,
+      switchMacAclCount,
+      switchL2AclCount
+    },
+    isFetching: switchMacAclIsFetching || switchL2AclIsFetching
   }
 }

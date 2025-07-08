@@ -14,7 +14,8 @@ export function SwitchAccessControl () {
     const { $t } = useIntl()
     const navigate = useNavigate()
     const basePath = useTenantLink('/policies/accessControl/switch')
-    const { switchMacAclCount, switchL2AclCount } = useSwitchAclTotalCount(false)
+    const { data: countData } = useSwitchAclTotalCount(false)
+    const { switchMacAclCount, switchL2AclCount } = countData ?? {}
 
     const onCategoryTabChange = (tab: string) => {
       navigate({

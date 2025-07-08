@@ -99,3 +99,9 @@ export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, Message
   [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
   [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }
+
+export const serviceTypeLabelWithCountMapping: Record<ServiceType, MessageDescriptor> = {
+  ...serviceTypeLabelMapping,
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: defineMessage({ defaultMessage: 'mDNS Proxy ({count})' }),
+  [ServiceType.DHCP_CONSOLIDATION]: defineMessage({ defaultMessage: 'DHCP ({count})' })
+}
