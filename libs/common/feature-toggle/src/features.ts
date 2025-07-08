@@ -196,7 +196,6 @@ export enum Features {
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE = 'wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
-  WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'removable-ff',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',

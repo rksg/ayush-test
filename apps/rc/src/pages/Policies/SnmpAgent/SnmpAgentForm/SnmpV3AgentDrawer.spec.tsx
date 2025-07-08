@@ -25,8 +25,8 @@ const renderInitState = (children: JSX.Element, initState=newEmptySnmpData) => {
 describe('SnmpV3AgentDrawer', () => {
   jest.mocked(useIsSplitOn).mockImplementation(
     ff => (
-      ff === Features.WIFI_RBAC_API ||
-      ff === Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+      ff === Features.WIFI_RBAC_API
+    )
   )
 
   describe('PasswordInputStrength Extend Test', () => {
