@@ -35,7 +35,7 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-    expect(await screen.findByText('Host Domains')).toBeVisible()
+    expect(await screen.findByText('Host Contacts')).toBeVisible()
   })
 
   it('should render guest pass successfully', async () => {
