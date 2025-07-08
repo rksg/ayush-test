@@ -86,7 +86,6 @@ export enum Features {
   INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'acx-ui-port-flap-toggle',
   INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
   INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
-  LINKEDIN_OIDC_TOGGLE = 'removable-ff',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
   MFA_ALTERNATE_QR_CODE_TOGGLE = 'acx-ui-mfa-qr-code-display-toggle',
   MFA_NEW_API_TOGGLE = 'mfa-new-api-toggle',
