@@ -103,7 +103,6 @@ export function SelfSignInForm () {
       'Please switch to “Sign In with LinkedIn using OpenID Connect”' +
       ' to ensure that your service is not interrupted.'
   })
-  const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
@@ -224,7 +223,7 @@ export function SelfSignInForm () {
           </>}
         ><>
             <SMSTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
-            { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
+            <Form.Item name={['guestPortal', 'enableEmailLogin']}
               initialValue={false}
               style={SelfSignInAppStyle}>
               <>
@@ -243,7 +242,6 @@ export function SelfSignInForm () {
                 </Tooltip>
               </>
             </Form.Item>
-            }
             <WhatsAppTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
