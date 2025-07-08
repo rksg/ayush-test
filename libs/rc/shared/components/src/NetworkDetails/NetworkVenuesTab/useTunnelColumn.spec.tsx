@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Table }                  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
