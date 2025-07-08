@@ -555,11 +555,13 @@ describe('NetworkTunnelDrawer', () => {
 
   describe('PIN', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff: Features) => {
+        return ff === Features.EDGE_PIN_HA_TOGGLE
+      })
       jest.mocked(useEdgeMvSdLanData).mockImplementation(() => ({ isLoading: false }))
     })
 
-    it('should correctly dispaly for PIN', async () => {
+    it('should correctly display for PIN', async () => {
       mockServer.use(
         rest.post(
           EdgePinUrls.getEdgePinStatsList.url,

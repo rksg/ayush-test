@@ -18,19 +18,19 @@ import {
 import { messageMappings } from './messageMappings'
 import * as UI             from './styledComponents'
 
-interface EdgeSdLanFwdDestinationProps {
-  venueSdLan?: EdgeMvSdLanViewData
+export interface EdgeSdLanFwdDestinationProps {
   networkType: NetworkTypeEnum
   hasVlanPool: boolean
+  sdLanData?: EdgeMvSdLanViewData
   requiredFw?: string
   disabled?: boolean
 }
 export const EdgeSdLanFwdDestination = (props: EdgeSdLanFwdDestinationProps) => {
   const { $t } = useIntl()
-  const { venueSdLan, networkType, hasVlanPool, requiredFw, disabled = false } = props
+  const { sdLanData, networkType, hasVlanPool, requiredFw, disabled = false } = props
   const form = Form.useFormInstance()
 
-  const activatedForwardingTunnelProfileIds = venueSdLan?.tunneledWlans
+  const activatedForwardingTunnelProfileIds = sdLanData?.tunneledWlans
     ?.map(item => item.forwardingTunnelProfileId)
     ?.filter((id): id is string => typeof id === 'string') || []
 
@@ -38,7 +38,7 @@ export const EdgeSdLanFwdDestination = (props: EdgeSdLanFwdDestinationProps) => 
     isDataLoading: isTunnelProfilesLoading,
     // eslint-disable-next-line max-len
     availableTunnelProfiles
-  } = useGetAvailableTunnelProfile({ serviceIds: venueSdLan?.id ? [venueSdLan.id] : [undefined] })
+  } = useGetAvailableTunnelProfile({ serviceIds: sdLanData?.id ? [sdLanData.id] : [undefined] })
 
   const { associatedEdgeClusters, isEdgeClustersLoading } = useGetEdgeClusterListQuery({
     payload: {
@@ -69,15 +69,16 @@ export const EdgeSdLanFwdDestination = (props: EdgeSdLanFwdDestinationProps) => 
       value: ''
     },
     ...transToOptions(
-      (availableTunnelProfiles || []).filter(item => item.id !== venueSdLan?.tunnelProfileId),
+      (availableTunnelProfiles || []).filter(item => item.id !== sdLanData?.tunnelProfileId),
       activatedForwardingTunnelProfileIds
     )
   ], [availableTunnelProfiles, isTunnelProfilesLoading])
 
   const isLowerSdLanEdgeFw = (): boolean => {
     const targetCluster = associatedEdgeClusters
-      ?.find(item => item.clusterId === venueSdLan?.edgeClusterId)
-    return !isEdgeMatchedRequiredFirmware(requiredFw, targetCluster?.edgeList)
+      ?.find(item => item.clusterId === sdLanData?.edgeClusterId)
+
+    return !!targetCluster && !isEdgeMatchedRequiredFirmware(requiredFw, targetCluster.edgeList)
   }
 
   const getFilteredTunnelProfileOptions = (
@@ -86,6 +87,7 @@ export const EdgeSdLanFwdDestination = (props: EdgeSdLanFwdDestinationProps) => 
   ) => {
     const isCaptivePortal = networkType === NetworkTypeEnum.CAPTIVEPORTAL
     const isLower = isLowerSdLanEdgeFw()
+
     return tunnelProfileOptions
       .map(item => {
         if(item.value) {

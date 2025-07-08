@@ -1,10 +1,9 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { EdgeSdLanFixtures, EdgeSdLanUrls, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
-import {  render, screen, waitFor, mockServer }              from '@acx-ui/test-utils'
+import { EdgeSdLanFixtures, EdgeSdLanUrls, NetworkTypeEnum }                 from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import {  render, screen, waitFor, mockServer, MockSelect, MockSelectProps } from '@acx-ui/test-utils'
 
 import { EdgeSdLanSelectOptionEnhanced } from './EdgeSdLanSelectOptionEnhanced'
 
@@ -60,28 +59,16 @@ jest.mock('@acx-ui/rc/utils', () => ({
   getServiceRoutePath: jest.fn(() => '/service-path'),
   useHelpPageLink: jest.fn(() => '/help-page')
 }))
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown, disabled: boolean }>
-  loading?: boolean
-  dropdownClassName?: string
-}>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  // eslint-disable-next-line max-len
-  const Select = ({ loading, children, onChange, options, dropdownClassName, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`}
-          value={option.value as string}
-          disabled={option.disabled}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+
+jest.mock('./EdgeSdLanFwdDestination', () => ({
+  EdgeSdLanFwdDestination: jest.fn().mockImplementation(() =>
+    <div data-testid='EdgeSdLanFwdDestination'></div>)
+}))
+
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Select: (props: MockSelectProps) => <MockSelect {...props}/>
+}))
 
 const params = {
   tenantId: 'tenant1',
@@ -106,128 +93,44 @@ describe('EdgeSdLanSelectOption by drawer', () => {
     })
   }
 
+  const mockSdLanFn = jest.fn()
   beforeEach(() => {
+    mockSdLanFn.mockClear()
+
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
+        (_, res, ctx) => {
+          mockSdLanFn()
+          return res(ctx.json({ data: mockedMvSdLanDataList }))
+        }
       )
     )
   })
 
-  it('should render with existing venue SD-LAN', () => {
+  it('should render with existing venue SD-LAN', async () => {
     renderComponent()
 
     expect(screen.getByText('Mocked_SDLAN_1')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeInTheDocument()
+    screen.getByText('Destination Cluster')
+    expect(screen.getByText('SE_Cluster 0')).toBeInTheDocument()
     expect(screen.getByText('Mocked_tunnel-1')).toBeInTheDocument()
-    expect(screen.getByText('Tunnel the traffic to a central location')).toBeInTheDocument()
+    screen.getByTestId('EdgeSdLanFwdDestination')
   })
 
-  it('should render help link when venue SD-LAN does not exist', async () => {
+  it('should render when venue does not associate with any SD-LAN', async () => {
     renderComponent({
       ...defaultProps,
       venueId: 'mocked-venue-id'
     })
 
-    const sdLanProfileSelect = screen.getByRole('combobox', { name: 'SD-LAN Profile' })
-    expect(sdLanProfileSelect).toBeInTheDocument()
-    await userEvent.selectOptions(sdLanProfileSelect, mockedMvSdLanDataList[1].name!)
-
-    const fwdDestinationSelect = screen.getByRole('combobox', { name: 'Forwarding Destination' })
-    expect(fwdDestinationSelect).toBeInTheDocument()
-    await userEvent.selectOptions(fwdDestinationSelect, 'Tunnel 2')
-    expect(await screen.findByText('See more information')).toBeInTheDocument()
+    await checkLoaded()
+    expect(screen.getByRole('button', { name: 'Select' })).toBeInTheDocument()
+    expect(screen.getByText('No SD-LAN set for this venue yet')).toBeInTheDocument()
   })
 
-  it('should filter out VXLAN-GPE options for non-CAPTIVEPORTAL networks', async () => {
-    renderComponent({
-      ...defaultProps,
-      venueId: 'mocked-venue-id',
-      networkType: NetworkTypeEnum.DPSK
-    })
-
-    const sdLanProfileSelect = screen.getByRole('combobox', { name: 'SD-LAN Profile' })
-    expect(sdLanProfileSelect).toBeInTheDocument()
-    await userEvent.selectOptions(sdLanProfileSelect, mockedMvSdLanDataList[0].name!)
-
-    const fwdDestinationSelect = screen.getByRole('combobox', { name: 'Forwarding Destination' })
-    expect(fwdDestinationSelect).toBeInTheDocument()
-    await userEvent.click(fwdDestinationSelect)
-
-    // Should only see GRE option and Core Port
-    expect(screen.getByText('Tunnel 3')).toBeInTheDocument()
-    expect(screen.queryByText('Tunnel 2')).not.toBeInTheDocument()
-  })
-
-  it('should has VXLAN-GPE options for CAPTIVEPORTAL networks', async () => {
-    renderComponent({
-      ...defaultProps,
-      networkType: NetworkTypeEnum.CAPTIVEPORTAL
-    })
-
-    const sdLanProfileSelect = screen.getByRole('combobox', { name: 'SD-LAN Profile' })
-    expect(sdLanProfileSelect).toBeInTheDocument()
-    await userEvent.selectOptions(sdLanProfileSelect, mockedMvSdLanDataList[0].name!)
-
-    const fwdDestinationSelect = screen.getByRole('combobox', { name: 'Forwarding Destination' })
-    expect(fwdDestinationSelect).toBeInTheDocument()
-    await userEvent.click(fwdDestinationSelect)
-
-    expect(screen.getByText('Tunnel 2')).toBeInTheDocument()
-  })
-
-  it('should filter out L2GRE options when firmware version is lower than required', async () => {
-    const originalMock =jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery
-    jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery = jest.fn(() => ({
-      associatedEdgeClusters: [{
-        clusterId: mockedMvSdLanDataList[0].edgeClusterId,
-        hasCorePort: true,
-        edgeList: [{
-          serialNumber: 'edgeId1',
-          firmwareVersion: '2.3.0'
-        }]
-      },{
-        clusterId: 'edgeClusterId2',
-        hasCorePort: false
-      }],
-      isEdgeClustersLoading: false
-    }))
-
-    renderComponent({
-      ...defaultProps,
-      networkType: NetworkTypeEnum.CAPTIVEPORTAL
-    })
-
-    const sdLanProfileSelect = screen.getByRole('combobox', { name: 'SD-LAN Profile' })
-    expect(sdLanProfileSelect).toBeInTheDocument()
-    await userEvent.selectOptions(sdLanProfileSelect, mockedMvSdLanDataList[0].name!)
-
-    const fwdDestinationSelect = screen.getByRole('combobox', { name: 'Forwarding Destination' })
-    expect(fwdDestinationSelect).toBeInTheDocument()
-    await userEvent.click(fwdDestinationSelect)
-
-    expect(screen.getByText(mockedMvSdLanDataList[0].tunnelProfileName!)).toBeInTheDocument()
-    expect(screen.getByText('Tunnel 2')).toBeInTheDocument()
-    expect(screen.queryByText('Tunnel 3')).not.toBeInTheDocument()
-    jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery = originalMock
-  })
-
-  it('should display error message when selecting tunnel option without Core Port', async () => {
-    renderComponent({
-      ...defaultProps,
-      networkType: NetworkTypeEnum.CAPTIVEPORTAL
-    })
-    const sdLanProfileSelect = screen.getByRole('combobox', { name: 'SD-LAN Profile' })
-    expect(sdLanProfileSelect).toBeInTheDocument()
-    await userEvent.selectOptions(sdLanProfileSelect, mockedMvSdLanDataList[0].name!)
-
-    const fwdDestinationSelect = screen.getByRole('combobox', { name: 'Forwarding Destination' })
-    expect(fwdDestinationSelect).toBeInTheDocument()
-    await userEvent.selectOptions(fwdDestinationSelect, 'Tunnel 2')
-
-    await waitFor(() => {
-      expect(screen.getByText(/To use the SD-LAN service/i)).toBeInTheDocument()
-    })
-  })
-
+  const checkLoaded = async () => {
+    await waitFor(() => expect(mockSdLanFn).toBeCalled())
+  }
 })

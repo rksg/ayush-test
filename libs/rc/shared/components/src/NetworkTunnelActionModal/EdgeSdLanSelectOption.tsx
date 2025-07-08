@@ -45,26 +45,25 @@ export const EdgeSdLanSelectOption = (props: SdLanSelectOptionProps) => {
   const isEdgeSdLanSelectionDrawerReady = useIsEdgeFeatureReady(Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE)
 
   return !disabledInfo?.isDisabled ? (
-    isEdgeL2greReady ? (
-      isEdgeSdLanSelectionDrawerReady
-        ? <EdgeSdLanSelectOptionEnhanced
-          venueId={networkVenueId}
-          networkType={networkType}
-          hasVlanPool={hasVlanPool}
-        />
-        : <EdgeSdLanSelectOptionL2greContent
-          venueId={networkVenueId}
-          networkType={networkType}
-          hasVlanPool={hasVlanPool}
-        />
-    ) :
-      (<EdgeSdLanSelectOptionContent
-        networkId={networkId}
-        networkVenueId={networkVenueId}
-        venueSdLan={venueSdLan}
+    isEdgeSdLanSelectionDrawerReady
+      ? <EdgeSdLanSelectOptionEnhanced
+        venueId={networkVenueId}
         networkType={networkType}
-        currentTunnelType={currentTunnelType}
         hasVlanPool={hasVlanPool}
-        tunnelTypeInitVal={tunnelTypeInitVal}
-      />)) : <></>
+      />
+      : (isEdgeL2greReady
+        ? <EdgeSdLanSelectOptionL2greContent
+          venueSdLan={venueSdLan}
+          networkType={networkType}
+          hasVlanPool={hasVlanPool}
+        />
+        : <EdgeSdLanSelectOptionContent
+          networkId={networkId}
+          networkVenueId={networkVenueId}
+          venueSdLan={venueSdLan}
+          networkType={networkType}
+          currentTunnelType={currentTunnelType}
+          hasVlanPool={hasVlanPool}
+          tunnelTypeInitVal={tunnelTypeInitVal}
+        />)) : <></>
 }

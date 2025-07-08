@@ -83,7 +83,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
   // If network is captive portal, SD-LAN should be selected by default and unchangeable
   // due to SoftGRE is not supported on captive portal
-  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && !!venueSdLanInfo
+  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && !!initialVenueSdLanInfo
 
   useEffect(() => {
     const isTunnelTypeTouched = form.isFieldTouched('tunnelType')
@@ -95,7 +95,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
       form.setFieldValue('tunnelType',
         tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? defaultTunnelType : tunnelTypeInitVal)
     }
-  }, [visible, tunnelTypeInitVal, venueSdLanInfo])
+  }, [visible, tunnelTypeInitVal, initialVenueSdLanInfo])
 
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 

@@ -14,7 +14,10 @@ import {
   ServiceOperation,
   ServiceType,
   getPolicyDetailsLink,
-  getServiceDetailsLink } from '@acx-ui/rc/utils'
+  getServiceDetailsLink,
+  Device,
+  CommonOperation,
+  getUrl } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFwdDestination }  from './EdgeSdLanFwdDestination'
@@ -149,32 +152,58 @@ const SdLanAssociated = (props: {
   const { $t } = useIntl()
   const { selectedSdLan, openSdLanSelectionDrawer, ...rest } = props
 
-  return <><Form.Item>
-    <Space>
-      <SdLanProfileName
-        id={selectedSdLan?.id}
-        name={selectedSdLan?.name}
-      />
-      <Button type='link' onClick={openSdLanSelectionDrawer}>
-        {$t({ defaultMessage: 'Change' })}
-      </Button>
-    </Space>
-  </Form.Item>
-  <Row>
-    <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })} >
-      <TunnelProfileName
-        id={selectedSdLan?.tunnelProfileId}
-        name={selectedSdLan?.tunnelProfileName}
-      />
+  return <>
+    <Form.Item>
+      <Space>
+        <SdLanProfileName
+          id={selectedSdLan?.id}
+          name={selectedSdLan?.name}
+        />
+        <Button type='link' onClick={openSdLanSelectionDrawer}>
+          {$t({ defaultMessage: 'Change' })}
+        </Button>
+      </Space>
     </Form.Item>
-  </Row>
-  <Row>
-    <EdgeSdLanFwdDestination
-      venueSdLan={selectedSdLan}
-      {...rest}
-    />
-  </Row>
+    <Row>
+      <Form.Item label={$t({ defaultMessage: 'Destination Cluster' })} >
+        <ClusterName
+          id={selectedSdLan?.edgeClusterId}
+          name={selectedSdLan?.edgeClusterName}
+        />
+      </Form.Item>
+    </Row>
+    <Row>
+      <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })} >
+        <TunnelProfileName
+          id={selectedSdLan?.tunnelProfileId}
+          name={selectedSdLan?.tunnelProfileName}
+        />
+      </Form.Item>
+    </Row>
+    <Row>
+      <EdgeSdLanFwdDestination
+        sdLanData={selectedSdLan}
+        {...rest}
+      />
+    </Row>
   </>
+}
+
+const ClusterName = (props: {
+  id: string | undefined
+  name: string | undefined
+}) => {
+  const { id, name } = props
+
+  return name && id
+    ? <TenantLink to={`${getUrl({
+      feature: Device.EdgeCluster,
+      oper: CommonOperation.Detail,
+      params: { id } })}/overview`}
+    >
+      {name}
+    </TenantLink>
+    : null
 }
 
 const SdLanProfileName = (props: {

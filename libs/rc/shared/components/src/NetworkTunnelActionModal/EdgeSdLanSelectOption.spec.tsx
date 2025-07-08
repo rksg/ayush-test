@@ -1,12 +1,14 @@
 
 import { render, screen } from '@testing-library/react'
 
+import { Features }        from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeSdLanSelectOption }             from './EdgeSdLanSelectOption'
 import { EdgeSdLanSelectOptionContent }      from './EdgeSdLanSelectOptionContent'
+import { EdgeSdLanSelectOptionEnhanced }     from './EdgeSdLanSelectOptionEnhanced'
 import { EdgeSdLanSelectOptionL2greContent } from './EdgeSdLanSelectOptionL2greContent'
 import { NetworkTunnelTypeEnum }             from './types'
 
@@ -63,12 +65,32 @@ describe('EdgeSdLanSelectOption', () => {
   })
 
   it('renders EdgeSdLanSelectOptionL2greContent when isEdgeL2greReady is true', () => {
-    (useIsEdgeFeatureReady as jest.Mock).mockReturnValue(true)
+    (useIsEdgeFeatureReady as jest.Mock).mockImplementation((ff) => {
+      return ff === Features.EDGE_L2OGRE_TOGGLE
+    })
 
     render(<EdgeSdLanSelectOption {...defaultProps} />)
 
     expect(screen.getByText('EdgeSdLanSelectOptionL2greContent')).toBeInTheDocument()
     expect(EdgeSdLanSelectOptionL2greContent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        venueSdLan: undefined,
+        networkType: NetworkTypeEnum.CAPTIVEPORTAL,
+        hasVlanPool: false
+      }),
+      {}
+    )
+  })
+
+  it('renders EdgeSdLanSelectOptionEnhanced when isEdgeSdLanSelectionDrawerReady is true', () => {
+    (useIsEdgeFeatureReady as jest.Mock).mockImplementation((ff) => {
+      return ff === Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE
+    })
+
+    render(<EdgeSdLanSelectOption {...defaultProps} />)
+
+    expect(screen.getByText('EdgeSdLanSelectOptionEnhanced')).toBeInTheDocument()
+    expect(EdgeSdLanSelectOptionEnhanced).toHaveBeenCalledWith(
       expect.objectContaining({
         venueId: 'venue-1',
         networkType: NetworkTypeEnum.CAPTIVEPORTAL,
@@ -77,6 +99,7 @@ describe('EdgeSdLanSelectOption', () => {
       {}
     )
   })
+
 
   it('renders nothing when disabledInfo indicates the component is disabled', () => {
     const disabledProps = {

@@ -1,74 +1,66 @@
-import { useEffect, useMemo } from 'react'
 
 import { Form, Row, Typography } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Select }                                                         from '@acx-ui/components'
-import { useGetEdgeFeatureSetsQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
+import { useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
 import {
+  EdgeMvSdLanViewData,
   IncompatibilityFeatures,
   NetworkTypeEnum,
   PolicyOperation,
   PolicyType,
-  getPolicyDetailsLink } from '@acx-ui/rc/utils'
+  ServiceOperation,
+  ServiceType,
+  getPolicyDetailsLink,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  useHelpPageLink
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFwdDestination } from './EdgeSdLanFwdDestination'
 
 interface EdgeSdLanContentProps {
-  venueId: string
+  venueSdLan: EdgeMvSdLanViewData | undefined
   networkType: NetworkTypeEnum
   hasVlanPool: boolean
 }
 
 export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) => {
   const { $t } = useIntl()
-  const { venueId, networkType, hasVlanPool } = props
-  const form = Form.useFormInstance()
-  const selectedSdLanId = Form.useWatch(['sdLan', 'newProfileId'], form)
+  const {
+    venueSdLan,
+    networkType,
+    hasVlanPool
+  } = props
 
-  const { sdLanOptions } = useGetEdgeMvSdLanViewDataListQuery({
-    payload: {
-      fields: [
-        'id',
-        'name',
-        'venueId',
-        'isGuestTunnelEnabled',
-        'edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName',
-        'tunnelProfileId', 'tunnelProfileName',
-        'tunneledWlans', 'tunneledGuestWlans'
-      ],
-      pageSize: 10000
-    }
-  }, { selectFromResult: ({ data }) => ({ sdLanOptions: data?.data }) })
+  const addSdLanPageLink = getServiceRoutePath({
+    type: ServiceType.EDGE_SD_LAN,
+    oper: ServiceOperation.CREATE
+  })
+  const helpUrl = useHelpPageLink(addSdLanPageLink)
 
-  const originVenueSdLan = useMemo(() => {
-    return sdLanOptions?.find(x => x.tunneledWlans?.some(t => t.venueId === venueId))
-  }, [sdLanOptions, venueId])
+  const isVenueSdLanExist = !!venueSdLan
 
-  // set initial selected sdLan ID
-  useEffect(() => {
-    const originProfileId = originVenueSdLan?.id ?? ''
-    form.setFieldValue(['sdLan', 'oldProfileId'], originProfileId)
-    form.setFieldValue(['sdLan', 'newProfileId'], originProfileId)
-  }, [originVenueSdLan])
+  const linkToSdLanDetail = venueSdLan?.id ? getServiceDetailsLink({
+    type: ServiceType.EDGE_SD_LAN,
+    oper: ServiceOperation.DETAIL,
+    serviceId: venueSdLan?.id
+  }) : undefined
 
-  const selectedSdLan = useMemo(() =>
-    sdLanOptions?.find(x => x.id === selectedSdLanId)
-  , [selectedSdLanId])
+  const linkToTunnelProfileDetail = venueSdLan?.tunnelProfileId ? getPolicyDetailsLink({
+    type: PolicyType.TUNNEL_PROFILE,
+    oper: PolicyOperation.DETAIL,
+    policyId: venueSdLan?.tunnelProfileId!
+  }) : undefined
 
-  const tunnelProfileName = useMemo(() => {
-    const target = selectedSdLan
-    const linkToTunnelProfileDetail = target?.tunnelProfileId ? getPolicyDetailsLink({
-      type: PolicyType.TUNNEL_PROFILE,
-      oper: PolicyOperation.DETAIL,
-      policyId: target?.tunnelProfileId!
-    }) : undefined
+  const sdlanName = (isVenueSdLanExist && linkToSdLanDetail)
+    ? <TenantLink to={linkToSdLanDetail}>{venueSdLan?.name}</TenantLink>
+    : ''
 
-    return (target && linkToTunnelProfileDetail)
-      ? <TenantLink to={linkToTunnelProfileDetail}>{target?.tunnelProfileName}</TenantLink>
-      : ''
-  }, [selectedSdLan])
+  const tunnelProfileName = (isVenueSdLanExist && linkToTunnelProfileDetail)
+    ? <TenantLink to={linkToTunnelProfileDetail}>{venueSdLan?.tunnelProfileName}</TenantLink>
+    : ''
 
   const { requiredFw, isFeatureSetsLoading } = useGetEdgeFeatureSetsQuery({
     payload: {
@@ -85,56 +77,43 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     }
   })
 
-  const onChange = (value:string) => {
-    form.setFieldValue(['sdLan', 'newProfileName'],
-      sdLanOptions?.find(item => item.id === value)?.name ?? '')
-  }
-
-  return <Row>
+  return <Row><Form.Item noStyle >
     <Typography.Text style={{ color: 'inherit' }}>
       {
-        <div className={'ant-form-item-label'}>
-          <label>{$t({ defaultMessage: 'Tunnel the traffic to a central location' })}</label>
-          <br /><br />
-          <Row>
-            <Form.Item
-              label={$t({ defaultMessage: 'SD-LAN Profile' })}
-              name={['sdLan', 'newProfileId']}
-            >
-              <Select
-                style={{ width: '220px' }}
-                onChange={onChange}
-                options={[
-                  {
-                    label: $t({ defaultMessage: 'Select...' }), value: ''
-                  },
-                  ...((sdLanOptions ?? []).map(item => ({
-                    label: item.name,
-                    value: item.id
-                  })))
-                ]}
+        isVenueSdLanExist
+        // eslint-disable-next-line max-len
+          ? (<div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location' })}</label><br /><br />
+            <Row>
+              <Form.Item
+                label={$t({ defaultMessage: 'Service Name' })}>
+                <div>
+                  {sdlanName}
+                </div>
+              </Form.Item></Row>
+            <Row>
+              <Form.Item
+                label={$t({ defaultMessage: 'Tunnel Profile' })}>
+                <div >
+                  {tunnelProfileName}
+                </div>
+              </Form.Item></Row>
+            <Row>
+              <EdgeSdLanFwdDestination
+                sdLanData={venueSdLan}
+                networkType={networkType}
+                hasVlanPool={hasVlanPool}
+                requiredFw={requiredFw}
+                disabled={isFeatureSetsLoading}
               />
-            </Form.Item>
-          </Row>
-
-          <Row>
-            <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })} >
-              <div>
-                {tunnelProfileName}
-              </div>
-            </Form.Item>
-          </Row>
-          <Row>
-            <EdgeSdLanFwdDestination
-              venueSdLan={selectedSdLan}
-              requiredFw={requiredFw}
-              disabled={isFeatureSetsLoading}
-              networkType={networkType}
-              hasVlanPool={hasVlanPool}
-            />
-          </Row>
-        </div>
+            </Row>
+          </div>)
+        // eslint-disable-next-line max-len
+          : (<div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location. {infoLink}' }, {
+            infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+              {$t({ defaultMessage: 'See more information' })}
+            </a>
+          })}</label></div>)
       }
     </Typography.Text>
-  </Row>
+  </Form.Item></Row>
 }

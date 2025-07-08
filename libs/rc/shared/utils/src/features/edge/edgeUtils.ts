@@ -589,7 +589,7 @@ export const getMergedLagTableDataFromLagForm = (lagData: EdgeLag[] | undefined,
 }
 
 export const isEdgeMatchedRequiredFirmware = (requiredFw: string | undefined, edgeList: EdgeStatus[] | undefined) => {
-  if (!edgeList?.length || !requiredFw) return true
+  if (!edgeList?.length || !requiredFw) return false
 
   // eslint-disable-next-line max-len
   const edgesData = [...edgeList]?.sort((n1, n2) => compareVersions(n1.firmwareVersion, n2.firmwareVersion))
