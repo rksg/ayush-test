@@ -202,7 +202,6 @@ export enum Features {
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
   WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'removable-ff',
-  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'removable-ff',
   WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE = 'wifi-ap-poe-operating-mode-setting-toggle',
   WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
   WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE = 'wifi-captive-portal-sso-saml-toggle',
