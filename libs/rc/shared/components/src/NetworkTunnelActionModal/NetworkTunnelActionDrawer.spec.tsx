@@ -368,7 +368,7 @@ describe('NetworkTunnelDrawer', () => {
     beforeEach(() => {
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({ isLoading: false })
     })
-    it('should be able to select SD-LAN when no SDLAN run on this venue', async () => {
+    it('should NOT be able to select SD-LAN when no SDLAN run on this venue', async () => {
       const mockedNetworkData = {
         id: 'mocked-networkId',
         type: NetworkTypeEnum.CAPTIVEPORTAL,
@@ -391,7 +391,7 @@ describe('NetworkTunnelDrawer', () => {
       const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
       await userEvent.click(tunnelingMethod)
       const sdlanOption = await screen.findByTestId('sd-lan-option')
-      expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
+      expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
 
     it('should do nothing when given network data is undefined', async () => {
@@ -661,11 +661,38 @@ describe('NetworkTunnelDrawer', () => {
   })
 
   describe('SD-LAN selection drawer', () => {
-    it('SD-LAN should be selected by default when network is captive portal', async () => {
+    beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff: Features) => {
         return ff === Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE
       })
+    })
 
+    it('should be able to select SD-LAN when no SDLAN run on this venue', async () => {
+      const mockedNetworkData = {
+        id: 'mocked-networkId',
+        type: NetworkTypeEnum.DPSK,
+        venueId: 'mock_venue',
+        venueName: 'mock_venue_test'
+      }
+
+      render(
+        <Provider>
+          <NetworkTunnelActionDrawer
+            visible={true}
+            onClose={jest.fn()}
+            network={mockedNetworkData}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={[]}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded(mockedNetworkData.venueName)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+      await userEvent.click(tunnelingMethod)
+      const sdlanOption = await screen.findByTestId('sd-lan-option')
+      expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
+    })
+    it('SD-LAN should be selected by default when network is captive portal', async () => {
       const mockedNetworkData = {
         id: 'mocked-networkId',
         type: NetworkTypeEnum.CAPTIVEPORTAL,
