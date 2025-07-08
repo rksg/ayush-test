@@ -38,7 +38,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     cachedActs, cachedSoftGre
   } = props
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
@@ -52,7 +51,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   const networkType = network?.type
   const networkVenueId = network?.venueId
   const networkVenueName = network?.venueName
-  const hiddenSoftGre = NetworkTypeEnum.CAPTIVEPORTAL === networkType
+  const isCaptivePortal = networkType === NetworkTypeEnum.CAPTIVEPORTAL
+  const hiddenSoftGre = isCaptivePortal
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
   const hasPinAllowOps = hasPermission({
     rbacOpsIds: [
@@ -81,18 +81,26 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     }
   }
 
+  // If network is captive portal, SD-LAN should be selected by default and unchangeable
+  // due to SoftGRE is not supported on captive portal
+  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && !!venueSdLanInfo
+
   useEffect(() => {
-    if (visible) {
+    const isTunnelTypeTouched = form.isFieldTouched('tunnelType')
+
+    if (visible && !isTunnelTypeTouched) {
+      const defaultTunnelType = shouldSdLanBeSelectedByDefault
+        ? NetworkTunnelTypeEnum.SdLan : ''
+
       form.setFieldValue('tunnelType',
-        tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal)
+        tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? defaultTunnelType : tunnelTypeInitVal)
     }
-  }, [visible, tunnelTypeInitVal])
+  }, [visible, tunnelTypeInitVal, venueSdLanInfo])
 
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
   return (<Drawer
-    title={$t({ defaultMessage: 'Tunnel: {name}' }, { name: networkVenueName })
-    }
+    title={$t({ defaultMessage: 'Tunnel: {name}' }, { name: networkVenueName })}
     visible={visible}
     width={450}
     push={false}
@@ -125,7 +133,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               />
             </>}
           </>}
-          initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {
               required: true,
@@ -136,6 +143,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             <Select
               style={{ width: '220px' }}
               placeholder={$t({ defaultMessage: 'Select...' })}
+              disabled={shouldSdLanBeSelectedByDefault}
             >
               <Select.Option value={''}>{$t({ defaultMessage: 'Select...' })}</Select.Option>
               <Select.Option
@@ -161,7 +169,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             </Select>
           }
         />
-        {isSoftGreEnabled && !hiddenSoftGre && visible
+        {!hiddenSoftGre && visible
           && tunnelType===NetworkTunnelTypeEnum.SoftGre &&
           <WifiSoftGreSelectOption currentTunnelType={tunnelType}
             venueId={networkVenueId!}

@@ -418,6 +418,24 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'RADIUS_OPTIONS' }]
     }),
+    activateVenueTemplateRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          VenueConfigTemplateUrlsInfo.activateVenueRadiusServiceRbac, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateVenueTemplateRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          VenueConfigTemplateUrlsInfo.deactivateVenueRadiusServiceRbac, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVenueTemplateDoSProtection: build.query<VenueDosProtection, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection,
@@ -733,6 +751,8 @@ export const {
   useUpdateVenueTemplateDirectedMulticastMutation,
   useGetVenueTemplateRadiusOptionsQuery,
   useUpdateVenueTemplateRadiusOptionsMutation,
+  useActivateVenueTemplateRadiusServiceMutation,
+  useDeactivateVenueTemplateRadiusServiceMutation,
   useGetVenueTemplateDoSProtectionQuery,
   useUpdateVenueTemplateDoSProtectionMutation,
   useGetVenueTemplateMdnsFencingQuery,
