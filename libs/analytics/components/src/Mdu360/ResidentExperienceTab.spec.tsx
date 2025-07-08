@@ -1,4 +1,3 @@
-
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -20,7 +19,10 @@ jest.mock('./Widgets/WifiGeneration', () => ({
 }))
 
 jest.mock('./Widgets/TopApplications', () => ({
-  TopApplications: jest.fn(() => <div>Top Applications</div>)
+  TopApplications: jest.fn(() => <div>Top 10 Applications</div>)
+}))
+jest.mock('./Widgets/TrafficByRadio/services', () => ({
+  useTrafficByRadioQuery: jest.fn().mockReturnValue({ isLoading: false })
 }))
 
 describe('ResidentExperienceTab', () => {
@@ -36,8 +38,9 @@ describe('ResidentExperienceTab', () => {
     )
 
     expect(await screen.findByText('Wi-Fi Client')).toBeVisible()
-    expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
     expect(await screen.findByText('Wi-Fi Generation')).toBeVisible()
-    expect(await screen.findByText('Top Applications')).toBeVisible()
+    expect(await screen.findByText('Top 10 Applications')).toBeVisible()
+    expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
+    expect(await screen.findByText('Traffic By Radio')).toBeVisible()
   })
 })

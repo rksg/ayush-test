@@ -8,12 +8,12 @@ import {
   SwitchPortProfilesAppliedTargets,
   PolicyType,
   PolicyOperation,
-  useTableQuery,
   usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { useTableQuery }                            from '@acx-ui/utils'
 
 import SwitchPortProfileWidget from './SwitchPortProfileWidget'
 

@@ -74,7 +74,11 @@
               },
               {
                 "sourceTag": "type:components",
-                "notDependOnLibsWithTags": ["type:features-components"]
+                "notDependOnLibsWithTags": ["rc-generic-features-components", "rc-components"]
+              },
+              {
+                "sourceTag": "ra",
+                "notDependOnLibsWithTags": ["rc-components"]
               },
               {
                 "sourceTag": "acx-app",

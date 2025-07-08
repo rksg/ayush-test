@@ -231,6 +231,7 @@ describe('AIFeature component', () => {
       ...makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled),
       metadata: { ...extractItem.metadata, appliedAt: '2024-04-19T07:30:00.000Z' }
     }
+    const naVerifiedRow = makeRow(Statuses.na, DisplayStates.naVerified)
     it('should return true for all actions', () => {
       expect(isVisibleByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
       expect(isVisibleByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
@@ -243,6 +244,7 @@ describe('AIFeature component', () => {
       expect(isVisibleByAction([newRow, pausedApplyFailedRow], Actions.Pause)).toBeFalsy()
       expect(isVisibleByAction([scheduledOneClickRow, revertScheduledRow], Actions.Cancel)).toBeTruthy()
       expect(isVisibleByAction([newRow, revertScheduledRow], Actions.Cancel)).toBeFalsy()
+      expect(isVisibleByAction([naVerifiedRow], Actions.Optimize)).toBeTruthy()
     })
   })
 

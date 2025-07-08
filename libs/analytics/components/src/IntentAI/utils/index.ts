@@ -25,8 +25,6 @@ export const getDefaultTime = () => {
     datetime3AM : datetime3AM.add(1, 'd')
 }
 
-
-
 export type TransitionIntentMetadata = {
   scheduledAt?: string
   applyScheduledAt?: string
@@ -57,12 +55,18 @@ export enum Actions {
 export const isVisibleByAction = (rows: Intent[], action: Actions) => {
   switch (action) {
     case Actions.One_Click_Optimize:
-      return !rows.some(row => row.displayStatus !== DisplayStates.new)
+      return !rows.some(row =>
+        ![DisplayStates.new, DisplayStates.naVerified].includes(row.displayStatus)
+      )
     case Actions.Optimize:
-      return rows.length === 1 &&
-        [DisplayStates.new, DisplayStates.scheduled,
-          DisplayStates.scheduledOneClick,DisplayStates.applyScheduled,
-          DisplayStates.active].includes(rows[0].displayStatus)
+      return rows.length === 1 && [
+        DisplayStates.new,
+        DisplayStates.scheduled,
+        DisplayStates.scheduledOneClick,
+        DisplayStates.applyScheduled,
+        DisplayStates.naVerified,
+        DisplayStates.active
+      ].includes(rows[0].displayStatus)
 
     case Actions.Revert:
       return !rows.some(row =>
@@ -92,16 +96,20 @@ export const isVisibleByAction = (rows: Intent[], action: Actions) => {
 }
 
 const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
+    if (preStatusTrail?.status === Statuses.na
+      && preStatusTrail.statusReason === StatusReasons.verified) {
+      return { status: Statuses.na, statusReason: StatusReasons.verified }
+    }
     return { status: Statuses.new }
   }
-  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
-
   return preStatusTrail?.status === Statuses.applyScheduled &&
    moment().isAfter(moment(item.metadata?.applyScheduledAt)) ?
     { status: Statuses.active } : preStatusTrail
 }
+
 
 const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
@@ -116,6 +124,17 @@ const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus
   ) {
     return { status: Statuses.active }
   } else if (preStatusTrail.status === Statuses.scheduled) {
+    const scheduledIndex = item.statusTrail?.findIndex(
+      ({ status }) => status === Statuses.scheduled
+    )
+    const previousTrail = scheduledIndex !== undefined && scheduledIndex >= 0
+      ? item.statusTrail?.[scheduledIndex + 1]
+      : undefined
+
+    if (previousTrail?.status === Statuses.na &&
+        previousTrail.statusReason === StatusReasons.verified) {
+      return { status: Statuses.na, statusReason: StatusReasons.verified }
+    }
     return { status: Statuses.new }
   } else if (
     [DisplayStates.pausedRevertFailed, DisplayStates.pausedReverted].includes(item.displayStatus)) {
@@ -133,9 +152,9 @@ export const getTransitionStatus =(
     case Actions.One_Click_Optimize:
       return { status: Statuses.scheduled, statusReason: StatusReasons.oneClick }
     case Actions.Optimize:
-      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus) ?
-        { status: Statuses.active } :
-        { status: Statuses.scheduled }
+      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus)
+        ? { status: Statuses.active }
+        : { status: Statuses.scheduled }
     case Actions.Revert:
       return { status: Statuses.revertScheduled }
     case Actions.Pause:

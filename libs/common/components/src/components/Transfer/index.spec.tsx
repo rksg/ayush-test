@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import React, { useState } from 'react'
 
+import userEvent        from '@testing-library/user-event'
 import { Tag }          from 'antd'
 import { TransferItem } from 'antd/lib/transfer'
 import { IntlProvider } from 'react-intl'
@@ -50,7 +51,7 @@ describe('Transfer', () => {
       }, {
         name: 'item4', key: 'item4'
       },{
-        name: 'item5', key: 'item5'
+        name: 'item5', key: 'item5', disabled: true
       }] as TransferItem[]
 
       const leftColumns = [
@@ -113,6 +114,14 @@ describe('Transfer', () => {
 
     expect(await screen.findByText('5 available')).toBeVisible()
     expect(await screen.findByText('0 selected')).toBeVisible()
+
+    const item3 = await screen.findAllByText(/item3/)
+    const item5 = await screen.findAllByText(/item5/)
+    await userEvent.click(item3[0])
+    await userEvent.click(item5[0])
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+    expect(await screen.findByText('4 available')).toBeVisible()
+    expect(await screen.findByText('1 selected')).toBeVisible()
   })
 
   it('should render correct available counts with "excludeDisabledInCount"', async () => {

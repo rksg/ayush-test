@@ -15,8 +15,8 @@ import {
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-import { mockDeepNetworkList, mockSoftGreTable } from './__tests__/fixtures'
-import { useEdgeMvSdLanData }                    from './useEdgeMvSdLanData'
+import { mockDeepNetworkList, mockIpSecTable, mockSoftGreTable } from './__tests__/fixtures'
+import { useEdgeMvSdLanData }                                    from './useEdgeMvSdLanData'
 
 import { NetworkTunnelActionDrawer, NetworkTunnelTypeEnum } from '.'
 
@@ -189,10 +189,10 @@ describe('NetworkTunnelDrawer', () => {
       const sdlanVenueId = mockedSdLan.tunneledWlans![0].venueId
       const sdlanVenueName = mockedSdLan.tunneledWlans![0].venueName
       // eslint-disable-next-line max-len
-      const targetNetwork = find(mockedNetworksData.response, { type: NetworkTypeEnum.CAPTIVEPORTAL })
+      const captivePortalNetwork = find(mockedNetworksData.response, { type: NetworkTypeEnum.CAPTIVEPORTAL })
       const defaultNetworkData = {
-        id: targetNetwork!.id,
-        type: targetNetwork!.type,
+        id: captivePortalNetwork!.id,
+        type: captivePortalNetwork!.type,
         venueId: sdlanVenueId,
         venueName: sdlanVenueName
       }
@@ -218,14 +218,9 @@ describe('NetworkTunnelDrawer', () => {
 
         await checkPageLoaded(defaultNetworkData.venueName)
         const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
-
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
-        await userEvent.click(sdlanOption)
+        expect(tunnelingMethod).toBeDisabled()
 
         const fwdGuest = screen.getByRole('switch')
-
         await userEvent.click(fwdGuest)
 
         screen.getByText('Forward guest traffic to DMZ')
@@ -251,12 +246,7 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
-
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
-        await userEvent.click(sdlanOption)
+        screen.getByRole('combobox', { name: 'Tunneling Method' })
 
         // change to DC case
         const fwdGuest = await screen.findByRole('switch')
@@ -294,12 +284,7 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(defaultNetworkData.venueName)
-        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
-
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
-        await userEvent.click(sdlanOption)
+        screen.getByRole('combobox', { name: 'Tunneling Method' })
 
         const fwdGuest = screen.getByRole('switch')
         expect(fwdGuest).not.toBeChecked()
@@ -327,12 +312,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
+        screen.getByRole('combobox', { name: 'Tunneling Method' })
 
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
-        await userEvent.click(sdlanOption)
         const fwdGuest = await screen.findByRole('switch')
         await waitFor(() => expect(fwdGuest).toBeChecked())
         await click(fwdGuest)
@@ -346,30 +327,6 @@ describe('NetworkTunnelDrawer', () => {
         })
       })
 
-      it('should greyout all option when network is the last one in SDLAN', async () => {
-        const mockData = cloneDeep(mockedSdLan)
-        // eslint-disable-next-line max-len
-        mockData.tunneledWlans!.splice(mockData.tunneledWlans!.findIndex(i => i.networkId === 'network_1'), 1)
-
-        jest.mocked(useEdgeMvSdLanData).mockReturnValue({ venueSdLan: mockData, isLoading: false })
-
-        render(
-          <Provider>
-            <NetworkTunnelActionDrawer
-              visible={true}
-              onClose={jest.fn()}
-              network={defaultNetworkData}
-              onFinish={mockedOnFinish}
-            />
-          </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-        await checkPageLoaded(sdlanVenueName)
-        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-        await userEvent.click(tunnelingMethod)
-        const sdlanOption = await screen.findByTestId('sd-lan-option')
-        expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
-      })
-
       // eslint-disable-next-line max-len
       it('should NOT greyout all option when the network is not the last one network in SDLAN', async () => {
         render(
@@ -379,7 +336,7 @@ describe('NetworkTunnelDrawer', () => {
               onClose={jest.fn()}
               network={{
                 id: 'tmpNetworkId',
-                type: NetworkTypeEnum.CAPTIVEPORTAL,
+                type: NetworkTypeEnum.DPSK,
                 venueId: defaultNetworkData.venueId,
                 venueName: defaultNetworkData.venueName
               }}
@@ -426,7 +383,6 @@ describe('NetworkTunnelDrawer', () => {
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
 
-
     it('should do nothing when given network data is undefined', async () => {
       render(
         <Provider>
@@ -448,7 +404,6 @@ describe('NetworkTunnelDrawer', () => {
     })
   })
 
-
   describe('SoftGRE', () => {
     const mockedGetFn = jest.fn()
     beforeEach(() => {
@@ -457,8 +412,7 @@ describe('NetworkTunnelDrawer', () => {
       store.dispatch(softGreApi.util.resetApiState())
       // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-        || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+        ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
         || ff === Features.WIFI_R370_TOGGLE)
       mockServer.use(
@@ -473,7 +427,7 @@ describe('NetworkTunnelDrawer', () => {
           IpsecUrls.getIpsecViewDataList.url,
           (_, res, ctx) => {
             mockedGetFn()
-            return res(ctx.json(mockSoftGreTable))
+            return res(ctx.json(mockIpSecTable.data))
           }
         )
       )
@@ -563,6 +517,40 @@ describe('NetworkTunnelDrawer', () => {
 
       await waitFor(() => expect(mockedGetFn).not.toBeCalled())
     })
+
+    it('SD-LAN should be selected by default when network is captive portal', async () => {
+      const mockedNetworkData = {
+        id: 'mocked-networkId',
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        venueId: 'mock_venue',
+        venueName: 'mock_venue_test'
+      }
+
+      jest.mocked(useEdgeMvSdLanData).mockReturnValue({
+        venueSdLan: mockedSdLan,
+        isLoading: false
+      })
+
+      render(
+        <Provider>
+          <NetworkTunnelActionDrawer
+            visible={true}
+            onClose={jest.fn()}
+            network={mockedNetworkData}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={[]}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded(mockedNetworkData.venueName)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+
+      await waitFor(() => expect(tunnelingMethod).toBeDisabled())
+      // SD-LAN should be selected by default
+      expect(await screen.findByText('SD-LAN')).toBeVisible()
+
+      jest.mocked(useEdgeMvSdLanData).mockClear()
+    })
   })
 
   describe('PIN', () => {
@@ -641,7 +629,6 @@ describe('NetworkTunnelDrawer', () => {
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
   })
-
 })
 
 const checkPageLoaded = async (venueName: string) => {
