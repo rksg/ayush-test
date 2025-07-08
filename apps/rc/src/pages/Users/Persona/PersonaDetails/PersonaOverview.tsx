@@ -51,12 +51,19 @@ const identityClientDefaultSorter = {
   sortOrder: 'ASC'
 }
 
-export function PersonaOverview (props:
-   { personaData?: Persona, personaGroupData?: PersonaGroup }
-) {
+interface PersonaOverviewProps {
+  personaData?: Persona
+  personaGroupData?: PersonaGroup
+  isIdentityAnalyticsEnabled?: boolean
+}
+
+export function PersonaOverview ({
+  personaData,
+  personaGroupData,
+  isIdentityAnalyticsEnabled
+}: PersonaOverviewProps) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
-  const { personaData, personaGroupData } = props
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
 
@@ -64,7 +71,6 @@ export function PersonaOverview (props:
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
-  const isIdentityAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_ANALYTICS_TOGGLE)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)

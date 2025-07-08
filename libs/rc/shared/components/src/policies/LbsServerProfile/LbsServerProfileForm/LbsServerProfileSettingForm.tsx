@@ -1,13 +1,16 @@
 import { Form, Input, InputNumber } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { PasswordInput }      from '@acx-ui/components'
+import { PasswordInput }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   checkObjectNotExists,
   lbsServerVenueNameRegExp,
   servicePolicyNameRegExp,
   networkWifiSecretRegExp,
   domainNameRegExp,
+  domainNameWithIPv6RegExp,
+  useConfigTemplate,
   LbsServerProfileViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }   from '@acx-ui/react-router-dom'
@@ -19,6 +22,8 @@ import { LbsServerConnectionProtocolInfo } from '../LbsServerConnectionProtocolI
 const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfileViewModel, unknown> | undefined } ) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
   const data = props.list
 
@@ -34,6 +39,12 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
     return Promise.resolve()
   }
 
+  const serverAddressValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return domainNameWithIPv6RegExp(value)
+    }
+    return domainNameRegExp(value)
+  }
 
   return (
     <>
@@ -72,7 +83,7 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
           style={{ display: 'inline-block', width: 'calc(80%)' }}
           rules={[
             { required: true },
-            { validator: (_, value) => domainNameRegExp(value) }
+            { validator: (_, value) => serverAddressValidator(value) }
           ]}
           label={$t({ defaultMessage: 'Server Address' })}
           initialValue={''}

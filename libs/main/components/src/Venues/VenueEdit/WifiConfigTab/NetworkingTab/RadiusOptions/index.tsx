@@ -34,6 +34,7 @@ export function RadiusOptions (props: VenueWifiConfigItemProps) {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
+  const isSupportVenueRadiusCustom = useIsSplitOn(Features.WIFI_VENUE_RADIUS_CUSTOM_TOGGLE)
 
   const {
     editContextData,
@@ -62,8 +63,9 @@ export function RadiusOptions (props: VenueWifiConfigItemProps) {
     const { data, isLoading } = getVenueRadiusOptions
     if (isLoading === false && data) {
       form.setFieldsValue(data)
-
-      setReadyToScroll?.(r => [...(new Set(r.concat('RADIUS-Options')))])
+      if (!isSupportVenueRadiusCustom) {
+        setReadyToScroll?.(r => [...(new Set(r.concat('RADIUS-Options')))])
+      }
     }
 
   }, [form, getVenueRadiusOptions, setReadyToScroll])
@@ -115,12 +117,18 @@ export function RadiusOptions (props: VenueWifiConfigItemProps) {
     })
   }
 
+  const toggleBtnLabel = isSupportVenueRadiusCustom
+    ? $t({ defaultMessage: 'Override the RADIUS options in active networks' })
+    : $t({ defaultMessage: 'Override the settings in active networks' })
+
+  const labelWidth = isSupportVenueRadiusCustom ? '330px' : '280px'
+
   return (<Loader states={[{
     isLoading: getVenueRadiusOptions.isLoading,
     isFetching: isUpdatingVenueRadiusOptions
   }]}>
-    <StepsForm.FieldLabel width={'280px'}>
-      {$t({ defaultMessage: 'Override the settings in active networks' })}
+    <StepsForm.FieldLabel width={labelWidth}>
+      {toggleBtnLabel}
       <Form.Item
         name='overrideEnabled'
         valuePropName={'checked'}
