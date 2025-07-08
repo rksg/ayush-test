@@ -37,6 +37,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     cachedActs, cachedSoftGre
   } = props
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeSdLanSelectionDrawerReady = useIsEdgeFeatureReady(Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
@@ -81,9 +83,11 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     }
   }
 
+  const isSdLanConfigurable = isEdgeSdLanSelectionDrawerReady ? true : !!initialVenueSdLanInfo
+
   // If network is captive portal, SD-LAN should be selected by default and unchangeable
   // due to SoftGRE is not supported on captive portal
-  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && !!initialVenueSdLanInfo
+  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && isSdLanConfigurable
 
   useEffect(() => {
     const isTunnelTypeTouched = form.isFieldTouched('tunnelType')
