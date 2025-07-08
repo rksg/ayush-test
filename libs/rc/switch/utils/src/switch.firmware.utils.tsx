@@ -34,6 +34,13 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
   }
 }
 
+export const checkVersionAtLeast10010gCd1= (version: string): boolean => {
+  if (_.isString(version)) {
+    return isVerGEVer(version, '10010g_cd1', true)
+  }
+  return false
+}
+
 export const invalidVersionFor82Av = (version: string): boolean => {
   if (_.isEmpty(version)) {
     return false
@@ -78,6 +85,9 @@ export const getStackUnitsMinLimitationV1002 = (
   if (switchModel?.includes('ICX8200')) {
     return checkVersionAtLeast10010b(currentFirmware) ? 12 : 4
   } else if (switchModel?.includes('ICX7150')) {
+    if(checkVersionAtLeast10010gCd1(currentFirmware)){
+      return 8
+    }
     return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
   } else { // 7550, 7650, 7850
     if (checkVersionAtLeast10010c(currentFirmware)) {

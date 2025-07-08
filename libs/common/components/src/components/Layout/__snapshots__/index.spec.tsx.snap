@@ -2110,10 +2110,11 @@ exports[`Layout should render correctly when menu has superscript 1`] = `
                     class="ant-menu-title-content"
                   >
                     <a
-                      class=""
+                      aria-current="page"
+                      class="active"
                       data-label="Dashboard"
                       data-superscript="beta"
-                      href="/undefined/t/analytics/dashboard"
+                      href="/ai/dashboard"
                     >
                       <span>
                          
