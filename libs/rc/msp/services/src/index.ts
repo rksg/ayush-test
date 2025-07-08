@@ -191,16 +191,18 @@ export const mspApi = baseMspApi.injectEndpoints({
         // eslint-disable-next-line max-len
         const deviceInventoryList = await fetchWithBQ({ ...deviceInventoryListReq, body: JSON.stringify(payload) })
         const deviceInventoryListData = deviceInventoryList.data as TableResult<EcDeviceInventory>
+
         return {
           data: {
             ...deviceInventoryListData,
             data: [
-              ...deviceInventoryListData.data.map(item => {
+              // eslint-disable-next-line max-len
+              ...(deviceInventoryListData.data?.length > 0 ? deviceInventoryListData.data.map(item => {
                 return {
                   ...item,
                   fwVersion: item.fwVersion || item.firmwareVersion
                 }
-              })
+              }) : [])
             ]
           }
         }
