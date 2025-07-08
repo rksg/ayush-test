@@ -255,13 +255,19 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
+    console.log('change current:')
+    console.log(customGuiChangedRef.current)
+    console.log('lan:')
+    console.log(lan)
+    console.log('lanPorts:')
+    console.log(lanPorts)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
         return item.model === apModel
           ? {
             ...item,
-            lanPorts: lan,
+            lanPorts,
             ...(poeMode && { poeMode: poeMode }),
             ...(poeOut && isObject(poeOut) &&
                  { poeOut: Object.values(poeOut).some(item => item === true) })
