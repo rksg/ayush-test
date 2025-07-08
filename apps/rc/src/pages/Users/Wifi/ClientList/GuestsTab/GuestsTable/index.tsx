@@ -78,7 +78,6 @@ export const GuestsTable = () => {
   const { rbacOpsApiEnabled } = getUserProfile()
   const params = useParams()
 
-  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = !hasCrossVenuesPermission() || hasRoles(RolesEnum.READ_ONLY)
   const addNetworkOpsApi = getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)
   const hasAddNetworkPermission = rbacOpsApiEnabled ?
@@ -145,7 +144,6 @@ export const GuestsTable = () => {
   const [importCsv, importResult] = useImportGuestPassMutation()
 
   const { handleGuestPassResponse } = useHandleGuestPassResponse()
-  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   const guestTypeFilterOptions = Object.values(GuestTypesEnum)
     .filter(gtype => gtype!==GuestTypesEnum.HOST_GUEST)
@@ -314,15 +312,13 @@ export const GuestsTable = () => {
           : guestStatus
       }
     },
-    ...( HAEmailList_FeatureFlag ? [
-      {
-        key: 'Approver',
-        title: $t({ defaultMessage: 'Approver' }),
-        dataIndex: 'hostApprovalEmail',
-        filterable: false,
-        show: false
-      }
-    ]: [])
+    {
+      key: 'Approver',
+      title: $t({ defaultMessage: 'Approver' }),
+      dataIndex: 'hostApprovalEmail',
+      filterable: false,
+      show: false
+    }
   ]
 
   const onClose = () => {
@@ -502,11 +498,7 @@ export const GuestsTable = () => {
         maxSize={CsvSize['5MB']}
         maxEntries={250}
         acceptType={['csv']}
-        templateLink={
-          isGuestManualPasswordEnabled ?
-            'assets/templates/guests_import_template_with_guestpass.csv' :
-            'assets/templates/guests_import_template.csv'
-        }
+        templateLink={'assets/templates/guests_import_template_with_guestpass.csv'}
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}

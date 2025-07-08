@@ -1,86 +1,91 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { now }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
-import { Sync }                                      from '@acx-ui/icons'
-import { PendingAsset }                              from '@acx-ui/rc/utils'
-import { TimeStamp }                                 from '@acx-ui/types'
+import { Button, cssStr, Loader, Table, TableProps }                                                                                                      from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
+import { Sync }                                                                                                                                           from '@acx-ui/icons'
+import { useGetSwitchModelsQuery, useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
+import {  DeviceProvision,  HideProvisionsPayload }                                                                                                       from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                                                                      from '@acx-ui/types'
+import { useTableQuery }                                                                                                                                  from '@acx-ui/utils'
 
 import { MessageMapping } from '../messageMapping'
 
 export const PendingSwitch = () => {
-  const [ refreshAt, setRefreshAt ] = useState<TimeStamp>(now() - 1000 * 60 * 5)
-  const [ tableData ] = useState([{
-    serial: '309862154862',
-    model: 'ICX7550-48',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '309862154841',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '309862154842',
-    model: 'ICX7150-C12P',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '309862154843',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '309862154844',
-    model: 'ICX7150-C12P',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '309862154863',
-    model: 'ICX7550-48',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  },{
-    serial: '309862154864',
-    model: 'ICX7550-48',
-    shipDate: '2025-05-21',
-    createdDate: '2025-05-20',
-    status: 'Ready'
-  }, {
-    serial: '309862154865',
-    model: 'ICX7550-48',
-    shipDate: '2024-05-01',
-    createdDate: '2024-05-05',
-    status: 'Ready'
-  }] as (PendingAsset)[])
-
-  const tableQuery = {
-    data: tableData,
-    pagination: {
-      page: 1,
-      pageSize: 5,
-      defaultPageSize: 5,
-      total: 8
-    },
-    handleTableChange: () => {}
-  }
-
   const { $t } = useIntl()
+  const params = useParams()
+  const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
 
-  const columns: TableProps<PendingAsset>['columns'] = [
+  const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
+    { params },
+    { refetchOnMountOrArgChange: true })
+
+  const [ refreshSwitchStatus ] = useRefreshSwitchStatusMutation()
+
+  const [ hideSwitchProvisions ] = useHideSwitchProvisionsMutation()
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const { modelFilterMap } = useGetSwitchModelsQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10_000
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map(model =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
+    }
+  })
+
+  const tableQuery = useTableQuery<DeviceProvision>({
+    useQuery: useGetSwitchProvisionsQuery,
+    defaultPayload: {
+      page: 0,
+      pageSize: 10,
+      filters: {}
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['serialNumber', 'model']
+    },
+    sorter: {
+      sortField: 'serialNumber',
+      sortOrder: 'asc'
+    }
+  })
+
+  useEffect(() => {
+    // Set refreshAt from switchStatus
+    setRefreshAt(
+      formatter(DateFormatEnum.DateTimeFormatWithSeconds)(switchStatus?.refreshedAt) ?? null
+    )
+
+    // Auto refresh when switchStatus?.refreshedAt is null
+    const autoRefresh = async () => {
+      if (switchStatus && switchStatus.refreshedAt === null && !hasAutoRefreshed) {
+        setHasAutoRefreshed(true)
+        await handleRefresh()
+      }
+    }
+
+    autoRefresh()
+  }, [switchStatus, hasAutoRefreshed])
+
+  const columns: TableProps<DeviceProvision>['columns'] = [
     {
-      key: 'serial',
-      title: 'Serial',
-      dataIndex: 'serial',
+      key: 'serialNumber',
+      title: 'Serial #',
+      dataIndex: 'serialNumber',
       sorter: true,
       searchable: true
     },
@@ -90,63 +95,80 @@ export const PendingSwitch = () => {
       dataIndex: 'model',
       sorter: true,
       searchable: true,
-      filterable: [{ key: 'ICX7550-48', label: 'ICX7550-48' },
-        { key: 'ICX7150-C12P', label: 'ICX7150-C12P' }]
+      filterable: modelFilterMap
     },
     {
       key: 'shipDate',
       title: 'Ship Date',
       dataIndex: 'shipDate',
       sorter: true,
-      searchable: true,
-      render: (value) => formatter(DateFormatEnum.DateFormat)(value)
+      render: (_, row) => {
+        return formatter(DateFormatEnum.DateFormat)(row.shipDate)
+      }
     },
     {
       key: 'createdDate',
       title: 'Created Date',
       dataIndex: 'createdDate',
       sorter: true,
-      searchable: true,
-      render: (value) => formatter(DateFormatEnum.DateFormat)(value)
+      filterable: true,
+      filterKey: 'fromDate',
+      filterComponent: { type: 'rangepicker' },
+      render: (_, row) => {
+        return formatter(DateFormatEnum.DateFormat)(row.createdDate)
+      }
     },
     {
-      key: 'status',
-      title: 'Status',
-      dataIndex: 'status',
+      key: 'visibleStatus',
+      title: 'Visibility',
+      dataIndex: 'visibleStatus',
       sorter: true,
-      searchable: true,
-      filterComponent: { type: 'checkbox', label: 'Show ignored devices' },
+      filterKey: 'includeHidden',
       filterable: true,
-      filterKey: 'status',
-      filterValueArray: true,
-      filterCustomOptions: [{ key: 'Ready', label: 'Ready' }, { key: 'Ignored', label: 'Ignored' }]
+      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show hidden devices' }) }
     }
   ]
 
-  const rowActions: TableProps<PendingAsset>['rowActions'] = [
+  const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
       onClick: () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Ignore Device' }),
-      tooltip: $t(MessageMapping.ignore_devive_tooltip),
-      onClick: () => {
+      label: $t({ defaultMessage: 'Hide Device' }),
+      tooltip: $t(MessageMapping.hide_devive_tooltip),
+      onClick: (selectedRows, clearSelection) => {
+        hideSwitchProvisions({
+          payload: {
+            serials: selectedRows.map((row) => row.serialNumber)
+          } as HideProvisionsPayload
+        }).then(() => {
+          clearSelection()
+        })
+      },
+      visible: (selectedRows: DeviceProvision[]) => {
+        return !selectedRows.some((row: DeviceProvision) => row.visibleStatus === 'Hidden')
       }
     }
   ]
 
-  const handleRefresh = () => {
-    setRefreshAt(now())
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    await refreshSwitchStatus({})
+    const { data: latestSwitchStatus } = await refetchSwitchStatus()
+    setRefreshAt(
+      formatter(DateFormatEnum.DateTimeFormatWithSeconds)(latestSwitchStatus?.refreshedAt) ?? null)
+    setIsLoading(false)
   }
 
   return (
-    <Loader>
+    <Loader states={[{ isLoading }]}>
       <div
         className={'ant-space-align-center'}
-        style={{ textAlign: 'right' }}>
-        <span style={{ fontSize: '12px', marginRight: '6px', color: cssStr('--acx-neutrals-60') }}>
+        style={{ textAlign: 'right', paddingBottom: '20px' }}>
+        <span style={{ fontSize: '12px', marginRight: '6px',
+          color: cssStr('--acx-neutrals-60') }}>
           {$t({ defaultMessage: 'Updated at' })}
         </span>
         <span data-testid='test-refresh-time' style={{ fontSize: '12px', marginRight: '6px' }}>
@@ -158,17 +180,21 @@ export const PendingSwitch = () => {
           size='small'
           onClick={handleRefresh}>{$t({ defaultMessage: 'Refresh' })}</Button>
       </div>
-      <Table<PendingAsset>
-        settingsId={'pending-aps-table'}
+
+      <Table<DeviceProvision>
+        settingsId={'pending-switches-tab'}
+        loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
-        dataSource={tableData}
+        dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowActions={rowActions}
+        enableApiFilter={true}
         rowSelection={
-          rowActions.length > 0 && { type: 'checkbox' }
+          rowActions?.length > 0 && { type: 'checkbox' }
         }
-        rowKey='serial'
+        rowKey='serialNumber'
       />
     </Loader>
   )
