@@ -36,26 +36,6 @@ describe('NetworkTunnelSwitchBtn', () => {
     expect(mockOnClick).toBeCalledTimes(1)
   })
 
-  it('should greyout when the network is the last one in SDLAN', async () => {
-    render(
-      <NetworkTunnelSwitchBtn
-        tunnelType={NetworkTunnelTypeEnum.SdLan}
-        onClick={mockOnClick}
-        venueSdLanInfo={{
-          ...mockedMvSdLanDataList[0],
-          tunneledWlans: mockedMvSdLanDataList[0].tunneledWlans!.slice(0, 1)
-        }}
-      />
-    )
-
-    const btn = screen.getByRole('switch')
-    expect(btn).toBeDisabled()
-    expect(btn).toBeChecked()
-    await userEvent.hover(btn, { pointerEventsCheck: PointerEventsCheckLevel.Never })
-    // eslint-disable-next-line max-len
-    await screen.findByRole('tooltip', { name: 'Cannot deactivate the last network at this venue', hidden: true })
-  })
-
   it('should correctly render PIN case', async () => {
     render(
       <NetworkTunnelSwitchBtn

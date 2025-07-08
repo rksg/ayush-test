@@ -9,7 +9,6 @@ import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanFormModel,
-  EdgeMvSdLanFormNetwork,
   getTunnelProfileOptsWithDefault,
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
@@ -125,17 +124,6 @@ export const TunnelNetworkForm = () => {
           <Form.Item
             name='activatedNetworks'
             dependencies={['isGuestTunnelEnabled', 'activatedGuestNetworks']}
-            rules={[
-              { required: true },
-              {
-                validator: (_, value) => {
-                  return value && Object.keys((value as EdgeMvSdLanFormNetwork)).length > 0
-                    ? Promise.resolve()
-                  // eslint-disable-next-line max-len
-                    : Promise.reject($t({ defaultMessage: 'Please select at least 1 <venueSingular></venueSingular> network' }))
-                }
-              }
-            ]}
           >
             <EdgeSdLanVenueNetworksTable />
           </Form.Item>

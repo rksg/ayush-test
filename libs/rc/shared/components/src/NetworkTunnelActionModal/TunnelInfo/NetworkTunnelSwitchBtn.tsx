@@ -1,9 +1,7 @@
 import { Switch, Tooltip } from 'antd'
-import { useIntl }         from 'react-intl'
 
 import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
 
-import { messageMappings }       from '../messageMappings'
 import { NetworkTunnelTypeEnum } from '../types'
 import { usePermissionResult }   from '../usePermissionResult'
 
@@ -16,27 +14,21 @@ interface NetworkTunnelSwitchBtnProps {
 }
 
 export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
-  const { $t } = useIntl()
-  const { tunnelType, onClick, venueSdLanInfo } = props
+  const { tunnelType, onClick } = props
   const {
     hasPartialPermission,
     hasEdgeSdLanPermission,
     hasSoftGrePermission
   } = usePermissionResult()
 
-  // eslint-disable-next-line max-len
-  const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
   const hasPermission = (
     tunnelType === NetworkTunnelTypeEnum.None && hasPartialPermission
   ) || (
     (tunnelType === NetworkTunnelTypeEnum.SdLan && hasEdgeSdLanPermission) ||
     (tunnelType === NetworkTunnelTypeEnum.SoftGre && hasSoftGrePermission)
   )
-  // eslint-disable-next-line max-len
-  const needDisabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin || !hasPermission
-  const tooltip = isTheLastSdLanWlan
-    ? $t(messageMappings.disable_deactivate_last_network)
-    : undefined
+
+  const needDisabled = tunnelType === NetworkTunnelTypeEnum.Pin || !hasPermission
 
   const handleOnClick = async (val: boolean) => {
     try {
@@ -46,7 +38,7 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
     }
   }
 
-  return <Tooltip title={props.tooltip || tooltip}>
+  return <Tooltip title={props.tooltip}>
     <Switch
       checked={tunnelType !== NetworkTunnelTypeEnum.None}
       disabled={props.disabled || needDisabled}

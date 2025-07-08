@@ -332,7 +332,8 @@ export function MultiLineTimeSeriesChart <
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        formatter: dateAxisFormatter(),
+        hideOverlap: true
       }
     },
     yAxis: yAxisConfig && yAxisConfig.length

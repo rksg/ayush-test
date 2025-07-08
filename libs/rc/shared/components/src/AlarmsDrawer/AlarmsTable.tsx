@@ -19,16 +19,13 @@ import {
   defaultSort,
   EventSeverityEnum,
   EventTypeEnum,
-  FILTER,
-  SEARCH,
-  sortProp,
-  useTableQuery
+  sortProp
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
-import { store }                                          from '@acx-ui/store'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                       from '@acx-ui/utils'
+import { TenantLink, useParams }                                  from '@acx-ui/react-router-dom'
+import { store }                                                  from '@acx-ui/store'
+import { RolesEnum }                                              from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles }         from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, FILTER,SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

@@ -1,4 +1,5 @@
-import { LeaseTimeUnit, NewTablePageable } from '@acx-ui/rc/utils'
+import { LeaseTimeUnit }    from '@acx-ui/rc/utils'
+import { NewTablePageable } from '@acx-ui/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')

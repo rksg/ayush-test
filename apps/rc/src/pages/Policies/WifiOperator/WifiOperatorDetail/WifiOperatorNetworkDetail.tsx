@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                                  from '@acx-ui/components'
-import { useGetWifiOperatorListQuery, useWifiNetworkListQuery }     from '@acx-ui/rc/services'
-import { NetworkType, NetworkTypeEnum, WifiNetwork, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                    from '@acx-ui/react-router-dom'
+import { Card, Table, TableProps }                              from '@acx-ui/components'
+import { useGetWifiOperatorListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
+import { NetworkType, NetworkTypeEnum, WifiNetwork }            from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
+import { useTableQuery }                                        from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: [

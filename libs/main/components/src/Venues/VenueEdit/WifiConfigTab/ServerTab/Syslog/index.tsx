@@ -25,7 +25,6 @@ import {
   PolicyType,
   SyslogPolicyListType,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   VenueSyslogSettingType,
   useConfigTemplateMutationFnSwitcher,
   useTemplateAwarePolicyPermission
@@ -35,6 +34,7 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import * as UI                                        from '../../styledComponents'
