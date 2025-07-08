@@ -1335,7 +1335,10 @@ export const apApi = baseApApi.injectEndpoints({
                 overwriteUntagId: l.untagId,
                 overwriteVlanMembers: l.vlanMembers,
                 clientIsolationEnabled: l.clientIsolationEnabled,
-                clientIsolationSettings: l.clientIsolationSettings
+                clientIsolationSettings: l.clientIsolationSettings,
+                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)?
+                  l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
@@ -1346,10 +1349,6 @@ export const apApi = baseApApi.injectEndpoints({
                 serialNumber: params!.serialNumber,
                 portId: l.portId,
                 policyId: l.softGreProfileId
-              },
-              payload: {
-                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
-                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
           const ipsecActivateRequests = apSettings?.lanPorts
