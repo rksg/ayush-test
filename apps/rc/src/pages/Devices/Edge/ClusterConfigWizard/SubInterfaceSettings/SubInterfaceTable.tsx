@@ -3,13 +3,13 @@ import { Key, ReactNode, useContext, useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showActionModal, Table, TableProps }                                                                          from '@acx-ui/components'
-import { Features }                                                                                                    from '@acx-ui/feature-toggle'
-import { CheckMark }                                                                                                   from '@acx-ui/icons'
-import { useIsEdgeFeatureReady }                                                                                       from '@acx-ui/rc/components'
-import { convertEdgeSubInterfaceToApiPayload, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                  from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                               from '@acx-ui/user'
+import { showActionModal, Table, TableProps }                                                                                             from '@acx-ui/components'
+import { Features }                                                                                                                       from '@acx-ui/feature-toggle'
+import { CheckMark }                                                                                                                      from '@acx-ui/icons'
+import { useIsEdgeFeatureReady }                                                                                                          from '@acx-ui/rc/components'
+import { convertEdgeSubInterfaceToApiPayload, EdgeLag, EdgePort, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                                     from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                  from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
@@ -26,13 +26,17 @@ export interface SubInterfaceTableProps {
   allInterface?: EdgePortInfo[]
   currentInterfaceName?: string
   isSupportAccessPort?: boolean
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   const {
     currentTab, ip, mac, value = [], onChange, allInterface = [], currentInterfaceName,
-    isSupportAccessPort
+    isSupportAccessPort, originalInterfaceData
   } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -43,6 +47,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   const { clusterNetworkSettings, edgeSdLanData } = useContext(ClusterConfigWizardContext)
   const vipSettings = clusterNetworkSettings?.virtualIpSettings
+  const isSdLanRun = !!edgeSdLanData
 
   const closeDrawers = () => {
     setDrawerVisible(false)
@@ -137,7 +142,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: (selectedRows) => !isAllowedToDelete(selectedRows),
+      disabled: (selectedRows) => !isAllowedToDelete(selectedRows) || (
+        isSdLanRun && selectedRows.some(item => item.corePortEnabled || item.accessPortEnabled)
+      ),
       tooltip: (selectedRows) => {
         if(!isAllowedToDelete(selectedRows)) {
           return $t({
@@ -224,9 +231,10 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               (value as { id: string, vlan: number }[])
             }
             allInterface={allInterface}
-            isSdLanRun={!!edgeSdLanData}
+            isSdLanRun={isSdLanRun}
             currentInterfaceName={currentInterfaceName}
             isSupportAccessPort={isSupportAccessPort}
+            originalInterfaceData={originalInterfaceData}
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}

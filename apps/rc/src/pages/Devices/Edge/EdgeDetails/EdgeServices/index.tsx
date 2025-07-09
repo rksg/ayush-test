@@ -11,12 +11,11 @@ import {
   EdgeDhcpUrls,
   EdgeService,
   EdgeServiceTypeEnum,
-  EdgeUrlsInfo,
-  useTableQuery
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { EdgeScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getOpsApi }                     from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 

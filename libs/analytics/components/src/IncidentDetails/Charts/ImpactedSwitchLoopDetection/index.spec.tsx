@@ -4,9 +4,9 @@ import { act }        from 'react-dom/test-utils'
 import { fakeIncidentLoopDetection, fakeIncidentLoopDetectionOnDomain,
   fakeIncidentLoopDetectionOnSzCluster,
   overlapsRollup } from '@acx-ui/analytics/utils'
-import { get }                                                            from '@acx-ui/config'
-import { dataApi, dataApiURL, Provider, store }                           from '@acx-ui/store'
-import { findTBody, mockGraphqlQuery, render, within, screen, fireEvent } from '@acx-ui/test-utils'
+import { dataApi, dataApiURL, Provider, store }                                                      from '@acx-ui/store'
+import { findTBody, mockGraphqlQuery, render, within, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { handleBlobDownloadFile }                                                                    from '@acx-ui/utils'
 
 import { ImpactedVlan } from './services'
 
@@ -19,11 +19,16 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+
 const mockOverlapsRollup = overlapsRollup as jest.Mock
+const mockHandleBlobDownloadFile = handleBlobDownloadFile as jest.Mock
 
-
-describe('ImpactedVlanTable',()=>{
-  const sample1:ImpactedVlan[] = [
+describe('ImpactedVlanTable', () => {
+  const sample1: ImpactedVlan[] = [
     {
       vlanId: '1',
       switches: [
@@ -57,216 +62,21 @@ describe('ImpactedVlanTable',()=>{
     }
   ]
 
-  const response = (data: ImpactedVlan[] = [
-    ...sample1
-  ]) => ({
+  const response = (data: ImpactedVlan[] = [...sample1]) => ({
     incident: {
       impactedVLANs: data
     }
   })
 
-  describe('ImpactedVlanTable', () => {
-    beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
-    it('should render for R1', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(
-        <Provider>
-          <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
-        </Provider>, {
-          route: {
-            path: '/tenantId/t/analytics/incidents',
-            wrapRoutes: false
-          }
-        })
+  beforeEach(() => {
+    store.dispatch(dataApi.util.resetApiState())
+    jest.clearAllMocks()
+  })
 
-      const body = within(await findTBody())
-      const rows = await body.findAllByRole('row')
-      expect(rows).toHaveLength(2)
-      expect(within(rows[0]).getAllByRole('cell')[0].textContent).toMatch('1')
-      expect(within(rows[1]).getAllByRole('cell')[1].textContent).toMatch('MM-126')
-    })
-
-    it('should render for RA', async () => {
-      jest.mocked(get).mockReturnValueOnce('true')
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(
-        <Provider>
-          <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
-        </Provider>, {
-          route: {
-            path: '/tenantId/t/analytics/incidents',
-            wrapRoutes: false
-          }
-        })
-
-      const body = within(await findTBody())
-      const rows = await body.findAllByRole('row')
-      expect(rows).toHaveLength(2)
-      expect(within(rows[0]).getAllByRole('cell')[0].textContent).toMatch('1')
-      expect(within(rows[1]).getAllByRole('cell')[1].textContent).toMatch('MM-126')
-    })
-
-    it('should copy the port numbers to clipboard', async () => {
-      const writeText = jest.fn()
-      Object.assign(navigator, {
-        clipboard: {
-          writeText
-        }
-      })
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider><ImpactedVlanTable incident={fakeIncidentLoopDetection} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
-
-      const body = within(await findTBody())
-      const rows = await body.findAllByRole('row')
-      fireEvent.click(within(rows[0]).getByTestId('CopyOutlined'))
-      expect(writeText).toHaveBeenCalledWith('babyrdn_24p')
-      writeText.mockReset()
-      fireEvent.click(within(rows[1]).getByTestId('CopyOutlined'))
-      expect(writeText).toHaveBeenCalledWith('ROD-135, MM-126')
-    })
-
-    it('should open the drawer with impacted switches in R1', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider><ImpactedVlanTable incident={fakeIncidentLoopDetection} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
-      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
-      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
-      expect(screen.queryByText(/switch group/i)).not.toBeInTheDocument()
-    })
-
-    it('should open the drawer with impacted switches in RA', async () => {
-      jest.mocked(get).mockReturnValueOnce('true')
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider><ImpactedVlanTable incident={fakeIncidentLoopDetection} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
-      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
-      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
-      expect(screen.queryByText(/switch group/i)).not.toBeInTheDocument()
-    })
-
-    it('should open the drawer with impacted switches in R1 - Incident on System', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider><ImpactedVlanTable
-        incident={fakeIncidentLoopDetectionOnSzCluster} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
-      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
-      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
-      expect(await screen.findByText(/switch group/i)).toBeVisible()
-    })
-
-    it('should open the drawer with impacted switches in RA - Incident on System', async () => {
-      jest.mocked(get).mockReturnValueOnce('true')
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider><ImpactedVlanTable
-        incident={fakeIncidentLoopDetectionOnSzCluster} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
-      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
-      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
-      expect(await screen.findByText(/switch group/i)).toBeVisible()
-    })
-
-    it('should show domain information in switch group tooltip for system slice type', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(
-        <Provider>
-          <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnSzCluster} />
-        </Provider>,
-        {
-          route: {
-            path: '/tenantId/t/analytics/incidents',
-            wrapRoutes: false
-          }
-        }
-      )
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      const switchGroupCell = await screen.findByText('switch grp 0')
-      expect(switchGroupCell).toBeVisible()
-      // Hover over the switch group cell to trigger the tooltip
-      fireEvent.mouseEnter(switchGroupCell)
-      // Wait for the tooltip to appear and check its content
-      const tooltip = await screen.findByRole('tooltip', { hidden: true })
-      // Wait for the tooltip to be visible
-      await screen.findByRole('tooltip')
-      expect(tooltip).toHaveTextContent('Domain 1')
-      expect(tooltip).toHaveTextContent('switch grp 0')
-    })
-
-    it('should show domain information in switch group tooltip for domain slice type', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(
-        <Provider>
-          <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnDomain} />
-        </Provider>,
-        {
-          route: {
-            path: '/tenantId/t/analytics/incidents',
-            wrapRoutes: false
-          }
-        }
-      )
-
-      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
-      const switchGroupCell = await screen.findByText('switch grp 0')
-      expect(switchGroupCell).toBeVisible()
-      // Hover over the switch group cell to trigger the tooltip
-      fireEvent.mouseEnter(switchGroupCell)
-      // Wait for the tooltip to appear and check its content
-      const tooltip = await screen.findByRole('tooltip', { hidden: true })
-      // Wait for the tooltip to be visible
-      await screen.findByRole('tooltip')
-      expect(tooltip).toHaveTextContent('Some Domain')
-      expect(tooltip).toHaveTextContent('switch grp 0')
-    })
-
-    describe('useDrawer', () => {
-      it('should set visible when onClose', () => {
-        const { result } = renderHook(() => useDrawer(false))
-        act(() => {
-          result.current.onClose()
-        })
-        expect(result.current.visible).toEqual(false)
-      })
-    })
-
-
-    it('should hide table when under druidRollup', async () => {
-      jest.mocked(mockOverlapsRollup).mockReturnValue(true)
-      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
-      render(<Provider>
+  it('should render table with VLAN data', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
         <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
       </Provider>, {
         route: {
@@ -274,22 +84,310 @@ describe('ImpactedVlanTable',()=>{
           wrapRoutes: false
         }
       })
-      await screen.findByText('Data granularity at this level is not available')
-      jest.mocked(mockOverlapsRollup).mockReturnValue(false)
-    })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const body = within(await findTBody())
+    const rows = await body.findAllByRole('row')
+    expect(rows).toHaveLength(2)
+    expect(within(rows[0]).getAllByRole('cell')[0].textContent).toMatch('1')
+    expect(within(rows[1]).getAllByRole('cell')[1].textContent).toMatch('MM-126')
   })
-  describe('vlanSorter', () => {
-    it('should return -1 when the first number is less than the second', () => {
-      expect(vlanSorter('1', '2')).toBe(-1)
-    })
 
-    it('should return 1 when the first number is greater than the second', () => {
-      expect(vlanSorter('2', 1)).toBe(1)
-    })
+  it('should handle CSV export with multiple VLANs', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
-    it('should return 0 when both numbers are equal', () => {
-      expect(vlanSorter(2, '2')).toBe(0)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Loop-Detection-VLANs')
+    )
+  })
+
+  it('should handle CSV export with single VLAN', async () => {
+    const singleVlanResponse = {
+      incident: {
+        impactedVLANs: [{
+          vlanId: '1',
+          switches: [
+            {
+              name: 'babyrdn_24p',
+              mac: '5C:83:6C:3F:B2:C2',
+              serial: 'FNY4828V00B',
+              switchGroup: 'switch grp 0',
+              domains: ['domain1||Domain 1']
+            }
+          ]
+        }]
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: singleVlanResponse })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Loop-Detection-VLAN')
+    )
+  })
+
+  it('should handle CSV export with empty data', async () => {
+    const emptyResponse = {
+      incident: {
+        impactedVLANs: []
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: emptyResponse })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // The export button should not be present when data is empty
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
+  })
+
+  it('should handle table sorting', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const vlanIdHeader = await screen.findByRole('columnheader', { name: /vlan id/i })
+    fireEvent.click(vlanIdHeader)
+
+    const body = within(await findTBody())
+    const rows = await body.findAllByRole('row')
+    const firstRow = rows[0]
+    expect(firstRow).toHaveTextContent('1')
+  })
+
+  it('should handle search functionality', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const searchInput = await screen.findByPlaceholderText(/search vlan id/i)
+    fireEvent.change(searchInput, { target: { value: '1' } })
+
+    const body = within(await findTBody())
+    const rows = await body.findAllByRole('row')
+    expect(rows).toHaveLength(2)
+    expect(body.getByText('1')).toBeVisible()
+  })
+
+  it('should handle empty data state', async () => {
+    const emptyResponse = {
+      incident: {
+        impactedVLANs: []
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: emptyResponse })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const body = within(await findTBody())
+    const rows = await body.findAllByRole('row')
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toHaveClass('ant-table-placeholder')
+  })
+
+  it('should handle drawer interaction', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+    expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
+
+    const drawer = await screen.findByRole('dialog')
+    expect(drawer).toBeVisible()
+    expect(drawer).toHaveTextContent('babyrdn_24p')
+    expect(drawer).toHaveTextContent('5C:83:6C:3F:B2:C2')
+  })
+
+  it('should handle copy switch names to clipboard', async () => {
+    const writeText = jest.fn()
+    Object.assign(navigator, {
+      clipboard: {
+        writeText
+      }
     })
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const body = within(await findTBody())
+    const rows = await body.findAllByRole('row')
+    fireEvent.click(within(rows[0]).getByTestId('CopyOutlined'))
+    expect(writeText).toHaveBeenCalledWith('babyrdn_24p')
+  })
+
+  it('should show domain information in switch group tooltip', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnDomain} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+    const switchGroupCell = await screen.findByText('switch grp 0')
+    fireEvent.mouseEnter(switchGroupCell)
+
+    const tooltip = await screen.findByRole('tooltip')
+    expect(tooltip).toHaveTextContent('Some Domain')
+    expect(tooltip).toHaveTextContent('switch grp 0')
+  })
+
+  it('should handle system cluster incidents', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnSzCluster} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('VLANs')).toBeVisible()
+  })
+
+  it('should hide table when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await screen.findByText('Data granularity at this level is not available')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
+  })
+
+  describe('useDrawer', () => {
+    it('should handle drawer state correctly', () => {
+      const { result } = renderHook(() => useDrawer(false))
+
+      act(() => {
+        result.current.onClose()
+      })
+      expect(result.current.visible).toEqual(false)
+
+      act(() => {
+        result.current.onOpen(sample1[0])
+      })
+      expect(result.current.visible).toEqual(true)
+      expect(result.current.vlan).toEqual(sample1[0])
+    })
+  })
+})
+
+describe('vlanSorter', () => {
+  it('should return -1 when the first number is less than the second', () => {
+    expect(vlanSorter('1', '2')).toBe(-1)
+  })
+
+  it('should return 1 when the first number is greater than the second', () => {
+    expect(vlanSorter('2', 1)).toBe(1)
+  })
+
+  it('should return 0 when both numbers are equal', () => {
+    expect(vlanSorter(2, '2')).toBe(0)
   })
 })

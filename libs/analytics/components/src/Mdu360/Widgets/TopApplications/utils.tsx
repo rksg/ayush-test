@@ -1,0 +1,89 @@
+import { Divider } from 'antd'
+
+import {
+  GoogleColored,
+  TwitterColored,
+  YouTube,
+  Netflix,
+  FacebookColored,
+  LinkedInColored,
+  ChromeColored,
+  Apple,
+  Microsoft,
+  Whatsapp,
+  Applications
+} from '@acx-ui/icons'
+
+import * as UI from './styledComponents'
+
+export interface ApplicationData {
+  name: string
+  value: string
+}
+
+const columnSize = 5
+
+const IconWrapper = ({
+  children,
+  zoom = 0.352,
+  padding = '10px'
+}: {
+  children: React.ReactNode
+  zoom?: number
+  padding?: string
+}) => (
+  <span style={{ zoom, paddingRight: padding }}>{children}</span>
+)
+
+const applicationsIcon = <IconWrapper zoom={0.27} padding='15px'><Applications /></IconWrapper>
+
+export const iconList = [
+  { name: 'facebook', icon: <IconWrapper><FacebookColored /></IconWrapper> },
+  { name: 'google', icon: <IconWrapper zoom={0.341}><GoogleColored /></IconWrapper> },
+  { name: 'twitter', icon: <IconWrapper zoom={0.42}><TwitterColored /></IconWrapper> },
+  { name: 'youtube', icon: <IconWrapper zoom={0.341}><YouTube /></IconWrapper> },
+  { name: 'netflix', icon: <IconWrapper><Netflix /></IconWrapper> },
+  { name: 'linkedin', icon: <IconWrapper><LinkedInColored /></IconWrapper> },
+  { name: 'apple', icon: <IconWrapper zoom={0.42}><Apple /></IconWrapper> },
+  { name: 'microsoft', icon: <IconWrapper zoom={0.42}><Microsoft /></IconWrapper> },
+  { name: 'whatsapp', icon: <IconWrapper zoom={0.511} padding='5px'><Whatsapp /></IconWrapper> },
+  { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> }
+]
+
+const getIconForApplication = (name: string) => {
+  return iconList.find(icon => name.toLowerCase().includes(icon.name))?.icon || applicationsIcon
+}
+
+const renderApplicationItem = (item: ApplicationData) => {
+  const { name, value } = item
+  const icon = getIconForApplication(name)
+  return (
+    <UI.ColumnItemWrapper key={name}>
+      <UI.ColumnItemIconWrapper>
+        {icon}
+        <span>{name}</span>
+      </UI.ColumnItemIconWrapper>
+      <UI.ColumnValue>{value}</UI.ColumnValue>
+    </UI.ColumnItemWrapper>
+  )
+}
+
+export const renderContent = (data: ApplicationData[]) => {
+  const leftColumn = data.slice(0, columnSize)
+  const rightColumn = data.slice(columnSize)
+
+  return (
+    <UI.ColumnWrapper>
+      <UI.ColumnHeaderWrapper itemCount={leftColumn.length}>
+        {leftColumn.map(item => renderApplicationItem(item))}
+      </UI.ColumnHeaderWrapper>
+      <Divider
+        type='vertical'
+        style={{ height: '100%', marginInline: 16 }}
+      />
+      <UI.ColumnHeaderWrapper itemCount={rightColumn.length}>
+        {rightColumn.map(item => renderApplicationItem(item))}
+      </UI.ColumnHeaderWrapper>
+    </UI.ColumnWrapper>
+  )
+}

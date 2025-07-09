@@ -1,8 +1,6 @@
 import {
   MacRegistrationPool,
   MessageType,
-  NewTablePageable,
-  NewTableResult,
   PassphraseFormatEnum,
   PersonaGroup,
   PropertyConfigStatus,
@@ -13,6 +11,7 @@ import {
   TemplateScope,
   Template
 } from '@acx-ui/rc/utils'
+import { NewTableResult, NewTablePageable } from '@acx-ui/utils'
 
 const defaultPageable: NewTablePageable = {
   offset: 0,

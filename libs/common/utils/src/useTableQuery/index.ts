@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
-import { TableProps }  from 'antd'
-import { FilterValue } from 'antd/lib/table/interface'
-import _               from 'lodash'
+import { TableProps }        from 'antd'
+import { FilterValue }       from 'antd/lib/table/interface'
+import _                     from 'lodash'
+import { useParams, Params } from 'react-router-dom'
 
-import { useParams, Params } from '@acx-ui/react-router-dom'
 import {
   RequestPayload,
   UseQuery,
   UseQueryResult,
   UseQueryOptions
 } from '@acx-ui/types'
+
 import {
   ApiInfo,
-  createHttpRequest,
+  createHttpRequest
+} from '../apiService'
+import {
   TABLE_DEFAULT_PAGE_SIZE,
   TABLE_MAX_PAGE_SIZE,
   TABLE_QUERY_POLLING_INTERVAL
-} from '@acx-ui/utils'
+} from '../constants'
 
 
 // export { RequestPayload }

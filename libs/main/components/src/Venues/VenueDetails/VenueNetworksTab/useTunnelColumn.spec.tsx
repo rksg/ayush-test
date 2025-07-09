@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
-import { cloneDeep }                          from 'lodash'
-import { rest }                               from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { NetworkTunnelActionModalProps, useEdgeAllPinData, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
@@ -19,7 +19,6 @@ import {
   EdgeMvSdLanViewData,
   EdgePinFixtures,
   EdgeSdLanFixtures,
-  EdgeSdLanTunneledWlan,
   MtuTypeEnum,
   SoftGreUrls,
   VlanPoolRbacUrls,
@@ -56,7 +55,6 @@ const disabledFFs = [
   Features.WIFI_RBAC_API,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
   Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
@@ -202,7 +200,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
@@ -239,37 +236,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       expect(toggleTunnelBtn).toBeChecked()
     })
 
-    it('should greyout when the WLAN is the last one in SDLAN', async () => {
-      const mockedData = {
-        sdLans: [{
-          ...mockedMvSdLanDataList[0],
-          name: 'Mocked_SDLAN_last_one_test',
-          tunneledWlans: [{
-            networkId: targetNetworkId,
-            networkName: 'test_1',
-            venueId: params.venueId
-          }] as EdgeSdLanTunneledWlan[],
-          tunneledGuestWlans: [] as EdgeSdLanTunneledWlan[]
-        }] as EdgeMvSdLanViewData[],
-        scopedNetworkIds: [targetNetworkId],
-        scopedGuestNetworkIds: []
-      }
-      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedData)
-
-      render(<Provider><VenueNetworksTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-      })
-
-      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
-      await within(activatedRow).findByText(/SD-LAN/)
-      within(activatedRow).getByRole('link', { name: 'Mocked_SDLAN_last_one_test' })
-      const toggleTunnelBtn = within(activatedRow).getAllByRole('switch')[1]
-      expect(toggleTunnelBtn).toBeChecked()
-      expect(toggleTunnelBtn).toBeDisabled()
-      await userEvent.hover(toggleTunnelBtn, { pointerEventsCheck: PointerEventsCheckLevel.Never })
-      await screen.findByRole('tooltip', { name: 'Cannot deactivate the last network at this venue', hidden: true })
-    })
-
     it('should correctly display when the network is not SDLAN selected', async () => {
       const mockSdLan = cloneDeep(mockedMvSdLanDataList[0])
       mockSdLan.tunneledWlans![0].venueId = params.venueId
@@ -301,7 +267,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })

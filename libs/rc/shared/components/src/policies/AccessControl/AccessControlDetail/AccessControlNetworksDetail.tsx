@@ -14,9 +14,9 @@ import {
   Network,
   NetworkTypeEnum,
   networkTypes,
-  useConfigTemplate,
-  useTableQuery
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 const defaultPayload = {
   searchString: '',

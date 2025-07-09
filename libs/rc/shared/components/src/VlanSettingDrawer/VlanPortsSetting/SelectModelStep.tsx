@@ -4,10 +4,10 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip }                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, SwitchModelPortData, isRodanAvSubModel, isBabyRodanXSubModel, is7550ZippySubModel } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                               from '@acx-ui/utils'
+import { Card, Tooltip }                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, SwitchModelPortData, isBabyRodanXSubModel, is7550ZippySubModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                            from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -48,7 +48,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
@@ -215,9 +214,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
       return { label: key, value: key }
     })
     const filterModels = (modelsData: { label: string; value: string }[]) => {
-      if (!isSupport8200AV && index === 'ICX8200') {
-        return modelsData.filter(model => !isRodanAvSubModel(model.value))
-      }
       if (!isSupport8100X && index === 'ICX8100') {
         return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
       }

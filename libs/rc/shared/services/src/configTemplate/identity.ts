@@ -1,16 +1,18 @@
 import {
   CommonResult,
   IdentityTemplateUrlsInfo,
-  PersonaGroup,
+  PersonaGroup
+} from '@acx-ui/rc/utils'
+import { baseConfigTemplateApi } from '@acx-ui/store'
+import { RequestPayload }        from '@acx-ui/types'
+import {
+  createHttpRequest,
   NewTableResult,
   TableResult,
   transferToTableResult,
   createNewTableHttpRequest,
   TableChangePayload
-} from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+} from '@acx-ui/utils'
 
 
 export const identityConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({

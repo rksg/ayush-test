@@ -143,17 +143,11 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
       }
     }
 
-    const isSdLanLastNetwork = (tunneledWlans?.length ?? 0) <= 1
-    if (!tunneledWlans || isGuestSwitchBtn || !isSdLanLastNetwork) return
-
-    const isTheLastOne = tunneledWlans[0].networkId === row.id
+    if (!tunneledWlans || isGuestSwitchBtn) return
 
     return {
-      isDisabled: isTheLastOne,
-      tooltip: isTheLastOne
-        // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
-        : undefined
+      isDisabled: false,
+      tooltip: undefined
     }
   }
 
