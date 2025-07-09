@@ -13,7 +13,6 @@ import _, { isNumber } from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { StepsForm, Button, Fieldset, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }                 from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -72,7 +71,6 @@ const calCurrentDataAndUnit = (timeData: number, units: UnitEnum[]) => {
 export function UserConnectionForm () {
   const { $t } = useIntl()
   const form = useFormInstance()
-  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
   const { data, editMode, cloneMode } = useContext(NetworkFormContext)
   const [useDefaultSetting, setUseDefaultSetting]=useState<boolean>(true)
   const [maxGracePeriod, setMaxGracePeriod]=useState<number>(1440)
@@ -151,10 +149,10 @@ export function UserConnectionForm () {
         if (macCredentialsDurationData && !macCredentialsDurationUnitData) {
           let duration = macCredentialsDurationData
           let durationUnit = UnitEnum.MINS
-          if (isSessionDurationEnable && macCredentialsDurationData >= oneWeek && macCredentialsDurationData % oneWeek === 0) {
+          if (macCredentialsDurationData >= oneWeek && macCredentialsDurationData % oneWeek === 0) {
             duration = macCredentialsDurationData / oneWeek
             durationUnit = UnitEnum.WEEKS
-          } else if (isSessionDurationEnable && macCredentialsDurationData >= oneDay && macCredentialsDurationData % oneDay === 0) {
+          } else if (macCredentialsDurationData >= oneDay && macCredentialsDurationData % oneDay === 0) {
             duration = macCredentialsDurationData / oneDay
             durationUnit = UnitEnum.DAYS
           } else if (macCredentialsDurationData >= oneHour && macCredentialsDurationData % oneHour === 0) {
@@ -170,7 +168,7 @@ export function UserConnectionForm () {
         }
       }
     }
-  }, [data, editMode, cloneMode, form, isSessionDurationEnable])
+  }, [data, editMode, cloneMode, form])
 
   /* eslint-enable max-len */
   const changeSettings=()=>{
@@ -385,13 +383,8 @@ export function UserConnectionForm () {
                 disabled={!checkDuration}>
                 <Option value={UnitEnum.MINS}>{$t({ defaultMessage: 'Minutes' })}</Option>
                 <Option value={UnitEnum.HOURS}>{$t({ defaultMessage: 'Hours' })}</Option>
-                {
-                  isSessionDurationEnable &&
-                  <>
-                    <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>
-                    <Option value={UnitEnum.WEEKS}>{$t({ defaultMessage: 'Weeks' })}</Option>
-                  </>
-                }
+                <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>
+                <Option value={UnitEnum.WEEKS}>{$t({ defaultMessage: 'Weeks' })}</Option>
               </Select>
             </Form.Item>
             <Form.Item
