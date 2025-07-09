@@ -398,10 +398,9 @@ export function StackForm () {
   const getMiniMembers = function (activeSerialNumber: string) {
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = (editMode ?
-      tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware :
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
       currentFirmwareV1002?.find(v =>
-        v.modelGroup === switchModelGroup)?.version) || ''
+        v.modelGroup === switchModelGroup)?.version || ''
 
     return getStackUnitsMinLimitationV1002(switchModel, currentVersion)
   }
@@ -808,10 +807,9 @@ export function StackForm () {
     }
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = (editMode ?
-      tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware :
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
       currentFirmwareV1002?.find(v =>
-        v.modelGroup === switchModelGroup)?.version) || ''
+        v.modelGroup === switchModelGroup)?.version || ''
 
     const miniMembers = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
 
