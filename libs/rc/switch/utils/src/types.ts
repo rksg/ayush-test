@@ -532,6 +532,7 @@ export interface SwitchTable {
   order?: number
   active?: boolean
   model: string
+  disabled: boolean
   firmware?: string
 }
 
