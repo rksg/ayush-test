@@ -10,9 +10,9 @@ import {
   useGetApWiredClientsQuery,
   useGetSwitchClientListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useTenantLink }        from '@acx-ui/react-router-dom'
 import { filterByAccess }       from '@acx-ui/user'
+import { usePollingTableQuery } from '@acx-ui/utils'
 import { ApWiredClientTable }   from '@acx-ui/wifi/components'
 
 

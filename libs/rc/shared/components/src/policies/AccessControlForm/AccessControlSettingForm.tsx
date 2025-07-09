@@ -19,10 +19,10 @@ import {
 import {
   AccessControlInfoType,
   AclEmbeddedObject, EnhancedAccessControlInfoType,
-  useConfigTemplate, useConfigTemplateQueryFnSwitcher,
-  useTableQuery
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import AccessControlComponent    from './AccessControlComponent'
 import { QUERY_DEFAULT_PAYLOAD } from './constants'

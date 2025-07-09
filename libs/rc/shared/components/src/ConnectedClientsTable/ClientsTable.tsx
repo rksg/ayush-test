@@ -21,12 +21,11 @@ import {
   ClientList,
   getDeviceTypeIcon,
   getOsTypeIcon,
-  usePollingTableQuery,
   networkTypes } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { TenantLink, useParams }               from '@acx-ui/react-router-dom'
+import { WifiScopes }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }       from '@acx-ui/user'
+import { usePollingTableQuery, noDataDisplay } from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -106,7 +105,6 @@ const AsyncLoadingInColumn = (
 export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
   const { $t } = useIntl()
   const params = useParams()
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -364,7 +362,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           })
         }
       }]),
-      ...(wifiEDAClientRevokeToggle ?[{
+      {
         key: 'networkType',
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
@@ -375,7 +373,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             return networkDisplayTransformer(intl, row.networkType)
           })
         }
-      }] : []),
+      },
       {
         key: 'sessStartTime',
         title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -687,8 +685,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
     }
   ]
 
-  const showRowSelection = (wifiEDAClientRevokeToggle &&
-    hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+  const showRowSelection = hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] })
 
   return (
     <UI.ClientTableDiv>
@@ -700,7 +697,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
         </Subtitle>
         <Table<ClientList>
           rowSelection={(showRowSelection && rowSelection)}
-          rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
+          rowActions={filterByAccess(rowActions)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}

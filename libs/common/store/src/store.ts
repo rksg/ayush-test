@@ -54,7 +54,8 @@ import {
   baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi,
   baseIpSecApi as ipSecApi,
-  baseSamlIdpProfileApi as samlIdpProfileApi
+  baseSamlIdpProfileApi as samlIdpProfileApi,
+  baseDeviceProvisionApi as deviceProvisionApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
 
@@ -116,7 +117,8 @@ export const store = configureStore({
     [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
     [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
     [ipSecApi.reducerPath]: ipSecApi.reducer,
-    [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer
+    [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer,
+    [deviceProvisionApi.reducerPath]: deviceProvisionApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -178,7 +180,8 @@ export const store = configureStore({
       ruckusAiChatApi.middleware,
       clientIsolationApi.middleware,
       ipSecApi.middleware,
-      samlIdpProfileApi.middleware
+      samlIdpProfileApi.middleware,
+      deviceProvisionApi.middleware
     ])
   },
 

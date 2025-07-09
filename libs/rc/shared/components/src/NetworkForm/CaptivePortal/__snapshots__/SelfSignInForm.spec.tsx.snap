@@ -2,7 +2,7 @@
 
 exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network successfully for snapshot test 1`] = `
 <DocumentFragment>
-  .c11 {
+  .c12 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -19,46 +19,46 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   gap: 8px;
 }
 
-.c11 svg {
+.c12 svg {
   width: 16px;
   height: 16px;
 }
 
-.c11 svg:before {
+.c12 svg:before {
   content: 'a';
 }
 
-.c11 svg path {
+.c12 svg path {
   color: var(--acx-primary-black);
 }
 
-.c11.ant-btn-link svg path {
+.c12.ant-btn-link svg path {
   color: var(--acx-accents-blue-50);
 }
 
-.c11.ant-btn-link:hover {
+.c12.ant-btn-link:hover {
   color: var(--acx-accents-blue-60);
 }
 
-.c11.ant-btn-link:hover svg path {
+.c12.ant-btn-link:hover svg path {
   color: var(--acx-accents-blue-60);
 }
 
-.c11.ant-btn-primary svg path {
+.c12.ant-btn-primary svg path {
   color: var(--acx-primary-white) !important;
 }
 
-.c11[disabled] svg path,
-.c11.ant-btn-disabled svg path {
+.c12[disabled] svg path,
+.c12.ant-btn-disabled svg path {
   color: var(--acx-primary-white);
 }
 
-.c11[disabled].ant-btn-link svg path,
-.c11.ant-btn-disabled.ant-btn-link svg path,
-.c11[disabled].ant-btn-default svg path,
-.c11.ant-btn-disabled.ant-btn-default svg path,
-.c11[disabled].ant-btn-primary svg path,
-.c11.ant-btn-disabled.ant-btn-primary svg path {
+.c12[disabled].ant-btn-link svg path,
+.c12.ant-btn-disabled.ant-btn-link svg path,
+.c12[disabled].ant-btn-default svg path,
+.c12.ant-btn-disabled.ant-btn-default svg path,
+.c12[disabled].ant-btn-primary svg path,
+.c12.ant-btn-disabled.ant-btn-primary svg path {
   color: var(--acx-neutrals-40);
 }
 
@@ -83,7 +83,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   min-width: 0;
 }
 
-.c18 {
+.c19 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -93,14 +93,14 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   z-index: 5;
 }
 
-.c18::before {
+.c19::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c18 .ant-space-item .ant-space {
+.c19 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -130,37 +130,37 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   height: 16px;
 }
 
-.c19 .has-steps-form .ant-modal-content .c17 {
+.c20 .has-steps-form .ant-modal-content .c18 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c19 .has-steps-form .ant-modal-content .c17::before {
+.c20 .has-steps-form .ant-modal-content .c18::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c19 .ant-modal-content:has(.c17) .c17 {
+.c20 .ant-modal-content:has(.c18) .c18 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c19 .ant-modal-content:has(.c17) .c17::before {
+.c20 .ant-modal-content:has(.c18) .c18::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c19 .ant-modal-content:has(.c17) .ant-modal-body {
+.c20 .ant-modal-content:has(.c18) .ant-modal-body {
   padding-bottom: 0px;
 }
 
-.c19 .ant-modal-content:has(.c17) .ant-modal-footer {
+.c20 .ant-modal-content:has(.c18) .ant-modal-footer {
   display: none;
 }
 
@@ -301,12 +301,12 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   flex: 1;
 }
 
-.c16 {
+.c17 {
   width: 358px;
   margin-top: 40px;
 }
 
-.c9 {
+.c8 {
   width: 130px;
 }
 
@@ -314,13 +314,13 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   width: 130px;
 }
 
-.c12 {
+.c13 {
   margin-bottom: -3px;
   margin-left: -6px !important;
   color: var(--acx-primary-black);
 }
 
-.c12:hover {
+.c13:hover {
   cursor: pointer;
   width: 18px !important;
   height: 18px !important;
@@ -337,29 +337,18 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   fill: var(--acx-neutrals-60);
 }
 
-.c8 {
+.c9 {
   width: 16px;
   height: 16px;
   margin-bottom: -4px;
   margin-right: 3px;
 }
 
-.c8 path:first-of-type {
+.c9 path:first-of-type {
   fill: var(--acx-neutrals-60);
 }
 
-.c8 path {
-  stroke: var(--acx-neutrals-60);
-}
-
-.c13 {
-  width: 16px;
-  height: 16px;
-  margin-bottom: -4px;
-  margin-right: 3px;
-}
-
-.c13 path {
+.c9 path {
   stroke: var(--acx-neutrals-60);
 }
 
@@ -370,8 +359,12 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   margin-right: 3px;
 }
 
-.c10 path {
+.c10 path:first-of-type {
   fill: var(--acx-neutrals-60);
+}
+
+.c10 path {
+  stroke: var(--acx-neutrals-60);
 }
 
 .c14 {
@@ -382,6 +375,17 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
 }
 
 .c14 path {
+  stroke: var(--acx-neutrals-60);
+}
+
+.c11 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c11 path {
   fill: var(--acx-neutrals-60);
 }
 
@@ -393,6 +397,17 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
 }
 
 .c15 path {
+  fill: var(--acx-neutrals-60);
+}
+
+.c16 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c16 path {
   fill: var(--acx-neutrals-60);
 }
 
@@ -580,6 +595,54 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item c8"
+                                          >
+                                            <span
+                                              class="ant-checkbox"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c9"
+                                                data-testid="EnvelopClosedSolid"
+                                              />
+                                              Email
+                                            </span>
+                                          </label>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                            style="margin-left: -5px; margin-bottom: -3px;"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
                                             class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item c6"
                                           >
                                             <span
@@ -597,7 +660,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                             </span>
                                             <span>
                                               <svg
-                                                class="c8"
+                                                class="c10"
                                                 data-testid="Whatsapp"
                                               />
                                               WhatsApp
@@ -629,7 +692,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -645,19 +708,19 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                             </span>
                                             <span>
                                               <svg
-                                                class="c10"
+                                                class="c11"
                                                 data-testid="Facebook"
                                               />
                                               Facebook
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link c11"
+                                            class="ant-btn ant-btn-link c12"
                                             data-testid="settingicon"
                                             type="button"
                                           >
                                             <svg
-                                              class="c12"
+                                              class="c13"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -683,61 +746,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
-                                          >
-                                            <span
-                                              class="ant-checkbox ant-checkbox-checked"
-                                            >
-                                              <input
-                                                class="ant-checkbox-input"
-                                                type="checkbox"
-                                                value=""
-                                              />
-                                              <span
-                                                class="ant-checkbox-inner"
-                                              />
-                                            </span>
-                                            <span>
-                                              <svg
-                                                class="c13"
-                                                data-testid="Google"
-                                              />
-                                              Google
-                                            </span>
-                                          </label>
-                                          <button
-                                            class="ant-btn ant-btn-link c11"
-                                            data-testid="settingicon"
-                                            type="button"
-                                          >
-                                            <svg
-                                              class="c12"
-                                              data-testid="ConfigurationSolid"
-                                            />
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-form-item ant-form-item-has-success"
-                                  style="margin-bottom: 0px;"
-                                >
-                                  <div
-                                    class="ant-row ant-form-item-row"
-                                  >
-                                    <div
-                                      class="ant-col ant-form-item-control"
-                                    >
-                                      <div
-                                        class="ant-form-item-control-input"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input-content"
-                                        >
-                                          <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -754,18 +763,18 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                             <span>
                                               <svg
                                                 class="c14"
-                                                data-testid="Twitter"
+                                                data-testid="Google"
                                               />
-                                              X
+                                              Google
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link c11"
+                                            class="ant-btn ant-btn-link c12"
                                             data-testid="settingicon"
                                             type="button"
                                           >
                                             <svg
-                                              class="c12"
+                                              class="c13"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -791,7 +800,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -808,18 +817,72 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                             <span>
                                               <svg
                                                 class="c15"
+                                                data-testid="Twitter"
+                                              />
+                                              X
+                                            </span>
+                                          </label>
+                                          <button
+                                            class="ant-btn ant-btn-link c12"
+                                            data-testid="settingicon"
+                                            type="button"
+                                          >
+                                            <svg
+                                              class="c13"
+                                              data-testid="ConfigurationSolid"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c16"
                                                 data-testid="LinkedIn"
                                               />
                                               LinkedIn
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link c11"
+                                            class="ant-btn ant-btn-link c12"
                                             data-testid="settingicon"
                                             type="button"
                                           >
                                             <svg
-                                              class="c12"
+                                              class="c13"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -1424,7 +1487,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                 data-testid="QuestionMarkCircleOutlined"
                               />
                               <button
-                                class="ant-btn ant-btn-link c11"
+                                class="ant-btn ant-btn-link c12"
                                 data-testid="walled-garden-clear-button"
                                 style="margin-left: 90px;"
                                 type="button"
@@ -1499,7 +1562,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                           class="ant-col"
                         >
                           <div
-                            class="c16"
+                            class="c17"
                           >
                             <img
                               src="SelfSignIn"
@@ -1533,7 +1596,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
         </div>
       </div>
       <div
-        class="c17 c18 action-footer single-step"
+        class="c18 c19 action-footer single-step"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1543,7 +1606,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary c11"
+              class="ant-btn ant-btn-primary c12"
               type="button"
             >
               <span>
@@ -1555,7 +1618,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default c11"
+              class="ant-btn ant-btn-default c12"
               type="button"
             >
               <span>

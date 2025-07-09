@@ -21,12 +21,25 @@ import { impactedApi, ImpactedAP, ImpactedClient } from './services'
 setUpIntl({ locale: 'en-US', messages: {} })
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
-
+const mockTenantLink = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  TenantLink: (props: { to: string, children: React.ReactNode }) => mockTenantLink(props)
+}))
 describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
   afterAll(() => jest.resetAllMocks())
   describe('ImpactedAPsDrawer', () => {
-    beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
+    beforeEach(() => {
+      store.dispatch(impactedApi.util.resetApiState())
+      get.mockReturnValue('')
+      mockTenantLink.mockImplementation(({ to, children, ...props }) => {
+        const isRai = get('IS_MLISA_SA') === 'true'
+        const prefix = isRai ? '/ai' : '/tenant-id/t'
+        const href = `${prefix}${to.startsWith('/') ? '' : '/'}${to}`
+        return <a href={href} {...props}>{children}</a>
+      })
+    })
     const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
     const sample = [
       { name: 'name', mac: 'mac', model: 'model', version: 'version' },
@@ -52,7 +65,7 @@ describe('Drawer', () => {
       screen.getByText('1 Impacted AP')
       const links: HTMLAnchorElement[] = screen.getAllByRole('link')
       expect(links[0].href).toBe(
-        'http://localhost/undefined/t/devices/wifi/mac/details/overview'
+        'http://localhost/tenant-id/t/devices/wifi/mac/details/overview'
       )
     })
     it('should render correct url for RAI', async () => {
