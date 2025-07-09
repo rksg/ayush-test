@@ -69,7 +69,6 @@ export function RadioTab () {
   const supportExtAnt = useIsSplitOn(Features.WIFI_AP_EXTERNAL_ANTENNA_TOGGLE) && isExtAntAp
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
 
-  const isStickyClientSteeringEnable = useIsSplitOn(Features.WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE)
   const apGroupPhase1Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
@@ -94,7 +93,7 @@ export function RadioTab () {
       </>
     )
   },
-  ...(isStickyClientSteeringEnable ? [{
+  {
     title: clientSteeringTitle,
     content: (
       <>
@@ -104,7 +103,7 @@ export function RadioTab () {
         <ClientSteering isAllowEdit={isAllowEditClientSteering} />
       </>
     )
-  }] : []),
+  },
   {
     title: clientAdmissionCtlTitle,
     content: (
