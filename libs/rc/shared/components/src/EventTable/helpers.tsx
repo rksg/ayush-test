@@ -158,7 +158,11 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   return <EntityLink {...{ entityKey, data, highlightFn }} />
 }
 
-export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs, clientPathType?: 'wired' | 'wifi') => {
+export const getDescription = (
+  data: Event,
+  highlightFn?: TableHighlightFnArgs,
+  clientPathType?: 'wired' | 'wifi'
+) => {
   const formatData = formatTurnOnOffTimestamp(data)
   try {
     let message = String(formatData.message && JSON.parse(formatData.message).message_template)
