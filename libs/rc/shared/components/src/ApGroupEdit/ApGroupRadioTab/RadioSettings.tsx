@@ -114,9 +114,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const { $t } = useIntl()
   const { isAllowEdit=true } = props
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
@@ -255,7 +253,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       [ApRadioTypeEnum.RadioUpper5G]: supportChUpper5g
     }
 
-    const radio6GBandwidth = supportWifi7_320MHz
+    const radio6GBandwidth = ap70BetaFlag
       ? channelBandwidth6GOptions
       : dropRight(channelBandwidth6GOptions)
 
@@ -274,7 +272,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       bandwidthRadioOptions,
       isSupport6GCountry
     }
-  }, [supportChannelsData, supportWifi7_320MHz])
+  }, [supportChannelsData, ap70BetaFlag])
 
   useEffect(() => {
     if (isEmpty(venueData)) {
