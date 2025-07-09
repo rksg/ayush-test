@@ -467,6 +467,7 @@ export interface SwitchTable {
   active?: boolean
   model: string
   disabled: boolean
+  firmware?: string
 }
 
 export interface SwitchProfileModel {
