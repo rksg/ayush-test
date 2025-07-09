@@ -65,6 +65,30 @@ exports[`PskSummaryForm should render cloudpath enabled successfully 1`] = `
         </div>
       </div>
     </div>
+    <div>
+      Accounting Service
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                Off
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
 </DocumentFragment>
 `;
