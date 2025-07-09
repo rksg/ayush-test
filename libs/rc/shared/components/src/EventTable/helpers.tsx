@@ -46,7 +46,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   }
   // Use the wired path for client entity if data.ethPort is not null/undefined/empty
   const isWiredClientEvent =
-    entity === 'client' && data.ethPort != null && data.ethPort !== ''
+    entity === 'client' && !!data.ethPort
   const pathSpecs: Record<
     typeof entityTypes[number],
     { path: string, params: Array<keyof Event> }
