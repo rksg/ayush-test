@@ -5,4 +5,4 @@
 "#VLAN ID (if empty, network's default VLAN will be used)",,,,,
 "#Passphrase Expiration (If empty, will be considered the value set in linked DPSK Networks. Otherwise,  the valid values: UNLIMITED, ONE_DAY, TWO_DAYS, ONE_WEEK, TWO_WEEKS, ONE_MONTH, SIX_MONTHS, ONE_YEAR, TWO_YEARS)",,,,,
 #,,,,,
-Username,Number of devices,MAC Address,Passphrase,VLAN ID,Passphrase Expiration
+Username,Number of devices,MAC Address,Passphrase,VLAN ID,Passphrase Expiration,PhoneNumber,Email
