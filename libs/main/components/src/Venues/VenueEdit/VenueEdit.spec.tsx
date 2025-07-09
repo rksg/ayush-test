@@ -41,6 +41,7 @@ import {
 } from '../__tests__/fixtures'
 
 import { VenueEdit } from './index'
+import { WifiConfigUrlsInfo } from 'libs/rc/shared/utils/src/urls/wifiConfigUrls'
 
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
@@ -81,6 +82,13 @@ jest.mock('./WifiConfigTab/AdvancedTab/AccessPointUSB', () => ({
 jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
   BssColoring: () => <div data-testid='BssColoring' />
 }))
+jest.mock('./WifiConfigTab/AdvancedTab/ApManagementVlan', () => ({
+  ApManagementVlan: () => <div data-testid='ApManagementVlan' />
+}))
+jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
+  BssColoring: () => <div data-testid='BssColoring' />
+}))
+
 
 
 const mockedUseConfigTemplate = jest.fn()
@@ -342,6 +350,14 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         ),
         rest.get(
           WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(
+          WifiConfigUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(
+          WifiConfigUrlsInfo.getVenueSmartMonitor.url,
           (_, res, ctx) => res(ctx.json({}))
         )
       )

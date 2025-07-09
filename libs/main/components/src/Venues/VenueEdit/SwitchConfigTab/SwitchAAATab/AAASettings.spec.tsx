@@ -3,7 +3,7 @@ import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { venueApi }        from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
@@ -34,7 +34,7 @@ describe('AAASettings', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSettingWithOrder))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
