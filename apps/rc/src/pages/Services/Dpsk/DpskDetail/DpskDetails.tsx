@@ -12,9 +12,10 @@ import {
   useServiceListBreadcrumb,
   getScopeKeyByService,
   filterDpskOperationsByPermission,
-  getServiceAllowedOperation, useTableQuery
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { useTableQuery }                          from '@acx-ui/utils'
 
 import { dpskTabNameMapping } from './contentsMap'
 

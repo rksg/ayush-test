@@ -27,9 +27,6 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
-  useTableQuery,
-  FILTER,
-  SEARCH,
   EdgeMvSdLanViewData,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
@@ -44,6 +41,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],

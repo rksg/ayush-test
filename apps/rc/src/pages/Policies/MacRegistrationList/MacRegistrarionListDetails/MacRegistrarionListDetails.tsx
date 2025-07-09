@@ -1,9 +1,10 @@
-import { MacRegistrationsTable }                                                    from '@acx-ui/rc/components'
-import { useSearchMacRegistrationsQuery }                                           from '@acx-ui/rc/services'
-import { MacRegistration, MacRegistrationDetailsTabKey, TableQuery, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                                from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                           from '@acx-ui/types'
-import { goToNotFound }                                                             from '@acx-ui/user'
+import { MacRegistrationsTable }                         from '@acx-ui/rc/components'
+import { useSearchMacRegistrationsQuery }                from '@acx-ui/rc/services'
+import { MacRegistration, MacRegistrationDetailsTabKey } from '@acx-ui/rc/utils'
+import { useParams }                                     from '@acx-ui/react-router-dom'
+import { RequestPayload }                                from '@acx-ui/types'
+import { goToNotFound }                                  from '@acx-ui/user'
+import { TableQuery, useTableQuery }                     from '@acx-ui/utils'
 
 
 import { MacRegistrationListOverviewTab } from './MacRegistrationListOverviewTab'

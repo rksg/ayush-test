@@ -9,9 +9,14 @@ import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/u
 import { AccountManagement, AccountManagementTabEnum } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: () => ({
+    hash: '',
+    pathname: '/tenant-id/t/analytics',
+    search: ''
+  })
 }))
 
 jest.mock('../Support', () => ({

@@ -41,7 +41,8 @@ export enum InCompatibilityFeatures {
   TUNNEL_PROFILE = 'Tunnel Profile',
   VENUE_MULTICAST_RATE_LIMIT = 'Multicast Rate Limit (Venue)',
   OWE_TRANSITION_6G = 'OWE Transition 6G',
-  MESH_5G_ONLY_6G_ONLY = 'Mesh 5G Only And 6G Only'
+  MESH_5G_ONLY_6G_ONLY = 'Mesh 5G Only And 6G Only',
+  SOTGRE_GATEWAY_FALLBACK = 'SoftGRE Gateway Fallback (Venue)'
 }
 
 export const retrievedApCompatibilitiesOptions = (
