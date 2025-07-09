@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/query'
 import { Badge, Divider, Form }   from 'antd'
-import _                          from 'lodash'
+import _, { isEmpty }             from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -14,7 +14,8 @@ import {
   ColumnType,
   PasswordInput,
   showToast,
-  cssStr
+  cssStr,
+  Button
 } from '@acx-ui/components'
 import { showActionModal, Tooltip }  from '@acx-ui/components'
 import type { TableHighlightFnArgs } from '@acx-ui/components'
@@ -25,12 +26,13 @@ import {
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { useImportSwitchesMutation,
+import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchName,
-  getSwitchModel
+  getSwitchModel,
+  getAckMsg
 } from '@acx-ui/rc/switch/utils'
 import {
   getSwitchStatusString,
@@ -121,7 +123,7 @@ export const defaultSwitchPayload = {
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
     'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword', 'extIp'
+    'syncedAdminPassword', 'adminPassword', 'extIp', 'venueId'
   ]
 }
 
@@ -153,6 +155,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
+  const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
   const importRBACTemplateLink = 'assets/templates/new_switches_import_template.csv'
@@ -271,6 +274,43 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     })
   }
 
+  const onClickAck = (row: SwitchRow) => {
+    const ackPayload = {
+      add: [] as string[],
+      remove: [] as string[]
+    }
+
+    if (!isEmpty(row.newSerialNumber)) {
+      ackPayload.add.push(row.newSerialNumber as string)
+      ackPayload.remove.push(row.serialNumber)
+    } else {
+      ackPayload.add.push(row.serialNumber)
+    }
+
+    acknowledgeSwitch({
+      params: { tenantId: params.tenantId, switchId: row.id, venueId: row.venueId },
+      payload: ackPayload,
+      enableRbac: isSwitchRbacEnabled
+    })
+  }
+
+  const renderAckButton = (row: SwitchRow) => {
+    if (row.needAck) {
+      const ackMsg = getAckMsg(!!row.needAck, row.serialNumber, row.newSerialNumber || '', $t)
+      return (
+        <Tooltip title={ackMsg}>
+          <Button
+            style={{ marginLeft: '10px' }}
+            type='link'
+            onClick={() => onClickAck(row)}>
+            {$t({ defaultMessage: 'ACK' })}
+          </Button>
+        </Tooltip>
+      )
+    }
+    return null
+  }
+
   const columns = React.useMemo(() => {
     return [{
       key: 'name',
@@ -293,7 +333,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           >
             {searchable ? highlightFn(name) : name}
           </TenantLink> :
-          `${name} (${getStackMemberStatus(row.unitStatus || '', true)})`
+          <>
+            {`${name} (${getStackMemberStatus(row.unitStatus || '', true)})`}
+            {renderAckButton(row)}
+          </>
       }
     }, {
       key: 'deviceStatus',

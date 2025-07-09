@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import _ from 'lodash'
-// import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import _             from 'lodash'
+import { IntlShape } from 'react-intl'
 
 import {
   ICX_MODELS_INFORMATION
@@ -984,3 +984,16 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, $t: IntlShape['$t']) => {
+  let ackMsg = ''
+  if (needAck === true) {
+    ackMsg = isEmpty(newSerialNumber) ?
+      $t({ defaultMessage: 'Additional member detected' }) :
+      $t({ defaultMessage:
+          'Member switch replacement detected. Old S/N: {serialNumber}  > New S/N: {newSerialNumber}' },
+      { serialNumber, newSerialNumber }
+      )
+  }
+  return ackMsg
+}
