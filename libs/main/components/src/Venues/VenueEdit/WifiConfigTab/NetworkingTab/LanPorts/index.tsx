@@ -221,7 +221,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const [guiChanged, setGuiChanged] = useState(false)
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
@@ -263,12 +262,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     // eslint-disable-next-line no-console
     console.log('lanPortData:', lanPortData)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
-    if (guiChanged && isEqual(model, apModel)) {
+    if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
         return item.model === apModel
           ? {
             ...item,
-            lanPorts,
+            lanPorts: lan,
             ...(poeMode && { poeMode: poeMode }),
             ...(poeOut !== undefined ? { poeOut } : {}),
             ...(poeOut
@@ -277,7 +276,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           } : item
       }) as VenueLanPorts[]
 
-
+      // eslint-disable-next-line no-console
+      console.log('lanPortOrinData:', lanPortOrinData)
+      // eslint-disable-next-line no-console
+      console.log('newData:', newData)
       // eslint-disable-next-line no-console
       console.log('isDirty:', !isEqual(newData, lanPortOrinData))
       setEditContextData && setEditContextData({
@@ -296,9 +298,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       setSelectedModel(getSelectedModelData(newData, apModel))
 
       customGuiChangedRef.current = false
-      setGuiChanged(false)
     }
-  }, [apPoeMode, apPoeOut, apPoeOutMode, lanPorts, guiChanged])
+  }, [apPoeMode, apPoeOut, apPoeOutMode, lanPorts])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -670,7 +671,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGUIChanged = (fieldName: string) => {
     customGuiChangedRef.current = true
-    setGuiChanged(true)
   }
 
   const handleResetDefaultSettings = () => {
@@ -716,7 +716,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
 
     customGuiChangedRef.current = true
-    setGuiChanged(true)
   }
 
   const isResetLanPort = (payload: VenueLanPorts[]) => {
