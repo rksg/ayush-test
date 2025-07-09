@@ -262,7 +262,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     // eslint-disable-next-line no-console
     console.log('lanPortData:', lanPortData)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
-    if (customGuiChangedRef.current && isEqual(model, apModel)) {
+    const isNotUpdated = lan && apModel
+      ? lanPortData?.some(
+        item => item.model === apModel && !isEqual(item.lanPorts, lan)
+      )
+      : false
+    if ((customGuiChangedRef.current || isNotUpdated) && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
         return item.model === apModel
           ? {
