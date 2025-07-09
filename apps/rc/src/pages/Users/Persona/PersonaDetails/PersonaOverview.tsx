@@ -355,6 +355,11 @@ export function PersonaOverview ({
       </GridRow>
       <GridRow>
         <GridCol col={{ span: 24 }}/>
+        {isIdentityAnalyticsEnabled && (
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <Traffic />
+          </GridCol>
+        )}
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
           <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
             <Card title={$t({ defaultMessage: 'Associated Devices' })}>
@@ -379,14 +384,9 @@ export function PersonaOverview ({
           </Loader>
         </GridCol>
         {isIdentityAnalyticsEnabled && (
-          <>
-            <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-              <Traffic />
-            </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-              <TopApplications />
-            </GridCol>
-          </>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <TopApplications />
+          </GridCol>
         )}
       </GridRow>
       {externalIdentityData !== undefined &&
