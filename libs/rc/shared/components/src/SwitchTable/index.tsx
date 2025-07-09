@@ -296,7 +296,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const renderAckButton = (row: SwitchRow) => {
     if (row.needAck) {
-      const ackMsg = getAckMsg(!!row.needAck, row.serialNumber, row.newSerialNumber || '', $t)
+      const ackMsg = getAckMsg(!!row.needAck, row.serialNumber, row.newSerialNumber || '', true, $t)
       return (
         <Tooltip title={ackMsg}>
           <Button

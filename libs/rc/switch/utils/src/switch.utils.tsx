@@ -985,15 +985,20 @@ export const allMultipleEditableFields = [
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
 
-export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, $t: IntlShape['$t']) => {
+export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, tooltip: boolean, $t: IntlShape['$t']) => {
   let ackMsg = ''
   if (needAck === true) {
-    ackMsg = isEmpty(newSerialNumber) ?
-      $t({ defaultMessage: 'Additional member detected' }) :
-      $t({ defaultMessage:
+    if(tooltip) {
+      ackMsg = isEmpty(newSerialNumber) ?
+        $t({ defaultMessage: 'Additional switch detected:' }) + `<li>${newSerialNumber}</li>` :
+        $t({ defaultMessage: 'Member switch replacement detected.' }) + `<li>Old S/N: ${serialNumber}</li><li>New S/N: ${newSerialNumber}</li>`
+    }else{
+      ackMsg = isEmpty(newSerialNumber) ?
+        $t({ defaultMessage: 'Additional switch detected: {newSerialNumber}' }, { newSerialNumber }) :
+        $t({ defaultMessage:
           'Member switch replacement detected. Old S/N: {serialNumber}  > New S/N: {newSerialNumber}' },
-      { serialNumber, newSerialNumber }
-      )
+        { serialNumber, newSerialNumber })
+    }
   }
   return ackMsg
 }

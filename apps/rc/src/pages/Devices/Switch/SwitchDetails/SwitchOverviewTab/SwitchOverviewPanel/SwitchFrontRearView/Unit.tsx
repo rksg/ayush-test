@@ -304,7 +304,7 @@ export function Unit (props:{
         status: switchMember.deviceStatus,
         isOnline,
         needAck: isEmpty(switchMember.needAck) ? false : switchMember.needAck,
-        ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber || '', $t),
+        ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber || '', false, $t),
         activeStatus: isEmpty(switchMember.unitStatus) ? transformSwitchUnitStatus(defaultStatusEnum) :
           switchMember.unitStatus
       }
