@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SwitchAccessControl } from '../SwitchAccessControl/index'
+import { SwitchAccessControl } from '../SwitchAccessControl'
 
 const AccessControlTabs = () => {
   const { $t } = useIntl()
