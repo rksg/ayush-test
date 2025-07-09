@@ -253,14 +253,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
   useEffect(() => {
     const { model, lan, poeOut, poeOutMode, poeMode } = form?.getFieldsValue(true)
-    // eslint-disable-next-line no-console
-    console.log('change current:', customGuiChangedRef.current)
-    // eslint-disable-next-line no-console
-    console.log('lan:', lan)
-    // eslint-disable-next-line no-console
-    console.log('lanPorts:', lanPorts)
-    // eslint-disable-next-line no-console
-    console.log('lanPortData:', lanPortData)
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChangedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -276,12 +268,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           } : item
       }) as VenueLanPorts[]
 
-      // eslint-disable-next-line no-console
-      console.log('lanPortOrinData:', lanPortOrinData)
-      // eslint-disable-next-line no-console
-      console.log('newData:', newData)
-      // eslint-disable-next-line no-console
-      console.log('isDirty:', !isEqual(newData, lanPortOrinData))
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'networking',
