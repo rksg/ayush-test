@@ -48,8 +48,7 @@ import {
   transformSwitchUnitStatus,
   getAdminPassword,
   SwitchRbacUrlsInfo,
-  SwitchUrlsInfo,
-  StackMember
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
