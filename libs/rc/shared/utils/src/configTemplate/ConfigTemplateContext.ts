@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 
 export type SaveEnforcementConfigFnType = (templateId: string) => Promise<void>
 
-export interface ConfigTemplateContextType {
+interface ConfigTemplateContextType {
   isTemplate: boolean
   setSaveEnforcementConfigFn?: (fn: SaveEnforcementConfigFnType) => void
   saveEnforcementConfig?: SaveEnforcementConfigFnType
