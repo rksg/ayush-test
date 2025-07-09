@@ -235,7 +235,8 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
       <Space size={0} direction='vertical'>
         <Space size={4} split={'-'}>
           <UI.BannerVersionName>{generateVersionName(firmware)}</UI.BannerVersionName>
-          <span>{ formatter(DateFormatEnum.DateFormat)(firmware.releaseDate) } </span>
+          {/* eslint-disable-next-line max-len */}
+          <span>{ formatter(DateFormatEnum.DateFormat)(firmware.releaseDate || firmware.onboardDate) } </span>
         </Space>
         <ExpandableApModelList apModels={apModels} generateLabelWrapper={generateLabelWrapper} />
       </Space>
