@@ -29,6 +29,7 @@ import {
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesVenueQuery,
+  useLazyGetApJwtTokenQuery,
   useLazyImportResultQuery,
   useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
@@ -73,6 +74,7 @@ import { ApsTabContext } from './context'
 import { useExportCsv }  from './useExportCsv'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, defaultApPayload, retriedApIds, transformMeshRole } from '.'
+import { ApCliSession } from '../ApCliSession'
 
 const DefaultSelectedApInfo = {
   serialNumber: '',
@@ -103,6 +105,14 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
 
+  const [getApJwtToken] = useLazyGetApJwtTokenQuery()
+  const [cliModalState, setCliModalOpen] = useState(false)
+  const [cliData, setCliData] = useState({
+    token: '',
+    serialNumber: '',
+    apName: ''
+  })
+  
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -547,6 +557,31 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
   }, {
+    label: $t({ defaultMessage: 'CLI Session' }),
+    scopeKey: [WifiScopes.UPDATE],
+    visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    onClick: async (rows) => {
+      const row = rows[0]
+      let token = ''
+      try {
+        token = (await getApJwtToken({
+          params: {
+            tenantId: params.tenantId,
+            serialNumber: row.serialNumber,
+            venueId: row.venueId
+          }
+        }, true)
+          .unwrap()).id_token || ''
+      } catch (err) {
+        console.log(err) // eslint-disable-line no-console
+      }
+
+      setCliData({ token, apName: row.name || row.serialNumber, serialNumber: row.serialNumber })
+      setTimeout(() => {
+        setCliModalOpen(true)
+      }, 1000)
+    }
+  }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     onClick: async (rows, clearSelection) => {
@@ -725,6 +760,13 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         networkId={params.networkId}
         apInfo={selectedApInfo}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
+      />
+      <ApCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={cliData.serialNumber}
+        jwtToken={cliData.token}
+        apName={cliData.apName}
       />
     </Loader>
   )

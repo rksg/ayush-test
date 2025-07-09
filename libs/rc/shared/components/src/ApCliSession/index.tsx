@@ -19,12 +19,12 @@ export function ApCliSession (props: {
   const { $t } = useIntl()
   const token = props.jwtToken
   // eslint-disable-next-line max-len
-  const url = window.location.origin + '/api/rpv2/rtty/wifi/' + props.serialNumber + '?rid=ce142e2b-d716-4de2-8a9b-048a8162cdf9&token=' + token
+  const url = window.location.origin + '/api/rpv2/rtty/wifi/' + props.serialNumber + '?rid=b31900cc-885a-4fb7-8b2d-b45e9c89e718&token=' + token
   const { setIsModalOpen, modalState, apName } = props
 
   // eslint-disable-next-line max-len
   const bannerMsg = $t({ defaultMessage: 'Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on RUCKUS One interface.' })
-  const title = $t({ defaultMessage: 'CLI Session - {apName}' }, { apName })
+  const title = $t({ defaultMessage: 'CLI Session: {apName}' }, { apName })
 
   const [bounds, setBounds] = useState({
     left: 0,
@@ -126,7 +126,7 @@ export function ApCliSession (props: {
                   height={height-50}
                   width={width}
                   style={{ border: '0px' }}
-                  title={$t({ defaultMessage: 'cli session' })}
+                  title={$t({ defaultMessage: 'CLI Session' })}
                   src={url}/></div>
             </>
           }

@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi }           from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -23,7 +23,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-const params = { tenantId: 't1', serialNumber: 'v1' }
+const params = { tenantId: 't1', venueId: 'u1', serialNumber: 'v1' }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
@@ -76,7 +76,34 @@ describe('ApPageHeader', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
+    const cancelBtn = await within(dialog).findByRole('button', { name: 'Cancel' })
+    expect(cancelBtn).toBeVisible()
+    fireEvent.click(cancelBtn)
+  })
 
+  it('click CLI Session button', async () => {
+    mockServer.resetHandlers()
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApJwtToken.url,
+        (_, res, ctx) => res(ctx.json({id_token: 'token'}))
+      )
+    )
+    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
+
+    await userEvent.click(await screen.findByText('More Actions'))
+    await userEvent.click(await screen.findByText('CLI Session'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/CLI Session/)).toBeVisible()
   })
 
   it('should render correct breadcrumb', async () => {

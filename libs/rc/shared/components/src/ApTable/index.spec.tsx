@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi }  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
   act,
@@ -98,6 +98,10 @@ describe('Aps', () => {
       ),
       rest.get(WifiUrlsInfo.getWifiCapabilities.url,
         (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiRbacUrlsInfo.getApJwtToken.url,
+        (_, res, ctx) => res(ctx.json({id_token: 'token'}))
+      ),
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
         (req, res, ctx) => res(ctx.json(getApGroupsList))
@@ -253,6 +257,24 @@ describe('Aps', () => {
     await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))
 
     expect(mockedUsedNavigate).toHaveBeenCalled()
+  })
+
+  it('Table action bar CLI Session', async () => {
+    render(<Provider><ApTable
+      rowSelection={{
+        type: 'checkbox'
+      }}
+    /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const row = await screen.findByRole('row', { name: /mock-ap-1/i })
+    await within(row).findByRole('checkbox', { checked: false })
+
+    await userEvent.click(row)
+
+    const toolbar = await screen.findByRole('alert')
+    await userEvent.click(await within(toolbar).findByRole('button', { name: 'CLI Session' }))
   })
 
   it.skip('should render with filterables', async () => {
