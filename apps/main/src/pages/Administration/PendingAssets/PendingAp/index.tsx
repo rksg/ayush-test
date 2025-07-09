@@ -7,18 +7,30 @@ import { Button, cssStr, Loader, Table, TableProps }                            
 import { DateFormatEnum, formatter }                                                                                                  from '@acx-ui/formatter'
 import { Sync }                                                                                                                       from '@acx-ui/icons'
 import { useGetApModelsQuery, useGetApProvisionsQuery, useGetApStatusQuery, useHideApProvisionsMutation, useRefreshApStatusMutation } from '@acx-ui/rc/services'
-import { DeviceProvision, HideProvisionsPayload }                                                                                     from '@acx-ui/rc/utils'
+import { DeviceProvision, HideProvisionsPayload, VenueExtended, AddApGroup }                                                          from '@acx-ui/rc/utils'
 import { TimeStamp }                                                                                                                  from '@acx-ui/types'
 import { useTableQuery }                                                                                                              from '@acx-ui/utils'
 
-import { MessageMapping } from '../messageMapping'
+import { ApGroupDrawer }     from '../ApGroupDrawer'
+import { ClaimDeviceDrawer } from '../ClaimDeviceDrawer'
+import { MessageMapping }    from '../messageMapping'
+import { VenueDrawer }       from '../VenueDrawer'
+
 
 export const PendingAp = () => {
   const { $t } = useIntl()
   const params = useParams()
+
+  const tenantId = params.tenantId
+
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
+  const [ claimDrawerVisible, setClaimDrawerVisible ] = useState(false)
+  const [ selectedDevices, setSelectedDevices ] = useState<{ serial: string; model: string }[]>([])
+  const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
+  const [ apGroupDrawerVisible, setApGroupDrawerVisible ] = useState(false)
+  const [ selectedVenueId ] = useState<string | undefined>(undefined)
 
   const { data: apStatus, refetch: refetchApStatus } = useGetApStatusQuery(
     { params },
@@ -30,7 +42,7 @@ export const PendingAp = () => {
 
   const emptyModelFilterMap: { key: string, value: string }[] = []
   const { modelFilterMap } = useGetApModelsQuery({
-    params: { tenantId: params.tenantId },
+    params: { tenantId },
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -76,6 +88,44 @@ export const PendingAp = () => {
 
     autoRefresh()
   }, [apStatus, hasAutoRefreshed])
+
+  // Handle add venue button click
+  const handleAddVenue = () => {
+    setVenueDrawerVisible(true)
+  }
+
+  // Handle venue drawer close
+  const handleVenueDrawerClose = () => {
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle venue creation success
+  const handleVenueCreated = async (venue?: VenueExtended) => {
+    if (venue) {
+      // Optionally select the newly created venue in ClaimDeviceDrawer
+      // This will be handled by the ClaimDeviceDrawer's refetch mechanism
+    }
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle add AP group button click
+  const handleAddApGroup = () => {
+    setApGroupDrawerVisible(true)
+  }
+
+  // Handle AP group drawer close
+  const handleApGroupDrawerClose = () => {
+    setApGroupDrawerVisible(false)
+  }
+
+  // Handle AP group creation success
+  const handleApGroupCreated = async (apGroup?: AddApGroup) => {
+    if (apGroup) {
+      // Optionally select the newly created AP group in ClaimDeviceDrawer
+      // This will be handled by the ClaimDeviceDrawer's refetch mechanism
+    }
+    setApGroupDrawerVisible(false)
+  }
 
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
@@ -129,7 +179,13 @@ export const PendingAp = () => {
   const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
-      onClick: () => {
+      onClick: (selectedRows) => {
+        const devices = selectedRows.map(row => ({
+          serial: row.serialNumber,
+          model: row.model
+        }))
+        setSelectedDevices(devices)
+        setClaimDrawerVisible(true)
       }
     },
     {
@@ -192,6 +248,30 @@ export const PendingAp = () => {
           rowActions?.length > 0 && { type: 'checkbox' }
         }
         rowKey='serialNumber'
+      />
+
+      <ClaimDeviceDrawer
+        visible={claimDrawerVisible}
+        devices={selectedDevices}
+        onClose={() => setClaimDrawerVisible(false)}
+        onAddVenue={handleAddVenue}
+        onAddApGroup={handleAddApGroup}
+      />
+
+      {/* Venue Drawer */}
+      <VenueDrawer
+        open={venueDrawerVisible}
+        onClose={handleVenueDrawerClose}
+        onSuccess={handleVenueCreated}
+      />
+
+      {/* Ap Group Drawer */}
+      <ApGroupDrawer
+        open={apGroupDrawerVisible}
+        onClose={handleApGroupDrawerClose}
+        onSuccess={handleApGroupCreated}
+        venueId={selectedVenueId}
+        tenantId={tenantId}
       />
     </Loader>
   )

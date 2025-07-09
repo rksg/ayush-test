@@ -2,7 +2,7 @@ import React from 'react'
 
 import { rest } from 'msw'
 
-import { DeviceProvisionUrlsInfo }                    from '@acx-ui/rc/utils'
+import { DeviceProvisionUrlsInfo, CommonUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                                   from '@acx-ui/store'
 import { render, fireEvent, waitFor, screen, within } from '@acx-ui/test-utils'
 import { setUserProfile, UserProfile }                from '@acx-ui/user'
@@ -15,11 +15,28 @@ const originalWarn = console.warn
 console.warn = (...args: unknown[]) => {
   const warningMsg =
     'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format'
+  const mswWarningMsg = '[MSW] Warning: captured a request without a matching request handler'
+
   if (typeof args[0] === 'string' &&
-      args[0].includes(warningMsg)) {
+      (args[0].includes(warningMsg) || args[0].includes(mswWarningMsg))) {
     return
   }
   originalWarn(...args)
+}
+
+// eslint-disable-next-line no-console
+const originalError = console.error
+// eslint-disable-next-line no-console
+console.error = (...args: unknown[]) => {
+  const useFormWarning =
+    'Warning: Instance created by `useForm` is not connected to any Form element'
+  const connectionError = 'Error: connect ECONNREFUSED 127.0.0.1:80'
+
+  if (typeof args[0] === 'string' &&
+      (args[0].includes(useFormWarning) || args[0].includes(connectionError))) {
+    return
+  }
+  originalError(...args)
 }
 
 const mockDeviceProvisions = [
@@ -117,6 +134,9 @@ describe('PendingSwitch component', () => {
       }),
       rest.patch(DeviceProvisionUrlsInfo.hideSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockCommonResult))
+      }),
+      rest.post(CommonUrlsInfo.getVenuesList.url, (req, res, ctx) => {
+        return res(ctx.json({ data: [], totalElements: 0 }))
       })
     )
   })

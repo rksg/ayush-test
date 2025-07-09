@@ -7,11 +7,13 @@ import { Button, cssStr, Loader, Table, TableProps }                            
 import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
 import { Sync }                                                                                                                                           from '@acx-ui/icons'
 import { useGetSwitchModelsQuery, useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
-import {  DeviceProvision,  HideProvisionsPayload }                                                                                                       from '@acx-ui/rc/utils'
+import {  DeviceProvision,  HideProvisionsPayload, VenueExtended }                                                                                        from '@acx-ui/rc/utils'
 import { TimeStamp }                                                                                                                                      from '@acx-ui/types'
 import { useTableQuery }                                                                                                                                  from '@acx-ui/utils'
 
-import { MessageMapping } from '../messageMapping'
+import { ClaimDeviceDrawer } from '../ClaimDeviceDrawer'
+import { MessageMapping }    from '../messageMapping'
+import { VenueDrawer }       from '../VenueDrawer'
 
 export const PendingSwitch = () => {
   const { $t } = useIntl()
@@ -19,6 +21,9 @@ export const PendingSwitch = () => {
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
+  const [ claimDrawerVisible, setClaimDrawerVisible ] = useState(false)
+  const [ selectedDevices, setSelectedDevices ] = useState<DeviceProvision[]>([])
+  const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
 
   const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
     { params },
@@ -81,6 +86,25 @@ export const PendingSwitch = () => {
     autoRefresh()
   }, [switchStatus, hasAutoRefreshed])
 
+  // Handle add venue button click
+  const handleAddVenue = () => {
+    setVenueDrawerVisible(true)
+  }
+
+  // Handle venue drawer close
+  const handleVenueDrawerClose = () => {
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle venue creation success
+  const handleVenueCreated = async (venue?: VenueExtended) => {
+    if (venue) {
+      // Optionally select the newly created venue in ClaimDeviceDrawer
+      // This will be handled by the ClaimDeviceDrawer's refetch mechanism
+    }
+    setVenueDrawerVisible(false)
+  }
+
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
       key: 'serialNumber',
@@ -132,7 +156,10 @@ export const PendingSwitch = () => {
   const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
-      onClick: () => {
+      onClick: (selectedRows, clearSelection) => {
+        setSelectedDevices(selectedRows)
+        setClaimDrawerVisible(true)
+        clearSelection()
       }
     },
     {
@@ -195,6 +222,27 @@ export const PendingSwitch = () => {
           rowActions?.length > 0 && { type: 'checkbox' }
         }
         rowKey='serialNumber'
+      />
+
+      <ClaimDeviceDrawer
+        deviceType='switch'
+        devices={selectedDevices.map(device => ({
+          serial: device.serialNumber,
+          model: device.model
+        }))}
+        visible={claimDrawerVisible}
+        onClose={() => {
+          setClaimDrawerVisible(false)
+          setSelectedDevices([])
+        }}
+        onAddVenue={handleAddVenue}
+      />
+
+      {/* Venue Drawer */}
+      <VenueDrawer
+        open={venueDrawerVisible}
+        onClose={handleVenueDrawerClose}
+        onSuccess={handleVenueCreated}
       />
     </Loader>
   )
