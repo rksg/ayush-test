@@ -986,12 +986,12 @@ export const allMultipleEditableFields = [
 ]
 
 export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, tooltip: boolean, $t: IntlShape['$t']) => {
-  let ackMsg = ''
+  let ackMsg: React.ReactNode = ''
   if (needAck === true) {
     if(tooltip) {
       ackMsg = isEmpty(newSerialNumber) ?
-        $t({ defaultMessage: 'Additional switch detected:' }) + `<li>${newSerialNumber}</li>` :
-        $t({ defaultMessage: 'Member switch replacement detected.' }) + `<li>Old S/N: ${serialNumber}</li><li>New S/N: ${newSerialNumber}</li>`
+        <>{$t({ defaultMessage: 'Additional switch detected:' })}<li>{newSerialNumber}</li></> :
+        <>{$t({ defaultMessage: 'Member switch replacement detected.' })}<li>Old S/N: {serialNumber}</li><li>New S/N: {newSerialNumber}</li></>
     }else{
       ackMsg = isEmpty(newSerialNumber) ?
         $t({ defaultMessage: 'Additional switch detected: {newSerialNumber}' }, { newSerialNumber }) :

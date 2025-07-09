@@ -24,7 +24,8 @@ import {
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
-  DownloadOutlined
+  DownloadOutlined,
+  InformationOutlined
 } from '@acx-ui/icons'
 import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
@@ -47,7 +48,8 @@ import {
   transformSwitchUnitStatus,
   getAdminPassword,
   SwitchRbacUrlsInfo,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  StackMember
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
@@ -294,13 +296,36 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     })
   }
 
+  const renderAckTooltip = (rows: SwitchRow[], row: SwitchRow) => {
+    if(row.isStack){
+      const showTooltip = rows.filter(r => r.activeSerial === row.activeSerial)[0]?.children?.map(
+        (r) => (r as { needAck: boolean }).needAck === true).includes(true)
+
+      if (showTooltip) {
+        return (
+          <Tooltip placement='top'
+            children={<InformationOutlined style={{
+              marginBottom: '-4px',
+              overflow: 'visible',
+              marginLeft: '4px'
+            }} />}
+            title={$t({ // eslint-disable-next-line max-len
+              defaultMessage: 'Additional switch(es) detected in the stack. Click ACK link below to confirm or if it is not expected, remove the member from the stack by physically disconnecting the stack link(s) to it.' })}
+          />
+        )
+      }
+    }
+
+    return null
+  }
+
   const renderAckButton = (row: SwitchRow) => {
     if (row.needAck) {
       const ackMsg = getAckMsg(!!row.needAck, row.serialNumber, row.newSerialNumber || '', true, $t)
       return (
         <Tooltip title={ackMsg}>
           <Button
-            style={{ marginLeft: '10px' }}
+            style={{ marginLeft: '10px', paddingTop: '5px' }}
             type='link'
             onClick={() => onClickAck(row)}>
             {$t({ defaultMessage: 'ACK' })}
@@ -332,6 +357,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             style={{ lineHeight: '20px' }}
           >
             {searchable ? highlightFn(name) : name}
+            {renderAckTooltip(tableData, row)}
           </TenantLink> :
           <>
             {`${name} (${getStackMemberStatus(row.unitStatus || '', true)})`}
