@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { venueApi }        from '@acx-ui/rc/services'
-import { SwitchRbacUrlsInfo, SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { venueApi }                           from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   act,
   fireEvent,

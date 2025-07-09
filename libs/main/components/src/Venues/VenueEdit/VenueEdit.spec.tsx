@@ -15,6 +15,7 @@ import {
   SwitchUrlsInfo,
   SyslogUrls,
   WifiRbacUrlsInfo,
+  WifiConfigUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
@@ -41,7 +42,6 @@ import {
 } from '../__tests__/fixtures'
 
 import { VenueEdit } from './index'
-import { WifiConfigUrlsInfo } from 'libs/rc/shared/utils/src/urls/wifiConfigUrls'
 
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
