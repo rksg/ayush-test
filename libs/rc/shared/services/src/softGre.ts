@@ -3,7 +3,6 @@ import _                     from 'lodash'
 
 import { CommonResult,
   SoftGreViewData,
-  TableResult,
   SoftGreUrls,
   SoftGre,
   CommonUrlsInfo,
@@ -20,9 +19,9 @@ import { CommonResult,
   IpsecUrls,
   IpsecViewData
 } from '@acx-ui/rc/utils'
-import { baseSoftGreApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseSoftGreApi }                 from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { TableResult, createHttpRequest } from '@acx-ui/utils'
 
 import consolidateActivations             from './softGreUtils'
 import { handleCallbackWhenActivityDone } from './utils'
@@ -295,7 +294,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             || i.apActivations.find(a => a.venueId === venueId)
             || i.venueActivations.find(a => a.venueId === venueId))
           if (ipsec) {
-            console.log('ipsecInSoftGreAPI:',ipsec) // eslint-disable-line no-console
             bindSoftGreId = ipsec.activations
               .find(a => a.venueId === venueId)?.softGreProfileId || ''
             if (bindSoftGreId.length === 0) {

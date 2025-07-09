@@ -19,9 +19,9 @@ import {
   RogueApConstant,
   RogueAPDetectionActionTypes,
   servicePolicyNameRegExp,
-  TableResult,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 

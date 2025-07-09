@@ -15,19 +15,16 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DPSKDeviceInfo,
-  FILTER,
-  SEARCH,
   NewDpskPassphrase,
   MacRegistrationFilterRegExp,
-  useTableQuery,
   sortProp,
   defaultSort,
   dateSort,
   filterDpskOperationsByPermission,
   DpskUrls
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }  from '@acx-ui/utils'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { FILTER, SEARCH, useTableQuery, getOpsApi } from '@acx-ui/utils'
 
 export interface ManageDeviceDrawerProps {
   visible: boolean;

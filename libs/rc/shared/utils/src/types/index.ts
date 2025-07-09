@@ -1,7 +1,5 @@
 import { defineMessage } from 'react-intl'
 
-import { TimeStamp } from '@acx-ui/types'
-
 import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
@@ -49,6 +47,7 @@ export * from './configTemplate'
 export * from './topology'
 export * from './mDnsFencingServie'
 export * from './ruckusAi'
+export * from './deviceProvision'
 
 export interface CommonResult {
   requestId: string
@@ -609,16 +608,4 @@ export const RWGStatusMap = {
   [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
   [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
   [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
-}
-
-export interface PendingAsset {
-  serial: string,
-  model: string,
-  shipDate: string,
-  createdDate: string,
-  status: string
-}
-
-export interface PendingAssetRefreshAt {
-  refreshedAt: TimeStamp
 }

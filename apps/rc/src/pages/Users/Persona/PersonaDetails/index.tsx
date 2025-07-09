@@ -19,14 +19,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MacRegistration,
-  PersonaUrls,
-  TableQuery,
-  useTableQuery
+  PersonaUrls
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                           from '@acx-ui/types'
 import { filterByOperations, getShowWithoutRbacCheckKey, hasCrossVenuesPermission } from '@acx-ui/user'
-import { DateRange, getOpsApi }                                                     from '@acx-ui/utils'
+import { DateRange, getOpsApi, TableQuery, useTableQuery }                          from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -306,6 +304,7 @@ function PersonaDetails () {
         return <PersonaOverview
           personaData={personaData}
           personaGroupData={personaGroupData}
+          isIdentityAnalyticsEnabled={isIdentityAnalyticsEnabled}
         />
     }
   }

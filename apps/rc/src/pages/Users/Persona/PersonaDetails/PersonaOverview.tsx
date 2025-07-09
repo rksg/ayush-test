@@ -14,6 +14,8 @@ import {
   DonutChart,
   GridCol,
   GridRow,
+  Loader,
+  NoData,
   Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -49,12 +51,19 @@ const identityClientDefaultSorter = {
   sortOrder: 'ASC'
 }
 
-export function PersonaOverview (props:
-   { personaData?: Persona, personaGroupData?: PersonaGroup }
-) {
+interface PersonaOverviewProps {
+  personaData?: Persona
+  personaGroupData?: PersonaGroup
+  isIdentityAnalyticsEnabled?: boolean
+}
+
+export function PersonaOverview ({
+  personaData,
+  personaGroupData,
+  isIdentityAnalyticsEnabled
+}: PersonaOverviewProps) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
-  const { personaData, personaGroupData } = props
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
 
@@ -62,7 +71,6 @@ export function PersonaOverview (props:
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
-  const isIdentityAnalyticsEnabled = useIsSplitOn(Features.IDENTITY_ANALYTICS_TOGGLE)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)
@@ -348,25 +356,27 @@ export function PersonaOverview (props:
       <GridRow>
         <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-          <Card
-            title={$t({ defaultMessage: 'Associated Devices' })}>
-            <AutoSizer>
-              {({ width, height }) => (
-                <DonutChart
-                  style={{ width, height }}
-                  title={$t({ defaultMessage: 'Wi-Fi' })}
-                  showLoading={isClientsLoading || isClientsFetching}
-                  data={[{
-                    value: identityDeviceCount,
-                    name: $t({ defaultMessage: 'Wi-Fi' }),
-                    color: identityDeviceCount > 0
-                      ? cssStr('--acx-semantics-green-50')
-                      : cssStr('--acx-neutrals-50')
-                  }]}
-                />
-              )}
-            </AutoSizer>
-          </Card>
+          <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
+            <Card title={$t({ defaultMessage: 'Associated Devices' })}>
+              <AutoSizer>
+                {({ width, height }) =>
+                  identityDeviceCount > 0 ? (
+                    <DonutChart
+                      style={{ width, height }}
+                      title={$t({ defaultMessage: 'Wi-Fi' })}
+                      data={[{
+                        value: identityDeviceCount,
+                        name: $t({ defaultMessage: 'Wi-Fi' }),
+                        color: cssStr('--acx-semantics-green-50')
+                      }]}
+                    />
+                  ) : (
+                    <NoData />
+                  )
+                }
+              </AutoSizer>
+            </Card>
+          </Loader>
         </GridCol>
         {isIdentityAnalyticsEnabled && (
           <GridCol col={{ span: 12 }} style={{ height: '190px' }}>

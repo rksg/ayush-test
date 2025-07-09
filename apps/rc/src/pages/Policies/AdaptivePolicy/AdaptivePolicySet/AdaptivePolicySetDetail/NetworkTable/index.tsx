@@ -13,8 +13,9 @@ import {
   useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, Network, NetworkTypeEnum, NetworkType } from '@acx-ui/rc/utils'
-import { TenantLink }                                           from '@acx-ui/react-router-dom'
+import { Network, NetworkTypeEnum, NetworkType } from '@acx-ui/rc/utils'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { useTableQuery }                         from '@acx-ui/utils'
 
 function useColumns () {
   const { $t } = useIntl()
