@@ -24,7 +24,8 @@ import {
   isInterfaceInVRRPSetting,
   validateEdgeGateway,
   getMergedLagTableDataFromLagForm,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }                      from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -387,6 +388,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
+            ipMode: {
+              // ONLY do ip mode sync checking when add new LAG
+              // cannot do this check on edit LAG because user may change ip mode, which will trigger this check in LAG table(across all LAGs)
+              rules: isDualWanEnabled && !isEditMode
+                ? [{ validator: () => edgeWanSyncIpModeValidator(portList, updatedLagList) }]
+                : []
+            },
             natStartIp: {
               rules: isClusterWizard && get(formFieldsProps, 'natStartIp')
                 ? [{ validator: natPoolClusterLevelValidator }]

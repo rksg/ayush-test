@@ -1,8 +1,8 @@
 import { ReactNode, useState } from 'react'
 
-import { Col, Row }            from 'antd'
-import _, { get, union, uniq } from 'lodash'
-import { useIntl }             from 'react-intl'
+import { Col, Form, Row }             from 'antd'
+import _, { get, isNil, union, uniq } from 'lodash'
+import { useIntl }                    from 'react-intl'
 
 import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import { Features }                                    from '@acx-ui/feature-toggle'
@@ -21,7 +21,9 @@ import {
   getEdgePortIpModeString,
   isInterfaceInVRRPSetting,
   sortProp,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  edgeWanSyncIpModeValidator,
+  getEdgeWanInterfaces
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -70,6 +72,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const transToTableData = (edgeLagList?: EdgeLag[], edgeLagStatusList?: EdgeLagStatus[]) => {
     return edgeLagList?.map(item => ({
@@ -283,6 +286,23 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
           type: 'radio'
         }}
         rowKey='id'
+      />
+      <Form.Item
+        name='multiWanIpModeCheck'
+        rules={[
+          ...(isEdgeDualWanEnabled
+            ? [{ validator: () => {
+              // only check when all WAN is LAG
+              const allWans = getEdgeWanInterfaces(portList, lagList)
+              // eslint-disable-next-line max-len
+              const isAllLagWan = allWans.every((wan: EdgePort | EdgeLag) => !isNil((wan as EdgeLag).lagEnabled))
+              if (!isAllLagWan) return Promise.resolve()
+
+              return edgeWanSyncIpModeValidator(portList ?? [], lagList ?? [])
+            } }]
+            : [])
+        ]}
+        children={<></>}
       />
       <LagDrawer
         clusterId={clusterId}
