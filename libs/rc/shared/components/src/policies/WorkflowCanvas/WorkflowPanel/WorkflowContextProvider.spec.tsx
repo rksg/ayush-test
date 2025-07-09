@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import userEvent                        from '@testing-library/user-event'
 import { Switch }                       from 'antd'
@@ -9,13 +9,11 @@ import { ActionType }     from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { mockInitialEdges, mockInitialNodes }          from './__tests__/fixtures'
+import { mockInitialNodes }                            from './__tests__/fixtures'
 import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextProvider'
 
 jest.mock('reactflow', () => ({
-  ...jest.requireActual('reactflow'),
-  useNodes: () => mockInitialNodes,
-  useEdges: () => mockInitialEdges
+  ...jest.requireActual('reactflow')
 }))
 
 describe('WorkflowContextProvider', () => {
@@ -101,6 +99,12 @@ describe('WorkflowContextProvider', () => {
   it('should handle ExistingDependencies correctly', async () => {
     const TestContextComponent = () => {
       const { workflowId, nodeState } = useWorkflowContext()
+
+      useEffect(() => {
+        const mockedNodesMap = new Map()
+        mockInitialNodes.forEach(n => mockedNodesMap.set(n.id, n))
+        nodeState.setNodeMap(mockedNodesMap)
+      }, [])
 
       const triggerSelectedNode = () => {
         if (mockInitialNodes[1]) {
