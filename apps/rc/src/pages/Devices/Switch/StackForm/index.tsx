@@ -56,7 +56,8 @@ import {
 import {
   getSwitchModel,
   isSameModelFamily,
-  isOperationalSwitch
+  isOperationalSwitch,
+  getStackUnitsMinLimitationV1002
 } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
@@ -73,7 +74,6 @@ import {
   checkVersionAtLeast09010h,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002,
   getSwitchFwGroupVersionV1002,
   SwitchFirmwareModelGroup,
   createSwitchSerialPattern,
