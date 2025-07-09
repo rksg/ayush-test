@@ -161,7 +161,6 @@ export enum Features {
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
-  WIFI_EDA_WIFI7_320MHZ = 'removable-ff',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'removable-ff',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
