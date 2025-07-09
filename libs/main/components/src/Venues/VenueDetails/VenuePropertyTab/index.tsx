@@ -161,7 +161,6 @@ export function VenuePropertyTab () {
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
     defaultPayload: {} as {
-      filters: { name: string|undefined }
     },
     pagination: { settingsId }
   })
@@ -473,6 +472,8 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
       searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
         return (
           isMultipleIdentityUnits ? <TenantLink
@@ -486,6 +487,8 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       filterMultiple: false,
+      sorter: true,
+      defaultSortOrder: 'ascend',
       filterable: PropertyUnitStatusOptions,
       render: (_, row) => row.status === PropertyUnitStatus.ENABLED
         ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Suspended' })
@@ -551,22 +554,32 @@ export function VenuePropertyTab () {
     ...isMultipleIdentityUnits ? [{
       key: 'identityCount',
       title: $t({ defaultMessage: 'Identities' }),
-      dataIndex: ['identityCount']
+      dataIndex: ['identityCount'],
+      sorter: true
     }] : [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
-      dataIndex: ['resident', 'name']
+      dataIndex: ['resident', 'name'],
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     },
     {
       key: 'residentEmail',
       title: $t({ defaultMessage: 'Resident Email' }),
-      dataIndex: ['resident', 'email']
+      dataIndex: ['resident', 'email'],
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     },
     {
-      key: 'residentPhone',
+      key: 'residentPhoneNumber',
       title: $t({ defaultMessage: 'Resident Phone' }),
-      dataIndex: ['resident', 'phoneNumber']
+      dataIndex: ['resident', 'phoneNumber'],
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     }
   ]
 
@@ -574,12 +587,11 @@ export function VenuePropertyTab () {
     const payload = queryUnitList.payload
 
     const customPayload = {
+      keyword: customSearch?.searchString ?? '',
       filters: {
-        name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
         status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
       }
     }
-
     queryUnitList.setPayload({
       ...payload,
       ...customPayload
