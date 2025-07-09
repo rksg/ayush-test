@@ -74,7 +74,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
-      const venueSdLan = formValues.sdLan.newProfileId ? formValues.sdLan.newProfile : undefined
+      const venueSdLan = formValues.sdLan.newProfileId && isEdgeSdLanSelectionDrawerReady
+        ? formValues.sdLan.newProfile
+        : initialVenueSdLanInfo
 
       await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan })
     } catch (error) {
