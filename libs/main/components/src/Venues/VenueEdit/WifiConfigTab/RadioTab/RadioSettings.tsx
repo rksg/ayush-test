@@ -74,7 +74,8 @@ import {
   VenueDefaultRegulatoryChannels,
   useConfigTemplate,
   ScanMethodEnum,
-  useSupportedApModelTooltip
+  useSupportedApModelTooltip,
+  Channel50Enum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -441,7 +442,51 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
+  const correctedLowerChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
+    if (!channelFrom5G) {
+      return []
+    }
+
+    const channelFrom5GFiltered = channelFrom5G.map(Number).filter(n => n < 100)
+    return channelFrom5GFiltered.map(n => n.toString())
+  }
+
+  const correctedUpperChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
+    if (!channelFrom5G) {
+      return []
+    }
+
+    const channelFrom5GFiltered = channelFrom5G.map(Number).filter(n => n >= 100)
+    return channelFrom5GFiltered.map(n => n.toString())
+  }
+
+  const syncLower5G = (checkStatus: boolean) => {
+    const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
+    if (checkStatus) {
+      const radio5GData = radioData.radioParams50G
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G'], {
+        ...radio5GData,
+        allowedIndoorChannels: correctedLowerChannels(radio5GData.allowedIndoorChannels || radioData.radioParamsDual5G?.radioParamsLower5G?.allowedIndoorChannels),
+        allowedOutdoorChannels: correctedLowerChannels(radio5GData.allowedOutdoorChannels || radioData.radioParamsDual5G?.radioParamsLower5G?.allowedOutdoorChannels)
+      })
+    }
+  }
+
+  const syncUpper5G = (checkStatus: boolean) => {
+    const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
+    if (checkStatus) {
+      const radio5GData = radioData.radioParams50G
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G'], {
+        ...radio5GData,
+        allowedIndoorChannels: correctedUpperChannels(radio5GData.allowedIndoorChannels || radioData.radioParamsDual5G?.radioParamsUpper5G?.allowedIndoorChannels),
+        allowedOutdoorChannels: correctedUpperChannels(radio5GData.allowedOutdoorChannels || radioData.radioParamsDual5G?.radioParamsUpper5G?.allowedOutdoorChannels)
+      })
+    }
+  }
+
   const onTabChange = (tab: string) => {
+    syncLower5G(isLower5gInherit)
+    syncUpper5G(isUpper5gInherit)
     setCurrentTab(tab)
   }
 
@@ -454,10 +499,12 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
 
   const onLower5gTypeChange = (e: RadioChangeEvent) => {
     setIsLower5gInherit(e.target.value)
+    syncLower5G(e.target.value)
   }
 
   const onUpper5gTypeChange = (e: RadioChangeEvent) => {
     setIsUpper5gInherit(e.target.value)
+    syncUpper5G(e.target.value)
   }
 
   const update5gData = (formData: VenueRadioCustomization) => {
