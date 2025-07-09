@@ -4,6 +4,13 @@ import { DateRange }         from '@acx-ui/utils'
 
 import { api } from './services'
 
+const payLoad = {
+  startDate: '2025-07-06T15:12:00+08:00',
+  endDate: '2025-07-07T15:12:00+08:00',
+  range: DateRange.last1Hour,
+  filter: {}
+}
+
 describe('IdentityOverview services', () => {
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -30,8 +37,8 @@ describe('IdentityOverview services', () => {
                 12
               ],
               clientThroughputSLA: [
-                1,
-                1
+                3,
+                5
               ]
             },
             {
@@ -53,12 +60,9 @@ describe('IdentityOverview services', () => {
   describe('useIdentityHealthQuery', () => {
     it('should return correct data', async () => {
       mockGraphqlQuery(dataApiURL, 'IdentityHealth', expectedResult)
-      const { status, data, error } = await store.dispatch(api.endpoints.IdentityHealth.initiate({
-        startDate: '025-07-06T15:12:00+08:00',
-        endDate: '2025-07-07T15:12:00+08:00',
-        range: DateRange.last1Hour,
-        filter: {}
-      }))
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.IdentityHealth.initiate(payLoad)
+      )
 
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult.data.network.hierarchyNode.health)
@@ -66,15 +70,12 @@ describe('IdentityOverview services', () => {
     })
 
     it('should handle error', async () => {
-      mockGraphqlQuery(dataApiURL, 'Traffic', {
+      mockGraphqlQuery(dataApiURL, 'IdentityHealth', {
         error: new Error('something went wrong!')
       })
-      const { status, data, error } = await store.dispatch(api.endpoints.IdentityHealth.initiate({
-        startDate: '2021-01-01T00:00:00+08:00',
-        endDate: '2021-01-01T01:00:00+08:00',
-        range: DateRange.last1Hour,
-        filter: {}
-      }))
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.IdentityHealth.initiate(payLoad)
+      )
 
       expect(status).toBe('rejected')
       expect(data).toBeUndefined()
