@@ -29,6 +29,7 @@ export const SubInterfaces = () => {
   const [currentTab, setCurrentTab] = useState('')
   const {
     portData,
+    lagData,
     portStatus,
     lagStatus,
     subInterfaceData,
@@ -99,6 +100,10 @@ export const SubInterfaces = () => {
                         mac={item.mac}
                         portId={portId}
                         isSupportAccessPort={isSupportAccessPort}
+                        originalInterfaceData={{
+                          portSettings: portData,
+                          lagSettings: lagData
+                        }}
                         data={
                           subInterfaceData?.find(subInterfaceInfo =>
                             (subInterfaceInfo as PortSubInterface).portId === portId)?.subInterfaces
@@ -123,6 +128,10 @@ export const SubInterfaces = () => {
                         mac={item.mac ?? ''}
                         lagId={item.lagId}
                         isSupportAccessPort={isSupportAccessPort}
+                        originalInterfaceData={{
+                          portSettings: portData,
+                          lagSettings: lagData
+                        }}
                         data={
                           subInterfaceData?.find(subInterfaceInfo =>
                             (subInterfaceInfo as LagSubInterface).lagId === item.lagId

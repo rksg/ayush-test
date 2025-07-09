@@ -38,7 +38,6 @@ import {
   useEnhanceNetworkVenueTableV2Query
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkSaveData,
   NetworkVenue,
   Venue,
@@ -55,7 +54,6 @@ import {
   VLANPoolViewModelType,
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo,
   ConfigTemplateType
@@ -68,7 +66,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
+import { useTableQuery, getOpsApi, transformToCityListOptions, TableResult } from '@acx-ui/utils'
 
 import { useEnforcedStatus }                from '../../configTemplates'
 import {

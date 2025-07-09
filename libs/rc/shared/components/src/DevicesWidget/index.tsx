@@ -366,7 +366,7 @@ export function DevicesWidgetv2 (props: {
                     : <UI.LinkContainer
                       key='iotController-linkContainer'
                       style={{ height: (height/2) - (10 * (numRow - 1)) }}>
-                      {!isCustomRole && filterByAccess([
+                      {filterByAccess([
                         <TenantLink to={'/devices/iotController/add'}
                           rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
                           {$t({ defaultMessage: 'Add IoT Controller' })}

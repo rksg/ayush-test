@@ -672,7 +672,7 @@ describe('DateTimePicker', () => {
     await user.click(screen.getByTestId('other'))
     expect(await screen.findByPlaceholderText('Select date')).not.toHaveFocus()
   })
-  it.skip('should handle same date apply correctly', async () => {
+  it('should handle same date apply correctly', async () => {
     const mockedInitialDate = moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm')
     const mockApply = jest.fn()
     const mockDisableHours = jest.fn()

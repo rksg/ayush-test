@@ -5,7 +5,7 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
@@ -26,7 +26,8 @@ import {
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery,
   useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
   useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery,
-  useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery
+  useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery,
+  useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                                       from '@acx-ui/types'
@@ -77,7 +78,6 @@ function useUnifiedServiceTotalCountMap (
 } {
   const params = useParams()
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
@@ -95,10 +95,10 @@ function useUnifiedServiceTotalCountMap (
     [PolicyType.ROGUE_AP_DETECTION]: useEnhancedRoguePoliciesQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.ROGUE_AP_DETECTION) }),
     [PolicyType.SYSLOG]: useSyslogPolicyListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.SYSLOG) }),
     [PolicyType.VLAN_POOL]: useGetVLANPoolPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.VLAN_POOL) }),
-    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac, isSNMPv3PassphraseOn }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
+    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
     [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: !typeSet.has(PolicyType.TUNNEL_PROFILE) }),
     [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: !typeSet.has(PolicyType.CONNECTION_METERING) }),
-    [PolicyType.ADAPTIVE_POLICY]: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: !typeSet.has(PolicyType.ADAPTIVE_POLICY) }),
+    [PolicyType.ADAPTIVE_POLICY_PROFILE]: useAdaptivePolicyTotalCount( { ...params, excludeContent: 'true' }, !typeSet.has(PolicyType.ADAPTIVE_POLICY_PROFILE)),
     [PolicyType.LBS_SERVER_PROFILE]: useGetLbsServerProfileListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.LBS_SERVER_PROFILE) }),
     [PolicyType.WORKFLOW]: useSearchInProgressWorkflowListQuery({ params: { ...params, excludeContent: 'true' } }, { skip: !typeSet.has(PolicyType.WORKFLOW) }),
     [PolicyType.CERTIFICATE_PROFILE]: useCertificateTotalCount(params, !typeSet.has(PolicyType.CERTIFICATE_PROFILE)),
@@ -331,5 +331,23 @@ function useCertificateTotalCount (params: Readonly<Params<string>>, isDisabled?
         + Number(deviceCertData?.totalCount ?? 0) + Number(serverCertData?.totalCount ?? 0)
     },
     isFetching: certTemplateFetching || caFetching || deviceCertFetching || serverCertFetching
+  }
+}
+
+function useAdaptivePolicyTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
+
+  const { data: adaptivePolicyData, isFetching: adaptivePolicyFetching } =
+    useAdaptivePolicyListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: adaptivePolicySetData, isFetching: adaptivePolicySetFetching } =
+    useAdaptivePolicySetListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  const { data: attributeGroupData, isFetching: attributeGroupFetching } =
+    useRadiusAttributeGroupListByQueryQuery({ params, payload: {} }, { skip: isDisabled })
+
+  return {
+    data: { totalCount: Number(adaptivePolicyData?.totalCount ?? 0) + Number(adaptivePolicySetData?.totalCount ?? 0)
+        + Number(attributeGroupData?.totalCount ?? 0) },
+    isFetching: adaptivePolicyFetching || adaptivePolicySetFetching || attributeGroupFetching
   }
 }

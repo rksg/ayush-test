@@ -1,6 +1,6 @@
 import { ColumnType, TableProps } from '@acx-ui/components'
-import { TableQuery }             from '@acx-ui/rc/utils'
 import { RequestPayload }         from '@acx-ui/types'
+import { TableQuery }             from '@acx-ui/utils'
 
 export interface ApGroupTableProps<T>
   extends Omit<TableProps<T>, 'columns'> {

@@ -1,4 +1,4 @@
-import { TableChangePayload } from '../../useTableQuery'
+import { TableChangePayload } from '@acx-ui/utils'
 
 import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
 
