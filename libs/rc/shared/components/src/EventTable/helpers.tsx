@@ -103,8 +103,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   if (!entityTypes.includes(entity)) return name
 
   const existKey = `is${_.upperFirst(identifyExistKey(entity))}Exists` as EntityExistsKey
-  //const exists = data[existKey as keyof typeof data]
-  const exists = true
+  const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
     title={<FormattedMessage defaultMessage='Not available' />}
