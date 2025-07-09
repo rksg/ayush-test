@@ -22,7 +22,7 @@ export const getTruncatedLegendFormatter = (
     const getCharWidth = (width: number) => {
       if (width > 200) return 9
       if (width > 170) return 12
-      return 16
+      return 17
     }
 
     const maxLegendChars = Math.floor(legendWidth / getCharWidth(legendWidth))

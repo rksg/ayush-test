@@ -299,7 +299,7 @@ export function DonutChart ({
       orient: 'vertical',
       icon: 'circle',
       selectedMode: !!props.onLegendClick,
-      itemGap: props.size === 'x-large'? 16 : 4,
+      itemGap: props.legendFormatter ? 8 : props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {

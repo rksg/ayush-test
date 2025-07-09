@@ -3931,12 +3931,12 @@ exports[`TopApplications should render correctly 1`] = `
                           32 MB
                         </text>
                         <path
-                          d="M-5 -5l45 0l0 206l-45 0Z"
+                          d="M-5 -5l45 0l0 242l-45 0Z"
                           fill="rgb(0,0,0)"
                           fill-opacity="0"
                           stroke="#ccc"
                           stroke-width="0"
-                          transform="translate(645 302)"
+                          transform="translate(645 284)"
                         />
                         <path
                           d="M8 4A4 4 0 1 1 8 3.9996"
@@ -3946,24 +3946,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                         />
                         <path
                           d="M13 -4l13 0l0 16l-13 0Z"
                           fill="none"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                         />
                         <path
                           d="M13 3.5l8 0l0 1l-8 0Z"
                           fill="none"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                           x="13"
                           y="4"
                         >
@@ -3974,7 +3974,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                           x="21"
                           xml:space="preserve"
                           y="4"
@@ -3984,14 +3984,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M22 3.5l4 0l0 1l-4 0Z"
                           fill="none"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 306)"
+                          transform="translate(645 288)"
                           x="22"
                           xml:space="preserve"
                           y="4"
@@ -4006,24 +4006,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                         />
                         <path
                           d="M13 -4l21 0l0 16l-21 0Z"
                           fill="none"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                         />
                         <path
                           d="M13 3.5l16 0l0 1l-16 0Z"
                           fill="none"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                           x="13"
                           xml:space="preserve"
                           y="4"
@@ -4035,7 +4035,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                           x="29"
                           xml:space="preserve"
                           y="4"
@@ -4045,14 +4045,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M30 3.5l4 0l0 1l-4 0Z"
                           fill="none"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 326)"
+                          transform="translate(645 312)"
                           x="30"
                           xml:space="preserve"
                           y="4"
@@ -4067,24 +4067,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                         />
                         <path
                           d="M13 -4l22 0l0 16l-22 0Z"
                           fill="none"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                         />
                         <path
                           d="M13 3.5l14 0l0 1l-14 0Z"
                           fill="none"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                           x="13"
                           xml:space="preserve"
                           y="4"
@@ -4096,7 +4096,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                           x="27"
                           xml:space="preserve"
                           y="4"
@@ -4106,14 +4106,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M28 3.5l7 0l0 1l-7 0Z"
                           fill="none"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 346)"
+                          transform="translate(645 336)"
                           x="28"
                           xml:space="preserve"
                           y="4"
@@ -4128,24 +4128,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                         />
                         <path
                           d="M13 -4l15 0l0 16l-15 0Z"
                           fill="none"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                         />
                         <path
                           d="M13 3.5l8 0l0 1l-8 0Z"
                           fill="none"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                           x="13"
                           y="4"
                         >
@@ -4156,7 +4156,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                           x="21"
                           xml:space="preserve"
                           y="4"
@@ -4166,14 +4166,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M22 3.5l6 0l0 1l-6 0Z"
                           fill="none"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 366)"
+                          transform="translate(645 360)"
                           x="22"
                           xml:space="preserve"
                           y="4"
@@ -4188,24 +4188,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                         />
                         <path
                           d="M13 -4l10 0l0 16l-10 0Z"
                           fill="none"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                         />
                         <path
                           d="M13 3.5l5 0l0 1l-5 0Z"
                           fill="none"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                           x="13"
                           y="4"
                         >
@@ -4216,7 +4216,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                           x="18"
                           xml:space="preserve"
                           y="4"
@@ -4226,14 +4226,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M19 3.5l4 0l0 1l-4 0Z"
                           fill="none"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 386)"
+                          transform="translate(645 384)"
                           x="19"
                           xml:space="preserve"
                           y="4"
@@ -4248,24 +4248,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                         />
                         <path
                           d="M13 -4l13 0l0 16l-13 0Z"
                           fill="none"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                         />
                         <path
                           d="M13 3.5l6 0l0 1l-6 0Z"
                           fill="none"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                           x="13"
                           y="4"
                         >
@@ -4276,7 +4276,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                           x="19"
                           xml:space="preserve"
                           y="4"
@@ -4286,14 +4286,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M20 3.5l6 0l0 1l-6 0Z"
                           fill="none"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 406)"
+                          transform="translate(645 408)"
                           x="20"
                           xml:space="preserve"
                           y="4"
@@ -4308,24 +4308,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                         />
                         <path
                           d="M13 -4l16 0l0 16l-16 0Z"
                           fill="none"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                         />
                         <path
                           d="M13 3.5l9 0l0 1l-9 0Z"
                           fill="none"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                           x="13"
                           y="4"
                         >
@@ -4336,7 +4336,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                           x="22"
                           xml:space="preserve"
                           y="4"
@@ -4346,14 +4346,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M23 3.5l6 0l0 1l-6 0Z"
                           fill="none"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 426)"
+                          transform="translate(645 432)"
                           x="23"
                           xml:space="preserve"
                           y="4"
@@ -4368,24 +4368,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                         />
                         <path
                           d="M13 -4l15 0l0 16l-15 0Z"
                           fill="none"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                         />
                         <path
                           d="M13 3.5l8 0l0 1l-8 0Z"
                           fill="none"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                           x="13"
                           y="4"
                         >
@@ -4396,7 +4396,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                           x="21"
                           xml:space="preserve"
                           y="4"
@@ -4406,14 +4406,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M22 3.5l6 0l0 1l-6 0Z"
                           fill="none"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 446)"
+                          transform="translate(645 456)"
                           x="22"
                           xml:space="preserve"
                           y="4"
@@ -4428,24 +4428,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                         />
                         <path
                           d="M13 -4l15 0l0 16l-15 0Z"
                           fill="none"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                         />
                         <path
                           d="M13 3.5l9 0l0 1l-9 0Z"
                           fill="none"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                           x="13"
                           y="4"
                         >
@@ -4456,7 +4456,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                           x="22"
                           xml:space="preserve"
                           y="4"
@@ -4466,14 +4466,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M23 3.5l5 0l0 1l-5 0Z"
                           fill="none"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 466)"
+                          transform="translate(645 480)"
                           x="23"
                           xml:space="preserve"
                           y="4"
@@ -4488,24 +4488,24 @@ exports[`TopApplications should render correctly 1`] = `
                           stroke-linejoin="round"
                           stroke-miterlimit="10"
                           stroke-width="0"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                         />
                         <path
                           d="M13 -4l14 0l0 16l-14 0Z"
                           fill="none"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                         />
                         <path
                           d="M13 3.5l8 0l0 1l-8 0Z"
                           fill="none"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="start"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                           x="13"
                           y="4"
                         >
@@ -4516,7 +4516,7 @@ exports[`TopApplications should render correctly 1`] = `
                           fill="#333333"
                           style="font: normal NaN 10px 'Open Sans', sans-serif"
                           text-anchor="start"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                           x="21"
                           xml:space="preserve"
                           y="4"
@@ -4526,14 +4526,14 @@ exports[`TopApplications should render correctly 1`] = `
                         <path
                           d="M22 3.5l5 0l0 1l-5 0Z"
                           fill="none"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                         />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                           text-anchor="start"
-                          transform="translate(645 486)"
+                          transform="translate(645 504)"
                           x="22"
                           xml:space="preserve"
                           y="4"

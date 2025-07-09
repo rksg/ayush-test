@@ -78,7 +78,7 @@ describe('getTruncatedLegendFormatter', () => {
 
     const formatterSmall = getTruncatedLegendFormatter(mockChartData, 500)
     const resultSmall = formatterSmall('Application A')
-    expect(resultSmall).toBe('{legendNormal|Applicati…:} {legendBold|1 KB}')
+    expect(resultSmall).toBe('{legendNormal|Applicat…:} {legendBold|1 KB}')
   })
 
   it('should handle empty chart data', () => {
