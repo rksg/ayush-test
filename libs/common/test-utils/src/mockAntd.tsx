@@ -12,7 +12,6 @@ export const MockSelect = ({
   ...props
 }: MockSelectProps) => (
   <select {...props} onChange={(e) => onChange?.(e.target.value)}>
-    {/* Additional <option> to ensure it is possible to reset value to empty */}
     {options?.map((option, index) => (
       <option
         key={`option-${index}`}
