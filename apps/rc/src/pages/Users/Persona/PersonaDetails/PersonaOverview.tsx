@@ -353,8 +353,18 @@ export function PersonaOverview ({
           </GridCol>
         }
       </GridRow>
+      {isIdentityAnalyticsEnabled && (
+        <GridRow>
+          <GridCol col={{ span: 24 }}/>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <IdentityHealth />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <Traffic />
+          </GridCol>
+        </GridRow>
+      )}
       <GridRow>
-        <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
           <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
             <Card title={$t({ defaultMessage: 'Associated Devices' })}>
@@ -378,20 +388,7 @@ export function PersonaOverview ({
             </Card>
           </Loader>
         </GridCol>
-        {isIdentityAnalyticsEnabled && (
-          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-            <Traffic />
-          </GridCol>
-        )}
       </GridRow>
-      {isIdentityAnalyticsEnabled && (
-        <GridRow>
-          <GridCol col={{ span: 24 }}/>
-          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-            <IdentityHealth />
-          </GridCol>
-        </GridRow>
-      )}
       {externalIdentityData !== undefined &&
       <CommonAttributesDrawer
         externalData={externalIdentityData}
