@@ -12,6 +12,7 @@ const ApWiredClientEventTab = () => {
     searchables={false}
     filterables={['severity']}
     omitColumns={['entity_type', 'product', 'source', 'macAddress']}
+    clientPathType='wired'
   />
 }
 

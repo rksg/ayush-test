@@ -83,6 +83,64 @@ describe('getDescription', () => {
   })
 })
 
+describe('EntityLink clientPathType', () => {
+  const clientEvent = {
+    ...events[2],
+    ...eventsMeta.find(meta => meta.id === events[2].id)
+  } as Event
+
+  it('renders wifi client link by default', async () => {
+    render(<>{getDescription(clientEvent)}</>, { route: true })
+    const links = await screen.findAllByRole('link')
+    expect(
+      links.some(link =>
+        link.getAttribute('href')?.includes(
+          '/users/wifi/clients/' + clientEvent.clientMac + '/details/overview'
+        )
+      )
+    ).toBe(true)
+  })
+
+  it('renders wired client link when clientPathType is wired', async () => {
+    render(<>{getDescription(clientEvent, undefined, 'wired')}</>, { route: true })
+    const links = await screen.findAllByRole('link')
+    expect(
+      links.some(link =>
+        link.getAttribute('href')?.includes(
+          '/users/wired/wifi/clients/' + clientEvent.clientMac + '/details/overview'
+        )
+      )
+    ).toBe(true)
+  })
+})
+
+describe('EntityLink clientName in description', () => {
+  const clientEvent = {
+    ...events[2],
+    ...eventsMeta.find(meta => meta.id === events[2].id)
+  } as Event
+
+  it('renders clientName as a wifi client link in description', async () => {
+    render(<>{getDescription(clientEvent)}</>, { route: true })
+    const links = await screen.findAllByRole('link')
+    const clientLink = links.find(link => link.textContent === clientEvent.clientName)
+    expect(clientLink).toBeDefined()
+    expect(clientLink?.getAttribute('href')).toContain(
+      '/users/wifi/clients/' + clientEvent.clientMac + '/details/overview'
+    )
+  })
+
+  it('renders clientName as a wired client link in description', async () => {
+    render(<>{getDescription(clientEvent, undefined, 'wired')}</>, { route: true })
+    const links = await screen.findAllByRole('link')
+    const clientLink = links.find(link => link.textContent === clientEvent.clientName)
+    expect(clientLink).toBeDefined()
+    expect(clientLink?.getAttribute('href')).toContain(
+      '/users/wired/wifi/clients/' + clientEvent.clientMac + '/details/overview'
+    )
+  })
+})
+
 describe('valueFrom', () => {
   it('renders value from map', () => {
     expect(valueFrom(typeMapping, 'ADMIN')).toBe('Admin')

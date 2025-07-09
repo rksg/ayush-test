@@ -60,6 +60,7 @@ interface EventTableProps {
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
   showScheduleExport?: boolean
+  clientPathType?: 'wired' | 'wifi'
 }
 
 export const EventTable = ({
@@ -70,7 +71,8 @@ export const EventTable = ({
   eventTypeMap = eventTypeMapping,
   columnState,
   omitColumns,
-  showScheduleExport = false
+  showScheduleExport = false,
+  clientPathType
 }: EventTableProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -243,7 +245,7 @@ export const EventTable = ({
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
           ? searchables.includes('message') : searchables
-        return getDescription(row, searchable ? highlightFn : v => v)
+        return getDescription(row, searchable ? highlightFn : v => v, clientPathType)
       },
       searchable: Array.isArray(searchables) ? searchables.includes('message') : searchables
     }

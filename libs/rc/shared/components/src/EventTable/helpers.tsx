@@ -27,9 +27,28 @@ const entityTypes
   ] as const
 const configurationUpdate = 'Configuration Update' as const
 
-export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
-  entityKey: keyof Event, data: Event, highlightFn?: TableHighlightFnArgs
+export function EntityLink ({ entityKey, data, highlightFn = val => val, clientPathType }: {
+  entityKey: keyof Event,
+  data: Event,
+  highlightFn?: TableHighlightFnArgs,
+  clientPathType?: 'wired' | 'wifi'
 }) {
+  let entity: EntityType
+
+  // Special case: treat 'clientName' as 'client' entity for linking
+  if (entityKey === 'clientName') {
+    entity = 'client'
+  } else if (entityTypes.includes(entityKey as EntityType)) {
+    entity = entityKey as EntityType
+  } else {
+    const parts = _.kebabCase(entityKey).split('-')
+    if (parts[parts.length - 1] === 'name') {
+      parts.pop()
+    }
+    entity = _.camelCase(parts.join('-')) as EntityType
+  }
+  // Only use the wired path for client entity if clientPathType is 'wired'
+  const isWiredClientEvent = entity === 'client' && clientPathType === 'wired'
   const pathSpecs: Record<
     typeof entityTypes[number],
     { path: string, params: Array<keyof Event> }
@@ -43,7 +62,9 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       params: ['remoteApSerialId']
     },
     client: {
-      path: 'users/wifi/clients/:clientMac/details/overview',
+      path: isWiredClientEvent
+        ? 'users/wired/wifi/clients/:clientMac/details/overview'
+        : 'users/wifi/clients/:clientMac/details/overview',
       params: ['clientMac']
     },
     network: {
@@ -78,17 +99,6 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'venues/:venueId/venue-details/units',
       params: ['venueId']
     }
-  }
-  let entity: EntityType
-
-  if (entityTypes.includes(entityKey as EntityType)) {
-    entity = entityKey as EntityType
-  } else {
-    const parts = _.kebabCase(entityKey).split('-')
-    if (parts[parts.length - 1] === 'name') {
-      parts.pop()
-    }
-    entity = _.camelCase(parts.join('-')) as EntityType
   }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
@@ -148,7 +158,7 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   return <EntityLink {...{ entityKey, data, highlightFn }} />
 }
 
-export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
+export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs, clientPathType?: 'wired' | 'wifi') => {
   const formatData = formatTurnOnOffTimestamp(data)
   try {
     let message = String(formatData.message && JSON.parse(formatData.message).message_template)
@@ -174,11 +184,14 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
       id='events-description-template'
       defaultMessage={cleanedHighlighted}
       values={{
-        entity: (chunks) => <EntityLink
-          entityKey={String(chunks[0]) as keyof Event}
-          data={formatData}
-          highlightFn={highlightFn}
-        />,
+        entity: (chunks) => (
+          <EntityLink
+            entityKey={String(chunks[0]) as keyof Event}
+            data={formatData}
+            highlightFn={highlightFn}
+            clientPathType={clientPathType}
+          />
+        ),
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
