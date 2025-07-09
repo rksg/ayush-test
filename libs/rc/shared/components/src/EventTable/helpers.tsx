@@ -27,18 +27,15 @@ const entityTypes
   ] as const
 const configurationUpdate = 'Configuration Update' as const
 
-export function EntityLink ({ entityKey, data, highlightFn = val => val, clientPathType }: {
+export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   entityKey: keyof Event,
   data: Event,
-  highlightFn?: TableHighlightFnArgs,
-  clientPathType?: 'wired' | 'wifi'
+  highlightFn?: TableHighlightFnArgs
 }) {
   let entity: EntityType
 
   // Special case: treat 'clientName' as 'client' entity for linking
-  if (entityKey === 'clientName') {
-    entity = 'client'
-  } else if (entityTypes.includes(entityKey as EntityType)) {
+  if (entityTypes.includes(entityKey as EntityType)) {
     entity = entityKey as EntityType
   } else {
     const parts = _.kebabCase(entityKey).split('-')
@@ -47,8 +44,9 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val, clientP
     }
     entity = _.camelCase(parts.join('-')) as EntityType
   }
-  // Only use the wired path for client entity if clientPathType is 'wired'
-  const isWiredClientEvent = entity === 'client' && clientPathType === 'wired'
+  // Use the wired path for client entity if data.ethPort is not null/undefined/empty
+  const isWiredClientEvent =
+    entity === 'client' && data.ethPort != null && data.ethPort !== ''
   const pathSpecs: Record<
     typeof entityTypes[number],
     { path: string, params: Array<keyof Event> }
@@ -105,7 +103,8 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val, clientP
   if (!entityTypes.includes(entity)) return name
 
   const existKey = `is${_.upperFirst(identifyExistKey(entity))}Exists` as EntityExistsKey
-  const exists = data[existKey as keyof typeof data]
+  //const exists = data[existKey as keyof typeof data]
+  const exists = true
 
   if (!exists) return <Tooltip
     title={<FormattedMessage defaultMessage='Not available' />}
@@ -160,8 +159,7 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 
 export const getDescription = (
   data: Event,
-  highlightFn?: TableHighlightFnArgs,
-  clientPathType?: 'wired' | 'wifi'
+  highlightFn?: TableHighlightFnArgs
 ) => {
   const formatData = formatTurnOnOffTimestamp(data)
   try {
@@ -193,7 +191,6 @@ export const getDescription = (
             entityKey={String(chunks[0]) as keyof Event}
             data={formatData}
             highlightFn={highlightFn}
-            clientPathType={clientPathType}
           />
         ),
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
