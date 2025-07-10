@@ -1,8 +1,9 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                      from '@acx-ui/store'
 import { render,
   screen,
   mockRestApiQuery,
@@ -80,6 +81,60 @@ describe('Clients widget v2', () => {
     await screen.findByText('Wi-Fi')
     await screen.findByText('Wired')
     expect(asFragment().querySelectorAll('svg').length).toBe(3)
+  })
+
+  it('should render properly with AP wired client chart', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => (
+      ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE
+    ))
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getClientSummaries.url,
+        (req, res, ctx) => res(ctx.json({
+          summary: {
+            switchClients: {
+              summary: {},
+              totalCount: 1
+            },
+            clients: {
+              summary: { Good: 1, Poor: 1, Unknown: 1 },
+              totalCount: 3
+            }
+          }
+        }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getApWiredClients.url,
+        (req, res, ctx) => res(ctx.json({
+          fields: [
+            'macAddress'
+          ],
+          totalCount: 2,
+          page: 1,
+          data: [
+            {
+              macAddress: 'C0:9C:51:05:CD:00'
+            },
+            {
+              macAddress: '54:10:33:b7:df:00'
+            }
+          ]
+        }))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d1234fdb31ae0e56789fcac'
+    }
+    const { asFragment } = render(<Provider><ClientsWidgetV2 /></Provider>,
+      { route: { params } })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Clients')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('AP Wired')).toBeVisible()
+    expect(await screen.findByText('Switch Wired')).toBeVisible()
+    expect(asFragment().querySelectorAll('svg').length).toBe(4)
   })
 })
 
