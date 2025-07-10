@@ -90,9 +90,11 @@ const tooltips = {
   hostname: <FormattedMessage defaultMessage='The hostname may only be known if the user has successfully obtained an IP address from DHCP'/>
 }
 
+const maxClientCount = 500
+
 const titleText =
   '{count} Impacted {count, plural, one {Client} other {Clients}}' +
-  '{isLimited, select, true { (Showing 500 of {totalCount} clients)} other {}}'
+  '{isLimited, select, true { (Showing {maxClientCount} of {totalCount} clients)} other {}}'
 
 export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (props) => {
   const { $t, formatList } = useIntl()
@@ -100,7 +102,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
-    n: 500,
+    n: maxClientCount,
     impactedStart: props.impactedStart,
     impactedEnd: props.impactedEnd
   }, { selectFromResult: (states) => ({
@@ -158,7 +160,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       },
       {
         count: props.impactedCount,
-        isLimited: props.impactedCount > 500 ? 'true' : 'false',
+        isLimited: props.impactedCount > maxClientCount ? 'true' : 'false',
+        maxClientCount,
         totalCount: props.impactedCount
       }
     )}
