@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantType }             from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -23,21 +21,76 @@ const userProfileContextValues = {
 } as UserProfileContextProps
 
 jest.mock('./DelegationsTable', () => ({
-  ...jest.requireActual('./DelegationsTable'),
   __esModule: true,
   default: () => {
     return <div data-testid='mocked-DelegationsTable'></div>
   }
 }))
 jest.mock('./AdministratorsTable', () => ({
-  ...jest.requireActual('./AdministratorsTable'),
   __esModule: true,
   default: () => {
     return <div data-testid='mocked-AdministratorsTable'></div>
   }
 }))
+jest.mock('./AdminGroups', () => ({
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-AdminGroups'></div>
+  }
+}))
 
 const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  useGetTenantDetailsQuery: jest.fn().mockReturnValue({
+    data: {
+      id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
+      createdDate: '2023-01-31T04:19:00.241+00:00',
+      updatedDate: '2023-02-15T02:34:21.877+00:00',
+      entitlementId: '140360222',
+      maintenanceState: false,
+      name: 'Dog Company 1551',
+      externalId: '0012h00000NrlYAAAZ',
+      upgradeGroup: 'production',
+      tenantMFA: {
+        mfaStatus: 'DISABLED',
+        recoveryCodes: '["825910","333815","825720","919107","836842"]' },
+      preferences: '{"global":{"mapRegion":"UA"}}',
+      ruckusUser: false,
+      isActivated: true,
+      status: 'active',
+      tenantType: 'REC'
+    }
+  }),
+  useGetAdminListQuery: jest.fn().mockReturnValue({
+    data: []
+  }),
+  useGetAdminGroupsQuery: jest.fn().mockReturnValue({
+    data: []
+  }),
+  useGetDelegationsQuery: jest.fn().mockReturnValue({
+    data: []
+  }),
+  useGetPrivilegeGroupsQuery: jest.fn().mockReturnValue({
+    data: []
+  }),
+  useGetCustomRolesQuery: jest.fn().mockReturnValue({
+    data: []
+  }),
+  useGetTenantAuthenticationsQuery: jest.fn().mockReturnValue({
+    data: [
+      {
+        id: '9db335ef808',
+        clientID: '8358489e',
+        clientSecret: '6bb84ba',
+        scopes: 'PRIME_ADMIN',
+        authenticationType: 'GOOGLE_WORKSPACE',
+        name: 'Prime',
+        clientIDStatus: 'ACTIVE',
+        samlSignatureEnabled: false
+      }
+    ]
+  })
+}))
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -61,27 +114,6 @@ describe('Administrators', () => {
       return { data: fakeMspEcProfile }
     })
 
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getTenantDetails.url,
-        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
-      ),
-      rest.get(
-        AdministrationUrlsInfo.getTenantAuthentications.url,
-        (req, res, ctx) => res(ctx.json([
-          {
-            id: '9db335ef808',
-            clientID: '8358489e',
-            clientSecret: '6bb84ba',
-            scopes: 'PRIME_ADMIN',
-            authenticationType: 'GOOGLE_WORKSPACE',
-            name: 'Prime',
-            clientIDStatus: 'ACTIVE',
-            samlSignatureEnabled: false
-          }
-        ]))
-      )
-    )
   })
 
   it('should correctly render', async () => {
