@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                                                       from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, IpsecUrls, SoftGreUrls, WifiConfigUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                 from '@acx-ui/test-utils'
+import { venueApi }                                                                                   from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, IpsecUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                             from '@acx-ui/test-utils'
 
 import {
   venueApsList,
@@ -35,11 +35,11 @@ describe('NetworkingTab', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        WifiConfigUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        WifiConfigUrlsInfo.getVenueSmartMonitor.url,
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(

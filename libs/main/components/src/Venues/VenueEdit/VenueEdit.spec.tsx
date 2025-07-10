@@ -15,7 +15,6 @@ import {
   SwitchUrlsInfo,
   SyslogUrls,
   WifiRbacUrlsInfo,
-  WifiConfigUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
@@ -84,9 +83,6 @@ jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
 }))
 jest.mock('./WifiConfigTab/AdvancedTab/ApManagementVlan', () => ({
   ApManagementVlan: () => <div data-testid='ApManagementVlan' />
-}))
-jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
-  BssColoring: () => <div data-testid='BssColoring' />
 }))
 
 
@@ -349,15 +345,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           (_, res, ctx) => res(ctx.json({}))
         ),
         rest.get(
-          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
         rest.get(
-          WifiConfigUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-          (_, res, ctx) => res(ctx.json({}))
-        ),
-        rest.get(
-          WifiConfigUrlsInfo.getVenueSmartMonitor.url,
+          WifiRbacUrlsInfo.getVenueSmartMonitor.url,
           (_, res, ctx) => res(ctx.json({}))
         )
       )
