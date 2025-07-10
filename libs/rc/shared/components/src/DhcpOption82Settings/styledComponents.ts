@@ -33,6 +33,7 @@ export const FieldLabelFullWidth = styled.div`
   display: grid;
   line-height: 32px;
   align-items: baseline;
+  margin-bottom: 10px;
 `
 
 export const FormItemNoLabel = styled(Form.Item)`
