@@ -26,7 +26,7 @@ import {
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { AddModeProps }                     from '../../AccessControlForm'
-import { Layer2Drawer }                     from '../../AccessControlForm/Layer2Drawer'
+import { Layer2Component }                  from '../../AccessControlForm/Layer2Component'
 import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY }  from '../constants'
 
@@ -46,7 +46,7 @@ const defaultPayload = {
   sortOrder: 'DESC'
 }
 
-const Layer2Component = () => {
+const Layer2ComponentSet = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { $t } = useIntl()
@@ -165,7 +165,7 @@ const Layer2Component = () => {
 
   return <Loader states={[tableQuery]}>
     <Form form={form}>
-      <Layer2Drawer
+      <Layer2Component
         onlyAddMode={addModeStatus}
       />
       <Table<L2AclPolicy>
@@ -203,7 +203,7 @@ function useColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <Layer2Drawer
+        return <Layer2Component
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
@@ -241,4 +241,4 @@ function useColumns (
 }
 
 
-export default Layer2Component
+export default Layer2ComponentSet

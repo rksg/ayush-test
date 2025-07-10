@@ -7,23 +7,27 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  useDelAppPoliciesMutation,
-  useGetEnhancedApplicationProfileListQuery,
+  useDelL3AclPoliciesMutation,
+  useGetEnhancedL3AclProfileListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery, ApplicationPolicy, AclOptionType, Network,
-  WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
-  filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation, doProfileDelete
+  AclOptionType, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation, getScopeKeyByPolicy,
+  L3AclPolicy,
+  Network, PolicyOperation, PolicyType,
+  useTableQuery,
+  WifiNetwork,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 
-import { defaultNetworkPayload }                from '../../../NetworkTable'
-import { AddModeProps }                         from '../../AccessControlForm'
-import { ApplicationDrawer }                    from '../../AccessControlForm/ApplicationDrawer'
-import { getToolTipByNetworkFilterOptions }     from '../AccessControlPolicy'
-import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { Layer3Component }                  from '../../AccessControlForm/Layer3Component'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY }  from '../constants'
+
 
 const defaultPayload = {
   fields: [
@@ -38,7 +42,7 @@ const defaultPayload = {
   page: 1
 }
 
-const ApplicationPolicyComponent = () => {
+const Layer3ComponentSet = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { $t } = useIntl()
@@ -47,7 +51,9 @@ const ApplicationPolicyComponent = () => {
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ deleteFn ] = useDelAppPoliciesMutation()
+  const form = Form.useFormInstance()
+
+  const [ deleteFn ] = useDelL3AclPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -68,9 +74,9 @@ const ApplicationPolicyComponent = () => {
     id: '', isEdit: false
   })
 
-  const settingsId = 'policies-access-control-application-policy-table'
+  const settingsId = 'policies-access-control-layer3-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedApplicationProfileListQuery,
+    useQuery: useGetEnhancedL3AclProfileListQuery,
     defaultPayload,
     pagination: { settingsId },
     enableRbac
@@ -79,9 +85,9 @@ const ApplicationPolicyComponent = () => {
   useEffect(() => {
     if (tableQuery.data) {
       let unionNetworkIds = [] as string[]
-      tableQuery.data.data.map(policy => {
-        if (policy.networkIds) {
-          unionNetworkIds.push(...policy.networkIds)
+      tableQuery.data.data.map(layer3Policy => {
+        if (layer3Policy.networkIds) {
+          unionNetworkIds.push(...layer3Policy.networkIds)
         }
       })
       setNetworkIds([...new Set(unionNetworkIds)])
@@ -107,16 +113,16 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
-    scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
-    label: $t({ defaultMessage: 'Add Application Policy' }),
-    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
+    scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
+    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
-  const doDelete = (selectedRows: ApplicationPolicy[], callback: () => void) => {
+  const doDelete = (selectedRows: L3AclPolicy[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
@@ -130,10 +136,10 @@ const ApplicationPolicyComponent = () => {
     )
   }
 
-  const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
+  const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
-      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
+      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -141,8 +147,8 @@ const ApplicationPolicyComponent = () => {
       }
     },
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
-      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
+      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -155,11 +161,11 @@ const ApplicationPolicyComponent = () => {
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return <Loader states={[tableQuery]}>
-    <Form>
-      <ApplicationDrawer
+    <Form form={form}>
+      <Layer3Component
         onlyAddMode={addModeStatus}
       />
-      <Table<ApplicationPolicy>
+      <Table<L3AclPolicy>
         settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
@@ -183,7 +189,7 @@ function useColumns (
   ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<ApplicationPolicy>['columns'] = [
+  const columns: TableProps<L3AclPolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -193,11 +199,11 @@ function useColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <ApplicationDrawer
+        return <Layer3Component
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
-          onlyViewMode={{ id: row.id ?? '', viewText: row.name }}
+          onlyViewMode={{ id: row.id, viewText: row.name }}
         />
       }
     },
@@ -230,4 +236,4 @@ function useColumns (
 }
 
 
-export default ApplicationPolicyComponent
+export default Layer3ComponentSet

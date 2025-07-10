@@ -31,10 +31,10 @@ import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui
 import { getUserProfile, isCoreTier }                              from '@acx-ui/user'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
-import { ApplicationDrawer }                from '../../AccessControlForm/ApplicationDrawer'
-import { DeviceOSDrawer }                   from '../../AccessControlForm/DeviceOSDrawer'
-import { Layer2Drawer }                     from '../../AccessControlForm/Layer2Drawer'
-import { Layer3Drawer }                     from '../../AccessControlForm/Layer3Drawer'
+import { ApplicationComponent }             from '../../AccessControlForm/ApplicationComponent'
+import { DeviceOSComponent }                from '../../AccessControlForm/DeviceOSComponent'
+import { Layer2Component }                  from '../../AccessControlForm/Layer2Component'
+import { Layer3Component }                  from '../../AccessControlForm/Layer3Component'
 import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
 
 
@@ -222,7 +222,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (_, row) {
         return row.l2AclPolicyId
-          ? <Form form={form}><Layer2Drawer
+          ? <Form form={form}><Layer2Component
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.l2AclPolicyId, viewText: row.l2AclPolicyName }}
           /></Form>
@@ -236,7 +236,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (_, row) {
         return row.l3AclPolicyId
-          ? <Form form={form}><Layer3Drawer
+          ? <Form form={form}><Layer3Component
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.l3AclPolicyId, viewText: row.l3AclPolicyName }}
           /></Form>
@@ -250,7 +250,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (_, row) {
         return row.devicePolicyId
-          ? <Form form={form}><DeviceOSDrawer
+          ? <Form form={form}><DeviceOSComponent
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.devicePolicyId, viewText: row.devicePolicyName }}
           /></Form>
@@ -264,7 +264,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (_, row) {
         return row.applicationPolicyId
-          ? <Form form={form}><ApplicationDrawer
+          ? <Form form={form}><ApplicationComponent
             isOnlyViewMode={true}
             onlyViewMode={{
               id: row.applicationPolicyId,

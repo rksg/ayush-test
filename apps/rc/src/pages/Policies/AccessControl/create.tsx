@@ -5,6 +5,7 @@ import { Path }               from 'react-router-dom'
 
 import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
+  getPolicyRoutePath,
   getSelectPolicyRoutePath,
   hasPolicyPermission,
   LocationExtended,
@@ -19,7 +20,6 @@ export default function CreateAccessControl () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const createWifiAccessControlPath = useTenantLink('/policies/accessControl/create')
   const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
   const fromPage = (useLocation() as LocationExtended)?.state?.from
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL_CONSOLIDATION)
@@ -36,11 +36,16 @@ export default function CreateAccessControl () {
 
   const pathMapping = {
     [NetworkTypeTabsEnum.WIFI]: {
-      [PolicyType.ACCESS_CONTROL]: useTenantLink('/policies/accessControl/create'),
-      [PolicyType.LAYER_2_POLICY]: useTenantLink('/policies/layer2policy/create'),
-      [PolicyType.LAYER_3_POLICY]: createWifiAccessControlPath,
-      [PolicyType.DEVICE_POLICY]: createWifiAccessControlPath,
-      [PolicyType.APPLICATION_POLICY]: createWifiAccessControlPath
+      // eslint-disable-next-line max-len
+      [PolicyType.ACCESS_CONTROL]: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.LAYER_2_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.LAYER_3_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.DEVICE_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.APPLICATION_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }))
     },
     [NetworkTypeTabsEnum.SWITCH]: {
       [PolicyType.ACCESS_CONTROL]: useTenantLink('/policies/accessControl/switch/add'),

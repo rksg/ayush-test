@@ -7,16 +7,18 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  useDelL3AclPoliciesMutation,
-  useGetEnhancedL3AclProfileListQuery,
+  useDelDevicePoliciesMutation,
+  useGetEnhancedDeviceProfileListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  AclOptionType, filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation, getScopeKeyByPolicy,
-  L3AclPolicy,
-  Network, PolicyOperation, PolicyType,
+  AclOptionType,
+  DevicePolicy, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
+  getScopeKeyByPolicy,
+  Network, PolicyOperation,
+  PolicyType,
   useTableQuery,
   WifiNetwork,
   doProfileDelete
@@ -24,9 +26,9 @@ import {
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { AddModeProps }                     from '../../AccessControlForm'
-import { Layer3Drawer }                     from '../../AccessControlForm/Layer3Drawer'
+import { DeviceOSComponent }                from '../../AccessControlForm/DeviceOSComponent'
 import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY }  from '../constants'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY }  from '../constants'
 
 
 const defaultPayload = {
@@ -41,8 +43,7 @@ const defaultPayload = {
   ],
   page: 1
 }
-
-const Layer3Component = () => {
+const DevicePolicyComponentSet = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { $t } = useIntl()
@@ -51,9 +52,7 @@ const Layer3Component = () => {
     { enable: true, visible: false } as AddModeProps
   )
 
-  const form = Form.useFormInstance()
-
-  const [ deleteFn ] = useDelL3AclPoliciesMutation()
+  const [ deleteFn ] = useDelDevicePoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -74,9 +73,9 @@ const Layer3Component = () => {
     id: '', isEdit: false
   })
 
-  const settingsId = 'policies-access-control-layer3-table'
+  const settingsId = 'policies-access-control-device-policy-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedL3AclProfileListQuery,
+    useQuery: useGetEnhancedDeviceProfileListQuery,
     defaultPayload,
     pagination: { settingsId },
     enableRbac
@@ -85,9 +84,9 @@ const Layer3Component = () => {
   useEffect(() => {
     if (tableQuery.data) {
       let unionNetworkIds = [] as string[]
-      tableQuery.data.data.map(layer3Policy => {
-        if (layer3Policy.networkIds) {
-          unionNetworkIds.push(...layer3Policy.networkIds)
+      tableQuery.data.data.map(policy => {
+        if (policy.networkIds) {
+          unionNetworkIds.push(...policy.networkIds)
         }
       })
       setNetworkIds([...new Set(unionNetworkIds)])
@@ -113,16 +112,16 @@ const Layer3Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
-    scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
-    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
-    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
+    scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
+    label: $t({ defaultMessage: 'Add Device & OS Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
-  const doDelete = (selectedRows: L3AclPolicy[], callback: () => void) => {
+  const doDelete = (selectedRows: DevicePolicy[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
@@ -136,10 +135,10 @@ const Layer3Component = () => {
     )
   }
 
-  const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
+  const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
-      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -147,8 +146,8 @@ const Layer3Component = () => {
       }
     },
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
-      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -161,11 +160,11 @@ const Layer3Component = () => {
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return <Loader states={[tableQuery]}>
-    <Form form={form}>
-      <Layer3Drawer
+    <Form>
+      <DeviceOSComponent
         onlyAddMode={addModeStatus}
       />
-      <Table<L3AclPolicy>
+      <Table<DevicePolicy>
         settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
@@ -189,7 +188,7 @@ function useColumns (
   ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<L3AclPolicy>['columns'] = [
+  const columns: TableProps<DevicePolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -199,11 +198,11 @@ function useColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <Layer3Drawer
+        return <DeviceOSComponent
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
-          onlyViewMode={{ id: row.id, viewText: row.name }}
+          onlyViewMode={{ id: row.id ?? '', viewText: row.name }}
         />
       }
     },
@@ -236,4 +235,4 @@ function useColumns (
 }
 
 
-export default Layer3Component
+export default DevicePolicyComponentSet

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Checkbox, Form, FormInstance, FormItemProps, Input, Select, Slider } from 'antd'
-import { useIntl }                                                            from 'react-intl'
+import { Checkbox, Form, FormInstance, Input, Select, Slider } from 'antd'
+import { useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps }                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -13,28 +13,21 @@ import {
   OsVendorEnum
 } from '@acx-ui/rc/utils'
 
+import PolicyFormItem from '../PolicyFormItem'
+
 import {
   deviceOsVendorMappingTable,
   getDeviceOsVendorMap,
   getDeviceTypeOptions,
   getOsVendorOptions,
-  isDeviceOSEnabled, isDeviceTypeEnabled
+  isDeviceOSEnabled,
+  isDeviceTypeEnabled
 } from './DeviceOSDrawerUtils'
 
 interface DeviceOSRuleContentProps {
   drawerForm: FormInstance,
   deviceOSRuleList: DeviceOSRule[],
   ruleDrawerEditMode: boolean
-}
-
-export const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
 }
 
 interface DeviceOSRule {
@@ -209,7 +202,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
 
 
   return <Form layout='horizontal' form={drawerForm}>
-    <DrawerFormItem
+    <PolicyFormItem
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}
       initialValue={''}
@@ -230,13 +223,13 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       ]}
       children={<Input />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='access'
       label={$t({ defaultMessage: 'Access' })}
       initialValue={AccessStatus.ALLOW}
       children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='deviceType'
       label={$t({ defaultMessage: 'Device Type' })}
       initialValue={$t({ defaultMessage: 'Select...' })}
@@ -263,7 +256,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         ]}
       />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='osVendor'
       label={$t({ defaultMessage: 'OS or Manufacturer' })}
       initialValue={$t({ defaultMessage: 'Please select...' })}
@@ -313,13 +306,13 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         options={osVendorOptionList}
       />}
     />
-    {access !== AccessStatus.BLOCK && <DrawerFormItem
+    {access !== AccessStatus.BLOCK && <PolicyFormItem
       name='rateLimit'
       label={$t({ defaultMessage: 'Rate Limit' })}
       initialValue={''}
       children={rateLimitContent}
     />}
-    {access !== AccessStatus.BLOCK && <DrawerFormItem
+    {access !== AccessStatus.BLOCK && <PolicyFormItem
       name='vlan'
       label={$t({ defaultMessage: 'VLAN' })}
       initialValue={''}

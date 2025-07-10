@@ -1,13 +1,16 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Form, FormItemProps, Input, Select } from 'antd'
-import TextArea                               from 'antd/lib/input/TextArea'
-import _                                      from 'lodash'
-import { useIntl }                            from 'react-intl'
-import { useParams }                          from 'react-router-dom'
+import { Form, Input, Select } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
+import _                       from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { Button, Drawer, GridCol, GridRow, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import {
+  Button, Drawer, GridCol, GridRow, Loader,
+  PageHeader,showActionModal, StepsForm, Table, TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddAppPolicyMutation,
   useAddAppPolicyTemplateMutation,
@@ -33,7 +36,7 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -41,6 +44,7 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES }                  from '../../AccessControl/constants'
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
+import PolicyFormItem                                                  from '../PolicyFormItem'
 import { useScrollLock }                                               from '../ScrollLock'
 
 import {
@@ -60,13 +64,14 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export interface ApplicationDrawerProps {
+export interface ApplicationComponentProps {
   inputName?: string[],
   onlyViewMode?: {
     id: string,
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  isComponentMode?: boolean,
   drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
@@ -100,16 +105,6 @@ export interface ApplicationsRule {
     upLinkMarkingType?: string,
     downLinkMarkingType?: string
   }
-}
-
-export const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
 }
 
 const AclGridCol = ({ children }: { children: ReactNode }) => {
@@ -159,13 +154,14 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
   }
 }
 
-export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
+export const ApplicationComponent = (props: ApplicationComponentProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
+    isComponentMode = false,
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     drawerViewModeId = '',
@@ -189,10 +185,14 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
+  const [policyId, setPolicyId] = useState<string | null>(null)
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
+  const breadcrumb = usePoliciesBreadcrumb()
+  const pageTitle = usePolicyPageHeaderTitle(editMode.isEdit, PolicyType.APPLICATION_POLICY)
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -209,7 +209,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const { data: librarySettings } = useApplicationLibrarySettingsQuery({
     enableRbac
   }, {
-    skip: !visible
+    skip: !ruleDrawerVisible
   })
 
   const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
@@ -228,13 +228,22 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
+  useEffect(() => {
+    if (isOnlyViewMode) {
+      setPolicyId(onlyViewMode.id)
+    }
+    if (isComponentMode) {
+      setPolicyId(params.policyId || null)
+    }
+  }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
+
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
     // eslint-disable-next-line max-len
-    skip: !visible || skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
+    skip: (!isComponentMode || policyId !== null) && (!visible || skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId))),
     extraParams: {
-      applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
+      applicationPolicyId: policyId || applicationPolicyId
     },
     enableRbac: resolvedRbacEnabled
   })
@@ -444,8 +453,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     setApplicationsRule({} as ApplicationsRule)
   }
 
-  const handleApplicationsDrawerClose = () => {
-    setDrawerVisible(false)
+  const handleContentClose = () => {
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -458,7 +466,22 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (!isComponentMode) {
+      setDrawerVisible(false)
+    }
     callBack()
+  }
+
+  const handleContentFinish = async () => {
+    try {
+      if (!isViewMode()) {
+        await contentForm.validateFields()
+        await handleAppPolicy(editMode.isEdit || localEditMode.isEdit)
+      }
+      handleContentClose()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
   }
 
   const handleAddApplicationsRule = () => {
@@ -581,8 +604,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }
 
   const content = <>
-    <Form layout='horizontal' form={contentForm}>
-      <DrawerFormItem
+    <Form layout={isComponentMode ? 'vertical' : 'horizontal'} form={contentForm}>
+      <PolicyFormItem
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
@@ -602,7 +625,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         ]}
         children={<Input disabled={isViewMode()}/>}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
@@ -610,7 +633,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='applicationsRule'
         label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
         rules={[
@@ -676,7 +699,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   )
 
   const modelContent = () => {
-    if (onlyAddMode.enable || drawerViewModeId !== '') {
+    if (isComponentMode || onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -749,10 +772,31 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   return (
     <>
       {modelContent()}
-      <Drawer
+      {isComponentMode && <>
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
+        <Loader states={[{ isLoading: false, isFetching: false }]}>
+          <StepsForm
+            form={form}
+            editMode={editMode.isEdit || localEditMode.isEdit}
+            onCancel={handleContentClose}
+            onFinish={handleContentFinish}
+          >
+            <StepsForm.StepForm
+              name='settings'
+              title={$t({ defaultMessage: 'Settings' })}
+            >
+              {content}
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Loader>
+      </>}
+      {!isComponentMode &&<Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
-        onClose={() => handleApplicationsDrawerClose()}
+        onClose={() => handleContentClose()}
         destroyOnClose={true}
         children={content}
         push={false}
@@ -760,22 +804,12 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           <Drawer.FormFooter
             showAddAnother={false}
             showSaveButton={!isViewMode()}
-            onCancel={handleApplicationsDrawerClose}
-            onSave={async () => {
-              try {
-                if (!isViewMode()) {
-                  await contentForm.validateFields()
-                  await handleAppPolicy(editMode.isEdit || localEditMode.isEdit)
-                }
-                handleApplicationsDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
+            onCancel={handleContentClose}
+            onSave={handleContentFinish}
           />
         }
         width={'830px'}
-      />
+      />}
     </>
   )
 }

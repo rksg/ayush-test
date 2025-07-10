@@ -1,13 +1,13 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
-import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
-import TextArea                                                        from 'antd/lib/input/TextArea'
-import _                                                               from 'lodash'
-import { DndProvider, useDrag, useDrop }                               from 'react-dnd'
-import { HTML5Backend }                                                from 'react-dnd-html5-backend'
-import { useIntl }                                                     from 'react-intl'
-import { useParams }                                                   from 'react-router-dom'
-import styled                                                          from 'styled-components/macro'
+import { Form, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import TextArea                                         from 'antd/lib/input/TextArea'
+import _                                                from 'lodash'
+import { DndProvider, useDrag, useDrop }                from 'react-dnd'
+import { HTML5Backend }                                 from 'react-dnd-html5-backend'
+import { useIntl }                                      from 'react-intl'
+import { useParams }                                    from 'react-router-dom'
+import styled                                           from 'styled-components/macro'
 
 import {
   Button,
@@ -17,6 +17,9 @@ import {
   Fieldset,
   GridCol,
   GridRow,
+  Loader,
+  PageHeader,
+  StepsForm,
   showActionModal,
   Table,
   TableProps
@@ -47,7 +50,7 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -55,18 +58,20 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
 import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import PolicyFormItem                                                                   from './PolicyFormItem'
 import { useScrollLock }                                                                from './ScrollLock'
 
 const { useWatch } = Form
 const { Option } = Select
 
-interface Layer3DrawerProps {
+interface Layer3ComponentProps {
   inputName?: string[],
   onlyViewMode?: {
     id: string,
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  isComponentMode?: boolean,
   drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
@@ -111,16 +116,6 @@ type DragItemProps = {
   id: number
 }
 
-const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
-}
-
 const AclGridCol = ({ children }: { children: ReactNode }) => {
   return (
     <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
@@ -129,13 +124,14 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const Layer3Drawer = (props: Layer3DrawerProps) => {
+export const Layer3Component = (props: Layer3ComponentProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
+    isComponentMode = false,
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     drawerViewModeId = '',
@@ -160,10 +156,14 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
+  const [policyId, setPolicyId] = useState<string | null>(null)
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
+  const breadcrumb = usePoliciesBreadcrumb()
+  const pageTitle = usePolicyPageHeaderTitle(editMode.isEdit, PolicyType.LAYER_3_POLICY)
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -198,11 +198,20 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
+  useEffect(() => {
+    if (isOnlyViewMode) {
+      setPolicyId(onlyViewMode.id)
+    }
+    if (isComponentMode) {
+      setPolicyId(params.policyId || null)
+    }
+  }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
+
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL3AclPolicyQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
-    skip: !visible || skipFetch,
-    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId },
+    skip: !isComponentMode && (!visible || skipFetch),
+    extraParams: { l3AclPolicyId: policyId || l3AclPolicyId },
     enableRbac: resolvedRbacEnabled
   })
 
@@ -401,8 +410,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
 
-  const handleLayer3DrawerClose = () => {
-    setDrawerVisible(false)
+  const handleContentClose = () => {
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -415,7 +423,22 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (!isComponentMode) {
+      setDrawerVisible(false)
+    }
     callBack()
+  }
+
+  const handleContentFinish = async () => {
+    try {
+      await contentForm.validateFields()
+      if (!isViewMode()) {
+        await handleL3AclPolicy(editMode.isEdit || localEditMode.isEdit)
+      }
+      handleContentClose()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
   }
 
   const handleLayer3Rule = () => {
@@ -736,7 +759,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <DrawerFormItem
+    <PolicyFormItem
       name='description'
       label={$t({ defaultMessage: 'Description' })}
       initialValue={''}
@@ -748,13 +771,13 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
       />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='access'
       label={$t({ defaultMessage: 'Access' })}
       initialValue={AccessStatus.ALLOW}
       children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
       initialValue={Layer3ProtocolType.ANYPROTOCOL}
@@ -826,7 +849,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <PolicyFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -912,7 +935,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <PolicyFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -927,8 +950,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   </Form>
 
   const content = <>
-    <Form layout='horizontal' form={contentForm}>
-      <DrawerFormItem
+    <Form layout={isComponentMode ? 'vertical' : 'horizontal'} form={contentForm}>
+      <PolicyFormItem
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
@@ -948,7 +971,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         ]}
         children={<Input disabled={isViewMode()}/>}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
@@ -956,7 +979,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='layer3DefaultAccess'
         label={<div style={{ textAlign: 'left' }}>
           <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -972,7 +995,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
           tabDetails={defaultTabDetails}
           size='large' />}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='layer3Rule'
         label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
         children={<></>}
@@ -1049,7 +1072,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 
   const modelContent = () => {
-    if (onlyAddMode.enable || drawerViewModeId !== '') {
+    if (isComponentMode || onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -1122,10 +1145,31 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   return (
     <>
       {modelContent()}
-      <Drawer
+      {isComponentMode && <>
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
+        <Loader states={[{ isLoading: false, isFetching: false }]}>
+          <StepsForm
+            form={form}
+            editMode={editMode.isEdit || localEditMode.isEdit}
+            onCancel={handleContentClose}
+            onFinish={handleContentFinish}
+          >
+            <StepsForm.StepForm
+              name='settings'
+              title={$t({ defaultMessage: 'Settings' })}
+            >
+              {content}
+            </StepsForm.StepForm>
+          </StepsForm>
+        </Loader>
+      </>}
+      {!isComponentMode &&<Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
-        onClose={() => handleLayer3DrawerClose()}
+        onClose={() => handleContentClose()}
         destroyOnClose={true}
         children={content}
         push={false}
@@ -1133,22 +1177,12 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
           <Drawer.FormFooter
             showAddAnother={false}
             showSaveButton={!isViewMode()}
-            onCancel={handleLayer3DrawerClose}
-            onSave={async () => {
-              try {
-                await contentForm.validateFields()
-                if (!isViewMode()) {
-                  await handleL3AclPolicy(editMode.isEdit || localEditMode.isEdit)
-                }
-                handleLayer3DrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
+            onCancel={handleContentClose}
+            onSave={handleContentFinish}
           />
         }
         width={'870px'}
-      />
+      />}
     </>
   )
 }

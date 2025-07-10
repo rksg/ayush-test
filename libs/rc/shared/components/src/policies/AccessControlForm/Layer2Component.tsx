@@ -60,7 +60,7 @@ import { useScrollLock }                                          from './Scroll
 const { useWatch } = Form
 const { Option } = Select
 
-export interface Layer2DrawerProps {
+export interface Layer2ComponentProps {
   inputName?: string[]
   onlyViewMode?: {
     id: string,
@@ -89,7 +89,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const Layer2Drawer = (props: Layer2DrawerProps) => {
+export const Layer2Component = (props: Layer2ComponentProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()

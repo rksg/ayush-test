@@ -14,7 +14,7 @@ import { mockServer, render, screen, waitFor }               from '@acx-ui/test-
 import { enhancedApplicationPolicyListResponse } from '../../AccessControl/__tests__/fixtures'
 import { applicationDetail, avcApp, avcCat }     from '../__tests__/fixtures'
 
-import { ApplicationDrawer } from './index'
+import { ApplicationComponent } from './index'
 
 const applicationResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
@@ -123,7 +123,7 @@ describe('ApplicationDrawer Component with view mode', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer
+          <ApplicationComponent
             onlyViewMode={{ id: 'edac8b0c22e140cd95e63a9e81421576', viewText: 'viewText' }}
             isOnlyViewMode={true}
           />
@@ -202,7 +202,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -261,7 +261,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -323,7 +323,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
