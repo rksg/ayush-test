@@ -49,7 +49,8 @@ export type Settings = {
   'lsp-name': string
   'property-name': string
   'sla-prospect-count': string
-  'enabled-intent-features': string
+  'enabled-intent-features': string,
+  'fetaure-related-events-suppression': string
 }
 
 export type ManagedUser = {

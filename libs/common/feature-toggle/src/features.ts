@@ -247,6 +247,7 @@ export enum Features {
   WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network',
   ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
+  RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE = 'ruckus-ai-feature-related-events-suppression-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE = 'entitlement-adaptive-policy-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE = 'entitlement-pms-integration-toggle',
