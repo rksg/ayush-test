@@ -1,3 +1,5 @@
+import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
+
 export enum NetworkTunnelTypeEnum {
   None = 'None',
   SdLan = 'SdLan',
@@ -8,9 +10,12 @@ export enum NetworkTunnelTypeEnum {
 export interface NetworkTunnelActionForm {
   tunnelType: NetworkTunnelTypeEnum
   sdLan: {
-    isGuestTunnelEnabled: boolean,
+    isGuestTunnelEnabled: boolean
     forwardingTunnelProfileId: string
     forwardingTunnelType: string
+    newProfileId: string
+    newProfile: EdgeMvSdLanViewData
+    oldProfileId: string
   },
   softGre: {
     newProfileId: string,
