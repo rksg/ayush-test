@@ -150,9 +150,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const icx71C08pGroupedData = (): SwitchFirmwareV1002[][] => {
     const upgradeSwitchListOf71C08p = upgradeSwitchList.filter(s =>
-      s.model === 'ICX7150-C08P')
+      s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08PT')
     const switch71C08pFirmwareList = getSwitchFirmwareList?.data.filter(s =>
-      s.model === 'ICX7150-C08P')
+      s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08PT')
     if (upgradeVenueList.length === 0 || switch71C08pFirmwareList) {
       const switchList = upgradeSwitchListOf71C08p.concat(switch71C08pFirmwareList || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
