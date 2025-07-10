@@ -4,7 +4,7 @@
 "#Passphrase (if empty, system generated passphrase will be used)",,,,,,,,,,,,,
 "#VLAN ID (if empty, network's default VLAN will be used)",,,,,,,,,,,,,
 #,,,,,,,,,,,,,
-Username,Number of devices,MAC Address,Passphrase,VLAN ID,Email,Phone Number,,,,,,,,,
+Username,Number of devices,MAC Address,Passphrase,VLAN ID,Email,PhoneNumber,,,,,,,,,
 ,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
