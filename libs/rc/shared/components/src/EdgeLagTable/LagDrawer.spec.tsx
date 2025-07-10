@@ -541,9 +541,20 @@ describe('Edge LAG table drawer', () => {
       // change IP mode to static
       const staticMode = await screen.findByRole('radio', { name: 'Static/Manual' })
       await userEvent.click(staticMode)
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'IP Address' }),
+        '15.1.1.11'
+      )
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'Subnet Mask' }),
+        '255.255.255.0'
+      )
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'Gateway' }),
+        '15.1.1.127'
+      )
 
       await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-      await screen.findByRole('alert')
       await waitFor(() => expect(mockOnEdit).toHaveBeenCalledTimes(1))
       expect(screen.queryByRole('alert')).toBeNull()
     })
