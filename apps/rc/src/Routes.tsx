@@ -75,6 +75,7 @@ import {
   ServiceType,
   IdentityProviderTabType,
   PersonaUrls,
+  IotUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useDhcpStateMap,
   useMdnsProxyStateMap
@@ -403,10 +404,16 @@ function DeviceRoutes () {
       <Route path='devices/iotController' element={<IotController />} />
       <Route
         path='devices/iotController/add'
-        element={<IotControllerForm />} />
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/:action'
-        element={<IotControllerForm />} />
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/details/:activeTab'
         element={<IotControllerDetails />} />

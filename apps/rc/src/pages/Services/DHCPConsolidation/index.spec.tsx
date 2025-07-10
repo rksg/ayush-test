@@ -15,9 +15,17 @@ jest.mock('../DHCP/Edge/DHCPTable', () => ({
 }))
 
 const mockedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useDhcpConsolidationTotalCount: () => ({
+    data: { totalCount: 10, dhcpCount: 5, edgeDhcpCount: 5 },
+    isFetching: false
+  })
 }))
 
 describe('DHCPConsolidation', () => {
@@ -32,9 +40,9 @@ describe('DHCPConsolidation', () => {
     render(<DHCPConsolidation />, {
       route: { params: { ...params, activeTab: 'wifi' }, path }
     })
-    expect(screen.getByText('DHCP')).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /Wi-Fi/ })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /RUCKUS Edge/ })).toBeInTheDocument()
+    expect(screen.getByText('DHCP (10)')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Wi-Fi \(5\)/ })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /RUCKUS Edge \(5\)/ })).toBeInTheDocument()
     expect(screen.getByText('Mocked DHCPTable')).toBeInTheDocument()
 
     const addButton = screen.getByRole('link', { name: /Add DHCP for Wi-Fi/ })
@@ -58,7 +66,7 @@ describe('DHCPConsolidation', () => {
       route: { params: { ...params, activeTab: 'wifi' }, path }
     })
 
-    const tabButton = screen.getByRole('tab', { name: /RUCKUS Edge/ })
+    const tabButton = screen.getByRole('tab', { name: /RUCKUS Edge \(5\)/ })
     await userEvent.click(tabButton)
     expect(mockedNavigate).toHaveBeenCalledWith({
       pathname: '/TENANT_ID/t/services/dhcpConsolidation/list/edge',

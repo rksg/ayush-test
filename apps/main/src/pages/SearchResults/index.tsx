@@ -45,12 +45,14 @@ import {
   NewAPModelExtended,
   SwitchClient,
   SwitchRow,
-  TableQuery,
-  useTableQuery,
   Venue,
   WifiNetwork
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
+import {
+  TableQuery,
+  useTableQuery
+} from '@acx-ui/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
@@ -59,7 +61,6 @@ import { Collapse, Panel } from './styledComponents'
 
 
 interface EnableRbacType {
-  isSwitchRbacEnabled?: boolean
   isWifiRbacEnabled?: boolean
 }
 
@@ -146,10 +147,10 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+  (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
-      enableRbac: enableRbac.isSwitchRbacEnabled,
+      enableRbac: true,
       defaultPayload: {
         ...defaultSwitchPayload
       },
@@ -261,13 +262,11 @@ function SearchResult ({ searchVal, enableRbac }:
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   return <SearchResult
     key={searchVal}
     searchVal={searchVal}
     enableRbac={{
-      isSwitchRbacEnabled,
       isWifiRbacEnabled
     }}
   />

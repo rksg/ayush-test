@@ -33,7 +33,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { state, dispatch } = useContext(SnmpAgentFormContext)
   const [ forceFocusOn, setForceFocusOn ] = useState<boolean>(false)
   // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const usedUserName = othersData.map(d => d.userName) ?? []
@@ -146,7 +145,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         rules={[
           { required: true },
           /* eslint-disable */
-          ...(isSNMPv3PassphraseOn ? [
             {
               validator: (_ : any, value: string) => {
                 const errors: number[] = []
@@ -174,13 +172,9 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
                   return Promise.resolve()
                 } }
           /* eslint-enable */
-          ] : [
-            { min: 8 },
-            { max: 32 }
-          ])
         ]}
         children={
-          ((isUseRbacApi && isSNMPv3PassphraseOn) ?
+          (isUseRbacApi ?
             <PasswordInputStrength
               forceFocusOn={forceFocusOn}
               setForceFocusOn={setForceFocusOn}

@@ -4,13 +4,20 @@ import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, S
 import { defineMessage, MessageDescriptor, useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
 import {
   AppAclLabelMapping,
   ApplicationAclType,
-  ApplicationRuleType, AppRuleLabelMapping, AvcCategory, generalIpAddressRegExp,
+  ApplicationRuleType, AppRuleLabelMapping, AvcCategory,
+  generalIpAddressRegExp, dualModeGeneralIpAddressRegExp,
   portRegExp,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  dualModeSubnetMaskIpRegExp,
+  ipv6RegExp,
+  ipv6PrefixRegExp,
+  useConfigTemplate,
+  customizePromiseAny
 } from '@acx-ui/rc/utils'
 
 import PolicyFormItem from '../PolicyFormItem'
@@ -57,6 +64,7 @@ export const appRateStrategyLabelMapping: Record<RateStrategyEnum, MessageDescri
 
 const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { avcSelectOptions, applicationsRuleList, applicationsRule, editMode, drawerForm } = props
   const [category, setCategory] = useState('')
   const [sourceValue, setSourceValue] = useState(drawerForm.getFieldValue('accessControl'))
@@ -81,6 +89,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     $t({ defaultMessage: 'TCP' }),
     $t({ defaultMessage: 'UDP' })
   ]
+
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
   useEffect(() => {
     if (applicationsRule.ruleSettings) {
@@ -166,6 +176,32 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     if (compareA > compareB) return 1
     if (compareA < compareB) return -1
     return 0
+  }
+
+  const subnetMaskValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return dualModeSubnetMaskIpRegExp(value)
+    }
+    return subnetMaskIpRegExp(value)
+  }
+
+  const networkAddressValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return dualModeGeneralIpAddressRegExp(value)
+    }
+    return generalIpAddressRegExp(value)
+  }
+
+  const ipModeValidator = (subnetMask: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      const destinationIp = drawerForm.getFieldValue('destinationIp')
+      return customizePromiseAny([
+        Promise.all([generalIpAddressRegExp(destinationIp), subnetMaskIpRegExp(subnetMask)]),
+        Promise.all([ipv6RegExp(destinationIp), ipv6PrefixRegExp(subnetMask)])],
+      new Error($t({ defaultMessage: 'Ip mode must same between address and subnet mask.' }))
+      )
+    }
+    return Promise.resolve()
   }
 
   const selectApplication = (category: string) => {
@@ -415,7 +451,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       initialValue={''}
       rules={[
         { required: true },
-        { validator: (_, value) => generalIpAddressRegExp(value) }
+        { validator: (_, value) => networkAddressValidator(value) }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a destination Ip' })}
@@ -425,9 +461,11 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       name='netmask'
       label={$t({ defaultMessage: 'Netmask' })}
       initialValue={''}
+      validateFirst
       rules={[
         { required: true },
-        { validator: (_, value) => subnetMaskIpRegExp(value) }
+        { validator: (_, value) => subnetMaskValidator(value) },
+        { validator: (_, value) => ipModeValidator(value) }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a mask' })}
