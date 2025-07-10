@@ -297,8 +297,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const renderAckTooltip = (rows: SwitchRow[], row: SwitchRow) => {
     if(row.isStack){
-      const showTooltip = rows.filter(r => r.activeSerial === row.activeSerial)[0]?.children?.map(
-        (r) => (r as { needAck: boolean }).needAck === true).includes(true)
+      const showTooltip = rows.find(r => r.activeSerial === row.activeSerial)?.children?.some(r => r.needAck === true)
+
 
       if (showTooltip) {
         return (
