@@ -2,6 +2,7 @@ import React from 'react'
 
 import { PageNoPermissions, PageNotFound }            from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }             from '@acx-ui/rc/services'
+import { getConfigTemplatePath }                      from '@acx-ui/rc/utils'
 import { Route, TenantNavigate, rootRoutes }          from '@acx-ui/react-router-dom'
 import { RolesEnum }                                  from '@acx-ui/types'
 import { AuthRoute, hasRoles, useUserProfileContext } from '@acx-ui/user'
@@ -31,12 +32,14 @@ import { UserProfile }                                                          
 import UsersBase                                                                 from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable, PropertyUnitDetails } from './pages/Venues'
 
+
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
+const RecConfigTemplatesRoutes = React.lazy(() => import('./routes/RecConfigTemplatesRoutes'))
 
 function AllRoutes () {
   const { data: userProfile } = useUserProfileContext()
@@ -107,6 +110,7 @@ function AllRoutes () {
           <Route path='venues/*' element={<VenuesRoutes />} />
           <Route path='administration/*' element={<AdministrationRoutes />} />
           <Route path='ruckus-wan-gateway/*' element={<RWGRoutes />} />
+          <Route path={getConfigTemplatePath('/*')} element={<RecConfigTemplatesRoutes />} />
         </Route>
       </Route>
       <Route path=':tenantId/v/*' element={<MFACheck />}>

@@ -1,13 +1,5 @@
-import { useContext, useEffect, useReducer, useState } from 'react'
-
-import { Brand360 }                                                                                    from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails, ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
-import { PortalSettings }                                                                              from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                                                   from '@acx-ui/msp/services'
-import {
-  AAAForm, AAAPolicyDetail,
+import { ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
+import { AAAForm, AAAPolicyDetail,
   DHCPDetail,
   DHCPForm, DpskForm,
   PortalForm,
@@ -25,205 +17,25 @@ import {
   CliProfileForm, ApGroupDetails, ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
-  EthernetPortProfileDetail,
-  IdentityGroupForm,
-  PersonaGroupDetails
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
-import {
-  CONFIG_TEMPLATE_LIST_PATH,
-  ConfigTemplateType,
-  LayoutWithConfigTemplateContext,
-  PolicyOperation,
-  PolicyType,
-  ServiceOperation,
-  ServiceType,
-  getConfigTemplatePath,
-  getPolicyRoutePath,
-  getServiceRoutePath
-}  from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { DataStudio }                                                            from '@acx-ui/reports/components'
-import { Provider }                                                              from '@acx-ui/store'
-import { SwitchScopes }                                                          from '@acx-ui/types'
-import { AuthRoute }                                                             from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
+import { CONFIG_TEMPLATE_LIST_PATH, ConfigTemplateType, getConfigTemplatePath, getPolicyRoutePath, getServiceRoutePath, LayoutWithConfigTemplateContext, PolicyOperation, PolicyType, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate }                                                                                                                                                                          from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                                                                                                                                               from '@acx-ui/types'
+import { AuthRoute }                                                                                                                                                                                                  from '@acx-ui/user'
 
-import HspContext, { HspActionTypes } from './HspContext'
-import { hspReducer }                 from './HspReducer'
-import { ConfigTemplatePage }         from './pages/ConfigTemplates'
-import { DeviceInventory }            from './pages/DeviceInventory'
-import { Integrators }                from './pages/Integrators'
-import Layout                         from './pages/Layout'
-import { ManageCustomer }             from './pages/ManageCustomer'
-import { ManageIntegrator }           from './pages/ManageIntegrator'
-import Mdu360                         from './pages/Mdu360'
-import { MspCustomers }               from './pages/MspCustomers'
-import { MspRecCustomers }            from './pages/MspRecCustomers'
-import { AddRecCustomer }             from './pages/MspRecCustomers/AddRecCustomer'
-import { NewDeviceInventory }         from './pages/NewDeviceInventory'
-import { NewManageCustomer }          from './pages/NewManageCustomer'
-import { NewManageIntegrator }        from './pages/NewManageIntegrator'
-import { Subscriptions }              from './pages/Subscriptions'
-import { AssignMspLicense }           from './pages/Subscriptions/AssignMspLicense'
-import { VarCustomers }               from './pages/VarCustomers'
+import { VenueDetails, VenuesForm, VenueEdit } from '../pages/Venues'
 
-export function Init () {
-  const {
-    state
-  } = useContext(HspContext)
-
-  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
-
-  const { tenantType } = getJwtTokenPayload()
-
-  const isInstaller = tenantType === AccountType.MSP_INSTALLER
-  const isShowBrand360 = isBrand360Enabled && state.isHsp && !isInstaller
-
-  const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
-  return <Navigate
-    replace
-    to={{ pathname: basePath.pathname }}
-  />
-}
-
-export default function MspRoutes () {
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
-  const newDeviceInventory =
-    useIsSplitOn(Features.VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE)
-
-  const { tenantType } = getJwtTokenPayload()
-
-  const [loadMspRoute, setLoadMspRoute] = useState<boolean>(false)
-  const { tenantId } = useParams()
-
-  const [state, dispatch] = useReducer(hspReducer, {
-    isHsp: false
-  })
-
-  const navigateToDashboard = state.isHsp
-    ? '/dashboard/mspRecCustomers'
-    : '/dashboard/mspCustomers'
-
-  const isTechPartner =
-  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (isTechPartner) {
-          const response = await checkMspRecsForIntegrator(tenantId as string)
-          const integratorListData = await response
-          dispatch({
-            type: HspActionTypes.IS_HSP,
-            payload: {
-              isHsp: !!integratorListData?.data?.length
-            }
-          })
-        } else {
-          dispatch({
-            type: HspActionTypes.IS_HSP,
-            payload: {
-              isHsp: isHspSupportEnabled
-            }
-          })
-        }
-        setLoadMspRoute(true)
-      } catch (error) {
-        setLoadMspRoute(false)
-        // eslint-disable-next-line no-console
-        console.log(error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  const routes = rootRoutes(
-    <Route path=':tenantId/v' element={<Layout />}>
-      <Route path='*' element={<PageNotFound />} />
-      <Route index element={<Init />} />
-      <Route
-        path='dashboard'
-        element={<TenantNavigate replace to={navigateToDashboard} tenantType='v'/>}
-      />
-      <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
-      <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
-      <Route path='dashboard/varCustomers' element={<VarCustomers />} />
-      <Route path='integrators/*' element={<CustomersRoutes />} />
-      <Route path='deviceinventory'
-        element={newDeviceInventory
-          ? <NewDeviceInventory />
-          : <DeviceInventory />} />
-      <Route path='msplicenses/*' element={<CustomersRoutes />} />
-      <Route path='portalSetting' element={<PortalSettings />} />
-      <Route path='brand360' element={<Brand360 />} />
-      <Route path='mdu360/*' element={<Mdu360 />} />
-      {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
-      <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
-    </Route>
-  )
-  return (
-    <Loader states={[{ isLoading: !loadMspRoute }]}>
-      <HspContext.Provider value={{ state, dispatch }}>
-        <ConfigProvider>
-          <Provider children={routes} />
-        </ConfigProvider>
-      </HspContext.Provider>
-    </Loader>
-  )
-}
-
-function CustomersRoutes () {
-  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
-  return rootRoutes(
-    <Route>
-      <Route path='*' element={<PageNotFound />} />
-      <Route path=':tenantId/v/dashboard/mspCustomers'>
-        <Route index element={<MspCustomers />} />
-        <Route path='create'
-          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
-        <Route path=':action/:status/:mspEcTenantId'
-          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
-      </Route>
-      <Route path=':tenantId/v/dashboard/mspRecCustomers'>
-        <Route index element={<MspRecCustomers />} />
-        <Route path='create' element={<AddRecCustomer />} />
-        <Route path=':action/:status/:mspEcTenantId' element={<AddRecCustomer />} />
-      </Route>
-      <Route path=':tenantId/v/integrators'>
-        <Route index element={<Integrators />} />
-        <Route path='create'
-          element={solutionTokenFFToggled
-            ? <NewManageIntegrator />
-            : <ManageIntegrator />} />
-        <Route path=':action/:type/:mspEcTenantId'
-          element={solutionTokenFFToggled
-            ? <NewManageIntegrator />
-            : <ManageIntegrator />} />
-      </Route>
-      <Route path=':tenantId/v/msplicenses'>
-        <Route index element={<Subscriptions />} />
-        <Route path=':activeTab' element={<Subscriptions />} />
-        <Route path='assign' element={<AssignMspLicense />} />
-      </Route>
-    </Route>
-  )
-}
-
-export function ConfigTemplatesRoutes () {
+export default function ConfigTemplatesRoutes () {
   const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
 
   return rootRoutes(
-    <Route path=':tenantId/v/'>
+    <Route path=':tenantId/t/'>
       <Route path={getConfigTemplatePath()} element={<LayoutWithConfigTemplateContext />}>
         <Route index
-          element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
+          element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} />}
         />
-        <Route path='templates' element={<ConfigTemplatePage />} />
+        <Route path='templates' element={<div>ConfigTemplatePage</div>} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
@@ -469,20 +281,6 @@ export function ConfigTemplatesRoutes () {
           <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
-        </>}
-        {configTemplateVisibilityMap[ConfigTemplateType.IDENTITY_GROUP] && <>
-          <Route
-            path='identityManagement/identityGroups/add'
-            element={<IdentityGroupForm />}
-          />
-          <Route
-            path='identityManagement/identityGroups/:personaGroupId/edit'
-            element={<IdentityGroupForm editMode={true}/>}
-          />
-          <Route
-            path='identityManagement/identityGroups/:personaGroupId/detail'
-            element={<PersonaGroupDetails />}
-          />
         </>}
       </Route>
     </Route>
