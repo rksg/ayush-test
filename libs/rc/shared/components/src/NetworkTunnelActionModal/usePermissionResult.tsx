@@ -5,7 +5,6 @@ import { getOpsApi }                                                            
 
 export const usePermissionResult = () => {
   const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const getSdLanPermission = () => {
@@ -50,7 +49,7 @@ export const usePermissionResult = () => {
   // eslint-disable-next-line max-len
   const hasEdgeSdLanPermission = getSdLanPermission()
   // eslint-disable-next-line max-len
-  const hasSoftGrePermission = !isSoftGreEnabled || getSoftGrePermission()
+  const hasSoftGrePermission = getSoftGrePermission()
   // eslint-disable-next-line max-len
   const hasIpSecPermission = !isIpSecEnabled || getIpSecPermission()
 
