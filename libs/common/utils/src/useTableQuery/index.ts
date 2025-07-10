@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { TableProps }  from 'antd'
-import { FilterValue } from 'antd/lib/table/interface'
-import _               from 'lodash'
+import { TableProps }        from 'antd'
+import { FilterValue }       from 'antd/lib/table/interface'
+import _                     from 'lodash'
+import { useParams, Params } from 'react-router-dom'
 
-import { useParams, Params } from '@acx-ui/react-router-dom'
 import {
   RequestPayload,
   UseQuery,
