@@ -1,3 +1,5 @@
+import { RolesEnum as Role } from '@acx-ui/types'
+
 import { getAIAllowedOperations, opsApis } from './aiAllowedOperations'
 import { hasRoles }                        from './userProfile'
 
@@ -25,6 +27,16 @@ describe('getAIAllowedOperations', () => {
     const expectedUris = [
       opsApis.updateIncident,
       opsApis.updateIntentAI
+    ]
+    const result = getAIAllowedOperations(profile)
+    expect(result.flatMap(op => op.uri).sort()).toEqual(expectedUris.sort())
+  })
+
+  it('should allow operations based on user role', () => {
+    jest.mocked(hasRoles).mockImplementation((roles) => roles.includes(Role.READ_ONLY))
+    const profile = mockProfile(['brand360.dashboard-r'])
+    const expectedUris = [
+      opsApis.readBrand360Dashboard
     ]
     const result = getAIAllowedOperations(profile)
     expect(result.flatMap(op => op.uri).sort()).toEqual(expectedUris.sort())
