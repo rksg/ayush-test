@@ -394,6 +394,17 @@ export const switchReleaseV1002 = [
     ]
   },
   {
+    modelGroup: 'ICX81',
+    versions: [
+      {
+        id: '10010_rc81',
+        name: '10010_rc81',
+        category: 'RECOMMENDED',
+        createdDate: '2024-05-23T03:54:07.867+00:00'
+      }
+    ]
+  },
+  {
     modelGroup: 'ICX82',
     versions: [
       {
