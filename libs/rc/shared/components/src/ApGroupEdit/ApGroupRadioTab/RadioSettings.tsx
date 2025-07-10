@@ -475,17 +475,17 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       return
     }
 
-    // special case
-    if (dual5gApModels.length > 0) {
-      setInitApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: apGroupBandModeSavedData.apModelBandModeSettings
-      })
-      setCurrentApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: [...apGroupBandModeSavedData.apModelBandModeSettings]
-      })
 
+    setInitApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: apGroupBandModeSavedData.apModelBandModeSettings ?? []
+    })
+    setCurrentApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: [...(apGroupBandModeSavedData.apModelBandModeSettings ?? [])]
+    })
+
+    if (dual5gApModels.length > 0) {
       const venueDual5GData = venueSavedChannelsData.radioParamsDual5G
       const updatedVenueBandModeSettings = handleDual5GBandModeSpecialCase(
         venueBandModeSavedData,
