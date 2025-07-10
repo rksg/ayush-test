@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import {
   Input,
   Form,
@@ -8,13 +10,15 @@ import {
 import { NamePath } from 'antd/lib/form/interface'
 import { useIntl }  from 'react-intl'
 
-import { DraggableTagField, Tooltip, cssStr } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
+import { DraggableTagField, Tooltip, cssStr }    from '@acx-ui/components'
+import type { DraggableTag }                     from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
   DhcpOption82SubOption151Enum,
-  DhcpOption82MacEnum
+  DhcpOption82MacEnum,
+  DhcpOption82SubOption1CustomizationAttribute
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -25,6 +29,7 @@ const { Option } = Select
 interface DhcpOption82FormField {
   dhcpOption82SubOption1EnabledFieldName: NamePath
   dhcpOption82SubOption1FormatFieldName: NamePath
+  dhcpOption82SubOption1CustomizationFieldName: NamePath
   dhcpOption82SubOption2EnabledFieldName: NamePath
   dhcpOption82SubOption2FormatFieldName: NamePath
   dhcpOption82SubOption150EnabledFieldName: NamePath
@@ -34,10 +39,30 @@ interface DhcpOption82FormField {
   dhcpOption82MacFormat: NamePath
 }
 
+const INTERFACE = 'INTERFACE'
+const INTERFACE_NO_PREFIX = 'INTERFACE_NO_PREFIX'
+const VLAN = 'VLAN'
+const ESSID = 'ESSID'
+const AP_MODEL = 'AP_MODEL'
+const AP_NAME = 'AP_NAME'
+const AP_MAC = 'AP_MAC'
+const USER_DEFINED = 'USER_DEFINED'
+
+const TagOptions = [
+  INTERFACE,
+  INTERFACE_NO_PREFIX,
+  VLAN,
+  ESSID,
+  AP_MODEL,
+  AP_NAME,
+  AP_MAC
+]
+
 /* eslint-disable max-len */
 const defaultDhcpOption82FormField = {
   dhcpOption82SubOption1EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled'],
   dhcpOption82SubOption1FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Format'],
+  dhcpOption82SubOption1CustomizationFieldName: [],
   dhcpOption82SubOption2EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled'],
   dhcpOption82SubOption2FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Format'],
   dhcpOption82SubOption150EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled'],
@@ -53,6 +78,7 @@ const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOpt
     return {
       dhcpOption82SubOption1EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled'],
       dhcpOption82SubOption1FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format'],
+      dhcpOption82SubOption1CustomizationFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Customization'],
       dhcpOption82SubOption2EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled'],
       dhcpOption82SubOption2FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format'],
       dhcpOption82SubOption150EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled'],
@@ -76,6 +102,8 @@ export const DhcpOption82SettingsFormField = (props: {
   readonly: boolean
  }) => {
 
+  const form = Form.useFormInstance()
+
   const { $t } = useIntl()
   const {
     labelWidth = '250px',
@@ -85,9 +113,12 @@ export const DhcpOption82SettingsFormField = (props: {
     readonly
   } = props
 
+  const isUsedByLanPortDrawer = (context !== undefined && context === 'lanport')
+
   const {
     dhcpOption82SubOption1EnabledFieldName,
     dhcpOption82SubOption1FormatFieldName,
+    dhcpOption82SubOption1CustomizationFieldName,
     dhcpOption82SubOption2EnabledFieldName,
     dhcpOption82SubOption2FormatFieldName,
     dhcpOption82SubOption150EnabledFieldName,
@@ -173,6 +204,36 @@ export const DhcpOption82SettingsFormField = (props: {
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
     useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName)
   ]
+
+  useEffect(() => {
+    if(isUsedByLanPortDrawer) {
+      const customization = form.getFieldValue(dhcpOption82SubOption1CustomizationFieldName)
+      if (customization) {
+        // eslint-disable-next-line max-len
+        const transformedTags = customization.attributes.map((attribute: DhcpOption82SubOption1CustomizationAttribute, index: string) => {
+          if (attribute.type === USER_DEFINED) {
+            return {
+              id: index,
+              value: attribute.text,
+              isCustom: true,
+              valid: true
+            } as DraggableTag
+          } else {
+            return {
+              id: index,
+              value: attribute.type,
+              isCustom: false,
+              valid: true
+            } as DraggableTag
+          }
+        })
+        // eslint-disable-next-line max-len
+        form.setFieldValue(`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`, transformedTags)
+      }
+
+    }
+  }, [])
+
   return (
     <>
       <UI.FieldLabel width={labelWidth}>
@@ -206,26 +267,41 @@ export const DhcpOption82SettingsFormField = (props: {
           }
         </div>
       </UI.FieldLabel>
-      <UI.AsteriskFormTitle>
-        {$t({ defaultMessage: 'Custom Attributes' })}
-      </UI.AsteriskFormTitle>
-      <div style={{
-        fontSize: '12px',
-        color: cssStr('--acx-neutrals-60')
-      }}>
-        {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
-      </div>
-      <UI.FieldLabelFullWidth>
-        <DraggableTagField
-          name='tags'
-          options={['Option1', 'Option2', 'Option3']}
-          maxTags={5}
-          customTags={{
-            maxLength: 20,
-            customRules: []
-          }}
-        />
-      </UI.FieldLabelFullWidth>
+      {isUsedByLanPortDrawer &&
+      <>
+        <UI.AsteriskFormTitle>
+          {$t({ defaultMessage: 'Custom Attributes' })}
+        </UI.AsteriskFormTitle>
+        <div style={{
+          fontSize: '12px',
+          color: cssStr('--acx-neutrals-60')
+        }}>
+          {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
+        </div>
+        <UI.FieldLabelFullWidth>
+          <DraggableTagField
+            name={`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`}
+            // eslint-disable-next-line max-len
+            options={TagOptions}
+            maxTags={8}
+            onChange={(val) => {
+              console.log('DraggableTagField onChange', val) // eslint-disable-line no-console
+              form.setFieldValue(dhcpOption82SubOption1CustomizationFieldName, {
+                attributes: val.map((tag) => {
+                  if(tag.isCustom) {
+                    return {
+                      type: 'USER_DEFINED',
+                      text: tag.value
+                    }
+                  } else {
+                    return { type: tag.value }
+                  }
+                })
+              })
+            }}
+          />
+        </UI.FieldLabelFullWidth>
+      </>}
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
           {$t({ defaultMessage: 'Agent Remote ID (#2)' })}
