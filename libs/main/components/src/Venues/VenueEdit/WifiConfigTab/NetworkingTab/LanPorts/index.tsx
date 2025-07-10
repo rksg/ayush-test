@@ -283,13 +283,13 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
 
-      const isNotUpdated = lan && apModel
+      const isUpdated = lan && apModel
         ? (() => {
-          const match = lanPortData?.find(item => item.model === apModel)
-          return match ? !isEqual(match.lanPorts, lan) : false
+          const matchItem = lanPortData?.find(item => item.model === apModel)
+          return matchItem ? isEqual(matchItem.lanPorts, lan) : false
         })()
         : false
-      if (!isNotUpdated) {
+      if (isUpdated) {
         customGuiChangedRef.current = false
       }
     }
