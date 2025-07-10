@@ -173,18 +173,23 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   format: formatter('percentFormatRound'),
   deltaSign: '-',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
-    ({
-      value: current.powerConsumption,
-      previous: previous.powerConsumption,
-      isPill: true
-    }),
+  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) => {
+    const currentValue = current.powerConsumption ?? 0
+    const previousValue = previous.powerConsumption ?? 0
+    const difference = currentValue / previousValue * 100
+
+    return {
+      value: currentValue,
+      previous: previousValue,
+      isPill: difference > 1000 ? true : false
+    }
+  },
   valueFormatter: formatter('countFormat'),
   tooltip: defineMessage({ defaultMessage: 'Total power consumed by all APs in this zone per day, measured in kilowatt-hours (kWh).' })
 },{
   key: 'maxApPower',
   label: defineMessage({ defaultMessage: 'Max AP Power' }),
-  format: formatter('countFormat'),
+  format: formatter('noFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
   valueAccessor: (current: KpiResultExtend) =>
@@ -195,7 +200,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
 },{
   key: 'minApPower',
   label: defineMessage({ defaultMessage: 'Min AP Power (Standard vs AI)' }),
-  format: formatter('countFormat'),
+  format: formatter('noFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
   valueAccessor: (current: KpiResultExtend) =>
