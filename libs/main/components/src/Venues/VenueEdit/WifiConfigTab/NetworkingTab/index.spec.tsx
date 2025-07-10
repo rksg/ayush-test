@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                                   from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, IpsecUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, IpsecUrls, SoftGreUrls, WifiConfigUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                             from '@acx-ui/test-utils'
 
@@ -34,6 +34,14 @@ describe('NetworkingTab', () => {
     mockGetApsList.mockClear()
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
+      rest.get(
+        WifiConfigUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiConfigUrlsInfo.getVenueSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
