@@ -39,7 +39,7 @@ const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
-const RecConfigTemplatesRoutes = React.lazy(() => import('./routes/RecConfigTemplatesRoutes'))
+const RecConfigTemplateRoutes = React.lazy(() => import('./routes/RecConfigTemplateRoutes'))
 
 function AllRoutes () {
   const { data: userProfile } = useUserProfileContext()
@@ -110,7 +110,7 @@ function AllRoutes () {
           <Route path='venues/*' element={<VenuesRoutes />} />
           <Route path='administration/*' element={<AdministrationRoutes />} />
           <Route path='ruckus-wan-gateway/*' element={<RWGRoutes />} />
-          <Route path={getConfigTemplatePath('/*')} element={<RecConfigTemplatesRoutes />} />
+          <Route path={getConfigTemplatePath('/*')} element={<RecConfigTemplateRoutes />} />
         </Route>
       </Route>
       <Route path=':tenantId/v/*' element={<MFACheck />}>
