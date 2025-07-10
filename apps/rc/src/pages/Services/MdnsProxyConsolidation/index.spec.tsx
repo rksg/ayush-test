@@ -22,6 +22,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedNavigate
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useMdnsProxyConsolidationTotalCount: () => ({
+    data: {
+      totalCount: 10,
+      mdnsProxyCount: 5,
+      edgeMdnsProxyCount: 5
+    },
+    isFetching: false
+  })
+}))
+
 describe('MdnsProxyConsolidation', () => {
   const path = '/:tenantId/services/mdnsProxyConsolidation/list/:activeTab'
   const params = { tenantId: 'TENANT_ID' }
@@ -34,9 +46,9 @@ describe('MdnsProxyConsolidation', () => {
     render(<MdnsProxyConsolidation />, {
       route: { params: { ...params, activeTab: 'wifi' }, path }
     })
-    expect(screen.getByText('mDNS Proxy')).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /Wi-Fi/ })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /RUCKUS Edge/ })).toBeInTheDocument()
+    expect(screen.getByText('mDNS Proxy (10)')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Wi-Fi \(5\)/ })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /RUCKUS Edge \(5\)/ })).toBeInTheDocument()
     expect(screen.getByText('Mocked MdnsProxyTable')).toBeInTheDocument()
 
     const addButton = screen.getByRole('link', { name: /Add mDNS Proxy for Wi-Fi/ })
@@ -60,7 +72,7 @@ describe('MdnsProxyConsolidation', () => {
       route: { params: { ...params, activeTab: 'wifi' }, path }
     })
 
-    const tabButton = screen.getByRole('tab', { name: /RUCKUS Edge/ })
+    const tabButton = screen.getByRole('tab', { name: /RUCKUS Edge \(5\)/ })
     await userEvent.click(tabButton)
     expect(mockedNavigate).toHaveBeenCalledWith({
       pathname: '/TENANT_ID/t/services/mdnsProxyConsolidation/list/edge',

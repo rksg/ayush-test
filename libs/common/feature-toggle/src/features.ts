@@ -298,6 +298,7 @@ export enum Features {
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
+  WORKFLOW_QRCODE_GENERATE = 'workflow-qrcode-generate-toggle',
   DHCP_CONSOLIDATION = 'acx-ui-consolidated-dhcp-toggle',
   MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control',
   WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication',
@@ -305,7 +306,9 @@ export enum Features {
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
-  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle'
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
+  WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
+  ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
