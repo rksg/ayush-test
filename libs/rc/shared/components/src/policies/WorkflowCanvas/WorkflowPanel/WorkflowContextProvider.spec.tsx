@@ -12,10 +12,6 @@ import { render, screen } from '@acx-ui/test-utils'
 import { mockInitialNodes }                            from './__tests__/fixtures'
 import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextProvider'
 
-jest.mock('reactflow', () => ({
-  ...jest.requireActual('reactflow')
-}))
-
 describe('WorkflowContextProvider', () => {
   const mockWorkflowId = 'mock-workflow-id'
 
