@@ -1,8 +1,8 @@
 import { ReactNode, useState } from 'react'
 
-import { Col, Form, Row }             from 'antd'
-import _, { get, isNil, union, uniq } from 'lodash'
-import { useIntl }                    from 'react-intl'
+import { Col, Row }            from 'antd'
+import _, { get, union, uniq } from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import { Features }                                    from '@acx-ui/feature-toggle'
@@ -21,9 +21,7 @@ import {
   getEdgePortIpModeString,
   isInterfaceInVRRPSetting,
   sortProp,
-  EdgeFormFieldsPropsType,
-  edgeWanSyncIpModeValidator,
-  getEdgeWanInterfaces
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -39,19 +37,19 @@ interface EdgeLagTableType extends EdgeLag {
 }
 
 interface EdgeLagTableProps {
-  clusterId?: string
-  serialNumber?: EdgeSerialNumber
-  lagList?: EdgeLag[]
-  lagStatusList?: EdgeLagStatus[]
-  portList?: EdgePort[]
-  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  serialNumber: EdgeSerialNumber | undefined
+  lagList: EdgeLag[] | undefined
+  portList: EdgePort[] | undefined
+  clusterInfo: EdgeClusterStatus
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
+
+  lagStatusList?: EdgeLagStatus[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   actionScopes?: { [key in string]: ScopeKeys }
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
   originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
@@ -59,7 +57,7 @@ interface EdgeLagTableProps {
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    clusterId = '', serialNumber = '', lagList,
+    serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
@@ -72,7 +70,6 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
-  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const transToTableData = (edgeLagList?: EdgeLag[], edgeLagStatusList?: EdgeLagStatus[]) => {
     return edgeLagList?.map(item => ({
@@ -287,25 +284,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         }}
         rowKey='id'
       />
-      <Form.Item
-        name='multiWanIpModeCheck'
-        rules={[
-          ...(isEdgeDualWanEnabled
-            ? [{ validator: () => {
-              // only check when all WAN is LAG
-              const allWans = getEdgeWanInterfaces(portList, lagList)
-              // eslint-disable-next-line max-len
-              const isAllLagWan = allWans.every((wan: EdgePort | EdgeLag) => !isNil((wan as EdgeLag).lagEnabled))
-              if (!isAllLagWan) return Promise.resolve()
-
-              return edgeWanSyncIpModeValidator(portList ?? [], lagList ?? [])
-            } }]
-            : [])
-        ]}
-        children={<></>}
-      />
       <LagDrawer
-        clusterId={clusterId}
         serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}

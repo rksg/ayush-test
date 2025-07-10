@@ -36,7 +36,7 @@ import { useIsEdgeFeatureReady }                       from '../useEdgeActions'
 import { LagMembersComponent } from './LagMembersComponent'
 
 interface LagDrawerProps {
-  clusterId: string
+  clusterInfo: EdgeClusterStatus
   serialNumber?: EdgeSerialNumber
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -48,7 +48,6 @@ interface LagDrawerProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
   originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
@@ -70,11 +69,11 @@ const defaultFormValues = {
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
-    clusterId = '', serialNumber = '', visible, setVisible,
+    clusterInfo, serialNumber = '', visible, setVisible,
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo, isSupportAccessPort,
+    isSupportAccessPort,
     formFieldsProps, originalInterfaceData
   } = props
   const isEditMode = data?.id !== undefined
@@ -90,7 +89,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
     edgeSdLanData
-  } = useGetEdgeSdLanByClusterId(clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo.clusterId)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
