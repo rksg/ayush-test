@@ -289,7 +289,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
 
     acknowledgeSwitch({
-      params: { tenantId: params.tenantId, switchId: row.id, venueId: row.venueId },
+      params: { tenantId: params.tenantId, switchId: row.switchMac, venueId: row.venueId },
       payload: ackPayload,
       enableRbac: isSwitchRbacEnabled
     })
@@ -298,7 +298,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const renderAckTooltip = (rows: SwitchRow[], row: SwitchRow) => {
     if(row.isStack){
       const showTooltip = rows.find(r => r.activeSerial === row.activeSerial)?.children?.some(r => r.needAck === true)
-
 
       if (showTooltip) {
         return (
