@@ -59,6 +59,7 @@ export enum Features {
   EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
+  EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -294,7 +295,8 @@ export enum Features {
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
   PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
-  ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names'
+  ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
+  IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
