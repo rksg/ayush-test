@@ -1024,6 +1024,15 @@ export enum DhcpOption82MacEnum {
   NODELIMITER = 'NODELIMITER',
 }
 
+export interface DhcpOption82SubOption1CustomizationAttribute {
+  type: string
+  text?: string
+}
+
+export interface DhcpOption82SubOption1Customization {
+  attributes: DhcpOption82SubOption1CustomizationAttribute[]
+}
+
 export interface DhcpOption82Settings {
   subOption151Input:	string
   subOption151Format:	DhcpOption82SubOption151Enum
@@ -1034,6 +1043,7 @@ export interface DhcpOption82Settings {
   subOption2Enabled:	boolean
   subOption150Enabled:	boolean
   subOption151Enabled:	boolean
+  subOption1Customization: DhcpOption82SubOption1Customization
 }
 
 export interface VenueApModelLanPortSettingsV1 {
