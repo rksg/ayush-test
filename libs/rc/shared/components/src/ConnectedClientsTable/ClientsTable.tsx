@@ -7,7 +7,6 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { AsyncColumnLoader }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useGetClientListQuery,
   useVenuesListQuery,
@@ -180,7 +179,6 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
 
   function GetCols (intl: IntlShape, showAllColumns?: boolean) {
     const { $t } = useIntl()
-    const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
 
     const clientStatuses = () => [
@@ -256,7 +254,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           </Tooltip>
         }
       },
-      ...(wifi7MLOToggle ? [{
+      {
         key: 'mldAddr',
         title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
         dataIndex: 'mldAddr',
@@ -271,7 +269,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             </Tooltip>
           }, (row) => row.mldAddr === undefined && row.apName === undefined && row.venueName === undefined)
         }
-      }] : []),
+      },
       {
         key: 'ipAddress',
         title: intl.$t({ defaultMessage: 'IP Address' }),

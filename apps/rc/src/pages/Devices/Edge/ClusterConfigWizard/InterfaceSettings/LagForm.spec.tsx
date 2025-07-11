@@ -7,15 +7,15 @@ import { Features }       from '@acx-ui/feature-toggle'
 import { EdgeLagTable }   from '@acx-ui/rc/components'
 import {
   EdgeClusterStatus, EdgeFormFieldsPropsType,
-  EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures,
+  EdgeGeneralFixtures, EdgeIpModeEnum, EdgeLag, EdgeLagFixtures,
   edgePhysicalPortInitialConfigs,
   EdgePort, EdgePortTypeEnum, EdgeStatus,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData } from '../__tests__/fixtures'
-import { ClusterConfigWizardContext }                                                   from '../ClusterConfigWizardDataProvider'
+import { getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData, mockDualWanClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }                                                                                       from '../ClusterConfigWizardDataProvider'
 
 import { LagForm }                   from './LagForm'
 import { InterfaceSettingsFormType } from './types'
@@ -71,6 +71,10 @@ describe('InterfaceSettings - LagForm', () => {
       clusterId: 'mocked_cluster_id',
       settingType: 'interface'
     }
+  })
+
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
   })
 
   it('should correctly render', async () => {
@@ -354,9 +358,6 @@ describe('InterfaceSettings - LagForm', () => {
       jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
       jest.mocked(EdgeLagTable).mockImplementation((props) => <MockComponent {...props}/>)
     })
-    afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
-    })
 
     const mockNode1NatPoolEnabledData = cloneDeep(mockClusterConfigWizardData)
     const node1Sn = mockedHaNetworkSettings.portSettings[0].serialNumber
@@ -405,6 +406,91 @@ describe('InterfaceSettings - LagForm', () => {
 
       // eslint-disable-next-line max-len
       expect(error).toHaveTextContent(`NAT pool ranges on ${edge1Name} overlap with those on ${edge2Name}`)
+    })
+  })
+
+  describe('when dual WAN enabled', () => {
+    const MockComponent = ({ formFieldsProps }: { formFieldsProps?: EdgeFormFieldsPropsType }) => {
+      return <Form.Item
+        data-testid='lag-table'
+        name='test-multi-wan-ip-mode'
+        {...formFieldsProps?.ipMode}
+        children={<span></span>}
+      />
+    }
+
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      jest.mocked(EdgeLagTable).mockImplementation((props) => <MockComponent {...props}/>)
+
+    })
+
+    it('should validate if multi WAN have consistent IP mode when all WAN is LAG', async () => {
+      const mockDiffIpModeLagWansData = cloneDeep(mockDualWanClusterConfigWizardData)
+      const node1Sn = mockedHaNetworkSettings.portSettings[0].serialNumber
+      // eslint-disable-next-line max-len
+      mockDiffIpModeLagWansData.portSettings[node1Sn].port1[0].portType = EdgePortTypeEnum.UNCONFIGURED
+      const secondLag = cloneDeep(mockDiffIpModeLagWansData.lagSettings[0].lags[0])
+      secondLag.id = 1
+      secondLag.portType = EdgePortTypeEnum.WAN
+      secondLag.ipMode = EdgeIpModeEnum.STATIC
+      mockDiffIpModeLagWansData.lagSettings[0].lags.push(secondLag)
+
+      const mockOnFinish = jest.fn()
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedClusterInfo,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <StepsForm initialValues={mockDiffIpModeLagWansData} onFinish={mockOnFinish}>
+            <StepsForm.StepForm>
+              <LagForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(await screen.findByTestId('lag-table')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+      const error = await screen.findByRole('alert')
+      expect(error).toBeVisible()
+      expect(error).toHaveTextContent('IP modes must be consistent across all WAN interfaces.')
+      expect(mockOnFinish).toBeCalledTimes(0)
+    })
+
+    it('should pass if multi WAN have inconsistent IP mode when NOT all WAN is LAG', async () => {
+      const mockDiffIpModeWansData = cloneDeep(mockDualWanClusterConfigWizardData)
+      // make LAG WAN IP mode different from physical WAN
+      mockDiffIpModeWansData.lagSettings[0].lags[0].ipMode = EdgeIpModeEnum.STATIC
+
+      const mockOnFinish = jest.fn()
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedClusterInfo,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <StepsForm initialValues={mockDiffIpModeWansData} onFinish={mockOnFinish}>
+            <StepsForm.StepForm>
+              <LagForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(await screen.findByTestId('lag-table')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+      expect(mockOnFinish).toBeCalledTimes(1)
+      expect(screen.queryByRole('alert')).toBeNull()
     })
   })
 })

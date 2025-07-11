@@ -5,8 +5,20 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Button, Card, cssStr, Descriptions, DonutChart, GridCol, GridRow, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
+import { Traffic } from '@acx-ui/analytics/components'
+import {
+  Button,
+  Card,
+  cssStr,
+  Descriptions,
+  DonutChart,
+  GridCol,
+  GridRow,
+  Loader,
+  NoData,
+  Subtitle
+} from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -34,19 +46,24 @@ import { getOpsApi, ignoreErrorModal, noDataDisplay }                           
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
 import { MAX_CLIENTS_PER_PAGE }   from './IdentityClientTable'
 
-
 const identityClientDefaultSorter = {
   sortField: 'username',
   sortOrder: 'ASC'
 }
 
+interface PersonaOverviewProps {
+  personaData?: Persona
+  personaGroupData?: PersonaGroup
+  isIdentityAnalyticsEnabled?: boolean
+}
 
-export function PersonaOverview (props:
-   { personaData?: Persona, personaGroupData?: PersonaGroup }
-) {
+export function PersonaOverview ({
+  personaData,
+  personaGroupData,
+  isIdentityAnalyticsEnabled
+}: PersonaOverviewProps) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
-  const { personaData, personaGroupData } = props
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
 
@@ -339,28 +356,35 @@ export function PersonaOverview (props:
       <GridRow>
         <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-          <Card
-            title={$t({ defaultMessage: 'Associated Devices' })}>
-            <AutoSizer>
-              {({ width, height }) => (
-                <DonutChart
-                  style={{ width, height }}
-                  title={$t({ defaultMessage: 'Wi-Fi' })}
-                  showLoading={isClientsLoading || isClientsFetching}
-                  data={[{
-                    value: identityDeviceCount,
-                    name: $t({ defaultMessage: 'Wi-Fi' }),
-                    color: identityDeviceCount > 0
-                      ? cssStr('--acx-semantics-green-50')
-                      : cssStr('--acx-neutrals-50')
-                  }]}
-                />
-              )}
-            </AutoSizer>
-          </Card>
+          <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
+            <Card title={$t({ defaultMessage: 'Associated Devices' })}>
+              <AutoSizer>
+                {({ width, height }) =>
+                  identityDeviceCount > 0 ? (
+                    <DonutChart
+                      style={{ width, height }}
+                      title={$t({ defaultMessage: 'Wi-Fi' })}
+                      data={[{
+                        value: identityDeviceCount,
+                        name: $t({ defaultMessage: 'Wi-Fi' }),
+                        color: cssStr('--acx-semantics-green-50')
+                      }]}
+                    />
+                  ) : (
+                    <NoData />
+                  )
+                }
+              </AutoSizer>
+            </Card>
+          </Loader>
         </GridCol>
+        {isIdentityAnalyticsEnabled && (
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <Traffic />
+          </GridCol>
+        )}
       </GridRow>
-      {externalIdentityData !==undefined &&
+      {externalIdentityData !== undefined &&
       <CommonAttributesDrawer
         externalData={externalIdentityData}
         visible={attributesDrawerVisible}

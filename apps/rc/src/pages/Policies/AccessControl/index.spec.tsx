@@ -1,11 +1,9 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import * as featureToggle                    from '@acx-ui/feature-toggle'
-import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { mockServer, render, screen }        from '@acx-ui/test-utils'
-import * as userModule                       from '@acx-ui/user'
+import * as featureToggle from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+import * as userModule    from '@acx-ui/user'
 
 
 import AccessControl from './index'
@@ -13,10 +11,39 @@ import AccessControl from './index'
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath = { pathname: '/tenant-id/t', search: '', hash: '' }
 
-const mockTableResult = {
-  totalCount: 0,
-  data: []
-}
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  AccessControlTabs: () => <div>Wi-Fi Access Control Tabs</div>,
+  useWifiAclTotalCount: () => ({
+    isFetching: false,
+    data: {
+      totalCount: 15,
+      aclCount: 1,
+      l2AclCount: 2,
+      l3AclCount: 3,
+      deviceAclCount: 4,
+      appAclCount: 5
+    }
+  }),
+  useSwitchAclTotalCount: () => ({
+    isFetching: false,
+    data: {
+      totalCount: 3,
+      switchMacAclCount: 1,
+      switchL2AclCount: 2
+    }
+  }),
+  useAclTotalCount: () => ({
+    isFetching: false,
+    data: {
+      totalCount: 18
+    }
+  })
+}))
+
+jest.mock('../SwitchAccessControl', () => ({
+  SwitchAccessControl: () => <div>Switch Access Control Tabs</div>
+}))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -30,20 +57,6 @@ describe('AccessControl', () => {
   beforeEach(() => {
     jest.spyOn(userModule, 'hasCrossVenuesPermission').mockReturnValue(true)
     jest.spyOn(userModule, 'filterByAccess').mockImplementation((children) => children)
-    mockServer.use(
-      rest.post(
-        AccessControlUrls.getEnhancedAccessControlProfiles.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
-        AccessControlUrls.getAccessControlProfileQueryList.url,
-        (_, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(CommonUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult)))
-    )
   })
 
   afterEach(() => {
@@ -57,12 +70,12 @@ describe('AccessControl', () => {
       <Provider>
         <AccessControl />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/policies/select' }
+        route: { params, path: '/:tenantId/t/policies/accessControl/wifi' }
       })
 
-    expect(screen.getByText('Access Control')).toBeInTheDocument()
-    expect(screen.getByText('Wi-Fi')).toBeInTheDocument()
-    expect(screen.getByText('Switch')).toBeInTheDocument()
+    expect(screen.getByText('Access Control (18)')).toBeInTheDocument()
+    expect(screen.getByText('Wi-Fi (15)')).toBeInTheDocument()
+    expect(screen.getByText('Switch (3)')).toBeInTheDocument()
     expect(screen.getByText('Add Access Control Set')).toBeInTheDocument()
   })
 
@@ -73,12 +86,12 @@ describe('AccessControl', () => {
       <Provider>
         <AccessControl />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/policies/select' }
+        route: { params, path: '/:tenantId/t/policies/accessControl/wifi' }
       })
 
-    expect(screen.getByText('Access Control')).toBeInTheDocument()
+    expect(screen.getByText('Access Control (18)')).toBeInTheDocument()
     expect(screen.getByText('Add Access Control Set')).toBeInTheDocument()
-    expect(screen.queryByText('Switch')).not.toBeInTheDocument()
+    expect(screen.queryByText('Switch (3)')).not.toBeInTheDocument()
   })
 
   it('should navigate when tab is changed', async () => {
@@ -88,10 +101,10 @@ describe('AccessControl', () => {
       <Provider>
         <AccessControl />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/policies/select' }
+        route: { params, path: '/:tenantId/t/policies/accessControl/wifi' }
       })
 
-    await userEvent.click(screen.getByText('Switch'))
+    await userEvent.click(screen.getByText('Switch (3)'))
 
     expect(mockedUseNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -99,19 +112,5 @@ describe('AccessControl', () => {
       }),
       { replace: true }
     )
-  })
-
-  it('should render correct add button for wifi tab', async () => {
-    jest.spyOn(featureToggle, 'useIsSplitOn').mockReturnValue(true)
-
-    render(
-      <Provider>
-        <AccessControl />
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/policies/select' }
-      })
-
-    const addButton = screen.getByText('Add Access Control Set')
-    expect(addButton).toBeInTheDocument()
   })
 })
