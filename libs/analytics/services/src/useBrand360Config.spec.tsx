@@ -11,7 +11,7 @@ const defaultSettings = {
   'brand-name': 'testBrand',
   'lsp-name': 'testLsp',
   'property-name': 'testProperty',
-  'property-code-name':'testPropertyCode'
+  'property-code-name': 'testPropertyCode'
 } as unknown as Settings
 
 const mockTenantSettings = (settings: Settings) => {

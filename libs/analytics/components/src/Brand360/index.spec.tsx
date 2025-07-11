@@ -14,7 +14,6 @@ import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingD
 import { FranchisorTimeseries }                                                                        from './services'
 
 import { Brand360 } from '.'
-import { useMspECListWithDelegationsQuery } from '@acx-ui/msp/services';
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
