@@ -10,12 +10,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
+import { getOpsApi }              from '@acx-ui/utils'
 
 import { usePathBasedOnConfigTemplate }           from '../../configTemplates'
 import { useApGroupConfigTemplateOpsApiSwitcher } from '../apGroupConfigTemplateApiSwitcher'
 import { ApGroupEditContext }                     from '../context'
 
-import { RadioSettings } from './RadioSettings'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
+import { RadioSettings }                  from './RadioSettings'
 
 export function ApGroupRadioTab () {
   const { $t } = useIntl()
@@ -28,9 +30,11 @@ export function ApGroupRadioTab () {
   )
 
   const [
-    isAllowEditRadio
+    isAllowEditRadio,
+    isAllowEditClientAdmissionControlSettings
   ] = [
-    hasAllowedOperations([radioSettingsOpsApi])
+    hasAllowedOperations([radioSettingsOpsApi]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)])
   ]
 
   const {
@@ -46,6 +50,7 @@ export function ApGroupRadioTab () {
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
+  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control' })
 
   const anchorItems = [{
     title: wifiSettingLink,
@@ -57,11 +62,22 @@ export function ApGroupRadioTab () {
         <RadioSettings isAllowEdit={isAllowEditRadio} />
       </>
     )
+  },{
+    title: clientAdmissionControlSettingsTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-admission-control'>
+          { clientAdmissionControlSettingsTitle }
+        </StepsFormLegacy.SectionTitle>
+        <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControlSettings} />
+      </>
+    )
   }]
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
       await editRadioContextData.updateWifiRadio?.()
+      await editRadioContextData.updateClientAdmissionControl?.()
 
       resetEditContextData()
 
@@ -79,6 +95,7 @@ export function ApGroupRadioTab () {
   const handleDiscardChanges = async () => {
     try {
       await editRadioContextData.discardWifiRadioChanges?.()
+      await editRadioContextData.discardClientAdmissionControl?.()
 
       resetEditContextData()
 

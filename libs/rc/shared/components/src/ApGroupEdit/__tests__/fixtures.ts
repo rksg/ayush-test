@@ -5679,6 +5679,7 @@ export const radioData = {
     inheritParamsLower5G: true,
     radioParamsLower5G: {
       method: 'CHANNELFLY',
+      scanInterval: 20,
       changeInterval: 33,
       channelBandwidth: 'AUTO',
       txPower: 'MAX',
@@ -5722,6 +5723,7 @@ export const radioData = {
     inheritParamsUpper5G: true,
     radioParamsUpper5G: {
       method: 'CHANNELFLY',
+      scanInterval: 20,
       changeInterval: 33,
       channelBandwidth: 'AUTO',
       txPower: 'MAX',
