@@ -11,7 +11,6 @@ import {
   Button,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useDeleteLayer2AclMutation, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyAllowedOperation,
@@ -31,7 +30,6 @@ export function SwitchLayer2ACL () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const settingsId = 'switch-layer2-access-control'
 
   const [deleteAccessControl] = useDeleteLayer2AclMutation()
@@ -41,7 +39,7 @@ export function SwitchLayer2ACL () {
     defaultPayload: {
       pagination: { settingsId }
     },
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'

@@ -470,7 +470,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(487.2235 85.126)"
                             >
@@ -484,7 +484,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(637.9834 176.8051)"
                             >
@@ -498,7 +498,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(719.1605 333.4699)"
                             >
@@ -512,7 +512,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(715.8006 481.0331)"
                             >
@@ -526,7 +526,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(666.1492 588.5745)"
                             >
@@ -540,7 +540,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(581.4444 671.3725)"
                             >
@@ -554,7 +554,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(501.4635 710.5322)"
                             >
@@ -568,7 +568,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(162.6342 653.6576)"
                             >
@@ -582,7 +582,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(52.1994 318.9669)"
                             >
@@ -596,7 +596,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(199.096 120.6049)"
                             >
@@ -1756,7 +1756,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(487.2235 85.126)"
                             >
@@ -1770,7 +1770,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(637.9834 176.8051)"
                             >
@@ -1784,7 +1784,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(719.1605 333.4699)"
                             >
@@ -1798,7 +1798,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(715.8006 481.0331)"
                             >
@@ -1812,7 +1812,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(666.1492 588.5745)"
                             >
@@ -1826,7 +1826,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(581.4444 671.3725)"
                             >
@@ -1840,7 +1840,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(501.4635 710.5322)"
                             >
@@ -1854,7 +1854,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(162.6342 653.6576)"
                             >
@@ -1868,7 +1868,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(52.1994 318.9669)"
                             >
@@ -1882,7 +1882,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(199.096 120.6049)"
                             >
@@ -2671,7 +2671,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(399.9404 73.0014)"
                               xml:space="preserve"
@@ -2686,7 +2686,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(501.4306 91.1014)"
                               xml:space="preserve"
@@ -2701,7 +2701,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(352.4697 726.5819)"
                               xml:space="preserve"
@@ -2716,7 +2716,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(130.6025 181.6)"
                               xml:space="preserve"
@@ -2731,7 +2731,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(148.1445 163.5)"
                               xml:space="preserve"
@@ -2746,7 +2746,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(168.7586 145.4)"
                               xml:space="preserve"
@@ -2761,7 +2761,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(193.4944 127.3)"
                               xml:space="preserve"
@@ -2776,7 +2776,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(224.3822 109.2)"
                               xml:space="preserve"
@@ -2791,7 +2791,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(266.6053 91.1)"
                               xml:space="preserve"
@@ -2806,7 +2806,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(368.8318 73)"
                               xml:space="preserve"

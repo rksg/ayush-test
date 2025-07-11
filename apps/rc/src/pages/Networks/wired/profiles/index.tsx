@@ -7,10 +7,8 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useBatchDeleteProfilesMutation,
-  useDeleteProfilesMutation,
   useGetProfilesQuery
 }      from '@acx-ui/rc/services'
 import {
@@ -21,7 +19,6 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useParams,
   useTenantLink
 }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
@@ -35,14 +32,10 @@ import { getOpsApi, usePollingTableQuery } from '@acx-ui/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const navigate = useNavigate()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
 
-  const [deleteProfiles] = useDeleteProfilesMutation()
   const [batchDeleteProfiles] = useBatchDeleteProfilesMutation()
-
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const typeFilterOptions = Object.values(ProfileTypeEnum).map(key => ({
     key, value: key
@@ -50,7 +43,7 @@ export function ProfilesTab () {
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     defaultPayload: {},
     search: {
       searchString: '',
@@ -115,15 +108,8 @@ export function ProfilesTab () {
             numOfEntities: selectedRows.length
           },
           onOk: async () => {
-            if (isSwitchRbacEnabled) {
-              const requests = selectedRows.map(row => ({ params: { switchProfileId: row.id } }))
-              await batchDeleteProfiles(requests).then(clearSelection)
-            } else {
-              deleteProfiles({
-                params: { tenantId },
-                payload: selectedRows.map(r => r.id)
-              }).then(clearSelection)
-            }
+            const requests = selectedRows.map(row => ({ params: { switchProfileId: row.id } }))
+            await batchDeleteProfiles(requests).then(clearSelection)
           }
         })
       }

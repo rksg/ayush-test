@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen }         from '@acx-ui/test-utils'
 
 import { ProfilesTab } from '.'
 
@@ -60,7 +60,7 @@ describe('Wired', () => {
     mockServer.use(
       rest.post(SwitchUrlsInfo.getProfiles.url,
         (_, res, ctx) => res(ctx.json(profilesList))),
-      rest.delete(SwitchUrlsInfo.deleteProfiles.url,
+      rest.delete(SwitchRbacUrlsInfo.deleteSwitchProfile.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
   })
