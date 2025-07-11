@@ -222,8 +222,6 @@ export function NetworkForm (props:{
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
@@ -327,7 +325,8 @@ export function NetworkForm (props:{
       const isDeleteAuthRadiusCase =
         (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
         (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
-        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
+        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true) ||
+        (saveData.type === NetworkTypeEnum.PSK && saveData.wlan?.macAddressAuthentication === false)
 
       if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
@@ -1058,7 +1057,7 @@ export function NetworkForm (props:{
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
+        if (formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
@@ -1066,7 +1065,7 @@ export function NetworkForm (props:{
         if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
           // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
-        } else if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
+        } else if (formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
@@ -1275,7 +1274,7 @@ export function NetworkForm (props:{
       afterVenueActivationRequest.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
-      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
+      if (form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
@@ -1287,7 +1286,7 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
         )
-      } else if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
+      } else if (formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)

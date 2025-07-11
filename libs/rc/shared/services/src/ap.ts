@@ -2,7 +2,6 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter } from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -64,12 +63,8 @@ import {
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
-  RequestFormData,
-  SEARCH,
-  SORTER,
   SupportCcdApGroup,
   SupportCcdVenue,
-  TableResult,
   Venue,
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
@@ -106,15 +101,18 @@ import {
   ApGroupQueryRadioCustomization,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { baseApApi } from '@acx-ui/store'
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-import { MaybePromise, RequestPayload } from '@acx-ui/types'
+import { baseApApi }                                 from '@acx-ui/store'
+import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
 import {
   ApiInfo,
   batchApi,
   createHttpRequest,
   getEnabledDialogImproved,
-  ignoreErrorModal
+  ignoreErrorModal,
+  RequestFormData,
+  SEARCH,
+  SORTER,
+  TableResult
 } from '@acx-ui/utils'
 
 
@@ -1337,7 +1335,10 @@ export const apApi = baseApApi.injectEndpoints({
                 overwriteUntagId: l.untagId,
                 overwriteVlanMembers: l.vlanMembers,
                 clientIsolationEnabled: l.clientIsolationEnabled,
-                clientIsolationSettings: l.clientIsolationSettings
+                clientIsolationSettings: l.clientIsolationSettings,
+                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)?
+                  l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
@@ -1348,10 +1349,6 @@ export const apApi = baseApApi.injectEndpoints({
                 serialNumber: params!.serialNumber,
                 portId: l.portId,
                 policyId: l.softGreProfileId
-              },
-              payload: {
-                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
-                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
           const ipsecActivateRequests = apSettings?.lanPorts
@@ -1389,6 +1386,7 @@ export const apApi = baseApApi.injectEndpoints({
             payload: {
               poeMode: apSettings.poeMode,
               poeOut: apSettings.poeOut,
+              poeOutMode: apSettings.poeOutMode,
               useVenueSettings: apSettings.useVenueSettings
             }
           }
@@ -1704,10 +1702,9 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
-      query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac ? ApiVersionEnum.v1 : undefined)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = ApiVersionEnum.v1_1
 
         const apiCustomHeader = rbacApiVersion? {
           ...GetApiVersionHeader(rbacApiVersion),

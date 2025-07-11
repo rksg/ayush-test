@@ -27,7 +27,8 @@ import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getOpsApi }                     from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
+import { EdgePortCommonFormProps } from '../EdgeFormItem/PortCommonForm'
+import { useIsEdgeFeatureReady }   from '../useEdgeActions'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -36,32 +37,33 @@ interface EdgeLagTableType extends EdgeLag {
 }
 
 interface EdgeLagTableProps {
-  clusterId?: string
-  serialNumber?: EdgeSerialNumber
-  lagList?: EdgeLag[]
-  lagStatusList?: EdgeLagStatus[]
-  portList?: EdgePort[]
-  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  serialNumber: EdgeSerialNumber | undefined
+  lagList: EdgeLag[] | undefined
+  portList: EdgePort[] | undefined
+  clusterInfo: EdgeClusterStatus
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
+
+  lagStatusList?: EdgeLagStatus[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   actionScopes?: { [key in string]: ScopeKeys }
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    clusterId = '', serialNumber = '', lagList,
+    serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
     isClusterWizard = false,
     clusterInfo, isSupportAccessPort,
-    formFieldsProps
+    formFieldsProps, originalInterfaceData
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -283,7 +285,6 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         rowKey='id'
       />
       <LagDrawer
-        clusterId={clusterId}
         serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}
@@ -298,6 +299,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         clusterInfo={clusterInfo}
         isSupportAccessPort={isSupportAccessPort}
         formFieldsProps={formFieldsProps}
+        originalInterfaceData={originalInterfaceData}
       />
     </>
   )

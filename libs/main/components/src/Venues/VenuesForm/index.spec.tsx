@@ -47,8 +47,8 @@ const venueTagReponse = ['newtag', 'sunnyvale', 'tag3']
 
 const mockedUsedNavigate = jest.fn()
 const mockedUseLocation = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => mockedUseLocation()
 }))

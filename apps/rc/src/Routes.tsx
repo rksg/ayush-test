@@ -74,6 +74,7 @@ import {
   ServiceType,
   IdentityProviderTabType,
   PersonaUrls,
+  IotUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useDhcpStateMap,
   useMdnsProxyStateMap
@@ -115,10 +116,12 @@ import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/Adapt
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
 import AdaptivePolicySetDetail                      from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail'
+import CreateAdaptivePolicyProfile                  from './pages/Policies/AdaptivePolicy/create'
 import RadiusAttributeGroupDetail                   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
 import RadiusAttributeGroupForm                     from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
 import CertificateTemplateDetail                    from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
 import CertificateTemplateList                      from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
+import CreateCertificateProfile                     from './pages/Policies/CertificateTemplate/create'
 import ClientIsolationDetail                        from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationTable                         from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
@@ -400,10 +403,16 @@ function DeviceRoutes () {
       <Route path='devices/iotController' element={<IotController />} />
       <Route
         path='devices/iotController/add'
-        element={<IotControllerForm />} />
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/:action'
-        element={<IotControllerForm />} />
+        element={
+          <AuthRoute rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}>
+            <IotControllerForm />
+          </AuthRoute>}/>
       <Route
         path='devices/iotController/:iotId/details/:activeTab'
         element={<IotControllerDetails />} />
@@ -1480,6 +1489,18 @@ function PolicyRoutes () {
       </>}
       {isCloudpathBetaEnabled && <>
         <Route
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_PROFILE, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY_PROFILE} oper={PolicyOperation.CREATE}>
+              <CreateAdaptivePolicyProfile/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })} />}
+        />
+        <Route
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
         />
@@ -1579,6 +1600,18 @@ function PolicyRoutes () {
       </>
       }
       {isCertificateTemplateEnabled && <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_PROFILE, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_PROFILE} oper={PolicyOperation.CREATE}>
+              <CreateCertificateProfile/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })} />}
+        />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>}

@@ -19,8 +19,8 @@ import { EdgeDetailsPageHeader } from '.'
 const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('../../HaStatusBadge', () => ({
@@ -42,6 +42,10 @@ describe('Edge Detail Page Header', () => {
 
   beforeEach(() => {
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))

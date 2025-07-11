@@ -9,6 +9,8 @@ import { Features }                                                             
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   EdgeIpModeEnum,
+  EdgeLag,
+  EdgePort,
   EdgePortInfo,
   EdgePortTypeEnum,
   IncompatibilityFeatures,
@@ -39,6 +41,10 @@ interface SubInterfaceDrawerProps {
   isSdLanRun?: boolean
   currentInterfaceName?: string
   isSupportAccessPort?: boolean
+  originalInterfaceData?: {
+    portSettings?: EdgePort[]
+    lagSettings?: EdgeLag[]
+  }
 }
 
 const getPortTypeOptions = () => {
@@ -61,7 +67,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const { $t } = useIntl()
   const {
     visible, setVisible, data, handleAdd, handleUpdate, allInterface = [],
-    isSdLanRun, serialNumber, currentInterfaceName, isSupportAccessPort
+    isSdLanRun, serialNumber, currentInterfaceName, isSupportAccessPort,
+    originalInterfaceData
   } = props
   const [formRef] = Form.useForm()
   const { form: stepFormRef } = useStepFormContext<SubInterfaceSettingsFormType>()
@@ -78,14 +85,29 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
     }
   }, [visible, formRef, data])
 
+  const isNewNode = useMemo(() => {
+    const hasPortSetting = originalInterfaceData?.portSettings?.some(item =>
+      item.portType !== EdgePortTypeEnum.UNCONFIGURED)
+    const hasLagSetting = originalInterfaceData?.lagSettings?.some(item =>
+      item.lagEnabled && item.lagMembers.length > 0)
+    return !hasPortSetting && !hasLagSetting
+  }, [originalInterfaceData])
+
   const getAllSubInterfacesFromForm = useCallback(() => {
     const value = stepFormRef?.getFieldsValue(true) as SubInterfaceSettingsFormType
+    const currentFormData = formRef.getFieldsValue(true) as SubInterface
     const portsSubInterfaces = Object.values(value?.portSubInterfaces[props.serialNumber] || {})
       .flat() as SubInterface[]
     const lagsSubInterfaces = Object.values(value?.lagSubInterfaces[props.serialNumber] || {})
       .flat() as SubInterface[]
-    return [...portsSubInterfaces, ...lagsSubInterfaces]
-  }, [stepFormRef, props.serialNumber])
+    const result = [...portsSubInterfaces, ...lagsSubInterfaces]
+    const currentFormDataIdx = result.findIndex(item => item.id === currentFormData.id)
+    if(currentFormDataIdx > -1) {
+      result.splice(currentFormDataIdx, 1)
+      result.push(currentFormData)
+    }
+    return result
+  }, [stepFormRef, props.serialNumber, formRef])
 
   const handleCorePortChange = (e: CheckboxChangeEvent) => {
     if(!isSupportAccessPort) {
@@ -95,7 +117,6 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { isPortEnabled, hasWanPort, hasCorePort, hasAccessPort } = useMemo(() => {
     const allSubInterfaces = getAllSubInterfacesFromForm()
-    const allSubInterfacesWithoutCurrent = allSubInterfaces.filter(item => item.id !== data?.id)
 
     const isPortEnabled = allInterface.some(
       item =>
@@ -109,11 +130,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       item => item.portType === EdgePortTypeEnum.WAN && item.portEnabled && !item.isLagMember
     )
 
-    const hasCorePort = allInterface.some(item => item.isCorePort) ||
-      allSubInterfacesWithoutCurrent.some(item => item.corePortEnabled)
+    const hasCorePort = allInterface.some(item =>
+      item.isCorePort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
+      allSubInterfaces.some(item => item.corePortEnabled)
 
-    const hasAccessPort = allInterface.some(item => item.isAccessPort) ||
-      allSubInterfacesWithoutCurrent.some(item => item.accessPortEnabled)
+    const hasAccessPort = allInterface.some(item =>
+      item.isAccessPort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
+      allSubInterfaces.some(item => item.accessPortEnabled)
 
     return {
       isPortEnabled,
@@ -121,7 +144,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       hasCorePort,
       hasAccessPort
     }
-  }, [allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm, data?.id])
+  }, [
+    allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm, data?.id,
+    corePortEnabled, accessPortEnabled
+  ])
+
+  const hasCorePortOnOthers = hasCorePort && !corePortEnabled
+  const hasAccessPortOnOthers = hasAccessPort && !accessPortEnabled
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -236,8 +265,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 children={$t({ defaultMessage: 'Core port' })}
                 onChange={handleCorePortChange}
                 disabled={
-                  !isPortEnabled || hasWanPort || (hasCorePort && !corePortEnabled) ||
-                  isSdLanRun
+                  !isPortEnabled || hasWanPort || (
+                    isSdLanRun ?
+                      (isNewNode ?
+                        hasCorePortOnOthers :
+                        hasCorePort) :
+                      hasCorePortOnOthers
+                  )
                 }
               />
             </Form.Item>
@@ -250,8 +284,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 <Checkbox
                   children={$t({ defaultMessage: 'Access port' })}
                   disabled={
-                    !isPortEnabled || hasWanPort || (hasAccessPort && !accessPortEnabled) ||
-                  isSdLanRun || !isSupportAccessPort
+                    !isSupportAccessPort || !isPortEnabled || hasWanPort || (
+                      isSdLanRun ?
+                        (isNewNode ?
+                          hasAccessPortOnOthers :
+                          hasAccessPort) :
+                        hasAccessPortOnOthers
+                    )
                   }
                 />
               </Form.Item>

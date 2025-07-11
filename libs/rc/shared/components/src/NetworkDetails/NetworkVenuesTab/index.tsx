@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep }      from 'lodash'
@@ -38,7 +38,6 @@ import {
   useEnhanceNetworkVenueTableV2Query
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkSaveData,
   NetworkVenue,
   Venue,
@@ -53,10 +52,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   KeyValue,
   VLANPoolViewModelType,
-  EdgeSdLanViewDataP2,
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
-  TableResult,
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo,
   ConfigTemplateType
@@ -69,10 +66,9 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
+import { useTableQuery, getOpsApi, transformToCityListOptions, TableResult } from '@acx-ui/utils'
 
 import { useEnforcedStatus }                from '../../configTemplates'
-import { useGetNetworkTunnelInfo }          from '../../EdgeSdLan/edgeSdLanUtils'
 import {
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction
@@ -93,8 +89,7 @@ import {
   transformRadios,
   transformScheduling
 } from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-import { useGetNetwork }         from '../services'
+import { useGetNetwork } from '../services'
 
 import { useTunnelColumn } from './useTunnelColumn'
 
@@ -224,9 +219,6 @@ export function NetworkVenuesTab () {
     : (hasActivatePermission)
 
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -311,7 +303,6 @@ export function NetworkVenuesTab () {
   const refetchFnRef = useRef({} as { [key: string]: () => void })
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId, refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
-  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     network: networkQuery.data,
@@ -659,19 +650,6 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady && !isSoftGreEnabled) ? [{
-      key: 'tunneled',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneled',
-      render: function (_: ReactNode, row: Venue) {
-        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id] as EdgeSdLanViewDataP2[]
-        if (Boolean(row.activated?.isActivated)) {
-          return getNetworkTunnelInfo(networkId!, destinationsInfo?.[0])
-        } else {
-          return ''
-        }
-      }
-    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -886,7 +864,6 @@ export function NetworkVenuesTab () {
 
     try{
       await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
-
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
 
       if (isIpsecEnabled && formValues.ipsec?.enableIpsec) {
@@ -954,7 +931,7 @@ export function NetworkVenuesTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
+      {tunnelModalState.visible &&
         <>
           {!isIpsecEnabled &&
             <NetworkTunnelActionModal

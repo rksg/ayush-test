@@ -1,20 +1,18 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
-import { useApNetworkListQuery, useGetRbacApNetworkListQuery }                         from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useApNetworkListQuery, useGetRbacApNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
   NetworkTypeEnum,
-  useTableQuery,
-  useApContext,
-  EdgeSdLanViewDataP2
+  useApContext
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 
 const defaultPayload = {
@@ -28,9 +26,6 @@ const defaultPayload = {
 export function ApNetworksTab () {
   const { $t } = useIntl()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const showTunnelColumn = (isEdgeSdLanHaReady && !isEdgeMvSdLanReady)
 
   const apiParams = useApContext() as Record<string, string>
   const settingsId = 'ap-networks-table'
@@ -40,12 +35,6 @@ export function ApNetworksTab () {
     apiParams,
     pagination: { settingsId }
   })
-
-  // tunnel
-  const venueId = showTunnelColumn? apiParams?.venueId : undefined
-  const networkIds = tableQuery.data?.data?.map(item => item.id)
-  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(venueId, networkIds)
-  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
     return [{
@@ -84,17 +73,7 @@ export function ApNetworksTab () {
           $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: row.vlanPool?.name ?? '' }) :
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
       }
-    },
-    ...(showTunnelColumn ? [{
-      key: 'tunneled',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneled',
-      render: function (_: ReactNode, row: Network) {
-        const destinationsInfo = (sdLanScopedNetworks?.sdLans as EdgeSdLanViewDataP2[])
-          ?.filter(sdlan => sdlan.networkIds.includes(row.id))
-        return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
-      }
-    }]: [])
+    }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
     //   title: $t({ defaultMessage: 'Health' }),
@@ -108,7 +87,7 @@ export function ApNetworksTab () {
     //   sorter: true
     // }
     ]
-  }, [$t, sdLanScopedNetworks, showTunnelColumn])
+  }, [$t])
 
   return (
     <Loader states={[tableQuery]}>

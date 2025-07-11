@@ -3,7 +3,7 @@ import { useCallback, useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                             from '@acx-ui/components'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
@@ -36,15 +36,15 @@ import {
   FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
-  SortResult,
-  useTableQuery
+  SortResult
 } from '@acx-ui/rc/utils'
+import type { Filter }           from '@acx-ui/types'
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess, getUserProfile, hasAllowedOperations,
   hasRoles
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'

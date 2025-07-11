@@ -4,10 +4,11 @@ import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 
-import { Loader }         from '@acx-ui/components'
-import { Features }       from '@acx-ui/feature-toggle'
+import { Loader }                               from '@acx-ui/components'
+import { showSdLanNetworksTunnelConflictModal } from '@acx-ui/edge/components'
+import { Features }                             from '@acx-ui/feature-toggle'
 import {
-  EdgeSdLanP2ActivatedNetworksTable,
+  EdgeMvSdLanActivatedNetworksTable,
   isSdLanLastNetworkInVenue,
   showSdLanGuestFwdConflictModal,
   showSdLanVenueDissociateModal,
@@ -84,32 +85,55 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
         // eslint-disable-next-line max-len
         if ( isGuestTunnelEnabled && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && isGuestNetworkAction) {
           const isFwdGuest = !(fieldName === 'activatedGuestNetworks' && !checked)
-
-          showSdLanGuestFwdConflictModal({
+          const modalProps = {
             currentNetworkVenueId: sdLanVenueId!,
             currentNetworkId: networkId,
             currentNetworkName: rowData.name!,
-            activatedDmz: checked,
-            tunneledWlans,
-            tunneledGuestWlans,
-            isL2oGreReady: isEdgeL2oGreReady,
-            onOk: async (impactVenueIds: string[]) => {
+            tunneledWlans: tunneledWlans!
+          }
 
-              if (impactVenueIds.length !== 0) {
-              // eslint-disable-next-line max-len
-                const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
-                actions.push(...impactVenueIds.map(impactVenueId =>
-                  toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
-                await Promise.all(actions)
+          if (isEdgeL2oGreReady) {
+            showSdLanNetworksTunnelConflictModal({
+              ...modalProps,
+              tunnelProfileId: '',
+              onOk: async (impactVenueIds: string[]) => {
+                if (impactVenueIds.length !== 0) {
+                  // eslint-disable-next-line max-len
+                  const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
+                  actions.push(...impactVenueIds.map(impactVenueId =>
+                    toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
+                  await Promise.all(actions)
 
-                handleFinally()
-              } else {
-              // eslint-disable-next-line max-len
-                await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, handleFinally)
+                  handleFinally()
+                } else {
+                  // eslint-disable-next-line max-len
+                  await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, handleFinally)
+                }
               }
-            },
-            onCancel: handleFinally
-          })
+            })
+          } else {
+            showSdLanGuestFwdConflictModal({
+              ...modalProps,
+              activatedDmz: checked,
+              tunneledGuestWlans,
+              isL2oGreReady: false,
+              onOk: async (impactVenueIds: string[]) => {
+                if (impactVenueIds.length !== 0) {
+                  // eslint-disable-next-line max-len
+                  const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
+                  actions.push(...impactVenueIds.map(impactVenueId =>
+                    toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
+                  await Promise.all(actions)
+
+                  handleFinally()
+                } else {
+                  // eslint-disable-next-line max-len
+                  await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, handleFinally)
+                }
+              },
+              onCancel: handleFinally
+            })
+          }
         } else {
           await toggleNetwork(serviceId!, sdLanVenueId!, networkId, checked, false, handleFinally)
         }
@@ -121,10 +145,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
     }
   }
 
-  const getDisabledInfo = (_venueId: string,
-    row: Network,
-    isGuestSwitchBtn: boolean
-  ) => {
+  const getDisabledInfo = (_venueId: string, row: Network) => {
     // eslint-disable-next-line max-len
     const hasEdgeUpdatePermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
 
@@ -143,22 +164,13 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
       }
     }
 
-    const isSdLanLastNetwork = (tunneledWlans?.length ?? 0) <= 1
-    if (!tunneledWlans || isGuestSwitchBtn || !isSdLanLastNetwork) return
-
-    const isTheLastOne = tunneledWlans[0].networkId === row.id
-
     return {
-      isDisabled: isTheLastOne,
-      tooltip: isTheLastOne
-        // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
-        : undefined
+      isDisabled: false
     }
   }
 
   return <Loader states={[{ isLoading: isPinNetworkIdsLoading }]}>
-    <EdgeSdLanP2ActivatedNetworksTable
+    <EdgeMvSdLanActivatedNetworksTable
       columnsSetting={[{
         key: 'name',
         title: $t({ defaultMessage: 'Network' }),

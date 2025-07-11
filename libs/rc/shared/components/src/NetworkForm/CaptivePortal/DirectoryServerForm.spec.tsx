@@ -14,7 +14,8 @@ import {
   NetworkTypeEnum,
   PersonaUrls,
   DpskUrls,
-  AccessControlUrls } from '@acx-ui/rc/utils'
+  AccessControlUrls,
+  TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
@@ -117,7 +118,20 @@ describe('CaptiveNetworkForm-Directory', () => {
       rest.get(
         WifiUrlsInfo.queryDpskService.url,
         (_req, res, ctx) => res(ctx.json({}))
-      )
+      ),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.get(DirectoryServerUrls.getDirectoryServer.url, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            id: req.params.id,
+            name: 'Mock Directory Profile',
+            type: 'LDAP',
+            wifiNetworkIds: []
+          })
+        )
+      })
     )
   })
 

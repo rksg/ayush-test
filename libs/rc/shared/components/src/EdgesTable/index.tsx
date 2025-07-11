@@ -22,17 +22,13 @@ import {
   EdgeStatus,
   EdgeStatusEnum,
   EdgeUrlsInfo,
-  FILTER,
-  SEARCH,
-  TABLE_QUERY,
   allowRebootShutdownForStatus,
-  allowResetForStatus,
-  usePollingTableQuery
+  allowResetForStatus
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
-import { filterByAccess }                         from '@acx-ui/user'
-import { getOpsApi }                              from '@acx-ui/utils'
+import { TenantLink, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
+import { EdgeScopes, RequestPayload }                                   from '@acx-ui/types'
+import { filterByAccess }                                               from '@acx-ui/user'
+import { getOpsApi, usePollingTableQuery, FILTER, SEARCH, TABLE_QUERY } from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
@@ -91,7 +87,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -312,7 +307,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
-      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+      visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (rows, clearSelection) => {

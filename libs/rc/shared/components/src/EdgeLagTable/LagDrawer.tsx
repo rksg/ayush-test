@@ -24,18 +24,19 @@ import {
   isInterfaceInVRRPSetting,
   validateEdgeGateway,
   getMergedLagTableDataFromLagForm,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
-import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
-import { useIsEdgeFeatureReady }            from '../useEdgeActions'
+import { getEnabledCorePortInfo }                      from '../EdgeFormItem/EdgePortsGeneralBase/utils'
+import { EdgePortCommonForm, EdgePortCommonFormProps } from '../EdgeFormItem/PortCommonForm'
+import { useGetEdgeSdLanByClusterId }                  from '../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }                       from '../useEdgeActions'
 
 import { LagMembersComponent } from './LagMembersComponent'
 
 interface LagDrawerProps {
-  clusterId: string
+  clusterInfo: EdgeClusterStatus
   serialNumber?: EdgeSerialNumber
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -47,9 +48,9 @@ interface LagDrawerProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
+  originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
 }
 
 const defaultFormValues = {
@@ -68,16 +69,15 @@ const defaultFormValues = {
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
-    clusterId = '', serialNumber = '', visible, setVisible,
+    clusterInfo, serialNumber = '', visible, setVisible,
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo, isSupportAccessPort,
-    formFieldsProps
+    isSupportAccessPort,
+    formFieldsProps, originalInterfaceData
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
@@ -89,7 +89,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
     edgeSdLanData
-  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
+  } = useGetEdgeSdLanByClusterId(clusterInfo.clusterId)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
@@ -379,6 +379,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
         const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentLagData)
 
         return <EdgePortCommonForm
+          serialNumber={serialNumber}
           formRef={form}
           portsData={portList}
           lagData={updatedLagList}
@@ -386,6 +387,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
+            ipMode: {
+              // ONLY do ip mode sync checking when add new LAG
+              // cannot do this check on edit LAG because user may change ip mode, which will trigger this check in LAG table(across all LAGs)
+              rules: isDualWanEnabled && !isEditMode
+                ? [{ validator: () => edgeWanSyncIpModeValidator(portList, updatedLagList) }]
+                : []
+            },
             natStartIp: {
               rules: isClusterWizard && get(formFieldsProps, 'natStartIp')
                 ? [{ validator: natPoolClusterLevelValidator }]
@@ -411,6 +419,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
           subnetInfoForValidation={subnetInfoForValidation}
           subInterfaceList={subInterfaceList}
           isSupportAccessPort={isSupportAccessPort}
+          originalInterfaceData={originalInterfaceData}
         />
       }}
     </Form.Item>

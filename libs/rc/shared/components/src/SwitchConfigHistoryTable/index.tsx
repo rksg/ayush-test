@@ -10,9 +10,9 @@ import {
   useGetVenueConfigHistoryQuery,
   useLazyGetVenueConfigHistoryDetailQuery
 } from '@acx-ui/rc/services'
-import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, FILTER, SwitchViewModel, transformConfigType, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                               from '@acx-ui/react-router-dom'
-import { getIntl }                                                                                                                 from '@acx-ui/utils'
+import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, SwitchViewModel, transformConfigType } from '@acx-ui/rc/utils'
+import { useParams }                                                                                        from '@acx-ui/react-router-dom'
+import { getIntl, useTableQuery, FILTER }                                                                   from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../CodeMirrorWidget'
 

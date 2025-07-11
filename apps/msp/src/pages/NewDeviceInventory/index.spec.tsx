@@ -30,7 +30,8 @@ const list = {
       deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
       venueName: 'My-Venue',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      fwVersion: '1.0.0'
     },
     {
       apMac: '89:28:38:22:77:24',
@@ -42,7 +43,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED,
       venueName: 'Venue 2',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      fwVersion: '1.0.1'
     },
     {
       apMac: '89:28:38:22:77:24',
@@ -54,7 +56,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.INITIALIZING,
       venueName: 'Venue 3',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      fwVersion: '1.0.2'
     },
     {
       apMac: '89:28:38:22:77:26',
@@ -66,7 +69,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.APPLYING_FIRMWARE,
       venueName: 'Venue 4',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.3'
     },
     {
       apMac: '89:28:38:22:77:27',
@@ -78,7 +82,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.OPERATIONAL,
       venueName: 'Venue 5',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.4'
     },
     {
       apMac: '89:28:38:22:77:28',
@@ -90,7 +95,8 @@ const list = {
       deviceStatus: ApDeviceStatusEnum.OFFLINE,
       venueName: 'Venue 6',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.5'
     },
     {
       apMac: '89:28:38:22:77:29',
@@ -102,7 +108,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
       venueName: 'Venue 7',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.6'
     },
     {
       apMac: '89:28:38:22:77:30',
@@ -114,7 +121,8 @@ const list = {
       deviceStatus: '1_01_NeverContactedCloud',
       venueName: 'Venue 8',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.7'
     },
     {
       switchMac: '89:28:38:22:77:31',
@@ -126,7 +134,8 @@ const list = {
       deviceStatus: '',
       venueName: 'Venue 9',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.8'
     },
     {
       serialNumber: '892838227732',
@@ -137,7 +146,8 @@ const list = {
       deviceStatus: SwitchStatusEnum.DISCONNECTED,
       venueName: 'Venue 10',
       managedAs: 'MSP',
-      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      firmwareVersion: '1.0.3'
     }
   ]
 }
@@ -153,6 +163,15 @@ const deviceModelFilterList = {
     'ICX-7150',
     'ANALYTIC',
     'R720'
+  ]
+}
+
+const deviceFirmwaresFilterList = {
+  data: [
+    '9.0.10j_cd',
+    '9.0.12j_cd',
+    '6.2.4.103.500',
+    '6.2.4.103.501'
   ]
 }
 
@@ -189,9 +208,9 @@ const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
-const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
+const utils = require('@acx-ui/utils')
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils')
 }))
 
 const fakeTenantDetails = {
@@ -241,7 +260,11 @@ describe('Device Inventory Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     jest.spyOn(services, 'useExportDeviceInventoryMutation')
     mockServer.use(
@@ -268,6 +291,10 @@ describe('Device Inventory Table', () => {
       rest.post(
         MspUrlsInfo.getdeviceModelsFilter.url,
         (req, res, ctx) => res(ctx.json(deviceModelFilterList))
+      ),
+      rest.post(
+        MspUrlsInfo.getDeviceFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(deviceFirmwaresFilterList))
       )
     )
     global.URL.createObjectURL = jest.fn()
@@ -278,7 +305,11 @@ describe('Device Inventory Table', () => {
   })
   it('should render page header and grid layout', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     render(
       <Provider>
@@ -293,7 +324,11 @@ describe('Device Inventory Table', () => {
   it('should render table', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     render(
       <Provider>
@@ -316,7 +351,11 @@ describe('Device Inventory Table', () => {
   })
   it('should export when button clicked', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     render(
       <Provider>
@@ -341,11 +380,14 @@ describe('Device Inventory Table', () => {
   })
   it('should render correctly when no data', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: {
-        totalCount: 0,
-        page: 1,
-        data: []
-      } }
+      return {
+        data: {
+          totalCount: 0,
+          page: 1,
+          data: []
+        },
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn() }
     })
     render(
       <Provider>
@@ -362,7 +404,11 @@ describe('Device Inventory Table', () => {
   })
   it('should retrieve data correctly when is integrator', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
+      return {
+        data: list,
+        handleFilterChange: jest.fn(),
+        setPayload: jest.fn()
+      }
     })
     mockServer.use(
       rest.get(

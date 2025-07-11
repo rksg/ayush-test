@@ -36,19 +36,22 @@ import {
   TwiliosMessagingServices,
   TwiliosWhatsappServices,
   Webhook,
-  TableResult,
   ScopeFeature,
   NotificationRecipientType,
   PrivacyFeatures,
-  PrivacySettings,
+  PrivacySettings
+} from '@acx-ui/rc/utils'
+import { baseAdministrationApi } from '@acx-ui/store'
+import { RequestPayload }        from '@acx-ui/types'
+import { ApiInfo,
+  createHttpRequest,
+  ignoreErrorModal,
   NewTableResult,
   transferToTableResult,
   TableChangePayload,
-  transferToNewTablePaginationParams
-} from '@acx-ui/rc/utils'
-import { baseAdministrationApi }                        from '@acx-ui/store'
-import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+  transferToNewTablePaginationParams,
+  TableResult
+} from '@acx-ui/utils'
 
 const getAdminUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? AdminRbacUrlsInfo : AdministrationUrlsInfo

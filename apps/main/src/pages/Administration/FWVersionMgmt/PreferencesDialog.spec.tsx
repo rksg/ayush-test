@@ -13,11 +13,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venue,
   preference,
   availableVersions
 } from './__tests__/fixtures'
-import { VenueFirmwareList } from './ApFirmware/VenueFirmwareList/index'
 import { PreferencesDialog } from './PreferencesDialog'
 
 const updatePreferencesRequestSpy = jest.fn()
@@ -29,10 +27,6 @@ describe('Firmware Venues Table', () => {
     Modal.destroyAll()
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(venue))
-      ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => res(ctx.json(availableVersions))
@@ -56,52 +50,6 @@ describe('Firmware Venues Table', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-  })
-
-  it('should render preferences - cancel', async () => {
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
-
-    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
-    const updateButton = screen.getByRole('button', { name: /Preferences/i })
-    await userEvent.click(updateButton)
-
-    const dialog = await screen.findByRole('dialog')
-    within(dialog).getByText('Choose update schedule method:')
-    const cancelButton = within(dialog).getByRole('button', { name: /cancel/i })
-    await userEvent.click(cancelButton)
-    expect(dialog).not.toBeVisible()
-  })
-
-  it.skip('should render preferences - schedule manually', async () => {
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
-
-    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
-    const updateButton = screen.getByRole('button', { name: /Preferences/i })
-    await userEvent.click(updateButton)
-
-    const dialog = await screen.findByRole('dialog')
-    within(dialog).getByText('Choose update schedule method:')
-    const updateVenueButton = within(dialog).getByRole('button', { name: /Save Preferences/i })
-    expect(updateVenueButton).toBeDisabled()
-
-    const manuallyRadio = within(dialog).getByRole('radio', { name: /schedule manually/i })
-    await userEvent.click(manuallyRadio)
-    await expect(manuallyRadio).toBeChecked()
-    expect(updateVenueButton).not.toBeDisabled()
-
-    await userEvent.click(updateVenueButton)
-    expect(updatePreferencesRequestSpy).toBeCalled()
-    expect(dialog).not.toBeVisible()
   })
 
   it('should render preferences Pre-Download', async () => {
@@ -129,6 +77,34 @@ describe('Firmware Venues Table', () => {
     const updateVenueButton = await within(dialog).findByText('Save Preferences')
     await userEvent.click(updateVenueButton)
     expect(onSubmitSpy).toBeCalled()
+  })
+
+  it('should render preferences - Cancel', async () => {
+    const onSubmitSpy = jest.fn()
+    const onCancelSpy = jest.fn()
+    render(
+      <Provider>
+        <PreferencesDialog
+          visible={true}
+          data={preference}
+          onCancel={onCancelSpy}
+          onSubmit={onSubmitSpy()}
+          isSwitch={true}
+          preDownload={true}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByTestId('PreDownload')).toBeChecked()
+
+    await userEvent.click(within(dialog).getByTestId('PreDownload'))
+    expect(within(dialog).getByTestId('PreDownload')).not.toBeChecked()
+
+    const cancelButton = await within(dialog).findByText('Cancel')
+    await userEvent.click(cancelButton)
+    expect(onCancelSpy).toBeCalled()
   })
 
 })

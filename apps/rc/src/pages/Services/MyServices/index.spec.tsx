@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                                                                         from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                                                                                                          from '@acx-ui/rc/components'
-import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, ServiceType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                                                       from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                                                                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                                                                                                         from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeSdLanUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, ServiceType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,14 +17,11 @@ import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mocked
 import MyServices from '.'
 
 
-jest.mock('../UnifiedServices/useUnifiedServiceListWithTotalCount', () => ({
-  ...jest.requireActual('../UnifiedServices/useUnifiedServiceListWithTotalCount'),
-  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false }),
-  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
-}))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false }),
+  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false })
 }))
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
@@ -89,6 +86,10 @@ describe('MyServices', () => {
         (_, res, ctx) => res(ctx.json({
           data: { totalCount: 0 }
         }))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

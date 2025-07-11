@@ -1,4 +1,4 @@
-import { RadioCardCategory } from '@acx-ui/components'
+import { RadioCardCategory } from '@acx-ui/types'
 
 import { ServiceType } from '../../constants'
 import { PolicyType }  from '../../types'
@@ -36,3 +36,6 @@ export interface UnifiedService<ContentType = string> {
 export interface ExtendedUnifiedService extends UnifiedService {
   totalCount?: number
 }
+
+export type TotalCountQueryResult<OtherCounts extends Record<string, number> = {}> =
+{ data?: { totalCount?: number } & OtherCounts, isFetching: boolean }

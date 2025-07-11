@@ -34,7 +34,7 @@ const mockedDisableFnParams = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
-  EdgeSdLanP2ActivatedNetworksTable: (props:
+  EdgeMvSdLanActivatedNetworksTable: (props:
     { isUpdating: boolean,
       disabled: Function,
       onActivateChange: (fieldName: string,
@@ -51,7 +51,7 @@ jest.mock('@acx-ui/rc/components', () => ({
     const onClick = () => {
       props.onActivateChange.apply(null, mockedData)
     }
-    return <div data-testid='EdgeSdLanP2ActivatedNetworksTable'>
+    return <div data-testid='EdgeMvSdLanActivatedNetworksTable'>
       {
         props.isUpdating
           ? <div data-testid='rc-loading'/>
@@ -124,7 +124,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
   it('should render correctly', async () => {
     const mockedEdgeSdLanDc = mockedMvSdLanDataList[1]
     renderTestComponent({ params, sdLan: mockedEdgeSdLanDc })
-    screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+    screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
   })
 
   describe('toggle traffic network', () => {
@@ -321,7 +321,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
         sdLan: mockedEdgeSdLanDc
       })
 
-      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      const networkTable = screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
       const btn = within(networkTable).getByRole('button')
       expect(btn).not.toBeDisabled()
       await userEvent.click(btn)
@@ -337,31 +337,6 @@ describe('venue > Multi-venue SDLAN - network table', () => {
       expect(mockedDeactivateNetworkReq).toBeCalledTimes(1)
       expect(mockedActivateNetworkReq).toBeCalledTimes(0)
       await waitFor(() => expect(dialog).not.toBeVisible())
-    })
-
-    it('should greyout when the WLAN is the last one in SDLAN', async () => {
-      const mockedEdgeSdLanDc = _.cloneDeep(mockedMvSdLanDataList[1])
-      mockedEdgeSdLanDc.tunneledWlans = mockedEdgeSdLanDc.tunneledWlans!.slice(0, 1)
-      // eslint-disable-next-line max-len
-      const targetNetwork = _.find(mockNetworkViewmodelList, { id: mockedEdgeSdLanDc.tunneledWlans[0].networkId })
-
-      mockedSubmitData.mockReturnValue([
-        'activatedNetworks',
-        targetNetwork,
-        false,
-        ['network_1']
-      ])
-      mockedDisableFnParams.mockReturnValue([
-        'mock_venue',
-        targetNetwork,
-        false
-      ])
-
-      renderTestComponent({ params, sdLan: mockedEdgeSdLanDc })
-      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
-      expect(within(networkTable).getByRole('button')).toBeDisabled()
-      // eslint-disable-next-line max-len
-      expect(within(networkTable).getByText('tooltip:Cannot deactivate the last network at this venue')).toBeVisible()
     })
 
     // eslint-disable-next-line max-len
@@ -384,7 +359,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
         sdLan: mockedNoGuestTraffic
       })
 
-      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      const networkTable = screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
       const btn = within(networkTable).getByRole('button')
       expect(btn).not.toBeDisabled()
       await userEvent.click(btn)
@@ -430,7 +405,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
 
       renderTestComponent({ params, sdLan: mockedEdgeSdLanDc })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      const networkTable = screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
       expect(within(networkTable).getByRole('button')).toBeDisabled()
       // eslint-disable-next-line max-len
       expect(within(networkTable).getByText(/tooltip:This network already used in Personal Identity Network/)).toBeVisible()
@@ -440,7 +415,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
 })
 
 const basicActsTestToggleNetwork = async () => {
-  const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+  const networkTable = screen.getByTestId('EdgeMvSdLanActivatedNetworksTable')
   await userEvent.click(within(networkTable).getByRole('button'))
   const loadingText = within(networkTable).getByTestId('rc-loading')
   await waitFor(() => expect(loadingText).not.toBeVisible())

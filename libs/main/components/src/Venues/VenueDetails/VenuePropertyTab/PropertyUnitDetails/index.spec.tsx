@@ -103,8 +103,8 @@ jest.mock('@acx-ui/cloudpath/components', () => ({
   })
 }))
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useTenantLink: () => jest.fn(),
   useHref: () => {},
   useParams: () => { return { tenantId: 'tenantId', venueId: 'venueId', unitId: 'unitId' } }

@@ -84,9 +84,7 @@ export enum FIRMWARE {
 }
 
 export function SwitchForm () {
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -297,7 +295,7 @@ export function SwitchForm () {
 
   const handleAddSwitch = async (values: Switch) => {
     const fw = getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
-    if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(fw)) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -434,7 +432,6 @@ export function SwitchForm () {
     const re = (isSupport8100 && isSpecific8100Model(value))
       ? createSwitchSerialPatternForSpecific8100Model()
       : createSwitchSerialPattern({
-        isSupport8200AV: isSupport8200AV,
         isSupport8100: isSupport8100,
         isSupport8100X: isSupport8100X,
         isSupport7550Zippy: isSupport7550Zippy

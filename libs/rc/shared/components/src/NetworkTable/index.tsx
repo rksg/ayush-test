@@ -11,19 +11,19 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { doProfileDelete, useDeleteNetworkMutation }              from '@acx-ui/rc/services'
+import { useDeleteNetworkMutation }                               from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
   NetworkType,
-  TableQuery,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetwork,
   WifiRbacUrlsInfo,
   useConfigTemplate,
   ConfigTemplateUrlsInfo,
-  ConfigTemplateType
+  ConfigTemplateType,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -34,7 +34,8 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime,
+  widgetsMapping, TableQuery } from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../configTemplates'
 

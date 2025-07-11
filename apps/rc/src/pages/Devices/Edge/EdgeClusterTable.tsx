@@ -19,7 +19,6 @@ import {
   allowSendOtpForStatus,
   allowSendFactoryResetStatus,
   getUrl,
-  usePollingTableQuery,
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
@@ -30,7 +29,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
-import { getOpsApi }                              from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery }        from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -53,7 +52,6 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const isEdgeDualWanReady = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const {
@@ -301,7 +299,7 @@ export const EdgeClusterTable = () => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
-      visible: (selectedRows) => (isGracefulShutdownReady &&
+      visible: (selectedRows) => (
         selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Shutdown' }),

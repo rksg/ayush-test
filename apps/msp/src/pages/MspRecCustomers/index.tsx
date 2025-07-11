@@ -12,19 +12,12 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  SelectIntegratorDrawer,
-  ManageMspDelegationDrawer
-} from '@acx-ui/msp/components'
-import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
-  useDelegateToMspEcPath,
-  useCheckDelegateAdmin
+  useDelegateToMspEcPath
 } from '@acx-ui/msp/services'
 import {
   MspEc,
@@ -34,16 +27,18 @@ import {
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import {
-  useTableQuery
-} from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, noDataDisplay }                                                            from '@acx-ui/utils'
+import { AccountType, getOpsApi, noDataDisplay, useTableQuery }                                             from '@acx-ui/utils'
 
-import HspContext                  from '../../HspContext'
-import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
+import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
+import HspContext                    from '../../HspContext'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { AssignEcMspAdminsDrawer }   from '../MspCustomers/AssignEcMspAdminsDrawer'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 
 export function MspRecCustomers () {
   const { $t } = useIntl()

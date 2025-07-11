@@ -46,8 +46,8 @@ const currentEdge:EdgeStatus = {
 }
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -112,29 +112,6 @@ describe('Edge Details Tabs', () => {
       })
 
     expect(screen.queryByText('DHCP')).toBeFalsy()
-  })
-
-  it('should not display troubleshooting tab when FF is disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <EdgeDetailsDataContext.Provider
-          value={{
-            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            currentCluster: mockEdgeCluster,
-            isEdgeStatusLoading: false,
-            isClusterLoading: false
-          }}
-        >
-          <EdgeDetailsTabs
-            isOperational={true}
-          />
-        </EdgeDetailsDataContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
   })
 
   it('should redirect to timeline tab', async () => {

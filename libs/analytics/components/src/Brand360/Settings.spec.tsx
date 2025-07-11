@@ -6,7 +6,7 @@ import type { Settings }                                      from '@acx-ui/anal
 import { Provider }                                           from '@acx-ui/store'
 import { screen, render, fireEvent, waitFor }                 from '@acx-ui/test-utils'
 import { WifiScopes }                                         from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                     from '@acx-ui/user'
+import { aiOpsApis, getUserProfile, setUserProfile }          from '@acx-ui/user'
 
 import { ConfigSettings } from './Settings'
 
@@ -20,6 +20,7 @@ jest.mock('@acx-ui/analytics/services', () => ({
 }))
 
 const route = { params: { tenantId: '0012h00000NrljgAAB' } }
+
 describe('ConfigSettings Drawer', () => {
   beforeEach(() => {
     mockedUseUpdateTenantSettingsMutation.mockImplementation(
@@ -132,23 +133,24 @@ describe('ConfigSettings Drawer', () => {
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })
 
-  it('shows read only settings', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      abacEnabled: true,
-      isCustomRole: true,
-      scopes: [WifiScopes.READ]
+  it.each([WifiScopes.READ, aiOpsApis.readBrand360Dashboard])(
+    'shows read only settings when scope contains %s only', async (scope) => {
+      const userProfile = getUserProfile()
+      setUserProfile({
+        ...userProfile,
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [scope]
+      })
+      const settings = {
+        'brand-ssid-compliance-matcher': ''
+      }
+      render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+      await userEvent.click(await screen.findByTestId('settings'))
+      expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+        .toBeVisible()
+      await waitFor(async () =>
+        expect(await screen.findByRole('button', { name: 'Save' })).toBeDisabled()
+      )
     })
-    const settings = {
-      'brand-ssid-compliance-matcher': ''
-    }
-    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('settings'))
-    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
-      .toBeVisible()
-    await waitFor(async () =>
-      expect(await screen.findByRole('button', { name: 'Save' })).toBeDisabled()
-    )
-  })
 })

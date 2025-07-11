@@ -1,17 +1,14 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                       from 'lodash'
 
-import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  RequestFormData,
   SaveSwitchProfile,
   SwitchViewModel,
   SwitchVlans,
   Acl,
   Vlan,
   SwitchPortViewModel,
-  TableResult,
   SwitchDefaultVlan,
   SwitchProfile,
   SwitchVlanUnion,
@@ -54,8 +51,6 @@ import {
   Lag,
   SwitchVlan,
   downloadFile,
-  SEARCH,
-  SORTER,
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse,
   FlexibleAuthentication,
@@ -72,13 +67,17 @@ import {
   MacAclRule,
   SwitchAccessControl
 } from '@acx-ui/rc/utils'
-import { baseSwitchServiceApi } from '@acx-ui/store'
-import { RequestPayload }       from '@acx-ui/types'
+import { baseSwitchServiceApi }        from '@acx-ui/store'
+import type { Filter, RequestPayload } from '@acx-ui/types'
 import {
   createHttpRequest,
   batchApi,
   ignoreErrorModal,
-  APT_QUERY_CACHE_TIME
+  APT_QUERY_CACHE_TIME,
+  SEARCH,
+  SORTER,
+  TableResult,
+  RequestFormData
 } from '@acx-ui/utils'
 
 import { SwitchRbacUrlsInfo } from './switchRbacUrls'

@@ -9,13 +9,13 @@ import {
   SyslogUrls, SyslogPolicyDetailType, SyslogPolicyListType,
   VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
-  TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
-  devicePolicyInfoType, DevicePolicy, NewTableResult,
-  transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
+  onSocketActivityChanged, onActivityMessageReceived, CommonResult,
+  devicePolicyInfoType, DevicePolicy,
+  AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
   AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
+  ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
   WifiOperatorUrls,
@@ -43,8 +43,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult,
-  transferToNewTablePaginationParams,
+
   CertificateUrls,
   CertificateTemplate,
   CertificateAuthority,
@@ -81,7 +80,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { batchApi, createHttpRequest, NewTableResult, NewAPITableResult, transferNewResToTableResult,
+  transferToNewTablePaginationParams, createNewTableHttpRequest, TableChangePayload,
+  TableResult, transferToTableResult } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -793,7 +794,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection',
             'DeleteVenue',
-            'DeleteVenues'
+            'DeleteVenues',
+            'AddRoguePolicy',
+            'DeleteRoguePolicy',
+            'UpdateRoguePolicy'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'RogueAp', id: 'LIST' }
@@ -879,7 +883,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRadius',
             'UpdateRadius',
             'DeleteRadius',
-            'DeleteRadiuses'
+            'DeleteRadiuses',
+            'ActivateRadiusServerProfileOnVenue',
+            'DeactivateRadiusServerProfileOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
@@ -2403,10 +2409,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
           const viewModelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1_1)
           // eslint-disable-next-line max-len
           const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewModelHeader),
             body: enableRbac? JSON.stringify({}) : {}
@@ -2449,14 +2455,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
-      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.getApSnmpPolicy, customParams, apiCustomHeader)
         const res = await fetchWithBQ(req)
@@ -2478,14 +2484,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
@@ -2497,14 +2503,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
         const rbacApiVersion =
-          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+          enableRbac ? ApiVersionEnum.v1_1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)
@@ -2541,7 +2547,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
             body: JSON.stringify( {
-              fields: ['apSerialNumbers', 'venueIds'],
+              fields: ['venueIds', 'apActivations'],
               filters: { id: [params?.policyId] }
             })
           }
@@ -2549,10 +2555,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const rbacApSnmpViewModel = response.data as TableResult<RbacApSnmpViewModelData>
           const apSnmpProfile = rbacApSnmpViewModel.data[0]
 
-          const { venueIds, apSerialNumbers } = apSnmpProfile
+
+          const { venueIds, apActivations } = apSnmpProfile
+
+          const snmpUsageData: ApSnmpApUsage[] = []
 
           const venueIdNameMap = new Map<string, string>()
-          if (venueIds.length) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (venueIds.length && (payload as any).searchForActivation === 'venue') {
             const venueListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, apiCustomHeader),
               body: JSON.stringify({
@@ -2568,16 +2578,24 @@ export const policyApi = basePolicyApi.injectEndpoints({
             venuesData?.forEach(venue => {
               venueIdNameMap.set(venue.id, venue.name)
             })
+
+            venueIdNameMap.forEach((value, key) => {
+              snmpUsageData.push({
+                apId: '',
+                apName: '',
+                venueId: key,
+                venueName: value
+              })
+            })
           }
 
-          const snmpUsageData: ApSnmpApUsage[] = []
-          let apUsedVenueIds: string[] = []
-          if (apSerialNumbers.length) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (apActivations.length && (payload as any).searchForActivation === 'ap') {
             const apListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, apiCustomHeader),
               body: JSON.stringify({
                 fields: ['name', 'serialNumber', 'venueId'],
-                filters: { serialNumber: apSerialNumbers },
+                filters: { serialNumber: apActivations.map((ap) => ap.apSerialNumber) },
                 page: 1,
                 pageSize: 10000
               })
@@ -2585,31 +2603,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
             const apList = apListQuery.data as TableResult<NewAPModel>
             const apListData = apList?.data as NewAPModel[]
 
+            const venueListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, apiCustomHeader),
+              body: JSON.stringify({
+                fields: ['id', 'name'],
+                filters: { id: apActivations.map((ap) => ap.venueId) },
+                page: 1,
+                pageSize: 10000
+              })
+            })
+            const venueList = venueListQuery.data as TableResult<Venue>
             apListData?.forEach(ap => {
               const { name='', serialNumber='', venueId='' } = ap
-              apUsedVenueIds.push(venueId)
-
               snmpUsageData.push({
                 apId: serialNumber,
                 apName: name,
                 venueId,
-                venueName: venueIdNameMap.get(venueId) ?? ''
+                venueName: venueList.data.find(venue => venue.id === venueId)?.name ?? ''
               })
             })
           }
-
-          apUsedVenueIds = uniq(apUsedVenueIds)
-          // only venue data without AP
-          venueIdNameMap.forEach((value, key) => {
-            if (!apUsedVenueIds.includes(key)) {
-              snmpUsageData.push({
-                apId: '',
-                apName: '',
-                venueId: key,
-                venueName: value
-              })
-            }
-          })
 
           const result : TableResult<ApSnmpApUsage> = {
             page: 1,
@@ -2706,9 +2719,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddApSnmpAgentProfile',
-            'UpdateApSnmpAgentProfile',
-            'DeleteApSnmpAgentProfile',
+            'UpdateSnmpAgentProfileV1_1',
+            'UpdateSnmpAgentProfileV1_1',
+            'DeleteSnmpAgentProfile',
             'UpdateVenueApSnmpAgent',
             'UpdateApSnmpAgent',
             'ResetApSnmpAgent'

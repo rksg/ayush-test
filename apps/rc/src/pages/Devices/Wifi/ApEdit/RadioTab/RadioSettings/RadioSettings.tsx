@@ -236,13 +236,9 @@ export function RadioSettings (props: ApEditItemProps) {
   const { setReadyToScroll } = useContext(AnchorContext)
   const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
@@ -268,8 +264,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: isUseRbacApi,
-    enableSeparation: is6gChannelSeparation
+    enableRbac: isUseRbacApi
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -331,7 +326,7 @@ export function RadioSettings (props: ApEditItemProps) {
     const availableChannels = getApAvailableChannels.data
     const is5GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization5G >= 160)
     const is6GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization6G >= 160)
-    const is6GHas320Mhz = supportWifi7_320MHz && maxChannelization6G >= 320
+    const is6GHas320Mhz = ap70BetaFlag && maxChannelization6G >= 320
 
     // 2.4G
     const supportCh24g = (availableChannels && availableChannels['2.4GChannels']) || {}
@@ -364,7 +359,7 @@ export function RadioSettings (props: ApEditItemProps) {
     // 6G
     const availableCh6g = (availableChannels && availableChannels['6GChannels'])
     const supportCh6g =
-      (is6gChannelSeparation ? (availableCh6g && availableCh6g[apModelType]) : availableCh6g) || {}
+      (availableCh6g && availableCh6g[apModelType]) || {}
     const bandwidth6g = GetSupportBandwidth(channelBandwidth6GOptions, supportCh6g, {
       isSupport160Mhz: is6GHas160Mhz,
       isSupport320Mhz: is6GHas320Mhz
@@ -401,7 +396,7 @@ export function RadioSettings (props: ApEditItemProps) {
       bandwidthRadioOptions
     }
 
-  }, [getApAvailableChannels.data, has160MHzChannelBandwidth, isOutdoor, maxChannelization5G, maxChannelization6G, supportWifi7_320MHz])
+  }, [getApAvailableChannels.data, has160MHzChannelBandwidth, isOutdoor, maxChannelization5G, maxChannelization6G, ap70BetaFlag])
 
   const afcProps = useMemo(() => {
     const availableChannels = getApAvailableChannels.data
@@ -536,8 +531,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi,
-        enableSeparation: is6gChannelSeparation
+        enableRbac: isUseRbacApi
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)

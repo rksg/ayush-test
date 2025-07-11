@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import _                           from 'lodash'
+import _, { isNil }                from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { useStepFormContext }                from '@acx-ui/components'
@@ -13,7 +13,10 @@ import {
   validateEdgeAllPortsEmptyLag,
   natPoolRangeClusterLevelValidator,
   useIsEdgeFeatureReady,
-  getMergedLagTableDataFromLagForm
+  getMergedLagTableDataFromLagForm,
+  edgeWanSyncIpModeValidator,
+  getEdgeWanInterfaces,
+  EdgePort
 } from '@acx-ui/rc/utils'
 import { EdgeScopes } from '@acx-ui/types'
 
@@ -59,8 +62,11 @@ interface LagSettingViewProps {
 const LagSettingView = (props: LagSettingViewProps) => {
   const { value, onChange } = props
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
-  const { clusterInfo, isSupportAccessPort } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo, isSupportAccessPort, clusterNetworkSettings
+  } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
 
   // eslint-disable-next-line max-len
@@ -179,6 +185,10 @@ const LagSettingView = (props: LagSettingViewProps) => {
               return lagList?.some(lag => String(lag.id) === lagId) ? subInterfaceList : []
             })
           const allSubInterface = portSubInterfaceList.concat(lagSubInterfaceList)
+          // eslint-disable-next-line max-len
+          const originalPortData = clusterNetworkSettings?.portSettings.find(item => item.serialNumber === serialNumber)?.ports
+          // eslint-disable-next-line max-len
+          const originalLagData = clusterNetworkSettings?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
 
           return <>
             <UI.StyledHiddenFormItem
@@ -191,7 +201,6 @@ const LagSettingView = (props: LagSettingViewProps) => {
               children={<input hidden/>}
             />
             <EdgeLagTable
-              clusterId={clusterInfo?.clusterId}
               serialNumber={serialNumber}
               lagList={lagList}
               portList={portList}
@@ -224,6 +233,27 @@ const LagSettingView = (props: LagSettingViewProps) => {
                     } }] : []
                 }
               }}
+              originalInterfaceData={{
+                portSettings: originalPortData,
+                lagSettings: originalLagData
+              }}
+            />
+            <Form.Item
+              name='multiWanIpModeCheck'
+              rules={[
+                ...(isEdgeDualWanEnabled
+                  ? [{ validator: () => {
+                    // only check when all WAN is LAG
+                    const allWans = getEdgeWanInterfaces(portList, lagList)
+                    // eslint-disable-next-line max-len
+                    const isAllLagWan = allWans.every((wan: EdgePort | EdgeLag) => !isNil((wan as EdgeLag).lagEnabled))
+                    if (!isAllLagWan) return Promise.resolve()
+
+                    return edgeWanSyncIpModeValidator(portList ?? [], lagList ?? [])
+                  } }]
+                  : [])
+              ]}
+              children={<></>}
             />
           </>
         }

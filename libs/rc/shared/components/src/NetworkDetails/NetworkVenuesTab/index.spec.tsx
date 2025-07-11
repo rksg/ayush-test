@@ -11,6 +11,7 @@ import {
   AccessControlUrls,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  EdgeSdLanUrls,
   SoftGreUrls,
   VlanPoolRbacUrls,
   WifiNetworkFixtures,
@@ -52,14 +53,10 @@ const { mockedRbacWifiNetworkList } = WifiNetworkFixtures
 // isMapEnabled = false && SD-LAN not enabled
 const disabledFFs = [
   Features.G_MAP,
-  Features.EDGES_SD_LAN_TOGGLE,
-  Features.EDGES_SD_LAN_HA_TOGGLE,
-  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.ABAC_POLICIES_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.WIFI_COMPATIBILITY_BY_MODEL
 ]
 type MockDialogProps = React.PropsWithChildren<{
@@ -202,6 +199,10 @@ describe.skip('NetworkVenuesTab', () => {
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockNetworkViewModelData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -873,8 +874,8 @@ describe.skip('SoftGreTunnel', () => {
   }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-      || ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API
+      || !disabledFFs.includes(ff as Features))
 
     act(() => {
       store.dispatch(networkApi.util.resetApiState())

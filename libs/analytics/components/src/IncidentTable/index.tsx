@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback } from 'react'
 
-import { stringify }                                           from 'csv-stringify/browser/esm/sync'
-import { omit }                                                from 'lodash'
-import { useIntl, defineMessage, FormattedMessage, IntlShape } from 'react-intl'
+import { stringify }                                from 'csv-stringify/browser/esm/sync'
+import { omit }                                     from 'lodash'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   productNames,
@@ -16,15 +16,16 @@ import {
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip, Button, Table, Filter } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                  from '@acx-ui/formatter'
+import { Loader, TableProps, Drawer, Tooltip, Button, Table } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   EyeOpenOutlined,
   EyeSlashOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import type { Filter }                   from '@acx-ui/types'
 import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
 import {
   filterByAccess,
@@ -38,7 +39,8 @@ import {
   noDataDisplay,
   handleBlobDownloadFile,
   useTrackLoadTime,
-  widgetsMapping
+  widgetsMapping,
+  getIntl
 } from '@acx-ui/utils'
 
 import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
@@ -52,6 +54,11 @@ import {
 } from './services'
 import * as UI                                             from './styledComponents'
 import { GetIncidentBySeverity, ShortIncidentDescription } from './utils'
+
+const getMutedStatusText = (isMuted: boolean): string => {
+  const { $t } = getIntl()
+  return isMuted ? $t({ defaultMessage: 'Muted' }) : $t({ defaultMessage: 'Unmuted' })
+}
 
 export function downloadIncidentList (
   incidents: IncidentNodeData,
@@ -73,14 +80,18 @@ export function downloadIncidentList (
       quoted: true,
       cast: {
         string: s => s === '--' ? '-' : s,
-        boolean: b => b ? 'true' : 'false'
+        boolean: (b, context) => {
+          if (context.column === 'isMuted') {
+            return getMutedStatusText(b)
+          }
+          return b ? 'true' : 'false'
+        }
       },
       columns: [
         ...columns.map(({ key, title }) => ({
           key: key === 'severity' ? 'severityLabel' : key,
           header: title as string
-        })),
-        { key: 'isMuted', header: 'Muted' }
+        }))
       ]
     }
   )
@@ -143,28 +154,32 @@ export enum IncidentVisibility {
   Unmuted
 }
 
-const visibilityFilterOptions = ($t: IntlShape['$t']) => [
-  {
-    id: IncidentVisibility.Unmuted,
-    key: 'false',
-    value: (
-      <UI.OptionItemWithIcon>
-        <EyeOpenOutlined height={18} /> {$t({ defaultMessage: 'Unmuted' })}
-      </UI.OptionItemWithIcon>
-    ),
-    label: $t({ defaultMessage: 'Unmuted' })
-  },
-  {
-    id: IncidentVisibility.Muted,
-    key: 'true',
-    value: (
-      <UI.OptionItemWithIcon>
-        <EyeSlashOutlined height={18} /> {$t({ defaultMessage: 'Muted' })}
-      </UI.OptionItemWithIcon>
-    ),
-    label: $t({ defaultMessage: 'Muted' })
-  }
-]
+const visibilityFilterOptions = () => {
+  const unmutedText = getMutedStatusText(false)
+  const mutedText = getMutedStatusText(true)
+  return [
+    {
+      id: IncidentVisibility.Unmuted,
+      key: 'false',
+      value: (
+        <UI.OptionItemWithIcon>
+          <EyeOpenOutlined height={18} /> {unmutedText}
+        </UI.OptionItemWithIcon>
+      ),
+      label: unmutedText
+    },
+    {
+      id: IncidentVisibility.Muted,
+      key: 'true',
+      value: (
+        <UI.OptionItemWithIcon>
+          <EyeSlashOutlined height={18} /> {mutedText}
+        </UI.OptionItemWithIcon>
+      ),
+      label: mutedText
+    }
+  ]
+}
 
 export const getIncidentsMutedStatus = (incidents: IncidentRowData[]) => {
   if (incidents.length === 0) return IncidentVisibility.All
@@ -272,7 +287,7 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'severityLabel',
       key: 'severity',
       render: (_, value) =>
-        <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id}/>,
+        <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id} />,
       sorter: { compare: sortProp('severity', severitySort) },
       defaultSortOrder: 'descend',
       fixed: 'left',
@@ -285,7 +300,7 @@ export function IncidentTable ({ filters }: {
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <DateLink value={value}/>
+        return <DateLink value={value} />
       },
       sorter: { compare: sortProp('endTime', dateSort) },
       fixed: 'left'
@@ -303,7 +318,7 @@ export function IncidentTable ({ filters }: {
       width: 200,
       dataIndex: 'description',
       key: 'description',
-      render: (_, value, __, highlightFn ) => (
+      render: (_, value, __, highlightFn) => (
         <ShortIncidentDescription
           onClickDesc={setDrawerSelection}
           incident={value}
@@ -352,7 +367,7 @@ export function IncidentTable ({ filters }: {
       width: 200,
       dataIndex: 'scope',
       key: 'scope',
-      render: (_, value, __, highlightFn ) => {
+      render: (_, value, __, highlightFn) => {
         return <Tooltip
           placement='top'
           title={formattedPath(value.path, value.sliceValue)}
@@ -381,18 +396,18 @@ export function IncidentTable ({ filters }: {
       align: 'center',
       render: (_, { isMuted }) =>
         isMuted ? (
-          <Tooltip title={$t({ defaultMessage: 'Muted' })}>
+          <Tooltip title={getMutedStatusText(true)}>
             <EyeSlashOutlined height={18} />
           </Tooltip>
         ) : (
-          <Tooltip title={$t({ defaultMessage: 'Unmuted' })}>
+          <Tooltip title={getMutedStatusText(false)}>
             <EyeOpenOutlined height={18} />
           </Tooltip>
         ),
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,
-      filterable: visibilityFilterOptions($t)
+      filterable: visibilityFilterOptions()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing

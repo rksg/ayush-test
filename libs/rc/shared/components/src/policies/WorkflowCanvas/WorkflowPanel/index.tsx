@@ -5,15 +5,17 @@ import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 import {
+  Node,
   ReactFlowProvider,
   useEdgesState,
   useNodesState
 } from 'reactflow'
 
 
-import { Loader, Tooltip }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { Loader, Tooltip }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                  from '@acx-ui/formatter'
+import { CheckMarkCircleThick, CrossCircleSolidIcon } from '@acx-ui/icons'
 import {
   useGetWorkflowActionDefinitionListQuery,
   useGetWorkflowByIdQuery,
@@ -116,13 +118,18 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
   useEffect(() => {
     if (!stepsData?.content ) return
-
     const {
       nodes: inputNodes,
       edges: inputEdges
     } = toReactFlowData(stepsData?.content, mode)
     setNodes(inputNodes)
     setEdges(inputEdges)
+
+    const nodeMap = new Map<string, Node>()
+    if(inputNodes && inputNodes.length > 0) {
+      inputNodes.forEach(n => {nodeMap.set(n.id, n)})
+    }
+    nodeState.setNodeMap(nodeMap)
   }, [stepsData])
 
   const onClickAction = (type: ActionType) => {
@@ -187,13 +194,11 @@ export function WorkflowPanel (props: WorkflowPanelProps) {
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const { type = PanelType.Default, ...rest } = props
   const [published, setPublished] = useState<Workflow>()
-  const [publishReadiness, setPublishReadiness] = useState<number>(0)
   const [statusReason, setStatusReason] = useState<StatusReason[]>([])
 
   useEffect(() => {
     if (workflowQuery.isLoading || !workflowQuery.data) return
     fetchVersionHistory(workflowQuery.data.id!!)
-    setPublishReadiness(workflowQuery.data?.publishReadiness || 0)
     setStatusReason(workflowQuery.data?.statusReasons || [])
   }, [workflowQuery.data, workflowQuery.isLoading])
 
@@ -256,33 +261,34 @@ export function WorkflowPanel (props: WorkflowPanelProps) {
             justifyContent: 'right',
             alignItems: 'center'
           }}>
-            <UI.PublishReadinessProgress progress={publishReadiness}>
-              <div className='progress-bar'
-                style={{
-                  width: publishReadiness + '%'
-                }}>
-                <span className='status-label'>
-                  { $t({ defaultMessage: 'Publish Readiness' }) }
-                </span>
+            {<>
+              <UI.PublishReadinessProgress ready={statusReason && !statusReason.length}>
+                { statusReason && !statusReason.length ?
+                  <CheckMarkCircleThick className='readyIcon'/>
+                  : <CrossCircleSolidIcon className='notReadyIcon' /> }
+                { statusReason && !statusReason.length ?
+                  $t({ defaultMessage: 'Ready' })
+                  : $t({ defaultMessage: 'Not Ready' }) }
+              </UI.PublishReadinessProgress>
+              <div style={{
+                display: 'inline-flex',
+                width: '20px',
+                height: '20px',
+                margin: '0px 8px'
+              }}> {
+                  !!statusReason.length
+              && <Tooltip.Info
+                iconStyle={{ width: '100%', height: '100%' }}
+                placement='bottomLeft'
+                showArrow={false}
+                overlayStyle={{
+                  width: '395px'
+                }}
+                isFilled
+                title={<PublishedTooltipContent reasons={statusReason as StatusReason[]} />}
+              />}
               </div>
-            </UI.PublishReadinessProgress>
-            <div style={{
-              display: 'inline-flex',
-              width: '20px',
-              height: '20px',
-              margin: '0px 8px'
-            }}> {
-                !!statusReason.length
-            && <Tooltip.Info
-              placement='bottomLeft'
-              showArrow={false}
-              overlayStyle={{
-                width: '395px'
-              }}
-              isFilled
-              title={<PublishedTooltipContent reasons={
-            statusReason as StatusReason[]
-              } />}/>} </div>
+            </>}
           </div>
         </Col>
       </Row>

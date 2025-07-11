@@ -241,10 +241,16 @@ const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
 const user = require('@acx-ui/user')
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const mockCheckDelegateAdmin = jest.fn()
+jest.mock('../../hooks/useCheckDelegateAdmin', () => ({
+  useCheckDelegateAdmin: () => ({ checkDelegateAdmin: mockCheckDelegateAdmin })
+}))
+
 
 describe('MspRecCustomers', () => {
   let params: { tenantId: string }
@@ -265,10 +271,6 @@ describe('MspRecCustomers', () => {
     services.useDelegateToMspEcPath = jest.fn().mockImplementation(() => {
       const delegateToMspEcPath = jest.fn()
       return { delegateToMspEcPath }
-    })
-    services.useCheckDelegateAdmin = jest.fn().mockImplementation(() => {
-      const checkDelegateAdmin = jest.fn()
-      return { checkDelegateAdmin }
     })
     rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: fakedPrivilegeGroupList }
@@ -536,7 +538,7 @@ describe('MspRecCustomers', () => {
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getAllByRole('link')[0])
 
-    expect(services.useCheckDelegateAdmin).toHaveBeenCalled()
+    expect(mockCheckDelegateAdmin).toHaveBeenCalled()
   })
   it('should work correctly for customer name clicked for support user', async () => {
     const supportUserProfile = { ...userProfile }

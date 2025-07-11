@@ -104,7 +104,8 @@ const recList = {
       billing_country: 'United States',
       billing_postal_code: '33172',
       billing_state: 'FL',
-      billing_street: '11275 Northwest 12th Street,'
+      billing_street: '11275 Northwest 12th Street,',
+      propertyCode: 'BBBBB'
     },
     {
       account_name: 'Springhill Suites Las Vegas',
@@ -113,7 +114,8 @@ const recList = {
       billing_country: 'United States',
       billing_postal_code: '95035',
       billing_state: 'CA',
-      billing_street: '1480 Falcon Drive'
+      billing_street: '1480 Falcon Drive',
+      propertyCode: 'AAAAA'
     }
   ]
 }
@@ -178,7 +180,8 @@ const fakedPrivilegeGroupList =
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
-const utils = require('@acx-ui/rc/utils')
+const user = require('@acx-ui/user')
+const utils = require('@acx-ui/utils')
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -189,7 +192,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-const user = require('@acx-ui/user')
 
 describe('AddRecCustomer', () => {
   beforeEach(() => {

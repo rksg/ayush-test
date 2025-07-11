@@ -72,4 +72,18 @@ describe('TimeRangeDropDown', () => {
       .setTimeRangeDropDownRange(DateRange.last7Days)).not.toThrow()
     expect(defaultTimeRangeDropDownContextValue.selectedRange).toBe(DateRange.last24Hours)
   })
+
+  it('should set default selected range based on defaultSelectedRange prop', () => {
+    render(
+      <TimeRangeDropDownProvider
+        availableRanges={ranges}
+        defaultSelectedRange={DateRange.last7Days}
+      >
+        <TimeRangeDropDown />
+      </TimeRangeDropDownProvider>,
+      { wrapper: Provider }
+    )
+
+    expect(screen.getByText(DateRange.last7Days)).toBeInTheDocument()
+  })
 })

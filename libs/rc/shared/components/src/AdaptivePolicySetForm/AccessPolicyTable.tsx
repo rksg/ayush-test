@@ -15,9 +15,10 @@ import {
 import {
   AdaptivePolicy,
   getAdaptivePolicyDetailLink,
-  PolicyOperation, useTableQuery
+  PolicyOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 

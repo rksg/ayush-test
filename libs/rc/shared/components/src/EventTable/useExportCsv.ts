@@ -2,13 +2,12 @@ import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Filter, showToast }                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { useDownloadEventsCSVMutation }                     from '@acx-ui/rc/services'
-import { TableQuery }                                       from '@acx-ui/rc/utils'
-import { RequestPayload }                                   from '@acx-ui/types'
-import { useUserProfileContext }                            from '@acx-ui/user'
-import { DateRangeFilter, computeRangeFilter, useTenantId } from '@acx-ui/utils'
+import { showToast }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { useDownloadEventsCSVMutation }                                 from '@acx-ui/rc/services'
+import type { Filter, RequestPayload }                                  from '@acx-ui/types'
+import { useUserProfileContext }                                        from '@acx-ui/user'
+import { DateRangeFilter, computeRangeFilter, useTenantId, TableQuery } from '@acx-ui/utils'
 
 export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>

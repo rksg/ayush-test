@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Typography }             from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                                         from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                                                            from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
 import {
@@ -18,6 +18,7 @@ import {
   useDhcpStateMap,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
+import { RadioCardCategory }          from '@acx-ui/types'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
@@ -34,6 +35,7 @@ export interface ServiceCardItem {
     helpIcon?: React.ReactNode
     isBetaFeature?: boolean
     readonly?: boolean
+    isLimitReached?: boolean
   }[]
 }
 
@@ -45,8 +47,6 @@ export default function ServiceCatalog () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -71,7 +71,7 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.DHCP}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
@@ -87,7 +87,7 @@ export default function ServiceCatalog () {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title=''
+            title={IncompatibilityFeatures.PIN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
@@ -97,11 +97,10 @@ export default function ServiceCatalog () {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
-            title={''}
+            title={IncompatibilityFeatures.SD_LAN}
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
-          />,
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          />
         },
         {
           type: ServiceType.EDGE_OLT,
@@ -152,7 +151,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WIFI_CALLING,
           categories: [RadioCardCategory.WIFI],
-          readonly: isWifiCallingLimitReached
+          isLimitReached: isWifiCallingLimitReached
         }
       ]
     },
@@ -214,6 +213,7 @@ export default function ServiceCatalog () {
                     type={'button'}
                     helpIcon={item.helpIcon}
                     isBetaFeature={item.isBetaFeature}
+                    isLimitReached={item.isLimitReached}
                   />
                 </GridCol>
             })}

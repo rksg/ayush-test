@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  doProfileDelete,
   useDelDevicePoliciesMutation,
   useGetEnhancedDeviceProfileListQuery,
   useNetworkListQuery,
@@ -20,9 +19,10 @@ import {
   getScopeKeyByPolicy,
   Network, PolicyOperation,
   PolicyType,
-  useTableQuery,
-  WifiNetwork
+  WifiNetwork,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { AddModeProps }                     from '../../AccessControlForm'

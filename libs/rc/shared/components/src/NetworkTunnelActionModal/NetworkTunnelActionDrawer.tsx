@@ -6,7 +6,6 @@ import { Drawer, Loader }             from '@acx-ui/components'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  EdgeMvSdLanViewData,
   EdgePinUrls,
   getServiceDetailsLink,
   NetworkTypeEnum,
@@ -20,7 +19,6 @@ import { getIntl, getOpsApi } from '@acx-ui/utils'
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
 import { SpaceWrapper }                                                                                from '../SpaceWrapper'
 import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
-
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
 import { messageMappings }                                from './messageMappings'
@@ -38,9 +36,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     onClose, onFinish,
     cachedActs, cachedSoftGre
   } = props
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeSdLanSelectionDrawerReady = useIsEdgeFeatureReady(Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
@@ -54,7 +52,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   const networkType = network?.type
   const networkVenueId = network?.venueId
   const networkVenueName = network?.venueName
-  const hiddenSoftGre = NetworkTypeEnum.CAPTIVEPORTAL === networkType
+  const isCaptivePortal = networkType === NetworkTypeEnum.CAPTIVEPORTAL
+  const hiddenSoftGre = isCaptivePortal
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
   const hasPinAllowOps = hasPermission({
     rbacOpsIds: [
@@ -63,7 +62,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
   const {
     tunnelType: tunnelTypeInitVal,
-    venueSdLanInfo,
+    venueSdLanInfo: initialVenueSdLanInfo,
     networkVlanPool,
     venuePinInfo,
     isLoading
@@ -75,27 +74,39 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
+      const venueSdLan = formValues.sdLan.newProfileId && isEdgeSdLanSelectionDrawerReady
+        ? formValues.sdLan.newProfile
+        : initialVenueSdLanInfo
 
-      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
+      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }
   }
 
-  useEffect(() => {
-    if (visible) {
-      form.setFieldValue('tunnelType',
-        tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal)
-    }
-  }, [visible, tunnelTypeInitVal])
+  const isSdLanConfigurable = isEdgeSdLanSelectionDrawerReady ? true : !!initialVenueSdLanInfo
 
-  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
+  // If network is captive portal, SD-LAN should be selected by default and unchangeable
+  // due to SoftGRE is not supported on captive portal
+  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && isSdLanConfigurable
+
+  useEffect(() => {
+    const isTunnelTypeTouched = form.isFieldTouched('tunnelType')
+
+    if (visible && !isTunnelTypeTouched) {
+      const defaultTunnelType = shouldSdLanBeSelectedByDefault
+        ? NetworkTunnelTypeEnum.SdLan : ''
+
+      form.setFieldValue('tunnelType',
+        tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? defaultTunnelType : tunnelTypeInitVal)
+    }
+  }, [visible, tunnelTypeInitVal, initialVenueSdLanInfo])
+
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
   return (<Drawer
-    title={$t({ defaultMessage: 'Tunnel: {name}' }, { name: networkVenueName })
-    }
+    title={$t({ defaultMessage: 'Tunnel: {name}' }, { name: networkVenueName })}
     visible={visible}
     width={450}
     push={false}
@@ -128,7 +139,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               />
             </>}
           </>}
-          initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {
               required: true,
@@ -139,53 +149,46 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             <Select
               style={{ width: '220px' }}
               placeholder={$t({ defaultMessage: 'Select...' })}
+              disabled={shouldSdLanBeSelectedByDefault}
             >
               <Select.Option value={''}>{$t({ defaultMessage: 'Select...' })}</Select.Option>
               <Select.Option
                 data-testid='softgre-option'
                 hidden={hiddenSoftGre}
                 value={NetworkTunnelTypeEnum.SoftGre}
-                disabled={isDisabledAll || !hasSoftGrePermission || hiddenSoftGre}>
-                <Tooltip
-                  title={isDisabledAll
-                    ? $t(messageMappings.disable_deactivate_last_network)
-                    : undefined}>
+                disabled={!hasSoftGrePermission || hiddenSoftGre}>
+                <Tooltip>
                   {$t({ defaultMessage: 'SoftGRE' })}
                 </Tooltip>
               </Select.Option>
               <Select.Option
                 data-testid='sd-lan-option'
                 value={NetworkTunnelTypeEnum.SdLan}
-                disabled={isDisabledAll || !hasEdgeSdLanPermission
-                  || isPinNetwork || !!!venueSdLanInfo}>
+                disabled={!hasEdgeSdLanPermission || isPinNetwork || !isSdLanConfigurable}>
                 <Tooltip
                   title={isPinNetwork
                     ? $t(messageMappings.disable_pin_network)
-                    : (isDisabledAll
-                      ? $t(messageMappings.disable_deactivate_last_network)
-                      : undefined)}>
+                    : undefined}>
                   {$t({ defaultMessage: 'SD-LAN' })}
                 </Tooltip>
               </Select.Option>
             </Select>
           }
         />
-        {isSoftGreEnabled && !hiddenSoftGre && visible
+        {!hiddenSoftGre && visible
           && tunnelType===NetworkTunnelTypeEnum.SoftGre &&
           <WifiSoftGreSelectOption currentTunnelType={tunnelType}
             venueId={networkVenueId!}
             networkId={networkId!}
             cachedSoftGre={cachedSoftGre}
-            disabledInfo={(isDisabledAll || !hasSoftGrePermission)
+            disabledInfo={(!hasSoftGrePermission)
               ? {
-                isDisabled: isDisabledAll || !hasSoftGrePermission,
-                tooltip: isDisabledAll
-                  ? $t(messageMappings.disable_deactivate_last_network)
-                  : undefined
+                isDisabled: !hasSoftGrePermission,
+                tooltip: undefined
               }
               : undefined} />
         }
-        {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
+        {network && visible && !venuePinInfo &&
         tunnelType===NetworkTunnelTypeEnum.SdLan &&
         <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
           <EdgeSdLanSelectOption
@@ -194,16 +197,14 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             networkId={networkId!}
             networkVenueId={networkVenueId!}
             networkType={networkType!}
-            venueSdLan={venueSdLanInfo}
+            venueSdLan={initialVenueSdLanInfo}
             networkVlanPool={networkVlanPool}
-            disabledInfo={(isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork)
+            disabledInfo={(!hasEdgeSdLanPermission || isPinNetwork)
               ? {
-                isDisabled: isDisabledAll || !hasEdgeSdLanPermission || !!isPinNetwork,
+                isDisabled: !hasEdgeSdLanPermission || !!isPinNetwork,
                 tooltip: isPinNetwork
                   ? $t(messageMappings.disable_pin_network)
-                  : (isDisabledAll
-                    ? $t(messageMappings.disable_deactivate_last_network)
-                    : undefined)
+                  : undefined
               }
               : undefined}
           />
@@ -244,15 +245,4 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
       />
     }
   />)
-}
-
-// eslint-disable-next-line max-len
-const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
-  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
-  if(dcNetworkCount === 0 || !currentNetworkId) return false
-
-  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
-  if (!isSdLanLastNetwork) return false
-
-  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }

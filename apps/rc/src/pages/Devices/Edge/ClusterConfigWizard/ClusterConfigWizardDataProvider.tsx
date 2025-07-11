@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeClusterNetworkSettingsQuery,
@@ -13,8 +13,8 @@ import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
+  EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  EdgeSdLanViewDataP2,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
@@ -23,7 +23,7 @@ export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
   portsStatus?: EdgeNodesPortsInfo
   lagsStatus?: EdgeNodesPortsInfo
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
   isSupportAccessPort?: boolean
@@ -82,7 +82,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo?.clusterId)
 
   const {
     data: clusterNetworkSettings,

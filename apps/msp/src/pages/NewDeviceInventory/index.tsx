@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 
 import { SortOrder }                         from 'antd/lib/table/interface'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
@@ -16,6 +16,7 @@ import {
   useDeviceInventoryListQuery,
   useDeviceModelFilterListQuery,
   useExportDeviceInventoryMutation,
+  useGetDeviceFirmwareListQuery,
   useVenueNamesFilterListQuery
 } from '@acx-ui/msp/services'
 import {
@@ -29,11 +30,11 @@ import {
   ApDeviceStatusEnum,
   transformApStatus,
   EntitlementNetworkDeviceType,
-  SwitchStatusEnum,
-  useTableQuery
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
-import { AccountType, exportMessageMapping } from '@acx-ui/utils'
+import { TenantLink, useParams }                            from '@acx-ui/react-router-dom'
+import { Filter }                                           from '@acx-ui/types'
+import { AccountType, exportMessageMapping, useTableQuery } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -55,6 +56,10 @@ const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) =>
 
 const transformMacaddressString = (row: EcDeviceInventory) => {
   return row.apMac ? row.apMac : (row.switchMac ? row.switchMac : '')
+}
+
+const transformFirmwareString = (row: EcDeviceInventory) => {
+  return row.fwVersion ?? row.firmwareVersion ?? ''
 }
 
 function transformDeviceOperStatus (row: EcDeviceInventory, intl: IntlShape) {
@@ -89,28 +94,43 @@ const transformSwitchStatus = ({ $t }: IntlShape, switchStatus: SwitchStatusEnum
   }
 }
 
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'deviceType',
-    'venueName',
-    'serialNumber',
-    'switchMac',
-    'name',
-    'tenantId',
-    'apMac',
-    'model',
-    'customerName',
-    'deviceStatus' ],
-  searchTargetFields: ['apMac', 'switchMac', 'serialNumber'],
-  filters: {}
-}
-
 export function NewDeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+  const [firmwareListName, setfirmwareListName] = useState<{ key: string; value: string; }[] >([])
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isMspDeviceInventoryFirmwareDisplayEnabled = useIsSplitOn(Features.MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE)
+
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'deviceType',
+      'venueName',
+      'serialNumber',
+      'switchMac',
+      'name',
+      'tenantId',
+      'apMac',
+      'model',
+      'customerName',
+      'deviceStatus',
+      ...(isMspDeviceInventoryFirmwareDisplayEnabled
+        ? ['fwVersion', 'firmwareVersion']
+        : []
+      )
+    ],
+    searchTargetFields: [
+      'apMac', 'switchMac', 'serialNumber',
+      ...(isMspDeviceInventoryFirmwareDisplayEnabled
+        ? ['fwVersion', 'firmwareVersion']
+        : []
+      )
+    ],
+    filters: {},
+    groupFilters: [] as { field: string, value: string }[][]
+  }
 
   const {
     state
@@ -151,6 +171,8 @@ export function NewDeviceInventory () {
   const { data: customerNameList } = useCustomerNamesFilterListQuery(filterQueryParams)
   const { data: venueNameList } = useVenueNamesFilterListQuery(filterQueryParams)
   const { data: deviceModelList } = useDeviceModelFilterListQuery(filterQueryParams)
+  // eslint-disable-next-line max-len
+  const { data: firmwareList } = useGetDeviceFirmwareListQuery(filterQueryParams, { skip: !isMspDeviceInventoryFirmwareDisplayEnabled })
 
   const ExportInventory = () => {
     const csvPayload = { ...defaultPayload, pageSize: 10000 }
@@ -159,6 +181,14 @@ export function NewDeviceInventory () {
       payload: csvPayload,
       enableRbac: isViewmodleAPIsMigrateEnabled })
   }
+
+  useEffect(() => {
+    if (firmwareList?.data) {
+      setfirmwareListName(
+        firmwareList.data.map((firmware: string) => ({ key: firmware, value: firmware }))
+      )
+    }
+  }, [firmwareList])
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
@@ -202,6 +232,15 @@ export function NewDeviceInventory () {
       sorter: true,
       key: 'name'
     },
+    ...(isMspDeviceInventoryFirmwareDisplayEnabled ? [{
+      title: $t({ defaultMessage: 'Current Firmware' }),
+      dataIndex: 'fwVersion',
+      key: 'fwVersion',
+      filterable: firmwareListName,
+      render: function (_: ReactNode, row: EcDeviceInventory) {
+        return transformFirmwareString(row)
+      }
+    }]: []),
     {
       title: $t({ defaultMessage: 'Customer Name' }),
       dataIndex: 'customerName',
@@ -247,6 +286,30 @@ export function NewDeviceInventory () {
     }
   ]
 
+  const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
+    let _customFilters = {}
+    _customFilters = {
+      ...filter
+    } as Filter
+    if (isMspDeviceInventoryFirmwareDisplayEnabled && filter.hasOwnProperty('fwVersion')) {
+      const apSwitchFirmwareList = filter.fwVersion as string[]
+      delete (_customFilters as Filter).fwVersion
+
+      tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: _customFilters,
+        groupFilters: apSwitchFirmwareList?.flatMap((item) => {
+          return [
+            [{ field: 'fwVersion', value: item }],
+            [{ field: 'firmwareVersion', value: item }]
+          ]
+        })
+      })
+    } else {
+      tableQuery.handleFilterChange(_customFilters, search)
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -266,7 +329,7 @@ export function NewDeviceInventory () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           actions={actions}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={onFilterChange}
           rowKey='serialNumber'
         />
       </Loader>

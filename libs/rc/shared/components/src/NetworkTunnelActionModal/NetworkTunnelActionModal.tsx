@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Tooltip, Typography } from 'antd'
 
-import { Loader, Modal }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Loader, Modal }  from '@acx-ui/components'
+import { Features }       from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
@@ -61,9 +61,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
     onClose, onFinish,
     cachedActs, cachedSoftGre
   } = props
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const { hasEdgeSdLanPermission, hasSoftGrePermission } = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
@@ -112,7 +110,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
     if (visible) {
       switch(tunnelType) {
         case NetworkTunnelTypeEnum.SdLan:
-          setIsValidData(isEdgeSdLanMvEnabled && !!venueSdLanInfo)
+          setIsValidData(!!venueSdLanInfo)
           return
         case NetworkTunnelTypeEnum.SoftGre:
           setIsValidData(!!softGreProfileId)
@@ -126,8 +124,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
       }
     }
 
-  // eslint-disable-next-line max-len
-  }, [visible, tunnelType, isSoftGreEnabled, isEdgeSdLanMvEnabled, isEdgePinHaEnabled, venueSdLanInfo, softGreProfileId])
+  }, [visible, tunnelType, isEdgePinHaEnabled, venueSdLanInfo, softGreProfileId])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
@@ -176,7 +173,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
             </Form.Item>
             }
 
-            {isSoftGreEnabled && !hiddenSoftGre && visible &&
+            {!hiddenSoftGre && visible &&
               <WifiSoftGreRadioOption
                 currentTunnelType={tunnelType}
                 venueId={networkVenueId!}
@@ -194,7 +191,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
             }
 
             <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
-              {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
+              {network && visible && !venuePinInfo &&
               <EdgeSdLanRadioOption
                 tunnelTypeInitVal={tunnelTypeInitVal}
                 currentTunnelType={tunnelType}
