@@ -5,6 +5,7 @@ import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 import {
+  Node,
   ReactFlowProvider,
   useEdgesState,
   useNodesState
@@ -117,13 +118,18 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
   useEffect(() => {
     if (!stepsData?.content ) return
-
     const {
       nodes: inputNodes,
       edges: inputEdges
     } = toReactFlowData(stepsData?.content, mode)
     setNodes(inputNodes)
     setEdges(inputEdges)
+
+    const nodeMap = new Map<string, Node>()
+    if(inputNodes && inputNodes.length > 0) {
+      inputNodes.forEach(n => {nodeMap.set(n.id, n)})
+    }
+    nodeState.setNodeMap(nodeMap)
   }, [stepsData])
 
   const onClickAction = (type: ActionType) => {

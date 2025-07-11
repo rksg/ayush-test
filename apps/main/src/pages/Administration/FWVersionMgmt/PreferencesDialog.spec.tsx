@@ -79,4 +79,32 @@ describe('Firmware Venues Table', () => {
     expect(onSubmitSpy).toBeCalled()
   })
 
+  it('should render preferences - Cancel', async () => {
+    const onSubmitSpy = jest.fn()
+    const onCancelSpy = jest.fn()
+    render(
+      <Provider>
+        <PreferencesDialog
+          visible={true}
+          data={preference}
+          onCancel={onCancelSpy}
+          onSubmit={onSubmitSpy()}
+          isSwitch={true}
+          preDownload={true}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByTestId('PreDownload')).toBeChecked()
+
+    await userEvent.click(within(dialog).getByTestId('PreDownload'))
+    expect(within(dialog).getByTestId('PreDownload')).not.toBeChecked()
+
+    const cancelButton = await within(dialog).findByText('Cancel')
+    await userEvent.click(cancelButton)
+    expect(onCancelSpy).toBeCalled()
+  })
+
 })
