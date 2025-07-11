@@ -9,7 +9,7 @@ import { Features,
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
-  useMspECListQuery,
+  useMspECListWithDelegationsQuery,
   useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
 import {
@@ -51,7 +51,7 @@ const mspPayload = {
     tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
     status: ['Active']
   },
-  fields: ['id', 'name', 'tenantType', 'status'],
+  fields: ['id', 'name', 'tenantType', 'status', 'propertyCode'],
   page: 1,
   pageSize: 10000,
   defaultPageSize: 10000,
@@ -99,7 +99,7 @@ export function Brand360 () {
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
-  const mspPropertiesData = useMspECListQuery(
+  const mspPropertiesData = useMspECListWithDelegationsQuery(
     { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid),
@@ -212,6 +212,7 @@ export function Brand360 () {
           isLSP={isLSP}
           lspLabel={lsp}
           propertyLabel={property}
+          propertyCodeLabel={'Property Id'}
           isMDU={isMDUEnabled}
         />
       </GridCol>

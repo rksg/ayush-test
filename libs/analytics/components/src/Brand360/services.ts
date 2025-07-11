@@ -14,6 +14,7 @@ export interface Response {
   avgTTC: [number, number]
   avgClientThroughput: [number, number]
   property: string,
+  propertyCode?: string
   tenantId: string
 }
 export interface BrandTimeseriesPayload {
