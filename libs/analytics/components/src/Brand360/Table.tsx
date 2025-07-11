@@ -9,7 +9,7 @@ import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
-  transformToLspView, transformToPropertyView, Property, Common, Lsp, customSort
+  transformToLspView, transformToPropertyView, Property, PropertyCode, Common, Lsp, customSort
 } from './helpers'
 import {
   Response
@@ -209,10 +209,10 @@ export function BrandTable ({
     : propertyCols
 
 
-  return <Table<Property | Lsp>
+  return <Table<Property | PropertyCode | Lsp>
     columns={[
       ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols
-    ] as unknown as TableProps<Property | Lsp>['columns']}
+    ] as unknown as TableProps<Property | PropertyCode | Lsp>['columns']}
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
     settingsId='property-list-table'
