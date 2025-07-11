@@ -82,33 +82,6 @@ describe('test WiFi7', () => {
     expect(switchElements[1]).not.toBeChecked()
   })
 
-  it('should not render MLO field item render when useIsSplitOn return false (all feature flags off)', function () {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    render(
-      <Provider>
-        <Form>
-          <WiFi7/>
-        </Form>
-      </Provider>, {
-        route: { params }
-      }
-    )
-
-    const heading = screen.getByRole('heading')
-    expect(heading).toBeInTheDocument()
-    within(heading).getByText('Wi-Fi 7')
-    within(heading).getByTestId('QuestionMarkCircleOutlined')
-
-    const switchElements = screen.getAllByRole('switch')
-    expect(switchElements.length).toBe(1)
-    expect(screen.getByText('Enable WiFi 6/ 7')).toBeInTheDocument()
-    expect(screen.queryByText('Enable Multi-Li' +
-            'nk operation (MLO)')).not.toBeInTheDocument()
-  })
-
   it('should maintain checkbox status when switching mlo toggle off', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)

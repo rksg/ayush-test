@@ -8,6 +8,7 @@ import { ITimeZone } from '@acx-ui/types'
 import { DateFilter } from './dateFilter'
 
 export enum DateRange {
+  last1Hour = 'Last 1 Hour',
   last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
@@ -52,7 +53,7 @@ export function getDatePickerValues (state: DateFilter) {
 }
 
 export function defaultAllRanges (subRange?: DateRange[]) {
-  const merged = {
+  const merged: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     ...defaultRanges(),
     ...defaultCoreTierRanges()
   }
@@ -120,6 +121,9 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.last1Hour]: defineMessage({
+    defaultMessage: 'Last 1 Hour'
+  }),
   [DateRange.last8Hours]: defineMessage({
     defaultMessage: 'Last 8 Hours'
   }),

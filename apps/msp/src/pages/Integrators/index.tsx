@@ -24,12 +24,11 @@ import {
   MspEc,
   MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
-import { useTableQuery }                                                                                    from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import {
-  AccountType, getOpsApi, isDelegationMode
+  AccountType, getOpsApi, isDelegationMode, useTableQuery
 } from '@acx-ui/utils'
 
 import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'

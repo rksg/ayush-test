@@ -1,21 +1,31 @@
 import { useMemo } from 'react'
 
-import { MessageDescriptor,
-  defineMessage, useIntl, FormattedMessage }          from 'react-intl'
+import moment                                                          from 'moment'
+import { MessageDescriptor, defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
-import {  Card, Loader, Table,
-  TableProps, Tooltip }         from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { defaultSort, sortProp }                    from '@acx-ui/analytics/utils'
+import { Card, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { DownloadOutlined }                         from '@acx-ui/icons'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { handleBlobDownloadFile }                   from '@acx-ui/utils'
 
 import { DetailsCard } from '../SwitchDetail/DetailsCard'
 import { ChartProps }  from '../types'
 
-import { usePortFlapImpactedSwitchQuery,
-  ImpactedSwitchPort }          from './services'
+import { usePortFlapImpactedSwitchQuery, ImpactedSwitchPort } from './services'
 
+type Port = {
+  portNumber: string
+  portType: string
+  lastFlapTimeStamp: string
+  poeDetail: string
+  vlan?: string | JSX.Element
+  vlanText: string
+  connectedDevicePort: string
+  connectedDevicePortType: string
+}
 
 /**
  * Displays details of the switch where the incident occurred.
@@ -69,6 +79,76 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
     return ''
   }
 
+  const handleExportCSV = () => {
+    const columnDefinitions = [
+      {
+        key: 'portNumber',
+        title: $t({ defaultMessage: 'Port Id' }),
+        extractValue: (row: Port) => row.portNumber
+      },
+      {
+        key: 'portType',
+        title: $t({ defaultMessage: 'Port Type' }),
+        extractValue: (row: Port) => row.portType
+      },
+      {
+        key: 'vlan',
+        title: $t({ defaultMessage: 'VLAN' }),
+        extractValue: (row: Port) => row.vlanText
+      },
+      {
+        key: 'poeDetail',
+        title: $t({ defaultMessage: 'PoE Detail' }),
+        extractValue: (row: Port) => row.poeDetail
+      },
+      {
+        key: 'connectedDevicePortType',
+        title: $t({ defaultMessage: 'Remote Device Port Type' }),
+        extractValue: (row: Port) => row.connectedDevicePortType
+      },
+      {
+        key: 'connectedDevicePort',
+        title: $t({ defaultMessage: 'Remote Device Port' }),
+        extractValue: (row: Port) => row.connectedDevicePort
+      },
+      {
+        key: 'lastFlapTimeStamp',
+        title: $t({ defaultMessage: 'Last Flap Time Stamp' }),
+        extractValue: (row: Port) => row.lastFlapTimeStamp
+      }
+    ]
+
+    const csvData = impactedSwitch.data!.ports!.map(port => {
+      const rowData: Record<string, string> = {}
+      columnDefinitions.forEach(col => {
+        const portData = {
+          portNumber: port.portNumber,
+          portType: port.type,
+          vlanText: port.flapVlans || '--',
+          poeDetail: port.poeOperState === 'Unknown' ? '--' : port.poeOperState,
+          connectedDevicePortType: port.connectedDevice.type === null ||
+            port.connectedDevice.type === 'Unknown' ? '--' : port.connectedDevice.type,
+          connectedDevicePort: port.connectedDevice.port === null ||
+            port.connectedDevice.port === 'Unknown' ? '--' : port.connectedDevice.port,
+          lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(port.lastFlapTime)
+        }
+        rowData[col.title] = col.extractValue(portData)
+      })
+      return rowData
+    })
+
+    const csvContent = [
+      columnDefinitions.map(col => col.title).join(','),
+      ...csvData.map(row => Object.values(row).map(value => `"${value}"`).join(','))
+    ].join('\n')
+
+    const timestamp = moment().format('YYYY_MM_DD_HH_mm_ss')
+    const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
+    handleBlobDownloadFile(new Blob([csvContent],
+      { type: 'text/csv;charset=utf-8;' }),
+    `Port-Flap-Impacted-${portText}-${timestamp}.csv`)
+  }
+
   return <Loader states={[impactedSwitch]}>
     <Card
       title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
@@ -86,24 +166,26 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
           }}
         />
       </p>
-      <ImpactedSwitchTable data={impactedSwitch.data?.ports ?? []} />
+      <ImpactedSwitchTable
+        data={impactedSwitch.data?.ports ?? []}
+        iconButton={impactedSwitch.data?.ports && impactedSwitch.data.ports.length > 0 ? {
+          icon: <DownloadOutlined />,
+          onClick: handleExportCSV,
+          tooltip: $t({ defaultMessage: 'Export to CSV' })
+        } : undefined}
+      />
     </Card>
   </Loader>
 }
 
 function ImpactedSwitchTable (props: {
     data: ImpactedSwitchPort[]
+    iconButton?: {
+      icon: React.ReactNode
+      onClick: () => void
+      tooltip: string
+    }
   }) {
-  type Port = {
-    portNumber: string
-    portType: string
-    lastFlapTimeStamp: string
-    poeDetail: string
-    vlan: string | JSX.Element
-    vlanText: string
-    connectedDevicePort: string
-    connectedDevicePortType: string
-  }
   const { $t } = useIntl()
   const ports = props.data
 
@@ -215,5 +297,6 @@ function ImpactedSwitchTable (props: {
     columns={columns}
     dataSource={rows}
     pagination={{ defaultPageSize: 5, pageSize: 5 }}
+    iconButton={props.iconButton}
   />
 }

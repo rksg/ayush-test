@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import { Typography } from 'antd'
-import { AlignType }  from 'rc-table/lib/interface'
-import { useIntl }    from 'react-intl'
+import { Typography }  from 'antd'
+import { FilterValue } from 'antd/lib/table/interface'
+import { AlignType }   from 'rc-table/lib/interface'
+import { useIntl }     from 'react-intl'
 
 import {
   Button,
@@ -25,10 +26,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
-  FILTER,
-  SEARCH,
   Workflow,
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
@@ -40,7 +38,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
 
@@ -48,7 +46,12 @@ import PublishReadinessProgress from '../PublishReadinessProgress'
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
   const workflowValidationEnhancementFFToggle =
-      useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
+  const publicationStatusFilterOptions = [{ key: 'DRAFT', label: $t({ defaultMessage: 'Draft' }) },
+    { key: 'PUBLISHED', value: 'Published' }]
+  const publishReadinessFilterOptions = [{ key: 'VALID', label: $t({ defaultMessage: 'Ready' }) },
+    { key: 'INVALID', label: $t({ defaultMessage: 'Not Ready' }) }]
 
   const columns: TableProps<Workflow>['columns'] = [
     {
@@ -76,6 +79,9 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       sorter: false,
+      filterKey: workflowValidationEnhancementFFToggle ? 'status' : undefined,
+      filterable:
+        workflowValidationEnhancementFFToggle ? publicationStatusFilterOptions : undefined,
       render: (_, row) => $t({ defaultMessage: `{
         status, select,
         PUBLISHED {Published}
@@ -95,15 +101,8 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: ['publishedDetails', 'version'],
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
-        return row.publishedDetails?.version
-          ? <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.WORKFLOW,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!!,
-              activeTab: WorkflowDetailsTabKey.OVERVIEW
-            })}
-          >{row.publishedDetails?.version}</TenantLink>
+        return workflowMap.get(row.id!)?.publishedDetails?.version
+          ? workflowMap.get(row.id!)?.publishedDetails?.version
           : noDataDisplay
       }
     },
@@ -113,10 +112,26 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: 'publishReadiness',
       align: 'center' as AlignType,
       sorter: false,
-      render: (_: React.ReactNode, row: Workflow) => {
-        return <PublishReadinessProgress
-          publishReadiness={row.publishReadiness as number}
-          reasons={row?.statusReasons as StatusReason[]}/>
+      width: 50,
+      filterKey: 'validationStatus',
+      filterable: publishReadinessFilterOptions,
+      render: (node: React.ReactNode, record:Workflow) => {
+        return {
+          props: {
+            style: {
+              background: record?.statusReasons && record.statusReasons.length > 0
+                ? 'var(--acx-semantics-red-10)' : '',
+              padding: '0px'
+            }
+          },
+          children:
+              <div style={{ alignItems: 'center', justifyContent: 'center',
+                display: 'flex', width: '100%', height: '100%' }}>
+                <PublishReadinessProgress
+                  variant='short'
+                  reasons={record?.statusReasons as StatusReason[]}/>
+              </div>
+        }
       }
     }] : []),
     {
@@ -289,9 +304,24 @@ export default function WorkflowTable () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
-      filters: customSearch?.searchString ? { name: customSearch?.searchString } : undefined
+      filters: {
+        name: customSearch?.searchString ? customSearch?.searchString : undefined,
+        status: customFilters?.validationStatus ? customFilters?.validationStatus : undefined,
+        publishedChildren: getPublishedChildrenFilter(customFilters?.status)
+      }
     }
     tableQuery.setPayload(payload)
+  }
+
+  const getPublishedChildrenFilter = (statusFilter:FilterValue | null) => {
+    if(statusFilter && statusFilter.length === 1) {
+      if(statusFilter[0] === 'PUBLISHED') {
+        return true
+      } else {
+        return false
+      }
+    }
+    return undefined
   }
 
   return (

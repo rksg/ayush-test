@@ -44,7 +44,7 @@ import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams }
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { SwitchScopes }                                                          from '@acx-ui/types'
-import { AuthRoute }                                                             from '@acx-ui/user'
+import { aiOpsApis, AuthRoute, hasPermission }                                   from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
@@ -72,7 +72,10 @@ export function Init () {
   } = useContext(HspContext)
 
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -93,6 +96,10 @@ export default function MspRoutes () {
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
   const newDeviceInventory =
     useIsSplitOn(Features.VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE)
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -159,7 +166,7 @@ export default function MspRoutes () {
           : <DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
-      <Route path='brand360' element={<Brand360 />} />
+      {isBrand360Enabled && <Route path='brand360' element={<Brand360 />} />}
       <Route path='mdu360/*' element={<Mdu360 />} />
       {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />

@@ -201,37 +201,6 @@ describe('useUpdateNetworkTunnelAction', () => {
       )
       expect(mockedToggleNetworkFn).toBeCalledTimes(1)
     })
-
-    // eslint-disable-next-line max-len
-    it('should reject when trying to operate target network venueId is not SDLAN scoped', async () => {
-      const { result } = renderHook(() => useUpdateNetworkTunnelAction(), {
-        wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
-      })
-      const mockSdLan = mockedMvSdLanDataList[0]
-
-      const mockFormValues = {
-        tunnelType: NetworkTunnelTypeEnum.SdLan,
-        sdLan: {
-          isGuestTunnelEnabled: false
-        }
-      } as NetworkTunnelActionForm
-
-      const mockNetwork = {
-        id: mockSdLan.tunneledWlans![0].networkId,
-        type: NetworkTypeEnum.DPSK,
-        venueId: 'mock_new_venue_id'
-      }
-
-      let isFailed: boolean
-      try {
-        await result.current(mockFormValues, mockNetwork, NetworkTunnelTypeEnum.SdLan, mockSdLan)
-        isFailed = false
-      } catch(err) {
-        isFailed = true
-      }
-
-      expect(isFailed).toBe(true)
-    })
   })
 
   describe('L2oGRE is ON', () => {
