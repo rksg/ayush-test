@@ -15,12 +15,6 @@ import {
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
-  ManageAdminsDrawer,
-  ManageDelegateAdminDrawer,
-  ManageMspDelegationDrawer,
-  SelectIntegratorDrawer
-} from '@acx-ui/msp/components'
-import {
   useAddBrandCustomersMutation,
   useAddRecCustomerMutation,
   useDisableMspEcSupportMutation,
@@ -41,16 +35,21 @@ import {
   MspRecCustomer,
   MspRecData
 } from '@acx-ui/msp/utils'
-import { useGetPrivilegeGroupsQuery }                     from '@acx-ui/rc/services'
-import { PrivilegeGroup, roleDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { useGetPrivilegeGroupsQuery }      from '@acx-ui/rc/services'
+import { PrivilegeGroup, roleDisplayText } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { useUserProfileContext }      from '@acx-ui/user'
-import { AccountType, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                 from '@acx-ui/types'
+import { useUserProfileContext }                     from '@acx-ui/user'
+import { AccountType, noDataDisplay, useTableQuery } from '@acx-ui/utils'
+
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 import * as UI                     from './styledComponents'
@@ -79,6 +78,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+  const mspHspDisplayToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
@@ -237,6 +237,7 @@ export function AddRecCustomer () {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
         mspRecCustomer.forEach((cus: MspRecCustomer) => {
           recCustomers.push({
+            ...(mspHspDisplayToggle && { propertyCode: cus.propertyCode }),
             account_id: cus.account_id,
             name: cus.account_name,
             admin_delegations: delegations,

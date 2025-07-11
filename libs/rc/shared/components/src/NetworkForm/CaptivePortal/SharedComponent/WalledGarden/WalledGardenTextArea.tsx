@@ -92,45 +92,64 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-  function actionRunnder (currentState: WalledGardenState, IncomingState: WalledGardenState) {
+  /**
+   * Reducer for WalledGardenTextArea state management.
+   * This reducer only returns the new state based on the dispatched action.
+   * It does NOT perform any side effects (such as setting form values),
+   * ensuring that React's render phase is pure and free from state updates.
+   */
+  function actionRunner (currentState: WalledGardenState, IncomingState: WalledGardenState) {
     switch (IncomingState.action) {
       case WallGardenAction.Clear:
-        /* eslint-disable no-console */
-        form.setFieldsValue(statesCollection.initialState.fieldsValue)
+        // Reset to initial empty state
         return statesCollection.initialState
       case WallGardenAction.UseDefault:
-        form.setFieldsValue(statesCollection.useDefaultState.fieldsValue)
+        // Use the default walled garden list
         return statesCollection.useDefaultState
       case WallGardenAction.Customize:
-        form.setFieldsValue(IncomingState.fieldsValue)
+        // Use the customized value from user input
         return IncomingState
       case WallGardenAction.UseExist:
-        form.setFieldsValue(statesCollection.useExistState.fieldsValue)
+        // Use the existing walled garden list from context (edit/clone mode)
         return statesCollection.useExistState
       default:
+        // Should not happen, but log for debugging
+        /* eslint-disable no-console */
         console.error(`Invalid action: ${IncomingState.action}`)
         return IncomingState
     }
   }
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [state, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
+  const [state, dispatch] = useReducer(actionRunner, statesCollection.initialState)
 
-  // Effect to control the textarea since it won't reset when user click back and change protal type
+  /**
+   * Initialize the component state based on the current mode and props.
+   * - If in edit or clone mode, use the existing walled garden list from context.
+   * - If default walled garden is enabled, use the default list.
+   * - Otherwise, reset to initial empty state.
+   *
+   * This effect will re-run if editMode, cloneMode, or enableDefaultWalledGarden changes.
+   */
   useEffect(() => {
     if (editMode || cloneMode) {
-      form.setFieldsValue(statesCollection.useExistState.fieldsValue)
+      dispatch(statesCollection.useExistState)
       return
     }
     if (enableDefaultWalledGarden) {
-      form.setFieldsValue(statesCollection.useDefaultState.fieldsValue)
+      dispatch(statesCollection.useDefaultState)
       return
     }
-    else {
-      form.setFieldsValue(statesCollection.initialState.fieldsValue)
-      return
-    }
-  },[])
+    dispatch(statesCollection.initialState)
+  }, [editMode, cloneMode, enableDefaultWalledGarden])
+
+  /**
+   * Whenever the local state changes, update the form values accordingly.
+   * This ensures the form fields always reflect the current state,
+   * and avoids any direct setFieldsValue calls inside the reducer or render phase.
+   */
+  useEffect(() => {
+    form.setFieldsValue(state.fieldsValue)
+  }, [state, form])
 
   /**
    * The reason why here we have to Form.item is because

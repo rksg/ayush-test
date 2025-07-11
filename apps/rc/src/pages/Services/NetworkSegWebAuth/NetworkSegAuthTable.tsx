@@ -3,7 +3,6 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -11,7 +10,6 @@ import {
   ServiceOperation,
   getServiceRoutePath,
   useServicesBreadcrumb,
-  useTableQuery,
   WebAuthTemplateTableData,
   isDefaultWebAuth,
   getScopeKeyByService,
@@ -19,6 +17,7 @@ import {
   getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                       from '@acx-ui/utils'
 
 const getNetworkSegAuthPayload = {
   fields: [
@@ -36,11 +35,10 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const tableQuery = useTableQuery({
     useQuery: useWebAuthTemplateListQuery,
     defaultPayload: getNetworkSegAuthPayload,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const [
@@ -118,7 +116,7 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
           okText: $t({ defaultMessage: 'Delete' }),
           onOk: () => {
             deleteWebAuthTemplate({
-              params: { serviceId: rows[0].id }, enableRbac: isSwitchRbacEnabled
+              params: { serviceId: rows[0].id }, enableRbac: true
             }).then(clearSelection)
           }
         })

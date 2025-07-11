@@ -1,14 +1,21 @@
-import { RadioCardCategory }                                                         from '@acx-ui/components'
 import { PolicyType, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
 import { act, renderHook }                                                           from '@acx-ui/test-utils'
+import { RadioCardCategory }                                                         from '@acx-ui/types'
 
 import { mockedAvailableUnifiedServicesList } from './__tests__/fixtures'
 import { ServiceSortOrder }                   from './ServicesToolBar'
 import { useUnifiedServiceSearchFilter }      from './useUnifiedServiceSearchFilter'
 describe('useUnifiedServiceSearchFilter', () => {
+  const defaultValues = {
+    filters: {
+      products: [],
+      categories: []
+    },
+    sortOrder: 0
+  }
   it('returns all services by default', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     expect(result.current.filteredServices.length).toBe(mockedAvailableUnifiedServicesList.length)
@@ -16,7 +23,7 @@ describe('useUnifiedServiceSearchFilter', () => {
 
   it('filters by searchTerm (label)', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     act(() => result.current.setSearchTerm('dhcp'))
@@ -27,7 +34,7 @@ describe('useUnifiedServiceSearchFilter', () => {
 
   it('filters by searchTerm (keyword)', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     act(() => result.current.setSearchTerm('Layer 2'))
@@ -39,7 +46,7 @@ describe('useUnifiedServiceSearchFilter', () => {
   it('filters by products', () => {
     // Filtered by Switch product
     const { result: resultForSwitch } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     act(() => resultForSwitch.current.setFilters({ products: [RadioCardCategory.SWITCH] }))
@@ -59,7 +66,7 @@ describe('useUnifiedServiceSearchFilter', () => {
           products: [RadioCardCategory.EDGE],
           category: UnifiedServiceCategory.NETWORK_SERVICES
         }
-      ], ServiceSortOrder.ASC)
+      ], defaultValues, 'test')
     )
 
     act(() => resultForEdge.current.setFilters({ products: [RadioCardCategory.EDGE] }))
@@ -69,7 +76,7 @@ describe('useUnifiedServiceSearchFilter', () => {
 
   it('filters by categories', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     // eslint-disable-next-line max-len
@@ -82,7 +89,7 @@ describe('useUnifiedServiceSearchFilter', () => {
 
   it('sorts ascending by label', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.ASC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
     )
 
     // eslint-disable-next-line max-len
@@ -91,10 +98,32 @@ describe('useUnifiedServiceSearchFilter', () => {
 
   it('sorts descending by label', () => {
     const { result } = renderHook(() =>
-      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, ServiceSortOrder.DESC)
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, {
+        ...defaultValues,
+        sortOrder: ServiceSortOrder.DESC
+      }, 'test')
     )
 
     // eslint-disable-next-line max-len
     expect(result.current.filteredServices.map(s => s.label)).toEqual(['DPSK', 'DHCP', 'Access Control', 'AAA'])
+  })
+
+  it('should save the search filter values to session storage', () => {
+    const { result } = renderHook(() =>
+      useUnifiedServiceSearchFilter(mockedAvailableUnifiedServicesList, defaultValues, 'test')
+    )
+
+    act(() => result.current.setFilters({
+      products: [RadioCardCategory.SWITCH],
+      categories: [UnifiedServiceCategory.NETWORK_SERVICES]
+    }))
+
+    expect(sessionStorage.getItem('test')).toBe(JSON.stringify({
+      filters: {
+        products: [RadioCardCategory.SWITCH],
+        categories: [UnifiedServiceCategory.NETWORK_SERVICES]
+      },
+      sortOrder: ServiceSortOrder.ASC
+    }))
   })
 })

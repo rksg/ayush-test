@@ -3,13 +3,14 @@ import { rest }  from 'msw'
 
 import {
   ActionType,
-  NewAPITableResult,
+  StepType,
   Workflow,
   WorkflowStep,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { NewAPITableResult }                              from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModalProps } from '../../../WorkflowActionPreviewModal'
 
@@ -54,12 +55,14 @@ const steps: NewAPITableResult<WorkflowStep> = {
     {
       id: 'step-1',
       enrollmentActionId: 'step-1-action-id',
-      nextStepId: 'step-2'
+      nextStepId: 'step-2',
+      type: StepType.Basic
     },
     {
       id: 'step-2',
       enrollmentActionId: 'step-2-action-id',
-      nextStepId: 'step-3'
+      nextStepId: 'step-3',
+      type: StepType.Basic
     }
   ],
   paging: {

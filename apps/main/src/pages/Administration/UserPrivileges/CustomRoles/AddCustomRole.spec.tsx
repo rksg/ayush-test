@@ -18,15 +18,21 @@ import { AddCustomRole } from './AddCustomRole'
 
 const services = require('@acx-ui/rc/services')
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+const mockedTenantLink = {
+  hash: '',
+  pathname: '/8c36a0a9ab9d4806b060e112205add6f/t/administration/userPrivileges/customRoles',
+  search: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => {
     return { state: {
       name: 'custom role',
       description: 'custom role'
     } }},
-  useTenantLink: () => jest.fn()
+  useTenantLink: () => mockedTenantLink
 }))
 describe('Add Custom Role', () => {
   let params: { tenantId: string, action: string, customRoleId?: string }

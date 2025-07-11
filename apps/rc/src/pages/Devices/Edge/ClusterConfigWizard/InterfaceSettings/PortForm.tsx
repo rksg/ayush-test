@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import _                           from 'lodash'
+import _, { flatten }              from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { Loader, useStepFormContext }                                       from '@acx-ui/components'
@@ -10,7 +10,8 @@ import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from
 import {
   validateEdgeClusterLevelGateway,
   EdgePort, EdgeLag, SubInterface,
-  natPoolRangeClusterLevelValidator
+  natPoolRangeClusterLevelValidator,
+  edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
@@ -153,6 +154,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
             // only display when portConfig has data
             return portsConfigs
               ? <EdgePortsGeneralBase
+                serialNumber={serialNumber}
                 lagData={lagData}
                 statusData={portsStatus?.[serialNumber]}
                 isEdgeSdLanRun={!!edgeSdLanData}
@@ -165,6 +167,15 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 clusterInfo={clusterInfo!}
                 isSupportAccessPort={isSupportAccessPort}
                 formFieldsProps={{
+                  ipMode: {
+                    rules: isDualWanEnabled
+                      // eslint-disable-next-line max-len
+                      ? [{ validator: () => {
+                        const portData = flatten(Object.values(portsConfigs))
+                        return edgeWanSyncIpModeValidator(portData, lagData ?? [])
+                      } }]
+                      : []
+                  },
                   natStartIp: {
                     rules: isMultiNatIpEnabled
                       ? [{ validator: () => {

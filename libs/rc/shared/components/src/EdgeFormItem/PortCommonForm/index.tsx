@@ -5,8 +5,9 @@ import { CheckboxChangeEvent }                                                  
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
-import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features }                 from '@acx-ui/feature-toggle'
+import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
+import { Features }                   from '@acx-ui/feature-toggle'
+import { useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
   EdgeFormFieldsPropsType,
@@ -17,7 +18,6 @@ import {
   IncompatibilityFeatures,
   SubInterface,
   edgePortIpValidator,
-  edgeWanSyncIpModeValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
   interfaceSubnetValidator,
@@ -36,6 +36,7 @@ import * as UI              from './styledComponents'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
+  serialNumber: string
   fieldHeadPath?: string[],
   portsDataRootPath?: string[],
   portsData: EdgePort[],
@@ -59,6 +60,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const { $t } = useIntl()
   const {
     formRef: form,
+    serialNumber,
     fieldHeadPath = [],
     isEdgeSdLanRun,
     portsData,
@@ -76,7 +78,21 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
-  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
+  const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.MULTI_NAT_IP]
+      } }
+  }, {
+    selectFromResult: ({ data }) => ({
+      requiredFwMap: {
+        [IncompatibilityFeatures.MULTI_NAT_IP]: data?.featureSets
+          ?.find(item =>
+            item.featureName === IncompatibilityFeatures.MULTI_NAT_IP)?.requiredFw
+      }
+    })
+  })
 
   const portTypeOptions = getEdgePortTypeOptions($t)
 
@@ -169,12 +185,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
+            {..._.omit(_.get(formFieldsProps, 'ipMode'), 'rules')}
             rules={[
               { required: true },
-              // eslint-disable-next-line max-len
-              ...(isEdgeDualWanEnabled ? [{ validator: () => edgeWanSyncIpModeValidator(portsData, lagData ?? []) }] : [])
+              ...(_.get(formFieldsProps, 'ipMode.rules') as FormItemProps['rules'] ?? [])
             ]}
-            {..._.get(formFieldsProps, 'ipMode')}
             children={
               <Radio.Group>
                 <Space direction='vertical'>
@@ -249,12 +264,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         {
           isNatItemsVisible &&
           <EdgeNatFormItems
+            serialNumber={serialNumber}
             parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
             getFieldFullPath={getFieldFullPath}
             formFieldsProps={formFieldsProps}
             clusterInfo={clusterInfo}
             portsData={portsData}
             lagData={lagData}
+            requiredFwMap={requiredFwMap}
           />
         }
       </>

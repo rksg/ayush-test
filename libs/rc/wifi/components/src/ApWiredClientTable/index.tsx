@@ -8,13 +8,13 @@ import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
-  TableQuery,
-  usePollingTableQuery,
   ApWiredClientInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { TableQuery,
+  usePollingTableQuery,
+  noDataDisplay }  from '@acx-ui/utils'
 
 import { LanPortProfileDetailsDrawer } from '../LanPortProfileDetailDrawer'
 
@@ -115,10 +115,11 @@ export const ApWiredClientTable = (props: {
       searchable: searchable,
       render: (_, { hostname, macAddress }, __, highlightFn) => {
         const host = searchable ? highlightFn(hostname) : hostname
+        const display = host || noDataDisplay
 
-        return host? <TenantLink
-          to={`users/wired/wifi/clients/${macAddress}/details/overview`}
-        >{host}</TenantLink> : noDataDisplay
+        return <TenantLink to={`users/wired/wifi/clients/${macAddress}/details/overview`}>
+          {display}
+        </TenantLink>
       }
     }, {
       key: 'osType',

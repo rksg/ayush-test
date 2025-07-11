@@ -8,7 +8,6 @@ import {
   Tooltip
 
 }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteCliTemplatesMutation,
   useGetCliTemplatesQuery
@@ -16,8 +15,7 @@ import {
 }  from '@acx-ui/rc/services'
 import {
   SwitchCliTemplateModel,
-  SwitchUrlsInfo,
-  usePollingTableQuery
+  SwitchUrlsInfo
 }            from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { useNavigate }  from '@acx-ui/react-router-dom'
@@ -26,9 +24,8 @@ import {
   hasCrossVenuesPermission,
   filterByAccess,
   hasPermission
-
 } from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi, usePollingTableQuery } from '@acx-ui/utils'
 
 import { Notification  } from './styledComponents'
 
@@ -38,12 +35,10 @@ export function OnDemandCliTab () {
   const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
     defaultPayload: {},
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     search: {
       searchString: '',
       searchTargetFields: ['name']
@@ -108,7 +103,7 @@ export function OnDemandCliTab () {
             deleteCliTemplates({
               params: { tenantId },
               payload: selectedRows.map(r => r.id),
-              enableRbac: isSwitchRbacEnabled
+              enableRbac: true
             }).then(clearSelection)
           }
         })

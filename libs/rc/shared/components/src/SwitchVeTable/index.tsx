@@ -21,7 +21,6 @@ import {
 import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   VenueMessages,
-  useTableQuery,
   VeViewModel,
   SwitchViewModel,
   SwitchRbacUrlsInfo
@@ -29,7 +28,7 @@ import {
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getOpsApi }                     from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 // TODO: Wait for support venue level

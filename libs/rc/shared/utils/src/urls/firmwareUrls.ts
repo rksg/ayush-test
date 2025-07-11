@@ -1,7 +1,5 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-const venueVersionParams = '?firmware_version=:version&firmware_type=:type&search=:search'
-
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getUpgradePreferences: {
     method: 'get',
@@ -27,18 +25,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/upgradeConfig/switchPreference',
     newApi: true,
     opsApi: 'PUT:/upgradeConfig/switchPreference'
-  },
-  getVenueVersionList: {
-    method: 'get',
-    url: '/venues/apFirmwares/schedules' + venueVersionParams,
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
-    newApi: true
-  },
-  getLatestFirmwareList: {
-    method: 'get',
-    url: '/apFirmwares?status=latest',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/latest',
-    newApi: true
   },
   getAvailableFirmwareList: {
     method: 'get',
@@ -210,12 +196,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
-  getScheduledFirmware: {
-    method: 'get',
-    url: '/apFirmwares?status=scheduled',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
-    newApi: true
-  },
   getVenueApModelFirmwareList: {
     method: 'post',
     url: '/venues/query',
@@ -237,6 +217,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getAllApModelFirmwareList: {
     method: 'get',
     url: '/apModelFirmwares',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getAllApModelScheduledFirmwareList: {
+    method: 'get',
+    url: '/apModelFirmwares?status=scheduled',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'

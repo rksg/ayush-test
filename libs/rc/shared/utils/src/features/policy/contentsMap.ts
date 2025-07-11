@@ -46,10 +46,15 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
   [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'IPsec' }),
-  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Identity Provider' })
+  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Identity Provider' }),
+  [PolicyType.CERTIFICATE_PROFILE]: defineMessage({ defaultMessage: 'Certificate Management' }),
+  [PolicyType.ADAPTIVE_POLICY_PROFILE]: defineMessage({ defaultMessage: 'Adaptive Policy' })
 }
 
 export const policyTypeLabelWithCountMapping: Record<PolicyType, MessageDescriptor> = {
   ...policyTypeLabelMapping,
+  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control ({count})' }),
+  // eslint-disable-next-line max-len
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: defineMessage({ defaultMessage: 'Access Control ({count})' }),
   [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Port Authentication ({count})' })
 }

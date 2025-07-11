@@ -59,7 +59,6 @@ const disabledFFs = [
   Features.WIFI_RBAC_API,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
   Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
@@ -106,8 +105,8 @@ const params = {
 }
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -562,10 +561,6 @@ describe('VenueNetworksTab', () => {
   describe('SoftGreTunnel', () => {
     const tenantId = 'tenantId'
     const venueId = 'venueId-1'
-
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-    })
 
     it('should correctly display tunnel column when SoftGre is running on it', async () => {
       render(<Provider><VenueNetworksTab /></Provider>, {

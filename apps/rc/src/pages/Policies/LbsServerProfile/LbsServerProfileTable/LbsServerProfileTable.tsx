@@ -7,7 +7,6 @@ import {
   LBS_SERVER_PROFILE_MAX_COUNT
 } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteLbsServerProfileMutation,
   useGetLbsServerProfileListQuery,
   useVenuesListQuery
@@ -20,13 +19,14 @@ import {
   getPolicyDetailsLink,
   usePoliciesBreadcrumb,
   getPolicyRoutePath,
-  useTableQuery,
   Venue,
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'lbsServerVenueName', 'server', 'venueIds'],

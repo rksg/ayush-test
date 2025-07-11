@@ -16,10 +16,11 @@ import {
   transformDisplayText,
   IotControllerStatus,
   IotControllerStatusEnum,
-  useTableQuery
+  IotUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                     from '@acx-ui/user'
+import { getOpsApi, useTableQuery }           from '@acx-ui/utils'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 
@@ -29,7 +30,6 @@ export function IotController () {
   const navigate = useNavigate()
   const params = useParams()
   const iotControllerActions = useIotControllerActions()
-  const { isCustomRole } = useUserProfileContext()
   const [ assocVenueDrawerVisible, setAssocVenueDrawerVisible ] = useState(false)
   const [ venueIds, setVenueIds ] = useState<string[]>([])
   const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
@@ -142,7 +142,7 @@ export function IotController () {
 
   const rowActions: TableProps<IotControllerStatus>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
-    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
+    rbacOpsIds: [getOpsApi(IotUrlsInfo.updateIotController)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit`, { replace: false })
@@ -150,7 +150,7 @@ export function IotController () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
+    rbacOpsIds: [getOpsApi(IotUrlsInfo.deleteIotController)],
     onClick: (rows, clearSelection) => {
       iotControllerActions.deleteIotController(rows, undefined, clearSelection)
     }
@@ -171,9 +171,9 @@ export function IotController () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'IoT Controllers ({count})' }, { count })}
-        extra={!isCustomRole && filterByAccess([
+        extra={filterByAccess([
           <TenantLink to='/devices/iotController/add'
-            // rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}
+            rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add IoT Controller' }) }</Button>
           </TenantLink>
@@ -189,7 +189,7 @@ export function IotController () {
           pagination={{ total: tableQuery?.data?.totalCount }}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey={(row: IotControllerStatus) => (row.id ?? `c-${row.id}`)}
-          rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'checkbox' }}
           onChange={handleTableChange}
         />

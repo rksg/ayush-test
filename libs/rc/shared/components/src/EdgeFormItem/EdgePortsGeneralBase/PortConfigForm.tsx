@@ -16,7 +16,8 @@ import * as UI from './styledComponents'
 
 interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
   formListItemKey: string
-  id: string
+  id: string // interfaceName
+  serialNumber: string
   statusData?: EdgePortInfo
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
@@ -33,6 +34,7 @@ const { useWatch, useFormInstance } = Form
 export const PortConfigForm = (props: ConfigFormProps) => {
   const {
     id,
+    serialNumber,
     statusData,
     formListItemKey,
     isEdgeSdLanRun,
@@ -129,6 +131,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
               return <EdgePortCommonForm
                 formRef={form}
+                serialNumber={serialNumber}
                 portsData={portsData}
                 lagData={lagData}
                 isEdgeSdLanRun={isEdgeSdLanRun}

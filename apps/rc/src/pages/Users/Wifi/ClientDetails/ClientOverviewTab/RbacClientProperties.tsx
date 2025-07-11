@@ -4,8 +4,7 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Card, Loader, Subtitle, Tooltip, Descriptions, cssStr }   from '@acx-ui/components'
 import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
 import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui/rc/components'
 import {
@@ -277,7 +276,6 @@ function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
 }
 
 function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const showVni = !!clientInfo?.networkInformation?.vni
@@ -372,14 +370,14 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         </Tooltip>}
         children={clientInfo?.apInformation?.bssid || noDataDisplay}
       />
-      { wifiEDAClientRevokeToggle && <Descriptions.Item
+      <Descriptions.Item
         label={<Tooltip
           placement='bottom'
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
         children={networkDisplayTransformer(intl, clientInfo?.networkInformation?.type)}
-      /> }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
         children={clientInfo?.networkInformation?.authenticationMethod || noDataDisplay}
@@ -465,7 +463,7 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'RSSI' })}
         </Tooltip>}
         children={<Space style={{
-          color: getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color
+          color: cssStr(getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color)
         }}>
           <Tooltip
             placement='bottom'

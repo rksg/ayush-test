@@ -16,10 +16,10 @@ import {
   EdgePinUrls,
   ServiceOperation,
   ServiceType,
-  SwitchUrlsInfo,
   VenueFixtures,
   EdgeCompatibilityFixtures,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import {
@@ -46,8 +46,8 @@ const mockUseLocationValue = {
   hash: '',
   state: null
 }
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
@@ -91,7 +91,7 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
         (_req, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.post(
-        SwitchUrlsInfo.getSwitchList.url,
+        SwitchRbacUrlsInfo.getSwitchList.url,
         (_req, res, ctx) => res(ctx.json(mockedSwitchOptions))
       ),
       rest.post(

@@ -223,6 +223,26 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       .getByRole('switch')
     expect(switchBtn).toBeDisabled()
   })
+
+  it('should grey out network is used by SoftGRE', async () => {
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <ActivatedNetworksTable
+              venueId='mocked-venue'
+              pinNetworkIds={[]}
+              softGreNetworkIds={['network_2']}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await checkPageLoaded()
+    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 2/i }))
+      .getByRole('switch')
+    expect(switchBtn).toBeDisabled()
+  })
 })
 
 const checkPageLoaded = async (): Promise<HTMLElement[]> => {

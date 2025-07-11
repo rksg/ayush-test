@@ -84,8 +84,9 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   }, { skip: !pinData?.venueId })
 
   const { dhcpName, dhcpId, dhcpPools, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: pinData?.edgeClusterInfo?.dhcpInfoId } },{
-      skip: !pinData?.edgeClusterInfo,
+    // eslint-disable-next-line max-len
+    { params: { id: pinData?.edgeClusterInfo?.dhcpInfoId || pinData?.networkSegmentConfiguration.dhcpInfoId } },{
+      skip: !pinData?.edgeClusterInfo && !pinData?.networkSegmentConfiguration,
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -195,7 +196,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
       colSpan: 4,
-      content: pinData?.edgeClusterInfo?.segments
+      content: pinData?.edgeClusterInfo?.segments || pinData?.networkSegmentConfiguration.segments
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
@@ -207,7 +208,8 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       colSpan: 4,
       content: () => {
         if(dhcpName) {
-          const dhcpPoolId = pinData?.edgeClusterInfo?.dhcpPoolId
+          // eslint-disable-next-line max-len
+          const dhcpPoolId = pinData?.edgeClusterInfo?.dhcpPoolId || pinData?.networkSegmentConfiguration.dhcpPoolId
           const dhcpPool = dhcpPools?.find(item => item.id === dhcpPoolId)
           return (
             <TenantLink to={getServiceDetailsLink({

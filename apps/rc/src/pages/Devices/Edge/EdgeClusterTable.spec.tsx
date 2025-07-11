@@ -28,12 +28,14 @@ jest.mock('@acx-ui/rc/components', () => ({
     reboot: mockedRebootFn,
     shutdown: mockedShutdownFn
   }),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  EdgeClusterStatusLabel: () => <div data-testid='edge-cluster-status-label' />,
+  EdgeStatusLight: () => <div data-testid='edge-status-light' />
 }))
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -78,14 +80,11 @@ describe('Edge Cluster Table', () => {
     const subRows = screen.getAllByRole('row', { name: /Smart Edge/i })
     expect(subRows.length).toBe(2)
 
-    expect((await screen.findAllByText('Active-Active')).length).toBe(1)
-    expect((await screen.findAllByText('Active-Standby')).length).toBe(2)
-    expect((await screen.findAllByText('N/A')).length).toBe(2)
-    expect((await screen.findAllByText('Single Node')).length).toBe(1)
-    expect((await screen.findAllByText('Ready (2/2)')).length).toBe(1)
-    expect((await screen.findAllByText('Cluster Forming')).length).toBe(1)
-    expect((await screen.findAllByText('Disconnected')).length).toBe(1)
-    expect((await screen.findAllByText('Cluster Setup Required')).length).toBe(1)
+    expect(screen.getAllByText('Active-Active').length).toBe(1)
+    expect(screen.getAllByText('Active-Standby').length).toBe(2)
+    expect(screen.getAllByText('N/A').length).toBe(2)
+    expect(screen.getAllByTestId('edge-cluster-status-label').length).toBe(5)
+    expect(screen.getAllByTestId('edge-status-light').length).toBe(7)
   })
 
   it('should delete selected items successfully', async () => {

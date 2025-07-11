@@ -11,7 +11,6 @@ import {
   allUserSettings,
   cloudMessageBanner,
   cloudVersion,
-  scheduleVersion,
   venueApModelFirmwareList
 } from './__tests__/fixtures'
 
@@ -27,8 +26,8 @@ jest.mock('@acx-ui/components', () => ({
 }))
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -56,10 +55,6 @@ describe('cloud Message Banner', () => {
         UserUrlsInfo.getCloudVersion.url,
         (_, res, ctx) => res(ctx.json(cloudVersion))
       ),
-      rest.get(
-        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
-        (_, res, ctx) => res(ctx.json(scheduleVersion))
-      ),
       rest.post(
         FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
         (_, res, ctx) => res(ctx.json(venueApModelFirmwareList))
@@ -75,6 +70,10 @@ describe('cloud Message Banner', () => {
       rest.get(
         FirmwareUrlsInfo.getAllApModelFirmwareList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelScheduledFirmwareList.url.replace('?status=scheduled', ''),
+        (req, res, ctx) => res(ctx.json([{ id: '1' }]))
       )
     )
   })
