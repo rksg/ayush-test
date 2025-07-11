@@ -7,7 +7,6 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
 import { AsyncColumnLoader }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useGetClientListQuery,
   useVenuesListQuery,
@@ -105,7 +104,6 @@ const AsyncLoadingInColumn = (
 export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
   const { $t } = useIntl()
   const params = useParams()
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -181,7 +179,6 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
 
   function GetCols (intl: IntlShape, showAllColumns?: boolean) {
     const { $t } = useIntl()
-    const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
 
     const clientStatuses = () => [
@@ -257,7 +254,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           </Tooltip>
         }
       },
-      ...(wifi7MLOToggle ? [{
+      {
         key: 'mldAddr',
         title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
         dataIndex: 'mldAddr',
@@ -272,7 +269,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             </Tooltip>
           }, (row) => row.mldAddr === undefined && row.apName === undefined && row.venueName === undefined)
         }
-      }] : []),
+      },
       {
         key: 'ipAddress',
         title: intl.$t({ defaultMessage: 'IP Address' }),
@@ -363,7 +360,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           })
         }
       }]),
-      ...(wifiEDAClientRevokeToggle ?[{
+      {
         key: 'networkType',
         title: intl.$t({ defaultMessage: 'Network Type' }),
         dataIndex: ['networkType'],
@@ -374,7 +371,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             return networkDisplayTransformer(intl, row.networkType)
           })
         }
-      }] : []),
+      },
       {
         key: 'sessStartTime',
         title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -686,8 +683,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
     }
   ]
 
-  const showRowSelection = (wifiEDAClientRevokeToggle &&
-    hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+  const showRowSelection = hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] })
 
   return (
     <UI.ClientTableDiv>
@@ -699,7 +695,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
         </Subtitle>
         <Table<ClientList>
           rowSelection={(showRowSelection && rowSelection)}
-          rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
+          rowActions={filterByAccess(rowActions)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}

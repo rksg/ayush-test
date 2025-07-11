@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { pinApi }                                       from '@acx-ui/rc/services'
-import { EdgePinFixtures, EdgePinUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
+import { pinApi }                                           from '@acx-ui/rc/services'
+import { EdgePinFixtures, EdgePinUrls, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }              from '@acx-ui/test-utils'
 
 import { switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
@@ -48,15 +48,15 @@ describe('AccessSwitchDrawer', () => {
     store.dispatch(pinApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
+        SwitchRbacUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json({ data: switchPortList }))
       ),
       rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
         (req, res, ctx) => res(ctx.json(switchVlanUnion))
       ),
       rest.get(
-        SwitchUrlsInfo.getLagList.url,
+        SwitchRbacUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(switchLagList))
       ),
       rest.get(

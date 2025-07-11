@@ -58,7 +58,6 @@ export function HostApprovalForm () {
     '1','4','24']))
   const expirationKey = Object.keys(CaptivePassphraseExpirationEnum) as Array<
   keyof typeof CaptivePassphraseExpirationEnum>
-  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
   const domainOrEmail = useWatch(['guestPortal','hostGuestConfig', 'hostApprovalType'])
 
   const networkSecurity = useWatch('networkSecurity', form)
@@ -113,81 +112,31 @@ export function HostApprovalForm () {
             <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: 3, marginTop: -3 }} />
           </Tooltip>
         </Row>
-        {HAEmailList_FeatureFlag ?
-          <Form.Item
-            noStyle
-            name={['guestPortal','hostGuestConfig', 'hostApprovalType']}
-            initialValue='domain'>
-            <Radio.Group onChange={changeDomainOrEmailList}>
-              <Row>
-                <Radio value='domain' style={{ marginBottom: '5px' }}>
-                  {$t({ defaultMessage: 'Entire Domain' })}
-                </Radio>
-              </Row>
-              {domainOrEmail === 'domain' &&
-            <Form.Item
-              name={['guestPortal','hostGuestConfig', 'hostDomains']}
-              rules={[
-                { required: true, message: $t(validationMessages.domains) },
-                { validator: (_, value) => domainsNameRegExp(
-                  (Array.isArray(value)? value : value.split(',')), true)
-                },
-                { validator: (rule, value) => domainNameDuplicationValidation((Array.isArray(value)? value : value.split(','))) }
-              ]
-              }
-              validateFirst
-              hasFeedback
-              style={{ marginBottom: '5px' }}
-              children={
-                <Input onChange={(e)=>
-                  form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
-                    e.target.value.split(','))
-                }
-                placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
-                />
-              }
-            />
-              }
-              <Row>
-                <Radio value='email' style={{ marginBottom: '5px' }}>
-                  {$t({ defaultMessage: 'Specific E-mail Contacts' })}
-                </Radio>
-              </Row>
-              { domainOrEmail === 'email' &&
-            <Form.Item
-              name={['guestPortal','hostGuestConfig', 'hostEmails']}
-              rules={[
-                { required: true },
-                { validator: (rule, value) => emailsRegExp((Array.isArray(value)? value : value.split(','))) },
-                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) },
-                { validator: (rule, value) => emailDuplicationValidation((Array.isArray(value)? value : value.split(','))) },
-                { validator: (rule, value) => emailMaxCountValidation((Array.isArray(value)? value : value.split(',')), 100) }
-              ]
-              }
-              normalize={(value: string) => value.split(',').map((text: string)=>text.replace(/\n/, '').trim())}
-              validateFirst
-              hasFeedback
-              style={{ marginBottom: '5px' }}
-              children={
-                <Input.TextArea
-                  placeholder={$t({ defaultMessage: 'Enter email addresses, separated by commas. Ensure all addresses are from the same domain' })}
-                />
-              }
-            />
-              }
-            </Radio.Group>
-          </Form.Item>
-          :
+
+        <Form.Item
+          noStyle
+          name={['guestPortal','hostGuestConfig', 'hostApprovalType']}
+          initialValue='domain'>
+          <Radio.Group onChange={changeDomainOrEmailList}>
+            <Row>
+              <Radio value='domain' style={{ marginBottom: '5px' }}>
+                {$t({ defaultMessage: 'Entire Domain' })}
+              </Radio>
+            </Row>
+            {domainOrEmail === 'domain' &&
           <Form.Item
             name={['guestPortal','hostGuestConfig', 'hostDomains']}
             rules={[
-              { required: true },
+              { required: true, message: $t(validationMessages.domains) },
               { validator: (_, value) => domainsNameRegExp(
                 (Array.isArray(value)? value : value.split(',')), true)
-              }]
+              },
+              { validator: (rule, value) => domainNameDuplicationValidation((Array.isArray(value)? value : value.split(','))) }
+            ]
             }
             validateFirst
             hasFeedback
+            style={{ marginBottom: '5px' }}
             children={
               <Input onChange={(e)=>
                 form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
@@ -197,7 +146,36 @@ export function HostApprovalForm () {
               />
             }
           />
-        }
+            }
+            <Row>
+              <Radio value='email' style={{ marginBottom: '5px' }}>
+                {$t({ defaultMessage: 'Specific E-mail Contacts' })}
+              </Radio>
+            </Row>
+            { domainOrEmail === 'email' &&
+          <Form.Item
+            name={['guestPortal','hostGuestConfig', 'hostEmails']}
+            rules={[
+              { required: true },
+              { validator: (rule, value) => emailsRegExp((Array.isArray(value)? value : value.split(','))) },
+              { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) },
+              { validator: (rule, value) => emailDuplicationValidation((Array.isArray(value)? value : value.split(','))) },
+              { validator: (rule, value) => emailMaxCountValidation((Array.isArray(value)? value : value.split(',')), 100) }
+            ]
+            }
+            normalize={(value: string) => value.split(',').map((text: string)=>text.replace(/\n/, '').trim())}
+            validateFirst
+            hasFeedback
+            style={{ marginBottom: '5px' }}
+            children={
+              <Input.TextArea
+                placeholder={$t({ defaultMessage: 'Enter email addresses, separated by commas. Ensure all addresses are from the same domain' })}
+              />
+            }
+          />
+            }
+          </Radio.Group>
+        </Form.Item>
 
         <Form.Item
           name={['guestPortal','hostGuestConfig', 'hostDurationChoices']}

@@ -8,7 +8,6 @@ import {
   Tooltip
 
 }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteCliTemplatesMutation,
   useGetCliTemplatesQuery
@@ -36,12 +35,10 @@ export function OnDemandCliTab () {
   const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
     defaultPayload: {},
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     search: {
       searchString: '',
       searchTargetFields: ['name']
@@ -106,7 +103,7 @@ export function OnDemandCliTab () {
             deleteCliTemplates({
               params: { tenantId },
               payload: selectedRows.map(r => r.id),
-              enableRbac: isSwitchRbacEnabled
+              enableRbac: true
             }).then(clearSelection)
           }
         })

@@ -5,37 +5,32 @@ import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
+import { useAclTotalCount, useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery, useGetConnectionMeteringListQuery,
-  useGetEdgeHqosProfileViewDataListQuery, useGetEnhancedAccessControlProfileListQuery,
+  useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedClientIsolationListQuery, useGetEthernetPortProfileViewDataListQuery,
   useGetFlexAuthenticationProfilesQuery, useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery, useGetSoftGreViewDataListQuery,
   useGetTunnelProfileViewDataListQuery, useGetVLANPoolPolicyViewModelListQuery,
   useSearchInProgressWorkflowListQuery,  useMacRegListsQuery, useGetDirectoryServerViewDataListQuery,
   useSyslogPolicyListQuery, useSwitchPortProfilesCountQuery, useGetWifiOperatorListQuery,
-  useGetIpsecViewDataListQuery, useGetSamlIdpProfileViewDataListQuery, useAccessControlsCountQuery,
+  useGetIpsecViewDataListQuery, useGetSamlIdpProfileViewDataListQuery,
   useGetDHCPProfileListViewModelQuery, useGetDhcpStatsQuery, useGetDpskListQuery,
   useGetEdgeFirewallViewDataListQuery, useGetEdgeMdnsProxyViewDataListQuery,
   useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgeTnmServiceListQuery, useGetEnhancedMdnsProxyListQuery,
   useGetEnhancedPortalProfileListQuery, useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery,
-  useGetEnhancedL2AclProfileListQuery, useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery, useGetEnhancedApplicationProfileListQuery, useGetLayer2AclsQuery,
   useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery,
   useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
-import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                       from '@acx-ui/types'
-import { getUserProfile, isCoreTier }                                                                                           from '@acx-ui/user'
+import { ExtendedUnifiedService, PolicyType, ServiceType, TotalCountQueryResult, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
 
 const defaultPayload = { fields: ['id'] }
-
-type TotalCountQueryResult = { data?: { totalCount?: number }, isFetching: boolean }
 
 export function useUnifiedServiceListWithTotalCount (): {
   unifiedServiceListWithTotalCount: Array<ExtendedUnifiedService>,
@@ -79,7 +74,6 @@ function useUnifiedServiceTotalCountMap (
   const params = useParams()
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const defaultQueryArgs = { params, payload: defaultPayload, enableRbac }
 
@@ -120,91 +114,16 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.DPSK]: useGetDpskListQuery({}, { skip: !typeSet.has(ServiceType.DPSK) }),
     [ServiceType.WIFI_CALLING]: useGetEnhancedWifiCallingServiceListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.WIFI_CALLING) }),
     [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.PORTAL) }),
-    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
+    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: true }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
     [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
     [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }),
-    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
-    [ServiceType.MDNS_PROXY_CONSOLIDATION]: useMdnsProxyConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.MDNS_PROXY_CONSOLIDATION))
+    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(!typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
+    [ServiceType.MDNS_PROXY_CONSOLIDATION]: useMdnsProxyConsolidationTotalCount(!typeSet.has(ServiceType.MDNS_PROXY_CONSOLIDATION))
   }
 
   return {
     typeToTotalCountQuery,
     isFetching: Object.values(typeToTotalCountQuery).some(({ isFetching }) => isFetching)
-  }
-}
-
-function useAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
-
-  const { data: aclData, isFetching: aclIsFetching } = useWifiAclTotalCount(isDisabled)
-
-  const { data: switchMacAclData, isFetching: switchMacAclIsFetching } = useSwitchAclTotalCount(
-    isDisabled || !isSwitchMacAclEnabled
-  )
-
-  const aclTotalCount = Number(aclData?.totalCount ?? 0)
-  const switchMacAclTotalCount = Number(switchMacAclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: aclTotalCount + switchMacAclTotalCount },
-    isFetching: aclIsFetching || switchMacAclIsFetching
-  }
-}
-
-function useWifiAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const params = useParams()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
-  const requestArgs = {
-    params,
-    payload: { ...defaultPayload, noDetails: true },
-    enableRbac
-  }
-  const requestOptions = {
-    skip: isDisabled,
-    refetchOnMountOrArgChange: false,
-    keepUnusedDataFor: 180
-  }
-
-  const { data: aclData, isFetching: aclIsFetching } = useGetEnhancedAccessControlProfileListQuery(requestArgs, requestOptions)
-  const { data: l2AclData, isFetching: l2AclIsFetching } = useGetEnhancedL2AclProfileListQuery(requestArgs, requestOptions)
-  const { data: l3AclData, isFetching: l3AclIsFetching } = useGetEnhancedL3AclProfileListQuery(requestArgs, requestOptions)
-  const { data: deviceAclData, isFetching: deviceAclIsFetching } = useGetEnhancedDeviceProfileListQuery(requestArgs, requestOptions)
-  const { data: appAclData, isFetching: appAclIsFetching } = useGetEnhancedApplicationProfileListQuery(requestArgs, {
-    ...requestOptions,
-    skip: isCore || isDisabled
-  })
-
-  const aclTotalCount = Number(aclData?.totalCount ?? 0)
-  const l2AclTotalCount = Number(l2AclData?.totalCount ?? 0)
-  const l3AclTotalCount = Number(l3AclData?.totalCount ?? 0)
-  const deviceAclTotalCount = Number(deviceAclData?.totalCount ?? 0)
-  const appAclTotalCount = Number(appAclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: aclTotalCount + l2AclTotalCount + l3AclTotalCount + deviceAclTotalCount + appAclTotalCount },
-    isFetching: aclIsFetching || l2AclIsFetching || l3AclIsFetching || deviceAclIsFetching || appAclIsFetching
-  }
-}
-
-function useSwitchAclTotalCount (isDisabled?: boolean): TotalCountQueryResult {
-  const params = useParams()
-  const { data: switchMacAclData, isFetching: switchMacAclIsFetching } = useAccessControlsCountQuery(
-    { params },
-    { skip: isDisabled }
-  )
-  const { data: switchL2AclData, isFetching: switchL2AclIsFetching } = useGetLayer2AclsQuery(
-    { params, payload: { ...defaultPayload } },
-    { skip: isDisabled }
-  )
-
-  const switchMacAclTotalCount = Number(switchMacAclData ?? 0)
-  const switchL2AclTotalCount = Number(switchL2AclData?.totalCount ?? 0)
-
-  return {
-    data: { totalCount: switchMacAclTotalCount + switchL2AclTotalCount },
-    isFetching: switchMacAclIsFetching || switchL2AclIsFetching
   }
 }
 
@@ -255,7 +174,6 @@ function useGetEdgeTnmServiceTotalCount (isDisabled?: boolean): TotalCountQueryR
 
 function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
@@ -267,47 +185,13 @@ function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisable
 
   const { data: pinPortal, isFetching: pinPortalIsFetching } =
     useWebAuthTemplateListQuery(
-      { params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled },
+      { params, payload: { ...defaultPayload }, enableRbac: true },
       { skip: isDisabled || !isEdgePinReady || !networkSegmentationSwitchEnabled }
     )
 
   return {
     data: { totalCount: Number(guestPortal?.totalCount ?? 0) + Number(pinPortal?.totalCount ?? 0) },
     isFetching: guestPortalIsFetching || pinPortalIsFetching
-  }
-}
-
-export function useDhcpConsolidationTotalCount (
-  defaultQueryArgs: RequestPayload,
-  isDisabled?: boolean
-) : TotalCountQueryResult {
-
-  const { data: dhcpData, isFetching: dhcpIsFetching } =
-    useGetDHCPProfileListViewModelQuery(defaultQueryArgs, { skip: isDisabled })
-
-  const { data: edgeDhcpData, isFetching: edgeDhcpIsFetching } =
-    useGetDhcpStatsQuery(defaultQueryArgs,{ skip: isDisabled })
-
-
-  return {
-    data: { totalCount: Number(dhcpData?.totalCount ?? 0) + Number(edgeDhcpData?.totalCount ?? 0) },
-    isFetching: dhcpIsFetching || edgeDhcpIsFetching
-  }
-}
-export function useMdnsProxyConsolidationTotalCount (
-  defaultQueryArgs: RequestPayload,
-  isDisabled?: boolean
-) : TotalCountQueryResult {
-
-  const { data: mdnsProxyData, isFetching: mdnsProxyFetching } =
-    useGetEnhancedMdnsProxyListQuery(defaultQueryArgs, { skip: isDisabled })
-
-  const { data: edgeMdnsProxyData, isFetching: edgeMdnsProxyIsFetching } =
-    useGetEdgeMdnsProxyViewDataListQuery(defaultQueryArgs, { skip: isDisabled })
-
-  return {
-    data: { totalCount: Number(mdnsProxyData?.totalCount ?? 0) + Number(edgeMdnsProxyData?.totalCount ?? 0) },
-    isFetching: mdnsProxyFetching || edgeMdnsProxyIsFetching
   }
 }
 

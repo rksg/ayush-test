@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, categoryMapping, PageHeader, Tabs } from '@acx-ui/components'
+import { Button, PageHeader, Tabs }            from '@acx-ui/components'
+import { useMdnsProxyConsolidationTotalCount } from '@acx-ui/rc/components'
 import {
   ServiceType,
   ServiceOperation,
@@ -9,10 +10,9 @@ import {
   filterByAccessForServicePolicyMutation,
   getServiceAllowedOperation,
   useServicesBreadcrumb,
-  serviceTypeLabelMapping
+  serviceTypeLabelWithCountMapping
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RadioCardCategory }                                 from '@acx-ui/types'
 
 import { EdgeMdnsProxyTable } from '../MdnsProxy/Edge/EdgeMdnsProxyTable'
 import MdnsProxyTable         from '../MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -34,6 +34,8 @@ export default function MdnsProxyConsolidation () {
   const activeTab = (params?.activeTab ?? MdnsProxyConsolidationTabKey.WIFI) as MdnsProxyConsolidationTabKey
 
   const Tab = tabs[activeTab as keyof typeof tabs]
+
+  const { data: countData } = useMdnsProxyConsolidationTotalCount()
 
   const getAddButton = () => {
     const targetType = activeTab === MdnsProxyConsolidationTabKey.WIFI
@@ -58,7 +60,11 @@ export default function MdnsProxyConsolidation () {
   return (
     <>
       <PageHeader
-        title={$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY_CONSOLIDATION])}
+        title={
+          $t(serviceTypeLabelWithCountMapping[ServiceType.MDNS_PROXY_CONSOLIDATION], {
+            count: countData?.totalCount
+          })
+        }
         breadcrumb={useServicesBreadcrumb()}
         extra={getAddButton()}
         footer={<ConsolidationTabs activeKey={activeTab} />}
@@ -72,6 +78,7 @@ function ConsolidationTabs ({ activeKey }: { activeKey: MdnsProxyConsolidationTa
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('services/mdnsProxyConsolidation/list')
+  const { data: countData } = useMdnsProxyConsolidationTotalCount()
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -83,11 +90,15 @@ function ConsolidationTabs ({ activeKey }: { activeKey: MdnsProxyConsolidationTa
   return (
     <Tabs onChange={onTabChange} activeKey={activeKey}>
       <Tabs.TabPane
-        tab={$t(categoryMapping[RadioCardCategory.WIFI].text)}
+        tab={$t({ defaultMessage: 'Wi-Fi ({count})' }, {
+          count: countData?.mdnsProxyCount
+        })}
         key={MdnsProxyConsolidationTabKey.WIFI}
       />
       <Tabs.TabPane
-        tab={$t(categoryMapping[RadioCardCategory.EDGE].text)}
+        tab={$t({ defaultMessage: 'RUCKUS Edge ({count})' }, {
+          count: countData?.edgeMdnsProxyCount
+        })}
         key={MdnsProxyConsolidationTabKey.EDGE}
       />
     </Tabs>

@@ -12,7 +12,6 @@ import { useIntl }           from 'react-intl'
 import {
   Button, Drawer, Subtitle, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import { isLAGMemberPort }              from '@acx-ui/rc/components'
 import {
@@ -49,7 +48,6 @@ export function AccessSwitchDrawer (props: {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { open, editRecords, venueId, onClose = ()=>{}, onSave } = props
 
@@ -65,9 +63,9 @@ export function AccessSwitchDrawer (props: {
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
 
   const { vlanList } = useGetSwitchVlanQuery({
-    params: { tenantId, switchId, venueId }, enableRbac: isSwitchRbacEnabled
+    params: { tenantId, switchId, venueId }, enableRbac: true
   }, {
-    skip: isMultipleEdit || !switchId || (isSwitchRbacEnabled && !venueId),
+    skip: isMultipleEdit || !switchId || (!venueId),
     selectFromResult: ({ data }) => ({
       vlanList: [
         ...(data?.switchVlan || []),
@@ -81,7 +79,7 @@ export function AccessSwitchDrawer (props: {
       sortField: 'portIdentifierFormatted', sortOrder: 'ASC',
       fields: ['portIdentifier', 'lagId', 'switchMac']
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   }, {
     skip: editRecords.length === 0,
     selectFromResult: ({ data }) => {
@@ -104,9 +102,9 @@ export function AccessSwitchDrawer (props: {
   })
   const { lagList } = useGetLagListQuery({
     params: { tenantId, switchId, venueId },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   }, {
-    skip: isMultipleEdit || !switchId || (isSwitchRbacEnabled && !venueId),
+    skip: isMultipleEdit || !switchId || (!venueId),
     selectFromResult: ({ data }) => ({
       lagList: data?.map(lag => ({
         label: `${lag.lagId} (${lag.name})`,
@@ -119,7 +117,7 @@ export function AccessSwitchDrawer (props: {
     payload: {
       fields: ['name', 'id']
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
 
@@ -146,7 +144,7 @@ export function AccessSwitchDrawer (props: {
     if (templateId) {
       getWebAuthTemplate({
         params: { tenantId, serviceId: templateId },
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: true
       }, true).unwrap()
         .then((templateRes) => {
           setTemplate(templateRes)
