@@ -3,9 +3,10 @@ import { useContext } from 'react'
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { useStepFormContext }                                               from '@acx-ui/components'
-import { Features }                                                         from '@acx-ui/feature-toggle'
-import { EdgeClusterVirtualIpSettingForm, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useStepFormContext }                        from '@acx-ui/components'
+import { Features }                                  from '@acx-ui/feature-toggle'
+import { EdgeClusterVirtualIpSettingForm, TypeForm } from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                     from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { transformFromApiToFormData } from '../SubInterfaceSettings/utils'

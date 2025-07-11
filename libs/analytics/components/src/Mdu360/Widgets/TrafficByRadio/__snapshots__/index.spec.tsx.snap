@@ -396,7 +396,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="start"
                               transform="translate(407.6034 73.1132)"
                               xml:space="preserve"
@@ -411,7 +411,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(360.3966 726.8868)"
                               xml:space="preserve"
@@ -426,7 +426,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font: normal 400 12px 'Open Sans', sans-serif"
                               text-anchor="end"
                               transform="translate(369 73)"
                               xml:space="preserve"

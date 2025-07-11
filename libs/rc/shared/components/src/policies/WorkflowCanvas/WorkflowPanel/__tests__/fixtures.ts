@@ -79,7 +79,9 @@ export const mockInitialNodes: Node[] = [
     id: 'step-2',
     position: { x: 0, y: 0 },
     type: ActionType.DISPLAY_MESSAGE,
-    data: {}
+    data: {
+      priorStepId: 'step-1'
+    }
   }
 ]
 
