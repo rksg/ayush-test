@@ -2,7 +2,7 @@
 
 import { cloneDeep, findIndex } from 'lodash'
 
-import { useEdgeSdLanActions }                                                                                                                     from '@acx-ui/edge/components'
+import { showSdLanNetworksTunnelConflictModal, useEdgeSdLanActions }                                                                               from '@acx-ui/edge/components'
 import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
 import { useGetEdgePinViewDataListQuery }                                                                                                          from '@acx-ui/rc/services'
 import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
@@ -132,11 +132,7 @@ export const useUpdateNetworkTunnelAction = () => {
 
     const networkId = network?.id
     const networkVenueId = network?.venueId
-    if (!networkId
-      || !networkVenueId
-      || !venueSdLanInfo
-      || !venueSdLanInfo.tunneledWlans?.some(wlan => wlan.venueId === networkVenueId)
-    ) {
+    if (!networkId || !networkVenueId || !venueSdLanInfo) {
       return Promise.reject()
     }
 
@@ -152,17 +148,16 @@ export const useUpdateNetworkTunnelAction = () => {
 
     const triggerSdLanOperations = async () => {
       return new Promise<void | boolean>((resolve, reject) => {
-        isEdgeL2oGreReady?
-          toggleNetworkChange(
-          venueSdLanInfo?.id!,
-          networkVenueId,
-          networkId!,
-          currentFwdTunnelProfileId!,
-          originFwdTunnelId!,
-          () => resolve()
+        isEdgeL2oGreReady
+          ? toggleNetworkChange(
+              venueSdLanInfo?.id!,
+              networkVenueId,
+              networkId!,
+              currentFwdTunnelProfileId!,
+              originFwdTunnelId!,
+              () => resolve()
           ).catch(() => reject())
-          :
-          toggleNetwork(
+          : toggleNetwork(
             venueSdLanInfo?.id!,
             networkVenueId,
             networkId!,
@@ -192,46 +187,71 @@ export const useUpdateNetworkTunnelAction = () => {
       // if no changes
       if (formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState === sdLanTunnelDmz)
         return Promise.resolve()
-      let showConnflictCondition = false
+      let showConflictCondition = false
       if(isEdgeL2oGreReady){
-        showConnflictCondition = (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan)
+        showConflictCondition = (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan)
       } else {
         // check conflict when is CAPTIVEPORTAL network
         // and 1. still SDLAN and tunnel guest changed
         // or 2. activate SDLAN
-        showConnflictCondition = ((formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState !== sdLanTunnelDmz)
+        showConflictCondition = ((formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState !== sdLanTunnelDmz)
         || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
         && network.type === NetworkTypeEnum.CAPTIVEPORTAL
       }
 
-      if(showConnflictCondition) {
-        const activatedDmz = formValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
-        return await new Promise<void | boolean>((resolve) =>
-          showSdLanGuestFwdConflictModal({
-            currentNetworkVenueId: network?.venueId!,
-            currentNetworkId: network?.id!,
-            currentNetworkName: '',
-            currentFwdTunnelType: currentFwdTunnelType,
-            activatedDmz: activatedDmz,
-            tunneledWlans: venueSdLanInfo!.tunneledWlans,
-            tunneledGuestWlans: venueSdLanInfo!.tunneledGuestWlans,
-            isL2oGreReady: isEdgeL2oGreReady,
-            onOk: async (impactVenueIds: string[]) => {
-              if (impactVenueIds.length) {
-                // has conflict and confirmed
-                const actions = [triggerSdLanOperations()]
-                actions.push(...impactVenueIds.map(impactVenueId =>
-                  new Promise<void | boolean>((resolve, reject) => {
-                    isEdgeL2oGreReady?
+
+      if(showConflictCondition) {
+        const modalProps = {
+          currentNetworkVenueId: network?.venueId!,
+          currentNetworkId: network?.id!,
+          currentNetworkName: '',
+          tunneledWlans: venueSdLanInfo!.tunneledWlans!
+        }
+
+        if (isEdgeL2oGreReady) {
+          return await new Promise<void | boolean>((resolve) =>
+            showSdLanNetworksTunnelConflictModal({
+              ...modalProps,
+              tunnelProfileId: currentFwdTunnelProfileId,
+              onOk: async (impactVenueIds: string[]) => {
+                if (impactVenueIds.length) {
+                  const actions = [triggerSdLanOperations()]
+                  actions.push(...impactVenueIds.map(impactVenueId =>
+                    new Promise<void | boolean>((resolve, reject) => {
                       toggleNetworkChange(
-                        venueSdLanInfo?.id!,
-                        impactVenueId,
-                        network?.id!,
-                        currentFwdTunnelProfileId!,
-                        undefined,
-                        () => resolve()
+                          venueSdLanInfo?.id!,
+                          impactVenueId,
+                          network?.id!,
+                          currentFwdTunnelProfileId!,
+                          undefined,
+                          () => resolve()
                       ).catch(() => reject())
-                      :
+                    })))
+
+                  await Promise.all(actions)
+                } else {
+                  await triggerSdLanOperations()
+                }
+
+                resolve()
+              }
+            })
+          )
+        } else {
+          const activatedDmz = formValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
+          return await new Promise<void | boolean>((resolve) =>
+            showSdLanGuestFwdConflictModal({
+              ...modalProps,
+              currentFwdTunnelType: currentFwdTunnelType,
+              activatedDmz: activatedDmz,
+              tunneledGuestWlans: venueSdLanInfo!.tunneledGuestWlans,
+              isL2oGreReady: false,
+              onOk: async (impactVenueIds: string[]) => {
+                if (impactVenueIds.length) {
+                // has conflict and confirmed
+                  const actions = [triggerSdLanOperations()]
+                  actions.push(...impactVenueIds.map(impactVenueId =>
+                    new Promise<void | boolean>((resolve, reject) => {
                       toggleNetwork(
                         venueSdLanInfo?.id!,
                         impactVenueId,
@@ -240,18 +260,19 @@ export const useUpdateNetworkTunnelAction = () => {
                         formValues.sdLan.isGuestTunnelEnabled,
                         () => resolve()
                       ).catch(() => reject())
-                  })
-                ))
-                await Promise.all(actions)
-              } else {
-                await triggerSdLanOperations()
-              }
+                    })
+                  ))
+                  await Promise.all(actions)
+                } else {
+                  await triggerSdLanOperations()
+                }
 
-              resolve()
-            },
-            onCancel: () => resolve(false)
-          })
-        )
+                resolve()
+              },
+              onCancel: () => resolve(false)
+            })
+          )
+        }
       } else {
         return await triggerSdLanOperations()
       }

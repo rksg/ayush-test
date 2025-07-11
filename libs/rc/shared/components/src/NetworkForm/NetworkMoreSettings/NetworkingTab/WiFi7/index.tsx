@@ -181,7 +181,6 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 
 function WiFi7 () {
   const { $t } = useIntl()
-  const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const { setData, data: wlanData } = useContext(NetworkFormContext)
@@ -278,7 +277,7 @@ function WiFi7 () {
           </div>
         )}
       </div>
-      { wifi7MloFlag && enableAP70 &&
+      { enableAP70 &&
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}

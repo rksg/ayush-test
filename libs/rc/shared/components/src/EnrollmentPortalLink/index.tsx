@@ -87,6 +87,7 @@ export function EnrollmentPortalLink (props: { url: string }) {
             <Button
               ghost
               icon={<CopyOutlined />}
+              style={{ top: '-9px' }}
               onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
               onClick={() => {
                 navigator.clipboard.writeText(url)
