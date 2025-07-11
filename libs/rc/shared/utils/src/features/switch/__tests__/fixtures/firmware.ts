@@ -15,7 +15,8 @@ export const mockSwitchCurrentVersionsV1002 = {
       versions: [
         '09010f_b19',
         '09010h_rc1',
-        '09010h_cd2_b4'
+        '09010h_cd2_b4',
+        '10010g_rc2'
       ]
     },
     {
