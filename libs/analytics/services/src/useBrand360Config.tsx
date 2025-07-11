@@ -34,7 +34,7 @@ export function useBrand360Config () {
       brand: $t({ defaultMessage: 'Brand 360' }),
       lsp: $t({ defaultMessage: 'LSP' }),
       property: $t({ defaultMessage: 'Property' }),
-      propertyCode: $t({ defaultMessage: 'Property Id' })
+      propertyCode: $t({ defaultMessage: 'Property ID' })
     }
 
     if (!settings) return {

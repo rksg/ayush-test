@@ -14,6 +14,7 @@ import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingD
 import { FranchisorTimeseries }                                                                        from './services'
 
 import { Brand360 } from '.'
+import { useMspECListWithDelegationsQuery } from '@acx-ui/msp/services';
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
@@ -75,7 +76,7 @@ describe('Brand360', () => {
         '[{"key": "sla-p1-incidents-count", "value": "1"},{"key": "sla-guest-experience", "value": "2"},{"key": "sla-brand-ssid-compliance", "value": "3"}]'
       )))
     )
-    services.useMspECListQuery = jest.fn().mockImplementation(() => {
+    services.useMspECListWithDelegationsQuery = jest.fn().mockImplementation(() => {
       return { data: propertiesMappingData }
     })
     rcServices.useGetTenantDetailsQuery = jest.fn(() => {
