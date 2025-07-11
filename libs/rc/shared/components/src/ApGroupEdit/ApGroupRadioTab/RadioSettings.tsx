@@ -764,13 +764,14 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           ...(data.radioParamsDual5G?.enabled
             ? {}
             : {
+              enabled: false,
               radioParamsLower5G: { useVenueSettings: false },
               radioParamsUpper5G: { useVenueSettings: false }
             }
           )
         }
       } : {}),
-      ...(defaultRadioSettings?.radioParamsDual5G?.enabled
+      ...(!isDual5gModeRef.current && defaultRadioSettings?.radioParamsDual5G?.enabled
         ? {
           radioParamsDual5G: {
             enabled: false,
