@@ -27,7 +27,7 @@ export interface Property extends PropertyCode, Common {
   property: string
 }
 export interface PropertyCode {
-  propertyCode: string | null
+  propertyCode: string
 }
 export interface Lsp extends Common {
   propertyCount: number
