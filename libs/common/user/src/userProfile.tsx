@@ -10,7 +10,7 @@ import {
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { AccountTier, AccountVertical } from '@acx-ui/utils'
 
 import {
   type UserProfile,
@@ -41,7 +41,8 @@ type Profile = {
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[],
-  tenantType?: TenantType
+  tenantType?: TenantType,
+  accountVertical?: AccountVertical
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -75,12 +76,14 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
+  userProfile.accountVertical = profile.accountVertical
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.isCustomPrivilegeGroup = profile.isCustomPrivilegeGroup
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
   userProfile.venuesList = profile?.venuesList
   userProfile.betaFeaturesList = profile?.betaFeaturesList
+  userProfile.accountVertical = profile?.accountVertical
 }
 export const getUserName = () =>
   `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
