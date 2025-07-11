@@ -12,6 +12,7 @@ import {
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeSdLanSelectOptionContent }      from './EdgeSdLanSelectOptionContent'
+import { EdgeSdLanSelectOptionEnhanced }     from './EdgeSdLanSelectOptionEnhanced'
 import { EdgeSdLanSelectOptionL2greContent } from './EdgeSdLanSelectOptionL2greContent'
 import { NetworkTunnelTypeEnum }             from './types'
 
@@ -40,22 +41,29 @@ export const EdgeSdLanSelectOption = (props: SdLanSelectOptionProps) => {
 
   const hasVlanPool = !isNil(networkVlanPool)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeSdLanSelectionDrawerReady = useIsEdgeFeatureReady(Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE)
 
   return !disabledInfo?.isDisabled ? (
-    isEdgeL2greReady ? (
-      <EdgeSdLanSelectOptionL2greContent
-        venueSdLan={venueSdLan}
+    isEdgeSdLanSelectionDrawerReady
+      ? <EdgeSdLanSelectOptionEnhanced
+        venueId={networkVenueId}
         networkType={networkType}
         hasVlanPool={hasVlanPool}
       />
-    ) :
-      (<EdgeSdLanSelectOptionContent
-        networkId={networkId}
-        networkVenueId={networkVenueId}
-        venueSdLan={venueSdLan}
-        networkType={networkType}
-        currentTunnelType={currentTunnelType}
-        hasVlanPool={hasVlanPool}
-        tunnelTypeInitVal={tunnelTypeInitVal}
-      />)) : <></>
+      : (isEdgeL2greReady
+        ? <EdgeSdLanSelectOptionL2greContent
+          venueSdLan={venueSdLan}
+          networkType={networkType}
+          hasVlanPool={hasVlanPool}
+        />
+        : <EdgeSdLanSelectOptionContent
+          networkId={networkId}
+          networkVenueId={networkVenueId}
+          venueSdLan={venueSdLan}
+          networkType={networkType}
+          currentTunnelType={currentTunnelType}
+          hasVlanPool={hasVlanPool}
+          tunnelTypeInitVal={tunnelTypeInitVal}
+        />)) : <></>
 }

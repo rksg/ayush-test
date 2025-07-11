@@ -13,12 +13,6 @@ export const SwitchContainer = styled('div')`
   margin-top: -15px;
 `
 
-export const StyledTitle = styled(Typography.Text)`
-  color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-3-font-size); 
-`
-// softGreDetail Drawer font Size is 13px, but above is set to 14 px
-
 export const RadioWrapper = styled('div')`
   display: flex;
   align-items: center;
