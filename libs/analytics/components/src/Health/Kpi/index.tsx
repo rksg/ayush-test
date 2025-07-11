@@ -118,6 +118,17 @@ export function KpiSection (props: {
   const { $t } = useIntl()
   const kpiList = useMemo(() => isArray(kpis) ? kpis : Object.values(kpis)[0], [kpis])
 
+  const getSubTabLabel = useMemo(() => (key: string) => {
+    switch (key) {
+      case 'System':
+        return $t({ defaultMessage: 'System' })
+      case 'Table':
+        return $t({ defaultMessage: 'Table' })
+      default:
+        return key
+    }
+  }, [$t])
+
   const connectChart = useMemo(() => (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -229,7 +240,7 @@ export function KpiSection (props: {
           const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
           const kpisToShow = loadMoreState[key] ? subTabKpis.slice(0, 1) : subTabKpis
           return {
-            label: key,
+            label: getSubTabLabel(key),
             value: key,
             children: (
               <div style={{ marginTop: '16px' }}>
