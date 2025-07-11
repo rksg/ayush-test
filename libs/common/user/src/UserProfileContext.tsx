@@ -2,8 +2,8 @@ import { createContext, useContext } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { RolesEnum as Role } from '@acx-ui/types'
-import { AccountVertical, useTenantId }       from '@acx-ui/utils'
+import { RolesEnum as Role }            from '@acx-ui/types'
+import { AccountVertical, useTenantId } from '@acx-ui/utils'
 
 import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
