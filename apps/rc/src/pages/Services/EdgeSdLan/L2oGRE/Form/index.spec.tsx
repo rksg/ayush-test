@@ -16,6 +16,7 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
+  SoftGreUrls,
   TunnelProfileViewData
 } from '@acx-ui/rc/utils'
 import {
@@ -98,6 +99,9 @@ describe('SD-LAN form', () => {
     store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))

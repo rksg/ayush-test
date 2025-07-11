@@ -18,7 +18,6 @@ import {
   IncompatibilityFeatures,
   SubInterface,
   edgePortIpValidator,
-  edgeWanSyncIpModeValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
   interfaceSubnetValidator,
@@ -79,7 +78,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
-  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {
@@ -187,12 +185,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
+            {..._.omit(_.get(formFieldsProps, 'ipMode'), 'rules')}
             rules={[
               { required: true },
-              // eslint-disable-next-line max-len
-              ...(isEdgeDualWanEnabled ? [{ validator: () => edgeWanSyncIpModeValidator(portsData, lagData ?? []) }] : [])
+              ...(_.get(formFieldsProps, 'ipMode.rules') as FormItemProps['rules'] ?? [])
             ]}
-            {..._.get(formFieldsProps, 'ipMode')}
             children={
               <Radio.Group>
                 <Space direction='vertical'>
