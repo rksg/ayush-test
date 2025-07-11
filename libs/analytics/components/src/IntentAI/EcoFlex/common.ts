@@ -181,7 +181,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
     return {
       value: currentValue,
       previous: previousValue,
-      isPill: difference > 1000 ? true : false
+      isPill: difference < 1000 ? true : false
     }
   },
   valueFormatter: formatter('countFormat'),
