@@ -10,7 +10,8 @@ import { useBrand360Config } from './useBrand360Config'
 const defaultSettings = {
   'brand-name': 'testBrand',
   'lsp-name': 'testLsp',
-  'property-name': 'testProperty'
+  'property-name': 'testProperty',
+  'property-code-name':'testPropertyCode'
 } as unknown as Settings
 
 const mockTenantSettings = (settings: Settings) => {
@@ -33,7 +34,8 @@ describe('useBrand360Config', () => {
         names: {
           brand: 'testBrand',
           lsp: 'testLsp',
-          property: 'testProperty'
+          property: 'testProperty',
+          propertyCode: 'testPropertyCode'
         } }))
     })
   })
@@ -48,7 +50,8 @@ describe('useBrand360Config', () => {
         names: {
           brand: 'Brand 360',
           lsp: 'LSP',
-          property: 'Property'
+          property: 'Property',
+          propertyCode: 'Property ID'
         } }))
     })
   })
@@ -63,7 +66,8 @@ describe('useBrand360Config', () => {
         names: {
           brand: 'Brand 360',
           lsp: 'LSP',
-          property: 'Property'
+          property: 'Property',
+          propertyCode: 'Property ID'
         } }))
     })
   })
