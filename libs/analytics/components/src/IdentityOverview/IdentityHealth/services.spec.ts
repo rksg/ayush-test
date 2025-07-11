@@ -22,34 +22,16 @@ describe('IdentityOverview services', () => {
         hierarchyNode: {
           health: [
             {
-              timeToConnectSLA: [
-                null,
-                null
-              ],
-              clientThroughputSLA: [
-                null,
-                null
-              ]
+              timeToConnectSLA: [ null, null ],
+              clientThroughputSLA: [ null, null ]
             },
             {
-              timeToConnectSLA: [
-                12,
-                12
-              ],
-              clientThroughputSLA: [
-                3,
-                5
-              ]
+              timeToConnectSLA: [ 12, 12 ],
+              clientThroughputSLA: [ 3, 5 ]
             },
             {
-              timeToConnectSLA: [
-                null,
-                null
-              ],
-              clientThroughputSLA: [
-                null,
-                null
-              ]
+              timeToConnectSLA: [ null, null ],
+              clientThroughputSLA: [ null, null ]
             }
           ]
         }
