@@ -76,7 +76,6 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
-  userProfile.accountVertical = profile.accountVertical
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.isCustomPrivilegeGroup = profile.isCustomPrivilegeGroup
   userProfile.scopes = profile?.scopes
