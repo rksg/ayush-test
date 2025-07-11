@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react'
 
 import { mean }    from 'lodash'
@@ -9,6 +8,7 @@ import { Card, Loader, NoData, useDateRange, GridRow, GridCol, ProgressBarV2 } f
 import { formatter }                                                           from '@acx-ui/formatter'
 
 import { IdentityHealthData, useIdentityHealthQuery } from './services'
+import { ProgressBarWrapper }                         from './styledComponents'
 
 const percentFormat = (value: number | null) => {
   return formatter('percentFormat')(value)
@@ -53,9 +53,7 @@ export const IdentityHealth = () => {
     filter: {}
   })
 
-  const data = useMemo(() => {
-    return getIdentityHealthData(queryResults?.data)
-  }, [queryResults?.data])
+  const data = useMemo(() => getIdentityHealthData(queryResults?.data), [queryResults?.data])
 
   return (
     <Loader states={[queryResults]}>
@@ -63,12 +61,7 @@ export const IdentityHealth = () => {
         {(data.clientThroughput || data.timeToConnect) ?
           <AutoSizer>
             {({ width, height }) => (
-              <div style={{
-                display: 'flex',
-                height,
-                width,
-                flexDirection: 'column',
-                justifyContent: 'space-around' }}>
+              <ProgressBarWrapper height={height} width={width}>
                 <GridRow>
                   <GridCol col={{ span: 4 }}>
                     {$t({ defaultMessage: 'Time to Connect' })}
@@ -95,7 +88,7 @@ export const IdentityHealth = () => {
                     }
                   </GridCol>
                 </GridRow>
-              </div>
+              </ProgressBarWrapper>
             )}
           </AutoSizer> : <NoData/>}
       </Card>

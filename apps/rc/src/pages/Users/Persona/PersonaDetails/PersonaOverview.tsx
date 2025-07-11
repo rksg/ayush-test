@@ -365,6 +365,7 @@ export function PersonaOverview ({
         </GridRow>
       )}
       <GridRow>
+        <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
           <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
             <Card title={$t({ defaultMessage: 'Associated Devices' })}>
