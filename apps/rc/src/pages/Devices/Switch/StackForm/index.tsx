@@ -311,7 +311,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
-                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL,
+              firmware: switchDetail.firmware
             }
           }) ?? []
 
@@ -396,8 +397,10 @@ export function StackForm () {
   const getMiniMembers = function (activeSerialNumber: string) {
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = currentFirmwareV1002?.find(v =>
-      v.modelGroup === switchModelGroup)?.version || ''
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
+      currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+
     return getStackUnitsMinLimitationV1002(switchModel, currentVersion)
   }
 
@@ -803,8 +806,10 @@ export function StackForm () {
     }
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = currentFirmwareV1002?.find(v =>
-      v.modelGroup === switchModelGroup)?.version || ''
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
+      currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+
     const miniMembers = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
 
     setTableData(tableData.splice(0, miniMembers))
