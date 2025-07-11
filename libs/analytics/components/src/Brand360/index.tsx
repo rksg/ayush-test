@@ -74,7 +74,7 @@ export function Brand360 () {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
   const { names, settingsQuery } = useBrand360Config()
-  const { brand, lsp, property } = names
+  const { brand, lsp, property, propertyCode } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
   const isLSP = tenantType === AccountType.MSP_INTEGRATOR
     || tenantType === AccountType.MSP_INSTALLER
@@ -212,7 +212,7 @@ export function Brand360 () {
           isLSP={isLSP}
           lspLabel={lsp}
           propertyLabel={property}
-          propertyCodeLabel={'Property Id'}
+          propertyCodeLabel={propertyCode}
           isMDU={isMDUEnabled}
         />
       </GridCol>
