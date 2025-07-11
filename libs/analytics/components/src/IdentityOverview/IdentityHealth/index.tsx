@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
@@ -16,35 +16,61 @@ const percentFormat = (value: number | null) => {
 
 const calcPercent = ([val, sum]:(number | null)[]) => {
   const percent = val !== null && sum ? val / sum : null
-  return { percent, formatted: percentFormat(percent) }
+  return percent
 }
 
-const getIdentityHealthData = (identityHealthData: IdentityHealthData[] | undefined) => {
-  const timeToConnect : number[] = []
-  const clientThroughput : number[] = []
+interface ProgressBarData {
+  title: string,
+  value: number,
+  formattedValue: string
+}
 
-  if (identityHealthData !== undefined && identityHealthData !== null) {
-    identityHealthData.forEach((row) => {
-      const { timeToConnectSLA, clientThroughputSLA } = row
-      const timeToConnectPercent = calcPercent(timeToConnectSLA)
-      const clientThroughputPercent = calcPercent(clientThroughputSLA)
-
-      timeToConnectPercent.percent !== null &&
-        timeToConnect.push(timeToConnectPercent.percent)
-      clientThroughputPercent.percent !== null &&
-        clientThroughput.push(clientThroughputPercent.percent)
-    })
-  }
-
-  return {
-    timeToConnect: mean(timeToConnect),
-    clientThroughput: mean(clientThroughput)
-  }
+const hasData = (progressBarData: ProgressBarData[]) => {
+  return progressBarData[0].value || progressBarData[1].value
 }
 
 export const IdentityHealth = () => {
   const { $t } = useIntl()
   const { timeRange, selectedRange } = useDateRange()
+
+  const getProgressBarData = useCallback((
+    identityHealthData: IdentityHealthData[] | undefined
+  ): ProgressBarData[] => {
+
+    const timeToConnect : number[] = []
+    const clientThroughput : number[] = []
+
+    if (identityHealthData !== undefined && identityHealthData !== null) {
+      identityHealthData.forEach((row) => {
+        const { timeToConnectSLA, clientThroughputSLA } = row
+        const timeToConnectPercent = calcPercent(timeToConnectSLA)
+        const clientThroughputPercent = calcPercent(clientThroughputSLA)
+
+        timeToConnectPercent !== null && timeToConnect.push(timeToConnectPercent)
+        clientThroughputPercent !== null && clientThroughput.push(clientThroughputPercent)
+      })
+    }
+
+    const averageTimeToConnectPercent: number = mean(timeToConnect)
+    const averageClientThroughputPercent: number = mean(clientThroughput)
+
+    const progressBarData: ProgressBarData[] = [
+      {
+        title: $t({ defaultMessage: 'Time to Connect' }),
+        value: averageTimeToConnectPercent * 100,
+        formattedValue: averageTimeToConnectPercent ?
+          percentFormat(averageTimeToConnectPercent) : '0%'
+      },
+      {
+        title: $t({ defaultMessage: 'Client Throughput' }),
+        value: averageClientThroughputPercent * 100,
+        formattedValue: averageClientThroughputPercent ?
+          percentFormat(averageClientThroughputPercent) : '0%'
+      }
+    ]
+
+    return progressBarData
+  }, [$t])
 
   const queryResults = useIdentityHealthQuery({
     startDate: timeRange[0].format(),
@@ -53,44 +79,37 @@ export const IdentityHealth = () => {
     filter: {}
   })
 
-  const data = useMemo(() => getIdentityHealthData(queryResults?.data), [queryResults?.data])
+  const progressBarData = useMemo(() => {
+    return getProgressBarData(queryResults?.data)
+  }, [getProgressBarData, queryResults?.data])
 
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Identity Health' })}>
-        {(data.clientThroughput || data.timeToConnect) ?
-          <AutoSizer>
-            {({ width, height }) => (
-              <ProgressBarWrapper height={height} width={width}>
-                <GridRow>
-                  <GridCol col={{ span: 4 }}>
-                    {$t({ defaultMessage: 'Time to Connect' })}
-                  </GridCol>
-                  <GridCol col={{ span: 16 }}>
-                    <ProgressBarV2 percent={data.timeToConnect * 100 || 0 as number}/>
-                  </GridCol>
-                  <GridCol col={{ span: 4 }}>
-                    {
-                      data.timeToConnect ? percentFormat(data.timeToConnect) : '0%'
-                    }
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol col={{ span: 4 }}>
-                    {$t({ defaultMessage: 'Client Throughput' })}
-                  </GridCol>
-                  <GridCol col={{ span: 16 }}>
-                    <ProgressBarV2 percent={data.clientThroughput * 100 || 0 as number}/>
-                  </GridCol>
-                  <GridCol col={{ span: 4 }}>
-                    {
-                      data.clientThroughput ? percentFormat(data.clientThroughput) : '0%'
-                    }
-                  </GridCol>
-                </GridRow>
-              </ProgressBarWrapper>
-            )}
-          </AutoSizer> : <NoData/>}
+        { hasData(progressBarData) ? <AutoSizer>
+          {({ width, height }) => (
+            <ProgressBarWrapper height={height} width={width}>
+              {
+                progressBarData.map((data) => {
+                  return (
+                    <GridRow>
+                      <GridCol col={{ span: 4 }}>
+                        { data.title }
+                      </GridCol>
+                      <GridCol col={{ span: 16 }}>
+                        <ProgressBarV2 percent={data.value || 0 as number}/>
+                      </GridCol>
+                      <GridCol col={{ span: 4 }}>
+                        { data.formattedValue || '0%' }
+                      </GridCol>
+                    </GridRow>
+                  )
+                })
+              }
+            </ProgressBarWrapper>
+          )}
+        </AutoSizer> : <NoData/>
+        }
       </Card>
     </Loader>
   )
