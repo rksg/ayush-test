@@ -86,7 +86,6 @@ const useGetApPassword = (currentAP: ApViewModel) => {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
@@ -155,7 +154,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       filters: { venueId: [currentAP?.venueId], id: [currentAP?.switchId] }
     },
     enableAggregateStackMember: false,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   }, {
     skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId
   })
@@ -180,7 +179,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         pageSize: 10000,
         fields: SwitchPortViewModelQueryFields
       },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     })
 
     const portData = switchPortsData?.data.filter((item: SwitchPortViewModel) => item.portIdentifier === currentAP?.switchPort)[0]
@@ -202,7 +201,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             switchId: portData.switchMac,
             venueId: portData.venueId
           },
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: true
         })
         const lagData = lagList?.find((item: Lag) =>
           item.lagId?.toString() === portData.lagId) as Lag
