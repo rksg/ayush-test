@@ -71,7 +71,7 @@ export function ClientOverviewTab () {
               clientStatus={clientStatus}
               filters={filters}
               connectedTimeStamp={
-                connectClientInfo.connectedTime ?? (new Date()).toISOString()
+                connectClientInfo?.connectedTime ?? (new Date()).toISOString()
               }
             />
           </UI.CardWrapper>
