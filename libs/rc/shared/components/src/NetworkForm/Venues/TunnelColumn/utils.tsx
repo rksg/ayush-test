@@ -2,6 +2,7 @@
 import { FormInstance }                            from 'antd'
 import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
+import { showSdLanNetworksTunnelConflictModal }                                                                                       from '@acx-ui/edge/components'
 import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import {
@@ -59,6 +60,7 @@ export const handleSdLanTunnelAction = async (
     } else {
       const isL2oGreReady = otherData.isL2oGreReady
       const currentFwdTunnelType = modalFormValues.sdLan?.forwardingTunnelType
+      const currentFwdTunnelProfileId = modalFormValues.sdLan?.forwardingTunnelProfileId
 
       let needSdLanConfigConflictCheck = false
       if (isL2oGreReady) {
@@ -71,41 +73,75 @@ export const handleSdLanTunnelAction = async (
       }
 
       if (needSdLanConfigConflictCheck) {
-        const activatedDmz = modalFormValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
-        showSdLanGuestFwdConflictModal({
+        const modalProps = {
           currentNetworkVenueId: network?.venueId!,
           currentNetworkId: network?.id!,
           currentNetworkName: '',
-          currentFwdTunnelType,
-          activatedDmz: activatedDmz,
-          tunneledWlans: venueSdLan!.tunneledWlans,
-          tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
-          isL2oGreReady: isL2oGreReady,
-          onOk: async (impactVenueIds: string[]) => {
-            if (impactVenueIds.length) {
-              // has conflict and confirmed
+          tunneledWlans: venueSdLan!.tunneledWlans!
+        }
 
-              let updates: NetworkTunnelSdLanAction[] = updateContent
-              impactVenueIds.forEach(impactVenueId => {
-                updates = getNetworkTunnelSdLanUpdateData(
-                  modalFormValues,
-                  updates,
-                  {
-                    ...otherData.network!,
-                    venueId: impactVenueId
-                  },
-                  venueSdLan) ?? []
-              })
+        if (isL2oGreReady) {
+          showSdLanNetworksTunnelConflictModal({
+            ...modalProps,
+            tunnelProfileId: currentFwdTunnelProfileId,
+            onOk: async (impactVenueIds: string[]) => {
+              if (impactVenueIds.length) {
+                // has conflict and confirmed
 
-              form.setFieldValue('sdLanAssociationUpdate', updates)
-            } else {
-              form.setFieldValue('sdLanAssociationUpdate', updateContent)
+                let updates: NetworkTunnelSdLanAction[] = updateContent
+                impactVenueIds.forEach(impactVenueId => {
+                  updates = getNetworkTunnelSdLanUpdateData(
+                    modalFormValues,
+                    updates,
+                    {
+                      ...otherData.network!,
+                      venueId: impactVenueId
+                    },
+                    venueSdLan) ?? []
+                })
+
+                form.setFieldValue('sdLanAssociationUpdate', updates)
+              } else {
+                form.setFieldValue('sdLanAssociationUpdate', updateContent)
+              }
+
+              resolve()
             }
+          })
+        } else {
+          const activatedDmz = modalFormValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
+          showSdLanGuestFwdConflictModal({
+            ...modalProps,
+            currentFwdTunnelType,
+            activatedDmz: activatedDmz,
+            tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+            isL2oGreReady: false,
+            onOk: async (impactVenueIds: string[]) => {
+              if (impactVenueIds.length) {
+                // has conflict and confirmed
 
-            resolve()
-          },
-          onCancel: () => resolve(false)
-        })
+                let updates: NetworkTunnelSdLanAction[] = updateContent
+                impactVenueIds.forEach(impactVenueId => {
+                  updates = getNetworkTunnelSdLanUpdateData(
+                    modalFormValues,
+                    updates,
+                    {
+                      ...otherData.network!,
+                      venueId: impactVenueId
+                    },
+                    venueSdLan) ?? []
+                })
+
+                form.setFieldValue('sdLanAssociationUpdate', updates)
+              } else {
+                form.setFieldValue('sdLanAssociationUpdate', updateContent)
+              }
+
+              resolve()
+            },
+            onCancel: () => resolve(false)
+          })
+        }
       } else {
         form.setFieldValue('sdLanAssociationUpdate', updateContent)
         resolve()
