@@ -179,7 +179,7 @@ describe('AP Group Edit Radio', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('apGroup-customize')
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByText(/r760/i)).toBeVisible()
