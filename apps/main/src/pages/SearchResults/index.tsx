@@ -1,8 +1,7 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { Loader, PageHeader }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Loader, PageHeader } from '@acx-ui/components'
 import {
   ApTable,
   ConnectedClientsTable,
@@ -35,21 +34,18 @@ import {
   NewAPModelExtended,
   SwitchClient,
   SwitchRow,
-  useTableQuery,
   Venue,
   WifiNetwork
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
+import {
+  useTableQuery
+} from '@acx-ui/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
 import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
-
-
-interface EnableRbacType {
-  isSwitchRbacEnabled?: boolean
-}
 
 const pagination = { pageSize: 5, showSizeChanger: false }
 
@@ -130,10 +126,10 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+  (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
-      enableRbac: enableRbac.isSwitchRbacEnabled,
+      enableRbac: true,
       defaultPayload: {
         ...defaultSwitchPayload
       },
@@ -189,10 +185,10 @@ const searches = [
   }
 ]
 
-function SearchResult ({ searchVal, enableRbac }:
-  { searchVal: string | undefined, enableRbac:EnableRbacType }) {
+function SearchResult ({ searchVal }:
+  { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const results = searches.map(search => search(searchVal as string, $t, enableRbac))
+  const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
   return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
     {count
@@ -226,13 +222,9 @@ function SearchResult ({ searchVal, enableRbac }:
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   return <SearchResult
     key={searchVal}
     searchVal={searchVal}
-    enableRbac={{
-      isSwitchRbacEnabled
-    }}
   />
 }

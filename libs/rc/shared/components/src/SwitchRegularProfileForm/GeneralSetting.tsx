@@ -12,12 +12,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SwitchProfile,
-  TableResult,
   checkObjectNotExists,
   useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 

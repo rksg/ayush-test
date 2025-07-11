@@ -20,7 +20,6 @@ import {
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
-  usePollingTableQuery,
   networkTypes,
   ClientInfo,
   getClientHealthClass,
@@ -35,7 +34,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping, usePollingTableQuery } from '@acx-ui/utils'
 
 import { ClientHealthIcon }    from '../ClientHealthIcon'
 import { IdentityDetailsLink } from '../CommonLinkHelper'
@@ -114,7 +113,6 @@ const AsyncLoadingInColumn = (
 
 export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boolean) {
   const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const identityClientToggle = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   const { tenantId, venueId, apId, networkId, personaId } = useParams()
@@ -333,7 +331,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
         })
       }
     }]),
-    ...(wifiEDAClientRevokeToggle ?[{
+    {
       key: 'networkInformation.type',
       title: intl.$t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkInformation.type',
@@ -344,7 +342,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
           return networkDisplayTransformer(intl, row?.networkInformation?.type)
         })
       }
-    }] : []),
+    },
     {
       key: 'connectedTime',
       title: intl.$t({ defaultMessage: 'Time Connected' }),
@@ -581,7 +579,6 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const params = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
   const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
@@ -748,9 +745,9 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     }
   ]
 
-  const showRowSelection = (wifiEDAClientRevokeToggle && (rbacOpsApiEnabled
+  const showRowSelection = (rbacOpsApiEnabled
     ? hasAllowedOperations([disconnectRevokeClientOpsApi])
-    : hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] })))
+    : hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }))
 
   useTrackLoadTime({
     itemName: widgetsMapping.WIRELESS_CLIENTS_TABLE,
@@ -768,7 +765,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         </Subtitle>
         <Table<ClientInfo>
           rowSelection={(showRowSelection && rowSelection)}
-          rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
+          rowActions={filterByAccess(rowActions)}
           settingsId={settingsId}
           columns={useRbacClientTableColumns(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}

@@ -31,7 +31,6 @@ import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from '.'
 
 const mockedCancel = jest.fn()
 const updateRequestSpy = jest.fn()
-const getSwitchRequestSpy = jest.fn()
 
 jest.mock('../../../PreferencesDialog', () => ({
   ...jest.requireActual('../../../PreferencesDialog'),
@@ -100,7 +99,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
         (req, res, ctx) => {
-          getSwitchRequestSpy()
           return res(ctx.json(upgradeSwitchViewList))
         }
       )
@@ -111,7 +109,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   })
 
 
-  it.skip('render SwitchUpgradeWizard - schedule - cancel', async () => {
+  it('render SwitchUpgradeWizard - schedule - cancel', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -213,7 +211,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
   })
 
-  it.skip('render SwitchUpgradeWizard - update now - Save', async () => {
+  it('render SwitchUpgradeWizard - update now - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -258,6 +256,12 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     userEvent.click(radio82)
     expect(radio82).toBeEnabled()
+
+    const radio81 = screen.getByRole('radio', {
+      name: /10\.0\.10_rc81/i
+    })
+    userEvent.click(radio81)
+    expect(radio81).toBeEnabled()
 
     const radio7x = screen.getByRole('radio', {
       name: /10\.0\.10_rc55/i
@@ -336,5 +340,39 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     const skipButton = within(dialog).getByRole('button', { name: 'Skip' })
     await userEvent.click(skipButton)
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
+  })
+
+  it('render SwitchUpgradeWizard - skip - cancel at confirmation dialog', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.skip}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenueV1002.filter(
+            item => item.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText(/skip updates/i)).toBeInTheDocument()
+
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    const skipButton = await screen.findByRole('button', { name: 'Skip' })
+    await userEvent.click(skipButton)
+    expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
+
+    const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelButton[1])
+
+    await waitFor(() => {
+      expect(screen.queryByText('Skip This Update?')).not.toBeInTheDocument()
+    })
+
+    expect(mockedCancel).toBeCalled()
   })
 })

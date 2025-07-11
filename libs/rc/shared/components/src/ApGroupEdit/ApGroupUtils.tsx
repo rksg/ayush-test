@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 
-import { isEmpty, uniq } from 'lodash'
+import { isEmpty, uniq, set } from 'lodash'
 
 import { useLazyApListQuery } from '@acx-ui/rc/services'
 import {
@@ -41,7 +41,7 @@ export const convertVenueRadioSettingsToApGroupRadioSettings = (data: VenueRadio
       return undefined
     }
 
-    const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc } = radioParams
+    const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc, enableMulticastDownlinkRateLimiting, enableMulticastRateLimiting, enableMulticastUplinkRateLimiting, multicastDownlinkRateLimiting, multicastUplinkRateLimiting, scanInterval } = radioParams
     return {
       allowedIndoorChannels,
       allowedOutdoorChannels,
@@ -52,7 +52,13 @@ export const convertVenueRadioSettingsToApGroupRadioSettings = (data: VenueRadio
       bssMinRate6G,
       mgmtTxRate6G,
       channelBandwidth320MhzGroup,
-      enableAfc
+      enableAfc,
+      enableMulticastDownlinkRateLimiting,
+      enableMulticastRateLimiting,
+      enableMulticastUplinkRateLimiting,
+      multicastDownlinkRateLimiting,
+      multicastUplinkRateLimiting,
+      scanInterval
     }
   }
 
@@ -272,11 +278,26 @@ export const mergeRadioData = (data: ApGroupRadioCustomization, apGroupData: ApG
           ? radioParamsDual5G?.radioParamsLower5G
           : apGroupRadioParamsDual5G?.radioParamsLower5G
         ),
+        useVenueSettings: apGroupRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings
+      },
+      radioParamsUpper5G: {
         ...(apGroupRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings || apGroupRadioParamsDual5G?.radioParamsUpper5G === undefined
           ? radioParamsDual5G?.radioParamsUpper5G
           : apGroupRadioParamsDual5G?.radioParamsUpper5G
-        )
+        ),
+        useVenueSettings: apGroupRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings
       }
     }
   } as ApGroupRadioCustomization
+}
+
+export const setValidatedManulChannel = (
+  data: ApGroupRadioCustomization,
+  path: string,
+  channel: number | undefined,
+  method: string
+) => {
+  if (channel && method === 'MANUAL') {
+    set(data, path, [channel.toString()])
+  }
 }

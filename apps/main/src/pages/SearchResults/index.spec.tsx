@@ -1,16 +1,21 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { SwitchRbacUrlsInfo } from '@acx-ui/rc/switch/services'
 import {
   ClientUrlsInfo,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }           from '@acx-ui/store'
+import {
+  mockRestApiQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved
+}  from '@acx-ui/test-utils'
 
 import {
   apListData,
@@ -42,6 +47,7 @@ describe('Search Results', () => {
     mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventListData)
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
+    mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchList.url, 'post', switchListData)
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', switchListData)
     mockRestApiQuery(ClientUrlsInfo.getClients.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(SwitchUrlsInfo.getSwitchPortlist.url, 'post', { data: [], totalCount: 0 })
@@ -84,7 +90,7 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonRbacUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', { data: [], totalCount: 0 })
-    mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
     render(<SearchResults />, {
       wrapper: Provider,
       route: {

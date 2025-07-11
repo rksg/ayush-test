@@ -3,20 +3,18 @@ import { useIntl } from 'react-intl'
 import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useAdaptivePolicyListByQueryQuery,
   useDeleteRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
+  filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroup, RadiusAttributeGroupUrlsInfo, SEARCH,
-  useTableQuery
+  PolicyType, RadiusAttributeGroup, RadiusAttributeGroupUrlsInfo, doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }                                    from '@acx-ui/utils'
+import { getOpsApi, useTableQuery, FILTER, SEARCH }     from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()

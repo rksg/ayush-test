@@ -25,7 +25,6 @@ export interface IpSecInfo {
 }
 // eslint-disable-next-line max-len
 export function useGetSoftGreScopeVenueMap (refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>) {
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const { venuesMap, refetch, isUninitialized } = useGetSoftGreViewDataListQuery({
     payload: {
       page: 1,
@@ -33,7 +32,6 @@ export function useGetSoftGreScopeVenueMap (refetchFnRef?: React.MutableRefObjec
       fields: ['name', 'id', 'activations'],
       filters: {}
     } }, {
-    skip: !isSoftGreEnabled,
     selectFromResult: ({ data, isUninitialized }) => {
       const venuesMap = {} as Record<string, SoftGreNetworkTunnel[]>
       data?.data?.forEach(item => {
@@ -59,7 +57,6 @@ export function useGetSoftGreScopeVenueMap (refetchFnRef?: React.MutableRefObjec
 
 // eslint-disable-next-line max-len
 export function useGetSoftGreScopeNetworkMap (networkId?: string, refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>) {
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const { venuesMap, refetch, isUninitialized } = useGetSoftGreViewDataListQuery({
     payload: {
       page: 1,
@@ -67,7 +64,7 @@ export function useGetSoftGreScopeNetworkMap (networkId?: string, refetchFnRef?:
       fields: ['name', 'id', 'activations'],
       filters: {}
     } }, {
-    skip: !isSoftGreEnabled || !networkId,
+    skip: !networkId,
     selectFromResult: ({ data, isUninitialized }) => {
       const venuesMap = {} as Record<string, SoftGreNetworkTunnel[]>
       data?.data?.forEach(item => {
@@ -166,7 +163,6 @@ export function useGetIpsecScopeNetworkMap (networkId?: string, refetchFnRef?: R
 }
 
 export function useSoftGreTunnelActions () {
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const [ activateSoftGre ] = useActivateSoftGreMutation()
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
@@ -175,7 +171,7 @@ export function useSoftGreTunnelActions () {
 
   const activateSoftGreTunnel = async (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
-    if (isSoftGreEnabled && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+    if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
         formValues.softGre?.newProfileId) {
       return new Promise<void | boolean>((resolve, reject) => {
         activateSoftGre({
@@ -194,7 +190,7 @@ export function useSoftGreTunnelActions () {
 
   const dectivateSoftGreTunnel = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
-    if (isSoftGreEnabled && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
+    if (formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
       && formValues.softGre?.oldProfileId && !formValues.softGre?.newProfileId) {
       return new Promise<void | boolean>((resolve, reject) => {
         dectivateSoftGre({
@@ -213,7 +209,7 @@ export function useSoftGreTunnelActions () {
 
   const activateIpSecOverSoftGre = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
-    if (isSoftGreEnabled && isIpSecEnabled
+    if (isIpSecEnabled
       && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
       formValues.ipsec?.enableIpsec === true &&
       formValues.ipsec?.newProfileId &&
@@ -236,7 +232,7 @@ export function useSoftGreTunnelActions () {
 
   const deactivateIpSecOverSoftGre = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
-    if (isSoftGreEnabled && isIpSecEnabled
+    if (isIpSecEnabled
       && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
       && formValues.ipsec?.oldProfileId && !formValues.ipsec?.newProfileId) {
       return new Promise<void | boolean>((resolve, reject) => {

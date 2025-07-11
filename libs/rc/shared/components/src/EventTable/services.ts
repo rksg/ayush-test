@@ -7,11 +7,10 @@ import { useAdminLogsNoMetaQuery, useAdminLogsQuery, useEventsNoMetaQuery, useEv
 import {
   Event,
   CommonUrlsInfo,
-  usePollingTableQuery,
   AdminLog
 } from '@acx-ui/rc/utils'
-import { useUserProfileContext }                            from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter } from '@acx-ui/utils'
+import { useUserProfileContext }                                                  from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter, usePollingTableQuery } from '@acx-ui/utils'
 
 import { adminLogTypeMapping, eventTypeMapping } from './mapping'
 
@@ -68,7 +67,8 @@ const defaultPayload = {
     'action',
     'macOui',
     'lldpTlv',
-    'macAcl'
+    'macAcl',
+    'ethPort'
   ]
 }
 

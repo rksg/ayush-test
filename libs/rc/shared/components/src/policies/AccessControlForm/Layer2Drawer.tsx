@@ -28,7 +28,6 @@ import {
   PolicyOperation,
   PolicyType,
   sortProp,
-  TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
@@ -36,6 +35,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { TableResult }    from '@acx-ui/utils'
 
 
 import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'

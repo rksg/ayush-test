@@ -8,7 +8,6 @@ import { Features, useIsSplitOn }                                   from '@acx-u
 import { CheckMark }                                                from '@acx-ui/icons'
 import { CertificateToolTip, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
   useNetworkListQuery,
@@ -19,7 +18,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   getPolicyRoutePath,
@@ -31,9 +29,11 @@ import {
   CertificateStatusType,
   getPolicyAllowedOperation,
   ConfigTemplateType,
-  usePoliciesBreadcrumb
+  usePoliciesBreadcrumb,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 export default function AAATable () {
   const { $t } = useIntl()

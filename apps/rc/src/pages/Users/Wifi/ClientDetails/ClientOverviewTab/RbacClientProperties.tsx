@@ -4,7 +4,7 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }           from '@acx-ui/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions, cssStr }   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
 import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui/rc/components'
@@ -264,7 +264,6 @@ function ClientDetails ({ client }: { client: ClientInfoExtended }) {
 }
 
 function Connection ({ client }: { client: ClientInfoExtended }) {
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const {
@@ -363,14 +362,14 @@ function Connection ({ client }: { client: ClientInfoExtended }) {
         </Tooltip>}
         children={apInformation?.bssid || noDataDisplay}
       />
-      { wifiEDAClientRevokeToggle && <Descriptions.Item
+      <Descriptions.Item
         label={<Tooltip
           placement='bottom'
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
         children={networkDisplayTransformer(intl, networkInformation?.type)}
-      /> }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
         children={networkInformation?.authenticationMethod || noDataDisplay}
@@ -457,7 +456,7 @@ function OperationalData ({ client }: { client: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'RSSI' })}
         </Tooltip>}
         children={<Space style={{
-          color: getRssiStatus(intl, signalStatus?.rssi)?.color
+          color: cssStr(getRssiStatus(intl, signalStatus?.rssi)?.color)
         }}>
           <Tooltip
             placement='bottom'

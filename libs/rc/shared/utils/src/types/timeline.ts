@@ -27,6 +27,7 @@ export const eventTypeMapping = {
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
   EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  IOT: defineMessage({ defaultMessage: 'IoT Controller' }),
   PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
@@ -36,6 +37,7 @@ export const eventProductMapping = {
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  IOT: defineMessage({ defaultMessage: 'IoT Controller' }),
   POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
 }
 
@@ -123,6 +125,7 @@ export interface EventBase {
   portList?: string
   indexName?: string
   authenticationType?: string
+  ethPort?: string
 }
 
 export interface EventMeta {
@@ -145,6 +148,7 @@ export interface EventMeta {
   venueName: string
   tableKey?: string
   edgeName: string,
+  iotControllerName: string,
   remoteedgeName: string,
   remoteApName: string
   unitName: string,
@@ -189,3 +193,5 @@ export type AdminLogBase = EventBase
 export type AdminLogMeta = EventMeta
 
 export type AdminLog = AdminLogBase & AdminLogMeta
+
+

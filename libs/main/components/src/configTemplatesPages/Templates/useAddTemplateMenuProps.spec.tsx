@@ -2,10 +2,13 @@ import { ItemType }           from '@acx-ui/components'
 import { ConfigTemplateType } from '@acx-ui/rc/utils'
 import { renderHook }         from '@acx-ui/test-utils'
 
-import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem, useIdentityGroupMenuItems } from './useAddTemplateMenuProps'
+import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem, useIdentityGroupMenuItems, consolidateServicePolicyMenuItems, ServicePolicyMenuItemType } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
+  ConfigTemplateLink: () => <div>ConfigTemplateLink</div>,
+  PolicyConfigTemplateLink: () => <div>PolicyConfigTemplateLink</div>,
+  ServiceConfigTemplateLink: () => <div>ServiceConfigTemplateLink</div>,
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 
@@ -266,6 +269,48 @@ describe('useAddTemplateMenuProps', () => {
       const { result } = renderHook(() => useIdentityGroupMenuItems())
       const key = (result.current as { key: string })?.key
       expect(key).toBe('add-identity-group')
+    })
+  })
+
+  describe('consolidateServicePolicyMenuItems', () => {
+    it('should merge and sort children from both menus', () => {
+      const mockedMap = {
+        [ConfigTemplateType.DPSK]: true,
+        [ConfigTemplateType.WIFI_CALLING]: true,
+        [ConfigTemplateType.ACCESS_CONTROL]: true,
+        [ConfigTemplateType.RADIUS]: true
+      }
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue(mockedMap)
+      const { result: serviceMenuItems } = renderHook(() => useServiceMenuItems())
+      const { result: policyMenuItems } = renderHook(() => usePolicyMenuItems())
+      // eslint-disable-next-line max-len
+      const consolidatedMenuItems = consolidateServicePolicyMenuItems(serviceMenuItems.current, policyMenuItems.current)
+      expect(consolidatedMenuItems).toBeDefined()
+
+      // eslint-disable-next-line max-len
+      const children = (consolidatedMenuItems as unknown as { children: ServicePolicyMenuItemType[] })?.children
+
+      expect(children).toHaveLength(4)
+
+      expect(children[0].labelText).toBe('Access Control')
+      expect(children[1].labelText).toBe('DPSK')
+      expect(children[2].labelText).toBe('RADIUS Server')
+      expect(children[3].labelText).toBe('Wi-Fi Calling')
+    })
+
+    it('should return null if no valid children', () => {
+      const mockedMap = {
+        [ConfigTemplateType.DPSK]: false,
+        [ConfigTemplateType.WIFI_CALLING]: false,
+        [ConfigTemplateType.ACCESS_CONTROL]: false,
+        [ConfigTemplateType.RADIUS]: false
+      }
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue(mockedMap)
+      const { result: serviceMenuItems } = renderHook(() => useServiceMenuItems())
+      const { result: policyMenuItems } = renderHook(() => usePolicyMenuItems())
+      // eslint-disable-next-line max-len
+      const consolidatedMenuItems = consolidateServicePolicyMenuItems(serviceMenuItems.current, policyMenuItems.current)
+      expect(consolidatedMenuItems).toBeNull()
     })
   })
 })

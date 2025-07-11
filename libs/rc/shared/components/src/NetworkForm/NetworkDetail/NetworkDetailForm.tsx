@@ -18,12 +18,12 @@ import {
   networkTypes,
   validateByteLength,
   ConfigTemplateType,
-  TableResult,
   useConfigTemplateLazyQueryFnSwitcher,
   Network,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { TableResult } from '@acx-ui/utils'
 
 import { ProtectedEnforceTemplateToggle }            from '../../configTemplates'
 import { networkTypesDescription }                   from '../contentsMap'
