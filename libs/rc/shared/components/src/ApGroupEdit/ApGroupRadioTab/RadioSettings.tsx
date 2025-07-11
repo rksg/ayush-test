@@ -770,7 +770,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           )
         }
       } : {}),
-      ...(defaultRadioSettings?.radioParamsDual5G?.enabled
+      ...(!isDual5gModeRef.current && defaultRadioSettings?.radioParamsDual5G?.enabled
         ? {
           radioParamsDual5G: {
             enabled: false,
