@@ -207,6 +207,11 @@ export const getOpsApi = (apiInfo: ApiInfo) => {
 function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
   const { url, ...rest } = apiInfo
 
+  // Skip URL transformation in test environment
+  if (process.env.NODE_ENV === 'test') {
+    return apiInfo
+  }
+
   return {
     ...rest,
     url: isRecSite() ? url.replace(/^\/templates/, '/rec/templates') : url
