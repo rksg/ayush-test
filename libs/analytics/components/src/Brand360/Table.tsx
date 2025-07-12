@@ -182,7 +182,8 @@ export function BrandTable ({
         fixed: 'left',
         searchable: true,
         sorter: { compare: sortProp('property', defaultSort) },
-        render: (_, row, __, highlightFn) => <span>{highlightFn(row?.property)}</span>
+        render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
+          <span>{highlightFn(row?.property)}</span>
       },
       {
         title: propertyCodeLabel,
@@ -191,27 +192,27 @@ export function BrandTable ({
         fixed: 'left',
         searchable: true,
         sorter: { compare: sortProp('propertyCode', defaultSort) },
-        render: (_, row, __, highlightFn) => <span>{highlightFn(row?.propertyCode)}</span>
-      },
-      {
+        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
+          <span>{highlightFn(row?.propertyCode)}</span>
+      }, {
         title: lspLabel,
         dataIndex: 'lsp',
         key: 'lsp',
         fixed: 'left',
         searchable: true,
         sorter: { compare: sortProp('lsp', defaultSort) },
-        render: (_, row, __, highlightFn) => <span>{highlightFn(row?.lsp)}</span>
+        render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
+          <span>{highlightFn(row?.lsp)}</span>
       }
     ]
   // Remove lsp column in case of LSP account
-  const finalPropertyCols = isLSP
-    ? propertyCols.filter(col => col.dataIndex !== 'lsp')
-    : propertyCols
-
+  if(isLSP){
+    propertyCols.splice(-1)
+  }
 
   return <Table<Property | PropertyCode | Lsp>
     columns={[
-      ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols
+      ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
     ] as unknown as TableProps<Property | PropertyCode | Lsp>['columns']}
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
