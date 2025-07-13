@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
 import { DirectoryServerUrls, PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, dataApiURL }                                                                                     from '@acx-ui/store'
-import { mockServer, render, waitFor, screen, waitForElementToBeRemoved, mockGraphqlQuery }                         from '@acx-ui/test-utils'
+import { Provider }                                                                                                 from '@acx-ui/store'
+import { mockServer, render, waitFor, screen, waitForElementToBeRemoved }                                           from '@acx-ui/test-utils'
 
 import { mockExternalIdentityList, mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
@@ -43,7 +43,8 @@ const route = {
 
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
-  Traffic: () => <div data-testid='Traffic' />
+  Traffic: () => <div data-testid='Traffic' />,
+  TopApplications: () => <div data-testid='TopApplications' />
 }))
 
 describe('PersonaOverview', () => {
@@ -114,7 +115,7 @@ describe('PersonaOverview', () => {
     expect(screen.getByText('Associated Devices')).toBeInTheDocument()
   })
 
-  it('should not render traffic widget when isIdentityAnalyticsEnabled is false', () => {
+  it('should not render widgets when isIdentityAnalyticsEnabled is false', () => {
     render(
       <Provider>
         <PersonaOverview
@@ -127,9 +128,10 @@ describe('PersonaOverview', () => {
     )
 
     expect(screen.queryByTestId('Traffic')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('TopApplications')).not.toBeInTheDocument()
   })
 
-  it('should render traffic widget when isIdentityAnalyticsEnabled is true', async () => {
+  it('should render widgets when isIdentityAnalyticsEnabled is true', async () => {
     render(
       <Provider>
         <PersonaOverview
@@ -142,5 +144,6 @@ describe('PersonaOverview', () => {
     )
 
     expect(await screen.findByTestId('Traffic')).toBeVisible()
+    expect(await screen.findByTestId('TopApplications')).toBeVisible()
   })
 })
