@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
 import { DirectoryServerUrls, PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                 from '@acx-ui/store'
-import { mockServer, render, waitFor, screen }                                                                      from '@acx-ui/test-utils'
+import { Provider, dataApiURL }                                                                                     from '@acx-ui/store'
+import { mockServer, render, waitFor, screen, waitForElementToBeRemoved, mockGraphqlQuery }                         from '@acx-ui/test-utils'
 
 import { mockExternalIdentityList, mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
@@ -107,7 +107,62 @@ describe('PersonaOverview', () => {
 
     await waitFor(() => expect(getUnitFn).toBeCalled())
     await waitFor(() => expect(searchClientQueryFn).toBeCalled())
-
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('Associated Devices')).toBeInTheDocument()
+  })
+
+  it('should render correctly when identity analytics is enabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'Traffic', {
+      data: {
+        network: {
+          hierarchyNode: {
+            userRxTraffic: 1000,
+            userTxTraffic: 2000
+          }
+        }
+      }
+    })
+
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: {
+        network: {
+          hierarchyNode: {
+            topNApplicationByTraffic: [
+              { name: 'YouTube', applicationTraffic: 500 },
+              { name: 'Netflix', applicationTraffic: 300 },
+              { name: 'Google', applicationTraffic: 200 }
+            ]
+          }
+        }
+      }
+    })
+    render(
+      <Provider>
+        <PersonaOverview
+          personaData={mockPersona}
+          personaGroupData={mockPersonaGroup}
+          isIdentityAnalyticsEnabled={true}
+        />
+      </Provider>,
+      {
+        route: {
+          params: {
+            tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+            personaGroupId: mockPersonaGroup.id,
+            personaId: mockPersona.id
+          },
+          // eslint-disable-next-line max-len
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+        }
+      }
+    )
+
+    expect(screen.getByRole('link', { name: mockPersonaGroup.name })).toBeInTheDocument()
+
+    await waitFor(() => expect(getUnitFn).toBeCalled())
+    await waitFor(() => expect(searchClientQueryFn).toBeCalled())
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getByText('Traffic')).toBeInTheDocument()
+    expect(screen.getByText('Top 10 Applications By Traffic Volume')).toBeInTheDocument()
   })
 })
