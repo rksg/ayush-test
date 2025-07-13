@@ -35,11 +35,11 @@ export const Traffic = () => {
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Traffic' })}>
-        {data.every((item) => item.value === 0) ? (
-          <NoData />
-        ) : (
-          <AutoSizer>
-            {({ width, height }) => (
+        <AutoSizer>
+          {({ width, height }) => (
+            data.every((item) => item.value === 0) ? (
+              <NoData />
+            ) : (
               <DonutChart
                 style={{ width, height }}
                 title={$t({ defaultMessage: 'User Traffic' })}
@@ -48,9 +48,9 @@ export const Traffic = () => {
                 dataFormatter={(value) => formats.bytesFormat(value as number)}
                 labelFormat='name-bold-value'
               />
-            )}
-          </AutoSizer>
-        )}
+            )
+          )}
+        </AutoSizer>
       </Card>
     </Loader>
   )
