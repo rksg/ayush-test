@@ -17,7 +17,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { switchVenueV1002 }    from '../../../__tests__/fixtures'
+import { switchFirmwareList, switchVenueV1002 } from '../../../__tests__/fixtures'
 import {
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
@@ -50,7 +50,7 @@ describe('UpdateNowStep', () => {
       ),
       rest.post(
         FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json(switchFirmwareList))
       ))
   })
 
@@ -116,6 +116,38 @@ describe('UpdateNowStep', () => {
     await userEvent.click(icx7xradio)
     expect(icx7xradio).toBeEnabled()
 
+  })
+  it('render UpdateNowStep - 7150-C08P note visible', async () => {
+    render(
+      <Provider>
+        <Form>
+          <UpdateNowStep
+            setShowSubTitle={jest.fn()}
+            visible={true}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
+            hasVenue={true}
+            upgradeVenueList={switchVenueV1002 as FirmwareSwitchVenueV1002[]}
+            upgradeSwitchList={[]}
+          />
+        </Form>
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const updateNowStepForm = screen.getByTestId('update-now-step')
+    expect(within(updateNowStepForm)
+      .getByText(/Firmware available for ICX 7150 Series/i)).toBeInTheDocument()
+
+    const icx71radio = screen.getByRole('radio', {
+      name: /10.0.10g_rc2/i
+    })
+    await userEvent.click(icx71radio)
+    expect(icx71radio).toBeEnabled()
+
+    expect(within(updateNowStepForm)
+      // eslint-disable-next-line max-len
+      .getByText(/The following switches will not be upgraded because the ICX7150-C08P\/PT models do not support FastIron versions 10.0.x./i)).toBeInTheDocument()
   })
 
 })

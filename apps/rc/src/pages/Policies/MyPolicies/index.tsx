@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard }                                                       from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                                         from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useAclTotalCount, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -30,8 +30,7 @@ import {
   useGetDirectoryServerViewDataListQuery,
   useSwitchPortProfilesCountQuery,
   useGetIpsecViewDataListQuery,
-  useGetSamlIdpProfileViewDataListQuery,
-  useAccessControlsCountQuery
+  useGetSamlIdpProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -165,8 +164,6 @@ function useCardData (): PolicyCardData[] {
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
-  // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -198,14 +195,7 @@ function useCardData (): PolicyCardData[] {
     {
       type: PolicyType.ACCESS_CONTROL,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
-      totalCount: Number(useGetEnhancedAccessControlProfileListQuery({
-        params, payload: {
-          ...defaultPayload,
-          noDetails: true
-        }, enableRbac
-      }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
-        params }, { skip: !isSwitchMacAclEnabled }).data ?? 0),
-      // eslint-disable-next-line max-len
+      totalCount: useAclTotalCount(!isSwitchMacAclEnabled).data?.totalCount,
       listViewPath: useTenantLink('/policies/accessControl/wifi'),
       disabled: !isSwitchMacAclEnabled
     },
@@ -286,7 +276,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: defaultPayload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+        params, payload: defaultPayload, enableRbac: isUseRbacApi
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))

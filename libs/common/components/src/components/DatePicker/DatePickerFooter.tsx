@@ -44,6 +44,15 @@ const defaultselectionForDisabledDates = {
   disabledHours: () => [],
   disabledMinutes: () => []
 }
+
+export const getDisabledMinutes = (selectedHour: number, startDate: Moment | null) => {
+  if (!startDate) return []
+  if (selectedHour === startDate.hour()) {
+    return timepickerRange(0, startDate.minute())
+  }
+  return []
+}
+
 export const DatePickerFooter = ({
   showTimePicker,
   range,
@@ -84,7 +93,7 @@ export const DatePickerFooter = ({
     if (range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day')) {
       return {
         disabledHours: () => timepickerRange(0, range.startDate?.hour()),
-        disabledMinutes: () => timepickerRange(0, range.startDate?.minute())
+        disabledMinutes: (selectedHour) => getDisabledMinutes(selectedHour, range.startDate)
       }
     }
     return defaultselectionForDisabledDates

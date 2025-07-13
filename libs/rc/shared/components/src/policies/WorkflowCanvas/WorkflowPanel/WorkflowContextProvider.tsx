@@ -1,9 +1,8 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
 import {
-  NodeProps,
-  useEdges,
-  useNodes
+  Node,
+  NodeProps
 } from 'reactflow'
 
 import { ActionType } from '@acx-ui/rc/utils'
@@ -30,6 +29,7 @@ export interface WorkflowContextProps {
   actionDrawerState: ActionDrawerState,
 
   nodeState: {
+      setNodeMap: (nodeMap: Map<string, Node>) => void,
       interactedNode?: NodeProps,
       setInteractedNode: (node?: NodeProps) => void,
       existingDependencies: Set<ActionType>
@@ -49,23 +49,19 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
   const [stepDrawerVisible, setStepDrawerVisible] = useState(false)
   const [stepDrawerEditMode, setStepDrawerEditMode] = useState(false)
   const [stepDrawerActionType, setStepDrawerActionType] = useState<ActionType | undefined>()
-
-
-  const nodes = useNodes()
-  const edges = useEdges()
+  const [nodeMap, setNodeMap] = useState<Map<string, Node>>(new Map())
 
   useEffect(() => {
     const findDependencies = (startId: string, dependencies: Set<ActionType>): Set<ActionType> => {
-
-      const node = nodes.find(node => node.id === startId)
+      const node = nodeMap.get(startId)
       if (!node) return dependencies
 
       dependencies.add(node.type as ActionType)
 
-      const priorEdge = edges.find(edge => edge.target === node.id)
-      if (!priorEdge) return dependencies
+      const priorStepId = node.data.priorStepId
+      if (!priorStepId) return dependencies
 
-      return findDependencies(priorEdge.source, dependencies)
+      return findDependencies(priorStepId, dependencies)
     }
 
     if (interactedNode !== undefined) {
@@ -79,6 +75,10 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
     value={{
       workflowId: props.workflowId,
       nodeState: {
+        // NOTE: set node map is only being updated when the steps change, so the position and
+        // selection data won't be up to date. But that's ok given the current usage. if we update
+        // the map more frequently it is likely to cause infinite loops on dragging nodes.
+        setNodeMap: setNodeMap,
         interactedNode: interactedNode,
         setInteractedNode: setInteractedNode,
         existingDependencies: existingDependencies

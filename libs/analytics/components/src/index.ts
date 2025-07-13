@@ -82,3 +82,5 @@ export * from './Developers/Webhooks'
 
 export { IntentAIForm, IntentAIDetails, IntentAIWidget } from './IntentAI'
 export const AppInsights = React.lazy(() => import('./AppInsights'))
+
+export { Traffic } from './IdentityOverview/Traffic'

@@ -1,8 +1,21 @@
+/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                     from '@acx-ui/store'
-import { mockRestApiQuery, render, screen, waitForElementToBeRemoved }  from '@acx-ui/test-utils'
+import {
+  ClientUrlsInfo,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
+import {
+  mockRestApiQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved
+}  from '@acx-ui/test-utils'
 
 import {
   apListData,
@@ -28,16 +41,19 @@ const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 describe('Search Results', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', venueListData)
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', networkListData)
-    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
+    mockRestApiQuery(CommonRbacUrlsInfo.getWifiNetworksList.url, 'post', networkListData)
+    mockRestApiQuery(CommonRbacUrlsInfo.getApsList.url, 'post', apListData)
+    // for get the switch name from AP List data
+    mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventListData)
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
+    mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchList.url, 'post', switchListData)
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', switchListData)
-    mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(ClientUrlsInfo.getClients.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(SwitchUrlsInfo.getSwitchPortlist.url, 'post', { data: [], totalCount: 0 })
-    mockRestApiQuery(ClientUrlsInfo.getClientMeta.url, 'post', {})
     mockRestApiQuery(SwitchUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
-    mockRestApiQuery(WifiUrlsInfo.getWifiCapabilities.url, 'get', { data: [], totalCount: 0 })
+    mockRestApiQuery(WifiRbacUrlsInfo.getApGroupsList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(WifiRbacUrlsInfo.getWifiCapabilities.url, 'get', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getHistoricalClientList.url, 'post',
       { data: [], totalCount: 0 })
   })
@@ -67,14 +83,14 @@ describe('Search Results', () => {
       data: [],
       totalCount: 0
     })
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+    mockRestApiQuery(CommonRbacUrlsInfo.getWifiNetworksList.url, 'post', {
       data: [],
       totalCount: 0
     })
-    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(CommonRbacUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', { data: [], totalCount: 0 })
-    mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(SwitchRbacUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
     render(<SearchResults />, {
       wrapper: Provider,
       route: {

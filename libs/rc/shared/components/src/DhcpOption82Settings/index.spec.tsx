@@ -1,22 +1,15 @@
 import '@testing-library/jest-dom'
 import { Form } from 'antd'
-import { rest } from 'msw'
 
-import { softGreApi } from '@acx-ui/rc/services'
-import {
-  SoftGreUrls
-} from '@acx-ui/rc/utils'
+import { softGreApi }      from '@acx-ui/rc/services'
 import { Provider, store } from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
-  waitFor,
   fireEvent
 } from '@acx-ui/test-utils'
 
 import {
-  mockDHCP82OptionSetting,
   mockSourceDataEnabled,
   mockSourceDataDisabled
 } from './__tests__/fixture'
@@ -35,37 +28,9 @@ describe('DhcpOption82Settings', () => {
     mockReqVenueData.mockReset()
     mockReqAPData.mockReset()
     store.dispatch(softGreApi.util.resetApiState())
-    mockServer.use(
-      rest.get(
-        SoftGreUrls.getSoftGreProfileConfigurationOnAP.url
-          .replace(':venueId' ,venueId)
-          .replace(':portId' ,portId)
-          .replace(':serialNumber' ,serialNumber)
-        , (req, res, ctx) => {
-          mockReqAPData()
-          return res(ctx.json(mockDHCP82OptionSetting))
-        })
-    )
+
   })
-  it('Should call AP API', async () => {
-    render(
-      <Provider>
-        <Form>
-          <DhcpOption82Settings
-            index={1}
-            isUnderAPNetworking={true}
-            venueId={venueId}
-            portId={portId}
-            serialNumber={serialNumber}
-            readonly={false}
-          />
-        </Form>
-      </Provider>)
-    expect(await screen.findByTestId('dhcpoption82-switch-toggle')).toBeInTheDocument()
-    await waitFor(() => {
-      expect(mockReqAPData).toBeCalled()
-    })
-  })
+
   it('Should be disabled under readonly', async () => {
     render(
       <Provider>

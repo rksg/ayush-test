@@ -1,10 +1,16 @@
 import { rest } from 'msw'
 
-import { apApi, networkApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
-import { AnalyticsFilter }                                from '@acx-ui/utils'
+import { apApi, networkApi } from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import {
   apGroupMembers,
@@ -40,10 +46,6 @@ describe('ApGroupDetails', () => {
         (_, res, ctx) => res(ctx.json(oneApGroupList))
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(apGroupMembers))
-      ),
-      rest.post(
         CommonUrlsInfo.getApGroupNetworkList.url,
         (_, res, ctx) => res(ctx.json(apGroupNetworkLinks))
       ),
@@ -65,22 +67,31 @@ describe('ApGroupDetails', () => {
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepList.response))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepList.response))
-      ),
-      rest.get(
-        WifiUrlsInfo.getWifiCapabilities.url,
-        (_, res, ctx) => res(ctx.json([]))
-      ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (req, res, ctx) => res(ctx.json(vlanPoolProfilesData))
       ),
       rest.get(
-        WifiUrlsInfo.getWifiCapabilities.url,
-        (req, res, ctx) => res(ctx.json({}))
+        WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepList.response))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(apGroupMembers))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json(oneApGroupList))
       )
+
     )
   })
 
