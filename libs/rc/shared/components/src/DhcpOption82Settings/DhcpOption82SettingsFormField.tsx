@@ -12,6 +12,7 @@ import { useIntl }  from 'react-intl'
 
 import { DraggableTagField, Tooltip, cssStr }    from '@acx-ui/components'
 import type { DraggableTag }                     from '@acx-ui/components'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
@@ -114,6 +115,8 @@ export const DhcpOption82SettingsFormField = (props: {
   } = props
 
   const isUsedByLanPortDrawer = (context !== undefined && context === 'lanport')
+
+  const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
 
   const {
     dhcpOption82SubOption1EnabledFieldName,
@@ -278,14 +281,14 @@ export const DhcpOption82SettingsFormField = (props: {
         }}>
           {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
         </div>
+        {isDhcpOption82Enabled &&
         <UI.FieldLabelFullWidth>
           <DraggableTagField
             name={`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`}
-            // eslint-disable-next-line max-len
             options={TagOptions}
             maxTags={8}
+            readonly={readonly}
             onChange={(val) => {
-              console.log('DraggableTagField onChange', val) // eslint-disable-line no-console
               form.setFieldValue(dhcpOption82SubOption1CustomizationFieldName, {
                 attributes: val.map((tag) => {
                   if(tag.isCustom) {
@@ -301,6 +304,7 @@ export const DhcpOption82SettingsFormField = (props: {
             }}
           />
         </UI.FieldLabelFullWidth>
+        }
       </>}
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
