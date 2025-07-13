@@ -21,11 +21,12 @@ type Props = Omit<DraggableTagSelectorProps, 'values' | 'status' | 'customTagRul
     maxLength?: number
     customRules?: Rule[]
   }
+  readonly?: boolean
 }
 
 const DEFAULT_MAX_LENGTH = 24
-
-export const DraggableTagField = ({ name, rules = [], customTags, onChange, ...rest }: Props) => {
+// eslint-disable-next-line max-len
+export const DraggableTagField = ({ name, rules = [], customTags, onChange, readonly = false, ...rest }: Props) => {
   const form = Form.useFormInstance()
   const maxLength = customTags?.maxLength ?? DEFAULT_MAX_LENGTH
   const customRules = customTags?.customRules ?? []
@@ -86,6 +87,7 @@ export const DraggableTagField = ({ name, rules = [], customTags, onChange, ...r
               }}
               status={status}
               customTagRules={customTagRules}
+              readonly={readonly}
             />
           )
         }}
