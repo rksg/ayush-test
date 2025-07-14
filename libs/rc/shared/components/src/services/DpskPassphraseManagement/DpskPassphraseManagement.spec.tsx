@@ -130,12 +130,8 @@ describe('DpskPassphraseManagement', () => {
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
         PersonaUrls.searchPersonaList.url.split('?')[0],
