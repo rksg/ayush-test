@@ -35,12 +35,10 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 jest.mock('./GuestsTab', () => ({
-  ...jest.requireActual('./GuestsTab'),
   GuestsTab: () => <div data-testid='GuestsTab' />
 }))
 
 jest.mock('./ClientTab', () => ({
-  ...jest.requireActual('./ClientTab'),
   ClientTab: () => <div data-testid='ClientTab' />
 }))
 
@@ -50,7 +48,6 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 
 jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
   NetworkFilter: () => <div data-testid='NetworkFilter' />
 }))
 
@@ -60,26 +57,17 @@ describe('WifiClientList', () => {
     store.dispatch(clientApi.util.resetApiState())
     mockedReqClientMeta.mockClear()
     mockServer.use(
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
+      rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
       ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => {
-          mockedReqClientMeta()
-          return res(ctx.json({ data: [] }))
-        }
-      ),
-      rest.post(ClientUrlsInfo.getClients.url, (req, res, ctx) =>
-        res(ctx.json(GuestClients))
+      rest.post(ClientUrlsInfo.getGuests.url,
+        (_, res, ctx) => res(ctx.json(GuestClients))
       )
     )
   })
   it('should render wifi client tab', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.CLIENTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    await waitFor(() => expect(mockedReqClientMeta).toHaveBeenCalled())
     expect(await screen.findByTestId('ClientTab')).toBeVisible()
     expect(await screen.findByRole('tab', {
       name: /clients list \(0\)/i
@@ -89,19 +77,16 @@ describe('WifiClientList', () => {
   it('should render guest tab', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.GUESTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    await waitFor(() => expect(mockedReqClientMeta).toHaveBeenCalled())
     expect(await screen.findByTestId('GuestsTab')).toBeVisible()
   })
   it('should render wifi reports tab', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.CLIENT_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    await waitFor(() => expect(mockedReqClientMeta).toHaveBeenCalled())
     expect(await screen.findByTestId(ReportType.CLIENT)).toBeVisible()
   })
   it('should handle tab click', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.GUESTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    await waitFor(() => expect(mockedReqClientMeta).toHaveBeenCalled())
     await userEvent.click(await screen.findByText('Wireless Clients Report'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/users/wifi/reports/clients', hash: '', search: ''
