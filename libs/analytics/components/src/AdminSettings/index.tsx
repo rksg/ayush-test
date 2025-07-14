@@ -14,17 +14,17 @@ export const AdminSettings = () => {
   const { $t } = useIntl()
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
   const settingsQuery = useGetTenantSettingsQuery()
-  const [ignoreTcmFailures, setIgnoreTcmFailures] = useState(false)
+  const [ignoreFailures, setIgnoreFailures] = useState(false)
 
   useEffect(() => {
     if (settingsQuery.data) {
       const currentValue = settingsQuery.data?.['fetaure-related-events-suppression'] ?? 'false'
-      setIgnoreTcmFailures(currentValue === 'true')
+      setIgnoreFailures(currentValue === 'true')
     }
   }, [settingsQuery.data])
 
   const handleCheckboxChange = (checked: boolean) => {
-    setIgnoreTcmFailures(checked)
+    setIgnoreFailures(checked)
     updateSettings({
       'fetaure-related-events-suppression': checked.toString()
     })
@@ -37,18 +37,18 @@ export const AdminSettings = () => {
           <Form.Item>
             <Checkbox
               onChange={(e) => handleCheckboxChange(e.target.checked)}
-              checked={ignoreTcmFailures}
-              value={ignoreTcmFailures}
+              checked={ignoreFailures}
+              value={ignoreFailures}
               disabled={!hasPermission({ permission: 'WRITE_TENANT_SETTINGS' })}
             >
-              {$t({ defaultMessage: 'Ignore TCM Connection Failures' })}
+              {$t({ defaultMessage: 'Ignore TCM, SmartRoam, ACL connection failures' })}
             </Checkbox>
           </Form.Item>
           <Typography.Paragraph className='indent greyText'>
             {$t({
               defaultMessage:
-                'When enabled, transient connection failures will not affect incidents, ' +
-                'health metrics, or appear in client troubleshooting views.'
+                'With the respective feature enabled - these failures will not affect ' +
+                'health metrics or appear in client troubleshooting views.'
             })}
           </Typography.Paragraph>
         </StepsForm.TextContent>

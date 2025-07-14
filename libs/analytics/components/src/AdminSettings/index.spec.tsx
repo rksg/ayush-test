@@ -46,16 +46,16 @@ describe('AdminSettings', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('should render the component with description andunchecked checkbox when settings data is not available', async () => {
+  it('should render the component with description and unchecked checkbox when settings data is not available', async () => {
     render(
       <Provider>
         <AdminSettings />
       </Provider>
     )
 
-    expect(screen.getByText('Ignore TCM Connection Failures')).toBeInTheDocument()
+    expect(screen.getByText('Ignore TCM, SmartRoam, ACL connection failures')).toBeInTheDocument()
     expect(screen.getByText(
-      /When enabled, transient connection failures will not affect incidents/
+      /With the respective feature enabled - these failures will not affect/
     )).toBeInTheDocument()
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).toBeInTheDocument()
