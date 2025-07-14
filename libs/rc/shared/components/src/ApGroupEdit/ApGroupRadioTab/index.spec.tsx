@@ -21,7 +21,9 @@ import {
   venuelist,
   venueRadioCustomization,
   mockApModelFamilies,
-  apGroupTripleBandMode
+  apGroupTripleBandMode,
+  apGroupClientAdmissionControl,
+  venueClientAdmissionControl
 } from '../__tests__/fixtures'
 import { ApGroupEditContext } from '../context'
 
@@ -149,6 +151,14 @@ describe('AP Group Edit Radio', () => {
       rest.get(
         WifiRbacUrlsInfo.getApGroupBandModeSettings.url,
         (_, res, ctx) => res(ctx.json(apGroupTripleBandMode))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings.url,
+        (_, res, ctx) => res(ctx.json({apGroupClientAdmissionControl}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(venueClientAdmissionControl))
       )
     )
   })
