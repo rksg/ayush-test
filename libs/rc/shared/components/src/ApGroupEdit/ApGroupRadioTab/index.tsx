@@ -31,7 +31,7 @@ export function ApGroupRadioTab () {
 
   const [
     isAllowEditRadio,
-    isAllowEditClientAdmissionControlSettings
+    isAllowEditClientAdmissionControl
   ] = [
     hasAllowedOperations([radioSettingsOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)])
@@ -50,7 +50,8 @@ export function ApGroupRadioTab () {
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
-  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control' })
+  const clientAdmissionControlSettingLink = $t({ defaultMessage: 'Client Admission Control' })
+  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control Settings' })
 
   const anchorItems = [{
     title: wifiSettingLink,
@@ -63,13 +64,13 @@ export function ApGroupRadioTab () {
       </>
     )
   },{
-    title: clientAdmissionControlSettingsTitle,
+    title: clientAdmissionControlSettingLink,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='client-admission-control'>
           { clientAdmissionControlSettingsTitle }
         </StepsFormLegacy.SectionTitle>
-        <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControlSettings} />
+        <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
       </>
     )
   }]

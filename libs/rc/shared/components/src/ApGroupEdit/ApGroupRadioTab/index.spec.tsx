@@ -198,6 +198,12 @@ describe('AP Group Edit Radio', () => {
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /5 GHz/ }))
+
+    console.log(screen.debug(undefined, 99999))
+
+    // const tabs = await screen.getAllByRole('tab');
+    // tabs.forEach(tab => console.log(tab));
+
     expect(await screen.findByText(/use inherited 5 ghz settings from venue/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /6 GHz/ }))
@@ -325,65 +331,3 @@ describe('AP Group Edit Radio', () => {
   })
 })
 
-// describe('AP Group Edit Radio - Client Admission Control', () => {
-//   it('should render the Client Admission Control section', async () => {
-//     render(
-//       <Provider>
-//         <ApGroupEditContext.Provider value={{
-//           ...defaultApGroupCxtdata,
-//           isEditMode: true
-//         }}>
-//           <ApGroupRadioTab />
-//         </ApGroupEditContext.Provider>
-//       </Provider>, {
-//         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
-//       }
-//     )
-//     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-//     expect(await screen.findByText(/Client Admission Control/i)).toBeInTheDocument()
-//   })
-
-//   it('should call updateClientAdmissionControl on save', async () => {
-//     const updateClientAdmissionControl = jest.fn()
-//     render(
-//       <Provider>
-//         <ApGroupEditContext.Provider value={{
-//           ...defaultApGroupCxtdata,
-//           isEditMode: true
-//         }}>
-//           <ApGroupRadioTab />
-//         </ApGroupEditContext.Provider>
-//       </Provider>, {
-//         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
-//       }
-//     )
-//     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-//     const saveButton = await screen.findByRole('button', { name: /save/i })
-//     userEvent.click(saveButton)
-//     await waitFor(() => {
-//       expect(updateClientAdmissionControl).toHaveBeenCalled()
-//     })
-//   })
-
-//   it('should call discardClientAdmissionControl on cancel', async () => {
-//     const discardClientAdmissionControl = jest.fn()
-//     render(
-//       <Provider>
-//         <ApGroupEditContext.Provider value={{
-//           ...defaultApGroupCxtdata,
-//           isEditMode: true
-//         }}>
-//           <ApGroupRadioTab />
-//         </ApGroupEditContext.Provider>
-//       </Provider>, {
-//         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
-//       }
-//     )
-//     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-//     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
-//     userEvent.click(cancelButton)
-//     await waitFor(() => {
-//       expect(discardClientAdmissionControl).toHaveBeenCalled()
-//     })
-//   })
-// })
