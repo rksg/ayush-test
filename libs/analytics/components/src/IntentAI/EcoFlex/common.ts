@@ -116,12 +116,17 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
   format: formatter('percentFormatRound'),
   deltaSign: '+',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
-    ({
-      value: current.powerSaving,
-      previous: previous.powerSaving,
-      isPill: true
-    }),
+  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) => {
+    const currentValue = current.powerSaving ?? 0
+    const previousValue = previous.powerSaving ?? 0
+    const difference = currentValue / previousValue * 100
+
+    return {
+      value: currentValue,
+      previous: previousValue,
+      isPill: difference < 1000 ? true : false
+    }
+  },
   valueFormatter: formatter('countFormat'),
   valueSuffixMessage: defineMessage({ defaultMessage: '/month' }),
   valueSuffixClass: 'ant-statistic-content-suffix-unit'
