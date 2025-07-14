@@ -94,7 +94,11 @@ describe('WifiConfigTab', () => {
       // rbac
       rest.get(
         WifiRbacUrlsInfo.getVenueApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps)))
+        (_, res, ctx) => res(ctx.json(venueCaps))),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      )
     )
 
     render(

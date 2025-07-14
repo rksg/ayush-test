@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import _, { isNil }                from 'lodash'
+import { omit, get, isNil }        from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { useStepFormContext }                from '@acx-ui/components'
@@ -60,7 +60,7 @@ interface LagSettingViewProps {
 }
 
 const LagSettingView = (props: LagSettingViewProps) => {
-  const { value, onChange } = props
+  const { value: lagSettings, onChange } = props
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
   const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
@@ -109,12 +109,12 @@ const LagSettingView = (props: LagSettingViewProps) => {
         }
       }
 
-      const isUnconfigPort = _.get(portSettings, serialNumber)
+      const isUnconfigPort = get(portSettings, serialNumber)
         ?.[member.portId]?.[0]?.portType === EdgePortTypeEnum.UNCONFIGURED
 
       if (!isUnconfigPort && portInterfaceName) {
         const data = {
-          ...(_.get(portSettings, [serialNumber, portInterfaceName, '0'])),
+          ...(get(portSettings, [serialNumber, portInterfaceName, '0'])),
           ...edgePhysicalPortInitialConfigs
         }
 
@@ -124,10 +124,18 @@ const LagSettingView = (props: LagSettingViewProps) => {
     })
   }
 
+  const deleteLagSubInterface = (serialNumber: string, lagId: string) => {
+    // should also delete the lag sub interface
+    const updatedLagSubInterfaces = omit(lagSubInterfaces?.[serialNumber], lagId)
+
+    // update Form.List need to use setFieldValue
+    form.setFieldValue(['lagSubInterfaces', serialNumber], updatedLagSubInterfaces)
+  }
+
   const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
         lags: [...(targetLagSettings?.lags ?? []), lagData]
@@ -139,9 +147,9 @@ const LagSettingView = (props: LagSettingViewProps) => {
   }
 
   const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
         lags: [...(targetLagSettings?.lags.filter(item => item.id !== lagData.id) ?? []), lagData]
@@ -152,15 +160,18 @@ const LagSettingView = (props: LagSettingViewProps) => {
     cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
-  const handleDelete = async (serialNumber: string, id: string) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+  const handleDelete = async (serialNumber: string, lagId: string) => {
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
+
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
-        lags: targetLagSettings?.lags.filter(item => item.id !== Number(id))
+        lags: targetLagSettings?.lags.filter(item => item.id !== Number(lagId))
       }
     ])
+
+    deleteLagSubInterface(serialNumber, lagId)
   }
 
   return (
@@ -168,7 +179,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
       nodeList={clusterInfo?.edgeList}
       content={
         (serialNumber) => {
-          const lagList = value?.find(item => item.serialNumber === serialNumber)?.lags
+          const lagList = lagSettings?.find(item => item.serialNumber === serialNumber)?.lags
           const portList = portSettings?.[serialNumber]
             ? Object.values(portSettings?.[serialNumber]).flat()
             : []
