@@ -33,9 +33,8 @@ export function AAAServers (props: {
   const { $t } = useIntl()
   const { setReadyToScroll } = useContext(AnchorContext)
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
     return $t(PanelHeader[type] , { count })
   }
@@ -56,7 +55,7 @@ export function AAAServers (props: {
   const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>({
     useQueryFn: useGetAaaSettingQuery,
     useTemplateQueryFn: useGetVenueTemplateSwitchAaaSettingQuery,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const radiusTableQuery = useTableQuery({

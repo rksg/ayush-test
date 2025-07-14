@@ -21,7 +21,6 @@ import {
   useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
 import {
-  useGetVenueSettingsQuery,
   useGetApCompatibilitiesVenueQuery,
   useGetVenueMeshQuery,
   useGetVenueApCompatibilitiesQuery
@@ -36,22 +35,10 @@ import { EmbeddedReport, ReportType }            from '@acx-ui/reports/component
 import { CompatibilityCheck }      from './CompatibilityCheck'
 import { IconThirdTab, AlertNote } from './styledComponents'
 import { RbacVenueMeshApsTable }   from './VenueMeshApsTable/RbacVenueMeshApsTable'
-import { VenueMeshApsTable }       from './VenueMeshApsTable/VenueMeshApsTable'
 
 const useIsMeshEnabled = (venueId: string | undefined) => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
-  const { data: venueWifiSetting } = useGetVenueSettingsQuery(
-    { params: { venueId } },
-    { skip: isWifiRbacEnabled })
-
-  const { data: venueMeshSettings } = useGetVenueMeshQuery({
-    params: { venueId } },
-  { skip: !isWifiRbacEnabled })
-
-  return (isWifiRbacEnabled
-    ? venueMeshSettings?.enabled
-    : venueWifiSetting?.mesh?.enabled) ?? false
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({ params: { venueId } })
+  return venueMeshSettings?.enabled
 }
 
 const useGetCompatibilitiesOptions = (venueId: string) => {
@@ -93,8 +80,6 @@ export function VenueWifi () {
   const navigate = useNavigate()
   const { venueId } = params
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
-
-  const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -200,7 +185,7 @@ export function VenueWifi () {
         tab={<Tooltip title={$t({ defaultMessage: 'Mesh List' })}>
           <MeshSolid />
         </Tooltip>}>
-        {isEnableWifiRbac ? <RbacVenueMeshApsTable /> : <VenueMeshApsTable />}
+        <RbacVenueMeshApsTable />
       </Tabs.TabPane>}
       <Tabs.TabPane key='overview'
         tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>

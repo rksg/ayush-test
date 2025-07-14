@@ -35,6 +35,14 @@ describe('NetworkingTab', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(

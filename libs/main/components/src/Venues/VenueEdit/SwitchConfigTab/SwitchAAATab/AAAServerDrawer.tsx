@@ -40,9 +40,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const params = useParams()
   const [form] = Form.useForm()
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
 
   const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAAAServerMutation,
