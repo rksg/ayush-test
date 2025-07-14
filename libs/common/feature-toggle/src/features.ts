@@ -59,6 +59,7 @@ export enum Features {
   EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
+  EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -161,12 +162,11 @@ export enum Features {
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
-  WIFI_EDA_WIFI7_MLO_TOGGLE = 'removable-ff',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
-  WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
+  WIFI_RBAC_API = 'removable-ff',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE = 'wifi-ipsec-psk-over-network',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
@@ -295,7 +295,8 @@ export enum Features {
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
   PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
-  ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names'
+  ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
+  IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

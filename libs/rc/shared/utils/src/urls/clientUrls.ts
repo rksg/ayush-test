@@ -1,27 +1,6 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
-  getClientList: {
-    method: 'post',
-    url: '/clients/clientlist',
-    oldUrl: '/api/viewmodel/:tenantId/client/clientlist',
-    newApi: true
-  },
-  getClientMeta: {
-    method: 'post',
-    url: '/clients/metas',
-    oldUrl: '/api/viewmodel/:tenantId/client/meta',
-    newApi: true
-  },
-  getClientDetails: {
-    // [New API] Path variable not match
-    // method: 'get',
-    // url: '/clients/:clientId/query',
-    // oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
-    // newApi: true
-    method: 'get',
-    url: '/api/viewmodel/:tenantId/client/:clientId'
-  },
   getClients: {
     method: 'post',
     url: '/venues/aps/clients/query',
