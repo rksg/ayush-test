@@ -43,7 +43,9 @@ export async function onSocketActivityChanged <Payload> (
 
       const hasPermittedVenue = getPermittedVenues()
 
-      if(userProfile.hasAllVenues || hasPermittedVenue){
+      const notCmnCfgUseCase = jsonData?.useCase !== 'CmnCfgCollectorSync'
+
+      if(userProfile.hasAllVenues || hasPermittedVenue || notCmnCfgUseCase){
         handler(jsonData)
       }
     } else {

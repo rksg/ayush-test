@@ -305,7 +305,7 @@ export function ClientsTable (props: {
       render: (_, row, __, highlightFn) => {
         const clientVlan = searchable ? highlightFn(row.clientVlan) : row.clientVlan
         return row.vlanName === 'DEFAULT-VLAN'
-          ? `${clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
+          ? <>{clientVlan} ({intl.$t({ defaultMessage: 'Default VLAN' })})</>
           : (clientVlan ?? '--')
       }
     },
