@@ -115,7 +115,8 @@ export function Brand360 () {
     ? transformVenuesData(
       venuesData as { data : BrandVenuesSLA[] },
       lookupAndMappingData,
-      isMDUEnabled
+      isMDUEnabled,
+      sliceType
     )
     : []
   /*

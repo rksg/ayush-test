@@ -58,7 +58,7 @@ export function BrandTable ({
               ? pColor : nColor
           }}
         >
-          {formatter('countFormat')(row?.p1Incidents)}
+          {!isNaN(row?.p1Incidents) ? formatter('countFormat')(row?.p1Incidents) : noDataDisplay}
         </span>
     },
     {
@@ -149,7 +149,11 @@ export function BrandTable ({
       title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
       key: 'deviceCount',
-      sorter: { compare: sortProp('deviceCount', customSort) }
+      sorter: { compare: sortProp('deviceCount', customSort) },
+      render: (_, row: Common) =>
+        <span>
+          {!isNaN(row?.deviceCount) ? formatter('countFormat')(row?.deviceCount) : noDataDisplay}
+        </span>
     }
   ]
   const lspCols: TableProps<Pick<Lsp,'lsp' | 'propertyCount'>>['columns'] = [

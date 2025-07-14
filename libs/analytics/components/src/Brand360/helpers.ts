@@ -236,7 +236,8 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
 export const transformVenuesData = (
   venuesData: { data: BrandVenuesSLA[] },
   lookupAndMappingData: TransformedMap,
-  isMDU: boolean
+  isMDU: boolean,
+  sliceType: string
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
@@ -249,6 +250,7 @@ export const transformVenuesData = (
   return Object.keys(lookupAndMappingData).reduce((newObj, tenantId, ind) => {
     const mappingData = lookupAndMappingData[tenantId]
     const tenantData = groupByTenantID[tenantId]
+    const isLSP = sliceType === 'lsp'
     mappingData.type === 'MSP_REC' && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
@@ -256,7 +258,8 @@ export const transformVenuesData = (
         ? mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
         : ['-'],
       p1Incidents: tenantData
-        ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
+        ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0)
+        : isLSP ? 0 : NaN,
       ssidCompliance: isMDU
         ? [0, 0]
         : sumData(
@@ -268,7 +271,7 @@ export const transformVenuesData = (
         : 0,
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
-        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
+        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : isLSP ? 0 : NaN,
       avgConnSuccess: sumData(
         tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
       ) as [number, number],
