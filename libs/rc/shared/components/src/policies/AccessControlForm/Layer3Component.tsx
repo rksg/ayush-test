@@ -624,7 +624,7 @@ export const Layer3Component = (props: Layer3ComponentProps) => {
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ([{ priority }]: Layer3Rule[]) => {
+    onClick: ([{ priority }]: Layer3Rule[], clearSelection: () => void) => {
       showActionModal({
         type: 'confirm',
         customContent: {
@@ -641,6 +641,7 @@ export const Layer3Component = (props: Layer3ComponentProps) => {
                 priority: ruleId + 1
               }
             }))
+          clearSelection()
         }
       })
     }
