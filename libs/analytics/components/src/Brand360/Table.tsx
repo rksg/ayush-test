@@ -184,8 +184,7 @@ export function BrandTable ({
         sorter: { compare: sortProp('property', defaultSort) },
         render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
           <span>{highlightFn(row?.property)}</span>
-      },
-      {
+      }, {
         title: propertyCodeLabel,
         dataIndex: 'propertyCode',
         key: 'propertyCode',
