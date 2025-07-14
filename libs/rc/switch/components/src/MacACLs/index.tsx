@@ -9,7 +9,6 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { useGetSwitchMacAclsQuery, useDeleteSwitchMacAclMutation } from '@acx-ui/rc/services'
 import {
   MacAcl,
@@ -30,7 +29,6 @@ export function MacACLs (props: {
   const { switchDetail } = props
   const deviceOnline = switchDetail?.deviceStatus === 'ONLINE'
   const [currentRow, setCurrentRow] = useState({} as MacAcl)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [macACLData, setMacACLData] = useState({} as unknown as MacAcl)
   const [editMode, setEditMode] = useState(false)
   const [macAClsDrawerVisible, setMacAClsDrawerVisible] = useState(false)
@@ -41,7 +39,7 @@ export function MacACLs (props: {
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchMacAclsQuery,
     defaultPayload: {},
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     apiParams: { venueId: (switchDetail?.venueId || '') as string },
     sorter: {
       sortField: 'name',

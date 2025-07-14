@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { Alert, Button, useLayoutContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useLazyGetScheduledFirmwareQuery,
+  useLazyGetAllApModelScheduledFirmwareListQuery,
   useLazyGetSwitchVenueVersionListV1001Query,
   useLazyGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -15,12 +15,10 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import {
   CloudVersion,
-  getUserSettingsByPath,
   hasRoles,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  useGetPlmMessageBannerQuery,
-  UserSettingsUIModel
+  useGetPlmMessageBannerQuery
 } from '@acx-ui/user'
 
 export function CloudMessageBanner () {
@@ -31,7 +29,6 @@ export function CloudMessageBanner () {
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
-  const dismissUpgradeSchedule = 'COMMON$dismiss-upgrade-schedule'
 
   const [version, setVersion] = useState({} as unknown as CloudVersion)
   const [newWifiScheduleExists, setNewWifiScheduleExists] = useState(false)
@@ -43,7 +40,7 @@ export function CloudMessageBanner () {
   const { data: userSettings } = useGetAllUserSettingsQuery({ params,
     enableRbac: isPtenantRbacApiEnabled })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
-  const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
+  const [getWifiScheduleVersion] = useLazyGetAllApModelScheduledFirmwareListQuery()
   const [getSwitchVenueVersionListV1001] = useLazyGetSwitchVenueVersionListV1001Query()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
 
@@ -64,21 +61,17 @@ export function CloudMessageBanner () {
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params }).unwrap()
+    return await getWifiScheduleVersion({}).unwrap()
       .then(cloudScheduleVersion => {
         if (!cloudScheduleVersion) return
 
         const updateVersion = {
           ...version,
-          scheduleVersionList: cloudScheduleVersion.scheduleVersionList
+          scheduleVersionList: cloudScheduleVersion.map(item => item.id)
         }
         setVersion(updateVersion)
         setNewWifiScheduleExists(
-          isThereNewSchedule(
-            updateVersion as CloudVersion,
-            userSettings as UserSettingsUIModel,
-            dismissUpgradeSchedule
-          )
+          cloudScheduleVersion && cloudScheduleVersion.length > 0
         )
       }).catch((error) => {
         console.log(error) // eslint-disable-line no-console
@@ -156,15 +149,4 @@ export function CloudMessageBanner () {
         </Button>
       </Space> : ''}
   /> : null
-}
-
-const isThereNewSchedule = (
-  version: CloudVersion,
-  userSettings: UserSettingsUIModel,
-  dismissUpgradeSchedule: string
-) => {
-  const dismissedUpgradeVersionInDB = getUserSettingsByPath(userSettings, dismissUpgradeSchedule)
-  return version?.scheduleVersionList
-  && version?.scheduleVersionList.length > 0
-  && !dismissedUpgradeVersionInDB
 }

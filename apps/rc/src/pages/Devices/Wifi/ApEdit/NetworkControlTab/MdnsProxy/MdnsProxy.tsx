@@ -13,9 +13,9 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ApMdnsProxySelector }    from '@acx-ui/rc/components'
-import { useGetApQuery }          from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { ApMdnsProxySelector }            from '@acx-ui/rc/components'
+import { useGetApMdnsProxySettingsQuery } from '@acx-ui/rc/services'
 import {
   useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation
@@ -78,7 +78,6 @@ export function MdnsProxy (props: ApEditItemProps) {
   const { isAllowEdit=true } = props
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -90,27 +89,26 @@ export function MdnsProxy (props: ApEditItemProps) {
   const { venueData } = useContext(ApDataContext)
 
   const {
-    data: apDetail,
+    data: mdnsProxyData,
     isFetching: isDataFetching,
     isLoading,
     isSuccess
-  } = useGetApQuery({
-    params: { ...params, venueId: venueData?.id },
-    enableRbac: isUseWifiRbacApi
+  } = useGetApMdnsProxySettingsQuery({
+    params: { ...params, venueId: venueData?.id }
   })
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
 
   useEffect(() => {
-    if (apDetail && !isLoading) {
+    if (mdnsProxyData && !isLoading) {
       setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Proxy')))])
     }
-  }, [apDetail, isLoading, setReadyToScroll])
+  }, [mdnsProxyData, isLoading, setReadyToScroll])
 
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()
-    const serviceId = apDetail!.multicastDnsProxyServiceProfileId
+    const serviceId = mdnsProxyData?.id
     const serviceEnabled = !!serviceId
 
     return (formData.serviceEnabled !== serviceEnabled) ||
@@ -142,18 +140,18 @@ export function MdnsProxy (props: ApEditItemProps) {
   }
 
   const onSave = async (formData: MdnsProxyFormFieldType) => {
-    const { multicastDnsProxyServiceProfileId: originalServiceId, venueId } = apDetail || {}
+    const { id: originalServiceId } = mdnsProxyData || {}
 
     try {
       if (formData.serviceEnabled && serialNumber) {
         await addMdnsProxyAps({
-          params: { ...params, serviceId: formData.serviceId, venueId: venueId },
+          params: { ...params, serviceId: formData.serviceId, venueId: venueData?.id },
           payload: [serialNumber],
           enableRbac
         }).unwrap()
       } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
-          params: { ...params, serviceId: originalServiceId, venueId: venueId },
+          params: { ...params, serviceId: originalServiceId, venueId: venueData?.id },
           payload: [serialNumber],
           enableRbac
         }).unwrap()
@@ -191,7 +189,7 @@ export function MdnsProxy (props: ApEditItemProps) {
               <GridCol col={{ span: 7 }} style={{ minWidth: 400 }}>
                 <MdnsProxyFormField
                   disabled={!isAllowEdit}
-                  serviceId={apDetail?.multicastDnsProxyServiceProfileId} />
+                  serviceId={mdnsProxyData?.id} />
               </GridCol>
             </GridRow>
           </StepsFormLegacy.StepForm>
