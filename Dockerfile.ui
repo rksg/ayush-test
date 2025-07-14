@@ -14,7 +14,7 @@ FROM ${GAR_CONTAINER_URL}node:${NODE_VERSION} as build-base
 
 WORKDIR /app
 
-RUN apk add curl
+RUN apk add --no-cache curl bash
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
