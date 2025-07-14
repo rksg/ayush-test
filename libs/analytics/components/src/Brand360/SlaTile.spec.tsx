@@ -81,7 +81,8 @@ describe('SlaTile', () => {
       const props = {
         chartKey,
         ...baseProps,
-        sliceType: 'lsp' as const
+        sliceType: 'lsp' as const,
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -107,7 +108,8 @@ describe('SlaTile', () => {
         chartKey,
         prevData: zeroPrevTimeseries,
         currData: zeroCurrTimeseries,
-        sliceType: 'property' as const
+        sliceType: 'property' as const,
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -128,7 +130,8 @@ describe('SlaTile', () => {
       const props = {
         chartKey,
         ...baseProps,
-        sliceType: 'property' as const
+        sliceType: 'property' as const,
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -160,7 +163,8 @@ describe('SlaTile', () => {
           'sla-brand-ssid-compliance': '100'
         } as Settings,
         lsp: 'LSP',
-        property: 'Property'
+        property: 'Property',
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -194,7 +198,8 @@ describe('SlaTile', () => {
           'sla-brand-ssid-compliance': '100'
         } as Settings,
         lsp: 'LSP',
-        property: 'Property'
+        property: 'Property',
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -229,7 +234,8 @@ describe('SlaTile', () => {
           'sla-brand-ssid-compliance': '100'
         } as Settings,
         lsp: 'LSP',
-        property: 'Property'
+        property: 'Property',
+        isMDU: false
       }
       return () => <SlaTile {...props} />
     })
@@ -252,7 +258,8 @@ describe('SlaTile', () => {
     const props = {
       chartKey: 'incident' as const,
       ...baseProps,
-      sliceType: 'property' as const
+      sliceType: 'property' as const,
+      isMDU: false
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('# of P1 Incidents'))
@@ -273,7 +280,8 @@ describe('SlaTile', () => {
       chartKey: 'incident' as const,
       ...baseProps,
       tableData: [],
-      sliceType: 'property' as const
+      sliceType: 'property' as const,
+      isMDU: false
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('# of P1 Incidents'))
@@ -292,7 +300,8 @@ describe('SlaTile', () => {
       chartKey: 'experience' as const,
       ...baseProps,
       tableData: [],
-      sliceType: 'property' as const
+      sliceType: 'property' as const,
+      isMDU: false
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
     expect(await screen.findByText('Guest Experience')).toBeInTheDocument()
