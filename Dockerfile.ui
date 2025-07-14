@@ -14,6 +14,7 @@ FROM ${GAR_CONTAINER_URL}node:${NODE_VERSION} as build-base
 
 WORKDIR /app
 
+# bash for unit test baseimage using.
 RUN apk add --no-cache curl bash
 
 ARG ENV_FILE
