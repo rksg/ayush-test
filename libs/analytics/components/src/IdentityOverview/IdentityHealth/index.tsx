@@ -92,7 +92,7 @@ export const IdentityHealth = () => {
               {
                 progressBarData.map((data) => {
                   return (
-                    <GridRow>
+                    <GridRow key={data.title}>
                       <GridCol col={{ span: 4 }}>
                         { data.title }
                       </GridCol>

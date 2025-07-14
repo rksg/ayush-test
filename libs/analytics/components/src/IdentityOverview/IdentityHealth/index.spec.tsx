@@ -11,39 +11,38 @@ jest.mock('./services', () => ({
 
 const mockIdentityHealthData = [
   {
-    timeToConnectSLA: [ 5, 10 ] as [number, number] | [null, null],
-    clientThroughputSLA: [ 5, 10 ] as [number, number] | [null, null]
+    timeToConnectSLA: [ 5, 10 ],
+    clientThroughputSLA: [ 5, 10 ]
   },
   {
-    timeToConnectSLA: [ 470, 479 ] as [number, number] | [null, null],
-    clientThroughputSLA: [ 239, 274 ] as [number, number] | [null, null]
+    timeToConnectSLA: [ 470, 479 ],
+    clientThroughputSLA: [ 239, 274 ]
   },
   {
-    timeToConnectSLA: [ 607, 621 ] as [number, number] | [null, null],
-    clientThroughputSLA: [ 135, 157 ] as [number, number] | [null, null]
+    timeToConnectSLA: [ 607, 621 ],
+    clientThroughputSLA: [ 135, 157 ]
   },
   {
-    timeToConnectSLA: [ 1, 10 ] as [number, number] | [null, null],
-    clientThroughputSLA: [ 1, 10 ] as [number, number] | [null, null]
+    timeToConnectSLA: [ 1, 10 ],
+    clientThroughputSLA: [ 1, 10 ]
   }
 ]
-
 const mockIdentityHealthNoData = [
   {
-    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
-    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+    timeToConnectSLA: [ null, null ],
+    clientThroughputSLA: [ null, null ]
   },
   {
-    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
-    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+    timeToConnectSLA: [ null, null ],
+    clientThroughputSLA: [ null, null ]
   },
   {
-    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
-    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+    timeToConnectSLA: [ null, null ],
+    clientThroughputSLA: [ null, null ]
   },
   {
-    timeToConnectSLA: [ null, null ] as [number, number] | [null, null],
-    clientThroughputSLA: [ null, null ] as [number, number] | [null, null]
+    timeToConnectSLA: [ null, null ],
+    clientThroughputSLA: [ null, null ]
   }
 ]
 
