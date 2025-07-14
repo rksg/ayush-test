@@ -276,6 +276,37 @@ describe('InterfaceSettings - LagForm', () => {
     expect(mockFormSetFieldValue).toBeCalledWith(port2FieldPath, [expectedPort2Result])
   })
 
+  it('should delete LAG subInterface when LAG is deleted', async () => {
+    const mockFormSetFieldValue = jest.fn()
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue = mockFormSetFieldValue
+      return form
+    })
+    render(
+      <ClusterConfigWizardContext.Provider value={{
+        clusterInfo: mockedClusterInfo,
+        isLoading: false,
+        isFetching: false
+      }}>
+        <StepsForm form={formRef.current} initialValues={mockClusterConfigWizardData}>
+          <StepsForm.StepForm>
+            <LagForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    expect(await screen.findByTestId('lag-table')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'TestDelete' }))
+    expect(mockFormSetFieldValue).toBeCalledTimes(1)
+
+    const lagSubInterfaceFieldPath = ['lagSubInterfaces', 'serialNumber-1']
+    expect(mockFormSetFieldValue).toBeCalledWith(lagSubInterfaceFieldPath, {})
+  })
+
   describe('when no node configured LAG', () => {
     const mockedOneNodeConfigured = cloneDeep(mockClusterConfigWizardData)
     mockedOneNodeConfigured.lagSettings = undefined

@@ -188,7 +188,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
 }))
 
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+jest.mocked(useIsSplitOn).mockImplementation(() => true)
 
 describe('Layout', () => {
   let params: { tenantId: string }
