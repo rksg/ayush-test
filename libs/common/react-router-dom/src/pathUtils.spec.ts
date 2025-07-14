@@ -1,4 +1,4 @@
-import { resolveTenantTypeFromPath } from "./pathUtils"
+import { resolveTenantTypeFromPath } from './pathUtils'
 
 describe('common path utils', () => {
   describe('resolveTenantTypeFromPath', () => {

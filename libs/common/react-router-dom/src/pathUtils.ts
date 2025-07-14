@@ -1,4 +1,4 @@
-import { TenantType }          from './useTenantLink'
+import { TenantType } from './useTenantLink'
 
 export function resolveTenantTypeFromPath (): TenantType {
   const [, marker] = window.location.pathname.split('/').filter(Boolean)
