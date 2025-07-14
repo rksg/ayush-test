@@ -16,10 +16,10 @@ import {
   EdgePinUrls,
   ServiceOperation,
   ServiceType,
-  SwitchUrlsInfo,
   VenueFixtures,
   EdgeCompatibilityFixtures,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import {
@@ -91,7 +91,7 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
         (_req, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.post(
-        SwitchUrlsInfo.getSwitchList.url,
+        SwitchRbacUrlsInfo.getSwitchList.url,
         (_req, res, ctx) => res(ctx.json(mockedSwitchOptions))
       ),
       rest.post(
