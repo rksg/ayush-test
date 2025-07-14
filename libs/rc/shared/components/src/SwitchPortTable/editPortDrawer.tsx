@@ -65,7 +65,8 @@ import {
   PoeSchedulerType,
   allMultipleEditableFields,
   PolicyType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                                        from '@acx-ui/react-router-dom'
 import { store }                                            from '@acx-ui/store'
@@ -237,6 +238,7 @@ export function EditPortDrawer ({
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
+  const isEditMultiPortNamesEnabled = useIsSplitOn(Features.ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -1444,17 +1446,35 @@ export function EditPortDrawer ({
             </Space>
             }
           />
-          { !isMultipleEdit &&
+          { !isMultipleEdit && !isEditMultiPortNamesEnabled &&
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
                 rules={[
-                  { max: 255 }
+                  { max: 255 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) }
                 ]}
                 initialValue=''
                 children={<Input />}
               />
           }
         </UI.HorizontalFormItemLayout>
+
+        { isEditMultiPortNamesEnabled && getFieldTemplate({
+          field: 'name',
+          content: <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='name'
+            label={$t(FIELD_LABEL.portName)}
+            initialValue=''
+            rules={[
+              { max: 255 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
+            ]}
+            children={shouldRenderMultipleText({
+              field: 'name', ...commonRequiredProps
+            }) ? <MultipleText /> : <Input disabled={getFieldDisabled('name')} />}
+          />
+        })}
 
         <UI.ContentDivider />
 

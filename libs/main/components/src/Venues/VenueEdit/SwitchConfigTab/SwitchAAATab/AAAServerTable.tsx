@@ -182,9 +182,8 @@ export const AAAServerTable = (props: {
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const { tenantId, venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
   const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteAAAServerMutation,
     useTemplateMutationFn: useDeleteVenueTemplateSwitchAAAServerMutation
