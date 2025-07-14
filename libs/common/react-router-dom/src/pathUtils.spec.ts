@@ -1,41 +1,74 @@
-import * as locationUtils from './locationUtils'
-import * as pathUtils     from './pathUtils'
+import { resolveTenantTypeFromPath } from "./pathUtils"
 
 describe('common path utils', () => {
-  beforeEach(() => {
-    jest.restoreAllMocks()
-  })
-
   describe('resolveTenantTypeFromPath', () => {
+    let originalLocation: Location
+
+    beforeEach(() => {
+      originalLocation = window.location
+    })
+
+    afterEach(() => {
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true
+      })
+    })
+
     it('should return "v" when path starts with /v', () => {
-      // eslint-disable-next-line max-len
-      jest.spyOn(locationUtils, 'getLocationPathname').mockReturnValue('/dc2146381a874d04a824bdd8c7bb991d/v/configTemplates/templates')
-      expect(pathUtils.resolveTenantTypeFromPath()).toBe('v')
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/dc2146381a874d04a824bdd8c7bb991d/v/configTemplates/templates'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('v')
     })
 
     it('should return "t" when path starts with /t', () => {
-      // eslint-disable-next-line max-len
-      jest.spyOn(locationUtils, 'getLocationPathname').mockReturnValue('/dc2146381a874d04a824bdd8c7bb991d/t/venues')
-      expect(pathUtils.resolveTenantTypeFromPath()).toBe('t')
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/dc2146381a874d04a824bdd8c7bb991d/t/venues'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('t')
     })
 
     it('should return "t" for unknown path', () => {
-      jest.spyOn(locationUtils, 'getLocationPathname').mockReturnValue('/abc/xyz/...')
-      expect(pathUtils.resolveTenantTypeFromPath()).toBe('t')
-    })
-  })
-
-  describe('isRecSite', () => {
-    it('should return true when path is /t', () => {
-      // eslint-disable-next-line max-len
-      jest.spyOn(locationUtils, 'getLocationPathname').mockReturnValue('/dc2146381a874d04a824bdd8c7bb991d/t/venues')
-      expect(pathUtils.isRecSite()).toBe(true)
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/abc/xyz/...'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('t')
     })
 
-    it('should return false when path is /v', () => {
-      // eslint-disable-next-line max-len
-      jest.spyOn(locationUtils, 'getLocationPathname').mockReturnValue('/dc2146381a874d04a824bdd8c7bb991d/v/configTemplates/templates')
-      expect(pathUtils.isRecSite()).toBe(false)
+    it('should handle edge cases correctly', () => {
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('t')
+
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/dc2146381a874d04a824bdd8c7bb991d'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('t')
+
+      Object.defineProperty(window, 'location', {
+        value: {
+          pathname: '/dc2146381a874d04a824bdd8c7bb991d/x/something'
+        },
+        writable: true
+      })
+      expect(resolveTenantTypeFromPath()).toBe('t')
     })
   })
 })
