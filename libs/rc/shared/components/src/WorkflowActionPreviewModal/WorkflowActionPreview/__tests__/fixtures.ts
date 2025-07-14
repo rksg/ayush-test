@@ -29,6 +29,17 @@ export const mockMacReg:MacRegAction = {
   version: 1,
   valid: true
 }
+export const mockInvalidMacReg:MacRegAction = {
+  identityGroupId: 'mac_reg_ig1',
+  macRegListId: 'mac-reg-list1',
+  identityId: '',
+  actionType: ActionType.MAC_REG,
+  name: 'mac-regtest-name',
+  id: 'my-test-mac-reg',
+  description: 'sothing',
+  version: 1,
+  valid: false
+}
 export const mockMacRegList: MacRegistrationPool = {
   id: 'mac-list-1',
   name: 'mac-list-1',
