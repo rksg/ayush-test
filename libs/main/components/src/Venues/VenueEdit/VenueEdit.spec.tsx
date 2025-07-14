@@ -81,6 +81,10 @@ jest.mock('./WifiConfigTab/AdvancedTab/AccessPointUSB', () => ({
 jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
   BssColoring: () => <div data-testid='BssColoring' />
 }))
+jest.mock('./WifiConfigTab/AdvancedTab/ApManagementVlan', () => ({
+  ApManagementVlan: () => <div data-testid='ApManagementVlan' />
+}))
+
 
 
 const mockedUseConfigTemplate = jest.fn()
@@ -341,7 +345,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           (_, res, ctx) => res(ctx.json({}))
         ),
         rest.get(
-          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueSmartMonitor.url,
           (_, res, ctx) => res(ctx.json({}))
         )
       )

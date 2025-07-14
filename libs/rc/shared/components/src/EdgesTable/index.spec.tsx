@@ -2,9 +2,9 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { edgeApi, venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                         from '@acx-ui/store'
+import { edgeApi, venueApi }                                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,6 +32,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('../useEdgeActions', () => ({
   ...jest.requireActual('../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('./EdgeStatusLight', () => ({
+  ...jest.requireActual('./EdgeStatusLight'),
+  EdgeStatusLight: (props: { data: string }) =>
+    <div data-testid='EdgeStatusLight'>{props.data}</div>
 }))
 
 const mockedDeleteApi = jest.fn()
@@ -102,11 +108,18 @@ describe('Edge Table', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/ })
     expect(rows.length).toBe(12)
 
-    // TODO: should add extra test for EdgeStatusLight
-    const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
-      'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
-      'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
-      'Rebooting', 'Resetting and recovering']
+    const expectedStatus = [
+      EdgeStatusEnum.INITIALIZING,
+      EdgeStatusEnum.NEVER_CONTACTED_CLOUD,
+      EdgeStatusEnum.OFFLINE,
+      EdgeStatusEnum.NEEDS_CONFIG,
+      EdgeStatusEnum.OPERATIONAL,
+      EdgeStatusEnum.APPLYING_FIRMWARE,
+      EdgeStatusEnum.APPLYING_CONFIGURATION,
+      EdgeStatusEnum.FIRMWARE_UPDATE_FAILED,
+      EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+      EdgeStatusEnum.DISCONNECTED_FROM_CLOUD,
+      EdgeStatusEnum.REBOOTING, EdgeStatusEnum.RESETTING]
 
     expectedStatus.forEach((status, index) => {
       expect(rows[Number(index)]).toHaveTextContent(`Smart Edge ${index+1}`)
@@ -219,7 +232,7 @@ describe('Edge Table', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should send OTP sucessfully', async () => {
+  it('should send OTP successfully', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -297,14 +310,14 @@ describe('Edge Table', () => {
     const row5 = await screen.findByRole('row', { name: /Smart Edge 5/i })
     await user.click(within(row5).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Reboot' }))
-    const rebootDialg = await screen.findByRole('dialog')
-    within(rebootDialg).getByText('Reboot "Smart Edge 5"?')
-    await user.click(within(rebootDialg).getByRole('button', { name: 'Reboot' }))
+    const rebootDialog = await screen.findByRole('dialog')
+    within(rebootDialog).getByText('Reboot "Smart Edge 5"?')
+    await user.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
     })
     await waitFor(() => {
-      expect(rebootDialg).not.toBeVisible()
+      expect(rebootDialog).not.toBeVisible()
     })
   })
 
@@ -358,7 +371,7 @@ describe('Edge Table', () => {
     expect(screen.queryByText('Reset & Recover')).toBeNull()
   })
 
-  it('should show incopatible warning', async () => {
+  it('should show incompatible warning', async () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
@@ -377,7 +390,6 @@ describe('Edge Table', () => {
             ],
             filters: { venueId: ['mockVenueId']
             } } }}
-          incompatibleCheck
         />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge' }

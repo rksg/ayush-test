@@ -37,20 +37,29 @@ export const useDateRange = () => {
 
 interface TimeRangeDropDownProviderProps {
   availableRanges: DateRange[]
+  defaultSelectedRange?: DateRange
+  /**
+   * Additional default time ranges that override the standard defaults for this TimeRangeDropdown context only.
+   * This parameter allows customizing time ranges specifically for this dropdown instance without affecting
+   * other date range functionality throughout the application.
+   */
+  additionalDefaultTimeRanges?: Partial<{ [key in DateRange]: moment.Moment[] }>
   children: React.ReactNode
 }
 
 export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps> = ({
   availableRanges,
+  defaultSelectedRange,
+  additionalDefaultTimeRanges,
   children
 }) => {
   const [selectedRange, setTimeRangeDropDownRange] = useState<DateRange>(
-    availableRanges[0]
+    defaultSelectedRange ?? availableRanges[0]
   )
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const timeRange = isCore ?
-    defaultCoreTierRanges()[selectedRange]! : defaultRanges()[selectedRange]!
+  const defaultTimeRanges = isCore ? defaultCoreTierRanges() : defaultRanges()
+  const timeRange = { ...defaultTimeRanges, ...additionalDefaultTimeRanges }[selectedRange]!
   return (
     <TimeRangeDropDownContext.Provider
       value={{ availableRanges, timeRange, selectedRange, setTimeRangeDropDownRange }}>
