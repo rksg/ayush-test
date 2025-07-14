@@ -78,7 +78,6 @@ const PersonalIdentityNetworkTable = () => {
   const settingsId = 'services-network-segmentation-table'
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
 
@@ -123,7 +122,7 @@ const PersonalIdentityNetworkTable = () => {
 
   const { switchOptions } = useSwitchListQuery(
     { payload: switchDefaultPayload,
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, {
       selectFromResult: ({ data }) => ({
         switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name })) ?? []
