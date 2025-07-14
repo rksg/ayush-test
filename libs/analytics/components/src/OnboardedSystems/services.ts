@@ -1,11 +1,10 @@
 import { get, isEmpty }  from 'lodash'
 import { defineMessage } from 'react-intl'
 
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { TableResult }                       from '@acx-ui/rc/utils'
-import { smartZoneApi as basedSmartZoneApi } from '@acx-ui/store'
-import { RequestPayload }                    from '@acx-ui/types'
-import { createHttpRequest, getIntl }        from '@acx-ui/utils'
+import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
+import { smartZoneApi as basedSmartZoneApi }       from '@acx-ui/store'
+import { RequestPayload }                          from '@acx-ui/types'
+import { createHttpRequest, getIntl, TableResult } from '@acx-ui/utils'
 
 export type OnboardedSystem = {
   device_id: string

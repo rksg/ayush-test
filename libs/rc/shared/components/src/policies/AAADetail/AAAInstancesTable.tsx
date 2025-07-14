@@ -8,9 +8,10 @@ import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkList
 import {
   ConfigTemplateType,
   GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
-  useConfigTemplate, useTableQuery
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useTableQuery }         from '@acx-ui/utils'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 import { captiveNetworkTypes }                  from '../../NetworkForm/contentsMap'

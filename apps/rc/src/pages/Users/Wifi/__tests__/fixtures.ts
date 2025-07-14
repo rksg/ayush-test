@@ -529,6 +529,57 @@ export const clientMeta = {
   ]
 }
 
+export const clientInfoList = [{
+  modelName: 'someone laptop',
+  deviceType: 'laptop',
+  macAddress: '24:41:8c:c3:16:df',
+  osType: 'Windows',
+  ipAddress: '10.206.1.93',
+  username: '24418cc316df',
+  hostname: 'LP-XXXXX',
+  authenticationStatus: 1,
+  connectedTime: '2025-06-19T21:56:23.895Z',
+  lastUpdatedTime: '2025-06-23T18:04:28.763Z',
+  venueInformation: {
+    id: '87c982325ef148a2b7cefe652384d3ca',
+    name: 'UI-TEST-VENUE'
+  },
+  apInformation: {
+    name: 'UI team ONLY',
+    macAddress: '28:B3:71:28:78:50',
+    serialNumber: '422039000230',
+    bssid: '28:b3:71:a8:78:51'
+  },
+  networkInformation: {
+    authenticationMethod: 'Standard+Open',
+    encryptionMethod: 'WPA3-SAE',
+    id: '423c3673e74f44e69c0f3b35cd579ecc',
+    ssid: 'NMS-app6-WLAN-QA',
+    type: 'Captive Portal',
+    vlan: 1
+  },
+  wifiCallingEnabled: false,
+  signalStatus: {
+    health: 'Good',
+    noiseFloor: -96,
+    rssi: -37,
+    snr: 59
+  },
+  radioStatus: {
+    channel: 3,
+    type: 'a/n/ac/ax/be'
+  },
+  trafficStatus: {
+    framesDropped: 10571,
+    packetsFromClient: 1641342,
+    packetsToClient: 4088198,
+    totalTraffic: 3708171380,
+    trafficFromClient: 131772053,
+    trafficToClient: 3576399327
+  },
+  band: '2.4 GHz'
+}]
+
 export const histClientList = {
   totalCount: 2,
   page: 1,

@@ -27,16 +27,14 @@ import {
   NewAPExtendedGrouped,
   NewAPModelExtended,
   PowerSavingStatusEnum,
-  TableQuery,
-  TableResult,
   transformApStatus,
   transformDisplayText
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
+import { RequestPayload }          from '@acx-ui/types'
+import { TableQuery, TableResult } from '@acx-ui/utils'
 
 
 import { NewApTable } from './NewApTable'
-import { OldApTable } from './OldApTable'
 
 export const defaultApPayload = {
   searchString: '',
@@ -126,9 +124,5 @@ export interface ApTableProps<T>
 }
 
 export const ApTable = forwardRef((props : ApTableProps<APExtended|NewAPModelExtended>, ref?: Ref<ApTableRefType>) => {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
-  return isUseWifiRbacApi ?
-    <NewApTable {...(props as ApTableProps<NewAPModelExtended>)} ref={ref} /> :
-    <OldApTable {...(props as ApTableProps<APExtended|APExtendedGrouped>)} ref={ref} />
+  return <NewApTable {...(props as ApTableProps<NewAPModelExtended>)} ref={ref} />
 })

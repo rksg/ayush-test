@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, categoryMapping, PageHeader, RadioCardCategory, Tabs } from '@acx-ui/components'
+import { Button, PageHeader, Tabs }       from '@acx-ui/components'
+import { useDhcpConsolidationTotalCount } from '@acx-ui/rc/components'
 import {
   ServiceType,
   ServiceOperation,
@@ -9,7 +10,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getServiceAllowedOperation,
   useServicesBreadcrumb,
-  serviceTypeLabelMapping
+  serviceTypeLabelWithCountMapping
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -34,6 +35,8 @@ export default function DHCPConsolidation () {
 
   const Tab = tabs[activeTab as keyof typeof tabs]
 
+  const { data: countData } = useDhcpConsolidationTotalCount()
+
   const getAddButton = () => {
     const targetType = activeTab === DHCPConsolidationTabKey.WIFI
       ? ServiceType.DHCP
@@ -57,7 +60,9 @@ export default function DHCPConsolidation () {
   return (
     <>
       <PageHeader
-        title={$t(serviceTypeLabelMapping[ServiceType.DHCP_CONSOLIDATION])}
+        title={$t(serviceTypeLabelWithCountMapping[ServiceType.DHCP_CONSOLIDATION], {
+          count: countData?.totalCount
+        })}
         breadcrumb={useServicesBreadcrumb()}
         extra={getAddButton()}
         footer={<ConsolidationTabs activeKey={activeTab} />}
@@ -71,7 +76,7 @@ function ConsolidationTabs ({ activeKey }: { activeKey: DHCPConsolidationTabKey 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('services/dhcpConsolidation/list')
-
+  const { data: countData } = useDhcpConsolidationTotalCount()
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
@@ -82,11 +87,15 @@ function ConsolidationTabs ({ activeKey }: { activeKey: DHCPConsolidationTabKey 
   return (
     <Tabs onChange={onTabChange} activeKey={activeKey}>
       <Tabs.TabPane
-        tab={$t(categoryMapping[RadioCardCategory.WIFI].text)}
+        tab={$t({ defaultMessage: 'Wi-Fi ({count})' }, {
+          count: countData?.dhcpCount
+        })}
         key={DHCPConsolidationTabKey.WIFI}
       />
       <Tabs.TabPane
-        tab={$t(categoryMapping[RadioCardCategory.EDGE].text)}
+        tab={$t({ defaultMessage: 'RUCKUS Edge ({count})' }, {
+          count: countData?.edgeDhcpCount
+        })}
         key={DHCPConsolidationTabKey.EDGE}
       />
     </Tabs>

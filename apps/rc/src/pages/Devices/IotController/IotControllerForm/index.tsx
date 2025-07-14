@@ -41,8 +41,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
-import { validationMessages }    from '@acx-ui/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -56,7 +55,6 @@ export function IotControllerForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const { isCustomRole } = useUserProfileContext()
 
   const [form] = Form.useForm()
   const publicEnabled = Form.useWatch('publicEnabled', form)
@@ -166,6 +164,11 @@ export function IotControllerForm () {
   const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
 
   const serialNumberValidator = async (value: string) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{16,30}$/
+    if (!alphanumericRegex.test(value)) {
+      // eslint-disable-next-line max-len
+      return Promise.reject($t({ defaultMessage: 'Serial number must be 16-30 alphanumeric characters (a-z, A-Z, 0-9)' }))
+    }
     try {
       const serialNumberData = (await getSerialNumber({
         params: { serialNumber: value }
@@ -239,7 +242,7 @@ export function IotControllerForm () {
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToIotController)
         }
-        disabled={isCustomRole || isConnectionTesting}
+        disabled={isConnectionTesting}
         buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}

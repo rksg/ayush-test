@@ -4,7 +4,6 @@ import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  NewAPITableResult,
   PolicyOperation,
   PolicyType,
   Workflow,
@@ -14,6 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { NewAPITableResult }                                                      from '@acx-ui/utils'
 
 import WorkflowTable from '.'
 const workflows:Workflow[] = [{
@@ -111,6 +111,7 @@ describe('WorkflowTable', () => {
     deleteWorkflowApi.mockClear()
     cloneWorkflowApi.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    searchInProgressWorkflowApi.mockClear()
     mockServer.use(
       rest.post(
         replacePagination(WorkflowUrls.searchInProgressWorkflows.url),

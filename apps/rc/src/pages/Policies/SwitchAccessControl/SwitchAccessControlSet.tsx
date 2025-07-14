@@ -8,16 +8,14 @@ import {
   Loader,
   showActionModal,
   Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
-  SwitchUrlsInfo,
-  useTableQuery } from '@acx-ui/rc/utils'
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
 import { filterByAccess }             from '@acx-ui/user'
-import { getOpsApi }                  from '@acx-ui/utils'
+import { getOpsApi, useTableQuery }   from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDetail } from './SwitchLayer2/SwitchLayer2ACLDetail'
 
@@ -38,7 +36,6 @@ export function SwitchAccessControlSet () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const settingsId = 'switch-access-control-set'
 
   const [deleteAccessControl] = useDeleteSwitchAccessControlSetMutation()
@@ -58,7 +55,7 @@ export function SwitchAccessControlSet () {
       ],
       pagination: { settingsId }
     },
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     sorter: {
       sortField: 'policyName',
       sortOrder: 'ASC'

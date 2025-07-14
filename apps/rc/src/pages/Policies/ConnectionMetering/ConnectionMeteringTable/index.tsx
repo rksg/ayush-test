@@ -16,7 +16,6 @@ import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
   useVenuesListQuery,
-  doProfileDelete,
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -24,15 +23,13 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   ConnectionMetering,
   getPolicyDetailsLink,
-  FILTER,
-  SEARCH,
   PropertyConfigs,
   PropertyConfigQuery,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -40,6 +37,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { useTableQuery, FILTER, SEARCH } from '@acx-ui/utils'
 
 import {
   DataConsumptionLabel

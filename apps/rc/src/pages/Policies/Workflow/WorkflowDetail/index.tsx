@@ -5,9 +5,10 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                                          from '@acx-ui/components'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader }                                                                                                                                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                                                                                                                                from '@acx-ui/formatter'
+import { WarningTriangleBold }                                                                                                                                                                                                      from '@acx-ui/icons'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                                    from '@acx-ui/rc/components'
 import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                                          from '@acx-ui/rc/services'
 import { usePolicyListBreadcrumb, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls, StatusReason } from '@acx-ui/rc/utils'
@@ -16,6 +17,8 @@ import { hasPermission }                                                        
 import { getOpsApi, noDataDisplay }                                                                                                                                                                                                 from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
+
+import * as UI from './styledComponents'
 
 
 
@@ -123,14 +126,17 @@ export default function WorkflowDetails () {
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      content: $t({ defaultMessage: ` {
-        status, select,
-        PUBLISHED {Published}
-        other {Draft}
-      }` }, {
+      content: <UI.PublicationStatus>{$t({ defaultMessage: ` {
+            status, select,
+            PUBLISHED {Published}
+            other {Draft}
+          }` }, {
         status: published?.publishedDetails?.status
-      }),
-      colSpan: 2
+      })}
+      {published?.publishedDetails?.status === 'PUBLISHED' && data?.statusReasons?.length
+            && workflowValidationEnhancementFFToggle ? <WarningTriangleBold/> : ''}
+      </UI.PublicationStatus>,
+      colSpan: 3
     },
     {
       title: $t({ defaultMessage: 'Last Published' }),
@@ -144,13 +150,7 @@ export default function WorkflowDetails () {
     },
     {
       title: $t({ defaultMessage: 'Versions' }),
-      content: <Button
-        type='link'
-        onClick={()=>{
-          closeWorkflowDesigner()
-          setPreviewVisible(false)
-          setIsComparatorOpen(true)
-        }}>{ published?.publishedDetails?.version }</Button>,
+      content: published?.publishedDetails?.version,
       visible: workflowValidationEnhancementFFToggle
       && published?.publishedDetails?.status === 'PUBLISHED',
       colSpan: 2
@@ -163,8 +163,7 @@ export default function WorkflowDetails () {
     {
       title: $t({ defaultMessage: 'Publishing Readiness' }),
       visible: workflowValidationEnhancementFFToggle,
-      content: <PublishReadinessProgress
-        publishReadiness={data?.publishReadiness as number}
+      content: <PublishReadinessProgress variant='text'
         reasons={data?.statusReasons as StatusReason[]} />,
       colSpan: 4
     },
@@ -259,7 +258,10 @@ export default function WorkflowDetails () {
     }
     <GridRow>
       <GridCol col={{ span: 24 }}>
-        <SummaryCard
+        <UI.StyledSummaryCard
+          warning={published?.publishedDetails?.status === 'PUBLISHED'
+            && data?.statusReasons?.length != undefined && data?.statusReasons?.length > 0
+            && workflowValidationEnhancementFFToggle}
           data={workflowInfo}
           isLoading={workflowQuery.isLoading}
           isFetching={workflowQuery.isFetching}

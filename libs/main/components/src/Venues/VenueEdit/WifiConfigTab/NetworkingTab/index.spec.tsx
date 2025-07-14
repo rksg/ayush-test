@@ -15,15 +15,16 @@ import {
   venueLanPorts,
   mockCellularSettings,
   mockRadiusOptions,
-  mockDirectedMulticast
+  mockDirectedMulticast,
+  mockSmartMonitor
 } from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -33,6 +34,14 @@ describe('NetworkingTab', () => {
     mockGetApsList.mockClear()
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
+      rest.get(
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
@@ -105,6 +114,10 @@ describe('NetworkingTab', () => {
       rest.get(
         WifiRbacUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_req, res, ctx) => res(ctx.json(mockSmartMonitor))
       )
     )
   })

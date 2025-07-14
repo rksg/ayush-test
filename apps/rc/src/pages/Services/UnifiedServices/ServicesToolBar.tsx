@@ -1,12 +1,16 @@
 import { useEffect } from 'react'
 
-import { Select, Space }                             from 'antd'
+import { Space }                                     from 'antd'
 import { debounce }                                  from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
-import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
-import { getIntl }                                   from '@acx-ui/utils'
+import { Table, categoryMapping } from '@acx-ui/components'
+import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
+import { RadioCardCategory }      from '@acx-ui/types'
+import { getIntl }                from '@acx-ui/utils'
+
+import { FilterSelect }              from './styledComponents'
+import { DefaultSearchFilterValues } from './useUnifiedServiceSearchFilter'
 
 export enum ServiceSortOrder {
   ASC,
@@ -35,14 +39,21 @@ export interface ServicesToolBarProps {
   setSearchTerm: (searchTerm: string) => void
   setFilters: React.Dispatch<React.SetStateAction<ServiceFiltersConfig>>
   availableFilters?: ServiceFiltersConfig
-  defaultSortOrder?: ServiceSortOrder
+  defaultValues?: DefaultSearchFilterValues
   setSortOrder: (sort: ServiceSortOrder) => void
 }
 
 export function ServicesToolBar (props: ServicesToolBarProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder , availableFilters = {} } = props
+  const { setSearchTerm, setFilters, defaultValues = {}, setSortOrder , availableFilters = {} } = props
+  const {
+    filters: defaultFilters,
+    sortOrder: defaultSortOrder
+  } = defaultValues
+  // eslint-disable-next-line max-len
+  const { products: defaultProducts = [], categories: defaultCategories = [] } = defaultFilters ?? {}
+
   const {
     products = Object.values(RadioCardCategory),
     categories = [
@@ -62,16 +73,22 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
   }, 500)
 
 
-  const handleProductFilterChange = (value: RadioCardCategory) => {
-    setFilters(filters => ({ ...filters, products: value !== undefined ? [value] : [] }))
+  const handleProductFilterChange = (value: unknown) => {
+    setFilters(filters => ({
+      ...filters,
+      products: value ? [value as RadioCardCategory] : []
+    }))
   }
 
-  const handleCategoryFilterChange = (value: UnifiedServiceCategory) => {
-    setFilters(filters => ({ ...filters, categories: value !== undefined ? [value] : [] }))
+  const handleCategoryFilterChange = (value: unknown) => {
+    setFilters(filters => ({
+      ...filters,
+      categories: (value !== undefined && value !== null) ? [value as UnifiedServiceCategory] : []
+    }))
   }
 
-  const handleSortOrderChange = (value: ServiceSortOrder) => {
-    setSortOrder(value)
+  const handleSortOrderChange = (value: unknown) => {
+    setSortOrder(value as ServiceSortOrder)
   }
 
   useEffect(() => {
@@ -88,8 +105,9 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         maxLength={64}
         allowClear
       />
-      <Select<RadioCardCategory>
+      <FilterSelect
         key='product'
+        defaultValue={defaultProducts[0]}
         onChange={handleProductFilterChange}
         placeholder={$t({ defaultMessage: 'Product' })}
         allowClear
@@ -102,8 +120,9 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
           value: product
         }))}
       />
-      <Select<UnifiedServiceCategory>
+      <FilterSelect
         key='category'
+        defaultValue={defaultCategories[0]}
         onChange={handleCategoryFilterChange}
         placeholder={$t({ defaultMessage: 'Category' })}
         allowClear
@@ -116,7 +135,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
           value: category
         }))}
       />
-      <Select<ServiceSortOrder>
+      <FilterSelect
         key='sort'
         defaultValue={defaultSortOrder}
         onChange={handleSortOrderChange}

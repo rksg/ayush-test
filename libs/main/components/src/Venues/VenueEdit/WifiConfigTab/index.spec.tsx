@@ -17,8 +17,8 @@ import { WifiConfigTab } from './index'
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -94,7 +94,11 @@ describe('WifiConfigTab', () => {
       // rbac
       rest.get(
         WifiRbacUrlsInfo.getVenueApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps)))
+        (_, res, ctx) => res(ctx.json(venueCaps))),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      )
     )
 
     render(

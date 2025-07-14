@@ -4,6 +4,8 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import {
+  GlobalSearchBar,
+  HeaderContext,
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
@@ -13,26 +15,24 @@ import {
   ActivityButton,
   AlarmsButton,
   FetchBot,
-  HeaderContext,
   HelpButton,
   UserButton,
   LicenseBanner,
-  RegionButton,
-  GlobalSearchBar
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerListQuery }    from '@acx-ui/msp/services'
-import { MSPUtils }                                                                        from '@acx-ui/msp/utils'
-import { CloudMessageBanner }                                                              from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                                        from '@acx-ui/rc/services'
-import { useTableQuery, dpskAdminRoutePathKeeper }                                         from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
-import { useParams }                                                                       from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                       from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerListQuery }                   from '@acx-ui/msp/services'
+import { MSPUtils }                                                                                       from '@acx-ui/msp/utils'
+import { CloudMessageBanner }                                                                             from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                                                       from '@acx-ui/rc/services'
+import { dpskAdminRoutePathKeeper }                                                                       from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }                  from '@acx-ui/react-router-dom'
+import { useParams }                                                                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                      from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles, useUserProfileContext }                                      from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId, useTableQuery } from '@acx-ui/utils'
 
 import { useBrowserDialog } from '../../BrowserDialog/BrowserDialog'
 import RuckusAiButton       from '../RuckusAiButton'

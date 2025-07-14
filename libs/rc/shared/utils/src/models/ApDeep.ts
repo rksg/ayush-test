@@ -75,8 +75,6 @@ export class ApDeep {
 
   updatedDate?: Date
 
-  multicastDnsProxyServiceProfileId?: string
-
   loginPassword?: string // Rbac API
 
   constructor () {
@@ -121,7 +119,5 @@ export class ApDeep {
     this.position = new ApPosition()
 
     this.deviceGps = new DeviceGps()
-
-    this.multicastDnsProxyServiceProfileId = ''
   }
 }

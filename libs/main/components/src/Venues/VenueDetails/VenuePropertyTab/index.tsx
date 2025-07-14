@@ -30,22 +30,20 @@ import {
 import {
   APExtended,
   ConnectionMetering,
-  FILTER,
   getPolicyDetailsLink,
   Persona,
   PolicyOperation,
   PolicyType,
   PropertyUnit,
   PropertyUnitMessages,
-  PropertyUnitStatus, PropertyUrlsInfo,
-  SEARCH,
-  SwitchViewModel,
-  useTableQuery
+  PropertyUnitStatus,
+  PropertyUrlsInfo,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { TenantLink }                                                     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                                from '@acx-ui/utils'
+import { FILTER, SEARCH, exportMessageMapping, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }         from './PropertyUnitDrawer'
@@ -150,7 +148,6 @@ export function VenuePropertyTab () {
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
   const hasPropertyUnitPermission = rbacOpsApiEnabled
@@ -301,7 +298,7 @@ export function VenuePropertyTab () {
     getSwitchList({
       params: { tenantId },
       payload: { ...switchViewModelPayload, filters: { switchMac } },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     })
       .then(result => {
         if (result.data) {

@@ -20,10 +20,10 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-const mockedUseTenantLink = jest.fn()
+const mockTenantLink = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useTenantLink: () => mockedUseTenantLink
+  TenantLink: (props: { to: string, children: React.ReactNode }) => mockTenantLink(props)
 }))
 
 describe('transferSorter', () => {
@@ -43,6 +43,12 @@ describe('Table', () => {
     jest.mocked(useAnySplitsOn).mockReturnValue(false)
     store.dispatch(api.util.resetApiState())
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    mockTenantLink.mockImplementation(({ to, children, ...props }) => {
+      const isRai = mockGet('IS_MLISA_SA') === true
+      const prefix = isRai ? '/ai' : '/tenant-id/t'
+      const href = `${prefix}${to.startsWith('/') ? '' : '/'}${to}`
+      return <a href={href} {...props}>{children}</a>
+    })
   })
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange',
@@ -95,11 +101,11 @@ describe('Table', () => {
     it('should render correct hyperlink for intentAI', async () => {
       render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
         <PagedTable/>
-      </ConfigChangeProvider>, { wrapper: Provider, route: { params: { tenantId: 'test' } } })
+      </ConfigChangeProvider>, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
       expect(await screen.findByRole('link')).toHaveAttribute(
         // eslint-disable-next-line max-len
-        'href', '/test/t/analytics/intentAI/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+        'href', '/tenant-id/t/analytics/intentAI/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
     })
     it('should render correct hyperlink for SA', async () => {
       mockGet.mockReturnValue(true)
@@ -110,7 +116,7 @@ describe('Table', () => {
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
       expect(await screen.findByRole('link')).toHaveAttribute(
         // eslint-disable-next-line max-len
-        'href', '/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+        'href', '/ai/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
     })
     it('should not render hyperlink for SA but not have permission', async () => {
       mockGet.mockReturnValue(true)

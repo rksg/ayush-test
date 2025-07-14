@@ -6,6 +6,7 @@ import { useIntl }    from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
 import {
+  HeaderContext,
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
@@ -19,7 +20,6 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
@@ -29,7 +29,7 @@ import { useRbacEntitlementListQuery }                                          
 import { ConfigTemplateContext, SaveEnforcementConfigFnType }                           from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
+import { aiOpsApis, hasPermission, hasRoles, useUserProfileContext }                    from '@acx-ui/user'
 import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }           from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
@@ -51,7 +51,10 @@ function Layout () {
   const navigate = useNavigate()
   const params = useParams()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
   const { names: { brand } } = useBrand360Config()
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()

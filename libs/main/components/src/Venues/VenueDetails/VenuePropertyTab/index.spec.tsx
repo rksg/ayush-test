@@ -9,7 +9,7 @@ import {
   Persona,
   PersonaUrls,
   PropertyUrlsInfo,
-  SwitchUrlsInfo
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -117,7 +117,7 @@ const getPersonaGroupSpy = jest.fn()
 const getApSpy = jest.fn()
 const getSwitchSpy = jest.fn()
 // eslint-disable-next-line max-len
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()
@@ -178,7 +178,7 @@ describe('Property Unit Page', () => {
         }
       ),
       rest.post(
-        SwitchUrlsInfo.getSwitchList.url,
+        SwitchRbacUrlsInfo.getSwitchList.url,
         (_, res, ctx) => {
           getSwitchSpy()
           return res(ctx.json({

@@ -5,7 +5,6 @@ import {
   CommonResult,
   CurrentVersions,
   PreDownload,
-  TableResult,
   UpgradePreferences,
   FirmwareUrlsInfo,
   FirmwareVersion,
@@ -38,10 +37,10 @@ import {
   StartEdgeFirmwareVenueUpdateNowPayload,
   UpdateEdgeFirmwareVenueSchedulePayload
 } from '@acx-ui/rc/utils'
-import { baseFirmwareApi }              from '@acx-ui/store'
-import { MaybePromise, RequestPayload } from '@acx-ui/types'
-import { CloudVersion }                 from '@acx-ui/user'
-import { batchApi, createHttpRequest }  from '@acx-ui/utils'
+import { baseFirmwareApi }                          from '@acx-ui/store'
+import { MaybePromise, RequestPayload }             from '@acx-ui/types'
+import { CloudVersion }                             from '@acx-ui/user'
+import { batchApi, createHttpRequest, TableResult } from '@acx-ui/utils'
 
 const v1Header = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -653,6 +652,12 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return { ...req }
       }
     }),
+    getAllApModelScheduledFirmwareList: build.query<{ id: string }[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelScheduledFirmwareList)
+        return { ...req }
+      }
+    }),
     // eslint-disable-next-line max-len
     patchVenueApModelFirmwares: build.mutation<{ batchId: string }, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
@@ -826,6 +831,8 @@ export const {
   useGetVenueApModelFirmwareListQuery,
   useGetVenueApModelFirmwareSchedulesListQuery,
   useGetAllApModelFirmwareListQuery,
+  useGetAllApModelScheduledFirmwareListQuery,
+  useLazyGetAllApModelScheduledFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation,
   useGetVenueApModelFirmwaresQuery,
   useUpdateVenueSchedulesPerApModelMutation,

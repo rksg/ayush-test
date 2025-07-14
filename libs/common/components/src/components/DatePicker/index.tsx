@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
-import { ClockOutlined }                                  from '@acx-ui/icons'
+import { ClockOutlined, CaretDownSolid }                  from '@acx-ui/icons'
 import { getUserProfile, isCoreTier }                     from '@acx-ui/user'
 import {
   trackDateSelection,
@@ -51,6 +51,7 @@ interface DatePickerProps {
   isReport?: boolean;
   maxMonthRange?: number;
   allowedMonthRange?: number;
+  filterLabel?: string;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -81,7 +82,8 @@ export const RangePicker = ({
   isReport,
   showLast8hours,
   maxMonthRange,
-  allowedMonthRange
+  allowedMonthRange,
+  filterLabel
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
@@ -98,6 +100,7 @@ export const RangePicker = ({
     return { translatedRanges, translatedOptions }
   }, [$t, rangeOptions])
   const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const [calChanged, setCalChanged] = useState<boolean>(false)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
@@ -177,6 +180,10 @@ export const RangePicker = ({
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
   const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
+
+  const hasFilterLabel = Boolean(filterLabel)
+  const shouldShowLabel = hasFilterLabel && (!calChanged && !isCalendarOpen)
+
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
@@ -186,6 +193,8 @@ export const RangePicker = ({
       rangeText={rangeText}
       showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
+      showLabel={shouldShowLabel}
+      filterLabel={filterLabel}
     >
       <AntRangePicker
         ref={rangeRef}
@@ -198,7 +207,8 @@ export const RangePicker = ({
           setIsCalendarOpen(true)
         }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={<ClockOutlined />}
+        suffixIcon={!hasFilterLabel || isCalendarOpen || calChanged
+          ? <ClockOutlined /> : <CaretDownSolid />}
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
           const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
@@ -208,6 +218,7 @@ export const RangePicker = ({
             startDate: restrictRange.startDate || null,
             endDate: restrictRange.endDate || null
           }))
+          setCalChanged(true)
         }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
@@ -221,10 +232,21 @@ export const RangePicker = ({
           />
         )}
         value={[range?.startDate, range?.endDate]}
-        format={isCalendarOpen || selectionType === DateRange.custom
-          ? formatter(showTimePicker ? DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
-          : rangeText
-        }
+        format={(() => {
+          if (isCalendarOpen || selectionType === DateRange.custom) {
+            const formatType = showTimePicker
+              ? DateFormatEnum.DateTimeFormat
+              : DateFormatEnum.DateFormat
+            return formatter(formatType)
+          }
+
+          const isAllTimeWithLabel = hasFilterLabel && !calChanged
+          if (isAllTimeWithLabel) {
+            return `[${filterLabel}]`
+          }
+
+          return rangeText
+        })()}
         allowClear={false}
       />
     </UI.RangePickerWrapper>
