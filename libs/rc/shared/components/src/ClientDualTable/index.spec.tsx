@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn, Features }                                                    from '@acx-ui/feature-toggle'
 import { apApi, clientApi, networkApi, venueApi }                                    from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -24,7 +24,7 @@ describe('ClientDualTable', () => {
     mockGetClientList.mockClear()
     mockServer.use(
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (req, res, ctx) => {
           mockGetClientList(req.body)
           return res(ctx.json({
@@ -39,10 +39,6 @@ describe('ClientDualTable', () => {
         }))
       ),
       rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
         CommonUrlsInfo.getEventListMeta.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
@@ -51,11 +47,11 @@ describe('ClientDualTable', () => {
         (req, res, ctx) => res(ctx.json([]))
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
@@ -107,63 +103,45 @@ describe('ClientDualTable', () => {
       expect(mockGetClientList).toHaveBeenCalledWith(expect.objectContaining({
         defaultPageSize: 10,
         fields: [
-          'hostname',
-          'osType',
-          'healthCheckStatus',
-          'clientMac',
-          'ipAddress',
-          'Username',
-          'serialNumber',
-          'venueId',
-          'switchSerialNumber',
-          'ssid',
-          'wifiCallingClient',
-          'sessStartTime',
-          'clientAnalytics',
-          'clientVlan',
-          'deviceTypeStr',
           'modelName',
-          'totalTraffic',
-          'trafficToClient',
-          'trafficFromClient',
-          'receiveSignalStrength',
-          'rssi',
-          'radio.mode',
-          'cpeMac',
-          'authmethod',
-          'status',
-          'encryptMethod',
-          'packetsToClient',
-          'packetsFromClient',
-          'packetsDropFrom',
-          'radio.channel',
-          'cog',
-          'venueName',
-          'apName',
-          'clientVlan',
-          'networkId',
-          'switchName',
-          'healthStatusReason',
-          'lastUpdateTime',
-          'networkType',
-          'mldAddr',
-          'vni',
-          'apMac'
+          'deviceType',
+          'osType',
+          'username',
+          'hostname',
+          'macAddress',
+          'ipAddress',
+          'mldMacAddress',
+          'cpeMacAddress',
+          'connectedTime',
+          'lastUpdatedTime',
+          'venueInformation',
+          'apInformation',
+          'networkInformation',
+          'switchInformation',
+          'signalStatus',
+          'radioStatus',
+          'trafficStatus',
+          'authenticationStatus',
+          'band',
+          'identityId',
+          'identityName',
+          'identityGroupId',
+          'identityGroupName'
         ],
         filters: {},
         page: 1,
         pageSize: 10,
         searchString: '3C:22:FB:97:C7:EF',
         searchTargetFields: [
-          'clientMac',
-          'mldAddr',
+          'macAddress',
+          'mldMacAddress',
           'ipAddress',
-          'Username',
+          'username',
           'hostname',
-          'ssid',
-          'clientVlan',
           'osType',
-          'vni'
+          'networkInformation.ssid',
+          'networkInformation.vni',
+          'networkInformation.vlan'
         ],
         sortField: 'name',
         sortOrder: 'ASC',

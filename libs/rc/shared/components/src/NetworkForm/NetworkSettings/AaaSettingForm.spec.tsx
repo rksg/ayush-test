@@ -4,11 +4,11 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, CommonUrlsInfo, NetworkSaveData, WifiUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider }                                                                               from '@acx-ui/store'
-import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                                           from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, MacRegListUrlsInfo, NetworkSaveData, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor }      from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                                from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
 import {
@@ -17,9 +17,11 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  mockAAAPolicyListResponse
+  mockAAAPolicyListResponse,
+  mockMacRegistrationPoolList
 } from '../__tests__/fixtures'
 import { MLOContext, NetworkForm } from '../NetworkForm'
+import NetworkFormContext          from '../NetworkFormContext'
 
 import { AaaSettingsForm, resolveMacAddressAuthenticationConfiguration } from './AaaSettingsForm'
 
@@ -113,7 +115,9 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(certificateAuthorityList))),
       rest.post(AaaUrls.queryAAAPolicyList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
-      )
+      ),
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
     )
   })
 
@@ -310,6 +314,229 @@ describe('NetworkForm', () => {
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
     expect(screen.getByText('Accounting Service')).toBeInTheDocument()
+  })
+
+  describe('MAC Registration List', () => {
+    // eslint-disable-next-line max-len
+    it('should show MAC registration list options when MAC authentication is enabled and feature is enabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <AaaSettingsForm />
+          </Form>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      await userEvent.click(macAuthSwitch)
+
+      // Should show MAC registration options
+      expect(await screen.findByText('MAC Registration List')).toBeInTheDocument()
+      expect(await screen.findByText('External MAC Auth')).toBeInTheDocument()
+    })
+
+    it('should not show MAC registration list options when feature is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff !== Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <AaaSettingsForm />
+          </Form>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      await userEvent.click(macAuthSwitch)
+
+      // Should not show MAC registration options
+      expect(screen.queryByText('MAC Registration List')).not.toBeInTheDocument()
+      expect(screen.queryByText('External MAC Auth')).not.toBeInTheDocument()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should not show MAC registration list options when MAC authentication is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <AaaSettingsForm />
+          </Form>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      // MAC authentication is disabled by default
+      expect(screen.queryByText('MAC Registration List')).not.toBeInTheDocument()
+      expect(screen.queryByText('External MAC Auth')).not.toBeInTheDocument()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should show MAC registration list component when MAC registration list is selected', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <AaaSettingsForm />
+          </Form>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      await userEvent.click(macAuthSwitch)
+
+      // Select MAC Registration List
+      const macRegistrationRadio = await screen.findByLabelText('MAC Registration List')
+      await userEvent.click(macRegistrationRadio)
+
+      // Should show MAC registration list component
+      expect(await screen.findByText('Select MAC Registration List')).toBeInTheDocument()
+    })
+
+    it('should disable MAC authentication switch in edit mode', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <NetworkFormContext.Provider value={{
+            editMode: true,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: null,
+            setData: jest.fn()
+          }}>
+            <Form>
+              <AaaSettingsForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      // In edit mode, the MAC authentication switch should be disabled
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      expect(macAuthSwitch).toBeDisabled()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should hide identity group selector when MAC registration list is selected', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED ||
+        ff === Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE ||
+        ff === Features.CERTIFICATE_TEMPLATE
+      )
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: null,
+            setData: jest.fn()
+          }}>
+            <Form>
+              <AaaSettingsForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      // Enable MAC authentication
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      await userEvent.click(macAuthSwitch)
+
+      // Initially, identity group selector should be visible
+      expect(screen.getByTestId('rc-IdentityGroupSelector')).toBeInTheDocument()
+
+      // Select MAC Registration List
+      const macRegistrationRadio = await screen.findByLabelText('MAC Registration List')
+      await userEvent.click(macRegistrationRadio)
+
+      // Identity group selector should be hidden when MAC registration list is selected
+      expect(screen.queryByTestId('rc-IdentityGroupSelector')).not.toBeInTheDocument()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should correctly select MAC registration list and radio in edit mode when macRegistrationListId is defined', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED
+      )
+
+      const mockData = {
+        wlan: {
+          macAddressAuthentication: true,
+          macRegistrationListId: 'test-mac-registration-list-id',
+          macAddressAuthenticationConfiguration: {
+            macAddressAuthentication: true
+          }
+        }
+      }
+
+      render(<Provider>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <NetworkFormContext.Provider value={{
+            editMode: true,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: mockData,
+            setData: jest.fn()
+          }}>
+            <Form>
+              <AaaSettingsForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </MLOContext.Provider>
+      </Provider>, { route: { params } })
+
+      // In edit mode with macRegistrationListId defined, MAC authentication should be enabled
+      const macAuthSwitch = await screen.findByTestId('macAuth8021x')
+      expect(macAuthSwitch).toBeChecked()
+
+      // MAC Registration List radio should be selected
+      const macRegistrationRadio = await screen.findByLabelText('MAC Registration List')
+      expect(macRegistrationRadio).toBeChecked()
+
+      // External MAC Auth radio should not be selected
+      const externalMacAuthRadio = await screen.findByLabelText('External MAC Auth')
+      expect(externalMacAuthRadio).not.toBeChecked()
+
+      // MAC registration list component should be visible
+      expect(await screen.findByText('Select MAC Registration List')).toBeInTheDocument()
+    })
   })
 
   describe('resolveMacAddressAuthenticationConfiguration', () => {

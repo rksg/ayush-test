@@ -1078,3 +1078,15 @@ export const mockedFirmwareVenuesPerApModel = [
     lastScheduleUpdate: '2022-01-12T14:00:01.099-08:00'
   }
 ]
+
+export const switchFirmwareList = [{
+  venueId: '892e797d3355400680913da725f69a45',
+  venueName: 'My-Venue',
+  switchId: 'c0:c5:20:b7:99:1d',
+  switchName: 'FMF3250Q094-0506',
+  isStack: false,
+  model: 'ICX7150-C08P',
+  currentFirmware: '09010h_cd2',
+  preDownload: false,
+  isSwitchLevelSchedule: false
+}]
