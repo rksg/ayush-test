@@ -447,7 +447,19 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       rest.get(WifiRbacUrlsInfo.getApGroupRadioCustomization.url,
         (_, res, ctx) => {
           return res(ctx.json({}))
-        })
+        }),
+      rest.post(WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          mockedApGroupListReq()
+          return res(ctx.json(mockAPGroupList))
+        }),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          mockedApGroupListReq()
+          return res(ctx.json(mockAPGroupList))
+        }
+      )
     )
 
     render(
@@ -508,7 +520,19 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
           return res(ctx.json({
             ...apGroupRadioCustomization
           }))
-        })
+        }),
+      rest.post(WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          mockedApGroupListReq()
+          return res(ctx.json(mockAPGroupList))
+        }),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          mockedApGroupListReq()
+          return res(ctx.json(mockAPGroupList))
+        }
+      )
     )
 
     render(

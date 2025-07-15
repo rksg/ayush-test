@@ -54,7 +54,7 @@ export function ClientAdmissionControlSettings(props: {
     useWatch<boolean>(enable24GFieldName),
     useWatch<boolean>(enable50GFieldName)
   ]
-  
+
   const getApGroupClientAdmissionControl = useGetApGroupClientAdmissionControlQuery({
     params: { venueId: venueId, apGroupId: apGroupId }
   })
