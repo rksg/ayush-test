@@ -247,10 +247,10 @@ describe('Health KPI', () => {
             'switchPoeUtilization'
           ],
           Table: [
-            'switchIpv4MulticastUtilization',
-            'switchIpv6MulticastUtilization',
             'switchIpv4UnicastUtilization',
             'switchIpv6UnicastUtilization',
+            'switchIpv4MulticastUtilization',
+            'switchIpv6MulticastUtilization',
             'switchArpUtilization',
             'switchMacUtilization'
           ]

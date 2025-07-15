@@ -265,7 +265,7 @@ describe('Kpi Section', () => {
     // Mock sub-tab KPIs structure
     const subTabKpis = {
       System: ['switchMemoryUtilization', 'switchCpuUtilization'],
-      Table: ['switchIpv4MulticastUtilization', 'switchIpv6MulticastUtilization']
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
     }
 
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -304,7 +304,7 @@ describe('Kpi Section', () => {
 
     const subTabKpis = {
       System: ['switchMemoryUtilization', 'switchCpuUtilization'],
-      Table: ['switchIpv4MulticastUtilization', 'switchIpv6MulticastUtilization']
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
     }
 
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -332,7 +332,7 @@ describe('Kpi Section', () => {
     await userEvent.click(tableTab)
 
     // Should show first KPI from Table tab
-    expect(await screen.findByText(/IPv4 Multicast/i)).toBeInTheDocument()
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
     expect(screen.queryByText(/Memory Compliance/i)).not.toBeInTheDocument()
   })
 
@@ -346,7 +346,7 @@ describe('Kpi Section', () => {
 
     const subTabKpis = {
       System: ['switchMemoryUtilization', 'switchCpuUtilization', 'switchesTemperature'],
-      Table: ['switchIpv4MulticastUtilization', 'switchIpv6MulticastUtilization']
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
     }
 
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -393,9 +393,9 @@ describe('Kpi Section', () => {
     const subTabKpis = {
       System: ['switchMemoryUtilization', 'switchCpuUtilization'],
       Table: [
-        'switchIpv4MulticastUtilization',
-        'switchIpv6MulticastUtilization',
-        'switchIpv4UnicastUtilization'
+        'switchIpv4UnicastUtilization',
+        'switchIpv6UnicastUtilization',
+        'switchIpv4MulticastUtilization'
       ],
       Network: ['switchPortUtilization']
     }
@@ -424,8 +424,8 @@ describe('Kpi Section', () => {
     // Table tab should show "View more" (3 KPIs)
     const tableTab = await screen.findByText('Table')
     await userEvent.click(tableTab)
-    expect(await screen.findByText(/IPv4 Multicast/i)).toBeInTheDocument()
-    expect(screen.queryByText(/IPv6 Multicast/i)).not.toBeInTheDocument()
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
+    expect(screen.queryByText(/IPv6 Unicast/i)).not.toBeInTheDocument()
 
     // Network tab should not show "View more" (1 KPI)
     const networkTab = await screen.findByText('Network')
@@ -444,7 +444,7 @@ describe('Kpi Section', () => {
 
     const subTabKpis = {
       System: ['switchMemoryUtilization', 'switchCpuUtilization'],
-      Table: ['switchIpv4MulticastUtilization', 'switchIpv6MulticastUtilization']
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
     }
 
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -472,8 +472,8 @@ describe('Kpi Section', () => {
     // Switch to Table tab
     const tableTab = await screen.findByText('Table')
     await userEvent.click(tableTab)
-    expect(await screen.findByText(/IPv4 Multicast/i)).toBeInTheDocument()
-    expect(screen.queryByText(/IPv6 Multicast/i)).not.toBeInTheDocument()
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
+    expect(screen.queryByText(/IPv6 Unicast/i)).not.toBeInTheDocument()
 
     // Switch back to System tab - should still be expanded
     const systemTab = await screen.findByText('System')

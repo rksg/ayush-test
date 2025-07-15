@@ -992,10 +992,10 @@ export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
           'switchPoeUtilization'
         ],
         Table: [
-          'switchIpv4MulticastUtilization',
-          'switchIpv6MulticastUtilization',
           'switchIpv4UnicastUtilization',
           'switchIpv6UnicastUtilization',
+          'switchIpv4MulticastUtilization',
+          'switchIpv6MulticastUtilization',
           'switchArpUtilization',
           'switchMacUtilization'
         ]
