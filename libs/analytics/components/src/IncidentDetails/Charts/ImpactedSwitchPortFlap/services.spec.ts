@@ -23,13 +23,21 @@ describe('incidentDetailsApi', () => {
               ports: [{
                 portNumber: '1/2/3',
                 connectedDevice: {
-                  name: 'Device 1'
+                  name: 'Device 1',
+                  port: '1/1/1',
+                  type: 'Switch',
+                  mac: 'AA:BB:CC:DD:EE:FF',
+                  serial: 'SN123456'
                 }
               },
               {
                 portNumber: '2/1/20',
                 connectedDevice: {
-                  name: 'Device 2'
+                  name: 'Device 2',
+                  port: '2/1/1',
+                  type: 'Router',
+                  mac: '11:22:33:44:55:66',
+                  serial: 'SN789012'
                 }
               }]
             }]
@@ -53,13 +61,21 @@ describe('incidentDetailsApi', () => {
         ports: [{
           portNumber: '1/2/3',
           connectedDevice: {
-            name: 'Device 1'
+            name: 'Device 1',
+            port: '1/1/1',
+            type: 'Switch',
+            mac: 'AA:BB:CC:DD:EE:FF',
+            serial: 'SN123456'
           }
         },
         {
           portNumber: '2/1/20',
           connectedDevice: {
-            name: 'Device 2'
+            name: 'Device 2',
+            port: '2/1/1',
+            type: 'Router',
+            mac: '11:22:33:44:55:66',
+            serial: 'SN789012'
           }
         }]
       })
@@ -79,7 +95,11 @@ describe('incidentDetailsApi', () => {
                 portNumber: '1/2/3',
                 poeOperState: 'Unknown',
                 connectedDevice: {
-                  name: 'Device 1'
+                  name: 'Device 1',
+                  port: '1/1/1',
+                  type: 'Switch',
+                  mac: 'AA:BB:CC:DD:EE:FF',
+                  serial: 'SN123456'
                 }
               }]
             }]
@@ -104,7 +124,11 @@ describe('incidentDetailsApi', () => {
           portNumber: '1/2/3',
           poeOperState: 'Unknown',
           connectedDevice: {
-            name: 'Device 1'
+            name: 'Device 1',
+            port: '1/1/1',
+            type: 'Switch',
+            mac: 'AA:BB:CC:DD:EE:FF',
+            serial: 'SN123456'
           }
         }]
       })
