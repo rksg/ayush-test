@@ -13,6 +13,9 @@ export type ImpactedSwitchPort = {
   connectedDevice: {
     port: string
     type: string
+    name: string
+    mac: string
+    serial: string
   }
 }
 export interface ImpactedSwitch {
@@ -46,6 +49,9 @@ export const api = dataApi.injectEndpoints({
                   connectedDevice {
                     port
                     type
+                    name
+                    mac
+                    serial
                   }
                 }
               }

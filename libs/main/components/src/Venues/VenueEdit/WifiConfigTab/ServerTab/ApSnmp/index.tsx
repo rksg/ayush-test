@@ -36,8 +36,6 @@ export function ApSnmp (props: VenueWifiConfigItemProps) {
   const { isAllowEdit=true } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  // eslint-disable-next-line
-  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
   const {
     editContextData,
@@ -52,7 +50,7 @@ export function ApSnmp (props: VenueWifiConfigItemProps) {
   useState({} as VenueApSnmpSettings)
 
   // eslint-disable-next-line max-len
-  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn })
+  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 

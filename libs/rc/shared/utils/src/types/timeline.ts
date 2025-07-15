@@ -125,6 +125,7 @@ export interface EventBase {
   portList?: string
   indexName?: string
   authenticationType?: string
+  ethPort?: string
 }
 
 export interface EventMeta {

@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
+import { SwitchRbacUrlsInfo }                    from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -25,7 +25,7 @@ describe('VenueSwitch', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        SwitchUrlsInfo.getSwitchModelList.url,
+        SwitchRbacUrlsInfo.getSwitchModelList.url,
         (req, res, ctx) => res(ctx.json({ data: [{ name: 'ICX7650-48ZP' }], totalCount: 1 }))
       )
     )
