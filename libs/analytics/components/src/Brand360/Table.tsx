@@ -194,7 +194,7 @@ export function BrandTable ({
         searchable: true,
         sorter: { compare: sortProp('propertyCode', defaultSort) },
         render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
-          <span>{highlightFn(row?.propertyCode)}</span>
+          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
       }, {
         title: lspLabel,
         dataIndex: 'lsp',
