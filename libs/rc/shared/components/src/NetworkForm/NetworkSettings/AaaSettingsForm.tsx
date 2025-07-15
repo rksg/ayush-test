@@ -109,7 +109,9 @@ export function AaaSettingsForm () {
         wlanSecurity: data.wlan?.wlanSecurity,
         managementFrameProtection: data.wlan?.managementFrameProtection,
         // eslint-disable-next-line max-len
-        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
+        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled),
+        isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+        macRegistrationListId: data.wlan?.macRegistrationListId
       }
     })
   }
@@ -144,6 +146,7 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
+  const isMacRegistrationList = useWatch(['wlan', 'isMacRegistrationList'])
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isMultipleCertificateTemplatesEnabled
   = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
@@ -229,6 +232,7 @@ function SettingsForm () {
         {
           (!useCertificateTemplate
             && isWifiIdentityManagementEnable
+            && !isMacRegistrationList
             && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
           <Form.Item>
             <IdentityGroup comboWidth='210px' />
