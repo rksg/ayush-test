@@ -466,7 +466,7 @@ describe('InterfaceSettings - Summary > sub-interface table', () => {
       )
 
       // Should still render the row but with empty edge name
-      const row = screen.getByRole('row', { name: 'LAN STATIC 1.1.1.1 255.255.255.0 1' })
+      const row = screen.getByRole('row', { name: 'Port1 LAN STATIC 1.1.1.1 255.255.255.0 1' })
       expect(row).toBeVisible()
     })
 
