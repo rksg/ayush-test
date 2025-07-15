@@ -69,9 +69,8 @@ export function GeneralSettingForm () {
   const { tenantId, venueId, activeSubTab } = useParams()
   const isProfileDisabled = useSwitchProfileDisabled()
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
@@ -79,7 +78,7 @@ export function GeneralSettingForm () {
   const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>({
     useQueryFn: useVenueSwitchSettingQuery,
     useTemplateQueryFn: useGetVenueTemplateSwitchSettingQuery,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>({
@@ -87,7 +86,7 @@ export function GeneralSettingForm () {
     useTemplateQueryFn: useGetSwitchConfigProfileTemplatesQuery,
     skip: isProfileDisabled,
     payload: { pageSize: 10000 },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   // eslint-disable-next-line max-len

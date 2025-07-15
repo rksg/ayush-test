@@ -39,7 +39,7 @@ const ApWiredClientData = [{
   macAddress: '22:ff:11:11:11:11',
   deviceTypeStr: 'phone',
   ipAddress: '192.168.0.12',
-  hostname: 'wiredDevice2',
+  hostname: undefined,
   venueId: 'venue_id_1',
   venueName: 'venue_01',
   vlanId: 1,
@@ -226,5 +226,15 @@ describe('ApWiredClientTable', () => {
     expect(screen.queryByText('Proxy Service (Accounting)')).not.toBeInTheDocument()
     expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
     expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
+  })
+
+  it('Should render anchor tag whether hostname undefined or not', async () => {
+    render(<Provider>
+      <ApWiredClientTable />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('Hostname')).toBeInTheDocument()
+    const link = await screen.findByRole('link', { name: '--' })
+    expect(link).toBeInTheDocument()
   })
 })

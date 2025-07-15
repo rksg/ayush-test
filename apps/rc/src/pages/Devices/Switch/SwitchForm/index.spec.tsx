@@ -64,13 +64,13 @@ describe('Add switch form', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueV1002))),
-      rest.post(SwitchUrlsInfo.getSwitchList.url,
+      rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(swtichListResponse))),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
-      rest.post(SwitchUrlsInfo.addSwitch.url,
+      rest.post(SwitchRbacUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.status(200), ctx.json({ requestId: 'request-id' }))),
-      rest.post(SwitchUrlsInfo.addStackMember.url,
+      rest.post(SwitchRbacUrlsInfo.addStackMember.url,
         (_, res, ctx) => res(ctx.status(200), ctx.json({ requestId: 'request-id' })))
     )
   })
@@ -120,7 +120,6 @@ describe('Add switch form', () => {
   })
 
   it('should cannot add TSB standalone switch', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     render(<Provider><SwitchForm /></Provider>, {
       route: {
         params: { tenantId: 'tenant-id', action: 'add' },
@@ -199,7 +198,7 @@ describe('Add switch form', () => {
 
   it('should handle error for add standalone switch correctly', async () => {
     mockServer.use(
-      rest.post(SwitchUrlsInfo.addSwitch.url,
+      rest.post(SwitchRbacUrlsInfo.addSwitch.url,
         (_, res, ctx) => {
           return res(ctx.status(400))
         })
@@ -280,19 +279,21 @@ describe('Edit switch form', () => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+      rest.get(SwitchRbacUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
-      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+      rest.get(SwitchRbacUrlsInfo.getStaticRoutes.url,
         (_, res, ctx) => res(ctx.json(staticRoutes))),
-      rest.get(SwitchUrlsInfo.getSwitch.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(switchResponse))),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json(swtichListResponse))),
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailHeader))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueV1002))),
-      rest.put(SwitchUrlsInfo.updateSwitch.url,
+      rest.put(SwitchRbacUrlsInfo.updateSwitch.url,
         (_, res, ctx) => {
           mockUpdateSwitch()
           return res(ctx.json({ requestId: 'request-id' }))
@@ -320,7 +321,7 @@ describe('Edit switch form', () => {
 
   it('should render edit switch with disabled ip settings correctly', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json({ ...switchDetailHeader, ipFullContentParsed: false })))
     )
     render(<Provider><SwitchForm /></Provider>, {
@@ -375,7 +376,7 @@ describe('Edit switch form', () => {
 
   it('should render edit switch form with readonly mode correctly', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json({ ...switchDetailHeader, cliApplied: true })))
     )
     render(<Provider><SwitchForm /></Provider>, {
@@ -392,13 +393,13 @@ describe('Edit switch form', () => {
   // eslint-disable-next-line max-len
   it('should not block form submit when switch is offline and settings tab has invalid field values', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitch.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json({
           ...switchResponse,
           igmpSnooping: ''
         }))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json({
           ...switchDetailHeader,
           deviceStatus: 'OFFLINE'
@@ -448,7 +449,7 @@ describe('Edit switch form', () => {
 
   it('should show toast message when the settings tab has invalid field values', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitch.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json({
           ...switchResponse,
           igmpSnooping: ''
@@ -474,13 +475,13 @@ describe('Edit switch form', () => {
   // eslint-disable-next-line max-len
   it('should show toast message when the settings tab has invalid field values in read-only mode', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitch.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json({
           ...switchResponse,
           igmpSnooping: ''
         }))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json({
           ...switchDetailHeader,
           cliApplied: true
@@ -503,13 +504,12 @@ describe('Edit switch form', () => {
     )).toBeVisible()
   })
 
-  describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
+  describe('Flexible Authentication', () => {
     const mockedGetSwitchFlexAuth = jest.fn()
     const mockedUpdateSwitchFlexAuth = jest.fn()
     beforeEach(() => {
       mockedGetSwitchFlexAuth.mockClear()
       mockedUpdateSwitchFlexAuth.mockClear()
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
       mockServer.use(
         rest.get(SwitchRbacUrlsInfo.getSwitch.url,
           (_, res, ctx) => res(ctx.json(switchResponse))
@@ -565,7 +565,7 @@ describe('Edit switch form', () => {
     it('should render correctly when the FF is enabled and the switch firmware version is below 10.0.10f', async () => {
       // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
       )
       mockServer.use(
         rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
@@ -592,7 +592,7 @@ describe('Edit switch form', () => {
     it('should render correctly when the FF is enabled and the firmware version is 10.0.10f or higher', async () => {
       // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
       )
       mockServer.use(
         rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
@@ -619,7 +619,7 @@ describe('Edit switch form', () => {
 
     it('should update switch flex auth correctly', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
       )
       mockServer.use(
         rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,

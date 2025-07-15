@@ -150,13 +150,7 @@ export default function WorkflowDetails () {
     },
     {
       title: $t({ defaultMessage: 'Versions' }),
-      content: <Button
-        type='link'
-        onClick={()=>{
-          closeWorkflowDesigner()
-          setPreviewVisible(false)
-          setIsComparatorOpen(true)
-        }}>{ published?.publishedDetails?.version }</Button>,
+      content: published?.publishedDetails?.version,
       visible: workflowValidationEnhancementFFToggle
       && published?.publishedDetails?.status === 'PUBLISHED',
       colSpan: 2

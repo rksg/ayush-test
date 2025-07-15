@@ -1,4 +1,4 @@
-FROM node:16.10.0-alpine as build-base
+FROM node:16.14.2-alpine3.14 as build-base
 
 # add deps for building node-gpy
 RUN apk add --no-cache python3 make g++

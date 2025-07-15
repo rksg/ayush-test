@@ -170,12 +170,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}',
     newApi: true
   },
+  // deprecated
   getVenue: {
     method: 'get',
     url: '/venues/:venueId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+
   deleteVenue: {
     method: 'delete',
     url: '/venues/:venueId',
@@ -222,12 +224,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
     newApi: true
   },
+  /*
   downloadApsCSV: {
     method: 'post',
     url: '/aps/query/csvFiles',
     oldUrl: '/aps/query/csvFiles',
     newApi: true
   },
+  */
   getFloorplan: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorPlanId',

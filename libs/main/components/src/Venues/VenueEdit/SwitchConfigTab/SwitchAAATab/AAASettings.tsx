@@ -123,9 +123,8 @@ export const AAASettings = (props: {
   const form = Form.useFormInstance()
   const { setReadyToScroll } = useContext(AnchorContext)
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
 
   const serverLevelItem = [{
     value: 'PORT_CONFIG',
@@ -173,7 +172,7 @@ export const AAASettings = (props: {
   const { data: aaaSetting, isFetching, isLoading } = useConfigTemplateQueryFnSwitcher<AAASetting>({
     useQueryFn: useGetAaaSettingQuery,
     useTemplateQueryFn: useGetVenueTemplateSwitchAaaSettingQuery,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)
