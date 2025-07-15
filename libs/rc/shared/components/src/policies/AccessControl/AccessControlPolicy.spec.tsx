@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { AccessControlUrls, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                    from '@acx-ui/test-utils'
+import { mockServer, render, screen }                                             from '@acx-ui/test-utils'
 
 import {
   applicationDetailResponse,
