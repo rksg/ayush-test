@@ -251,6 +251,7 @@ export enum Features {
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   WIFI_POE_OUT_MODE_SETTING_TOGGLE = 'wifi-poe-out-mode-setting-toggle',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  UNITS_ADVANCED_SEARCH = 'units-advanced-search',
   DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',

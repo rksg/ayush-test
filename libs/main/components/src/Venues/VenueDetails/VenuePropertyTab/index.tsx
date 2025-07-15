@@ -148,6 +148,7 @@ export function VenuePropertyTab () {
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
+  const isEnhancedUnitSearch = useIsSplitOn(Features.UNITS_ADVANCED_SEARCH)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
@@ -160,8 +161,10 @@ export function VenuePropertyTab () {
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
-    defaultPayload: {} as {
-    },
+    defaultPayload: isEnhancedUnitSearch ? ({} as {
+    }) : ({} as {
+      filters: { name: string|undefined }
+    }),
     pagination: { settingsId }
   })
 
@@ -561,7 +564,7 @@ export function VenuePropertyTab () {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
       dataIndex: ['resident', 'name'],
-      searchable: true,
+      searchable: isEnhancedUnitSearch ? true : false,
       sorter: true,
       defaultSortOrder: 'ascend'
     },
@@ -569,7 +572,7 @@ export function VenuePropertyTab () {
       key: 'residentEmail',
       title: $t({ defaultMessage: 'Resident Email' }),
       dataIndex: ['resident', 'email'],
-      searchable: true,
+      searchable: isEnhancedUnitSearch ? true : false,
       sorter: true,
       defaultSortOrder: 'ascend'
     },
@@ -577,7 +580,7 @@ export function VenuePropertyTab () {
       key: 'residentPhoneNumber',
       title: $t({ defaultMessage: 'Resident Phone' }),
       dataIndex: ['resident', 'phoneNumber'],
-      searchable: true,
+      searchable: isEnhancedUnitSearch ? true : false,
       sorter: true,
       defaultSortOrder: 'ascend'
     }
@@ -586,12 +589,17 @@ export function VenuePropertyTab () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = queryUnitList.payload
 
-    const customPayload = {
+    const customPayload = isEnhancedUnitSearch ? ({
       keyword: customSearch?.searchString ?? '',
       filters: {
         status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
       }
-    }
+    }) : ({
+      filters: {
+        name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
+        status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
+      }
+    })
     queryUnitList.setPayload({
       ...payload,
       ...customPayload
