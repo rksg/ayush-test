@@ -55,6 +55,7 @@ describe('Brand 360 Table', () => {
     })
     expect(await screen.findByText('Property')).toBeVisible()
     expect(screen.getByText('LSP')).toBeVisible()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
   it('should render table correctly for lsp view', async () => {
     const slaThreshold = {

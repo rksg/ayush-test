@@ -45,6 +45,9 @@ export function BrandTable ({
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data, lspLabel)
     : transformToPropertyView(data)
+
+  const formatCount = (count: number) => !isNaN(count) ? formatter('countFormat')(count) : noDataDisplay
+
   const commonCols: TableProps<Common>['columns'] = [
     {
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
@@ -58,7 +61,7 @@ export function BrandTable ({
               ? pColor : nColor
           }}
         >
-          {!isNaN(row?.p1Incidents) ? formatter('countFormat')(row?.p1Incidents) : noDataDisplay}
+          {formatCount(row?.deviceCount)}
         </span>
     },
     {
@@ -152,7 +155,7 @@ export function BrandTable ({
       sorter: { compare: sortProp('deviceCount', customSort) },
       render: (_, row: Common) =>
         <span>
-          {!isNaN(row?.deviceCount) ? formatter('countFormat')(row?.deviceCount) : noDataDisplay}
+          {formatCount(row?.deviceCount)}
         </span>
     }
   ]
