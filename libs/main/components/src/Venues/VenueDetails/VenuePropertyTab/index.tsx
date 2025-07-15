@@ -149,7 +149,6 @@ export function VenuePropertyTab () {
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isEnhancedUnitSearch = useIsSplitOn(Features.UNITS_ADVANCED_SEARCH)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
   const hasPropertyUnitPermission = rbacOpsApiEnabled
@@ -301,7 +300,7 @@ export function VenuePropertyTab () {
     getSwitchList({
       params: { tenantId },
       payload: { ...switchViewModelPayload, filters: { switchMac } },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     })
       .then(result => {
         if (result.data) {

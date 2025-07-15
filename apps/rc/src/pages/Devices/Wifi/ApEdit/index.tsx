@@ -138,9 +138,7 @@ export function ApEdit () {
   })
 
   // fetch venueName
-  const {
-    data: venueData
-  } = useGetVenueQuery({
+  const { data: venueData } = useGetVenueQuery({
     params: {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )

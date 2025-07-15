@@ -652,6 +652,12 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return { ...req }
       }
     }),
+    getAllApModelScheduledFirmwareList: build.query<{ id: string }[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelScheduledFirmwareList)
+        return { ...req }
+      }
+    }),
     // eslint-disable-next-line max-len
     patchVenueApModelFirmwares: build.mutation<{ batchId: string }, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
@@ -825,6 +831,8 @@ export const {
   useGetVenueApModelFirmwareListQuery,
   useGetVenueApModelFirmwareSchedulesListQuery,
   useGetAllApModelFirmwareListQuery,
+  useGetAllApModelScheduledFirmwareListQuery,
+  useLazyGetAllApModelScheduledFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation,
   useGetVenueApModelFirmwaresQuery,
   useUpdateVenueSchedulesPerApModelMutation,
