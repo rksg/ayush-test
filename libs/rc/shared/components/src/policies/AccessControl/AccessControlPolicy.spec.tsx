@@ -188,11 +188,10 @@ describe('AccessControlPolicy component', () => {
       }
     )
 
-    await waitFor(() => expect(mockLibSetting).toHaveBeenCalled())
-    await waitFor(() => expect(mockAvcCategory).toHaveBeenCalled())
-    await waitFor(() => expect(mockAvcApp).toHaveBeenCalled())
-
     expect(await screen.findByText(/Application Access Settings/i)).toBeVisible()
+    expect(mockLibSetting).not.toHaveBeenCalled()
+    expect(mockAvcCategory).not.toHaveBeenCalled()
+    expect(mockAvcApp).not.toHaveBeenCalled()
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelButton)
     expect(screen.queryByText(/Application Access Settings/i)).toBeNull()
