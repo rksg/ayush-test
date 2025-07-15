@@ -10,16 +10,17 @@ import {
 import { NamePath } from 'antd/lib/form/interface'
 import { useIntl }  from 'react-intl'
 
-import { DraggableTagField, Tooltip, cssStr }    from '@acx-ui/components'
-import type { DraggableTag }                     from '@acx-ui/components'
-import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
+import { DraggableTagField, Tooltip, cssStr } from '@acx-ui/components'
+import type { DraggableTag }                  from '@acx-ui/components'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
   DhcpOption82SubOption151Enum,
   DhcpOption82MacEnum,
-  DhcpOption82SubOption1CustomizationAttribute
+  DhcpOption82SubOption1CustomizationAttribute,
+  DhcpOption82SubOption1CustomizationType
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -39,25 +40,6 @@ interface DhcpOption82FormField {
   dhcpOption82SubOption151InputFieldName: NamePath
   dhcpOption82MacFormat: NamePath
 }
-
-const INTERFACE = 'INTERFACE'
-const INTERFACE_NO_PREFIX = 'INTERFACE_NO_PREFIX'
-const VLAN = 'VLAN'
-const ESSID = 'ESSID'
-const AP_MODEL = 'AP_MODEL'
-const AP_NAME = 'AP_NAME'
-const AP_MAC = 'AP_MAC'
-const USER_DEFINED = 'USER_DEFINED'
-
-const TagOptions = [
-  INTERFACE,
-  INTERFACE_NO_PREFIX,
-  VLAN,
-  ESSID,
-  AP_MODEL,
-  AP_NAME,
-  AP_MAC
-]
 
 /* eslint-disable max-len */
 const defaultDhcpOption82FormField = {
@@ -135,34 +117,40 @@ export const DhcpOption82SettingsFormField = (props: {
     onGUIChanged && onGUIChanged('DHCPOption82Settings')
   }
 
-  const dhcp82SubOption1Options = [{
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
-    label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO,
-    label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE,
-    label: $t({ defaultMessage: 'AP MAC; ESSID; Privacy Type' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX,
-    label: $t({ defaultMessage: 'AP MAC-hex' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX_ESSID,
-    label: $t({ defaultMessage: 'AP MAC-hex: ESSID' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_ESSID,
-    label: $t({ defaultMessage: 'ESSID' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC,
-    label: $t({ defaultMessage: 'AP MAC' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID,
-    label: $t({ defaultMessage: 'AP MAC: ESSID' })
-  }, {
-    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_NAME_ESSID,
-    label: $t({ defaultMessage: 'AP Name: ESSID' })
-  }]
+  const dhcp82SubOption1Options = [
+    // TODO: Uncomment this option when we support it.
+    // {
+    //   value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
+    //   label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })
+    // },
+    {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO,
+      label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE,
+      label: $t({ defaultMessage: 'AP MAC; ESSID; Privacy Type' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX,
+      label: $t({ defaultMessage: 'AP MAC-hex' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX_ESSID,
+      label: $t({ defaultMessage: 'AP MAC-hex: ESSID' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_ESSID,
+      label: $t({ defaultMessage: 'ESSID' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC,
+      label: $t({ defaultMessage: 'AP MAC' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID,
+      label: $t({ defaultMessage: 'AP MAC: ESSID' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_AP_NAME_ESSID,
+      label: $t({ defaultMessage: 'AP Name: ESSID' })
+    }, {
+      value: DhcpOption82SubOption1Enum.SUBOPT1_CUSTOMIZED,
+      label: $t({ defaultMessage: 'Custom' })
+    }]
 
   const dhcp82SubOption2Options = [{
     value: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC,
@@ -199,13 +187,15 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption2Enabled,
     dhcpOption82SubOption151Enabled,
     dhcpOption82SubOption2Format,
-    dhcpOption82SubOption151Format
+    dhcpOption82SubOption151Format,
+    dhcpOption82SubOption1Format
   ] = [
     useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
-    useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName)
+    useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName),
+    useWatch<DhcpOption82SubOption1Enum>(dhcpOption82SubOption1FormatFieldName)
   ]
 
   useEffect(() => {
@@ -214,7 +204,7 @@ export const DhcpOption82SettingsFormField = (props: {
       if (customization) {
         // eslint-disable-next-line max-len
         const transformedTags = customization.attributes.map((attribute: DhcpOption82SubOption1CustomizationAttribute, index: string) => {
-          if (attribute.type === USER_DEFINED) {
+          if (attribute.type === DhcpOption82SubOption1CustomizationType.USER_DEFINED) {
             return {
               id: index,
               value: attribute.text,
@@ -259,7 +249,7 @@ export const DhcpOption82SettingsFormField = (props: {
           { dhcpOption82SubOption1Enabled &&
             <Form.Item
               name={dhcpOption82SubOption1FormatFieldName}
-              initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
+              initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO}
               children={
                 <Select
                   disabled={readonly}
@@ -270,7 +260,10 @@ export const DhcpOption82SettingsFormField = (props: {
           }
         </div>
       </UI.FieldLabel>
-      {isUsedByLanPortDrawer &&
+      {
+        isUsedByLanPortDrawer &&
+        isDhcpOption82Enabled &&
+        DhcpOption82SubOption1Enum.SUBOPT1_CUSTOMIZED === dhcpOption82SubOption1Format &&
       <>
         <UI.AsteriskFormTitle>
           {$t({ defaultMessage: 'Custom Attributes' })}
@@ -281,11 +274,10 @@ export const DhcpOption82SettingsFormField = (props: {
         }}>
           {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
         </div>
-        {isDhcpOption82Enabled &&
         <UI.FieldLabelFullWidth>
           <DraggableTagField
             name={`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`}
-            options={TagOptions}
+            options={Object.values(DhcpOption82SubOption1CustomizationType)}
             maxTags={8}
             readonly={readonly}
             onChange={(val) => {
@@ -293,7 +285,7 @@ export const DhcpOption82SettingsFormField = (props: {
                 attributes: val.map((tag) => {
                   if(tag.isCustom) {
                     return {
-                      type: 'USER_DEFINED',
+                      type: DhcpOption82SubOption1CustomizationType.USER_DEFINED,
                       text: tag.value
                     }
                   } else {
@@ -304,7 +296,6 @@ export const DhcpOption82SettingsFormField = (props: {
             }}
           />
         </UI.FieldLabelFullWidth>
-        }
       </>}
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
