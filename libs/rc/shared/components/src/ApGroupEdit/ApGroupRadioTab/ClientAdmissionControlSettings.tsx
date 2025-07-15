@@ -15,7 +15,6 @@ import {
 import {  
   useGetApGroupClientAdmissionControlQuery,
   useUpdateApGroupClientAdmissionControlMutation,
-  useLazyGetVenueClientAdmissionControlQuery,
   useGetVenueClientAdmissionControlQuery
 } from '@acx-ui/rc/services'
 
