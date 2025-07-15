@@ -2,7 +2,8 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import {
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
@@ -18,6 +19,7 @@ import { ApGroupEditContext }                     from '../context'
 
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
 import { RadioSettings }                  from './RadioSettings'
+
 
 export function ApGroupRadioTab () {
   const { $t } = useIntl()
@@ -51,7 +53,7 @@ export function ApGroupRadioTab () {
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionControlSettingLink = $t({ defaultMessage: 'Client Admission Control' })
-  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control Settings' })
+  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control' })
 
   const anchorItems = [{
     title: wifiSettingLink,
@@ -69,6 +71,13 @@ export function ApGroupRadioTab () {
       <>
         <StepsFormLegacy.SectionTitle id='client-admission-control'>
           { clientAdmissionControlSettingsTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+              'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }}
+            />
+          </Tooltip>
         </StepsFormLegacy.SectionTitle>
         <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
       </>

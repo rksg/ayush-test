@@ -179,15 +179,15 @@ export function ClientAdmissionControlSettings(props: {
             paddingBottom: '20px' }} >
             {
               <Radio.Group
-                data-testid='ap-radiosettings'
+                data-testid='client-admission-control'
                 value={isUseVenueSettings}
                 onChange={handleVenueOrCustomizeSetting}
                 disabled={!isAllowEdit}>
                 <Space direction='vertical'>
-                  <Radio value={true} data-testid='ap-radiosettings-useVenueOrApGroupSettings'>
+                  <Radio value={true} data-testid='client-admission-control-useVenueSettings'>
                     <FormattedMessage defaultMessage={'Use inherited settings from venue'} />
                   </Radio>
-                  <Radio value={false} data-testid='ap-radiosettings-customize'>
+                  <Radio value={false} data-testid='client-admission-control-customizeSettings'>
                     <FormattedMessage defaultMessage={'Customize settings'} />
                   </Radio>
                 </Space>

@@ -189,7 +189,7 @@ describe('AP Group Edit Radio', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByTestId('apGroup-customize')
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByText(/r760/i)).toBeVisible()
@@ -198,11 +198,6 @@ describe('AP Group Edit Radio', () => {
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /5 GHz/ }))
-
-    console.log(screen.debug(undefined, 99999))
-
-    // const tabs = await screen.getAllByRole('tab');
-    // tabs.forEach(tab => console.log(tab));
 
     expect(await screen.findByText(/use inherited 5 ghz settings from venue/i)).toBeVisible()
 
@@ -329,5 +324,31 @@ describe('AP Group Edit Radio', () => {
 
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
   })
-})
 
+  it('should handle client admission control settings', async () => {
+    render(
+      <Provider>
+        <ApGroupEditContext.Provider value={{
+          ...defaultApGroupCxtdata,
+          isEditMode: true
+        }}>
+          <ApGroupRadioTab />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    // eslint-disable-next-line max-len
+    const customizeClientAdmissionControl = screen.getByTestId('client-admission-control-customizeSettings')
+    userEvent.click(customizeClientAdmissionControl)
+
+    const enable24G = await screen.findByTestId('client-admission-control-enable-24g')
+    const enable50G = await screen.findByTestId('client-admission-control-enable-50g')
+    await userEvent.click(enable24G)
+    await userEvent.click(enable50G)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+  })
+})

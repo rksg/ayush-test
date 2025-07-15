@@ -5673,27 +5673,20 @@ export const apGroupTripleBandMode = {
   useVenueSettings: true
 }
 
-export const apGroupClientAdmissionControl = {
-    "useVenueSettings": true,
-    "enable24G": true,
-    "enable50G": true,
-    "minClientCount24G": 10,
-    "minClientCount50G": 20,
-    "maxRadioLoad24G": 75,
-    "maxRadioLoad50G": 85,
-    "minClientThroughput24G": 30,
-    "minClientThroughput50G": 30
+export const venueClientAdmissionControl = {
+  enable24G: false,
+  enable50G: false,
+  minClientCount24G: 10,
+  minClientCount50G: 20,
+  maxRadioLoad24G: 75,
+  maxRadioLoad50G: 75,
+  minClientThroughput24G: 1,
+  minClientThroughput50G: 2
 }
 
-export const venueClientAdmissionControl = {
-  "enable24G": true,
-  "enable50G": true,
-  "minClientCount24G": 10,
-  "minClientCount50G": 20,
-  "maxRadioLoad24G": 75,
-  "maxRadioLoad50G": 85,
-  "minClientThroughput24G": 30,
-  "minClientThroughput50G": 30
+export const apGroupClientAdmissionControl = {
+  ...venueClientAdmissionControl,
+  useVenueSettings: true
 }
 
 export const radioData = {
