@@ -141,7 +141,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
-  // const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
+  const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
 
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -701,12 +701,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
-  }, {
+  }, ...(isApCliSessionEnabled ? [{
     label: $t({ defaultMessage: 'CLI Session' }),
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-    visible: (rows) => {
+    visible: (rows: NewAPModelExtended[]) => {
       return isActionVisible(rows, { selectOne: true })
       // if (rows && rows.length === 0) return false
 
@@ -715,7 +715,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       // const isOperational = row.status === ApDeviceStatusEnum.OPERATIONAL
       // return (isActionVisible(rows, { selectOne: true })) && !(isOperational || isUpgradeFail)
     },
-    onClick: async (rows) => {
+    onClick: async (rows: NewAPModelExtended[]) => {
       const row = rows[0]
       let token = ''
       try {
@@ -736,7 +736,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         setCliModalOpen(true)
       }, 1000)
     }
-  }, {
+  }]: []), {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],

@@ -45,7 +45,7 @@ function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  // const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
+  const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
@@ -135,13 +135,13 @@ function ApPageHeader () {
         scopeKey: [WifiScopes.READ],
         roles: [RolesEnum.READ_ONLY]
       }] :
-        [{
+        [...(isApCliSessionEnabled ? [{
           label: $t({ defaultMessage: 'CLI Session' }),
           key: 'cliSession',
           scopeKey: [WifiScopes.UPDATE],
           rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
           roles: operationRoles
-        }, {
+        }] : []), {
           label: $t({ defaultMessage: 'Reboot' }),
           key: 'reboot',
           scopeKey: [WifiScopes.UPDATE],

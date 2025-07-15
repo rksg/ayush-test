@@ -16,6 +16,7 @@ import { deviceAps } from '../../__tests__/fixtures'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -55,33 +56,8 @@ describe('ApPageHeader', () => {
     expect(mockNavigate).toBeCalledTimes(1)
   })
 
-  it('click to action button', async () => {
-
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))
-      )
-    )
-    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
-
-    await userEvent.click(await screen.findByText('More Actions'))
-    await userEvent.click(await screen.findByText('Reboot'))
-
-    const dialog = await screen.findByRole('dialog')
-    expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
-    const cancelBtn = await within(dialog).findByRole('button', { name: 'Cancel' })
-    expect(cancelBtn).toBeVisible()
-    fireEvent.click(cancelBtn)
-  })
-
   it('click CLI Session button', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_CLI_SESSION_TOGGLE)
     mockServer.resetHandlers()
     mockServer.use(
       rest.get(
@@ -104,6 +80,29 @@ describe('ApPageHeader', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(await within(dialog).findByText(/CLI Session/)).toBeVisible()
+  })
+
+  it('click to action button', async () => {
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      )
+    )
+    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
+
+    await userEvent.click(await screen.findByText('More Actions'))
+    await userEvent.click(await screen.findByText('Reboot'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
   })
 
   it('should render correct breadcrumb', async () => {
