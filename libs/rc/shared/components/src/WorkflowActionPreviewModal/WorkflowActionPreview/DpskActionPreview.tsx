@@ -18,7 +18,7 @@ export function DpskActionPreview (props: GenericActionPreviewProps<DpskAction>)
 
   const { data: dpskService } = useGetDpskQuery(
     { params: { serviceId: data?.dpskPoolId } },
-    { skip: !data?.identityGroupId || data.valid === false })
+    { skip: !data?.dpskPoolId || data.valid === false })
 
   const { Title, Text, Link } = Typography
 
