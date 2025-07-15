@@ -40,6 +40,8 @@ export function RadiusSettings (props: RadiusSettingsProps) {
   const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const isNonProxyAcctDpskFFEnabled = useIsSplitOn(Features.ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   useEffect(() => {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
@@ -137,8 +139,9 @@ export function RadiusSettings (props: RadiusSettingsProps) {
             labelWidth={labelWidth}
             networkType={data?.type}
             excludeRadSec={
-              data?.type === NetworkTypeEnum.DPSK ||
-            dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
+              (isSupportNetworkRadiusAccounting)? false :
+                (data?.type === NetworkTypeEnum.DPSK ||
+                  dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed)
             }
             customProxyModeToolTip={(data?.type === NetworkTypeEnum.DPSK)?
               DPSKAcctProxyServiceTooltip: undefined
