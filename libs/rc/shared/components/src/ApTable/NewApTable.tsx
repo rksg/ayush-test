@@ -706,15 +706,17 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-    visible: (rows: NewAPModelExtended[]) => {
-      return isActionVisible(rows, { selectOne: true })
-      // if (rows && rows.length === 0) return false
-
-      // const row = rows[0]
-      // const isUpgradeFail = row.status === ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED
-      // const isOperational = row.status === ApDeviceStatusEnum.OPERATIONAL
-      // return (isActionVisible(rows, { selectOne: true })) && !(isOperational || isUpgradeFail)
-    },
+    visible: (rows: NewAPModelExtended[]) => isActionVisible(rows,
+      { selectOne: true,
+        deviceStatus: [
+          ApDeviceStatusEnum.OPERATIONAL,
+          ApDeviceStatusEnum.APPLYING_CONFIGURATION,
+          ApDeviceStatusEnum.APPLYING_FIRMWARE,
+          ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED,
+          ApDeviceStatusEnum.HEARTBEAT_LOST,
+          ApDeviceStatusEnum.INITIALIZING,
+          ApDeviceStatusEnum.OFFLINE,
+          ApDeviceStatusEnum.REBOOTING ] }),
     onClick: async (rows: NewAPModelExtended[]) => {
       const row = rows[0]
       let token = ''
