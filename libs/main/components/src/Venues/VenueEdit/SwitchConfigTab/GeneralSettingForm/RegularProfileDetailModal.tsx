@@ -1,7 +1,6 @@
 import { Typography } from 'antd'
 
 import { Modal, Table, TableProps }                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { useGetSwitchConfigProfileQuery, useGetSwitchConfigProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
   Acl,
@@ -22,14 +21,13 @@ export function RegularProfileDetailModal (props: {
   formData: VenueSwitchConfiguration,
   setFormState: (data: FormState) => void
 }) {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { $t } = getIntl()
   const { formState, setFormState, formData } = props
   const { data } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
     useQueryFn: useGetSwitchConfigProfileQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
     extraParams: { profileId: formData?.profileId?.[0] as string },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const vlansColumns: TableProps<Vlan>['columns']= [{

@@ -1,10 +1,10 @@
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 
-import { Features }                                                  from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
-import { render, screen, within }                                    from '@acx-ui/test-utils'
-import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                            from '@acx-ui/user'
+import { Features }                                                                                          from '@acx-ui/feature-toggle'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { render, screen, within }                                                                            from '@acx-ui/test-utils'
+import { EdgeScopes, SwitchScopes, WifiScopes }                                                              from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                                                    from '@acx-ui/user'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -12,6 +12,7 @@ import { EdgeLagTable } from '.'
 
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('./LagDrawer', () => ({
   ...jest.requireActual('./LagDrawer'),
@@ -22,18 +23,26 @@ jest.mock('../useEdgeActions', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
+const mockDefaultProps = {
+  clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+  serialNumber: 'test-edge',
+  lagList: mockedEdgeLagList.content,
+  lagStatusList: mockEdgeLagStatusList.data,
+  portList: mockEdgePortConfig.ports,
+  onAdd: async () => {},
+  onEdit: async () => {},
+  onDelete: async () => {}
+}
+
 describe('EdgeLagTable', () => {
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
+  })
+
   it('should correctly render', async () => {
-    render(
-      <EdgeLagTable
-        lagList={mockedEdgeLagList.content}
-        lagStatusList={mockEdgeLagStatusList.data}
-        portList={mockEdgePortConfig.ports}
-        onAdd={async () => {}}
-        onEdit={async () => {}}
-        onDelete={async () => {}}
-      />
-    )
+    render(<EdgeLagTable
+      {...mockDefaultProps}
+    />)
 
     expect(screen.getByTestId('LagDrawer')).toBeVisible()
     expect(await screen.findByRole('row', { name: /LAG 1/i })).toBeVisible()
@@ -41,23 +50,15 @@ describe('EdgeLagTable', () => {
   })
 
   it('should disable the "Delete" button when the interface set as a VRRP interface', async () => {
-    render(
-      <EdgeLagTable
-        serialNumber='test-edge'
-        lagList={mockedEdgeLagList.content}
-        lagStatusList={mockEdgeLagStatusList.data}
-        portList={mockEdgePortConfig.ports}
-        vipConfig={[{
-          ports: [{
-            serialNumber: 'test-edge',
-            portName: 'lag2'
-          }]
-        }] as VirtualIpSetting[]}
-        onAdd={async () => {}}
-        onEdit={async () => {}}
-        onDelete={async () => {}}
-      />
-    )
+    render(<EdgeLagTable
+      {...mockDefaultProps}
+      vipConfig={[{
+        ports: [{
+          serialNumber: 'test-edge',
+          portName: 'lag2'
+        }]
+      }] as VirtualIpSetting[]}
+    />)
 
     const lag2Row = await screen.findByRole('row', { name: /LAG 2/i })
     expect(lag2Row).toBeVisible()
@@ -72,7 +73,7 @@ describe('EdgeLagTable', () => {
   })
 
   describe('ABAC permission', () => {
-    it('should dispaly with custom scopeKeys', async () => {
+    it('should display with custom scopeKeys', async () => {
       setUserProfile({
         allowedOperations: [],
         profile: {
@@ -83,20 +84,14 @@ describe('EdgeLagTable', () => {
         scopes: [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, WifiScopes.READ]
       })
 
-      render(
-        <EdgeLagTable
-          lagList={mockedEdgeLagList.content}
-          lagStatusList={mockEdgeLagStatusList.data}
-          portList={mockEdgePortConfig.ports}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
-          onDelete={async () => {}}
-          actionScopes={{
-            add: [EdgeScopes.UPDATE],
-            edit: [EdgeScopes.UPDATE],
-            delete: [EdgeScopes.UPDATE]
-          }}
-        />)
+      render(<EdgeLagTable
+        {...mockDefaultProps}
+        actionScopes={{
+          add: [EdgeScopes.UPDATE],
+          edit: [EdgeScopes.UPDATE],
+          delete: [EdgeScopes.UPDATE]
+        }}
+      />)
 
       expect(screen.getByTestId('LagDrawer')).toBeVisible()
       const row = await screen.findByRole('row', { name: /LAG 1/i })
@@ -117,20 +112,14 @@ describe('EdgeLagTable', () => {
         scopes: [EdgeScopes.READ, EdgeScopes.CREATE, SwitchScopes.READ, WifiScopes.READ]
       })
 
-      render(
-        <EdgeLagTable
-          lagList={mockedEdgeLagList.content}
-          lagStatusList={mockEdgeLagStatusList.data}
-          portList={mockEdgePortConfig.ports}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
-          onDelete={async () => {}}
-          actionScopes={{
-            add: [EdgeScopes.UPDATE],
-            edit: [EdgeScopes.UPDATE],
-            delete: [EdgeScopes.UPDATE]
-          }}
-        />)
+      render(<EdgeLagTable
+        {...mockDefaultProps}
+        actionScopes={{
+          add: [EdgeScopes.UPDATE],
+          edit: [EdgeScopes.UPDATE],
+          delete: [EdgeScopes.UPDATE]
+        }}
+      />)
 
       expect(screen.getByTestId('LagDrawer')).toBeVisible()
       const row = await screen.findByRole('row', { name: /LAG 1/i })
@@ -145,21 +134,10 @@ describe('EdgeLagTable', () => {
       jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     })
 
-    afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
-    })
-
     it('should show core port and access port column when FF is on', async () => {
-      render(
-        <EdgeLagTable
-          lagList={mockedEdgeLagList.content}
-          lagStatusList={mockEdgeLagStatusList.data}
-          portList={mockEdgePortConfig.ports}
-          onAdd={async () => {}}
-          onEdit={async () => {}}
-          onDelete={async () => {}}
-        />
-      )
+      render(<EdgeLagTable
+        {...mockDefaultProps}
+      />)
 
       expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
