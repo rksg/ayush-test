@@ -40,6 +40,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   showValue: boolean,
+  labelFormat: 'name' | 'name-bold-value',
   legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
@@ -50,6 +51,7 @@ const defaultProps: DonutChartOptionalProps = {
   showLabel: false,
   showTotal: true,
   showValue: false,
+  labelFormat: 'name',
   legend: 'value',
   size: 'small'
 }
@@ -342,8 +344,20 @@ export function DonutChart ({
         label: {
           show: props.showLabel,
           ...styles.label,
+          rich: {
+            bold: {
+              ...styles.label,
+              fontWeight: cssNumber('--acx-body-font-weight-bold')
+            }
+          },
           formatter: (params) => {
-            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+            switch (props.labelFormat) {
+              case 'name-bold-value':
+                return `${params.name} {bold|${dataFormatter(params.value)}}`
+              case 'name': //fallthrough
+              default:
+                return props.showValue ? `${dataFormatter(params.value)}` : params.name
+            }
           }
         },
         tooltip: {

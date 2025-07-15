@@ -283,7 +283,15 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
 
-      customGuiChangedRef.current = false
+      const isUpdated = lan && apModel
+        ? (() => {
+          const matchItem = lanPortData?.find(item => item.model === apModel)
+          return matchItem ? isEqual(matchItem.lanPorts, lan) : false
+        })()
+        : false
+      if (isUpdated) {
+        customGuiChangedRef.current = false
+      }
     }
   }, [apPoeMode, apPoeOut, apPoeOutMode, lanPorts])
 

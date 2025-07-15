@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { CommonUrlsInfo, SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,6 +24,9 @@ describe('ClientList', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json([]))
       ),
       rest.post(

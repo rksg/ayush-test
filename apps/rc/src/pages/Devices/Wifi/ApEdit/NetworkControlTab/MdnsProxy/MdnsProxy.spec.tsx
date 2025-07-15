@@ -135,11 +135,9 @@ describe('MdnsProxy', () => {
     const targetErrorMessage = 'MulticastDnsProxyServiceProfile Not Found'
 
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (req, res, ctx) => res(ctx.json({
-          serialNumber: '121749001049'
-        }))
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => (res(ctx.json({ id: 'fake_Mdns_id' })))
       ),
       rest.post(
         MdnsProxyUrls.addMdnsProxyAps.url,

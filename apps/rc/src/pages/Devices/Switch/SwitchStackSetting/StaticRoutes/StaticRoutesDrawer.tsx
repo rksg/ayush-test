@@ -6,7 +6,6 @@ import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
 import { Drawer }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation
@@ -35,8 +34,6 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
   const { tenantId, switchId } = useParams()
   const { visible, setVisible, data, switchDetail } = props
   const [formRef] = Form.useForm()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const [addSwitchStaticRoute] = useAddSwitchStaticRouteMutation()
   const [updateSwitchStaticRoute] = useUpdateSwitchStaticRouteMutation()
 
@@ -89,12 +86,12 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       venueId: switchDetail?.venueId
     }
     if(data) {
-      updateSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
+      updateSwitchStaticRoute({ params, payload, enableRbac: true }).unwrap()
         .catch((error) => {
           console.log(error) // eslint-disable-line no-console
         })
     } else {
-      addSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
+      addSwitchStaticRoute({ params, payload, enableRbac: true }).unwrap()
         .catch((error) => {
           console.log(error) // eslint-disable-line no-console
         })

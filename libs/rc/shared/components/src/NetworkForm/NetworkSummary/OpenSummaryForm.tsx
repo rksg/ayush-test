@@ -3,7 +3,8 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
-import { AaaSummary } from './AaaSummary'
+import { AaaSummary }            from './AaaSummary'
+import { MacAuthenticationInfo } from './MacAuthenticationInfo'
 
 type OpenSummaryFormProps = {
   summaryData: NetworkSaveData
@@ -15,15 +16,18 @@ export const OpenSummaryForm = (props: OpenSummaryFormProps) => {
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   const isDisplayAuth = (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
-    !summaryData.wlan?.macRegistrationListId)
+    !summaryData.wlan?.isMacRegistrationList)
 
-  const isDisplayAccounting = (isSupportNetworkRadiusAccounting)? true : isDisplayAuth
+  const isDisplayAccounting = (isSupportNetworkRadiusAccounting) ? true : isDisplayAuth
 
   return (
-    <AaaSummary
-      summaryData={summaryData}
-      isDisplayAuth={isDisplayAuth}
-      isDisplayAccounting={isDisplayAccounting}
-    />
+    <>
+      <MacAuthenticationInfo summaryData={summaryData} />
+      <AaaSummary
+        summaryData={summaryData}
+        isDisplayAuth={isDisplayAuth}
+        isDisplayAccounting={isDisplayAccounting}
+      />
+    </>
   )
 }

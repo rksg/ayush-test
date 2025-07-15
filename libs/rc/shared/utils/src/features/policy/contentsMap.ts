@@ -53,5 +53,8 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
 
 export const policyTypeLabelWithCountMapping: Record<PolicyType, MessageDescriptor> = {
   ...policyTypeLabelMapping,
+  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control ({count})' }),
+  // eslint-disable-next-line max-len
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: defineMessage({ defaultMessage: 'Access Control ({count})' }),
   [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Port Authentication ({count})' })
 }

@@ -26,9 +26,8 @@ import { AAASettings } from './AAASettings'
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : true
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
@@ -41,7 +40,7 @@ export function SwitchAAATab () {
   const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>({
     useQueryFn: useVenueSwitchSettingQuery,
     useTemplateQueryFn: useGetVenueTemplateSwitchSettingQuery,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
   const cliApplied = !!venueSwitchSetting?.cliApplied
 
