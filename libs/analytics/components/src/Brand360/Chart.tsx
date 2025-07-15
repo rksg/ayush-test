@@ -27,11 +27,6 @@ export const getSeriesMapping = (chartKey: ChartKey, $t: IntlShape['$t']) => {
       { key: 'clientThroughputSLA', name: $t({ defaultMessage: 'Client Throughput' }) },
       { key: 'connectionSuccessSLA', name: $t({ defaultMessage: 'Connection Success' }) }
     ]
-    // for demo only
-    // istanbul ignore next
-    case 'mdu': return [
-      { key: 'prospectCountSLA', name: $t({ defaultMessage: '# of Prospects' }) }
-    ]
   }
 }
 

@@ -45,9 +45,6 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
     case 'incident': return ['incidentCount']
     case 'experience': return ['timeToConnectSLA', 'clientThroughputSLA', 'connectionSuccessSLA']
     case 'compliance': return ['ssidComplianceSLA']
-    // for demo only
-    // istanbul ignore next
-    case 'mdu': return ['prospectCountSLA']
   }
 }
 

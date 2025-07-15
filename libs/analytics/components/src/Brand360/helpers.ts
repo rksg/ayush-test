@@ -7,7 +7,7 @@ import { MspEc }                               from '@acx-ui/msp/utils'
 import { getIntl, noDataDisplay, TableResult } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
-export type ChartKey = 'incident' | 'experience' | 'compliance' | 'mdu'
+export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
 type SortResult = -1 | 0 | 1
@@ -20,8 +20,7 @@ export interface Common {
   deviceCount: number
   avgConnSuccess: number | null,
   avgTTC: number | null,
-  avgClientThroughput: number | null,
-  prospectCountSLA: number
+  avgClientThroughput: number | null
 }
 export interface Property extends Common {
   property: string
@@ -85,8 +84,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       clientThroughput,
       p1Incidents,
       ssidCompliance,
-      deviceCount,
-      prospectCountSLA
+      deviceCount
     } = properties.reduce(
       (acc, cur) => ({
         connSuccess: [
@@ -104,8 +102,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
           acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
           acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
-        deviceCount: acc.deviceCount + cur.deviceCount,
-        prospectCountSLA: acc.prospectCountSLA + cur.prospectCountSLA
+        deviceCount: acc.deviceCount + cur.deviceCount
       }),
       {
         connSuccess: [0, 0],
@@ -113,8 +110,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
         clientThroughput: [0, 0],
         p1Incidents: 0,
         ssidCompliance: [0, 0],
-        deviceCount: 0,
-        prospectCountSLA: 0
+        deviceCount: 0
       }
     )
     const avgConnSuccess = checkPropertiesForNaN(properties, 'avgConnSuccess', connSuccess)
@@ -139,8 +135,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       p1Incidents,
       ssidCompliance: validatedSsidCompliance,
       deviceCount,
-      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput),
-      prospectCountSLA
+      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput)
     }
   })
 }
@@ -202,15 +197,6 @@ export const slaKpiConfig = {
     formatter: formatter('percentFormat'),
     direction: 'high',
     order: 'desc'
-  },
-  mdu: {
-    getTitle: // istanbul ignore next
-      () => defineMessage({ defaultMessage: '# of Prospects' }),
-    dataKey: 'prospectCountSLA',
-    avg: true,
-    formatter: formatter('countFormat'),
-    direction: 'high',
-    order: 'desc'
   }
 }
 
@@ -257,7 +243,6 @@ export const transformVenuesData = (
       ssidCompliance: sumData(
         tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
       ) as [number, number],
-      prospectCountSLA: 0,
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
         (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
