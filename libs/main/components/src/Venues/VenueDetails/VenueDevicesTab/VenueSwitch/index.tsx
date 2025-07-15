@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 
 import { Tabs, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
 import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
 import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
@@ -14,13 +13,12 @@ import { IconThirdTab } from '../VenueWifi/styledComponents'
 export function VenueSwitch () {
   const { $t } = useIntl()
   const params = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/devices`)
 
   const { getSwitchModelList } = useGetSwitchModelListQuery({
     params: { tenantId: params.tenantId },
-    enableRbac: isSwitchRbacEnabled,
+    enableRbac: true,
     payload: {
       fields: ['name', 'id'],
       pageSize: 10000,

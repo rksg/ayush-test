@@ -37,19 +37,19 @@ interface EdgeLagTableType extends EdgeLag {
 }
 
 interface EdgeLagTableProps {
-  clusterId?: string
-  serialNumber?: EdgeSerialNumber
-  lagList?: EdgeLag[]
-  lagStatusList?: EdgeLagStatus[]
-  portList?: EdgePort[]
-  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  serialNumber: EdgeSerialNumber | undefined
+  lagList: EdgeLag[] | undefined
+  portList: EdgePort[] | undefined
+  clusterInfo: EdgeClusterStatus
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
+
+  lagStatusList?: EdgeLagStatus[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   actionScopes?: { [key in string]: ScopeKeys }
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
   originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
@@ -57,7 +57,7 @@ interface EdgeLagTableProps {
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    clusterId = '', serialNumber = '', lagList,
+    serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
@@ -285,7 +285,6 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         rowKey='id'
       />
       <LagDrawer
-        clusterId={clusterId}
         serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}

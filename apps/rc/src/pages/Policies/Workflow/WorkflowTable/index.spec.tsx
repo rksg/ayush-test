@@ -111,6 +111,7 @@ describe('WorkflowTable', () => {
     deleteWorkflowApi.mockClear()
     cloneWorkflowApi.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    searchInProgressWorkflowApi.mockClear()
     mockServer.use(
       rest.post(
         replacePagination(WorkflowUrls.searchInProgressWorkflows.url),
