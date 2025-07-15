@@ -108,7 +108,6 @@ describe('HQoS Settings Form', () => {
     expect(await within(row).findByTestId('WarningCircleSolid')).toBeVisible()
   })
 
-
   it('should correctly render in edit mode', async () => {
 
     const { result: stepFormRef } = renderHook(() => useMockedFormHook({
@@ -120,8 +119,9 @@ describe('HQoS Settings Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     const rows = await screen.findAllByRole('row')
-    const row1 = rows[1]
-    const row2 = rows[2]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_header, row1, row2, row3, row4] = rows
+
     expect(row1).toHaveTextContent(/VideoHigh/i)
     expect(row2).toHaveTextContent(/Video/i)
     const videoCheckbox1 = within(row1).getByRole('checkbox')
@@ -129,15 +129,17 @@ describe('HQoS Settings Form', () => {
     const videoCheckbox2 = within(row2).getByRole('checkbox')
     expect(videoCheckbox2).toBeChecked()
 
-    expect(rows[3]).toHaveTextContent(/Voice/i)
-    const voiceCheckbox1 = within(rows[3]).getByRole('checkbox')
+    expect(row3).toHaveTextContent(/Voice/i)
+    const voiceCheckbox1 = within(row3).getByRole('checkbox')
     expect(voiceCheckbox1).not.toBeChecked()
-    const voiceCheckbox2 = within(rows[4]).getByRole('checkbox')
+    const voiceCheckbox2 = within(row4).getByRole('checkbox')
     expect(voiceCheckbox2).not.toBeChecked()
 
-    const row1NumInputs = within(rows[1]).getAllByRole('spinbutton')
-    expect(row1NumInputs[0].getAttribute('value')).toBe('15')
-    expect(row1NumInputs[1].getAttribute('value')).toBe('100')
+    const row1NumInputs = within(row1).getAllByRole('spinbutton')
+    const row1MinBandwidth = row1NumInputs[0]
+    const row1MaxBandwidth = row1NumInputs[1]
+    expect(row1MinBandwidth.getAttribute('value')).toBe('15')
+    expect(row1MaxBandwidth.getAttribute('value')).toBe('100')
 
     const minBandwidthArray = mockTrafficClassSettings?.map((item) => item?.minBandwidth)
     const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
