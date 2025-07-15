@@ -3,9 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { venueApi }                                                               from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, SwitchUrlsInfo }                                      from '@acx-ui/rc/utils'
+import { AAAServerTypeEnum, SwitchRbacUrlsInfo, SwitchUrlsInfo }                  from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, waitForElementToBeRemoved, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -20,8 +19,8 @@ describe('AAAServers', () => {
   })
   it('should render empty lists and alert message correctly', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => res(ctx.json(emptyList)))
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => res(ctx.json(emptyList)))
     )
     render(<Provider><AAAServers /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -37,10 +36,10 @@ describe('AAAServers', () => {
 
   it('should render RADIUS list correctly and add data', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
@@ -77,10 +76,10 @@ describe('AAAServers', () => {
 
   it('should render RADIUS list correctly and edit row data', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
@@ -116,15 +115,15 @@ describe('AAAServers', () => {
 
   it('should render RADIUS list correctly and delete data', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
       }),
-      rest.delete(SwitchUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
+      rest.delete(SwitchRbacUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
     )
@@ -165,10 +164,10 @@ describe('AAAServers', () => {
       acctEnabledExec: true
     }
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(aaaSettings))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: AAAServerTypeEnum }
         switch (body.serverType) {
           case 'RADIUS': return res(ctx.json(radiusList))
@@ -177,7 +176,7 @@ describe('AAAServers', () => {
           default: return res(ctx.json(emptyList))
         }
       }),
-      rest.delete(SwitchUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
+      rest.delete(SwitchRbacUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
     )
@@ -203,10 +202,9 @@ describe('AAAServers', () => {
   })
 
   it('should render correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: AAAServerTypeEnum }
         switch (body.serverType) {
           case 'LOCAL': return res(ctx.json(localUserList))
