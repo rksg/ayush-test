@@ -40,9 +40,9 @@ describe('Brand 360 Table', () => {
       id: '1',
       property: 'p',
       lsps: ['l'],
-      p1Incidents: 0,
+      p1Incidents: NaN,
       ssidCompliance: '--' as unknown as [number, number],
-      deviceCount: 0,
+      deviceCount: NaN,
       avgConnSuccess: '--' as unknown as [number, number],
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
