@@ -66,8 +66,6 @@ export function ClientAdmissionControlSettings(props: {
   const [updateApGroupClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApGroupClientAdmissionControlMutation()
 
-
-
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true) 
   const isUseVenueSettingsRef = useRef<boolean>(true)
   const initClientAdmissionControlRef = useRef<ApGroupClientAdmissionControl>()
