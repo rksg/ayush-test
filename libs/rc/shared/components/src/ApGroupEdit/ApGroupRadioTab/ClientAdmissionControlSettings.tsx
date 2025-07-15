@@ -1,25 +1,23 @@
+/* eslint-disable max-len */
 import { useContext, useEffect, useState, useRef } from 'react'
 
 import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { FormattedMessage, useIntl }                      from 'react-intl'
+import { useParams }                                      from 'react-router-dom'
 
-import { AnchorContext, Loader } from '@acx-ui/components'
+import { AnchorContext, Loader }           from '@acx-ui/components'
+import {
+  useGetApGroupClientAdmissionControlQuery,
+  useUpdateApGroupClientAdmissionControlMutation,
+  useGetVenueClientAdmissionControlQuery
+} from '@acx-ui/rc/services'
+import { ApGroupClientAdmissionControl, ClientAdmissionControl, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
   ClientAdmissionControlLevelEnum
-} from '@acx-ui/rc/components'
-
-import {  
-  useGetApGroupClientAdmissionControlQuery,
-  useUpdateApGroupClientAdmissionControlMutation,
-  useGetVenueClientAdmissionControlQuery
-} from '@acx-ui/rc/services'
-
-import { ApGroupClientAdmissionControl, ClientAdmissionControl, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
-
+} from '../../ClientAdmissionControlForm'
 import { ApGroupEditContext } from '../context'
 
 const { useWatch } = Form
@@ -29,7 +27,7 @@ export function ClientAdmissionControlSettings(props: {
 }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { isAllowEdit = true} = props
+  const { isAllowEdit = true } = props
 
   const { apGroupId } = useParams()
   const {
@@ -71,7 +69,7 @@ export function ClientAdmissionControlSettings(props: {
   const initClientAdmissionControlRef = useRef<ApGroupClientAdmissionControl>()
   const venueClientAdmissionControlRef = useRef<VenueClientAdmissionControl>()
 
-  useEffect(() => {       
+  useEffect(() => {
     if(!getApGroupClientAdmissionControl.isLoading) {
       const setData = async () => {
         const clientAdmissionControlData = getApGroupClientAdmissionControl?.data
@@ -88,9 +86,9 @@ export function ClientAdmissionControlSettings(props: {
       setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, getApGroupClientAdmissionControl?.data])  
+  }, [form, getApGroupClientAdmissionControl?.data])
 
-  const setDataToForm = (data: ApGroupClientAdmissionControl ) => { 
+  const setDataToForm = (data: ApGroupClientAdmissionControl ) => {
     form.setFieldValue(enable24GFieldName, data.enable24G)
     form.setFieldValue(enable50GFieldName, data.enable50G)
     form.setFieldValue(minClientCount24GFieldName, data.minClientCount24G)
@@ -125,24 +123,24 @@ export function ClientAdmissionControlSettings(props: {
       const payload: ApGroupClientAdmissionControl = isUseVenueSettingsRef.current
         ? { useVenueSettings: true }
         : { useVenueSettings: false,
-            enable24G: form.getFieldValue(enable24GFieldName),
-            enable50G: form.getFieldValue(enable50GFieldName),
-            minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
-            minClientCount50G: form.getFieldValue(minClientCount50GFieldName),
-            maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
-            maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
-            minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
-            minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
-          };
-  
+          enable24G: form.getFieldValue(enable24GFieldName),
+          enable50G: form.getFieldValue(enable50GFieldName),
+          minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
+          minClientCount50G: form.getFieldValue(minClientCount50GFieldName),
+          maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
+          maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
+          minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
+          minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
+        }
+
       await updateApGroupClientAdmissionControl({
         params: { venueId, apGroupId },
         payload
-      }).unwrap();
+      }).unwrap()
     } catch (error) {
-      console.error(error); // eslint-disable-line no-console
+      console.error(error) // eslint-disable-line no-console
     }
-  };
+  }
 
   const onFormDataChanged = () => {
     setEditContextData && setEditContextData({
@@ -204,36 +202,36 @@ export function ClientAdmissionControlSettings(props: {
       isLoading: getApGroupClientAdmissionControl.isLoading,
       isFetching: isUpdatingClientAdmissionControl
     }]}>
-    {useVenueSettingsOrCustomizeRadio()}
+      {useVenueSettingsOrCustomizeRadio()}
       <Row gutter={[0, 16]}>
         {<Col style={{ width: '340px' }}>
-            <ClientAdmissionControlForm
-              key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
-              level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-              type={ClientAdmissionControlTypeEnum.CAC_24G}
-              readOnly={!isAllowEdit || isUseVenueSettings}
-              isEnabled={enable24G}
-              isMutuallyExclusive={false}
-              enabledFieldName={enable24GFieldName}
-              minClientCountFieldName={minClientCount24GFieldName}
-              maxRadioLoadFieldName={maxRadioLoad24GFieldName}
-              minClientThroughputFieldName={minClientThroughput24GFieldName}
-              onFormDataChanged={onFormDataChanged}
-            />
-            <ClientAdmissionControlForm
-              key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
-              level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-              type={ClientAdmissionControlTypeEnum.CAC_5G}
-              readOnly={!isAllowEdit || isUseVenueSettings}
-              isEnabled={enable50G}              
-              isMutuallyExclusive={false}
-              enabledFieldName={enable50GFieldName}
-              minClientCountFieldName={minClientCount50GFieldName}
-              maxRadioLoadFieldName={maxRadioLoad50GFieldName}
-              minClientThroughputFieldName={minClientThroughput50GFieldName}
-              onFormDataChanged={onFormDataChanged}
-            />
-          </Col>}
+          <ClientAdmissionControlForm
+            key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+            level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+            type={ClientAdmissionControlTypeEnum.CAC_24G}
+            readOnly={!isAllowEdit || isUseVenueSettings}
+            isEnabled={enable24G}
+            isMutuallyExclusive={false}
+            enabledFieldName={enable24GFieldName}
+            minClientCountFieldName={minClientCount24GFieldName}
+            maxRadioLoadFieldName={maxRadioLoad24GFieldName}
+            minClientThroughputFieldName={minClientThroughput24GFieldName}
+            onFormDataChanged={onFormDataChanged}
+          />
+          <ClientAdmissionControlForm
+            key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+            level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+            type={ClientAdmissionControlTypeEnum.CAC_5G}
+            readOnly={!isAllowEdit || isUseVenueSettings}
+            isEnabled={enable50G}
+            isMutuallyExclusive={false}
+            enabledFieldName={enable50GFieldName}
+            minClientCountFieldName={minClientCount50GFieldName}
+            maxRadioLoadFieldName={maxRadioLoad50GFieldName}
+            minClientThroughputFieldName={minClientThroughput50GFieldName}
+            onFormDataChanged={onFormDataChanged}
+          />
+        </Col>}
       </Row>
     </Loader>
   )
