@@ -8,15 +8,14 @@ import {
   SamlIdpProfile,
   SamlIdpProfileViewData,
   SamlIdpProfileUrls,
-  TableResult,
   SamlIdpProfileFormType,
   onActivityMessageReceived,
   onSocketActivityChanged,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { baseSamlIdpProfileApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseSamlIdpProfileApi }          from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 
 export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({

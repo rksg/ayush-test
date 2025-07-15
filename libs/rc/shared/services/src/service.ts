@@ -7,7 +7,6 @@ import { v4 as uuidv4 }                            from 'uuid'
 import {
   CommonUrlsInfo,
   DHCPUrls,
-  TableResult,
   Service,
   CommonResult,
   MdnsProxyFormData,
@@ -21,9 +20,7 @@ import {
   DpskUrls,
   Portal,
   PortalUrlsInfo,
-  NewTableResult,
   NewDpskPassphrase,
-  transferToTableResult,
   DpskPassphrasesSaveData,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
@@ -32,12 +29,7 @@ import {
   onActivityMessageReceived,
   MdnsProxyAp,
   UploadUrlResponse,
-  TableChangePayload,
-  RequestFormData,
-  createNewTableHttpRequest,
   downloadFile,
-  NewAPITableResult,
-  transferNewResToTableResult,
   MdnsProxyViewModel,
   PortalTablePayload,
   IpUtilsService,
@@ -57,9 +49,12 @@ import {
   APExtended,
   CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseServiceApi }                       from '@acx-ui/store'
-import { RequestPayload }                       from '@acx-ui/types'
-import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseServiceApi }                            from '@acx-ui/store'
+import { RequestPayload }                            from '@acx-ui/types'
+import { ApiInfo, batchApi, createHttpRequest, NewTableResult, NewAPITableResult,
+  transferNewResToTableResult,  TableChangePayload,
+  RequestFormData, TableResult,
+  createNewTableHttpRequest, transferToTableResult } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -435,24 +430,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     addMdnsProxyAps: build.mutation<CommonResult, RequestPayload<string[]>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyApsRbac : MdnsProxyUrls.addMdnsProxyAps
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
+        await batchApi(MdnsProxyUrls.addMdnsProxyApsRbac, requests, fetchWithBQ)
 
-        if (enableRbac) {
-          const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
-          await batchApi(apiInfo, requests, fetchWithBQ)
-
-          return { data: {} as CommonResult }
-        } else {
-          const res = await fetchWithBQ({
-            ...createHttpRequest(apiInfo, params),
-            body: payload
-          })
-
-          return res.data
-            ? { data: res.data as CommonResult }
-            : { error: res.error as FetchBaseQueryError }
-        }
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
@@ -578,6 +560,36 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    getApMdnsProxySettings: build.query<MdnsProxyViewModel, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, params)
+        const payload = {
+          fields: ['name', 'activations', 'rules', 'id'],
+          filters: {
+            'activations.apSerialNumbers': [params?.serialNumber]
+          }
+        }
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (response: TableResult<MdnsProxyViewModel>) {
+        return response?.data?.[0] ?? {} as MdnsProxyViewModel
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ActivateMulticastDnsProxyProfile',
+            'DeactivateMulticastDnsProxyProfile'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'MdnsProxy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -1144,6 +1156,7 @@ export const {
   useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
+  useGetApMdnsProxySettingsQuery,
   useDeleteWifiCallingServicesMutation,
   useGetWifiCallingServiceQuery,
   useGetEnhancedWifiCallingServiceListQuery,

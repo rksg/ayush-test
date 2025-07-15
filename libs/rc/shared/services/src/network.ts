@@ -21,7 +21,6 @@ import {
   NetworkRadiusSettings,
   NetworkSaveData,
   NetworkVenue,
-  TableResult,
   Venue,
   VenueConfigTemplateUrlsInfo,
   WifiNetwork,
@@ -41,17 +40,16 @@ import {
   CompatibilityResponse,
   Compatibility,
   IncompatibleFeatureLevelEnum,
-  NewTableResult,
-  transferToTableResult,
   MacRegistrationPool,
   TxStatus,
   NewAPModel,
   VlanPool,
   PoliciesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi }                      from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseNetworkApi }              from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal, NewTableResult,
+  transferToTableResult, TableResult } from '@acx-ui/utils'
 
 import {
   aggregatedRbacNetworksVenueData,
@@ -465,6 +463,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    // It needs to keep the non-RBAC API for the RUCKUS AI Onboarding Assistant
     getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
       async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -2192,6 +2191,7 @@ export const {
   useDeactivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
+  useLazyGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,

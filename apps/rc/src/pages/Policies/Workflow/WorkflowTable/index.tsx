@@ -26,10 +26,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
-  FILTER,
-  SEARCH,
   Workflow,
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
@@ -41,7 +38,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
 
@@ -105,14 +102,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
         return workflowMap.get(row.id!)?.publishedDetails?.version
-          ? <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.WORKFLOW,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!!,
-              activeTab: WorkflowDetailsTabKey.OVERVIEW
-            })}
-          >{workflowMap.get(row.id!)?.publishedDetails?.version}</TenantLink>
+          ? workflowMap.get(row.id!)?.publishedDetails?.version
           : noDataDisplay
       }
     },

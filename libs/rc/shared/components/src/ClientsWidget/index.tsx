@@ -6,7 +6,7 @@ import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
 import type { DonutChartData }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useClientSummariesQuery }                              from '@acx-ui/rc/services'
+import { useClientSummariesQuery, useGetApWiredClientsQuery }   from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
@@ -69,6 +69,21 @@ export const getSwitchClientStackedBarChartData = (
   }]
 }
 
+export const getApWiredClientStackedBarChartData = (
+  apWiredClientCount: number,
+  { $t }: IntlShape
+): ChartData[] => {
+  const series: ChartData['series'] = []
+  series.push({
+    name: $t({ defaultMessage: 'Clients' }),
+    value: apWiredClientCount || 0
+  })
+  return [{
+    category: '',
+    series
+  }]
+}
+
 export function ClientsWidgetV2 () {
   const onArrowClick = useNavigateToPath('/users/')
   const intl = useIntl()
@@ -98,6 +113,17 @@ export function ClientsWidgetV2 () {
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
 
+  const apWiredClientTableQuery = useGetApWiredClientsQuery({
+    payload: {
+      filters: {},
+      fields: [ 'macAddress']
+    }
+  }, {
+    skip: !isSupportWifiWiredClient
+  })
+  const apWiredClientCount = apWiredClientTableQuery.data?.totalCount || 0
+  const apWiredData = getApWiredClientStackedBarChartData(apWiredClientCount, intl)
+
   useTrackLoadTime({
     itemName: widgetsMapping.CLIENTS_WIDGET,
     states: [queryResults],
@@ -107,6 +133,7 @@ export function ClientsWidgetV2 () {
   const switchClientsPath = isSupportWifiWiredClient
     ? '/users/wired/switch/clients'
     : '/users/switch/clients'
+  const apClientsPath = '/users/wired/wifi/clients'
 
   return (
     <Loader states={[queryResults]}>
@@ -143,11 +170,45 @@ export function ClientsWidgetV2 () {
                   }
                 </GridCol>
               </GridRow>
+              {isSupportWifiWiredClient &&
+                <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                  <GridCol col={{ span: apWiredClientCount > 0 ? 9 : 12 }}>
+                    { apWiredClientCount > 0
+                      ? $t({ defaultMessage: 'AP Wired' })
+                      : $t({ defaultMessage: 'No AP Wired Clients' })
+                    }
+                  </GridCol>
+                  <GridCol col={{ span: apWiredClientCount > 0 ? 15 : 12 }}>
+                    { apWiredClientCount > 0
+                      ? <Space>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height/2 - 30,
+                            width: width/2 - 15
+                          }}
+                          data={apWiredData}
+                          showLabels={false}
+                          showTotal={false}
+                          total={apWiredClientCount}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={apClientsPath}>
+                          {apWiredClientCount}
+                        </TenantLink>
+                      </Space>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </GridCol>
+                </GridRow>
+              }
               <GridRow style={{ display: 'flex', alignItems: 'center' }}>
                 <GridCol col={{ span: switchClientCount > 0 ? 9 : 12 }}>
                   { switchClientCount > 0
-                    ? $t({ defaultMessage: 'Wired' })
-                    : $t({ defaultMessage: 'No Wired Clients' })
+                    ? (isSupportWifiWiredClient ?
+                      $t({ defaultMessage: 'Switch Wired' }) : $t({ defaultMessage: 'Wired' }))
+                    : (isSupportWifiWiredClient ?
+                      $t({ defaultMessage: 'No Switch Wired Clients' }) :
+                      $t({ defaultMessage: 'No Wired Clients' }))
                   }
                 </GridCol>
                 <GridCol col={{ span: switchClientCount > 0 ? 15 : 12 }}>

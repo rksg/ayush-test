@@ -17,9 +17,12 @@ import { DataConnector }                  from './types'
 
 const { click } = userEvent
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useTenantLink: jest.fn(),
+  TenantLink: jest.fn()
 }))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -48,6 +51,20 @@ describe('DataConnector table', () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
         data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
+
+      // Set up RAI-specific mocks
+      const { useTenantLink, TenantLink } = require('@acx-ui/react-router-dom')
+      jest.mocked(useTenantLink).mockReturnValue({
+        hash: '',
+        pathname: '/ai/dataConnector',
+        search: ''
+      })
+      jest.mocked(TenantLink).mockImplementation(
+        ({ children, to }: { children: React.ReactNode, to: string }) =>
+          <a href={`/ai/${to}`}>
+            {children}
+          </a>
+      )
     })
 
     afterEach(() => {
@@ -296,6 +313,20 @@ describe('DataConnector table', () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
         data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
+
+      // Set up R1-specific mocks
+      const { useTenantLink, TenantLink } = require('@acx-ui/react-router-dom')
+      jest.mocked(useTenantLink).mockReturnValue({
+        hash: '',
+        pathname: '/dataConnector',
+        search: ''
+      })
+      jest.mocked(TenantLink).mockImplementation(
+        ({ children, to }: { children: React.ReactNode, to: string }) =>
+          <a href={to}>
+            {children}
+          </a>
+      )
     })
 
     afterEach(() => {

@@ -8,11 +8,10 @@ import { useGetMacRegListQuery, useSearchMacRegistrationsQuery } from '@acx-ui/r
 import {
   MacRegistration,
   MacRegistrationPoolLink,
-  PersonaGroup,
-  TableQuery,
-  useTableQuery
+  PersonaGroup
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
+import { RequestPayload }            from '@acx-ui/types'
+import { TableQuery, useTableQuery } from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 

@@ -2,11 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }                               from '@acx-ui/rc/utils'
-import { getUserProfile, isCoreTier }                  from '@acx-ui/user'
+import { Tabs }                       from '@acx-ui/components'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
+
+import { useWifiAclTotalCount } from '../counterUtils'
 
 import AccessControlSet           from './AccessControlSet'
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'
@@ -14,14 +13,6 @@ import DevicePolicyComponent      from './DevicePolicyComponent'
 import Layer2Component            from './Layer2Component'
 import Layer3Component            from './Layer3Component'
 
-
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name'
-  ]
-}
 
 export function AccessControlTabs () {
   const { $t } = useIntl()
@@ -32,48 +23,45 @@ export function AccessControlTabs () {
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
 
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data: countData } = useWifiAclTotalCount(false)
+
+  const {
+    aclCount = 0,
+    l2AclCount = 0,
+    l3AclCount = 0,
+    deviceAclCount = 0,
+    appAclCount = 0
+  } = countData ?? {}
 
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)
   }
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload: {
-      ...defaultPayload,
-      noDetails: true
-    },
-    enableRbac
-  })
-
   return (
     <Tabs onChange={onTabChange} activeKey={currentTab} type='card'>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Access Control Set ({aclCount})' }, {
-          aclCount: tableQuery?.data?.totalCount
-        })}
+        tab={$t({ defaultMessage: 'Access Control Set ({aclCount})' }, { aclCount })}
         key='accessControlSet'
         style={paddingStyle}
       >
         <AccessControlSet />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Layer 2' })}
+        tab={$t({ defaultMessage: 'Layer 2 ({l2AclCount})' }, { l2AclCount })}
         key='layer2'
         style={paddingStyle}
       >
         <Layer2Component />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Layer 3' })}
+        tab={$t({ defaultMessage: 'Layer 3 ({l3AclCount})' }, { l3AclCount })}
         key='layer3'
         style={paddingStyle}
       >
         <Layer3Component />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Device & OS' })}
+        tab={$t({ defaultMessage: 'Device & OS ({deviceAclCount})' }, { deviceAclCount })}
         key='device'
         style={paddingStyle}
       >
@@ -81,7 +69,7 @@ export function AccessControlTabs () {
       </Tabs.TabPane>
       {
         !isCore && <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Applications' })}
+          tab={$t({ defaultMessage: 'Applications ({appAclCount})' }, { appAclCount })}
           key='application'
           style={paddingStyle}
         >

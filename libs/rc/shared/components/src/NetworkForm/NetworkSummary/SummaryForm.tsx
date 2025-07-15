@@ -7,7 +7,7 @@ import { useIntl }                 from 'react-intl'
 
 import { StepsFormLegacy, Subtitle }                              from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
+import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
   Demo,
   GuestNetworkTypeEnum,
@@ -68,11 +68,6 @@ export function SummaryForm (props: {
     map[obj.id] = obj
     return map
   }, {})
-
-  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const { data: macRegListOption } = useMacRegListsQuery({
-    payload: { pageSize: 10000 }
-  }, { skip: !macRegistrationEnabled })
 
   const getVenues = function () {
     const venues = summaryData.venues
@@ -181,15 +176,6 @@ export function SummaryForm (props: {
             />}
           {summaryData.type === NetworkTypeEnum.AAA &&
            <AaaSummaryForm summaryData={summaryData} />
-          }
-          {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
-          <Form.Item
-            label={$t({ defaultMessage: 'Mac registration list:' })}
-            children={
-              `${macRegListOption?.data.find(
-                regList => regList.id === summaryData.wlan?.macRegistrationListId
-              )?.name}`
-            }/>
           }
           {summaryData.type === NetworkTypeEnum.HOTSPOT20 &&
             <Hotspot20SummaryForm summaryData={summaryData} />

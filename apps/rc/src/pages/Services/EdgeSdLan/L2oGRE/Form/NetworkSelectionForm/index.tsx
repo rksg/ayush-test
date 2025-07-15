@@ -1,15 +1,12 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { StepsForm }                    from '@acx-ui/components'
-import { useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
-import { EdgeMvSdLanFormNetwork }       from '@acx-ui/rc/utils'
+import { StepsForm } from '@acx-ui/components'
 
 import { EdgeSdLanVenueNetworksTable } from './VenueNetworkTable'
 
 export const NetworkSelectionForm = () => {
   const { $t } = useIntl()
-  const isTemplateSupported = useIsEdgeDelegationPermitted()
 
   return <>
     <Row>
@@ -21,18 +18,6 @@ export const NetworkSelectionForm = () => {
       <Col span={24}>
         <Form.Item
           name='activatedNetworks'
-          rules={isTemplateSupported
-            ? undefined
-            : [
-              {
-                validator: (_, value) => {
-                  return value && Object.keys((value as EdgeMvSdLanFormNetwork)).length > 0
-                    ? Promise.resolve()
-                  // eslint-disable-next-line max-len
-                    : Promise.reject($t({ defaultMessage: 'Please select at least 1 <venueSingular></venueSingular> network' }))
-                }
-              }
-            ]}
         >
           <EdgeSdLanVenueNetworksTable />
         </Form.Item>
