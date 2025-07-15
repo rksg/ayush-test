@@ -154,7 +154,7 @@ describe('AP Group Edit Radio', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings.url,
-        (_, res, ctx) => res(ctx.json({apGroupClientAdmissionControl}))
+        (_, res, ctx) => res(ctx.json(apGroupClientAdmissionControl))
       ),
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
@@ -198,7 +198,6 @@ describe('AP Group Edit Radio', () => {
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /5 GHz/ }))
-
     expect(await screen.findByText(/use inherited 5 ghz settings from venue/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /6 GHz/ }))

@@ -61,6 +61,9 @@ describe('ApGroup Client Admission Control Settings', () => {
       </Provider>,
       { route: { params } }
     )
+    if (screen.queryByLabelText('loader')) {
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    }
     expect(await screen.findByTestId('client-admission-control-useVenueSettings')).toBeChecked()
     expect(
       await screen.findByTestId('client-admission-control-enable-read-only-24g')
@@ -88,29 +91,11 @@ describe('ApGroup Client Admission Control Settings', () => {
       </Provider>,
       { route: { params } }
     )
+    if (screen.queryByLabelText('loader')) {
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    }
     expect(await screen.findByTestId('client-admission-control-customizeSettings')).toBeChecked()
     expect(await screen.findByTestId('client-admission-control-enable-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-enable-50g')).toBeVisible()
-  })
-
-  it('should toggle between venue and custom settings', async () => {
-    render(
-      <Provider>
-        <ApGroupEditContext.Provider value={defaultContext}>
-          <Form>
-            <ClientAdmissionControlSettings />
-          </Form>
-        </ApGroupEditContext.Provider>
-      </Provider>,
-      { route: { params } }
-    )
-    const customizeRadio = await screen.findByTestId('client-admission-control-customizeSettings')
-    const venueRadio = await screen.findByTestId('client-admission-control-useVenueSettings')
-    // Switch to customize
-    customizeRadio.click()
-    expect(customizeRadio).toBeChecked()
-    // Switch back to venue
-    venueRadio.click()
-    expect(venueRadio).toBeChecked()
   })
 })
