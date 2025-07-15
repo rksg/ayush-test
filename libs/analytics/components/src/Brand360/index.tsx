@@ -91,8 +91,7 @@ export function Brand360 () {
     start: startDate,
     end: endDate,
     ssidRegex: ssid,
-    toggles: useIncidentToggles(),
-    isMDU: false
+    toggles: useIncidentToggles()
   }
 
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
