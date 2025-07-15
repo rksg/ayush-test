@@ -3,10 +3,10 @@ import { useContext, useMemo } from 'react'
 import { Form, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                                       from '@acx-ui/components'
-import { Features }                                                                 from '@acx-ui/feature-toggle'
-import { NodesTabs, TypeForm, useIsEdgeFeatureReady }                               from '@acx-ui/rc/components'
-import { validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway } from '@acx-ui/rc/utils'
+import { useStepFormContext }                                                                              from '@acx-ui/components'
+import { Features }                                                                                        from '@acx-ui/feature-toggle'
+import { NodesTabs, TypeForm }                                                                             from '@acx-ui/rc/components'
+import { validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { SubInterfaceSettingsForm }   from '../SubInterfaceSettings/SubInterfaceSettingsForm'
@@ -107,18 +107,28 @@ const SubInterfaceSettingView = () => {
     />
     <NodesTabs
       nodeList={clusterInfo?.edgeList}
-      content={(serialNumber) => (
-        <SubInterfaceSettingsForm
-          serialNumber={serialNumber}
-          ports={clusterNetworkSettings?.portSettings
-            ?.find(settings => settings.serialNumber === serialNumber)
-            ?.ports ?? []
-          }
-          portStatus={allInterface[serialNumber]?.filter(item => !item.isLag)}
-          lagStatus={allInterface[serialNumber]?.filter(item => item.isLag)}
-          isSupportAccessPort={isSupportAccessPort}
-        />
-      )}
+      content={
+        (serialNumber) => {
+          // eslint-disable-next-line max-len
+          const originalPortData = clusterNetworkSettings?.portSettings.find(item => item.serialNumber === serialNumber)?.ports
+          // eslint-disable-next-line max-len
+          const originalLagData = clusterNetworkSettings?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+          return <SubInterfaceSettingsForm
+            serialNumber={serialNumber}
+            ports={clusterNetworkSettings?.portSettings
+              ?.find(settings => settings.serialNumber === serialNumber)
+              ?.ports ?? []
+            }
+            portStatus={allInterface[serialNumber]?.filter(item => !item.isLag)}
+            lagStatus={allInterface[serialNumber]?.filter(item => item.isLag)}
+            isSupportAccessPort={isSupportAccessPort}
+            originalInterfaceData={{
+              portSettings: originalPortData,
+              lagSettings: originalLagData
+            }}
+          />
+        }
+      }
     />
   </>
 }

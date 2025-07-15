@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   Col,
-  Divider,
   Form,
   Radio,
   RadioChangeEvent,
@@ -81,7 +80,7 @@ import {
   convertVenueRadioSettingsToApGroupRadioSettings,
   createCacheApGroupSettings,
   handleDual5GBandModeSpecialCase,
-  mergeRadioData,
+  mergeRadioData, setValidatedManulChannel,
   useVenueTriBandApModels
 } from '../ApGroupUtils'
 import { ApGroupEditContext }          from '../context'
@@ -89,6 +88,13 @@ import { ApGroupRadioConfigItemProps } from '../index'
 import { RadioLabel }                  from '../styledComponents'
 
 import { ApGroupSingleRadioSettings } from './ApGroupSingleRadioSettings'
+
+const Radio24GAllowedChannels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+const Radio5GAllowedChannels = ['36', '40', '44', '48', '52', '56', '60', '64', '100', '104', '108', '112', '116', '120', '124', '128', '132', '136', '140', '144', '149', '153', '157', '161']
+const RadioInner5GAllowedChannels = ['36', '40', '44', '48', '52', '56', '60' , '64']
+const RadioUpper5GAllowedChannels = ['100', '104', '108', '112', '116', '120', '124', '128', '132', '136', '140', '144', '149', '153', '157', '161']
+const Radio6GIndoorAllowedChannels = ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93', '97', '101', '105', '109', '113', '117', '121', '125', '129', '133', '137', '141', '145', '149', '153', '157', '161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221']
+const Radio6GOutdoorAllowedChannels = ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93', '129', '133', '137', '141', '145', '149', '153', '157']
 
 const {
   channelBandwidth24GOptions,
@@ -108,9 +114,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const { $t } = useIntl()
   const { isAllowEdit=true } = props
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
@@ -249,7 +253,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       [ApRadioTypeEnum.RadioUpper5G]: supportChUpper5g
     }
 
-    const radio6GBandwidth = supportWifi7_320MHz
+    const radio6GBandwidth = ap70BetaFlag
       ? channelBandwidth6GOptions
       : dropRight(channelBandwidth6GOptions)
 
@@ -268,7 +272,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       bandwidthRadioOptions,
       isSupport6GCountry
     }
-  }, [supportChannelsData, supportWifi7_320MHz])
+  }, [supportChannelsData, ap70BetaFlag])
 
   useEffect(() => {
     if (isEmpty(venueData)) {
@@ -385,12 +389,41 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       if (!isAFCEnabled) {
         set(data, 'radioParams6G.enableAfc', false)
       }
-      const { radioParams6G } = data
+      const { radioParams6G, radioParams24G, radioParams50G, radioParamsDual5G } = data
+      if (radioParams24G) {
+        setValidatedManulChannel(data, 'radioParams24G.allowedChannels', radioParams24G.channel, radioParams24G.method)
+      }
+      if (radioParams50G) {
+        setValidatedManulChannel(data, 'radioParams50G.allowedIndoorChannels', radioParams50G.indoorChannel, radioParams50G.method)
+        setValidatedManulChannel(data, 'radioParams50G.allowedOutdoorChannels', radioParams50G.outdoorChannel, radioParams50G.method)
+      }
+      if (radioParamsDual5G) {
+        const { enabled, radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G
+        if (enabled) {
+          if (radioParamsLower5G) {
+            setValidatedManulChannel(data, 'radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels', radioParamsLower5G.indoorChannel, radioParamsLower5G.method)
+            setValidatedManulChannel(data, 'radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels', radioParamsLower5G.outdoorChannel, radioParamsLower5G.method)
+          }
+          if (radioParamsUpper5G) {
+            setValidatedManulChannel(data, 'radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels', radioParamsUpper5G.indoorChannel, radioParamsUpper5G.method)
+            setValidatedManulChannel(data, 'radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels', radioParamsUpper5G.outdoorChannel, radioParamsUpper5G.method)
+          }
+        }
+      }
       if (radioParams6G) {
         const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting } = radioParams6G
         if (enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting) {
           set(data, 'radioParams6G.enableMulticastRateLimiting', true)
+          if (enableMulticastUplinkRateLimiting) {
+            set(data, 'radioParams6G.multicastUplinkRateLimiting', radioParams6G.multicastUplinkRateLimiting)
+          }
+          if (enableMulticastDownlinkRateLimiting) {
+            set(data, 'radioParams6G.multicastDownlinkRateLimiting', radioParams6G.multicastDownlinkRateLimiting)
+          }
         }
+
+        setValidatedManulChannel(data, 'radioParams6G.allowedIndoorChannels', radioParams6G.indoorChannel, radioParams6G.method)
+        setValidatedManulChannel(data, 'radioParams6G.allowedOutdoorChannels', radioParams6G.outdoorChannel, radioParams6G.method)
       }
 
       setEditRadioContextData({ radioData: data })
@@ -412,7 +445,9 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       })
     }
 
-    if (!isLoadingVenueData && venueSavedChannelsData && apGroupRadioData && formRef?.current && supportRadioChannels) {
+    if (!isLoadingVenueData && venueSavedChannelsData
+      && !isLoadingApGroupData && apGroupRadioData
+      && formRef?.current && supportRadioChannels) {
       const correctedData = correctApiRadioChannelData(venueSavedChannelsData)
       const correctedApGroupData = correctApiRadioChannelData(apGroupRadioData)
       const mergedData = mergeRadioData(correctedData, correctedApGroupData)
@@ -428,6 +463,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         isUseVenueSettings6G: !!apGroupRadioData.radioParams6G?.useVenueSettings
       })
 
+      setIsDual5gMode(!!apGroupRadioData.radioParamsDual5G?.enabled)
+
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
 
@@ -438,28 +475,22 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       return
     }
 
-    // special case
+
+    setInitApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: apGroupBandModeSavedData.apModelBandModeSettings ?? []
+    })
+    setCurrentApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: [...(apGroupBandModeSavedData.apModelBandModeSettings ?? [])]
+    })
+
     if (dual5gApModels.length > 0) {
-      const dual5GData = venueSavedChannelsData.radioParamsDual5G
-
-      const updatedApGroupBandModeSettings = handleDual5GBandModeSpecialCase(
-        apGroupBandModeSavedData.apModelBandModeSettings,
-        dual5gApModels,
-        dual5GData
-      )
-      setInitApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: updatedApGroupBandModeSettings
-      })
-      setCurrentApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: [...updatedApGroupBandModeSettings]
-      })
-
+      const venueDual5GData = venueSavedChannelsData.radioParamsDual5G
       const updatedVenueBandModeSettings = handleDual5GBandModeSpecialCase(
         venueBandModeSavedData,
         dual5gApModels,
-        dual5GData
+        venueDual5GData
       )
       setInitVenueBandModeData([ ...updatedVenueBandModeSettings ])
     }
@@ -508,14 +539,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     setIsDual5gMode(isDual5GEnabled)
     formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
     onTabChange('Normal24GHz')
-  }
-
-  const onLower5gTypeChange = (e: RadioChangeEvent) => {
-    setIsLower5gInherit(e.target.value)
-  }
-
-  const onUpper5gTypeChange = (e: RadioChangeEvent) => {
-    setIsUpper5gInherit(e.target.value)
   }
 
   const update5gData = (formData: ApGroupRadioCustomization) => {
@@ -724,6 +747,129 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     return true
   }
 
+  const createRadioSettingsPayload = (data: ApGroupRadioCustomization) => {
+    return {
+      radioParams24G: {
+        ...defaultRadioSettings?.radioParams24G,
+        ...data.radioParams24G
+      },
+      radioParams5G: {
+        ...defaultRadioSettings?.radioParams50G,
+        ...data.radioParams50G
+      },
+      ...(isDual5gModeRef.current ? {
+        radioParamsDual5G: {
+          ...defaultRadioSettings?.radioParamsDual5G,
+          ...data.radioParamsDual5G,
+          ...(data.radioParamsDual5G?.enabled
+            ? {}
+            : {
+              enabled: false,
+              radioParamsLower5G: { useVenueSettings: false },
+              radioParamsUpper5G: { useVenueSettings: false }
+            }
+          )
+        }
+      } : {}),
+      ...(!isDual5gModeRef.current && defaultRadioSettings?.radioParamsDual5G?.enabled
+        ? {
+          radioParamsDual5G: {
+            enabled: false,
+            radioParamsLower5G: { useVenueSettings: false },
+            radioParamsUpper5G: { useVenueSettings: false }
+          }
+        }
+        : {}
+      ),
+      radioParams6G: {
+        ...defaultRadioSettings?.radioParams6G,
+        ...data.radioParams6G
+      }
+    }
+  }
+
+  const correctedByManualChannels = (data: any) => {
+    return {
+      radioParams24G: {
+        ...data.radioParams24G,
+        ...(data.radioParams24G.method === 'MANUAL'
+          ? {
+            allowedChannels: Radio24GAllowedChannels,
+            channel: data.radioParams24G.allowedChannels![0]
+          }
+          : {}
+        )
+      },
+      radioParams5G: {
+        ...data.radioParams5G,
+        ...(data.radioParams5G.method === 'MANUAL' && data.radioParams5G.allowedIndoorChannels
+          ? {
+            allowedIndoorChannels: Radio5GAllowedChannels,
+            indoorChannel: data.radioParams5G.allowedIndoorChannels[0]
+          }
+          : {}
+        ),
+        ...(data.radioParams5G.method === 'MANUAL' && data.radioParams5G.allowedOutdoorChannels
+          ? {
+            allowedOutdoorChannels: Radio5GAllowedChannels,
+            outdoorChannel: data.radioParams5G.allowedOutdoorChannels[0]
+          }
+          : {}
+        )
+      },
+      ...(data.radioParamsDual5G ? {
+        radioParamsDual5G: {
+          ...data.radioParamsDual5G,
+          ...(data.radioParamsDual5G?.radioParamsLower5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsLower5G?.allowedIndoorChannels
+            ? {
+              allowedIndoorChannels: RadioInner5GAllowedChannels,
+              indoorChannel: data.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels[0]
+            }
+            : {}
+          ),
+          ...(data.radioParamsDual5G?.radioParamsUpper5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsUpper5G?.allowedIndoorChannels
+            ? {
+              allowedIndoorChannels: RadioInner5GAllowedChannels,
+              indoorChannel: data.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels[0]
+            }
+            : {}
+          ),
+          ...(data.radioParamsDual5G?.radioParamsLower5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsLower5G?.allowedOutdoorChannels
+            ? {
+              allowedOutdoorChannels: RadioUpper5GAllowedChannels,
+              outdoorChannel: data.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels[0]
+            }
+            : {}
+          ),
+          ...(data.radioParamsDual5G?.radioParamsUpper5G?.method === 'MANUAL' && data.radioParamsDual5G?.radioParamsUpper5G?.allowedOutdoorChannels
+            ? {
+              allowedOutdoorChannels: RadioUpper5GAllowedChannels,
+              outdoorChannel: data.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels[0]
+            }
+            : {}
+          )
+        }
+      } : {}),
+      radioParams6G: {
+        ...data.radioParams6G,
+        ...(data.radioParams6G?.method === 'MANUAL' && data.radioParams6G?.allowedIndoorChannels
+          ? {
+            allowedIndoorChannels: Radio6GIndoorAllowedChannels,
+            indoorChannel: data.radioParams6G.allowedIndoorChannels[0]
+          }
+          : {}
+        ),
+        ...(data.radioParams6G?.method === 'MANUAL' && data.radioParams6G?.allowedOutdoorChannels
+          ? {
+            allowedOutdoorChannels: Radio6GOutdoorAllowedChannels,
+            outdoorChannel: data.radioParams6G.allowedOutdoorChannels[0]
+          }
+          : {}
+        )
+      }
+    }
+  }
+
   const handleUpdateRadioSettings = async () => {
     const d = formRef?.current?.getFieldsValue()
     const data = { ...d } as ApGroupRadioCustomization
@@ -793,26 +939,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
       await updateApGroupRadioCustomization({
         params: { venueId, apGroupId },
-        payload: {
-          radioParams24G: {
-            ...defaultRadioSettings?.radioParams24G,
-            ...data.radioParams24G
-          },
-          radioParams5G: {
-            ...defaultRadioSettings?.radioParams50G,
-            ...data.radioParams50G
-          },
-          ...(isDual5gModeRef.current ? {
-            radioParamsDual5G: {
-              ...defaultRadioSettings?.radioParamsDual5G,
-              ...data.radioParamsDual5G
-            }
-          } : {}),
-          radioParams6G: {
-            ...defaultRadioSettings?.radioParams6G,
-            ...data.radioParams6G
-          }
-        },
+        payload: correctedByManualChannels(createRadioSettingsPayload(data)),
         enableRbac: resolvedRbacEnabled
       }).unwrap()
     } catch (error) {
@@ -1010,7 +1137,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData || isLoadingApGroupData)),
+      isLoading: isLoadingVenueData || isLoadingApGroupData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData)),
       isFetching: isUpdatingApGroupRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy
@@ -1178,29 +1305,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
                   currentTab === 'Lower5GHz' ? 'block' : 'none'
               }}>
-                <Row gutter={20}>
-                  <Col span={8}>
-                    <Form.Item
-                      label={$t({ defaultMessage: '5GHz settings:' })}
-                      name={['radioParamsDual5G', 'inheritParamsLower5G']}
-                    >
-                      <Radio.Group defaultValue={true} onChange={onLower5gTypeChange}>
-                        <Radio value={true}>
-                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
-                        </Radio>
-
-                        <Radio value={false}>
-                          {$t({ defaultMessage: 'Custom Settings' })}
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <Divider style={{ marginTop: '5px' }}/>
-                  </Col>
-                </Row>
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableLower5g}
                   testId='apgroup-radio-l5g-tab'
@@ -1219,29 +1323,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
                   currentTab === 'Upper5GHz' ? 'block' : 'none'
               }}>
-                <Row gutter={20}>
-                  <Col span={8}>
-                    <Form.Item
-                      label={$t({ defaultMessage: '5GHz settings:' })}
-                      name={['radioParamsDual5G', 'inheritParamsUpper5G']}
-                    >
-                      <Radio.Group onChange={onUpper5gTypeChange}>
-                        <Radio value={true}>
-                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
-                        </Radio>
-
-                        <Radio value={false}>
-                          {$t({ defaultMessage: 'Custom Settings' })}
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <Divider style={{ marginTop: '5px' }}/>
-                  </Col>
-                </Row>
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableUpper5g}
                   testId='apgroup-radio-u5g-tab'

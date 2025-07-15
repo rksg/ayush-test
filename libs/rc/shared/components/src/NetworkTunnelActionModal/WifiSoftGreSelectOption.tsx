@@ -15,12 +15,9 @@ import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/uti
 import IpsecDrawer   from '../policies/Ipsec/IpsecForm/IpsecDrawer'
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
-import { messageMappings }             from './messageMappings'
 import * as UI                         from './styledComponents'
 import { NetworkTunnelTypeEnum }       from './types'
 import { WiFISoftGreRadioOptionProps } from './WifiSoftGreRadioOption'
-
-
 
 const defaultPayload = {
   fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
@@ -255,7 +252,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   }
 
   return <>
-    {!enableOption && <Alert type='info' showIcon message={$t(messageMappings.disable_deactivate_last_network)} />}
+    {!enableOption && <Alert type='info' showIcon message={disabledInfo?.tooltip} />}
     {enableOption && <>
       <Row>
         {<div className={'ant-form-item-label'}>

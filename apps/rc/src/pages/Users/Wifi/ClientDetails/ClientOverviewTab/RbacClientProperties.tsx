@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -11,14 +11,13 @@ import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui
 import {
   useGetPassphraseClientQuery,
   useLazyGetApQuery,
+  useLazyGetDpskServiceQuery,
   useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
-  useLazyGetVenueQuery,
-  useLazyGetClientsQuery
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
-  ClientStatusEnum,
   getRssiStatus,
   getOsTypeIcon,
   NetworkSaveData,
@@ -40,94 +39,97 @@ import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-interface ClientInfoExtended extends ClientInfo {
+type ClientInfoExtended = ClientInfo & {
   hasSwitch: boolean,
   enableLinkToAp: boolean,
   enableLinkToVenue: boolean,
   enableLinkToNetwork: boolean,
-  radioType: string
+  networkName?: string
 }
 
-// eslint-disable-next-line
-const getRadioTypeFromRbacAndNonRbacAPI = (nonRbacRadioType: any, rbacRadioType: any, ff: boolean) : string => {
-  let radioType = undefined
-  if (ff) {
-    radioType = rbacRadioType?.data.data[0]?.radioStatus?.type
-  } else {
-    radioType = nonRbacRadioType?.data?.data[0]?.radio?.mode
-  }
-
-  if(radioType === undefined || radioType === '') {
-    radioType = noDataDisplay
-  }
-  return radioType
+// eslint-disable-next-line max-len
+const shouldDisplayDpskPassphraseDetail = (networkType: NetworkTypeEnum | undefined, isExternalDpskClient: boolean) => {
+  return networkType === NetworkTypeEnum.DPSK && !isExternalDpskClient
 }
 
-export function RbacClientProperties ({ clientStatus, clientInfo } : {
-  clientStatus: string,
-  clientInfo: ClientInfo
-}) {
+// eslint-disable-next-line max-len
+const shouldDisplayGuestDetail = (
+  networkType: NetworkTypeEnum | undefined,
+  guestType: GuestNetworkTypeEnum | undefined
+) => {
+  if (!networkType || !guestType) return false
 
+  const displayGuestNetworkTypes = [
+    GuestNetworkTypeEnum.GuestPass,
+    GuestNetworkTypeEnum.HostApproval,
+    GuestNetworkTypeEnum.SelfSignIn
+  ]
+
+  return (networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
+    displayGuestNetworkTypes.includes(guestType))
+}
+export function RbacClientProperties ({ clientDetails } : { clientDetails: ClientInfo }) {
   const { tenantId } = useParams()
   // eslint-disable-next-line max-len
-  const [stateOfClientInfo, setStateOfClientInfo] = useState(undefined as unknown as ClientInfoExtended)
+  const [client, setClient] = useState(undefined as unknown as ClientInfoExtended)
   const [networkType, setNetworkType] = useState<NetworkTypeEnum>()
   const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
+  const [getDpskService] = useLazyGetDpskServiceQuery()
   const [getGuestsList] = useLazyGetGuestsListQuery()
-  const [getClientRbac] = useLazyGetClientsQuery()
+
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
 
   useEffect(() => {
-    if (Object.keys(clientInfo)?.length) {
+    if (Object.keys(clientDetails)?.length) {
       let apData = null as unknown as ApDeep
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
-      let radioType = null as string | null
-      const serialNumber = clientInfo?.apInformation?.serialNumber
+
+      const {
+        macAddress, username,
+        apInformation, venueInformation, networkInformation
+      } = clientDetails || {}
+
+      const serialNumber = apInformation?.serialNumber
+      const networkId = networkInformation?.id
+      const venueId = venueInformation?.id
+
+      const getDpskServiceData = async () => {
+        const dpskService = await getDpskService({ params: { networkId } }, true).unwrap()
+
+        setIsExternalDpskClient(!!(dpskService?.id))
+      }
 
       const getGuestData = async () => {
         const list = (await getGuestsList({
           params: { tenantId },
-          payload: getGuestsPayload(clientInfo?.macAddress) }, true).unwrap()
+          payload: getGuestsPayload(macAddress) }, true).unwrap()
         )?.data || []
 
         if (list.length > 0) {
-          const networkId = clientInfo?.networkInformation?.id
-          const name = clientInfo?.username
-          const mac = clientInfo?.macAddress
-          let result = list.find(item => item.wifiNetworkId === networkId && item.name === name)
-            || list.find(item => item.wifiNetworkId === networkId && item.devicesMac?.includes(mac))
+          const filteredList = list.filter(item => item.wifiNetworkId === networkId)
+          let result = filteredList.find(item => item.name === username)
+            || filteredList.find(item => item.devicesMac?.includes(macAddress))
           setGuestDetail(result ?? ({} as Guest))
         }
       }
 
       const getMetaData = async () => {
         try {
-
           await Promise.all([
-            getAp({ params: { tenantId, serialNumber } }, true),
-            getVenue({ params: { tenantId, venueId: clientInfo?.venueInformation?.id } }, true),
-            // eslint-disable-next-line max-len
-            getNetwork({ params: { tenantId, networkId: clientInfo?.networkInformation?.id } }, true),
-            getClientRbac({ payload: {
-              fields: [
-                'macAddress','radioStatus.type'
-              ],
-              filters: {
-                macAddress: [clientInfo?.macAddress]
-              }
-            } })
-          ]).then(([ ap, venue, network, rbacRadioType ]) => {
+            getAp({ params: { venueId, serialNumber }, enableRbac: true }, true),
+            getVenue({ params: { venueId }, enableRbac: true }, true),
+            getNetwork({ params: { networkId }, enableRbac: true }, true)
+          ]).then(([ ap, venue, network ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */
             setData(
               ((ap as any)?.data ?? null) as unknown as ApDeep,
               ((venue as any)?.data ?? null) as unknown as VenueExtended,
-              ((network as any)?.data ?? null) as unknown as NetworkSaveData,
-              getRadioTypeFromRbacAndNonRbacAPI(undefined, rbacRadioType, true)
+              ((network as any)?.data ?? null) as unknown as NetworkSaveData
             )
             /* eslint-enable @typescript-eslint/no-explicit-any */
           }).catch((error) => {
@@ -135,33 +137,32 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
           })
 
         } catch {
-          setData(apData, venueData, networkData, radioType)
+          setData(apData, venueData, networkData)
         }
       }
 
       const setData = (apData: ApDeep,
         venueData: VenueExtended,
-        networkData: NetworkSaveData | null,
-        clientMacAndRadioType: string | null
+        networkData: NetworkSaveData | null
       ) => {
         setNetworkType(networkData?.type)
         setGuestType(networkData?.guestPortal?.guestNetworkType)
 
-        setStateOfClientInfo({
-          ...clientInfo,
+        setClient({
+          ...clientDetails,
           hasSwitch: false, // TODO: this.userProfileService.isSwitchEnabled(profile);
           ...(apData && { apName: apData?.name }),
           ...(venueData && { venueName: venueData?.name }),
           ...(networkData && { networkName: networkData?.name }),
           enableLinkToAp: !!apData,
           enableLinkToVenue: !!venueData,
-          enableLinkToNetwork: !!networkData,
-          radioType: (clientMacAndRadioType === null ? noDataDisplay : clientMacAndRadioType)
+          enableLinkToNetwork: !!networkData
         })
 
-        setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
-
-        if ('guest' === networkData?.type) {
+        if (NetworkTypeEnum.DPSK === networkData?.type) {
+          getDpskServiceData()
+        }
+        else if (NetworkTypeEnum.CAPTIVEPORTAL === networkData?.type) {
           getGuestData()
         }
       }
@@ -169,46 +170,26 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
       getMetaData()
 
     } else {
-      setStateOfClientInfo({} as ClientInfoExtended)
+      setClient({} as ClientInfoExtended)
     }
-  }, [clientInfo])
+  }, [clientDetails])
 
-  const shouldDisplayDpskPassphraseDetail = () => {
-    return networkType === NetworkTypeEnum.DPSK && !isExternalDpskClient
-  }
-
-  const shouldDisplayGuestDetail = () => {
-    return networkType === NetworkTypeEnum.CAPTIVEPORTAL && (
-      guestType === GuestNetworkTypeEnum.GuestPass ||
-      guestType === GuestNetworkTypeEnum.HostApproval ||
-      guestType === GuestNetworkTypeEnum.SelfSignIn ||
-      guestType === GuestNetworkTypeEnum.Directory ||
-      guestType === GuestNetworkTypeEnum.SAML
-    )
-  }
-
-  const getProperties = (clientStatus: string, clientMac: string) => {
-    let obj = null
-    switch (clientStatus) {
-      case ClientStatusEnum.CONNECTED:
-        obj = [
-          <ClientDetails clientInfo={stateOfClientInfo} />,
-          <OperationalData clientInfo={stateOfClientInfo} />,
-          <Connection clientInfo={stateOfClientInfo} />,
-          (shouldDisplayGuestDetail() &&
-            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
-          (shouldDisplayDpskPassphraseDetail() &&
-            <DpskPassphraseDetails
-              networkId={clientInfo?.networkInformation.id}
-              clientMac={clientInfo?.macAddress}
-              username={clientInfo?.username}
-            />
-          ),
-          // eslint-disable-next-line max-len
-          (stateOfClientInfo?.wifiCallingEnabled && <WiFiCallingDetails clientInfo={stateOfClientInfo} />)
-        ]
-        break
-    }
+  const getProperties = (clientMac: string) => {
+    const obj = [
+      <ClientDetails client={client} />,
+      <OperationalData client={client} />,
+      <Connection client={client} />,
+      (shouldDisplayGuestDetail(networkType, guestType) &&
+        <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
+      (shouldDisplayDpskPassphraseDetail(networkType, isExternalDpskClient) &&
+        <DpskPassphraseDetails
+          networkId={client?.networkInformation.id}
+          clientMac={client?.macAddress}
+          username={client?.username}
+        />
+      ),
+      (client?.wifiCallingEnabled && <WiFiCallingDetails client={client} />)
+    ]
 
     const divider = <Divider />
     const objLength = obj ? obj?.filter(item => item)?.length - 1 : 0
@@ -222,17 +203,22 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
 
   return <Card>
     <Loader states={[{
-      isLoading: !stateOfClientInfo
+      isLoading: !client
     }]}>
-      { getProperties(clientStatus, clientInfo.macAddress) }
+      { getProperties(clientDetails.macAddress) }
     </Loader>
   </Card>
 
 }
 
 
-function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
+function ClientDetails ({ client }: { client: ClientInfoExtended }) {
   const { $t } = getIntl()
+
+  const {
+    macAddress, mldMacAddress, ipAddress,
+    osType, hostname, username
+  } = client ?? {}
 
   return <>
     <Subtitle level={4}>
@@ -241,32 +227,33 @@ function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'MAC Address' })}
-        children={clientInfo?.macAddress || noDataDisplay}
+        children={macAddress || noDataDisplay}
       />
-      { clientInfo?.mldMacAddress &&
+      { mldMacAddress &&
         <Descriptions.Item
           label={$t({ defaultMessage: 'MLD MAC Address' })}
-          children={clientInfo?.mldMacAddress}
+          children={mldMacAddress}
         />
       }
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
-        children={clientInfo?.ipAddress || noDataDisplay}
+        children={ipAddress || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'OS' })}
-        children={clientInfo?.osType ? <UI.OsType size={4}>
-          {getOsTypeIcon(clientInfo?.osType || '')}
-          {clientInfo?.osType}
-        </UI.OsType> : noDataDisplay}
+        children={osType ?
+          <UI.OsType size={4}>
+            {getOsTypeIcon(osType)}
+            {osType}
+          </UI.OsType> : noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Host Name' })}
-        children={clientInfo?.hostname || noDataDisplay}
+        children={hostname || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Username' })}
-        children={clientInfo?.username || noDataDisplay}
+        children={username || noDataDisplay}
       />
       {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
@@ -276,11 +263,15 @@ function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
   </>
 }
 
-function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
-  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+function Connection ({ client }: { client: ClientInfoExtended }) {
   const intl = useIntl()
   const { $t } = intl
-  const showVni = !!clientInfo?.networkInformation?.vni
+  const {
+    enableLinkToAp, hasSwitch, enableLinkToVenue, networkName,
+    networkInformation, apInformation, switchInformation, venueInformation
+  } = client ?? {}
+
+  const showVni = !!networkInformation?.vni
   return <>
     <Subtitle level={4}>
       {$t({ defaultMessage: 'Connection' })}
@@ -292,50 +283,49 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Access Point' })}
         >{$t({ defaultMessage: 'AP' })}</Tooltip>
         }
-        children={
-          clientInfo?.enableLinkToAp ?
-            <TenantLink
-              to={`devices/wifi/${clientInfo.apInformation?.serialNumber}/details/overview`}>
-              {clientInfo?.apInformation?.name || noDataDisplay}
-            </TenantLink>
-            : clientInfo?.apInformation?.name || noDataDisplay
+        children={enableLinkToAp ?
+          <TenantLink
+            to={`devices/wifi/${apInformation?.serialNumber}/details/overview`}>
+            {apInformation?.name || noDataDisplay}
+          </TenantLink>
+          : apInformation?.name || noDataDisplay
         }
       />
-      {clientInfo?.hasSwitch && <Descriptions.Item
+      {hasSwitch && <Descriptions.Item
         label={<Tooltip
           placement='bottom'
           title={$t({ defaultMessage: 'Switch' })}
         >{$t({ defaultMessage: 'Switch' })}</Tooltip>
         }
         children={
-          clientInfo?.enableLinkToAp ?
+          client?.enableLinkToAp ?
             // eslint-disable-next-line max-len
-            <TenantLink to={`devices/switches/${clientInfo?.switchInformation?.serialNumber}/details/overview`}>
-              {clientInfo?.switchInformation?.name || noDataDisplay}
+            <TenantLink to={`devices/switches/${switchInformation?.serialNumber}/details/overview`}>
+              {switchInformation?.name || noDataDisplay}
             </TenantLink>
-            : clientInfo?.switchInformation?.name || noDataDisplay
+            : switchInformation?.name || noDataDisplay
         }
       />}
       <Descriptions.Item
         label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
-          clientInfo?.enableLinkToVenue ?
+          enableLinkToVenue ?
             // eslint-disable-next-line max-len
-            <TenantLink to={`venues/${clientInfo?.venueInformation?.id}/venue-details/overview`}>
-              {clientInfo?.venueInformation?.name || noDataDisplay}
+            <TenantLink to={`venues/${client?.venueInformation?.id}/venue-details/overview`}>
+              {venueInformation?.name || noDataDisplay}
             </TenantLink>
-            : clientInfo?.venueInformation?.name || noDataDisplay
+            : venueInformation?.name || noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Wireless Network' })}
         children={
-          clientInfo?.enableLinkToNetwork ?
+          client?.enableLinkToNetwork ?
           // eslint-disable-next-line max-len
-            <TenantLink to={`networks/wireless/${clientInfo?.networkInformation?.id}/network-details/overview`}>
-              {clientInfo?.networkInformation?.ssid || noDataDisplay}
+            <TenantLink to={`networks/wireless/${networkInformation?.id}/network-details/overview`}>
+              {networkName || noDataDisplay}
             </TenantLink>
-            : clientInfo?.networkInformation?.ssid || noDataDisplay
+            : networkName || noDataDisplay
         }
       />
       <Descriptions.Item
@@ -344,7 +334,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Service Set Identifier' })}
         >{$t({ defaultMessage: 'SSID' })}
         </Tooltip>}
-        children={clientInfo?.networkInformation?.ssid || noDataDisplay}
+        children={networkInformation?.ssid || noDataDisplay}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -352,7 +342,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Virtual Local Area Network Identifier' })}
         >{$t({ defaultMessage: 'VLAN ID' })}
         </Tooltip>}
-        children={clientInfo?.networkInformation?.vlan || noDataDisplay}
+        children={networkInformation?.vlan || noDataDisplay}
       />
       { showVni &&
         <Descriptions.Item
@@ -361,7 +351,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
             title={$t({ defaultMessage: 'VXLAN network identifier' })}
           >{$t({ defaultMessage: 'VNI' })}
           </Tooltip>}
-          children={clientInfo?.networkInformation?.vni || noDataDisplay}
+          children={networkInformation?.vni || noDataDisplay}
         />
       }
       <Descriptions.Item
@@ -370,35 +360,36 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Basic Service Set Identifier' })}
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
-        children={clientInfo?.apInformation?.bssid || noDataDisplay}
+        children={apInformation?.bssid || noDataDisplay}
       />
-      { wifiEDAClientRevokeToggle && <Descriptions.Item
+      <Descriptions.Item
         label={<Tooltip
           placement='bottom'
           title={$t({ defaultMessage: 'Network Type' })}
         >{$t({ defaultMessage: 'Network Type' })}
         </Tooltip>}
-        children={networkDisplayTransformer(intl, clientInfo?.networkInformation?.type)}
-      /> }
+        children={networkDisplayTransformer(intl, networkInformation?.type)}
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
-        children={clientInfo?.networkInformation?.authenticationMethod || noDataDisplay}
+        children={networkInformation?.authenticationMethod || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Status' })}
-        children={getAuthStatus(clientInfo?.authenticationStatus)}
+        children={getAuthStatus(client?.authenticationStatus)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Encryption' })}
-        children={clientInfo?.networkInformation?.encryptionMethod || noDataDisplay}
+        children={networkInformation?.encryptionMethod || noDataDisplay}
       />
     </Descriptions>
   </>
 }
 
-function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
+function OperationalData ({ client }: { client: ClientInfoExtended }) {
   const intl = useIntl()
   const numberFormatter = formatter('numberWithCommas')
+  const { radioStatus, trafficStatus, signalStatus } = client ?? {}
 
   return <>
     <Subtitle level={4}>
@@ -411,40 +402,40 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={intl.$t({ defaultMessage: 'Radio Frequency Channel' })}
         >{intl.$t({ defaultMessage: 'RF Channel' })}
         </Tooltip>}
-        children={clientInfo?.radioStatus?.channel || noDataDisplay}
+        children={radioStatus?.channel || noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
-        children={clientInfo?.trafficStatus?.trafficFromClient ? <Tooltip
+        children={trafficStatus?.trafficFromClient ? <Tooltip
           placement='bottom'
-          title={`${numberFormatter(clientInfo.trafficStatus.trafficFromClient)} Bytes`}
+          title={`${numberFormatter(trafficStatus.trafficFromClient)} Bytes`}
         >
-          {transformByte(clientInfo.trafficStatus.trafficFromClient)}
+          {transformByte(trafficStatus.trafficFromClient)}
         </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets From Client' })}
-        children={clientInfo?.trafficStatus?.packetsFromClient ?
-          numberFormatter(clientInfo?.trafficStatus?.packetsFromClient) : noDataDisplay}
+        children={trafficStatus?.packetsFromClient ?
+          numberFormatter(trafficStatus?.packetsFromClient) : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
-        children={clientInfo?.trafficStatus?.trafficToClient ? <Tooltip
+        children={trafficStatus?.trafficToClient ? <Tooltip
           placement='bottom'
-          title={`${numberFormatter(clientInfo.trafficStatus.trafficToClient)} Bytes`}
+          title={`${numberFormatter(trafficStatus.trafficToClient)} Bytes`}
         >
-          {transformByte(clientInfo.trafficStatus.trafficToClient)}
+          {transformByte(trafficStatus.trafficToClient)}
         </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets To Client' })}
-        children={clientInfo?.trafficStatus?.packetsToClient ?
-          numberFormatter(clientInfo?.trafficStatus?.packetsToClient) : noDataDisplay}
+        children={trafficStatus?.packetsToClient ?
+          numberFormatter(trafficStatus?.packetsToClient) : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Frames Dropped' })}
-        children={clientInfo?.trafficStatus?.framesDropped ?
-          numberFormatter(clientInfo?.trafficStatus?.framesDropped) : noDataDisplay}
+        children={trafficStatus?.framesDropped ?
+          numberFormatter(trafficStatus?.framesDropped) : noDataDisplay}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -453,9 +444,9 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'SNR' })}
         </Tooltip>}
         children={<WifiSignal
-          snr={clientInfo?.signalStatus?.snr}
-          text={clientInfo?.signalStatus?.snr
-            ? clientInfo?.signalStatus?.snr + ' dB' : noDataDisplay}
+          snr={signalStatus?.snr}
+          text={signalStatus?.snr
+            ? signalStatus?.snr + ' dB' : noDataDisplay}
         />}
       />
       <Descriptions.Item
@@ -465,28 +456,29 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'RSSI' })}
         </Tooltip>}
         children={<Space style={{
-          color: cssStr(getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color)
+          color: cssStr(getRssiStatus(intl, signalStatus?.rssi)?.color)
         }}>
           <Tooltip
             placement='bottom'
-            title={getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.tooltip}
+            title={getRssiStatus(intl, signalStatus?.rssi)?.tooltip}
           >
-            {clientInfo?.signalStatus?.rssi
-              ? clientInfo?.signalStatus?.rssi + ' dBm' : noDataDisplay}
+            {client?.signalStatus?.rssi
+              ? client?.signalStatus?.rssi + ' dBm' : noDataDisplay}
           </Tooltip>
         </Space>}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Radio Type' })}
-        children={clientInfo?.radioStatus?.type ? clientInfo?.radioStatus?.type : noDataDisplay}
+        children={radioStatus?.type ? radioStatus?.type : noDataDisplay}
       />
     </Descriptions>
   </>
 }
 
-function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
+function WiFiCallingDetails ({ client }: { client: ClientInfoExtended }) {
   const { $t } = getIntl()
   const bytesFormatter = formatter('bytesFormat')
+  const { wifiCallingStatus } = client ?? {}
 
   return <>
     <Subtitle level={4}>
@@ -495,35 +487,35 @@ function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended })
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Carrier Name' })}
-        children={clientInfo?.wifiCallingStatus.carrierName || noDataDisplay}
+        children={wifiCallingStatus.carrierName || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'QoS Priority' })}
         children={
-          clientInfo?.wifiCallingStatus.qosPriority
-            ? transformQosPriorityType(clientInfo?.wifiCallingStatus.qosPriority as QosPriorityEnum)
+          wifiCallingStatus?.qosPriority
+            ? transformQosPriorityType(wifiCallingStatus.qosPriority as QosPriorityEnum)
             : noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Total Traffic' })}
         children={
-          (clientInfo?.wifiCallingStatus.totalTraffic &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.totalTraffic)) || noDataDisplay
+          (wifiCallingStatus.totalTraffic &&
+            bytesFormatter(wifiCallingStatus.totalTraffic)) || noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Transmitted Traffic' })}
         children={
-          (clientInfo?.wifiCallingStatus.trafficToClient &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.trafficToClient)) || noDataDisplay
+          (wifiCallingStatus.trafficToClient &&
+            bytesFormatter(wifiCallingStatus.trafficToClient)) || noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Received Traffic' })}
         children={
-          (clientInfo?.wifiCallingStatus.trafficFromClient &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.trafficFromClient)) || noDataDisplay
+          (wifiCallingStatus.trafficFromClient &&
+            bytesFormatter(wifiCallingStatus.trafficFromClient)) || noDataDisplay
         }
       />
     </Descriptions>
@@ -531,9 +523,9 @@ function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended })
 }
 
 function GuestDetails ({ guestDetail, clientMac }: {
-                        guestDetail: Guest
-                        clientMac: string
-                      }) {
+  guestDetail: Guest,
+  clientMac: string
+}) {
   const { $t } = getIntl()
   return <>
     <Subtitle level={4}>
@@ -590,6 +582,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
 
 // eslint-disable-next-line max-len
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const { networkId, clientMac, username } = props
   const intl = getIntl()
   const { passphraseClient } = useGetPassphraseClientQuery({
@@ -643,8 +636,11 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
           <List<string>
             dataSource={passphraseClient.clientMac}
             renderItem={item => {
+              const linkPath = isSupportWifiWiredClient
+                ? `users/wired/switch/clients/${item}`
+                : `users/switch/clients/${item}`
               return <List.Item>
-                <TenantLink to={`users/switch/clients/${item}`}>{item}</TenantLink>
+                <TenantLink to={linkPath}>{item}</TenantLink>
               </List.Item>
             }}
           />
@@ -654,12 +650,10 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
   </>
 }
 
-function getGuestsPayload (clientMacAddress: string) {
+function getGuestsPayload (clientMac: string) {
   return {
-    searchString: clientMacAddress,
-    searchTargetFields: [
-      'devicesMac'
-    ],
+    searchString: clientMac,
+    searchTargetFields: ['devicesMac'],
     fields: [
       'creationDate',
       'name',
@@ -679,9 +673,7 @@ function getGuestsPayload (clientMacAddress: string) {
       'notes'
     ],
     filters: {
-      includeExpired: [
-        true
-      ]
+      includeExpired: [true]
     }
   }
 }

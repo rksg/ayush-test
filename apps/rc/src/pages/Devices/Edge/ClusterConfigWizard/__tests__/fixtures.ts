@@ -4,6 +4,7 @@ import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
+  EdgeDualWanFixtures,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLagLacpModeEnum,
@@ -20,6 +21,7 @@ import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 const { mockedHaNetworkSettings, mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedDualWanNetworkSettings } = EdgeDualWanFixtures
 
 const mockedMvSdLanServiceDmz = mockedMvSdLanDataList[0]
 
@@ -46,7 +48,8 @@ export const mockClusterConfigWizardData = {
           ipMode: 'STATIC',
           portType: 'LAN',
           subnet: '255.255.255.0',
-          vlan: 1
+          vlan: 1,
+          interfaceName: 'lag0.1'
         }
       ]
     },
@@ -58,7 +61,8 @@ export const mockClusterConfigWizardData = {
           ipMode: 'DHCP',
           portType: 'LAN',
           subnet: '',
-          vlan: 3
+          vlan: 3,
+          interfaceName: 'lag1.3'
         }
       ]
     }
@@ -72,7 +76,8 @@ export const mockClusterConfigWizardData = {
           ipMode: 'STATIC',
           portType: 'LAN',
           subnet: '255.255.255.0',
-          vlan: 123
+          vlan: 123,
+          interfaceName: 'port0.123'
         }
       ],
       port_id_1: []
@@ -86,11 +91,28 @@ export const mockClusterConfigWizardData = {
           ipMode: 'STATIC',
           portType: 'LAN',
           subnet: '255.255.255.0',
-          vlan: 1
+          vlan: 1,
+          interfaceName: 'port1.1'
         }
       ]
     }
   }
+}
+
+export const mockDualWanClusterConfigWizardData = {
+  portSettings: _.reduce(mockedDualWanNetworkSettings.portSettings,
+    (result, port) => {
+      result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
+      return result
+    }, {} as InterfaceSettingsFormType['portSettings']),
+  lagSettings: mockedDualWanNetworkSettings.lagSettings,
+  vipConfig: mockedDualWanNetworkSettings.virtualIpSettings?.map(item => {
+    return {
+      interfaces: item.ports,
+      vip: item.virtualIp
+    }
+  }),
+  timeout: 3
 }
 
 export const defaultCxtData = {

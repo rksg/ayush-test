@@ -4,15 +4,14 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
 import { PageHeader, Tabs }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { SwitchClientContext, SwitchClientsTable } from '@acx-ui/rc/components'
 import {
   useGetApWiredClientsQuery,
   useGetSwitchClientListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useTenantLink }        from '@acx-ui/react-router-dom'
 import { filterByAccess }       from '@acx-ui/user'
+import { usePollingTableQuery } from '@acx-ui/utils'
 import { ApWiredClientTable }   from '@acx-ui/wifi/components'
 
 
@@ -42,12 +41,9 @@ type WiredTabsInfo = {
 }
 
 const useTabs = () : WiredTabsInfo => {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const [ switchCount, setSwitchCount ] = useState(0)
   const [ switchTableQueryFilters, setSwitchTableQueryFilters ] = useState({})
   const [ apWiredCount, setApWiredCount ] = useState(0)
-
 
   const switchClientTableQuery = usePollingTableQuery({
     useQuery: useGetSwitchClientListQuery,
@@ -56,7 +52,7 @@ const useTabs = () : WiredTabsInfo => {
       filters: {},
       fields: [ 'clientMac']
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   // eslint-disable-next-line max-len

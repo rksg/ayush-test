@@ -29,8 +29,8 @@ const mockUseLocationValue = {
   state: null
 }
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))

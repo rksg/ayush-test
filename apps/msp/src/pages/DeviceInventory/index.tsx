@@ -28,12 +28,11 @@ import {
   ApDeviceStatusEnum,
   transformApStatus,
   EntitlementNetworkDeviceType,
-  SwitchStatusEnum,
-  useTableQuery
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
-import { getUserProfile, hasAllowedOperations }         from '@acx-ui/user'
-import { AccountType, exportMessageMapping, getOpsApi } from '@acx-ui/utils'
+import { TenantLink, useParams }                                       from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations }                        from '@acx-ui/user'
+import { AccountType, exportMessageMapping, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 

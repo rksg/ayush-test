@@ -56,7 +56,8 @@ import {
 import {
   getSwitchModel,
   isSameModelFamily,
-  isOperationalSwitch
+  isOperationalSwitch,
+  getStackUnitsMinLimitationV1002
 } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
@@ -73,7 +74,6 @@ import {
   checkVersionAtLeast09010h,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002,
   getSwitchFwGroupVersionV1002,
   SwitchFirmwareModelGroup,
   createSwitchSerialPattern,
@@ -107,7 +107,6 @@ const modelNotSupportStack =
 
 export type SwitchModelParams = {
   serialNumber: string;
-  isSupport8200AV: boolean;
   isSupport8100: boolean;
   isSupport8100X: boolean;
   isSupport7550Zippy: boolean;
@@ -115,14 +114,13 @@ export type SwitchModelParams = {
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X,
+  const { serialNumber, isSupport8100, isSupport8100X,
     isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
   const re = (isSupport8100 && isSpecific8100Model(serialNumber))
     ? createSwitchSerialPatternForSpecific8100Model()
     : createSwitchSerialPattern({
-      isSupport8200AV: isSupport8200AV,
       isSupport8100: isSupport8100,
       isSupport8100X: isSupport8100X,
       isSupport7550Zippy: isSupport7550Zippy
@@ -170,7 +168,6 @@ export function StackForm () {
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
-  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
@@ -315,7 +312,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
-                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL,
+              firmware: switchDetail.firmware
             }
           }) ?? []
 
@@ -400,8 +398,10 @@ export function StackForm () {
   const getMiniMembers = function (activeSerialNumber: string) {
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = currentFirmwareV1002?.find(v =>
-      v.modelGroup === switchModelGroup)?.version || ''
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
+      currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+
     return getStackUnitsMinLimitationV1002(switchModel, currentVersion)
   }
 
@@ -676,7 +676,6 @@ export function StackForm () {
               validator: (_, value) => {
                 const switchModelParams: SwitchModelParams = {
                   serialNumber: value,
-                  isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
                   isSupport8100X: isSupport8100X,
                   isSupport7550Zippy: isSupport7550Zippy,
@@ -808,8 +807,10 @@ export function StackForm () {
     }
     const switchModel = getSwitchModel(activeSerialNumber) || ''
     const switchModelGroup = checkSwitchModelGroup(switchModel)
-    const currentVersion = currentFirmwareV1002?.find(v =>
-      v.modelGroup === switchModelGroup)?.version || ''
+    const currentVersion = tableData.filter(item => item.id === activeSerialNumber)[0]?.firmware ||
+      currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+
     const miniMembers = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
 
     setTableData(tableData.splice(0, miniMembers))

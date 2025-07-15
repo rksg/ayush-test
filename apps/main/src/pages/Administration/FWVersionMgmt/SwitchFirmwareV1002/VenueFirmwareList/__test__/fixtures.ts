@@ -394,6 +394,17 @@ export const switchReleaseV1002 = [
     ]
   },
   {
+    modelGroup: 'ICX81',
+    versions: [
+      {
+        id: '10010_rc81',
+        name: '10010_rc81',
+        category: 'RECOMMENDED',
+        createdDate: '2024-05-23T03:54:07.867+00:00'
+      }
+    ]
+  },
+  {
     modelGroup: 'ICX82',
     versions: [
       {
@@ -692,8 +703,14 @@ export const availableVersions_hasInUse = [
       {
         id: '09010h_cd2_b4',
         name: '09010h_cd2_b4',
-        category: 'RECOMMENDED',
+        category: 'REGULAR',
         createdDate: '2024-04-09T09:13:06.337+00:00'
+      },
+      {
+        id: '10010g_rc2',
+        name: '10010g_rc2',
+        category: 'RECOMMENDED',
+        createdDate: '2024-05-22T07:21:52.693+00:00'
       }
     ]
   }

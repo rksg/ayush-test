@@ -693,3 +693,10 @@ export const mockedHaNetworkSettings = {
     }
   ]
 } as unknown as ClusterNetworkSettings
+
+export const mockedSingleNodeNetworkSettings = {
+  lagSettings: [mockedHaNetworkSettings.lagSettings[0]],
+  portSettings: [mockedHaNetworkSettings.portSettings[0]],
+  virtualIpSettings: mockedHaNetworkSettings.virtualIpSettings,
+  subInterfaceSettings: [mockedHaNetworkSettings.subInterfaceSettings![0]]
+}

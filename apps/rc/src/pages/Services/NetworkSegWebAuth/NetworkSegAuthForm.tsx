@@ -16,10 +16,6 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  Features,
-  useIsSplitOn
-}    from '@acx-ui/feature-toggle'
-import {
   useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
   useUpdateWebAuthTemplateMutation
@@ -54,12 +50,10 @@ export default function NetworkSegAuthForm (
     oper: ServiceOperation.LIST
   }))
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
   const { data } = useGetWebAuthTemplateQuery(
-    { params, enableRbac: isSwitchRbacEnabled }, { skip: !editMode }
+    { params, enableRbac: true }, { skip: !editMode }
   )
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
@@ -81,11 +75,11 @@ export default function NetworkSegAuthForm (
       let results = {} as CommonResult
       if (editMode) {
         await updateWebAuthTemplate({
-          params, payload: value, enableRbac: isSwitchRbacEnabled
+          params, payload: value, enableRbac: true
         }).unwrap()
       } else {
         results = await createWebAuthTemplate({
-          params, payload: _.omit(value, 'id'), enableRbac: isSwitchRbacEnabled
+          params, payload: _.omit(value, 'id'), enableRbac: true
         }).unwrap()
       }
 

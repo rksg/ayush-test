@@ -2,12 +2,18 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi, apApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { venueApi, apApi } from '@acx-ui/rc/services'
+import {
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData } from '../../__tests__/fixtures'
+import {
+  venueApCompatibilitiesData,
+  apCompatibilitiesFilterData
+} from '../../__tests__/fixtures'
 
 import { VenueDevicesTab } from '.'
 
@@ -24,8 +30,8 @@ const mockSessionStorage = {
 }
 Object.defineProperty(global, 'sessionStorage', { value: mockSessionStorage })
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -51,78 +57,24 @@ jest.mock('@acx-ui/rc/components', () => ({
   }
 }))
 
+jest.mock('./VenueWifi/VenueMeshApsTable/RbacVenueMeshApsTable', ()=>({
+  RbacVenueMeshApsTable: () => <div data-testid={'rbacVenueMeshApsTable'} />
+}))
+
 jest.mock('./VenueEdge', () => ({
   VenueEdge: () => <div data-testid='VenueEdge' id='acx-edge-device' />
 }))
 
-const meshData = {
-  fields: ['clients','serialNumber','apDownRssis','downlink','IP','apUpRssi','apMac',
-    'venueName','meshRole','uplink','venueId','name','apUpMac','apRssis','model','hops','cog'],
-  page: 1,
-  totalCount: 0,
-  data: [
-    {
-      serialNumber: '981604906462',
-      name: 'AP-981604906462',
-      model: 'R710',
-      venueId: '8caa8f5e01494b5499fa156a6c565138',
-      venueName: 'Ada',
-      IP: '192.168.34.237',
-      apMac: '74:3E:2B:30:1E:70',
-      meshRole: 'RAP',
-      hops: 0,
-      uplink: [],
-      downlink: [{
-        serialNumber: '321602105278',
-        name: 'AP-321602105278',
-        model: 'R510',
-        venueId: '8caa8f5e01494b5499fa156a6c565138',
-        venueName: 'Ada',
-        IP: '192.168.34.203',
-        apMac: 'EC:8C:A2:32:88:93',
-        meshRole: 'MAP',
-        hops: 3,
-        txFrames: '3847',
-        rssi: 78,
-        rxBytes: '495421',
-        txBytes: '787581',
-        rxFrames: '1726',
-        type: 2,
-        downMac: 'ec:8c:a2:32:88:93',
-        uplink: [],
-        downlink: []
-      }]
-    },
-    {
-      serialNumber: '321602105275',
-      name: 'AP-321602105275',
-      model: 'R510',
-      venueId: '8caa8f5e01494b5499fa156a6c565138',
-      venueName: 'Ada',
-      IP: '192.168.34.201',
-      apMac: 'EC:8C:A2:32:88:90',
-      meshRole: 'MAP',
-      hops: 1,
-      uplink: [],
-      downlink: []
-    },
-    {
-      serialNumber: '481503905523',
-      name: 'AP-481503905523',
-      model: 'R600',
-      venueId: '8caa8f5e01494b5499fa156a6c565138',
-      venueName: 'Ada',
-      IP: '192.168.34.234',
-      apMac: 'F8:E7:1E:25:9F:D0',
-      meshRole: 'EMAP',
-      hops: 2,
-      uplink: [],
-      downlink: []
-    }
-  ]
+const venueMeshSettings = {
+  enabled: true,
+  ssid: 'Mesh-test',
+  passphrase: '1234',
+  radioType: '5G',
+  zeroTouchEnabled: false
 }
 
 describe('VenueWifi', () => {
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
@@ -133,23 +85,21 @@ describe('VenueWifi', () => {
         (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
-        CommonUrlsInfo.getMeshAps.url.replace('?mesh=true', ''),
-        (req, res, ctx) => res(ctx.json(meshData))
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
       ),
+      // RBAC
       rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting))
+        WifiRbacUrlsInfo.getVenueMesh.url,
+        (_, res, ctx) => res(ctx.json(venueMeshSettings))
       ),
       rest.post(
         WifiRbacUrlsInfo.getVenueApCompatibilities.url,
-        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
-      ),
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
+        (_, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
       )
     )
   })
+
 
   const params = {
     tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
@@ -166,7 +116,7 @@ describe('VenueWifi', () => {
     expect(await screen.findByTestId('ApTable')).toBeVisible()
 
     fireEvent.click(await screen.findByTestId('MeshSolid'))
-    expect(await screen.findByRole('row', { name: /AP-981604906462/i })).toBeVisible()
+    expect(await screen.findByTestId('rbacVenueMeshApsTable')).toBeVisible()
   })
 
   it('should render Ap Compatibilities alert correctly', async () => {

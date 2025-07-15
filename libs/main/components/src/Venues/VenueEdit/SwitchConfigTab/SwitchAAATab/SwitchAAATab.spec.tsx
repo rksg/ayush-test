@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi, switchApi }            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { venueApi, switchApi }                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -33,8 +33,8 @@ const venueSwitchSetting = {
 }
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
@@ -47,18 +47,18 @@ describe('SwitchAAATab', () => {
   it('should render correctly', async () => {
     const requestSpy = jest.fn()
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
       }),
-      rest.post(SwitchUrlsInfo.addAaaServer.url, (req, res, ctx) =>
+      rest.post(SwitchRbacUrlsInfo.addAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       ),
-      rest.put(SwitchUrlsInfo.updateAaaSetting.url, (req, res, ctx) => {
+      rest.put(SwitchRbacUrlsInfo.updateAaaSetting.url, (req, res, ctx) => {
         requestSpy()
         return res(ctx.json({}))
       }),
@@ -82,15 +82,15 @@ describe('SwitchAAATab', () => {
     const requestSpy = jest.fn()
 
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSettingWithOrder))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))
       }),
-      rest.put(SwitchUrlsInfo.updateAaaSetting.url, (req, res, ctx) => {
+      rest.put(SwitchRbacUrlsInfo.updateAaaSetting.url, (req, res, ctx) => {
         requestSpy()
         return res(ctx.json({}))
       }),
@@ -125,10 +125,10 @@ describe('SwitchAAATab', () => {
 
   it('should not allowed to configure AAA in CLI mode', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+      rest.get(SwitchRbacUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+      rest.post(SwitchRbacUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }
         if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
         return res(ctx.json(emptyList))

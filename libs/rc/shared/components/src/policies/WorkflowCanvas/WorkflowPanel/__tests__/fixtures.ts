@@ -1,7 +1,8 @@
 import { MessageDescriptor } from 'react-intl'
 import { Edge, Node }        from 'reactflow'
 
-import { ActionType, NewAPITableResult, WorkflowActionDefinition, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionType, WorkflowActionDefinition, WorkflowStep } from '@acx-ui/rc/utils'
+import { NewAPITableResult }                                  from '@acx-ui/utils'
 
 // To make sure that the tests are working, it's important that you are using
 // this implementation of ResizeObserver and DOMMatrixReadOnly
@@ -78,7 +79,9 @@ export const mockInitialNodes: Node[] = [
     id: 'step-2',
     position: { x: 0, y: 0 },
     type: ActionType.DISPLAY_MESSAGE,
-    data: {}
+    data: {
+      priorStepId: 'step-1'
+    }
   }
 ]
 

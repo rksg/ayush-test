@@ -3,7 +3,6 @@ import {
   onActivityMessageReceived,
   ActivePluginsData,
   CommonResult,
-  TableResult,
   RcapLicenseUtilizationData,
   IotControllerDashboard,
   IotControllerSetting,
@@ -17,7 +16,8 @@ import { baseIotApi }     from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
 import {
   createHttpRequest,
-  ignoreErrorModal
+  ignoreErrorModal,
+  TableResult
 } from '@acx-ui/utils'
 
 export const iotApi = baseIotApi.injectEndpoints({

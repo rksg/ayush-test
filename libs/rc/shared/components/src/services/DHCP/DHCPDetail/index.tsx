@@ -16,12 +16,12 @@ import {
   useTemplateAwareServiceAllowedOperation,
   ServiceOperation,
   ServiceType,
-  TableResult,
+  DHCPUsage,
   useConfigTemplateQueryFnSwitcher,
   useServiceListBreadcrumb,
   Venue
 } from '@acx-ui/rc/utils'
-import { DHCPUsage } from '@acx-ui/rc/utils'
+import { TableResult } from '@acx-ui/utils'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { PoolTable }                         from '../DHCPForm'
