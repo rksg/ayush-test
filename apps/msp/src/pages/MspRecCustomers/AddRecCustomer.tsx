@@ -293,7 +293,7 @@ export function AddRecCustomer () {
         >
           <Paragraph>{customer.account_name}</Paragraph>
         </Form.Item>
-        {mspHspDisplayToggle && <Form.Item
+        {mspHspDisplayToggle && <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Property Id' })}
         >
           <Paragraph>{customer.propertyCode}</Paragraph>
