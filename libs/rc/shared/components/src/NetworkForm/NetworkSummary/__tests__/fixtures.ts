@@ -1,4 +1,54 @@
-import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum, NetworkTypeEnum, NetworkSaveData } from '@acx-ui/rc/utils'
+
+export const mockMacRegListData = {
+  content: [
+    {
+      id: 'mac-reg-list-1',
+      name: 'Test MAC Registration List 1',
+      autoCleanup: true,
+      enabled: true,
+      registrationCount: 5,
+      defaultAccess: 'ACCEPT'
+    },
+    {
+      id: 'mac-reg-list-2',
+      name: 'Test MAC Registration List 2',
+      autoCleanup: false,
+      enabled: true,
+      registrationCount: 10,
+      defaultAccess: 'REJECT'
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 2,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 2,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
+export const baseMockSummary = {
+  name: 'test-network',
+  type: 'psk' as NetworkTypeEnum,
+  isCloudpathEnabled: false,
+  venues: [
+    {
+      venueId: '6cf550cdb67641d798d804793aaa82db',
+      name: 'My-Venue'
+    }
+  ]
+} as NetworkSaveData
 
 export const mockAaaNetworkSummary = {
   name: 'test',
