@@ -87,7 +87,8 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
   [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' }),
-  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' })
+  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' }),
+  ['START' as ActionType]: defineMessage({ defaultMessage: 'Start' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
