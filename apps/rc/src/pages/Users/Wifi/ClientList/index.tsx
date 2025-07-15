@@ -2,16 +2,15 @@ import { useState, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { ClientTabContext }                                                 from '@acx-ui/rc/components'
-import { useGetClientListQuery, useGetClientsQuery, useGetGuestsListQuery } from '@acx-ui/rc/services'
-import { ClientInfo, ClientList }                                           from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                       from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra }                   from '@acx-ui/reports/components'
-import { RequestPayload }                                                   from '@acx-ui/types'
-import { filterByAccess }                                                   from '@acx-ui/user'
-import { DateRange, usePollingTableQuery, COUNT_ALL_REQ_CONTENT }           from '@acx-ui/utils'
+import { PageHeader, Tabs }                                       from '@acx-ui/components'
+import { ClientTabContext }                                       from '@acx-ui/rc/components'
+import { useGetClientsQuery, useGetGuestsListQuery }              from '@acx-ui/rc/services'
+import { ClientInfo, ClientList  }                                from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                             from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra }         from '@acx-ui/reports/components'
+import { RequestPayload }                                         from '@acx-ui/types'
+import { filterByAccess }                                         from '@acx-ui/user'
+import { DateRange, COUNT_ALL_REQ_CONTENT, usePollingTableQuery } from '@acx-ui/utils'
 
 import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
@@ -48,7 +47,6 @@ export interface GuestDateFilter {
 }
 
 const useTabs = () : WirelessTab[] => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const payload = {
     searchString: '',
     filters: {},
@@ -57,9 +55,9 @@ const useTabs = () : WirelessTab[] => {
 
   // eslint-disable-next-line max-len
   const clientTableQuery = usePollingTableQuery<ClientInfo|ClientList, RequestPayload<unknown>, unknown>({
-    useQuery: isWifiRbacEnabled? useGetClientsQuery : useGetClientListQuery,
+    useQuery: useGetClientsQuery,
     defaultPayload: { ...payload },
-    ...(isWifiRbacEnabled && COUNT_ALL_REQ_CONTENT)
+    ...COUNT_ALL_REQ_CONTENT
   })
 
   const guestTableQuery = usePollingTableQuery({

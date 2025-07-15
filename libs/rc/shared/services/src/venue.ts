@@ -339,12 +339,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenue: build.query<VenueExtended, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-        const req = createHttpRequest(urlsInfo.getVenue, params, apiCustomHeader)
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenue, params, apiCustomHeader)
         return{
           ...req
         }
@@ -2246,6 +2243,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     }),
+    activateVenueRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiRbacUrlsInfo.activateVenueRadiusService, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateVenueRadiusService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiRbacUrlsInfo.deactivateVenueRadiusService, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVenueClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -2647,6 +2662,8 @@ export const {
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueRadiusOptionsQuery,
   useUpdateVenueRadiusOptionsMutation,
+  useActivateVenueRadiusServiceMutation,
+  useDeactivateVenueRadiusServiceMutation,
   useGetVenueClientAdmissionControlQuery,
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,

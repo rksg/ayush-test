@@ -4,7 +4,6 @@ import { Form, Input, Tooltip, Checkbox } from 'antd'
 import { useIntl }                        from 'react-intl'
 
 import { Button, Modal, PasswordInput } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { GuestPortal }                  from '@acx-ui/rc/utils'
 
 import appPhoto           from '../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
@@ -34,7 +33,6 @@ export default function LinkedInSetting (props:{
   const [visibleNote, setVisibleNote]=useState(true)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
-  const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const linkedInNote = $t({
     defaultMessage:
       'Please note'
@@ -161,7 +159,7 @@ export default function LinkedInSetting (props:{
         maskClosable={false}
       >
         {getContent}
-        {editMode && isEnabledLinkedInOIDC && !visibleNote &&
+        {editMode && !visibleNote &&
           <UI.AlertNote message={<>
             <span style={{ fontWeight: 'bold' }}>{linkedInNote}:</span>
             <div>{linkedInInfo}</div>

@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { firmwareApi }                                        from '@acx-ui/rc/services'
 import {
   EdgeFirmwareFixtures,
   FirmwareRbacUrlsInfo,
+  CommonUrlsInfo,
   FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
@@ -127,8 +127,6 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      (ff !== Features.SWITCH_RBAC_API))
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
@@ -137,6 +135,10 @@ describe('Firmware Version Management', () => {
       rest.get(
         FirmwareUrlsInfo.getLatestEdgeFirmware.url.replace('?latest=true', ''),
         (_req, res, ctx) => res(ctx.json(mockedLatestEdgeFirmwares))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
     render(

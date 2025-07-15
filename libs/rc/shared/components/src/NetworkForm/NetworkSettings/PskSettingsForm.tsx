@@ -66,30 +66,35 @@ export function PskSettingsForm () {
   const isMacRegistrationList = useWatch(['wlan', 'isMacRegistrationList'])
   const enableAccountingService = useWatch('enableAccountingService')
   useEffect(()=>{
-    if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
-      form.setFieldsValue({
-        wlan: {
-          passphrase: data.wlan?.passphrase,
-          wepHexKey: data.wlan?.wepHexKey,
-          saePassphrase: data.wlan?.saePassphrase,
-          wlanSecurity: data.wlan?.wlanSecurity,
-          managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthentication: data.wlan?.macAddressAuthentication,
-          macRegistrationListId: data.wlan?.macRegistrationListId,
-          macAuthMacFormat: data.wlan?.macAuthMacFormat
-        },
-        enableAuthProxy: data.enableAuthProxy,
-        enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.enableAccountingService,
-        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
-        authRadius: data.authRadius,
-        accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
-      })
+    if((editMode || cloneMode) && data){
+      setFieldsValue()
     }
-  }, [data])
+  }, [data?.id])
+
+  const setFieldsValue = () => {
+    data && form.setFieldsValue({
+      wlan: {
+        passphrase: data.wlan?.passphrase,
+        wepHexKey: data.wlan?.wepHexKey,
+        saePassphrase: data.wlan?.saePassphrase,
+        wlanSecurity: data.wlan?.wlanSecurity,
+        managementFrameProtection: data.wlan?.managementFrameProtection,
+        macAddressAuthentication: data.wlan?.macAddressAuthentication,
+        macRegistrationListId: data.wlan?.macRegistrationListId,
+        macAuthMacFormat: data.wlan?.macAuthMacFormat,
+        isMacRegistrationList: !!data.wlan?.macRegistrationListId
+      },
+      enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
+      enableAccountingService: data.enableAccountingService,
+      enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+      enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+      authRadius: data.authRadius,
+      accountingRadius: data.accountingRadius,
+      accountingRadiusId: data.accountingRadiusId,
+      authRadiusId: data.authRadiusId
+    })
+  }
 
   return (<>
     <Row gutter={20}>
@@ -116,7 +121,7 @@ export function PskSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const { networkId } = useParams()
@@ -212,43 +217,7 @@ function SettingsForm () {
         wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Optional
         break
     }
-
-    setData && setData({
-      ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          wlanSecurity: value as WlanSecurityEnum,
-          ...wlanProtocolConfig
-        }
-      }
-    })
   }
-
-  const onMacAuthChange = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          macAddressAuthentication: checked
-        }
-      }
-    })
-  }
-
-  useEffect(()=>{
-    form.setFieldsValue(data)
-    if (editMode && data) {
-      form.setFieldsValue({
-        wlan: {
-          isMacRegistrationList: !!data.wlan?.macRegistrationListId,
-          macAddressAuthentication: data.wlan?.macAddressAuthentication,
-          macRegistrationListId: data.wlan?.macRegistrationListId
-        }
-      })
-    }
-  },[data])
 
   useEffect(() => {
 
@@ -388,13 +357,13 @@ function SettingsForm () {
               onClick={() => setDrawerVisible(true)}
             />}
             {isR370UnsupportedFeatures &&
-            <ApCompatibilityDrawer
-              visible={drawerVisible}
-              type={ApCompatibilityType.ALONE}
-              networkId={networkId}
-              featureNames={[InCompatibilityFeatures.MAC_AUTH]}
-              onClose={() => setDrawerVisible(false)}
-            />}
+          <ApCompatibilityDrawer
+            visible={drawerVisible}
+            type={ApCompatibilityType.ALONE}
+            networkId={networkId}
+            featureNames={[InCompatibilityFeatures.MAC_AUTH]}
+            onClose={() => setDrawerVisible(false)}
+          />}
           </Space>
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}
@@ -402,7 +371,7 @@ function SettingsForm () {
             <Switch
               data-testid={'macAddressAuthentication-switch'}
               disabled={editMode}
-              onChange={onMacAuthChange} />
+            />
           </Form.Item>
         </UI.FieldLabel>
         {macAddressAuthentication && <>
@@ -442,12 +411,6 @@ function SettingsForm () {
           <AccountingServiceInput
             isProxyModeConfigurable={isSupportNetworkRadiusAccounting}
             labelWidth={labelWidth}
-            enableToggleOnChange={(checked) => {
-              setData && setData({ ...data, enableAccountingService: checked })
-            }}
-            proxyModeToggleOnChange={(checked) => {
-              setData && setData({ ...data, enableAccountingProxy: checked })
-            }}
             excludeRadSec={!isSupportNetworkRadiusAccounting}
           />
         }

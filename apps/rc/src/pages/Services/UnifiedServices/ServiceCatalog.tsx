@@ -25,7 +25,7 @@ const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, Incompatibilit
   [PolicyType.HQOS_BANDWIDTH]: IncompatibilityFeatures.HQOS
 }
 
-const serviceCatalogSettingsId = 'service-catalog'
+const serviceCatalogSettingsId = 'service-catalog-filter'
 
 export function ServiceCatalog () {
   const { $t } = useIntl()

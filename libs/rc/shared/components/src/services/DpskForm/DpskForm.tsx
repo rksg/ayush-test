@@ -132,7 +132,7 @@ export function DpskForm (props: DpskFormProps) {
     if (targetDpsk) {
       modalCallBack?.(targetDpsk)
     }
-  }, [idAfterCreatedRef, dpskList])
+  }, [idAfterCreatedRef.current, dpskList])
 
   const saveData = async (data: CreateDpskFormFields) => {
     const dpskSaveData = transferFormFieldsToSaveData(data)
