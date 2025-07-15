@@ -103,6 +103,7 @@ describe('ApPageHeader', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
+
   })
 
   it('should render correct breadcrumb', async () => {
