@@ -4,6 +4,7 @@ import { useIntl }       from 'react-intl'
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
@@ -42,6 +43,7 @@ export function BrandTable ({
   const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
 
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data, lspLabel)
@@ -209,9 +211,13 @@ export function BrandTable ({
     propertyCols.splice(-1)
   }
 
+  const finalPropertyCols = !propertyIdToggle
+    ? propertyCols.filter(col => col.dataIndex !== 'propertyCode')
+    : propertyCols
+
   return <Table<Property | PropertyCode | Lsp>
     columns={[
-      ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
+      ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols
     ] as unknown as TableProps<Property | PropertyCode | Lsp>['columns']}
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}

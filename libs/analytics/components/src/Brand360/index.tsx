@@ -10,7 +10,7 @@ import { Features,
 } from '@acx-ui/feature-toggle'
 import {
   useMspECListWithDelegationsQuery,
-  useIntegratorCustomerListDropdownQuery
+  useIntegratorCustomerListDropdownQuery, useMspECListQuery
 } from '@acx-ui/msp/services'
 import {
   useGetTenantDetailsQuery
@@ -46,6 +46,21 @@ import { useSliceType }   from './useSliceType'
 
 
 const mspPayload = {
+  searchString: '',
+  filters: {
+    tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
+    status: ['Active']
+  },
+  fields: ['id', 'name', 'tenantType', 'status'],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
+const mspPayloadTenantsQuery = {
   searchString: '',
   filters: {
     tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
@@ -95,12 +110,17 @@ export function Brand360 () {
     toggles: useIncidentToggles(),
     isMDU: isMDUEnabled
   }
-
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
+  const mspPropertiesDataUsingECsQuery =
+    useMspECListQuery({ params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+  const mspPropertiesDataUsingTenantsQuery =
+    useMspECListWithDelegationsQuery(
+      { params: { tenantId }, payload: mspPayloadTenantsQuery }, { skip: isLSP })
 
-  const mspPropertiesData = useMspECListWithDelegationsQuery(
-    { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+  const mspPropertiesData = propertyIdToggle ?
+    mspPropertiesDataUsingTenantsQuery : mspPropertiesDataUsingECsQuery
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid),
       enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isLSP
