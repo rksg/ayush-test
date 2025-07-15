@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import moment from 'moment-timezone'
+import { skipToken } from '@reduxjs/toolkit/query'
+import moment        from 'moment-timezone'
 
 import { useBrand360Config }                                 from '@acx-ui/analytics/services'
 import { Settings }                                          from '@acx-ui/analytics/utils'
@@ -113,12 +114,18 @@ export function Brand360 () {
   const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
-  const mspPropertiesDataUsingECsQuery =
-    useMspECListQuery({ params: { tenantId }, payload: mspPayload }, { skip: isLSP })
-  const mspPropertiesDataUsingTenantsQuery =
-    useMspECListWithDelegationsQuery(
-      { params: { tenantId }, payload: mspPayloadTenantsQuery }, { skip: isLSP })
-
+  const shouldUseTenantsQuery = propertyIdToggle
+  const shouldUseECsQuery = !propertyIdToggle
+  const mspPropertiesDataUsingECsQuery = useMspECListQuery(
+    shouldUseECsQuery
+      ? { params: { tenantId }, payload: mspPayload }
+      : skipToken
+  )
+  const mspPropertiesDataUsingTenantsQuery = useMspECListWithDelegationsQuery(
+    shouldUseTenantsQuery
+      ? { params: { tenantId }, payload: mspPayloadTenantsQuery }
+      : skipToken
+  )
   const mspPropertiesData = propertyIdToggle ?
     mspPropertiesDataUsingTenantsQuery : mspPropertiesDataUsingECsQuery
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
