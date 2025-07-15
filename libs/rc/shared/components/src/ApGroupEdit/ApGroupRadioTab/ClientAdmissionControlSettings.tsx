@@ -15,7 +15,8 @@ import {
 import {  
   useGetApGroupClientAdmissionControlQuery,
   useUpdateApGroupClientAdmissionControlMutation,
-  useLazyGetVenueClientAdmissionControlQuery
+  useLazyGetVenueClientAdmissionControlQuery,
+  useGetVenueClientAdmissionControlQuery
 } from '@acx-ui/rc/services'
 
 import { ApGroupClientAdmissionControl, ClientAdmissionControl, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
@@ -57,12 +58,16 @@ export function ClientAdmissionControlSettings(props: {
 
   const getApGroupClientAdmissionControl = useGetApGroupClientAdmissionControlQuery({
     params: { venueId: venueId, apGroupId: apGroupId }
-  })
+  }, { skip: !venueId })
+
+  const getVenueClientAdmissionControl = useGetVenueClientAdmissionControlQuery({
+    params: { venueId }, enableRbac: true
+  }, { skip: !venueId })
 
   const [updateApGroupClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApGroupClientAdmissionControlMutation()
 
-  const [getVenueClientAdmissionControl] = useLazyGetVenueClientAdmissionControlQuery()
+
 
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true) 
   const isUseVenueSettingsRef = useRef<boolean>(true)
@@ -79,9 +84,7 @@ export function ClientAdmissionControlSettings(props: {
           setIsUseVenueSettings(clientAdmissionControlData.useVenueSettings || false)
           isUseVenueSettingsRef.current = clientAdmissionControlData.useVenueSettings || false
         }
-
-        const venueClientAdmissionControl = (await getVenueClientAdmissionControl(
-          { params: { venueId }, enableRbac: true }, true).unwrap())
+        const venueClientAdmissionControl = getVenueClientAdmissionControl?.data
         venueClientAdmissionControlRef.current = venueClientAdmissionControl
       }
       setData()

@@ -56,6 +56,7 @@ const mockedUpdateApGroupRadioCustomization = jest.fn()
 const mockedGetApGroupDefaultRegulatoryChannels = jest.fn()
 const mockedGetApGroupBandModeSettings = jest.fn()
 const mockedGetApGroupClientAdmissionControl = jest.fn()
+const mockedGetVenueClientAdmissionControl = jest.fn()
 const mockedGetWifiCapabilities = jest.fn()
 const mockedGetVenue = jest.fn()
 
@@ -316,8 +317,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     tenantId: 'tenant-id',
     apGroupId: 'apgroup-id',
     action: 'edit',
-    activeTab: 'radio',
-    venueId: 'venue-id'
+    activeTab: 'radio'
   }
 
   beforeEach(() => {
@@ -425,12 +425,15 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings.url,
-        (_, res, ctx) => res(ctx.json(apGroupClientAdmissionControl))
+        (_, res, ctx) => {
+          mockedGetApGroupClientAdmissionControl()
+          return res(ctx.json(apGroupClientAdmissionControl))
+        }
       ),
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
         (_, res, ctx) => {
-          mockedGetApGroupClientAdmissionControl()
+          mockedGetVenueClientAdmissionControl()
           return res(ctx.json(venueClientAdmissionControl))
         })
     )
@@ -447,19 +450,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       rest.get(WifiRbacUrlsInfo.getApGroupRadioCustomization.url,
         (_, res, ctx) => {
           return res(ctx.json({}))
-        }),
-      rest.post(WifiRbacUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => {
-          mockedApGroupListReq()
-          return res(ctx.json(mockAPGroupList))
-        }),
-      rest.post(
-        WifiUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => {
-          mockedApGroupListReq()
-          return res(ctx.json(mockAPGroupList))
-        }
-      )
+        })
     )
 
     render(
@@ -520,19 +511,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
           return res(ctx.json({
             ...apGroupRadioCustomization
           }))
-        }),
-      rest.post(WifiRbacUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => {
-          mockedApGroupListReq()
-          return res(ctx.json(mockAPGroupList))
-        }),
-      rest.post(
-        WifiUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => {
-          mockedApGroupListReq()
-          return res(ctx.json(mockAPGroupList))
-        }
-      )
+        })
     )
 
     render(
