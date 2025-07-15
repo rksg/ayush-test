@@ -52,13 +52,11 @@ import {
   GetApiVersionHeader,
   GetUploadFormDataApiVersionHeader,
   ImportErrorRes,
-  MdnsProxyUrls,
   MeshUplinkAp,
   NewAPExtendedGrouped,
   NewAPModel,
   NewAPModelExtended,
   NewDhcpAp,
-  NewMdnsProxyData,
   NewPacketCaptureState,
   PacketCaptureOperationResponse,
   PacketCaptureState,
@@ -464,19 +462,6 @@ export const apApi = baseApApi.injectEndpoints({
         if(apData) {
           apData.serialNumber = params?.serialNumber ?? ''
           apData.venueId = params?.venueId ?? ''
-          const mDnsProxyPayload = {
-            fields: ['name', 'activations', 'rules', 'id'],
-            filters: {
-              'activations.apSerialNumbers': [params?.serialNumber]
-            }
-          }
-          const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
-          const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
-          const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
-          const targetMdnsData = mDnsProxyList?.[0]
-          if (targetMdnsData) {
-            apData.multicastDnsProxyServiceProfileId = targetMdnsData.id
-          }
         }
         return { data: apData }
       },
@@ -486,9 +471,7 @@ export const apApi = baseApApi.injectEndpoints({
           const activities = [
             'UpdateAp',
             'UpdateApCustomization',
-            'ResetApCustomization',
-            'ActivateMulticastDnsProxyProfile',
-            'DeactivateMulticastDnsProxyProfile'
+            'ResetApCustomization'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
@@ -1909,13 +1892,12 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     downloadApsCSV: build.mutation<Blob, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        if(customHeaders) {
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        if (customHeaders) {
           customHeaders.Accept = 'text/vnd.ruckus.v1+csv'
         }
-        const req = createHttpRequest(urlsInfo.downloadApsCSV, params, customHeaders)
+        const req = createHttpRequest(CommonRbacUrlsInfo.downloadApsCSV, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload),

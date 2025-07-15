@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { venueApi }        from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { venueApi }                                            from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider, store }                                     from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -23,6 +23,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedSwitchDetail = {
+  id: 'switch-id',
+  venueId: 'venue-id',
+  name: 'switch-name'
+} as SwitchViewModel
+
 describe('edit static routes form', () => {
   const params = { tenantId: 'tenant-id', switchId: 'switch-id', serialNumber: 'serial-number' }
   beforeEach(() => {
@@ -34,7 +40,7 @@ describe('edit static routes form', () => {
       rest.post(SwitchUrlsInfo.addStaticRoute.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       ),
-      rest.put(SwitchUrlsInfo.updateStaticRoute.url,
+      rest.put(SwitchRbacUrlsInfo.updateStaticRoute.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       )
     )
@@ -42,6 +48,7 @@ describe('edit static routes form', () => {
 
   it('should render correctly', async () => {
     render(<Provider><StaticRoutesDrawer
+      switchDetail={mockedSwitchDetail}
       visible={true}
       setVisible={jest.fn()}
       data={staticRoutes[0]} /></Provider>, {
@@ -52,6 +59,7 @@ describe('edit static routes form', () => {
 
   it('should trigger destination ip validation correctly', async () => {
     render(<Provider><StaticRoutesDrawer
+      switchDetail={mockedSwitchDetail}
       visible={true}
       setVisible={jest.fn()}
       data={staticRoutes[0]} /></Provider>, {
@@ -79,6 +87,7 @@ describe('edit static routes form', () => {
 
   it('should trigger saving form correctly', async () => {
     render(<Provider><StaticRoutesDrawer
+      switchDetail={mockedSwitchDetail}
       visible={true}
       setVisible={jest.fn()}
       data={staticRoutes[0]} /></Provider>, {

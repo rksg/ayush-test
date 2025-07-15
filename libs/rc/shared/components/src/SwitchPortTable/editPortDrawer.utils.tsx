@@ -32,6 +32,7 @@ export interface PortVlan {
 }
 
 export const FIELD_LABEL: Record<string, MessageDescriptor> = {
+  portName: defineMessage({ defaultMessage: 'Port Name' }),
   flexibleAuthenticationEnabled: defineMessage({ defaultMessage: 'Port Authentication' }),
   authenticationProfileId: defineMessage({ defaultMessage: 'Profile' }),
   authenticationType: defineMessage({ defaultMessage: 'Type' }),
