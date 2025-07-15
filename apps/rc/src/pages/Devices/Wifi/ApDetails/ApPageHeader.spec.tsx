@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { apApi }                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                  from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -16,7 +17,6 @@ import { deviceAps } from '../../__tests__/fixtures'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -70,7 +70,7 @@ describe('ApPageHeader', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApJwtToken.url,
-        (_, res, ctx) => res(ctx.json({id_token: 'token'}))
+        (_, res, ctx) => res(ctx.json({ id_token: 'token' }))
       )
     )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
