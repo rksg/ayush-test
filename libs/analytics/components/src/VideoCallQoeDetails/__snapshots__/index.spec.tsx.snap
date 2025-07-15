@@ -379,7 +379,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -1386,7 +1386,6 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
-  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -6123,7 +6122,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -7169,7 +7168,6 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
-  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -11362,7 +11360,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/tenant-id/t/analytics/videoCallQoe"
+                  href="/ai/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -11397,26 +11395,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
               class="ant-page-header-heading-title"
             >
               <h1
-                aria-label="Test 1"
-                class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
               >
                 Test 1
-                <span
-                  aria-hidden="true"
-                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                >
-                  lg
-                </span>
-                <span
-                  aria-hidden="true"
-                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                >
-                  <span
-                    aria-hidden="true"
-                  >
-                    ...
-                  </span>
-                </span>
               </h1>
             </span>
           </div>
@@ -11457,7 +11438,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           class="ant-page-header-content"
         >
           <span
-            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
             <span>
               Start Time: 04/18/2023 10:21:13
@@ -11475,22 +11456,6 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
             </span>
             <span>
               Duration: 7 m 48 s
-            </span>
-            <span
-              aria-hidden="true"
-              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-            >
-              lg
-            </span>
-            <span
-              aria-hidden="true"
-              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-            >
-              <span
-                aria-hidden="true"
-              >
-                ...
-              </span>
             </span>
           </span>
         </div>
@@ -11567,7 +11532,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -12221,28 +12186,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 title="Participant 1"
                               >
                                 <span
-                                  aria-label="Participant 1"
-                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
                                   style="width: 100%; margin: 0px; padding: 0px;"
                                   title=""
                                 >
                                   Participant 1
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                  >
-                                    lg
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                  >
-                                    <span
-                                      aria-hidden="true"
-                                    >
-                                      ...
-                                    </span>
-                                  </span>
                                 </span>
                               </td>
                               <td
@@ -12250,28 +12198,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 title="106.216.236.123"
                               >
                                 <span
-                                  aria-label="106.216.236.123"
-                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
                                   style="width: 100%; margin: 0px; padding: 0px;"
                                   title=""
                                 >
                                   106.216.236.123
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                  >
-                                    lg
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                  >
-                                    <span
-                                      aria-hidden="true"
-                                    >
-                                      ...
-                                    </span>
-                                  </span>
                                 </span>
                               </td>
                               <td
@@ -12356,7 +12287,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                       style="margin-right: 8px;"
                                     >
                                       <a
-                                        href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                        href="/ai/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
                                         F0:81:73:20:84:39
                                       </a>
@@ -12377,28 +12308,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 title="Participant 2 (Mac M1)"
                               >
                                 <span
-                                  aria-label="Participant 2 (Mac M1)"
-                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
                                   style="width: 100%; margin: 0px; padding: 0px;"
                                   title=""
                                 >
                                   Participant 2 (Mac M1)
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                  >
-                                    lg
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                  >
-                                    <span
-                                      aria-hidden="true"
-                                    >
-                                      ...
-                                    </span>
-                                  </span>
                                 </span>
                               </td>
                               <td
@@ -12406,28 +12320,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 title="49.207.200.111"
                               >
                                 <span
-                                  aria-label="49.207.200.111"
-                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
                                   style="width: 100%; margin: 0px; padding: 0px;"
                                   title=""
                                 >
                                   49.207.200.111
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                  >
-                                    lg
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                  >
-                                    <span
-                                      aria-hidden="true"
-                                    >
-                                      ...
-                                    </span>
-                                  </span>
                                 </span>
                               </td>
                               <td
@@ -12441,35 +12338,18 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 title="AP-Group-Issue"
                               >
                                 <span
-                                  aria-label="AP-Group-Issue"
-                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
                                   style="width: 100%; margin: 0px; padding: 0px;"
                                   title=""
                                 >
                                   AP-Group-Issue
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                  >
-                                    lg
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                  >
-                                    <span
-                                      aria-hidden="true"
-                                    >
-                                      ...
-                                    </span>
-                                  </span>
                                 </span>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -12574,7 +12454,6 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
-  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -12789,7 +12668,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="1"
+                      size-sensor-id="9"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -13157,7 +13036,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -13167,7 +13046,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr0-c0)"
+                              clip-path="url(#zr8-c0)"
                             >
                               <path
                                 d="M193.2857 566.08C193.2857 566.08 283.901 566.08 373.5714 566.08C464.1867 566.08 463.2419 539.84 553.8571 539.84C643.5276 539.84 644 539.84 734.1429 539.84C824.2857 539.84 826.1185 539.84 914.4286 539.84C1006.4041 539.84 1094.7142 487.36 1094.7142 487.36"
@@ -13178,7 +13057,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr0-c1)"
+                              clip-path="url(#zr8-c1)"
                             >
                               <path
                                 d=""
@@ -13189,7 +13068,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr0-c2)"
+                              clip-path="url(#zr8-c2)"
                             >
                               <path
                                 d="M193.2857 434.88C193.2857 434.88 278.6882 371.3499 373.5714 329.92C458.9739 292.6299 465.8135 277.44 553.8571 277.44C646.0992 277.44 640.0699 356.16 734.1429 356.16C820.3557 356.16 824.7581 356.16 914.4286 356.16C1005.0438 356.16 1094.7142 329.92 1094.7142 329.92"
@@ -13200,7 +13079,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr0-c3)"
+                              clip-path="url(#zr8-c3)"
                             >
                               <path
                                 d=""
@@ -13213,7 +13092,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr0-c0"
+                              id="zr8-c0"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13221,7 +13100,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr0-c1"
+                              id="zr8-c1"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13229,7 +13108,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr0-c2"
+                              id="zr8-c2"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13237,7 +13116,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr0-c3"
+                              id="zr8-c3"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13328,7 +13207,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="2"
+                      size-sensor-id="10"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -13711,7 +13590,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -13721,7 +13600,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr1-c0)"
+                              clip-path="url(#zr9-c0)"
                             >
                               <path
                                 d="M13 657.92C13 657.92 106.0251 697.28 193.2857 697.28C286.3108 697.28 283.4286 618.56 373.5714 618.56C463.7143 618.56 459.7842 697.28 553.8571 697.28C640.0699 697.28 644 697.28 734.1429 697.28C824.2857 697.28 914.4286 697.28 914.4286 697.28"
@@ -13732,7 +13611,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr1-c1)"
+                              clip-path="url(#zr9-c1)"
                             >
                               <path
                                 d=""
@@ -13743,7 +13622,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr1-c2)"
+                              clip-path="url(#zr9-c2)"
                             >
                               <path
                                 d="M13 592.32C13 592.32 134.5717 592.32 193.2857 579.2C314.8574 552.0341 283.4286 251.2 373.5714 251.2C463.7143 251.2 432.2854 552.0341 553.8571 579.2C612.5712 592.32 643.881 592.32 734.1429 592.32C824.1667 592.32 824.4048 592.32 914.4286 592.32C1004.6904 592.32 1094.7142 579.2 1094.7142 579.2"
@@ -13754,7 +13633,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr1-c3)"
+                              clip-path="url(#zr9-c3)"
                             >
                               <path
                                 d=""
@@ -13767,7 +13646,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr1-c0"
+                              id="zr9-c0"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13775,7 +13654,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr1-c1"
+                              id="zr9-c1"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13783,7 +13662,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr1-c2"
+                              id="zr9-c2"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13791,7 +13670,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr1-c3"
+                              id="zr9-c3"
                             >
                               <path
                                 d="M12 119.4l1263 0l0 657.2l-1263 0Z"
@@ -13896,7 +13775,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="3"
+                      size-sensor-id="11"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -14299,7 +14178,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -14309,7 +14188,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr2-c0)"
+                              clip-path="url(#zr10-c0)"
                             >
                               <path
                                 d="M194.1429 660.1067C194.1429 660.1067 290.6421 570.3822 374.2857 469.8667C470.785 353.9022 481.7395 227.1467 554.4286 227.1467C661.8824 227.1467 610.1778 636.0533 734.5714 636.0533C790.3207 636.0533 819.9336 548.5867 914.7143 548.5867C1000.0765 548.5867 1094.8572 557.3333 1094.8572 557.3333"
@@ -14320,7 +14199,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr2-c1)"
+                              clip-path="url(#zr10-c1)"
                             >
                               <path
                                 d=""
@@ -14331,7 +14210,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr2-c2)"
+                              clip-path="url(#zr10-c2)"
                             >
                               <path
                                 d="M194.1429 651.36C194.1429 651.36 289.6112 563.1365 374.2857 465.4933C469.7541 355.4032 482.4786 235.8933 554.4286 235.8933C662.6214 235.8933 610.335 636.0533 734.5714 636.0533C790.4778 636.0533 821.7957 555.1467 914.7143 555.1467C1001.9386 555.1467 1094.8572 598.88 1094.8572 598.88"
@@ -14342,7 +14221,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr2-c3)"
+                              clip-path="url(#zr10-c3)"
                             >
                               <path
                                 d=""
@@ -14355,7 +14234,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr2-c0"
+                              id="zr10-c0"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14363,7 +14242,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr2-c1"
+                              id="zr10-c1"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14371,7 +14250,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr2-c2"
+                              id="zr10-c2"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14379,7 +14258,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr2-c3"
+                              id="zr10-c3"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14470,7 +14349,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="4"
+                      size-sensor-id="12"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -14853,7 +14732,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -14863,7 +14742,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr3-c0)"
+                              clip-path="url(#zr11-c0)"
                             >
                               <path
                                 d="M14 689.408C14 689.408 131.7407 659.013 194.1429 577.888C311.8836 424.821 293.536 221.024 374.2857 221.024C473.6789 221.024 423.3378 678.912 554.4286 678.912C603.4806 678.912 644.1949 640.864 734.5714 640.864C824.3378 640.864 914.7143 672.352 914.7143 672.352"
@@ -14874,7 +14753,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr3-c1)"
+                              clip-path="url(#zr11-c1)"
                             >
                               <path
                                 d=""
@@ -14885,7 +14764,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr3-c2)"
+                              clip-path="url(#zr11-c2)"
                             >
                               <path
                                 d="M14 709.088C14 709.088 132.4809 674.9879 194.1429 591.008C312.6238 429.6439 293.4078 218.4 374.2857 218.4C473.5506 218.4 422.2628 693.344 554.4286 693.344C602.4056 693.344 643.594 653.984 734.5714 653.984C823.7368 653.984 825.6183 654.7892 914.7143 668.416C1005.7612 682.3412 1094.8572 709.088 1094.8572 709.088"
@@ -14896,7 +14775,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr3-c3)"
+                              clip-path="url(#zr11-c3)"
                             >
                               <path
                                 d=""
@@ -14909,7 +14788,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr3-c0"
+                              id="zr11-c0"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14917,7 +14796,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr3-c1"
+                              id="zr11-c1"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14925,7 +14804,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr3-c2"
+                              id="zr11-c2"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -14933,7 +14812,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr3-c3"
+                              id="zr11-c3"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -15038,7 +14917,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="5"
+                      size-sensor-id="13"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -15326,7 +15205,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -15336,7 +15215,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr4-c0)"
+                              clip-path="url(#zr12-c0)"
                             >
                               <path
                                 d="M191.5714 776C191.5714 776 281.8571 579.2 372.1429 579.2C462.4286 579.2 444.9795 776 552.7143 776C625.5509 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
@@ -15347,7 +15226,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr4-c1)"
+                              clip-path="url(#zr12-c1)"
                             >
                               <path
                                 d=""
@@ -15358,7 +15237,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr4-c2)"
+                              clip-path="url(#zr12-c2)"
                             >
                               <path
                                 d="M191.5714 776C191.5714 776 281.8571 513.6 372.1429 513.6C462.4286 513.6 437.4727 776 552.7143 776C618.0441 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
@@ -15369,7 +15248,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr4-c3)"
+                              clip-path="url(#zr12-c3)"
                             >
                               <path
                                 d=""
@@ -15382,7 +15261,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr4-c0"
+                              id="zr12-c0"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15390,7 +15269,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr4-c1"
+                              id="zr12-c1"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15398,7 +15277,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr4-c2"
+                              id="zr12-c2"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15406,7 +15285,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr4-c3"
+                              id="zr12-c3"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15497,7 +15376,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="6"
+                      size-sensor-id="14"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -15820,7 +15699,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -15830,7 +15709,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr5-c0)"
+                              clip-path="url(#zr13-c0)"
                             >
                               <path
                                 d="M11 776C11 776 132.8209 776 191.5714 776C313.3923 776 281.8571 448 372.1429 448C462.4286 448 430.8934 776 552.7143 776C611.4649 776 643 776 733.2857 776C823.5714 776 913.8571 776 913.8571 776"
@@ -15841,7 +15720,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr5-c1)"
+                              clip-path="url(#zr13-c1)"
                             >
                               <path
                                 d=""
@@ -15852,7 +15731,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr5-c2)"
+                              clip-path="url(#zr13-c2)"
                             >
                               <path
                                 d="M11 776C11 776 150.7101 776 191.5714 776C331.2815 776 281.8571 185.6 372.1429 185.6C462.4286 185.6 413.0042 776 552.7143 776C593.5756 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
@@ -15863,7 +15742,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr5-c3)"
+                              clip-path="url(#zr13-c3)"
                             >
                               <path
                                 d=""
@@ -15876,7 +15755,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr5-c0"
+                              id="zr13-c0"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15884,7 +15763,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr5-c1"
+                              id="zr13-c1"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15892,7 +15771,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr5-c2"
+                              id="zr13-c2"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -15900,7 +15779,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr5-c3"
+                              id="zr13-c3"
                             >
                               <path
                                 d="M10 119.4l1265 0l0 657.2l-1265 0Z"
@@ -16005,7 +15884,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="7"
+                      size-sensor-id="15"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -16364,7 +16243,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -16374,7 +16253,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr6-c0)"
+                              clip-path="url(#zr14-c0)"
                             >
                               <path
                                 d="M194.1429 273.0667C194.1429 273.0667 274.9935 141.8667 374.2857 141.8667C455.1364 141.8667 464.3571 163.7333 554.4286 163.7333C644.5 163.7333 644.1706 141.8667 734.5714 141.8667C824.3135 141.8667 824.9722 141.8667 914.7143 141.8667C1005.1151 141.8667 1094.8572 163.7333 1094.8572 163.7333"
@@ -16385,7 +16264,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr6-c1)"
+                              clip-path="url(#zr14-c1)"
                             >
                               <path
                                 d="M194.1429 273.0667C194.1429 273.0667 281.4112 207.4667 374.2857 207.4667C461.554 207.4667 467.1603 207.4667 554.4286 207.4667C647.3031 207.4667 644.5 141.8667 734.5714 141.8667C824.6429 141.8667 914.7143 207.4667 914.7143 207.4667"
@@ -16398,7 +16277,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr6-c0"
+                              id="zr14-c0"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -16406,7 +16285,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr6-c1"
+                              id="zr14-c1"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -16497,7 +16376,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     <div
                       _echarts_instance_="ec_mock"
                       class="echarts-for-react "
-                      size-sensor-id="8"
+                      size-sensor-id="16"
                       style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
@@ -16876,7 +16755,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                             <path
                               d=""
                               fill="none"
-                              stroke="#666"
+                              stroke="#3E98C5"
                               transform="translate(1267 5)"
                             />
                             <path
@@ -16886,7 +16765,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               transform="translate(1275 5)"
                             />
                             <g
-                              clip-path="url(#zr7-c0)"
+                              clip-path="url(#zr15-c0)"
                             >
                               <path
                                 d="M14 326.1714C14 326.1714 103.1169 288.6857 194.1429 288.6857C283.2598 288.6857 284.2143 288.6857 374.2857 288.6857C464.3571 288.6857 464.3571 288.6857 554.4286 288.6857C644.5 288.6857 734.5714 288.6857 734.5714 288.6857"
@@ -16897,7 +16776,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </g>
                             <g
-                              clip-path="url(#zr7-c1)"
+                              clip-path="url(#zr15-c1)"
                             >
                               <path
                                 d="M14 307.4286C14 307.4286 101.4297 232.4571 194.1429 232.4571C281.5726 232.4571 283.5022 269.9429 374.2857 269.9429C463.6451 269.9429 465.0692 265.146 554.4286 251.2C645.2121 237.0317 644.5 213.7143 734.5714 213.7143C824.6429 213.7143 914.7143 251.2 914.7143 251.2"
@@ -16910,7 +16789,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                           </g>
                           <defs>
                             <clippath
-                              id="zr7-c0"
+                              id="zr15-c0"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -16918,7 +16797,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               />
                             </clippath>
                             <clippath
-                              id="zr7-c1"
+                              id="zr15-c1"
                             >
                               <path
                                 d="M13 119.4l1262 0l0 657.2l-1262 0Z"
@@ -17334,7 +17213,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
 
 .c3 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c3 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -18333,7 +18212,6 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
-  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
@@ -19549,7 +19427,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
 
 .c3 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c3 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -20555,7 +20433,6 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
 
 .c7 .ant-card-head-title .ant-space .ant-space-item:last-child {
   line-height: 0;
-  z-index: 1;
 }
 
 .c7 .ant-card-head-wrapper {
