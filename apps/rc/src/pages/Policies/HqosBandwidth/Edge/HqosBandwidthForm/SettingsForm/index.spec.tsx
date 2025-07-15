@@ -51,7 +51,7 @@ const MockedDefaultComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
-describe.skip('HQoS Settings Form', () => {
+describe('HQoS Settings Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
   })
@@ -119,21 +119,25 @@ describe.skip('HQoS Settings Form', () => {
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
 
-    const videoRows = await screen.findAllByRole('row', { name: /Video/i })
-    const videoCheckbox1 = within(videoRows[0]).getByRole('checkbox')
+    const rows = await screen.findAllByRole('row')
+    const row1 = rows[1]
+    const row2 = rows[2]
+    expect(row1).toHaveTextContent(/VideoHigh/i)
+    expect(row2).toHaveTextContent(/Video/i)
+    const videoCheckbox1 = within(row1).getByRole('checkbox')
     expect(videoCheckbox1).toBeChecked()
-    const videoCheckbox2 = within(videoRows[1]).getByRole('checkbox')
+    const videoCheckbox2 = within(row2).getByRole('checkbox')
     expect(videoCheckbox2).toBeChecked()
 
-    const voiceRows = screen.getAllByRole('row', { name: /Voice/i })
-    const voviceCheckbox1 = within(voiceRows[0]).getByRole('checkbox')
-    expect(voviceCheckbox1).not.toBeChecked()
-    const voviceCheckbox2 = within(voiceRows[1]).getByRole('checkbox')
-    expect(voviceCheckbox2).not.toBeChecked()
+    expect(rows[3]).toHaveTextContent(/Voice/i)
+    const voiceCheckbox1 = within(rows[3]).getByRole('checkbox')
+    expect(voiceCheckbox1).not.toBeChecked()
+    const voiceCheckbox2 = within(rows[4]).getByRole('checkbox')
+    expect(voiceCheckbox2).not.toBeChecked()
 
-    const inputNumberElems = screen.getAllByRole('spinbutton')
-    expect(inputNumberElems[0].getAttribute('value')).toBe('15')
-    expect(inputNumberElems[1].getAttribute('value')).toBe('100')
+    const row1NumInputs = within(rows[1]).getAllByRole('spinbutton')
+    expect(row1NumInputs[0].getAttribute('value')).toBe('15')
+    expect(row1NumInputs[1].getAttribute('value')).toBe('100')
 
     const minBandwidthArray = mockTrafficClassSettings?.map((item) => item?.minBandwidth)
     const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
