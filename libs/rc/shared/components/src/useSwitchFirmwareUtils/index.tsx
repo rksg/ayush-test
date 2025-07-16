@@ -76,7 +76,8 @@ export function useSwitchFirmwareUtils () {
       <div style={{
         marginTop: '5px',
         fontSize: 'var(--acx-body-4-font-size)',
-        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+        color: v.inUse || (v.model === 'ICX71' && v.name.startsWith('100'))
+          ? 'inherit' : 'var(--acx-neutrals-60)'
       }}>
         {getSwitchVersionLabelV1002(intl, v)}
       </div>
@@ -124,6 +125,9 @@ export function useSwitchFirmwareUtils () {
       } else if (version.isDowngraded10to90) {
         // eslint-disable-next-line max-len
         return `${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
+      } else if (version.model === 'ICX71' && version.name.startsWith('100')) {
+        // eslint-disable-next-line max-len
+        return intl.$t({ defaultMessage: 'Selected ICX7150-C08P/PT model only support FastIron versions 9.0.10x.' })
       }
       return ''
     }
@@ -476,6 +480,13 @@ export function useSwitchFirmwareUtils () {
               {`${intl.$t({ defaultMessage: 'ICX Models' })} ${modelGroupTooltipText}`}
             </div>
             <div> {switchVersion} </div>
+            {modelGroupTooltipText.includes('7150') && versionGroup.version.startsWith('100') &&
+              <div style={{
+                backgroundColor: 'var(--acx-neutrals-70)', padding: '5px', borderRadius: '4px' }}>
+                {// eslint-disable-next-line max-len
+                  intl.$t({ defaultMessage: 'Note: ICX7150-C08P/PT models don\'t support FastIron 10.0.10x. Use version 9.0.10x instead.' })
+                } </div>
+            }
           </div>
         )
       }
