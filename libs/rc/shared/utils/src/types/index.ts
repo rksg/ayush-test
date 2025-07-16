@@ -342,6 +342,12 @@ export interface Dashboard {
       }>,
       totalCount: number;
     },
+    apWiredClients?: {
+      summary: {
+        [prop: string]: string;
+      },
+      totalCount: number;
+    },
     switchClients?: {
       summary: {
         [prop: string]: string;
