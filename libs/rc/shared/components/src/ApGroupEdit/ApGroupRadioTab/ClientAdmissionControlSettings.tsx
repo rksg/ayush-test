@@ -1,15 +1,14 @@
-/* eslint-disable max-len */
 import { useContext, useEffect, useState, useRef } from 'react'
 
 import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
-import { AnchorContext, Loader }           from '@acx-ui/components'
+import { AnchorContext, Loader }               from '@acx-ui/components'
 import {
   useGetApGroupClientAdmissionControlQuery,
   useUpdateApGroupClientAdmissionControlMutation,
-  useGetVenueClientAdmissionControlQuery
+  useLazyGetVenueClientAdmissionControlQuery
 } from '@acx-ui/rc/services'
 import { ApGroupClientAdmissionControl, ClientAdmissionControl, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
 
@@ -57,9 +56,7 @@ export function ClientAdmissionControlSettings (props: {
     params: { venueId: venueId, apGroupId: apGroupId }
   }, { skip: !venueId })
 
-  const getVenueClientAdmissionControl = useGetVenueClientAdmissionControlQuery({
-    params: { venueId }, enableRbac: true
-  }, { skip: !venueId })
+  const [getVenueClientAdmissionControl] = useLazyGetVenueClientAdmissionControlQuery()
 
   const [updateApGroupClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApGroupClientAdmissionControlMutation()
@@ -79,8 +76,11 @@ export function ClientAdmissionControlSettings (props: {
           setIsUseVenueSettings(clientAdmissionControlData.useVenueSettings || false)
           isUseVenueSettingsRef.current = clientAdmissionControlData.useVenueSettings || false
         }
-        const venueClientAdmissionControl = getVenueClientAdmissionControl?.data
-        venueClientAdmissionControlRef.current = venueClientAdmissionControl
+        if (venueId) {
+          const venueClientAdmissionControl = (await getVenueClientAdmissionControl(
+            { params: { venueId }, enableRbac: true }, true).unwrap())
+          venueClientAdmissionControlRef.current = venueClientAdmissionControl
+        }
       }
       setData()
       setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
@@ -161,6 +161,7 @@ export function ClientAdmissionControlSettings (props: {
   const handleDiscard = () => {
     if (initClientAdmissionControlRef.current) {
       setIsUseVenueSettings(initClientAdmissionControlRef.current.useVenueSettings || false)
+      // eslint-disable-next-line max-len
       isUseVenueSettingsRef.current = initClientAdmissionControlRef.current.useVenueSettings || false
       setDataToForm(initClientAdmissionControlRef.current)
     }
