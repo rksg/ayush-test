@@ -19,7 +19,7 @@ export function ApCliSession (props: {
   const { $t } = useIntl()
   const token = props.jwtToken
   // eslint-disable-next-line max-len
-  const url = window.location.origin + '/api/rpv2/rtty/wifi/' + props.serialNumber + '?rid=b31900cc-885a-4fb7-8b2d-b45e9c89e718&token=' + token
+  const url = window.location.origin + '/api/rpv2/rtty/ap/' + props.serialNumber + '?rid=b31900cc-885a-4fb7-8b2d-b45e9c89e718&token=' + token
   const { setIsModalOpen, modalState, apName } = props
 
   // eslint-disable-next-line max-len
