@@ -100,7 +100,7 @@ const VersionInfo = (props: VersionInfoProps) => {
           marginLeft: '2px'
         }} />}
         // eslint-disable-next-line max-len
-        title={$t({ defaultMessage: 'ICX7150-C08P/PT models do not support FastIron versions 10.0.10x.' })}
+        title={$t({ defaultMessage: 'ICX7150-C08P/PT models do not support FastIron versions 10.0.10x. The recommended firmware upgrade is version 9.0.10x.' })}
         />}
       </div>
       {shownMoreFirmwaresInBanner ? <><div>
