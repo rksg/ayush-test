@@ -25,9 +25,7 @@ import {
   venueCaps,
   venuelist,
   venueRadioCustomization,
-  mockedApModelFamilies,
-  venueClientAdmissionControl,
-  apGroupClientAdmissionControl
+  mockedApModelFamilies
 } from './__tests__/fixtures'
 import { ApGroupEditContext } from './context'
 
@@ -55,8 +53,6 @@ const mockedVenueRadioCustomization = jest.fn()
 const mockedUpdateApGroupRadioCustomization = jest.fn()
 const mockedGetApGroupDefaultRegulatoryChannels = jest.fn()
 const mockedGetApGroupBandModeSettings = jest.fn()
-const mockedGetApGroupClientAdmissionControl = jest.fn()
-const mockedGetVenueClientAdmissionControl = jest.fn()
 const mockedGetWifiCapabilities = jest.fn()
 const mockedGetVenue = jest.fn()
 
@@ -422,20 +418,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       rest.get(
         WifiRbacUrlsInfo.getWifiCapabilities.url,
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings.url,
-        (_, res, ctx) => {
-          mockedGetApGroupClientAdmissionControl()
-          return res(ctx.json(apGroupClientAdmissionControl))
-        }
-      ),
-      rest.get(
-        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
-        (_, res, ctx) => {
-          mockedGetVenueClientAdmissionControl()
-          return res(ctx.json(venueClientAdmissionControl))
-        })
+      )
     )
   })
 
@@ -531,7 +514,6 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     await waitFor(() => { expect(mockedGetApGroupBandModeSettings).toHaveBeenCalled() })
     await waitFor(() => { expect(mockedVenueRadioCustomization).toHaveBeenCalled() })
     await waitFor(() => { expect(mockedGetApGroupRadioCustomization).toHaveBeenCalled() })
-    await waitFor(() => { expect(mockedGetApGroupClientAdmissionControl).toHaveBeenCalled() })
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
