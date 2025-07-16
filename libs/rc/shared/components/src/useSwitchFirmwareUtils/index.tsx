@@ -127,7 +127,7 @@ export function useSwitchFirmwareUtils () {
         return `${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
       } else if (version.model === 'ICX71' && version.name.startsWith('100')) {
         // eslint-disable-next-line max-len
-        return intl.$t({ defaultMessage: 'Selected ICX7150-C08P/PT model only support FastIron versions 9.0.10x.' })
+        return intl.$t({ defaultMessage: 'Selected ICX7150-C08P/PT model only support FastIron versions 9.0.10x' })
       }
       return ''
     }
