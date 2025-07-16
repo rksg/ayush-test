@@ -121,8 +121,6 @@ function useColumns (workflowMap: Map<string, Workflow>) {
         return {
           props: {
             style: {
-              background: record?.statusReasons && record.statusReasons.length > 0
-                ? 'var(--acx-semantics-red-10)' : '',
               padding: '0px'
             }
           },
