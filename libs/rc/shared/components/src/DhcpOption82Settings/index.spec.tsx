@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import { Form } from 'antd'
 
-import { softGreApi }      from '@acx-ui/rc/services'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { softGreApi }             from '@acx-ui/rc/services'
+import { Provider, store }        from '@acx-ui/store'
 import {
   render,
   screen,
@@ -115,7 +116,9 @@ describe('DhcpOption82SettingsFormField', () => {
     expect(screen.getByText('DHCPv4 Virtual Subnet Selection Control (#151)')).toBeInTheDocument()
   })
 
-  it('Should render with lanport context and show custom attributes', () => {
+  it('Should render with lanport context and show custom attributes', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
     render(
       <Provider>
         <Form>
@@ -128,6 +131,14 @@ describe('DhcpOption82SettingsFormField', () => {
         </Form>
       </Provider>
     )
+
+    // click on the format dropdown and select "Custom"
+    const formatSelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(formatSelect)
+
+    // Wait for dropdown to appear and select "Custom" option
+    const customOption = await screen.findByText('Custom')
+    fireEvent.click(customOption)
 
     // Check if custom attributes section is rendered for lanport context
     expect(screen.getByText('Custom Attributes')).toBeInTheDocument()
@@ -135,7 +146,9 @@ describe('DhcpOption82SettingsFormField', () => {
       .toBeInTheDocument()
   })
 
-  it('Should display DraggableTagField when lanport context is provided', () => {
+  it('Should display DraggableTagField when lanport context is provided', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
     render(
       <Provider>
         <Form>
@@ -149,12 +162,16 @@ describe('DhcpOption82SettingsFormField', () => {
       </Provider>
     )
 
-    // Check if DraggableTagField is rendered by looking for its container
-    // The DraggableTagField should be present when lanport context is used
-    expect(screen.getByText('Custom Attributes')).toBeInTheDocument()
+    // click on the format dropdown and select "Custom"
+    const formatSelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(formatSelect)
 
-    // Check if the DraggableTagField is properly rendered by verifying the section exists
-    // This tests that the DraggableTagField component is present in the DOM
+    // Wait for dropdown to appear and select "Custom" option
+    const customOption = await screen.findByText('Custom')
+    fireEvent.click(customOption)
+
+    // Now check if DraggableTagField is rendered
+    expect(screen.getByText('Custom Attributes')).toBeInTheDocument()
     expect(screen.getByText(
       'Select attribute from the list or input custom attribute.'
     )).toBeInTheDocument()
