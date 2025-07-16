@@ -22,7 +22,7 @@ import { ApGroupEditContext } from '../context'
 
 const { useWatch } = Form
 
-export function ClientAdmissionControlSettings(props: {
+export function ClientAdmissionControlSettings (props: {
   isAllowEdit?: boolean
 }) {
   const { $t } = useIntl()
@@ -64,7 +64,7 @@ export function ClientAdmissionControlSettings(props: {
   const [updateApGroupClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApGroupClientAdmissionControlMutation()
 
-  const [isUseVenueSettings, setIsUseVenueSettings] = useState(true) 
+  const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
   const isUseVenueSettingsRef = useRef<boolean>(true)
   const initClientAdmissionControlRef = useRef<ApGroupClientAdmissionControl>()
   const venueClientAdmissionControlRef = useRef<VenueClientAdmissionControl>()
@@ -130,7 +130,7 @@ export function ClientAdmissionControlSettings(props: {
           maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
           maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
           minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
-          minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
+          minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName)
         }
 
       await updateApGroupClientAdmissionControl({
