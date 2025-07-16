@@ -161,7 +161,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       return []
     }
   }
-  const total7150C08pCount = icx71C08pGroupedData().length
+  const ICX7150C08pCount = icx71C08pGroupedData().length
 
   const exist82AvAndInvalidVersion = (version: string): boolean => {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
@@ -394,12 +394,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
               {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v => {
                   const only7150C08pWithFW10010 = (v.id.startsWith('100') &&
-                      total7150C08pCount > 0 && total7150C08pCount === ICX71Count)
+                      ICX7150C08pCount > 0 && ICX7150C08pCount === ICX71Count)
                   v.model = only7150C08pWithFW10010
                     ? SwitchFirmwareModelGroup.ICX71 : undefined
                   const disabled = v.inUse || only7150C08pWithFW10010
-                  const showAsterisk = total7150C08pCount > 0 &&
-                      total7150C08pCount < ICX71Count && v.id.startsWith('100')
+                  const showAsterisk = ICX7150C08pCount > 0 &&
+                      ICX7150C08pCount < ICX71Count && v.id.startsWith('100')
 
                   return (
                     <Radio value={v.id} key={v.id} disabled={disabled}>
@@ -413,7 +413,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
               </Radio>
             </Space>
           </Radio.Group>
-          {total7150C08pCount > 0 && total7150C08pCount < ICX71Count && icx71hasFWWith10010 &&
+          {ICX7150C08pCount > 0 && ICX7150C08pCount < ICX71Count && icx71hasFWWith10010 &&
             <SwitchNote
               type={NotesEnum.NOTE7150_1}
               data={icx71C08pGroupedData()} />
