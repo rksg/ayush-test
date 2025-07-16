@@ -2,8 +2,8 @@ import { createContext, useContext } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { RolesEnum as Role } from '@acx-ui/types'
-import { useTenantId }       from '@acx-ui/utils'
+import { RolesEnum as Role }            from '@acx-ui/types'
+import { AccountVertical, useTenantId } from '@acx-ui/utils'
 
 import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
@@ -39,6 +39,7 @@ export interface UserProfileContextProps {
   selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
   tenantType?: TenantType
+  accountVertical?: AccountVertical
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -57,6 +58,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   const { data: tenantDetails } = useGetTenantDetailsQuery({ tenantId })
   const tenantType = tenantDetails?.tenantType as TenantType
+  const accountVertical = tenantDetails?.accountVertical as AccountVertical
 
   let abacEnabled = false,
     isCustomRole = false,
@@ -157,7 +159,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       venuesList,
       selectedBetaListEnabled,
       betaFeaturesList,
-      tenantType
+      tenantType,
+      accountVertical
     })
   }
 
@@ -181,7 +184,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       venuesList,
       selectedBetaListEnabled,
       betaFeaturesList,
-      tenantType
+      tenantType,
+      accountVertical
     }}
     children={props.children}
   />
