@@ -79,6 +79,8 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
   }, {} as { [key: string]: Response[] })
 
   return Object.entries(lsps).map(([lsp, properties], ind) => {
+    const allPropertiesHaveInvalidData = properties.every(prop => !prop.hasValidData)
+
     const {
       connSuccess,
       ttc,
@@ -136,9 +138,9 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       avgConnSuccess,
       avgTTC,
       avgClientThroughput,
-      p1Incidents,
+      p1Incidents: allPropertiesHaveInvalidData ? NaN : p1Incidents,
       ssidCompliance: validatedSsidCompliance,
-      deviceCount,
+      deviceCount: allPropertiesHaveInvalidData ? NaN : deviceCount,
       guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput),
       prospectCountSLA
     }
@@ -279,7 +281,8 @@ export const transformVenuesData = (
       avgClientThroughput: sumData(
         tenantData?.map(v => v.clientThroughputSLA), [0, 0]
       ) as [number, number],
-      tenantId
+      tenantId,
+      hasValidData: !!tenantData
     })
     return newObj
   }, [] as Response[])
