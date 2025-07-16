@@ -6,7 +6,7 @@ import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
 import type { DonutChartData }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useClientSummariesQuery, useGetApWiredClientsQuery }   from '@acx-ui/rc/services'
+import { useClientSummariesQuery }                              from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
@@ -70,13 +70,14 @@ export const getSwitchClientStackedBarChartData = (
 }
 
 export const getApWiredClientStackedBarChartData = (
-  apWiredClientCount: number,
+  overviewData: Dashboard | undefined,
   { $t }: IntlShape
 ): ChartData[] => {
   const series: ChartData['series'] = []
+  const apWiredClients = overviewData?.summary?.apWiredClients
   series.push({
     name: $t({ defaultMessage: 'Clients' }),
-    value: apWiredClientCount || 0
+    value: apWiredClients?.totalCount || 0
   })
   return [{
     category: '',
@@ -104,25 +105,23 @@ export function ClientsWidgetV2 () {
       ...rest,
       data: {
         apData: getAPClientStackedBarChartData(data, intl),
+        apWiredData: getApWiredClientStackedBarChartData(data, intl),
         switchData: getSwitchClientStackedBarChartData(data, intl),
         apClientCount: data?.summary?.clients?.totalCount || 0,
+        apWiredClientCount: data?.summary?.apWiredClients?.totalCount || 0,
         switchClientCount: data?.summary?.switchClients?.totalCount || 0
       }
     })
   })
   const { $t } = intl
-  const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
-
-  const apWiredClientTableQuery = useGetApWiredClientsQuery({
-    payload: {
-      filters: {},
-      fields: [ 'macAddress']
-    }
-  }, {
-    skip: !isSupportWifiWiredClient
-  })
-  const apWiredClientCount = apWiredClientTableQuery.data?.totalCount || 0
-  const apWiredData = getApWiredClientStackedBarChartData(apWiredClientCount, intl)
+  const {
+    apClientCount,
+    apData,
+    apWiredClientCount,
+    apWiredData,
+    switchClientCount,
+    switchData
+  } = queryResults.data
 
   useTrackLoadTime({
     itemName: widgetsMapping.CLIENTS_WIDGET,
