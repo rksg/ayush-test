@@ -556,7 +556,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 multicast route entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv4 multicast route entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchIpv6MulticastUtilization: {
@@ -585,7 +587,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 multicast route entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv6 multicast route entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchIpv4UnicastUtilization: {
@@ -614,7 +618,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv4 unicast route entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv4 unicast route entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchIpv6UnicastUtilization: {
@@ -643,7 +649,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where IPv6 unicast route entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv6 unicast route entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchArpUtilization: {
@@ -672,7 +680,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where ARP table entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where ARP table entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchMacUtilization: {
@@ -701,7 +711,9 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where Mac table entries are within the threshold of the configured/supported capacity' })
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where Mac table entries are within the threshold of the configured/supported capacity.{br}Data is displayed for switches with firmware version 10.0.10h and SmartZone version 7.x or above.'
+      })
     }
   },
   switchCpuUtilization: {

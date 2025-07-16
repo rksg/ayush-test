@@ -21,8 +21,10 @@ const OverviewTab = (props: { filters? : AnalyticsFilter, wirelessOnly?: boolean
   const switchFirmwareVersionMsg = get('IS_MLISA_SA') ?
     <FormattedMessage
       defaultMessage={
-      // eslint-disable-next-line max-len
-        'Data is displayed for switches with firmware version <b>{switchFmwrVersion}</b> and SmartZone version <b>7.x</b> or above.'
+        'For Wired Health metrics – you are recommended to ensure switches have a ' +
+        'pre-requisite firmware version of <b>{switchFmwrVersion}</b> and SmartZone version ' +
+        '<b>7.x</b> or above at minimum. Select compliance metrics may need higher ' +
+        'firmware levels.'
       }
       values={{
         switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
@@ -32,7 +34,9 @@ const OverviewTab = (props: { filters? : AnalyticsFilter, wirelessOnly?: boolean
     :
     <FormattedMessage
       defaultMessage={
-        'Data is displayed for switches with firmware version <b>{switchFmwrVersion}</b> or above.'
+        'For Wired Health metrics – you are recommended to ensure switches have a ' +
+        'pre-requisite firmware version of <b>{switchFmwrVersion}</b> or above at minimum. ' +
+        'Select compliance metrics may need higher firmware levels.'
       }
       values={{
         switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
