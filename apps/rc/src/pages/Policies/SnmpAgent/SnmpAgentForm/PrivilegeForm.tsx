@@ -98,8 +98,8 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
           style={{ display: 'inline-block', width: '250px', paddingRight: '10px' }}
           rules={[
             { required: true },
-            { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? 
-              networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
+            { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate)
+              ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
           ]}
           children={<Input />}
         />

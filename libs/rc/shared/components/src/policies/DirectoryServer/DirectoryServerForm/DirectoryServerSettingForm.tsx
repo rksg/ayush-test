@@ -217,9 +217,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               rules={[
                 { required: true },
                 { max: 255 },
-                { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? 
-                  domainNameWithIPv6RegExp(value) : domainNameRegExp(value),
-                  message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
+                { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate)
+                  ? domainNameWithIPv6RegExp(value) : domainNameRegExp(value),
+                message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
                 }
               ]}
               label={$t({ defaultMessage: 'FQDN or IP Address' })}

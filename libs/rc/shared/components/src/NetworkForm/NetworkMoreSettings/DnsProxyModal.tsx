@@ -8,15 +8,14 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-
 import {
   Button,
   Table,
   TableProps,
   Modal
 } from '@acx-ui/components'
-import { DeleteOutlined } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { DeleteOutlined }         from '@acx-ui/icons'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
@@ -315,8 +314,8 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? 
-          networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
+        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate)
+          ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
       ]}
       validateFirst
       children={<Input />}
