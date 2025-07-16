@@ -4,7 +4,7 @@ import { useIntl }       from 'react-intl'
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
-import { formatter }                        from '@acx-ui/formatter'
+import { formatter, FormatterType }         from '@acx-ui/formatter'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
@@ -46,8 +46,8 @@ export function BrandTable ({
     ? transformToLspView(data, lspLabel)
     : transformToPropertyView(data)
 
-  const formatCount = (count: number) =>
-    !isNaN(count) ? formatter('countFormat')(count) : noDataDisplay
+  const formatValues = (count: number | null, format: FormatterType) =>
+    !isNaN(count) ? formatter(format)(count) : noDataDisplay
 
   const commonCols: TableProps<Common>['columns'] = [
     {
@@ -58,11 +58,13 @@ export function BrandTable ({
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.p1Incidents <= parseInt(thresholdP1Incidents as string, 10)
-              ? pColor : nColor
+            color: !isNaN(row?.p1Incidents) && !isNull(row?.p1Incidents)
+              ? row?.p1Incidents <= parseInt(thresholdP1Incidents as string, 10)
+                ? pColor : nColor
+              : noDataColor
           }}
         >
-          {formatCount(row?.p1Incidents)}
+          {formatValues(row?.p1Incidents, 'countFormat')}
         </span>
     },
     {
@@ -80,15 +82,9 @@ export function BrandTable ({
           // eslint-disable-next-line max-len
           defaultMessage: 'Average Connection Success: {avgConnSuccess}{nl} Average Time to Connect: {avgTTC}{nl} Average Client Throughput: {avgClientThroughput}'
         }, {
-          avgConnSuccess: !isNaN(row.avgConnSuccess)
-            ? formatter('percentFormat')(row.avgConnSuccess)
-            : noDataDisplay,
-          avgTTC: !isNaN(row.avgTTC)
-            ? formatter('percentFormat')(row.avgTTC)
-            : noDataDisplay,
-          avgClientThroughput: !isNaN(row.avgClientThroughput)
-            ? formatter('percentFormat')(row.avgClientThroughput)
-            : noDataDisplay,
+          avgConnSuccess: formatValues(row.avgConnSuccess, 'percentFormat'),
+          avgTTC: formatValues(row.avgTTC, 'percentFormat'),
+          avgClientThroughput: formatValues(row.avgClientThroughput, 'percentFormat'),
           nl: '\n'
         })}
       >
@@ -101,7 +97,7 @@ export function BrandTable ({
               : noDataColor
           }}
         >
-          {!isNaN(row?.guestExp) ? formatter('percentFormat')(row?.guestExp) : noDataDisplay}
+          {formatValues(row?.guestExp, 'percentFormat')}
         </span>
       </Tooltip>
     },
@@ -144,9 +140,7 @@ export function BrandTable ({
                 : noDataColor
             }}
           >
-            {!isNaN(row?.ssidCompliance)
-              ? formatter('percentFormat')(row?.ssidCompliance)
-              : noDataDisplay}
+            {formatValues(row?.ssidCompliance, 'percentFormat')}
           </span>
       }]),
     {
@@ -156,7 +150,7 @@ export function BrandTable ({
       sorter: { compare: sortProp('deviceCount', customSort) },
       render: (_, row: Common) =>
         <span>
-          {formatCount(row?.deviceCount)}
+          {formatValues(row?.deviceCount, 'countFormat')}
         </span>
     }
   ]

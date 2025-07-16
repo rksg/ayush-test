@@ -72,7 +72,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 : {
   chartKey: ChartKey,
   prevData?: FranchisorTimeseries,
-  currData?: FranchisorTimeseries,
+  currData?: FranchisorTimeseries
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
