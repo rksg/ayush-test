@@ -2,7 +2,14 @@ import { Checkbox, Form, Input, InputNumber, Radio, Space } from 'antd'
 import _                                                    from 'lodash'
 import { useIntl }                                          from 'react-intl'
 
-import { networkWifiIpRegExp, SnmpNotificationTypeEnum, SnmpV2Agent, SnmpV3Agent } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  networkWifiIpRegExp,
+  networkWifiDualModeIpRegExp,
+  SnmpNotificationTypeEnum,
+  SnmpV2Agent, SnmpV3Agent,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 
 const { useWatch } = Form
 
@@ -32,6 +39,9 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
   const [readPrivilege, trapPrivilege] = [
     useWatch<boolean>('readPrivilege'),
     useWatch<boolean>('trapPrivilege')]
+
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   return (<>
     <Form.Item label={$t({ defaultMessage: 'Privilege' })} style={{ marginBottom: '0' }}>
@@ -88,7 +98,7 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
           style={{ display: 'inline-block', width: '250px', paddingRight: '10px' }}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
           ]}
           children={<Input />}
         />

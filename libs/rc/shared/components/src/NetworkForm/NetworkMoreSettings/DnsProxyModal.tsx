@@ -8,6 +8,8 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+
 import {
   Button,
   Table,
@@ -20,7 +22,9 @@ import {
   domainNameRegExp,
   checkObjectNotExists,
   checkItemNotIncluded,
-  DnsProxyRule
+  DnsProxyRule,
+  networkWifiDualModeIpRegExp,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -207,6 +211,8 @@ export function DnsProxyModalRuleModal (props: {
   const [form] = Form.useForm()
   const { modalState, setModalState } = props
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   const resetRuleModal = () => {
     setModalState({
@@ -309,7 +315,7 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => networkWifiIpRegExp(value) }
+        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
       ]}
       validateFirst
       children={<Input />}

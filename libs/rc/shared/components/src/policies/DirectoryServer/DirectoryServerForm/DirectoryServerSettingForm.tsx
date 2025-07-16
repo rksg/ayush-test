@@ -16,9 +16,11 @@ import {
   checkObjectNotExists,
   DirectoryServerProfileEnum,
   domainNameRegExp,
+  domainNameWithIPv6RegExp,
   DirectoryServerDiagnosisCommand,
   DirectoryServerDiagnosisCommandEnum,
-  splitAttributeMappingsFromData
+  splitAttributeMappingsFromData,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -64,6 +66,8 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
 
   // eslint-disable-next-line max-len
   const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
   useEffect(() => {
     if (!policyId || !data) return
@@ -213,7 +217,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               rules={[
                 { required: true },
                 { max: 255 },
-                { validator: (_, value) => domainNameRegExp(value),
+                { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? domainNameWithIPv6RegExp(value) : domainNameRegExp(value),
                   message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
                 }
               ]}
