@@ -991,8 +991,7 @@ export interface ApStickyClientSteering extends StickyClientSteering {
 }
 
 export enum DhcpOption82SubOption1Enum {
-  // TODO: Uncomment this option when we support it.
-  // SUBOPT1_AP_INFO_LOCATION = 'AP_INFO_LOCATION',
+  SUBOPT1_AP_INFO_LOCATION = 'AP_INFO_LOCATION',
   SUBOPT1_AP_INFO = 'AP_INFO',
   SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'AP_MAC_ESSID_PRIVACYTYPE',
   SUBOPT1_AP_MAC_HEX = 'AP_MAC_HEX',
