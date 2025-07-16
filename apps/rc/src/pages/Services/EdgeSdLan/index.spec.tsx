@@ -1,11 +1,15 @@
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { render, screen }        from '@acx-ui/test-utils'
+import { Features }       from '@acx-ui/feature-toggle'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 jest.mock('./L2oGRE/AddEdgeSdLan', () => ({
   AddEdgeSdLan: () => <div data-testid='l2ogre-AddEdgeSdLan' />
@@ -57,7 +61,7 @@ describe('Edge SD-LAN', () => {
 
   describe('L2oGRE', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff =>
         ff === Features.EDGE_L2OGRE_TOGGLE)
     })
 
