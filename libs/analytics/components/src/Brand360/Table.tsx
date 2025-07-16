@@ -46,7 +46,8 @@ export function BrandTable ({
     ? transformToLspView(data, lspLabel)
     : transformToPropertyView(data)
 
-  const formatCount = (count: number) => !isNaN(count) ? formatter('countFormat')(count) : noDataDisplay
+  const formatCount = (count: number) =>
+    !isNaN(count) ? formatter('countFormat')(count) : noDataDisplay
 
   const commonCols: TableProps<Common>['columns'] = [
     {
@@ -61,7 +62,7 @@ export function BrandTable ({
               ? pColor : nColor
           }}
         >
-          {formatCount(row?.deviceCount)}
+          {formatCount(row?.p1Incidents)}
         </span>
     },
     {
