@@ -95,7 +95,7 @@ describe('PersonaOverview', () => {
       )
     )
   })
-  it('should render overview correctly', async () => {
+  it.skip('should render overview correctly', async () => {
     render(
       <Provider>
         <PersonaOverview

@@ -201,7 +201,7 @@ export const radiusErrorMessage = {
 /* eslint-disable max-len */
 export const captiveTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
   [GuestNetworkTypeEnum.ClickThrough]: defineMessage({ defaultMessage: 'Click-Through' }),
-  [GuestNetworkTypeEnum.SelfSignIn]: defineMessage({ defaultMessage: 'Sefl Sign In' }),
+  [GuestNetworkTypeEnum.SelfSignIn]: defineMessage({ defaultMessage: 'Self Sign In' }),
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({ defaultMessage: 'Cloudpath Captive Portal' }),
   [GuestNetworkTypeEnum.HostApproval]: defineMessage({ defaultMessage: 'Host Approval' }),
   [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
