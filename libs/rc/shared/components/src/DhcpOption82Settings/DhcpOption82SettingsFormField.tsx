@@ -118,11 +118,12 @@ export const DhcpOption82SettingsFormField = (props: {
   }
 
   const dhcp82SubOption1Options = [
-    // TODO: Uncomment this option when we support it.
-    // {
-    //   value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
-    //   label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })
-    // },
+    ...(!isUsedByLanPortDrawer ? [
+      {
+        value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
+        // eslint-disable-next-line max-len
+        label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })
+      }] : []),
     {
       value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO,
       label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC' })
@@ -147,10 +148,12 @@ export const DhcpOption82SettingsFormField = (props: {
     }, {
       value: DhcpOption82SubOption1Enum.SUBOPT1_AP_NAME_ESSID,
       label: $t({ defaultMessage: 'AP Name: ESSID' })
-    }, {
+    },
+    ...(isUsedByLanPortDrawer ? [{
       value: DhcpOption82SubOption1Enum.SUBOPT1_CUSTOMIZED,
       label: $t({ defaultMessage: 'Custom' })
-    }]
+    }] : [])
+  ]
 
   const dhcp82SubOption2Options = [{
     value: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC,
