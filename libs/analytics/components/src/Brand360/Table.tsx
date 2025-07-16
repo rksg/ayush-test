@@ -25,7 +25,6 @@ interface BrandTableProps {
   isLSP?: boolean
   lspLabel: string
   propertyLabel: string
-  propertyCodeLabel?: string
   isMDU?: boolean
 }
 
@@ -187,7 +186,7 @@ export function BrandTable ({
         render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
           <span>{highlightFn(row?.property)}</span>
       }, {
-        title: propertyCodeLabel,
+        title: $t({ defaultMessage: 'Property ID' }),
         dataIndex: 'propertyCode',
         key: 'propertyCode',
         fixed: 'left',
@@ -214,7 +213,6 @@ export function BrandTable ({
   const finalPropertyCols = !propertyIdToggle
     ? propertyCols.filter(col => col.dataIndex !== 'propertyCode')
     : propertyCols
-
   return <Table<Property | PropertyCode | Lsp>
     columns={[
       ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols

@@ -12,14 +12,12 @@ interface Brand360Names {
   brand: string
   lsp: string
   property: string
-  propertyCode: string
 }
 
 const mapper: Record<keyof Brand360Names, keyof Settings> = {
   brand: 'brand-name',
   lsp: 'lsp-name',
-  property: 'property-name',
-  propertyCode: 'property-code-name'
+  property: 'property-name'
 }
 
 export function useBrand360Config () {
@@ -33,8 +31,7 @@ export function useBrand360Config () {
     const names: Brand360Names = {
       brand: $t({ defaultMessage: 'Brand 360' }),
       lsp: $t({ defaultMessage: 'LSP' }),
-      property: $t({ defaultMessage: 'Property' }),
-      propertyCode: $t({ defaultMessage: 'Property ID' })
+      property: $t({ defaultMessage: 'Property' })
     }
 
     if (!settings) return {
