@@ -98,7 +98,8 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork,
+  ApClientAdmissionControl_v1_1
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -2008,6 +2009,22 @@ export const apApi = baseApApi.injectEndpoints({
         const req = createHttpRequest(WifiUrlsInfo.deleteApClientAdmissionControl, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    getApClientAdmissionControl_v1_1: build.query<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApClientAdmissionControlSettings_v1_1, params)
+      },
+      providesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    updateApClientAdmissionControl_v1_1: build.mutation<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApClientAdmissionControlSettings_v1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]

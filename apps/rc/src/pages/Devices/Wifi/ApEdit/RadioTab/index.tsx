@@ -13,12 +13,13 @@ import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
-import { AntennaSection }                 from './Antenna/AntennaSection'
-import { ExternalAntennaSettings }        from './Antenna/ExternalAntennaSettings'
-import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
-import { ClientSteering }                 from './ClientSteering/ClientSteering'
-import { RadioSettings }                  from './RadioSettings/RadioSettings'
-import { RadioSettingsV1Dot1 }            from './RadioSettings/RadioSettingsV1Dot1'
+import { AntennaSection }                       from './Antenna/AntennaSection'
+import { ExternalAntennaSettings }              from './Antenna/ExternalAntennaSettings'
+import { ClientAdmissionControlSettings }       from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
+import { ClientAdmissionControlSettingsV1Dot1 } from './ClientAdmissionControlSettings/ClientAdmissionControlSettingsV1Dot1'
+import { ClientSteering }                       from './ClientSteering/ClientSteering'
+import { RadioSettings }                        from './RadioSettings/RadioSettings'
+import { RadioSettingsV1Dot1 }                  from './RadioSettings/RadioSettingsV1Dot1'
 
 export interface ApRadioContext {
   updateWifiRadio?: (data?: unknown) => void | Promise<void>
@@ -118,8 +119,9 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        {
-          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
+        { apGroupPhase1Toggle
+          ? <ClientAdmissionControlSettingsV1Dot1 isAllowEdit={isAllowEditClientAdmissionControl} />
+          : <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
         }
       </>
     )
