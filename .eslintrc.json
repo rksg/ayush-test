@@ -81,6 +81,10 @@
                 "notDependOnLibsWithTags": ["rc-components"]
               },
               {
+                "sourceTag": "rc-components",
+                "notDependOnLibsWithTags": ["msp-components", "report-components", "wifi-components"]
+              },
+              {
                 "sourceTag": "acx-app",
                 "notDependOnLibsWithTags": ["rc-common-components"]
               },

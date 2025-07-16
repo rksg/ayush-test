@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 
-import { ColumnType }                     from '@acx-ui/components'
 import { Features }                       from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }          from '@acx-ui/rc/components'
 import { EdgeLagFixtures, EdgeLagStatus } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen }                 from '@acx-ui/test-utils'
+import type { ColumnType }                from '@acx-ui/types'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
