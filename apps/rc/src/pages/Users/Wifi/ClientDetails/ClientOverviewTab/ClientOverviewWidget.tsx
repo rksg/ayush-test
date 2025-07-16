@@ -47,7 +47,7 @@ const useAppVisibility = (tenantId: string | undefined) => {
 }
 
 // eslint-disable-next-line
-export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters, connectedTimeStamp }: {
+export function ClientOverviewWidget ({ clientStatistic, clientStatus, filters, connectedTimeStamp }: {
   clientStatistic: ClientStatistic | undefined,
   clientStatus: string,
   clientDetails?: Client,
@@ -56,24 +56,15 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
 }) {
   const { $t } = useIntl()
   const { clientId, tenantId } = useParams()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isAppVisibilityEnabled = useAppVisibility(tenantId)
 
   const getTime = () => {
-    if(isWifiRbacEnabled) {
-      if (clientStatus !== ClientStatusEnum.CONNECTED) {
-        return formatter('durationFormat')({ value: 0 })
-      }
-      const timeInSeconds = round(divide(Date.parse(connectedTimeStamp), 1000))
-      const timestamp = convertEpochToRelativeTime(timeInSeconds)
-      return formatter('durationFormat')(timestamp)
-    } else {
-      return formatter('durationFormat')(
-        clientDetails?.timeConnectedMs ?
-          convertEpochToRelativeTime(clientDetails?.timeConnectedMs) :
-          (clientDetails?.sessionDuration ? clientDetails?.sessionDuration * 1000 : 0 )
-      )
+    if (clientStatus !== ClientStatusEnum.CONNECTED) {
+      return formatter('durationFormat')({ value: 0 })
     }
+    const timeInSeconds = round(divide(Date.parse(connectedTimeStamp), 1000))
+    const timestamp = convertEpochToRelativeTime(timeInSeconds)
+    return formatter('durationFormat')(timestamp)
   }
 
   return <Card type='solid-bg'>
