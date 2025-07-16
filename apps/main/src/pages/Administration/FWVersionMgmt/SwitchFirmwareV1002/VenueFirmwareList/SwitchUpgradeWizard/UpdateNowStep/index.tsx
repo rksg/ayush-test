@@ -207,7 +207,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     if (isSupport7550Zippy) {
       updateSwitch75ZippyNoteEnable(form.getFieldValue('selectedICX7XVersion'))
     }
-  }, [current])
+  }, [current, getSwitchFirmwareList?.data])
 
   const handleICX71Change = (value: RadioChangeEvent) => {
     setSelecteedICX71Version(value.target.value)
