@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import type { Settings }                                                                               from '@acx-ui/analytics/utils'
-import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle';
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, rbacApiURL }                                                            from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
 import { WifiScopes }                                                                                  from '@acx-ui/types'
