@@ -103,6 +103,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const [switch82AvNoteEnable, setSwitch82AvNoteEnable] = useState(false)
   const [switch81XNoteEnable, setSwitch81XNoteEnable] = useState(false)
   const [switch75ZippyNoteEnable, setSwitch75ZippyNoteEnable] = useState(false)
+  const [switch71C08pNoteEnable, setSwitch71C08pNoteEnable] = useState(false)
+  const [icx7150C08pCount, setIcx7150C08pCount] = useState(0)
 
   const payload = {
     venueIdList: upgradeVenueList.map(item => item.venueId),
@@ -197,7 +199,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
       return []
     }
   }
-  const ICX7150C08pCount = icx71C08pGroupedData().reduce((total, group) => total + group.length, 0)
 
   const exist82AvAndInvalidVersion = (version: string): boolean => {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
@@ -235,6 +236,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
     setVersionFieldValue()
     updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
+    setIcx7150C08pCount(icx71C08pGroupedData().reduce((total, group) => total + group.length, 0))
     if (isSupport8100X) {
       updateSwitch81XNoteEnable(form.getFieldValue('selectedICX81Version'))
     }
@@ -245,6 +247,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const handleICX71Change = (value: RadioChangeEvent) => {
     setSelecteedICX71Version(value.target.value)
+    setSwitch71C08pNoteEnable(value.target.value.startsWith('100'))
     form.setFieldValue('selectedICX71Version', value.target.value)
     form.validateFields(['selectVersionStep'])
   }
@@ -319,9 +322,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
       return []
     }
-
-  const icx71hasFWWith10010 =
-    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
 
   return (
     <div
@@ -463,13 +463,13 @@ export function ScheduleStep (props: ScheduleStepProps) {
               <Space direction={'vertical'}>
                 {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v => {
-                    const only7150C08pWithFW10010 = (v.id.startsWith('100') &&
-                      ICX7150C08pCount > 0 && ICX7150C08pCount === ICX71Count)
+                    const only7150C08pWithFW10010 = v.id.startsWith('100') &&
+                      icx7150C08pCount > 0 && icx7150C08pCount === ICX71Count
                     v.model = only7150C08pWithFW10010
                       ? SwitchFirmwareModelGroup.ICX71 : undefined
                     const disabled = v.inUse || only7150C08pWithFW10010
-                    const showAsterisk = ICX7150C08pCount > 0 &&
-                      ICX7150C08pCount < ICX71Count && v.id.startsWith('100')
+                    const showAsterisk = v.id.startsWith('100') && icx7150C08pCount > 0 &&
+                      icx7150C08pCount < ICX71Count
 
                     return (
                       <Radio value={v.id} key={v.id} disabled={disabled}>
@@ -483,7 +483,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-            {ICX7150C08pCount > 0 && ICX7150C08pCount < ICX71Count && icx71hasFWWith10010 &&
+            {icx7150C08pCount > 0 && icx7150C08pCount < ICX71Count && switch71C08pNoteEnable &&
               <SwitchNote
                 type={NotesEnum.NOTE7150_1}
                 data={icx71C08pGroupedData()} />
