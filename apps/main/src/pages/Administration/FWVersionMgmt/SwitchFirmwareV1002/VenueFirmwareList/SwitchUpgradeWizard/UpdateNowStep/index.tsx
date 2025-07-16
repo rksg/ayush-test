@@ -161,7 +161,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       return []
     }
   }
-  const ICX7150C08pCount = icx71C08pGroupedData().length
+  const ICX7150C08pCount = icx71C08pGroupedData().reduce((total, group) => total + group.length, 0)
 
   const exist82AvAndInvalidVersion = (version: string): boolean => {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
