@@ -29,7 +29,7 @@ interface BrandTableProps {
 }
 
 export function BrandTable ({
-  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel, propertyCodeLabel, isMDU
+  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel, isMDU
 }: BrandTableProps) {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
