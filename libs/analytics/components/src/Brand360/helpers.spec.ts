@@ -103,9 +103,9 @@ describe('helpers', () => {
           avgClientThroughput: [0, 0] as [number, number],
           avgTTC: [0, 0] as [number, number],
           ssidCompliance: [0, 0] as [number, number],
-          p1Incidents: 0,
+          p1Incidents: NaN,
           prospectCountSLA: 0,
-          deviceCount: 0,
+          deviceCount: NaN,
           property: 'Property1',
           tenantId: '1',
           lsps: ['LSP1'],
@@ -116,9 +116,9 @@ describe('helpers', () => {
           avgClientThroughput: [0, 0] as [number, number],
           avgTTC: [0, 0] as [number, number],
           ssidCompliance: [0, 0] as [number, number],
-          p1Incidents: 0,
+          p1Incidents: NaN,
           prospectCountSLA: 0,
-          deviceCount: 0,
+          deviceCount: NaN,
           property: 'Property2',
           tenantId: '2',
           lsps: ['LSP1'],
@@ -155,9 +155,9 @@ describe('helpers', () => {
           avgClientThroughput: [0, 0] as [number, number],
           avgTTC: [0, 0] as [number, number],
           ssidCompliance: [0, 0] as [number, number],
-          p1Incidents: 0,
+          p1Incidents: NaN,
           prospectCountSLA: 0,
-          deviceCount: 0,
+          deviceCount: NaN,
           property: 'Property2',
           tenantId: '2',
           lsps: ['LSP1'],
@@ -286,8 +286,7 @@ describe('transformVenuesData', () => {
     const transformed = transformVenuesData(
       mockVenuesData as { data: BrandVenuesSLA[] },
       mockLookupAndMappingData as unknown as TransformedMap,
-      false,
-      'lsp'
+      false
     )
     expect(transformed).toEqual([
       {
@@ -310,8 +309,7 @@ describe('transformVenuesData', () => {
     const transformed = transformVenuesData(
       mockVenuesData as { data: BrandVenuesSLA[] },
       mockLookupAndMappingData as unknown as TransformedMap,
-      true,
-      'property'
+      true
     )
     expect(transformed).toEqual([
       {
@@ -335,8 +333,7 @@ describe('transformVenuesData', () => {
     const transformed = transformVenuesData(
       { data: [] },
       mockLookupAndMappingData as unknown as TransformedMap,
-      false,
-      'property'
+      false
     )
     expect(transformed).toEqual([
       {
@@ -358,17 +355,16 @@ describe('transformVenuesData', () => {
     const transformed = transformVenuesData(
       { data: [] },
       mockLookupAndMappingData as unknown as TransformedMap,
-      false,
-      'lsp'
+      false
     )
     expect(transformed).toEqual([
       {
         avgClientThroughput: '--',
         avgConnSuccess: '--',
         avgTTC: '--',
-        deviceCount: 0,
+        deviceCount: NaN,
         lsps: ['IntegratorName'],
-        p1Incidents: 0,
+        p1Incidents: NaN,
         property: 'Property1',
         ssidCompliance: '--',
         id: 'Property1-0',
@@ -380,7 +376,7 @@ describe('transformVenuesData', () => {
 
   it('handles undefined mapping data', () => {
     const transformed = transformVenuesData(
-      mockVenuesData as { data: BrandVenuesSLA[] }, {}, false, 'property')
+      mockVenuesData as { data: BrandVenuesSLA[] }, {}, false)
     expect(transformed).toEqual([])
   })
   it('calcSLA should handle [0,0]', () => {

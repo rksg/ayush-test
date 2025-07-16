@@ -101,12 +101,12 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
           acc.clientThroughput[0] + checkNaN(cur.avgClientThroughput[0]),
           acc.clientThroughput[1] + checkNaN(cur.avgClientThroughput[1])
         ],
-        p1Incidents: acc.p1Incidents + cur.p1Incidents,
+        p1Incidents: acc.p1Incidents + checkNaN(cur.p1Incidents),
         ssidCompliance: [
           acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
           acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
-        deviceCount: acc.deviceCount + cur.deviceCount,
+        deviceCount: acc.deviceCount + checkNaN(cur.deviceCount),
         prospectCountSLA: acc.prospectCountSLA + cur.prospectCountSLA
       }),
       {
@@ -238,8 +238,7 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
 export const transformVenuesData = (
   venuesData: { data: BrandVenuesSLA[] },
   lookupAndMappingData: TransformedMap,
-  isMDU: boolean,
-  sliceType: string
+  isMDU: boolean
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
@@ -252,7 +251,6 @@ export const transformVenuesData = (
   return Object.keys(lookupAndMappingData).reduce((newObj, tenantId, ind) => {
     const mappingData = lookupAndMappingData[tenantId]
     const tenantData = groupByTenantID[tenantId]
-    const isLSP = sliceType === 'lsp'
     mappingData.type === 'MSP_REC' && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
@@ -261,7 +259,7 @@ export const transformVenuesData = (
         : ['-'],
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0)
-        : isLSP ? 0 : NaN,
+        : NaN,
       ssidCompliance: isMDU
         ? [0, 0]
         : sumData(
@@ -273,7 +271,7 @@ export const transformVenuesData = (
         : 0,
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
-        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : isLSP ? 0 : NaN,
+        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : NaN,
       avgConnSuccess: sumData(
         tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
       ) as [number, number],
