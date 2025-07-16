@@ -188,7 +188,7 @@ describe('transformLookupAndMappingData', () => {
 
 describe('transformVenuesData', () => {
 
-  it('transforms and sums venue data correctly for non MDU', () => {
+  it('transforms and sums venue data correctly', () => {
     const transformed = transformVenuesData(
       mockVenuesData as { data: BrandVenuesSLA[] },
       mockLookupAndMappingData as unknown as TransformedMap

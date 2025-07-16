@@ -19,8 +19,7 @@ export interface BrandTimeseriesPayload {
   start: string,
   end: string,
   ssidRegex: string,
-  granularity?: 'all',
-  isMDU?: boolean
+  granularity?: 'all'
 }
 export interface FranchisorTimeseries {
   time: string[],
