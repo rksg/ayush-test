@@ -315,7 +315,8 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
+        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate) ? 
+          networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
       ]}
       validateFirst
       children={<Input />}
