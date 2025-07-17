@@ -48,6 +48,7 @@ export type Settings = {
   'brand-name': string
   'lsp-name': string
   'property-name': string
+  'property-code-name': string
   'enabled-intent-features': string
 }
 
