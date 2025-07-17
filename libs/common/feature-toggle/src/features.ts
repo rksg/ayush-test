@@ -203,7 +203,6 @@ export enum Features {
   WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE = 'wifi-ethernet-dhcp-option-82-toggle',
   WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE = 'wifi-ethernet-client-isolation-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
-  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE = 'wifi-network-radius-accounting-toggle',
   WIFI_NETWORK_VENUE_QUERY = 'wifi-eda-network-venue-query-toggle',
