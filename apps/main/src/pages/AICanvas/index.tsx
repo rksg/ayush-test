@@ -9,10 +9,10 @@ import { useIntl }                       from 'react-intl'
 import { v4 as uuidv4 }                  from 'uuid'
 
 import { Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { NewChat }                          from '@acx-ui/icons'
 import {
   SendMessageSolid,
   HistoricalOutlined,
-  Plus,
   Close,
   CanvasCollapse,
   CanvasExpand
@@ -639,7 +639,7 @@ export default function AICanvasModal (props: {
                       Please delete an existing chat to add a new one.` })
                           : ''}
                       >
-                        <Plus
+                        <NewChat
                           data-testid='newChatIcon'
                           className={
                             'newChat' + (isChatHistoryLimitReached ? ' disabled' : '')
@@ -649,6 +649,11 @@ export default function AICanvasModal (props: {
                       </Tooltip>
                     </> : null
                   }
+                </div>
+                <div className='title'>
+                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                </div>
+                <div className='actions'>
                   {
                     showCanvas ? <CanvasCollapse
                       data-testid='canvasCollapseIcon'
@@ -667,11 +672,6 @@ export default function AICanvasModal (props: {
                         />
                       </Tooltip>
                   }
-                </div>
-                <div className='title'>
-                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
-                </div>
-                <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
                   <Close data-testid='close-icon' onClick={onClickClose}/>
                 </div>
               </div>
