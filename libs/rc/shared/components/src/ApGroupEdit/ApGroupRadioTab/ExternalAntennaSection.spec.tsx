@@ -61,7 +61,7 @@ const defaultApGroupCxtdata = {
     apModelAntennaTypes: {}
   },
   venueId,
-  venueData: { ...venueData, mesh: { enabled: false } } as any,
+  venueData: { ...venueData, mesh: { enabled: false } },
   apGroupApCaps,
   setEditContextData: setEditContextDataFn,
   setEditRadioContextData: setEditRadioContextDataFn

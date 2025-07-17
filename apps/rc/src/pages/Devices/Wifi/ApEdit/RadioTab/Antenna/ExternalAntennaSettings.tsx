@@ -34,7 +34,7 @@ import { paramsType } from './AntennaSection'
 export function ExternalAntennaSettings () {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const {
     editContextData,
@@ -92,7 +92,7 @@ export function ExternalAntennaSettings () {
       }
 
       const setData = async () => {
-        const apExtAnt = isApGroupMoreParameterPhase1Enabled
+        const apExtAnt = isApGroupMoreParameterPhase3Enabled
           ? (await getApExtAntennaV1001({
             params: { venueId, serialNumber }
           }).unwrap())
@@ -112,7 +112,7 @@ export function ExternalAntennaSettings () {
 
         const apGroupExtAnt = (await getApGroupExtAntenna({
           // eslint-disable-next-line max-len
-          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase1Enabled
+          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase3Enabled
         }, true).unwrap())
 
         // eslint-disable-next-line max-len
@@ -123,7 +123,7 @@ export function ExternalAntennaSettings () {
           venueExtAntennaRef.current = convertToFormData(cloneDeep(findSettings))
         }
 
-        const venueOrApGroupSettings = isApGroupMoreParameterPhase1Enabled
+        const venueOrApGroupSettings = isApGroupMoreParameterPhase3Enabled
           ? (apExtAnt as ApExternalAntennaSettingsV1001).useVenueOrApGroupSettings
           : (apExtAnt as ApExternalAntennaSettings).useVenueSettings
         setIsUseVenueSettings(venueOrApGroupSettings)
@@ -190,7 +190,7 @@ export function ExternalAntennaSettings () {
         onOk: async () => {
           try {
             const params = paramsRef.current
-            if (isApGroupMoreParameterPhase1Enabled) {
+            if (isApGroupMoreParameterPhase3Enabled) {
               const payload = {
                 useVenueOrApGroupSettings: isUseVenueSettingsRef.current,
                 externalAntenna: cleanExtModel(extAnt)
@@ -217,7 +217,7 @@ export function ExternalAntennaSettings () {
     isLoading: formInitializing,
     isFetching: isUpdatingExtAntSettings || isUpdatingExtAntSettingsV1001
   }]}>
-    { isApGroupMoreParameterPhase1Enabled
+    { isApGroupMoreParameterPhase3Enabled
       ? <VenueOrApGroupSettingsHeader apGroupId={apDetails?.apGroupId}
         isUseVenueSettings={isUseVenueSettings}
         handleVenueSetting={handleVenueSetting} />

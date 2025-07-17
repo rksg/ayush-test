@@ -57,7 +57,7 @@ export function ApGroupRadioTab () {
 
   const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
   // eslint-disable-next-line max-len
-  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
@@ -75,7 +75,7 @@ export function ApGroupRadioTab () {
         <RadioSettings isAllowEdit={isAllowEditRadio} />
       </>
     )
-  }, ...(isApGroupMoreParameterPhase1Enabled ? [{
+  }, ...(isApGroupMoreParameterPhase3Enabled ? [{
     title: externalTitle,
     content: (
       <>

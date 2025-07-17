@@ -35,7 +35,7 @@ export type paramsType = {
 export function AntennaSection () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line max-len
-  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const { $t } = useIntl()
   const {
@@ -81,7 +81,7 @@ export function AntennaSection () {
         serialNumber: serialNumber!
       }
       const setData = async () => {
-        const apAntType = isApGroupMoreParameterPhase1Enabled
+        const apAntType = isApGroupMoreParameterPhase3Enabled
           ? (await getApAntennaTypeV1001({
             params: { venueId, serialNumber }
           }).unwrap())
@@ -99,7 +99,7 @@ export function AntennaSection () {
 
         const apGroupAntType = (await getApGroupAntennaType({
           // eslint-disable-next-line max-len
-          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase1Enabled
+          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase3Enabled
         }, true).unwrap())
 
         // eslint-disable-next-line max-len
@@ -111,7 +111,7 @@ export function AntennaSection () {
           venueAntennaTypeRef.current = findSettings
         }
 
-        const venueOrApGroupSettings = isApGroupMoreParameterPhase1Enabled
+        const venueOrApGroupSettings = isApGroupMoreParameterPhase3Enabled
           ? (apAntType as ApAntennaTypeSettingsV1001).useVenueOrApGroupSettings
           : (apAntType as ApAntennaTypeSettings).useVenueSettings
         setIsUseVenueSettings(venueOrApGroupSettings)
@@ -176,7 +176,7 @@ export function AntennaSection () {
       onOk: async () => {
         try {
           const params = paramsRef.current
-          if (isApGroupMoreParameterPhase1Enabled) {
+          if (isApGroupMoreParameterPhase3Enabled) {
             const payload = {
               useVenueOrApGroupSettings: isUseVenueSettingsRef.current,
               antennaType: form.getFieldValue('antennaType')
@@ -200,7 +200,7 @@ export function AntennaSection () {
     isLoading: formInitializing,
     isFetching: isUpdatingAntTypeSettings || isUpdatingAntTypeSettingsV1001
   }]}>
-    { isApGroupMoreParameterPhase1Enabled
+    { isApGroupMoreParameterPhase3Enabled
       ? <VenueOrApGroupSettingsHeader apGroupId={apDetails?.apGroupId}
         isUseVenueSettings={isUseVenueSettings}
         handleVenueSetting={handleVenueSetting} />

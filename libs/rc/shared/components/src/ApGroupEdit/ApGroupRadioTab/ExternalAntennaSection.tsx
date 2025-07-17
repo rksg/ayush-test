@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {useContext, useEffect, useRef, useState} from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Radio, Row, Select, Space } from 'antd'
 import { get, uniqBy }                          from 'lodash'
@@ -7,10 +7,6 @@ import { FormattedMessage, useIntl }            from 'react-intl'
 
 import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import {
-  ApAntennaTypeSelector,
-  ApExtAntennaForm
-} from '@acx-ui/rc/components'
 import {
   useGetApGroupAntennaTypeQuery,
   useGetApGroupExternalAntennaQuery,
@@ -29,11 +25,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import ApModelPlaceholder                   from '../assets/images/aps/ap-model-placeholder.png'
+import { ApAntennaTypeSelector }            from '../../ApAntennaTypeSelector'
+import { ApExtAntennaForm }                 from '../../ApExtAntennaForm'
 import {
   useApGroupConfigTemplateMutationFnSwitcher,
   useApGroupConfigTemplateQueryFnSwitcher
 } from '../apGroupConfigTemplateApiSwitcher'
+import ApModelPlaceholder     from '../assets/images/aps/ap-model-placeholder.png'
 import { ApGroupEditContext } from '../context'
 
 type ApGroupWifiConfigItemProps = {
@@ -90,8 +88,8 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
 
   const [updateApGroupExternalAntenna, { isLoading: isUpdatingApGroupExternalAntenna }] =
       useApGroupConfigTemplateMutationFnSwitcher(
-          useUpdateApGroupExternalAntennaMutation,
-          useUpdateApGroupExternalAntennaMutation
+        useUpdateApGroupExternalAntennaMutation,
+        useUpdateApGroupExternalAntennaMutation
       )
 
   const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({
@@ -100,7 +98,7 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
   }, { skip: !supportAntennaTypeSelection })
 
   const { data: apGroupAntennaTypeSettings } = useGetApGroupAntennaTypeQuery({
-    params: { ...params, venueId },
+    params: { ...params, venueId }
   })
 
   const [updateApGroupAntennaType, { isLoading: isUpdateApGroupAntennaType }] = useUpdateApGroupAntennaTypeMutation()
@@ -116,8 +114,6 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
-          console.log(data)
-          debugger
           await updateApGroupExternalAntenna({
             params: { ...params, venueId },
             payload: {
@@ -143,8 +139,6 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
-          console.log(data)
-          debugger
           await updateApGroupAntennaType({
             params: { ...params, venueId },
             payload: {
@@ -179,7 +173,6 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
     let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
     selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
 
-    console.log(antennaTypeSettings, apGroupAntennaTypeSettings, 'AntennaTypeSettings')
     if (supportAntennaTypeSelection && antennaTypeSettings && antennaTypeSettings.length > 0 && apGroupAntennaTypeSettings && apGroupAntennaTypeSettings.antennaTypeSettings.length > 0) {
       const antennaTypeSettingsUpdated = apGroupAntennaTypeSettings.useVenueSettings ? antennaTypeSettings : apGroupAntennaTypeSettings.antennaTypeSettings
       setAntennaTypeModels(antennaTypeSettingsUpdated)
@@ -189,7 +182,6 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
       uniqBy(selectItems, 'value')
     }
 
-    console.log('selectItems', selectItems)
     setSelectOptions(selectItems)
     const anchorItemName = supportAntennaTypeSelection? 'Antenna' : 'External-Antenna'
     setReadyToScroll?.(r => [...(new Set(r.concat(anchorItemName)))])
@@ -362,7 +354,7 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingExternalAntenna,
+      isLoading: isLoadingExternalAntenna || isLoadingApGroupExternalAntenna,
       isFetching: isUpdatingApGroupExternalAntenna || isUpdateApGroupAntennaType }]}
     >
       {displayVenueSettingOrApGroupAndCustomize()}

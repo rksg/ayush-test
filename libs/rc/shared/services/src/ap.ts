@@ -99,8 +99,9 @@ import {
   ApGroupQueryRadioCustomization,
   WifiNetwork,
   ApGroupApAntennaTypeSettings,
-  ExternalAntenna,
-  ApGroupApExternalAntennaSettings, ApAntennaTypeEnum, ApAntennaTypeSettingsV1001, ApExternalAntennaSettingsV1001
+  ApGroupApExternalAntennaSettings,
+  ApExternalAntennaSettingsV1001,
+  ApAntennaTypeSettingsV1001
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'

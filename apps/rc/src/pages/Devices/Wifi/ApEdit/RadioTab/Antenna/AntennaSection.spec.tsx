@@ -175,7 +175,7 @@ describe('AP Antenna Type Section', () => {
 
 })
 
-describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE', () => {
+describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE', () => {
   const defaultApEditCtxData = {
     editContextData: {
       unsavedTabKey: 'radio',
@@ -212,7 +212,7 @@ describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGL
 
   it('should render correctly when use venue or apgroup settings', async () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>
@@ -233,7 +233,7 @@ describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGL
 
   it('should render correctly when use custom settings', async () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>
