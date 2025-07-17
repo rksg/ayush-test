@@ -146,9 +146,9 @@ describe('ImpactedSwitchPortFlap', () => {
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // Verify both connected device cells show "--"
+    // Verify connected device cells show "--" (port type, port, and name)
     const dashCells = await screen.findAllByText('--')
-    expect(dashCells).toHaveLength(2)
+    expect(dashCells).toHaveLength(3)
   })
 
   describe('VLAN formatting', () => {
@@ -444,6 +444,7 @@ describe('ImpactedSwitchPortFlap', () => {
         'PoE Detail',
         'Remote Device Port Type',
         'Remote Device Port',
+        'Remote Device Name',
         'Last Flap Time Stamp'
       ]
       const headers = csvContent.split('\n')[0].split(',')
@@ -605,5 +606,205 @@ describe('ImpactedSwitchPortFlap', () => {
         expect(rows[1]).toContain('10,20,30') // Should contain actual flapVlans
         expect(rows[1]).toContain('Enabled') // Should contain actual poeOperState
       })
+  })
+
+  describe('Connected Device Name rendering', () => {
+    it('should render device name as link when MAC and serial are available', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                connectedDevice: {
+                  name: 'Test Device',
+                  port: '1/1/1',
+                  type: 'Switch',
+                  mac: 'AA:BB:CC:DD:EE:FF',
+                  serial: 'SN123456'
+                }
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const deviceLink = await screen.findByRole('link', { name: 'Test Device' })
+      expect(deviceLink).toBeVisible()
+      expect(deviceLink).toHaveAttribute('href', expect.stringContaining('/devices/switch/'))
+    })
+
+    it('should render connected device name as text when MAC or serial are missing', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                connectedDevice: {
+                  name: 'Test Device',
+                  port: '1/1/1',
+                  type: 'Switch',
+                  mac: '',
+                  serial: 'SN123456'
+                }
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(await screen.findByText('Test Device')).toBeVisible()
+      expect(screen.queryByRole('link', { name: 'Test Device' })).not.toBeInTheDocument()
+    })
+
+    it('should render -- when connected device name is empty or --', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                connectedDevice: {
+                  name: '',
+                  port: '1/1/1',
+                  type: 'Switch',
+                  mac: 'AA:BB:CC:DD:EE:FF',
+                  serial: 'SN123456'
+                }
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(await screen.findByText('--')).toBeVisible()
+    })
+  })
+
+  describe('Switch Details Path Generation', () => {
+    it('should generate correct path when MAC and serial are available', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const switchLink = await screen.findByRole('link', { name: 'ICX8200-24P Router' })
+      expect(switchLink).toHaveAttribute('href', expect.stringContaining('/devices/switch/'))
+      expect(switchLink).toHaveAttribute('href', expect.stringContaining('/38:45:3b:3c:f1:20/'))
+      expect(switchLink).toHaveAttribute('href', expect.stringContaining('/SN123456/'))
+    })
+
+    it('should not render link when MAC or serial are missing', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              mac: '',
+              serial: 'SN123456'
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(await screen.findByText('ICX8200-24P Router')).toBeVisible()
+      // When MAC is missing, the link should not be rendered
+      const link = screen.queryByRole('link', { name: 'ICX8200-24P Router' })
+      expect(link).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Utility Function Edge Cases', () => {
+    it('should handle null/Unknown connected device fields', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                connectedDevice: {
+                  port: null,
+                  type: 'Unknown',
+                  name: 'Test Device',
+                  mac: 'AA:BB:CC:DD:EE:FF',
+                  serial: 'SN123456'
+                }
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      // Check that the connected device fields show '--' for null/Unknown values
+      const cells = screen.getAllByText('--')
+      expect(cells.length).toBeGreaterThan(0)
+      // Verify that at least one '--' is visible in a table cell
+      const tableCells = screen.getAllByRole('cell')
+      const cellsWithDash = tableCells.filter(cell => cell.textContent === '--')
+      expect(cellsWithDash.length).toBeGreaterThan(0)
+    })
+
+    it('should handle null/empty flapVlans', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                flapVlans: null
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(await screen.findByText('--')).toBeVisible()
+    })
+  })
+
+  describe('VLAN rendering edge cases', () => {
+    it('should handle null/empty VLAN text in render function', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                flapVlans: null
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(await screen.findByText('--')).toBeVisible()
+    })
   })
 })
