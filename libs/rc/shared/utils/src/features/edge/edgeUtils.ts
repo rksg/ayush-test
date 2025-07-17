@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { DefaultOptionType }                    from 'antd/lib/select'
-import _, { difference, flatMap, isNil, sumBy } from 'lodash'
-import { IntlShape }                            from 'react-intl'
+import { DefaultOptionType }                                          from 'antd/lib/select'
+import _, { cloneDeep, difference, findIndex, flatMap, isNil, sumBy } from 'lodash'
+import { IntlShape }                                                  from 'react-intl'
 
 import { compareVersions, getIntl } from '@acx-ui/utils'
 
@@ -124,7 +124,17 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
   }
 }
 
-// eslint-disable-next-line max-len
+/**
+ * This function is used to convert the Edge network interface config to API payload.
+ * It will adjust the config based on the port type and core access separation feature.
+ *
+ * For example, it will clear the gateway for non-core port type LAN port,
+ * or prevent LAN port from using DHCP mode when it had been core port before but not a core port now.
+ * It will also disable NAT if port type is not WAN and clear NAT pools if NAT is disabled.
+ * @param formData the Edge network interface config
+ * @param isEdgeCoreAccessSeparationReady whether the edge core access separation feature is ready
+ * @returns the converted API payload
+ */
 export const convertEdgeNetworkIfConfigToApiPayload = (
   formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface,
   isEdgeCoreAccessSeparationReady?: boolean
@@ -596,4 +606,63 @@ export const isEdgeMatchedRequiredFirmware = (requiredFw: string | undefined, ed
   const minNodeVersion = edgesData?.[0]?.firmwareVersion
   const isMatched = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) >= 0
   return isMatched
+}
+
+
+/**
+ * Do a dry run on the network interfaces based on the given LAGs data,
+ * It will,
+ * - reset the port to initial config
+ * - remove the lag member interface sub interface
+ * - reset ip / subnet to empty when ip mode is DHCP
+ * - reset ip mode to STATIC when port type is LAN and corePortEnabled is false
+ * - reset ip mode to DHCP when port type is UNCONFIGURED
+ * - disable NAT if port type is not WAN and clear NAT pools if NAT is disabled
+ * ...etc.
+ * @param lags the LAGs data
+ * @param ports the port data
+ * @param subInterfaces the sub interface data
+ * @returns an object with the dry run result
+ */
+export const doEdgeNetworkInterfacesDryRun = (
+  lags: EdgeLag[], ports: EdgePort[], subInterfaces: SubInterface[],
+  isEdgeCoreAccessSeparationReady?: boolean
+): {
+  lags: EdgeLag[],
+  ports: EdgePort[],
+  subInterfaces: SubInterface[]
+} => {
+  const dryRunLags = cloneDeep(lags)
+  const dryRunPorts = cloneDeep(ports)
+  const dryRunSubInterfaces = cloneDeep(subInterfaces)
+
+  dryRunLags.forEach((lag, idx) => {
+    lag.lagMembers.forEach(member => {
+      const targetPortIdx = findIndex(dryRunPorts, { id: member.portId })
+      if(targetPortIdx !== -1) {
+      // reset lag member port
+        dryRunPorts[targetPortIdx] = { ...dryRunPorts[targetPortIdx], ...edgePhysicalPortInitialConfigs }
+
+        // remove lag member interface sub interface
+        subInterfaces = subInterfaces.filter(subInterface =>
+          subInterface.interfaceName?.split('.')[0] !== dryRunPorts[targetPortIdx].interfaceName)
+      }
+    })
+
+    dryRunLags[idx] = convertEdgeNetworkIfConfigToApiPayload(lag, isEdgeCoreAccessSeparationReady) as EdgeLag
+  })
+
+  dryRunPorts.forEach((port, idx) => {
+    dryRunPorts[idx] = convertEdgeNetworkIfConfigToApiPayload(port, isEdgeCoreAccessSeparationReady) as EdgePort
+  })
+
+  dryRunSubInterfaces.forEach((subInterface, idx) => {
+    dryRunSubInterfaces[idx] = convertEdgeNetworkIfConfigToApiPayload(subInterface as EdgeSubInterface, isEdgeCoreAccessSeparationReady) as SubInterface
+  })
+
+  return {
+    lags: lags,
+    ports: dryRunPorts,
+    subInterfaces: dryRunSubInterfaces
+  }
 }
