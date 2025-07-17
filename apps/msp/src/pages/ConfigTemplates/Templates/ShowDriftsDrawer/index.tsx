@@ -157,12 +157,12 @@ function Toolbar (props: ToolbarProps) {
   const { $t } = useIntl()
 
   return <Row justify='space-between' align='middle'>
-    <Col span={12}>
+    <Col span={14}>
       <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
+        {$t({ defaultMessage: 'Select all on this page (up to 10)' })}
       </Checkbox>
     </Col>
-    <Col span={12} style={{ textAlign: 'right' }}>
+    <Col span={10} style={{ textAlign: 'right' }}>
       <Select
         style={{ minWidth: 200, textAlign: 'left' }}
         placeholder={$t({ defaultMessage: 'All Customers' })}
