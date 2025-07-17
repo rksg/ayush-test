@@ -36,7 +36,6 @@ interface SlaTileProps {
   sliceType: SliceType
   lsp: string
   property: string
-  isMDU: boolean
 }
 
 const { Text } = Typography
@@ -46,9 +45,6 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
     case 'incident': return ['incidentCount']
     case 'experience': return ['timeToConnectSLA', 'clientThroughputSLA', 'connectionSuccessSLA']
     case 'compliance': return ['ssidComplianceSLA']
-    // for demo only
-    // istanbul ignore next
-    case 'mdu': return ['prospectCountSLA']
   }
 }
 
@@ -72,7 +68,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 : {
   chartKey: ChartKey,
   prevData?: FranchisorTimeseries,
-  currData?: FranchisorTimeseries,
+  currData?: FranchisorTimeseries
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
@@ -114,7 +110,20 @@ const getListData = (
     result[key] = curr + (avg ? meanBy(val, dataKey) : sumBy(val, dataKey))
     return result
   }, {} as Record<string, number>)
-  return orderBy(toPairs(res), val =>isNaN(val[1]) ? -1 : val[1],[order as 'asc' | 'desc'])
+  const result = orderBy(
+    toPairs(res),
+    [
+      val => {
+        if (isNaN(val[1])) {
+          return order === 'asc' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY
+        }
+        return val[1]
+      },
+      val => val[0]
+    ],
+    [order as 'asc' | 'desc', 'asc']
+  )
+  return result
 }
 
 const SwitcherIcon = ({ order }: { order: boolean }) => {
@@ -162,7 +171,6 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  isMDU,
   lsp,
   property
 }: SlaTileProps) {
@@ -188,7 +196,7 @@ export function SlaTile ({
   }
 
   return <Card title={{
-    title: ($t(getTitle(isMDU), { name })),
+    title: ($t(getTitle(), { name })),
     icon: getTooltip(chartKey) }}
   >
     <UI.Spacer />
@@ -201,7 +209,7 @@ export function SlaTile ({
         currData={currData} />
     </UI.ValueWrapper>
     <UI.Spacer />
-    <SlaChart isMDU={isMDU} chartData={chartData} chartKey={chartKey} />
+    <SlaChart chartData={chartData} chartKey={chartKey} />
     <UI.Spacer />
     <TopElementsSwitcher data={listData} chartKey={chartKey} />
   </Card>
