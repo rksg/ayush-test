@@ -71,6 +71,7 @@ export function RadioTab () {
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
 
   const apGroupPhase1Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const apGroupPhase3Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
@@ -119,7 +120,7 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        { apGroupPhase1Toggle
+        { apGroupPhase3Toggle
           ? <ClientAdmissionControlSettingsV1Dot1 isAllowEdit={isAllowEditClientAdmissionControl} />
           : <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
         }

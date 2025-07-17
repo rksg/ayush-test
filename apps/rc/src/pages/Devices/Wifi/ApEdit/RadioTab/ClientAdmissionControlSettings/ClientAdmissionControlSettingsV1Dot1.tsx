@@ -51,21 +51,24 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
   ]
 
   const {
+    apViewContextData,
     editContextData,
     setEditContextData,
     editRadioContextData,
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const { venueData, apData } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
   const venueId = venueData?.id
-  const apGroupId = apData?.apGroupId
+  const apGroupId = apViewContextData?.deviceGroupId
 
   const [getApGroupClientAdmissionControl] = useLazyGetApGroupClientAdmissionControlQuery()
+
   const getApClientAdmissionControl = useGetApClientAdmissionControl_v1_1Query(
-    { params: { venueId, serialNumber } }
+    { params: { venueId, serialNumber }, skip: !venueId }
   )
+
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApClientAdmissionControl_v1_1Mutation()
 
@@ -86,9 +89,11 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           // eslint-disable-next-line max-len
           isUseApGroupSettingsRef.current = clientAdmissionControlData.useVenueOrApGroupSettings || false
         }
-        const apGroupClientAdmissionControl = (await getApGroupClientAdmissionControl(
-          { params: { venueId, apGroupId } }, true).unwrap())
-        apGroupRef.current = apGroupClientAdmissionControl
+        if (venueId && apGroupId) {
+          const apGroupClientAdmissionControl = (await getApGroupClientAdmissionControl(
+            { params: { venueId, apGroupId } }, true).unwrap())
+          apGroupRef.current = apGroupClientAdmissionControl
+        }
       }
       setData()
 
@@ -131,7 +136,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
       if(isUseApGroupSettingsRef.current) {
         await updateClientAdmissionControl(
           { params: { venueId, serialNumber },
-            payload: { useVenueSettings: true },
+            payload: { useVenueOrApGroupSettings: true },
             enableRbac: true }).unwrap()
       } else {
         const payload: ApClientAdmissionControl_v1_1 = {
