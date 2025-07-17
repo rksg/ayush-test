@@ -460,9 +460,11 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     return channelFrom5GFiltered.map(n => n.toString())
   }
 
-  const syncLower5G = (checkStatus: boolean) => {
+  const syncLower5G = (needSync: boolean) => {
+    if (!needSync) return
+
     const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
-    if (checkStatus) {
+    if (radioData) {
       const radio5GData = radioData.radioParams50G
       formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G'], {
         ...radio5GData,
@@ -472,21 +474,23 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const syncUpper5G = (checkStatus: boolean) => {
+  const syncUpper5G = (needSync: boolean) => {
+    if (!needSync) return
+
     const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
-    if (checkStatus) {
+    if (radioData) {
       const radio5GData = radioData.radioParams50G
       formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G'], {
         ...radio5GData,
-        allowedIndoorChannels: correctedUpperChannels(radio5GData.allowedIndoorChannels || radioData.radioParamsDual5G?.radioParamsUpper5G?.allowedIndoorChannels),
-        allowedOutdoorChannels: correctedUpperChannels(radio5GData.allowedOutdoorChannels || radioData.radioParamsDual5G?.radioParamsUpper5G?.allowedOutdoorChannels)
+        allowedIndoorChannels: correctedUpperChannels(radio5GData.allowedIndoorChannels),
+        allowedOutdoorChannels: correctedUpperChannels(radio5GData.allowedOutdoorChannels)
       })
     }
   }
 
   const onTabChange = (tab: string) => {
-    syncLower5G(isLower5gInherit)
-    syncUpper5G(isUpper5gInherit)
+    if (tab === 'Lower5GHz') syncLower5G(isLower5gInherit)
+    if (tab === 'Upper5GHz') syncUpper5G(isUpper5gInherit)
     setCurrentTab(tab)
   }
 
