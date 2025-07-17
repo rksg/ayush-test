@@ -47,8 +47,9 @@ export function useRecConfigTemplateAccess (): boolean {
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
   const isRecConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_REC_P1)
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) // This is only for 2025/Q3 release, will apply custom RBAC in the future
 
-  return !isCore && isRecConfigTemplateEnabled
+  return !isCore && isRecConfigTemplateEnabled && isAdminUser
 }
 
 export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
