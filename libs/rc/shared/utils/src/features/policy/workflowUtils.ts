@@ -81,6 +81,8 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.SAML_AUTH]: SamlAuthActionTypeIcon
 }
 
+export const START_NODE_TITLE = defineMessage({ defaultMessage: 'Start' })
+
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
@@ -88,8 +90,7 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
   [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' }),
-  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' }),
-  ['START' as ActionType]: defineMessage({ defaultMessage: 'Start' })
+  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {

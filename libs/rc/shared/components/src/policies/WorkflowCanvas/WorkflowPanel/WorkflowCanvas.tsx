@@ -18,10 +18,10 @@ import ReactFlow, {
   NodeDimensionChange
 } from 'reactflow'
 
-import { showActionModal }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { useAttachStepBeneathStepMutation }                         from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, StepType, WorkflowPanelMode } from '@acx-ui/rc/utils'
+import { showActionModal }                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { useAttachStepBeneathStepMutation }                                           from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, START_NODE_TITLE, StepType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 import { useWorkflowContext } from './WorkflowContextProvider'
 import {
@@ -199,9 +199,13 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       stepIdToAttach = node.id.split('parent')[0]
     }
 
+    const nodeTypeTitle = intersectedNode.type === 'START' ?
+      $t(START_NODE_TITLE)
+      : $t(ActionTypeTitle[intersectedNode.type as ActionType])
+
     const title = $t(
       { defaultMessage: 'Attach to Step "{formattedName}"?' },
-      { formattedName: $t(ActionTypeTitle[intersectedNode.type as ActionType]) }
+      { formattedName: nodeTypeTitle }
     )
 
     showActionModal({
@@ -210,7 +214,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       content: $t({
         defaultMessage:
           'Are you sure you want to attach the branch below the step of type "{formattedName}"'
-      }, { formattedName: $t(ActionTypeTitle[intersectedNode.type as ActionType]) }),
+      }, { formattedName: nodeTypeTitle }),
       okText: $t({ defaultMessage: 'Attach Steps' }),
       onOk: () => {
         attachSteps({ params: { policyId: workflowId, stepId: intersectedNode?.id,
