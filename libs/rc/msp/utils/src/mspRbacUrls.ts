@@ -8,6 +8,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/tenants/query'
   },
+  getMspCustomersListWithDelegations: {
+    method: 'post',
+    url: '/tenants/query?includeDelegations=true',
+    newApi: true,
+    opsApi: 'POST:/tenants/query?includeDelegations=true'
+  },
   getMspCustomersListWithoutDelegations: {
     method: 'post',
     url: '/ecs/query?delegations=false',
