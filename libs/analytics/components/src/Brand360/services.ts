@@ -14,6 +14,7 @@ export interface Response {
   avgClientThroughput: [number, number]
   property: string,
   tenantId: string
+  hasValidData?: boolean
 }
 export interface BrandTimeseriesPayload {
   start: string,

@@ -68,7 +68,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 : {
   chartKey: ChartKey,
   prevData?: FranchisorTimeseries,
-  currData?: FranchisorTimeseries,
+  currData?: FranchisorTimeseries
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
@@ -110,7 +110,20 @@ const getListData = (
     result[key] = curr + (avg ? meanBy(val, dataKey) : sumBy(val, dataKey))
     return result
   }, {} as Record<string, number>)
-  return orderBy(toPairs(res), val =>isNaN(val[1]) ? -1 : val[1],[order as 'asc' | 'desc'])
+  const result = orderBy(
+    toPairs(res),
+    [
+      val => {
+        if (isNaN(val[1])) {
+          return order === 'asc' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY
+        }
+        return val[1]
+      },
+      val => val[0]
+    ],
+    [order as 'asc' | 'desc', 'asc']
+  )
+  return result
 }
 
 const SwitcherIcon = ({ order }: { order: boolean }) => {

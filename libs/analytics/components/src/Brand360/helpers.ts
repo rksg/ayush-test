@@ -78,6 +78,8 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
   }, {} as { [key: string]: Response[] })
 
   return Object.entries(lsps).map(([lsp, properties], ind) => {
+    const allPropertiesHaveInvalidData = properties.every(prop => !prop.hasValidData)
+
     const {
       connSuccess,
       ttc,
@@ -97,12 +99,12 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
           acc.clientThroughput[0] + checkNaN(cur.avgClientThroughput[0]),
           acc.clientThroughput[1] + checkNaN(cur.avgClientThroughput[1])
         ],
-        p1Incidents: acc.p1Incidents + cur.p1Incidents,
+        p1Incidents: acc.p1Incidents + checkNaN(cur.p1Incidents),
         ssidCompliance: [
           acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
           acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
-        deviceCount: acc.deviceCount + cur.deviceCount
+        deviceCount: acc.deviceCount + checkNaN(cur.deviceCount)
       }),
       {
         connSuccess: [0, 0],
@@ -132,9 +134,9 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       avgConnSuccess,
       avgTTC,
       avgClientThroughput,
-      p1Incidents,
+      p1Incidents: allPropertiesHaveInvalidData ? NaN : p1Incidents,
       ssidCompliance: validatedSsidCompliance,
-      deviceCount,
+      deviceCount: allPropertiesHaveInvalidData ? NaN : deviceCount,
       guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput)
     }
   })
@@ -239,13 +241,14 @@ export const transformVenuesData = (
         ? mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
         : ['-'],
       p1Incidents: tenantData
-        ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
+        ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0)
+        : NaN,
       ssidCompliance: sumData(
         tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
       ) as [number, number],
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
-        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
+        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : NaN,
       avgConnSuccess: sumData(
         tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
       ) as [number, number],
@@ -253,7 +256,8 @@ export const transformVenuesData = (
       avgClientThroughput: sumData(
         tenantData?.map(v => v.clientThroughputSLA), [0, 0]
       ) as [number, number],
-      tenantId
+      tenantId,
+      hasValidData: !!tenantData
     })
     return newObj
   }, [] as Response[])
