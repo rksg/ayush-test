@@ -1,14 +1,18 @@
 /* eslint-disable no-console */
-import { LoadingOutlined } from '@ant-design/icons'
-import * as _              from 'lodash'
-import { IntlShape }       from 'react-intl'
-import { generatePath }    from 'react-router-dom'
-import styled              from 'styled-components/macro'
+import { LoadingOutlined }   from '@ant-design/icons'
+import { isEmpty, template } from 'lodash'
+import { IntlShape }         from 'react-intl'
+import { generatePath }      from 'react-router-dom'
+import styled                from 'styled-components/macro'
 
-import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { hasRoles }                                          from '@acx-ui/user'
-import { getEnabledActivityErrorImproved, getIntl }          from '@acx-ui/utils'
+import { showActionModal }                     from '@acx-ui/components'
+import { RolesEnum }                           from '@acx-ui/types'
+import { hasRoles }                            from '@acx-ui/user'
+import {
+  getEnabledActivityErrorImproved,
+  getIntl,
+  showToast, type ToastProps, type ToastType
+} from '@acx-ui/utils'
 
 import { rcToastTemplates } from './toastTemplate'
 
@@ -239,7 +243,7 @@ const getToastMessage = (tx: Transaction): string => {
         `Template not found for method ${method}, falling back to default messages. tx=`, tx)
       method = 'DefaultMethod'
     }
-    return _.template(rcToastTemplates[method].messages[tx.status])(tx)
+    return template(rcToastTemplates[method].messages[tx.status])(tx)
   }
 
   return message
@@ -276,9 +280,9 @@ const getTabViewParams = (tx:Transaction) => {
   const method = tx.method
   const tabId = method &&
     rcToastTemplates[method] &&
-    _.template(rcToastTemplates[method].tabView)(tx)
+    template(rcToastTemplates[method].tabView)(tx)
 
-  return (_.isEmpty(tabId))? null : { tabView: tabId }
+  return (isEmpty(tabId))? null : { tabView: tabId }
 }
 
 const skipToast = (tx: Transaction): boolean => {

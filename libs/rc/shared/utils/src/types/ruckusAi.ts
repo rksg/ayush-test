@@ -1,5 +1,5 @@
 import { BarChartData, TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { TableColumn }                       from '@acx-ui/types'
+import type { TableColumn }                  from '@acx-ui/types'
 
 export interface RuckusAiConversation {
   sessionId: string,
