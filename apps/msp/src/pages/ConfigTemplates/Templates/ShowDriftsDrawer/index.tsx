@@ -27,6 +27,8 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   const { $t } = useIntl()
   const [ selectedInstances, setSelectedInstances ] = useState<Array<string>>([])
   const [ selectedFilterValue, setSelectedFilterValue ] = useState<string | undefined>()
+  const [ currentPage, setCurrentPage ] = useState(1)
+  const [ pageSize, setPageSize ] = useState(10)
   const { setVisible, selectedTemplate } = props
   // eslint-disable-next-line max-len
   const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useGetDriftInstancesQuery({
@@ -78,7 +80,12 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const getSyncAllInstances = () => {
-    return driftInstances.map(i => i.id).slice(0, MAX_SYNC_EC_TENANTS)
+    const startIdx = (currentPage - 1) * pageSize
+    const endIdx = startIdx + pageSize
+    return driftInstances
+      .slice(startIdx, endIdx)
+      .map(i => i.id)
+      .slice(0, MAX_SYNC_EC_TENANTS)
   }
 
   const footer = <div>
@@ -118,7 +125,12 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
           pagination={{
-            position: 'bottom',
+            current: currentPage,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page)
+              setPageSize(pageSize)
+            },
             style: {
               display: 'flex',
               justifyContent: 'center',
