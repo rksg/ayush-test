@@ -51,13 +51,13 @@ export const DeviceProvisionUrlsInfo: { [key: string]: ApiInfo } = {
   },
   importApProvisions: {
     method: 'POST',
-    url: '/deviceProvisions/venue/:venueId/apGroups/:apGroupId/aps',
+    url: '/deviceProvisions/venues/:venueId/apGroups/:apGroupId/aps',
     newApi: true,
     opsApi: 'POST:/deviceProvisions/venue/{venueId}/apGroups/{apGroupId}/aps'
   },
   importSwitchProvisions: {
     method: 'POST',
-    url: '/deviceProvisions/venue/:venueId/switches',
+    url: '/deviceProvisions/venues/:venueId/switches',
     newApi: true,
     opsApi: 'POST:/deviceProvisions/venue/{venueId}/switches'
   },
