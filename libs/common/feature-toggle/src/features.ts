@@ -202,7 +202,6 @@ export enum Features {
   WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE = 'wifi-ethernet-dhcp-option-82-toggle',
   WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE = 'wifi-ethernet-client-isolation-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
-  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE = 'wifi-network-radius-accounting-toggle',
   WIFI_NETWORK_VENUE_QUERY = 'wifi-eda-network-venue-query-toggle',
@@ -247,6 +246,7 @@ export enum Features {
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   WIFI_POE_OUT_MODE_SETTING_TOGGLE = 'wifi-poe-out-mode-setting-toggle',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  UNITS_ADVANCED_SEARCH = 'units-advanced-search',
   DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
@@ -296,7 +296,8 @@ export enum Features {
   PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
-  IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle'
+  IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
+  WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

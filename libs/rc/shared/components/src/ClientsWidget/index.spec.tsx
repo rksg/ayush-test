@@ -1,9 +1,9 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                      from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   screen,
   mockRestApiQuery,
@@ -100,26 +100,12 @@ describe('Clients widget v2', () => {
             clients: {
               summary: { Good: 1, Poor: 1, Unknown: 1 },
               totalCount: 3
+            },
+            apWiredClients: {
+              summary: {},
+              totalCount: 2
             }
           }
-        }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getApWiredClients.url,
-        (req, res, ctx) => res(ctx.json({
-          fields: [
-            'macAddress'
-          ],
-          totalCount: 2,
-          page: 1,
-          data: [
-            {
-              macAddress: 'C0:9C:51:05:CD:00'
-            },
-            {
-              macAddress: '54:10:33:b7:df:00'
-            }
-          ]
         }))
       )
     )

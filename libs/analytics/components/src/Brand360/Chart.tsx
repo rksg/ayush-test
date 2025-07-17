@@ -11,7 +11,6 @@ import { ChartWrapper }           from './styledComponents'
 
 interface SlaChartProps {
   chartKey: ChartKey
-  isMDU: boolean
   chartData: FranchisorTimeseries | undefined
 }
 
@@ -28,11 +27,6 @@ export const getSeriesMapping = (chartKey: ChartKey, $t: IntlShape['$t']) => {
       { key: 'clientThroughputSLA', name: $t({ defaultMessage: 'Client Throughput' }) },
       { key: 'connectionSuccessSLA', name: $t({ defaultMessage: 'Connection Success' }) }
     ]
-    // for demo only
-    // istanbul ignore next
-    case 'mdu': return [
-      { key: 'prospectCountSLA', name: $t({ defaultMessage: '# of Prospects' }) }
-    ]
   }
 }
 
@@ -43,7 +37,7 @@ export const removeErrors = (data: FranchisorTimeseries | undefined) => {
   return values
 }
 
-export function SlaChart ({ chartKey, chartData, isMDU }: SlaChartProps) {
+export function SlaChart ({ chartKey, chartData }: SlaChartProps) {
   const { $t } = useIntl()
   const { formatter } = slaKpiConfig[chartKey]
   const seriesMapping = getSeriesMapping(chartKey, $t)
@@ -64,10 +58,7 @@ export function SlaChart ({ chartKey, chartData, isMDU }: SlaChartProps) {
             total: formatter
           }}
           tooltipTotalTitle={chartKey === 'experience'
-            ? (isMDU // istanbul ignore next
-              ? $t({ defaultMessage: 'Resident Experience' })
-              : $t({ defaultMessage: 'Guest Experience' })
-            )
+            ? $t({ defaultMessage: 'Guest Experience' })
             : undefined}
         />
         : <NoData/>}
