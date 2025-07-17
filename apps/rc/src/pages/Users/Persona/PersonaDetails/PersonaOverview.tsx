@@ -5,7 +5,7 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Traffic, TopApplications } from '@acx-ui/analytics/components'
+import { IdentityHealth, Traffic, TopApplications } from '@acx-ui/analytics/components'
 import {
   Button,
   Card,
@@ -353,13 +353,19 @@ export function PersonaOverview ({
           </GridCol>
         }
       </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 24 }}/>
-        {isIdentityAnalyticsEnabled && (
+      {isIdentityAnalyticsEnabled && (
+        <GridRow>
+          <GridCol col={{ span: 24 }}/>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <IdentityHealth />
+          </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
             <Traffic />
           </GridCol>
-        )}
+        </GridRow>
+      )}
+      <GridRow>
+        <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
           <Loader states={[{ isLoading: isClientsLoading || isClientsFetching }]}>
             <Card title={$t({ defaultMessage: 'Associated Devices' })}>
