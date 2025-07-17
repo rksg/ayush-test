@@ -390,7 +390,7 @@ export function Unit (props:{
                     </div>
                     <div className='status'>{unit.unitStatus.ackMsg}</div>
                     <div className='status'>
-                      <span className='unit-button' onClick={onClickAck}>
+                      <span className='ack-button' onClick={onClickAck}>
                         {$t({ defaultMessage: 'Acknowledge' })}
                       </span>
                     </div>

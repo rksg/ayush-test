@@ -323,8 +323,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       return (
         <Tooltip title={ackMsg}>
           <Button
-            style={{ marginLeft: '10px', paddingTop: '5px' }}
-            type='link'
+            style={{ marginLeft: '10px', top: '4px' }}
+            size='small'
             onClick={() => onClickAck(row)}>
             {$t({ defaultMessage: 'ACK' })}
           </Button>
