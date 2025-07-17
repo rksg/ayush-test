@@ -9,7 +9,6 @@ import { MaybePromise, RequestPayload } from '@acx-ui/types'
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
-
 export interface ApiInfo {
   url: string;
   method: string;
@@ -205,12 +204,12 @@ export const getOpsApi = (apiInfo: ApiInfo) => {
 }
 
 function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
-  const { url, ...rest } = apiInfo
-
   // Skip URL transformation in test environment
   if (process.env.NODE_ENV === 'test') {
     return apiInfo
   }
+
+  const { url, ...rest } = apiInfo
 
   return {
     ...rest,
