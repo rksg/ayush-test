@@ -3,7 +3,10 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
+  getAntennaTypePayload,
+  getExternalAntennaPayload,
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
@@ -15,7 +18,8 @@ import { usePathBasedOnConfigTemplate }           from '../../configTemplates'
 import { useApGroupConfigTemplateOpsApiSwitcher } from '../apGroupConfigTemplateApiSwitcher'
 import { ApGroupEditContext }                     from '../context'
 
-import { RadioSettings } from './RadioSettings'
+import { ExternalAntennaSection } from './ExternalAntennaSection'
+import { RadioSettings }          from './RadioSettings'
 
 export function ApGroupRadioTab () {
   const { $t } = useIntl()
@@ -27,10 +31,17 @@ export function ApGroupRadioTab () {
     VenueConfigTemplateUrlsInfo.updateVenueRadioCustomizationRbac
   )
 
+  const antennaOpsApi = useApGroupConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueExternalAntenna,
+    VenueConfigTemplateUrlsInfo.updateVenueExternalAntennaRbac
+  )
+
   const [
-    isAllowEditRadio
+    isAllowEditRadio,
+    isAllowEditAntenna
   ] = [
-    hasAllowedOperations([radioSettingsOpsApi])
+    hasAllowedOperations([radioSettingsOpsApi]),
+    hasAllowedOperations([antennaOpsApi])
   ]
 
   const {
@@ -44,8 +55,15 @@ export function ApGroupRadioTab () {
 
   const basePath = usePathBasedOnConfigTemplate('/devices/')
 
+  const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
+  const externalTitle = supportAntennaTypeSelection?
+    $t({ defaultMessage: 'Antenna' }) :
+    $t({ defaultMessage: 'External Antenna' })
 
   const anchorItems = [{
     title: wifiSettingLink,
@@ -57,10 +75,35 @@ export function ApGroupRadioTab () {
         <RadioSettings isAllowEdit={isAllowEditRadio} />
       </>
     )
-  }]
+  }, ...(isApGroupMoreParameterPhase1Enabled ? [{
+    title: externalTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='external-antenna'>
+          { externalTitle }
+        </StepsFormLegacy.SectionTitle>
+        <ExternalAntennaSection isAllowEdit={isAllowEditAntenna} />
+      </>
+    )
+  }] : [])]
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
+      const {
+        apModels,
+        apModelAntennaTypes
+      } = editRadioContextData
+
+      if (apModels) {
+        const extPayload = getExternalAntennaPayload(apModels)
+        await editRadioContextData.updateExternalAntenna?.(extPayload)
+      }
+
+      if (apModelAntennaTypes) {
+        const antTypePayload = getAntennaTypePayload(apModelAntennaTypes)
+        await editRadioContextData.updateAntennaType?.(antTypePayload)
+      }
+
       await editRadioContextData.updateWifiRadio?.()
 
       resetEditContextData()
@@ -98,6 +141,8 @@ export function ApGroupRadioTab () {
     if (editRadioContextData) {
       const newData = { ...editRadioContextData }
       delete newData.updateWifiRadio
+      delete newData.updateExternalAntenna
+      delete newData.updateAntennaType
       delete newData.discardWifiRadioChanges
 
       setEditRadioContextData(newData)

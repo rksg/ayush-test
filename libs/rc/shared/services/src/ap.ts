@@ -97,7 +97,10 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork,
+  ApGroupApAntennaTypeSettings,
+  ExternalAntenna,
+  ApGroupApExternalAntennaSettings, ApAntennaTypeEnum, ApAntennaTypeSettingsV1001, ApExternalAntennaSettingsV1001
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -967,6 +970,60 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'BandModeSettings' }]
     }),
+    getApGroupAntennaType: build.query<ApGroupApAntennaTypeSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApGroupAntennaType, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueAntennaType'], () => {
+              api.dispatch(apApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateApGroupAntennaType: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApGroupAntennaType, params)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+    }),
+    getApGroupExternalAntenna: build.query<ApGroupApExternalAntennaSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApGroupExternalAntenna, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueExternalAntenna'], () => {
+              api.dispatch(apApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateApGroupExternalAntenna: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApGroupExternalAntenna, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+    }),
     getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
         const { params } = arg
@@ -1542,6 +1599,25 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
     }),
+    getApExternalAntennaSettingsV1001: build.query<ApExternalAntennaSettingsV1001, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApExternalAntennaSettingsV1001, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
+    }),
+    updateApExternalAntennaSettingsV1001: build.mutation<CommonResult, RequestPayload<ApExternalAntennaSettingsV1001>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApExternalAntennaSettingsV1001, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
+    }),
     getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1568,6 +1644,35 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateApAntennaTypeSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
+    getApAntennaTypeSettingsV1001: build.query<ApAntennaTypeSettingsV1001, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApAntennaTypeSettingsV1001, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ANTENNA' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApAntennaTypeSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ANTENNA' }]))
+          })
+        })
+      }
+    }),
+    updateApAntennaTypeSettingsV1001: build.mutation<CommonResult, RequestPayload<ApAntennaTypeSettingsV1001>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApAntennaTypeSettingsV1001, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2178,10 +2283,15 @@ export const {
   useLazyGetApGroupApModelBandModeSettingsQuery,
   useUpdateApGroupApModelBandModeSettingsMutation,
   useLazyGetApExternalAntennaSettingsQuery,
+  useLazyGetApExternalAntennaSettingsV1001Query,
   useUpdateApExternalAntennaSettingsMutation,
+  useUpdateApExternalAntennaSettingsV1001Mutation,
   useGetApAntennaTypeSettingsQuery,
+  useGetApAntennaTypeSettingsV1001Query,
   useLazyGetApAntennaTypeSettingsQuery,
+  useLazyGetApAntennaTypeSettingsV1001Query,
   useUpdateApAntennaTypeSettingsMutation,
+  useUpdateApAntennaTypeSettingsV1001Mutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
   useGetApSmartMonitorQuery,
@@ -2240,7 +2350,13 @@ export const {
   useMoveApToTargetApGroupMutation,
   useGetApStickyClientSteeringQuery,
   useUpdateApStickyClientSteeringMutation,
-  useResetApStickyClientSteeringMutation
+  useResetApStickyClientSteeringMutation,
+  useGetApGroupAntennaTypeQuery,
+  useLazyGetApGroupAntennaTypeQuery,
+  useUpdateApGroupAntennaTypeMutation,
+  useGetApGroupExternalAntennaQuery,
+  useLazyGetApGroupExternalAntennaQuery,
+  useUpdateApGroupExternalAntennaMutation
 } = apApi
 
 export function isAPLowPower (afcInfo?: AFCInfo): boolean {

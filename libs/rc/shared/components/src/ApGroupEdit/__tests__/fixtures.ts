@@ -5,7 +5,13 @@ import {
   AFCStatus,
   ApViewModel,
   NetworkTypeEnum,
-  RadioEnum, RadioTypeEnum, WlanSecurityEnum, ApModelFamily, ApModelFamilyType
+  RadioEnum,
+  RadioTypeEnum,
+  WlanSecurityEnum,
+  ApModelFamily,
+  ApModelFamilyType,
+  ExternalAntenna,
+  ApAntennaTypeEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -5866,3 +5872,67 @@ export const mockedApModelFamilies = [
   }
 ]
 
+export const mockVenueExternalAntennas = [
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 8,
+    gain50G: 8,
+    model: 'T350SE'
+  },
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 8,
+    gain50G: 8,
+    model: 'T750SE'
+  },
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 3,
+    gain50G: 3,
+    model: 'E510'
+  },
+  {
+    enable24G: true,
+    enable50G: true,
+    gain24G: 11,
+    gain50G: 14,
+    model: 'T305E'
+  },
+  {
+    enable50G: false,
+    gain50G: 5,
+    model: 'T300E'
+  }
+]
+
+export const mockApGroupExternalAntennas = {
+  externalAntenna: {
+    enable24G: true,
+    enable50G: true,
+    gain24G: 8,
+    gain50G: 8,
+    supportDisable: true,
+    coupled: false,
+    model: 'E510'
+  } as ExternalAntenna,
+  useVenueOrApGroupSettings: true
+}
+
+export const mockAntennaTypeSettings = [{ model: 'T670SN', antennaType: 'SECTOR' }]
+
+export const mockApGroupAntennaTypeSettings = {
+  useVenueSettings: true,
+  antennaTypeSettings: [
+    {
+      model: 'R760',
+      antennaType: ApAntennaTypeEnum.NARROW
+    },
+    {
+      model: 'R560',
+      antennaType: ApAntennaTypeEnum.NARROW
+    }
+  ]
+}

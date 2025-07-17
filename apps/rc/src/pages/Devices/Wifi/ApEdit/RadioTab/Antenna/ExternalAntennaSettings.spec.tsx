@@ -2,13 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                       from '@acx-ui/rc/services'
 import { WifiRbacUrlsInfo, WifiUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { venuelist }                    from '../../../../__tests__/fixtures'
+import { ApDataContext, ApEditContext }           from '../..'
+import { ApCap_T750SE, ApData_T750SE, venuelist } from '../../../../__tests__/fixtures'
 
 import { ExternalAntennaSettings } from './ExternalAntennaSettings'
 
@@ -86,6 +87,18 @@ const mockApExtAntenna = {
     supportDisable: true
   },
   useVenueSettings: true
+}
+
+const mockApExtAntennaV1001 = {
+  externalAntenna: {
+    enable24G: false,
+    enable50G: false,
+    gain24G: undefined,
+    gain50G: undefined,
+    coupled: false,
+    supportDisable: true
+  },
+  useVenueOrApGroupSettings: true
 }
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
@@ -168,6 +181,100 @@ describe('AP Ext Antenna Settings', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ } ))
     expect(await screen.findByRole('button', { name: /Customize/ } )).toBeVisible()
+  })
+
+})
+
+describe('AP Ext Antenna Settings with WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE', () => {
+  const defaultApEditCtxData = {
+    editContextData: {
+      unsavedTabKey: 'radio',
+      tabTitle: 'Radio',
+      isDirty: false
+    },
+    setEditContextData: jest.fn(),
+    editRadioContextData: {
+      updateApAntennaType: jest.fn()
+    },
+    setEditRadioContextData: jest.fn()
+  }
+
+  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venuelist.data[0] }
+  // eslint-disable-next-line max-len
+  const defaultR760ApCtxData = { apData: ApData_T750SE, venueData: venuelist.data[0], apCapabilities: ApCap_T750SE }
+
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(mockVenueExtAntenna))),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(mockVenueExtAntenna))),
+      rest.get(
+        WifiRbacUrlsInfo.getApExternalAntennaSettings.url,
+        (_, res, ctx) => res(ctx.json(mockApExtAntenna))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApExternalAntennaSettings.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiRbacUrlsInfo.getApExternalAntennaSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json(mockApExtAntennaV1001))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApExternalAntennaSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+
+  it('should render correctly when use venue or apgroup settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    render(
+      <Provider>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultE510ApCtxData}>
+            <Form>
+              <ExternalAntennaSettings />
+            </Form>
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/Customize/)).toBeVisible()
+
+    const enableToggleBtns = await screen.findAllByRole('switch')
+    expect(enableToggleBtns.length).toBe(2)
+
+  })
+
+  it('should render correctly when use custom settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    render(
+      <Provider>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
+            <Form>
+              <ExternalAntennaSettings />
+            </Form>
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    await userEvent.click(await screen.findByText(/Customize settings/))
+
+    const enableToggleBtns = await screen.findAllByRole('switch')
+    expect(enableToggleBtns.length).toBe(1)
+
+    await userEvent.click(enableToggleBtns[0])
+
+    await userEvent.click(await screen.findByText(/Use inherited settings from AP Group/))
+    expect(await screen.findByText(/Customize settings/)).toBeVisible()
   })
 
 })

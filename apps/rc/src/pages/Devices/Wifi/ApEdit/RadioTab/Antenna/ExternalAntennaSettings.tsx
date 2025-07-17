@@ -1,40 +1,40 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Row }              from 'antd'
-import { cloneDeep, find, omit } from 'lodash'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Col, Row }        from 'antd'
+import { cloneDeep, find } from 'lodash'
+import { useIntl }         from 'react-intl'
+import { useParams }       from 'react-router-dom'
 
-import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
-import { ApExtAntennaForm }                       from '@acx-ui/rc/components'
+import { AnchorContext, Loader, showActionModal }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { ApExtAntennaForm }                                                                     from '@acx-ui/rc/components'
 import {
   useLazyGetApExternalAntennaSettingsQuery,
+  useLazyGetApExternalAntennaSettingsV1001Query,
+  useLazyGetApGroupExternalAntennaQuery,
   useLazyGetVenueExternalAntennaQuery,
-  useUpdateApExternalAntennaSettingsMutation
+  useUpdateApExternalAntennaSettingsMutation, useUpdateApExternalAntennaSettingsV1001Mutation
 } from '@acx-ui/rc/services'
-import { ExternalAntenna } from '@acx-ui/rc/utils'
+import {
+  ApExternalAntennaSettings,
+  ApExternalAntennaSettingsV1001,
+  cleanExtModel,
+  ExternalAntenna
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
+import { VenueOrApGroupSettingsHeader } from '../../VenueOrApGroupSettingsHeader'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 import { paramsType } from './AntennaSection'
 
-const cleanExtModel = (model: ExternalAntenna) => {
-  let data = JSON.parse(JSON.stringify(model))
-  const removeFields = ['coupled', 'supportDisable', 'model']
-  if (!data.enable24G) {
-    removeFields.push('gain24G')
-  }
-  if (!data.enable50G) {
-    removeFields.push('gain50G')
-  }
-  data = omit(data, removeFields)
-  return data
-}
+
 
 export function ExternalAntennaSettings () {
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const {
     editContextData,
@@ -58,10 +58,14 @@ export function ExternalAntennaSettings () {
   const [extAntenna, setExtAntenna] = useState({} as ExternalAntenna)
 
   const [getVenueExtAntenna] = useLazyGetVenueExternalAntennaQuery()
+  const [getApGroupExtAntenna] = useLazyGetApGroupExternalAntennaQuery()
   const [getApExtAntenna] = useLazyGetApExternalAntennaSettingsQuery()
+  const [getApExtAntennaV1001] = useLazyGetApExternalAntennaSettingsV1001Query()
 
   const [updateApExtAntSettings, { isLoading: isUpdatingExtAntSettings }]
    = useUpdateApExternalAntennaSettingsMutation()
+  const [updateApExtAntSettingsV1001, { isLoading: isUpdatingExtAntSettingsV1001 }]
+    = useUpdateApExternalAntennaSettingsV1001Mutation()
 
   const venueId = venueData?.id
 
@@ -88,30 +92,42 @@ export function ExternalAntennaSettings () {
       }
 
       const setData = async () => {
-        const apExtAnt = (await getApExtAntenna({
-          params: { venueId, serialNumber }
-        }).unwrap())
+        const apExtAnt = isApGroupMoreParameterPhase1Enabled
+          ? (await getApExtAntennaV1001({
+            params: { venueId, serialNumber }
+          }).unwrap())
+          : (await getApExtAntenna({
+            params: { venueId, serialNumber }
+          }).unwrap())
 
-        const { externalAntenna, useVenueSettings } = cloneDeep(apExtAnt)
-
-        if (externalAntenna) {
-          const apExtAntSettings = convertToFormData(externalAntenna)
+        const externalAntennaObject = cloneDeep(apExtAnt)
+        if (externalAntennaObject.externalAntenna) {
+          const apExtAntSettings = convertToFormData(externalAntennaObject.externalAntenna)
           customExtAntennaRef.current = apExtAntSettings
           setExtAntenna(apExtAntSettings)
           setInitExtAntenna(cloneDeep(apExtAntSettings))
         }
 
         const venueExtAnt = (await getVenueExtAntenna({ params: { venueId } }, true).unwrap())
-        if (venueExtAnt) {
+
+        const apGroupExtAnt = (await getApGroupExtAntenna({
           // eslint-disable-next-line max-len
-          const findSettings = find(venueExtAnt, (extAntSettings: ExternalAntenna) => extAntSettings.model === model)
-          if (findSettings) {
-            venueExtAntennaRef.current = convertToFormData(cloneDeep(findSettings))
-          }
+          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase1Enabled
+        }, true).unwrap())
+
+        // eslint-disable-next-line max-len
+        const findSettings = find(
+          apDetails.apGroupId ? apGroupExtAnt.externalAntennaSettings : venueExtAnt,
+          (extAntSettings: ExternalAntenna) => extAntSettings.model === model)
+        if (findSettings) {
+          venueExtAntennaRef.current = convertToFormData(cloneDeep(findSettings))
         }
 
-        setIsUseVenueSettings(useVenueSettings)
-        isUseVenueSettingsRef.current = useVenueSettings
+        const venueOrApGroupSettings = isApGroupMoreParameterPhase1Enabled
+          ? (apExtAnt as ApExternalAntennaSettingsV1001).useVenueOrApGroupSettings
+          : (apExtAnt as ApExternalAntennaSettings).useVenueSettings
+        setIsUseVenueSettings(venueOrApGroupSettings)
+        isUseVenueSettingsRef.current = venueOrApGroupSettings
 
 
         setFormInitializing(false)
@@ -174,12 +190,21 @@ export function ExternalAntennaSettings () {
         onOk: async () => {
           try {
             const params = paramsRef.current
-            const payload = {
-              useVenueSettings: isUseVenueSettingsRef.current,
-              externalAntenna: cleanExtModel(extAnt)
-            }
+            if (isApGroupMoreParameterPhase1Enabled) {
+              const payload = {
+                useVenueOrApGroupSettings: isUseVenueSettingsRef.current,
+                externalAntenna: cleanExtModel(extAnt)
+              }
 
-            await updateApExtAntSettings({ params, payload }).unwrap()
+              await updateApExtAntSettingsV1001({ params, payload }).unwrap()
+            } else {
+              const payload = {
+                useVenueSettings: isUseVenueSettingsRef.current,
+                externalAntenna: cleanExtModel(extAnt)
+              }
+
+              await updateApExtAntSettings({ params, payload }).unwrap()
+            }
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
@@ -190,11 +215,15 @@ export function ExternalAntennaSettings () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingExtAntSettings
+    isFetching: isUpdatingExtAntSettings || isUpdatingExtAntSettingsV1001
   }]}>
-    <VenueSettingsHeader venue={venueData}
-      isUseVenueSettings={isUseVenueSettings}
-      handleVenueSetting={handleVenueSetting} />
+    { isApGroupMoreParameterPhase1Enabled
+      ? <VenueOrApGroupSettingsHeader apGroupId={apDetails?.apGroupId}
+        isUseVenueSettings={isUseVenueSettings}
+        handleVenueSetting={handleVenueSetting} />
+      : <VenueSettingsHeader venue={venueData}
+        isUseVenueSettings={isUseVenueSettings}
+        handleVenueSetting={handleVenueSetting} />}
     <Row gutter={24}>
       <Col span={8}>
         <ApExtAntennaForm

@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                       from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, WifiUrlsInfo }                       from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, WifiRbacUrlsInfo, WifiUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -70,9 +71,22 @@ const mockVenueAntennaType = [{
   antennaType: ApAntennaTypeEnum.NARROW
 }]
 
+const mockApGroupAntennaType = {
+  antennaTypeSettings: [{
+    model: 'R670',
+    antennaType: ApAntennaTypeEnum.NARROW
+  }],
+  useVenueSettings: true
+}
+
 const mockApAntennaType = {
   antennaType: ApAntennaTypeEnum.NARROW,
   useVenueSettings: true
+}
+
+const mockApAntennaTypeV1001 = {
+  antennaType: ApAntennaTypeEnum.NARROW,
+  useVenueOrApGroupSettings: true
 }
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
@@ -157,6 +171,98 @@ describe('AP Antenna Type Section', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ } ))
     expect(await screen.findByRole('button', { name: /Customize/ } )).toBeVisible()
+  })
+
+})
+
+describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE', () => {
+  const defaultApEditCtxData = {
+    editContextData: {
+      unsavedTabKey: 'radio',
+      tabTitle: 'Radio',
+      isDirty: false
+    },
+    setEditContextData: jest.fn(),
+    editRadioContextData: {
+      updateApAntennaType: jest.fn()
+    },
+    setEditRadioContextData: jest.fn()
+  }
+
+  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venuelist.data[0] }
+
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getVenueAntennaType.url,
+        (_, res, ctx) => res(ctx.json(mockVenueAntennaType))),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupAntennaType.url,
+        (_, res, ctx) => res(ctx.json(mockApGroupAntennaType))),
+      rest.get(
+        WifiRbacUrlsInfo.getApAntennaTypeSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json(mockApAntennaTypeV1001))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApAntennaTypeSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+
+  it('should render correctly when use venue or apgroup settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    render(
+      <Provider>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
+            <Form>
+              <AntennaSection />
+            </Form>
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/Use inherited settings from AP Group/)).toBeVisible()
+    expect(await screen.findByText(/Customize/)).toBeVisible()
+
+    expect(await screen.findByText('Narrow')).toBeVisible()
+  })
+
+  it('should render correctly when use custom settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+    render(
+      <Provider>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
+            <Form>
+              <AntennaSection />
+            </Form>
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    await userEvent.click(await screen.findByText(/Customize settings/))
+
+    const antTypeCombobox = await screen.findByRole('combobox', { name: /Antenna Type/ })
+    expect(antTypeCombobox).toBeInTheDocument()
+
+    const narrow = screen.queryByText('Narrow')
+    expect(narrow).toBeVisible()
+    const sector = screen.queryByText('Sector')
+    expect(sector).not.toBeInTheDocument()
+
+    await userEvent.click(antTypeCombobox)
+    await userEvent.click(await screen.findByText('Sector'))
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByText(/Use inherited settings from AP Group/))
+    expect(await screen.findByText(/Customize settings/)).toBeVisible()
   })
 
 })

@@ -167,7 +167,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -179,8 +179,8 @@ describe('AP Group Edit Radio', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
-    userEvent.click(customizeBandMode)
+    const customizeBandMode = screen.getAllByText(/customize settings/i)
+    userEvent.click(customizeBandMode[0])
 
     expect(await screen.findByText(/r760/i)).toBeVisible()
 
@@ -208,7 +208,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -252,7 +252,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -292,7 +292,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
