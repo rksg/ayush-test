@@ -6,7 +6,7 @@ import { Features, useIsSplitOn }                                            fro
 import { mspApi }                                                            from '@acx-ui/msp/services'
 import { MspRbacUrlsInfo, MspUrlsInfo }                                      from '@acx-ui/msp/utils'
 import { administrationApi }                                                 from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, LicenseUrlsInfo, AccountTier }              from '@acx-ui/rc/utils'
 import { store, Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile }                                    from '@acx-ui/user'
@@ -26,7 +26,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 100,
       sku: 'CLD-MS76-1001',
-      status: 'VALID'
+      status: 'VALID',
+      skuType: 'Gold'
     },
     {
       name: 'Wi-Fi',
@@ -39,7 +40,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 80,
       sku: 'CLD-MW00-1001',
-      status: 'VALID'
+      status: 'VALID',
+      skuType: 'Gold'
     },
     {
       name: 'Wi-Fi',
@@ -52,7 +54,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 60,
       sku: 'CLD-MW00-1001',
-      status: 'EXPIRED'
+      status: 'EXPIRED',
+      skuType: 'Platinum'
     },
     {
       name: 'APSW',
@@ -65,7 +68,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 60,
       sku: 'CLD-MW00-1001',
-      status: 'FUTURE'
+      status: 'FUTURE',
+      skuType: 'Platinum'
     }
   ]
 

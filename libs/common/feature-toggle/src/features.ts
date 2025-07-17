@@ -296,7 +296,8 @@ export enum Features {
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
-  WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled'
+  WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
+  MULTI_LICENSE_POOL_TOGGLE='entitlement-mulitpool-mspec-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
