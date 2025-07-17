@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import {
   redirectPreviousPage,
@@ -23,6 +24,8 @@ import { RadioSettings }                  from './RadioSettings'
 
 export function ApGroupRadioTab () {
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
   const params = useParams()
   const navigate = useNavigate()
 
@@ -65,24 +68,27 @@ export function ApGroupRadioTab () {
         <RadioSettings isAllowEdit={isAllowEditRadio} />
       </>
     )
-  },{
-    title: clientAdmissionControlSettingLink,
-    content: (
-      <>
-        <StepsFormLegacy.SectionTitle id='client-admission-control'>
-          { clientAdmissionControlSettingsTitle }
-          <Tooltip
-            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
-              'based on the connectivity thresholds set per radio.' })}
-            placement='right'>
-            <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }}
-            />
-          </Tooltip>
-        </StepsFormLegacy.SectionTitle>
-        <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
-      </>
-    )
   }]
+
+  if (isApGroupMoreParameterPhase3Enabled) {
+    anchorItems.push({
+      title: clientAdmissionControlSettingLink,
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle id='client-admission-control'>
+            { clientAdmissionControlSettingsTitle }
+            <Tooltip
+              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+                'based on the connectivity thresholds set per radio.' })}
+              placement='right'>
+              <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }} />
+            </Tooltip>
+          </StepsFormLegacy.SectionTitle>
+          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
+        </>
+      )
+    })
+  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {

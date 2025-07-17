@@ -33,6 +33,7 @@ const setEditContextDataFn = jest.fn()
 const setEditRadioContextDataFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedGetApGroupRadioCustomization = jest.fn()
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
