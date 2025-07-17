@@ -7,7 +7,7 @@ import { formatter }                                  from '@acx-ui/formatter'
 
 import { Mdu360TabProps } from '../../types'
 
-import { IntentHighlight, useIntentAISummaryQuery } from './services'
+import { IntentSummary, useIntentAISummaryQuery } from './services'
 
 function hasData (intentAISummaryChartData: DonutChartData[]) : Boolean {
   if (
@@ -21,7 +21,7 @@ function hasData (intentAISummaryChartData: DonutChartData[]) : Boolean {
   return true
 }
 
-function getIntentAISummaryChartData (data: IntentHighlight | undefined): DonutChartData[] {
+function getIntentAISummaryChartData (data: IntentSummary | undefined): DonutChartData[] {
   const intentAISummaryChartData: DonutChartData[] = [
     { name: 'New', value: 0 },
     { name: 'Active', value: 0 },
@@ -30,7 +30,7 @@ function getIntentAISummaryChartData (data: IntentHighlight | undefined): DonutC
   ]
 
   for (const intent in data ) {
-    const currentIntent = data[intent as keyof IntentHighlight]
+    const currentIntent = data[intent as keyof IntentSummary]
 
     intentAISummaryChartData[0].value += currentIntent?.new ?? 0
     intentAISummaryChartData[1].value += currentIntent?.active ?? 0
@@ -48,39 +48,7 @@ export function IntentAISummary ({ filters }: { filters: Mdu360TabProps }) {
     path: [{ type: 'network', name: 'Network' }] // replace this with the path when provided by ResidentExperienceTab
   })
 
-  // const queryResults = {
-  //   data: {
-  //     highlights: {
-  //       rrm: {
-  //         new: 1,
-  //         active: 0,
-  //         paused: 7,
-  //         verified: 3
-  //       },
-  //       probeflex: {
-  //         new: 0,
-  //         active: 0,
-  //         paused: 3,
-  //         verified: 6
-  //       },
-  //       ops: {
-  //         new: 0,
-  //         active: 0,
-  //         paused: 8,
-  //         verified: 14
-  //       },
-  //       ecoflex: {
-  //         new: 0,
-  //         active: 4,
-  //         paused: 1,
-  //         verified: 1
-  //       }
-  //     }
-  //   }
-  // }
-
   const chartData: DonutChartData[] = getIntentAISummaryChartData(queryResults.data)
-  // const chartData: DonutChartData[] = getIntentAISummaryChartData(queryResults.data.highlights)
 
   return (
     <Loader>

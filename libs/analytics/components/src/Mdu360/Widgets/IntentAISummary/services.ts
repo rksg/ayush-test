@@ -3,32 +3,32 @@ import { gql } from 'graphql-request'
 import { intentAIApi } from '@acx-ui/store'
 import { NetworkPath } from '@acx-ui/utils'
 
-export type HighlightItem = {
+export type SummaryItem = {
   new: number
   active: number
   paused: number
   verified: number
 }
 
-export type IntentHighlight = {
-  rrm?: HighlightItem
-  probeflex?: HighlightItem
-  ops?: HighlightItem
-  ecoflex?: HighlightItem
+export type IntentSummary = {
+  rrm?: SummaryItem
+  probeflex?: SummaryItem
+  ops?: SummaryItem
+  ecoflex?: SummaryItem
 }
 
 export interface Payload {
   path: NetworkPath
 }
 
-interface Response <IntentHighlight> {
-  highlights: IntentHighlight
+interface Response <IntentSummary> {
+  highlights: IntentSummary
 }
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAISummary: build.query<
-      IntentHighlight,
+      IntentSummary,
       Payload
     >({
       query: (payload) => ({
@@ -68,7 +68,7 @@ export const api = intentAIApi.injectEndpoints({
           path: payload.path
         }
       }),
-      transformResponse: (response: Response<IntentHighlight>) =>
+      transformResponse: (response: Response<IntentSummary>) =>
         response.highlights
     })
   })
