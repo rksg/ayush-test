@@ -18,14 +18,13 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   const { $t } = useIntl()
   const params = useParams()
   const { readOnly, switchDetail } = props
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
   const { data, isFetching: isDataFetching } = useGetSwitchStaticRoutesQuery({
     params: { ...params, venueId: switchDetail?.venueId },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
   const [deleteSwitchStaticRoutes] = useDeleteSwitchStaticRoutesMutation()
 
@@ -77,7 +76,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
         deleteSwitchStaticRoutes({
           params: { ...params, venueId: switchDetail?.venueId || '' },
           payload: selectedRows.map(item => item.id),
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: true
         })
         clearSelection()
       }

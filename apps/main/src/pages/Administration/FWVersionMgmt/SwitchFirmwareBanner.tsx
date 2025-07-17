@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Col, Divider, Row, Space } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { cssNumber }                           from '@acx-ui/components'
+import { cssNumber, Tooltip }                  from '@acx-ui/components'
 import { formatter, DateFormatEnum }           from '@acx-ui/formatter'
+import { InformationOutlined }                 from '@acx-ui/icons'
 import { FirmwareCategory, firmwareTypeTrans } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -93,6 +94,14 @@ const VersionInfo = (props: VersionInfoProps) => {
     <UI.FwContainer>
       <div>
         <span>{ label } </span>
+        { label?.includes('7150') && <Tooltip children={<InformationOutlined style={{
+          marginBottom: '-4px',
+          overflow: 'visible',
+          marginLeft: '2px'
+        }} />}
+        // eslint-disable-next-line max-len
+        title={$t({ defaultMessage: 'ICX7150-C08P/PT models do not support FastIron versions 10.0.10x. The recommended firmware upgrade is version 9.0.10x.' })}
+        />}
       </div>
       {shownMoreFirmwaresInBanner ? <><div>
         <span>{firmware.recommendedCategory &&

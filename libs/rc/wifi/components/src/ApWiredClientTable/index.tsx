@@ -115,10 +115,11 @@ export const ApWiredClientTable = (props: {
       searchable: searchable,
       render: (_, { hostname, macAddress }, __, highlightFn) => {
         const host = searchable ? highlightFn(hostname) : hostname
+        const display = host || noDataDisplay
 
-        return host? <TenantLink
-          to={`users/wired/wifi/clients/${macAddress}/details/overview`}
-        >{host}</TenantLink> : noDataDisplay
+        return <TenantLink to={`users/wired/wifi/clients/${macAddress}/details/overview`}>
+          {display}
+        </TenantLink>
       }
     }, {
       key: 'osType',

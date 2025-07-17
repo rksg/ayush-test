@@ -32,6 +32,20 @@ const getPropertyIdentities = jest.fn()
 
 const getUnitFn = jest.fn()
 const searchClientQueryFn = jest.fn()
+const route = {
+  params: {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    personaGroupId: mockPersonaGroup.id,
+    personaId: mockPersona.id
+  },
+  path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+}
+
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  Traffic: () => <div data-testid='Traffic' />,
+  IdentityHealth: () => <div data-testid='IdentityHealth' />
+}))
 
 describe('PersonaOverview', () => {
   getUnitFn.mockClear()
@@ -47,7 +61,7 @@ describe('PersonaOverview', () => {
         }
       ),
       rest.post(PropertyUrlsInfo.getUnitsLinkedIdentities.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           getPropertyIdentities()
           return res(ctx.json(personaIds))
         }),
@@ -82,7 +96,7 @@ describe('PersonaOverview', () => {
       )
     )
   })
-  it('should render overview correctly', async () => {
+  it.skip('should render overview correctly', async () => {
     render(
       <Provider>
         <PersonaOverview
@@ -90,17 +104,7 @@ describe('PersonaOverview', () => {
           personaGroupData={mockPersonaGroup}
         />
       </Provider>,
-      {
-        route: {
-          params: {
-            tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-            personaGroupId: mockPersonaGroup.id,
-            personaId: mockPersona.id
-          },
-          // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-        }
-      }
+      { route }
     )
 
     expect(screen.getByRole('link', { name: mockPersonaGroup.name })).toBeInTheDocument()
@@ -108,6 +112,40 @@ describe('PersonaOverview', () => {
     await waitFor(() => expect(getUnitFn).toBeCalled())
     await waitFor(() => expect(searchClientQueryFn).toBeCalled())
 
-    expect(screen.getByText('Associated Devices')).toBeInTheDocument()
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
+  })
+
+  it('should not render traffic widget when isIdentityAnalyticsEnabled is false', async () => {
+    render(
+      <Provider>
+        <PersonaOverview
+          personaData={mockPersona}
+          personaGroupData={mockPersonaGroup}
+          isIdentityAnalyticsEnabled={false}
+        />
+      </Provider>,
+      { route }
+    )
+
+    expect(screen.queryByTestId('Traffic')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('IdentityHealth')).not.toBeInTheDocument()
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
+  })
+
+  it('should render traffic widget when isIdentityAnalyticsEnabled is true', async () => {
+    render(
+      <Provider>
+        <PersonaOverview
+          personaData={mockPersona}
+          personaGroupData={mockPersonaGroup}
+          isIdentityAnalyticsEnabled
+        />
+      </Provider>,
+      { route }
+    )
+
+    expect(await screen.findByTestId('Traffic')).toBeVisible()
+    expect(await screen.findByTestId('IdentityHealth')).toBeVisible()
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
   })
 })

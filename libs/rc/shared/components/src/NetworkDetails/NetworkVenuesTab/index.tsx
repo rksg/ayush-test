@@ -864,7 +864,6 @@ export function NetworkVenuesTab () {
 
     try{
       await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
-
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
 
       if (isIpsecEnabled && formValues.ipsec?.enableIpsec) {

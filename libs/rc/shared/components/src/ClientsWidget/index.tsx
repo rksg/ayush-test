@@ -69,6 +69,22 @@ export const getSwitchClientStackedBarChartData = (
   }]
 }
 
+export const getApWiredClientStackedBarChartData = (
+  overviewData: Dashboard | undefined,
+  { $t }: IntlShape
+): ChartData[] => {
+  const series: ChartData['series'] = []
+  const apWiredClients = overviewData?.summary?.apWiredClients
+  series.push({
+    name: $t({ defaultMessage: 'Clients' }),
+    value: apWiredClients?.totalCount || 0
+  })
+  return [{
+    category: '',
+    series
+  }]
+}
+
 export function ClientsWidgetV2 () {
   const onArrowClick = useNavigateToPath('/users/')
   const intl = useIntl()
@@ -89,14 +105,23 @@ export function ClientsWidgetV2 () {
       ...rest,
       data: {
         apData: getAPClientStackedBarChartData(data, intl),
+        apWiredData: getApWiredClientStackedBarChartData(data, intl),
         switchData: getSwitchClientStackedBarChartData(data, intl),
         apClientCount: data?.summary?.clients?.totalCount || 0,
+        apWiredClientCount: data?.summary?.apWiredClients?.totalCount || 0,
         switchClientCount: data?.summary?.switchClients?.totalCount || 0
       }
     })
   })
   const { $t } = intl
-  const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
+  const {
+    apClientCount,
+    apData,
+    apWiredClientCount,
+    apWiredData,
+    switchClientCount,
+    switchData
+  } = queryResults.data
 
   useTrackLoadTime({
     itemName: widgetsMapping.CLIENTS_WIDGET,
@@ -107,6 +132,7 @@ export function ClientsWidgetV2 () {
   const switchClientsPath = isSupportWifiWiredClient
     ? '/users/wired/switch/clients'
     : '/users/switch/clients'
+  const apClientsPath = '/users/wired/wifi/clients'
 
   return (
     <Loader states={[queryResults]}>
@@ -143,11 +169,45 @@ export function ClientsWidgetV2 () {
                   }
                 </GridCol>
               </GridRow>
+              {isSupportWifiWiredClient &&
+                <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                  <GridCol col={{ span: apWiredClientCount > 0 ? 9 : 12 }}>
+                    { apWiredClientCount > 0
+                      ? $t({ defaultMessage: 'AP Wired' })
+                      : $t({ defaultMessage: 'No AP Wired Clients' })
+                    }
+                  </GridCol>
+                  <GridCol col={{ span: apWiredClientCount > 0 ? 15 : 12 }}>
+                    { apWiredClientCount > 0
+                      ? <Space>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height/2 - 30,
+                            width: width/2 - 15
+                          }}
+                          data={apWiredData}
+                          showLabels={false}
+                          showTotal={false}
+                          total={apWiredClientCount}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={apClientsPath}>
+                          {apWiredClientCount}
+                        </TenantLink>
+                      </Space>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </GridCol>
+                </GridRow>
+              }
               <GridRow style={{ display: 'flex', alignItems: 'center' }}>
                 <GridCol col={{ span: switchClientCount > 0 ? 9 : 12 }}>
                   { switchClientCount > 0
-                    ? $t({ defaultMessage: 'Wired' })
-                    : $t({ defaultMessage: 'No Wired Clients' })
+                    ? (isSupportWifiWiredClient ?
+                      $t({ defaultMessage: 'Switch Wired' }) : $t({ defaultMessage: 'Wired' }))
+                    : (isSupportWifiWiredClient ?
+                      $t({ defaultMessage: 'No Switch Wired Clients' }) :
+                      $t({ defaultMessage: 'No Wired Clients' }))
                   }
                 </GridCol>
                 <GridCol col={{ span: switchClientCount > 0 ? 15 : 12 }}>
