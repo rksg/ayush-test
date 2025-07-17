@@ -135,7 +135,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApJwtToken: {
     method: 'get',
-    //url: '/venues/aps/:serialNumber/jwtToken',
     url: '/venues/:venueId/aps/:serialNumber/jwtToken',
     newApi: true
   },
