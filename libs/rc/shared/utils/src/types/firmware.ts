@@ -130,6 +130,7 @@ export interface FirmwareVersion {
   inUse?: boolean;
   isDowngraded10to90?: boolean;
   isDowngradeVersion?: boolean;
+  model?: string;
 }
 
 export enum SwitchFirmwareModelGroup {
@@ -161,6 +162,7 @@ export interface SwitchVersion1002 {
   inUse?: boolean;
   isDowngradeVersion?: boolean;
   isDowngraded10to90?: boolean;
+  model?: string;
 }
 
 export interface FirmwareVersion1002 {
