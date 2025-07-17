@@ -531,7 +531,7 @@ export const kpiConfig = {
     }
   },
   switchIpv4MulticastUtilization: {
-    text: defineMessage({ defaultMessage: 'Ipv4 Multicast Table Compliance' }),
+    text: defineMessage({ defaultMessage: 'IPv4 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -562,7 +562,7 @@ export const kpiConfig = {
     }
   },
   switchIpv6MulticastUtilization: {
-    text: defineMessage({ defaultMessage: 'Ipv6 Multicast Table Compliance' }),
+    text: defineMessage({ defaultMessage: 'IPv6 Multicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -593,7 +593,7 @@ export const kpiConfig = {
     }
   },
   switchIpv4UnicastUtilization: {
-    text: defineMessage({ defaultMessage: 'Ipv4 Unicast Table Compliance' }),
+    text: defineMessage({ defaultMessage: 'IPv4 Unicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -624,7 +624,7 @@ export const kpiConfig = {
     }
   },
   switchIpv6UnicastUtilization: {
-    text: defineMessage({ defaultMessage: 'Ipv6 Unicast Table Compliance' }),
+    text: defineMessage({ defaultMessage: 'IPv6 Unicast Table Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
