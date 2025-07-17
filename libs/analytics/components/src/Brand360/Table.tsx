@@ -4,12 +4,13 @@ import { useIntl }       from 'react-intl'
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter, FormatterType }         from '@acx-ui/formatter'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
-  transformToLspView, transformToPropertyView, Property, Common, Lsp, customSort
+  transformToLspView, transformToPropertyView, Property, PropertyCode, Common, Lsp, customSort
 } from './helpers'
 import {
   Response
@@ -24,23 +25,22 @@ interface BrandTableProps {
   isLSP?: boolean
   lspLabel: string
   propertyLabel: string
-  isMDU?: boolean
 }
 
 export function BrandTable ({
-  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel, isMDU
+  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel
 }: BrandTableProps) {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
-  const thresholdProspectCount = thresholds['sla-prospect-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
   const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
 
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data, lspLabel)
@@ -68,9 +68,7 @@ export function BrandTable ({
         </span>
     },
     {
-      title: isMDU  // istanbul ignore next
-        ? $t({ defaultMessage: 'Resident Experience' })
-        : $t({ defaultMessage: 'Guest Experience' }),
+      title: $t({ defaultMessage: 'Guest Experience' }),
       dataIndex: 'guestExp',
       key: 'guestExp',
       sorter: { compare: sortProp('guestExp', customSort) },
@@ -101,48 +99,25 @@ export function BrandTable ({
         </span>
       </Tooltip>
     },
-    ...(isMDU
-      ?
-      // for demo only
-      // istanbul ignore next
-      [
-        {
-          title: $t({ defaultMessage: '# of Prospects' }),
-          dataIndex: 'prospectCountSLA',
-          key: 'prospectCountSLA',
-          sorter: { compare: sortProp('prospectCountSLA', customSort) },
-          render:
-          // istanbul ignore next
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (_: any, row: Common) =>
-            <span
-              style={{
-                color: row?.prospectCountSLA >= parseInt(thresholdProspectCount as string, 10)
-                  ? pColor : nColor
-              }}
-            >
-              {formatter('countFormat')(row?.prospectCountSLA)}
-            </span>
-        }
-      ] : [{
-        title: $t({ defaultMessage: 'SSID Compliance' }),
-        dataIndex: 'ssidCompliance',
-        key: 'ssidCompliance',
-        sorter: { compare: sortProp('ssidCompliance', customSort) },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render: (_: any, row: Common) =>
-          <span
-            style={{
-              color: !isNaN(row?.ssidCompliance) && !isNull(row?.ssidCompliance)
-                ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
-                  ? pColor
-                  : nColor
-                : noDataColor
-            }}
-          >
-            {formatValues(row?.ssidCompliance, 'percentFormat')}
-          </span>
-      }]),
+    {
+      title: $t({ defaultMessage: 'SSID Compliance' }),
+      dataIndex: 'ssidCompliance',
+      key: 'ssidCompliance',
+      sorter: { compare: sortProp('ssidCompliance', customSort) },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_: any, row: Common) =>
+        <span
+          style={{
+            color: !isNaN(row?.ssidCompliance) && !isNull(row?.ssidCompliance)
+              ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
+          }}
+        >
+          {formatValues(row?.ssidCompliance, 'percentFormat')}
+        </span>
+    },
     {
       title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
@@ -173,35 +148,50 @@ export function BrandTable ({
       width: 100
     }
   ]
-  const propertyCols: TableProps<Pick<Property, 'property' | 'lsp'>>['columns'] = [{
-    title: propertyLabel,
-    dataIndex: 'property',
-    key: 'property',
-    fixed: 'left',
-    searchable: true,
-    sorter: { compare: sortProp('property', defaultSort) },
-    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
-      <span>{highlightFn(row?.property)}</span>
-  }, {
-    title: lspLabel,
-    dataIndex: 'lsp',
-    key: 'lsp',
-    fixed: 'left',
-    searchable: true,
-    sorter: { compare: sortProp('lsp', defaultSort) },
-    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
-      <span>{highlightFn(row?.lsp)}</span>
-  }
-  ]
+  const propertyCols: TableProps<Pick<Property,
+    'property' | 'propertyCode' | 'lsp'>>['columns'] =
+    [
+      {
+        title: propertyLabel,
+        dataIndex: 'property',
+        key: 'property',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('property', defaultSort) },
+        render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
+          <span>{highlightFn(row?.property)}</span>
+      }, {
+        title: $t({ defaultMessage: 'Property ID' }),
+        dataIndex: 'propertyCode',
+        key: 'propertyCode',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('propertyCode', defaultSort) },
+        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
+          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
+      }, {
+        title: lspLabel,
+        dataIndex: 'lsp',
+        key: 'lsp',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('lsp', defaultSort) },
+        render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
+          <span>{highlightFn(row?.lsp)}</span>
+      }
+    ]
   // Remove lsp column in case of LSP account
   if(isLSP){
     propertyCols.splice(-1)
   }
 
-  return <Table<Property | Lsp>
+  const finalPropertyCols = !propertyIdToggle
+    ? propertyCols.filter(col => col.dataIndex !== 'propertyCode')
+    : propertyCols
+  return <Table<Property | PropertyCode | Lsp>
     columns={[
-      ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
-    ] as unknown as TableProps<Property | Lsp>['columns']}
+      ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols
+    ] as unknown as TableProps<Property | PropertyCode | Lsp>['columns']}
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
     settingsId='property-list-table'

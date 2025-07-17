@@ -60,6 +60,21 @@ const mspPayload = {
   sortOrder: 'ASC'
 }
 
+const mspPayloadTenantsQuery = {
+  searchString: '',
+  filters: {
+    tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
+    status: ['Active']
+  },
+  fields: ['id', 'name', 'tenantType', 'status', 'propertyCode'],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
 const getlspPayload = (parentTenantId: string | undefined) => ({
   ...mspPayload,
   filters: {
@@ -70,7 +85,6 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 })
 
 export function Brand360 () {
-  const isMDUEnabled = useIsSplitOn(Features.BRAND360_MDU_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
   const { names, settingsQuery } = useBrand360Config()
@@ -92,15 +106,18 @@ export function Brand360 () {
     start: startDate,
     end: endDate,
     ssidRegex: ssid,
-    toggles: useIncidentToggles(),
-    isMDU: isMDUEnabled
+    toggles: useIncidentToggles()
   }
-
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
   const mspPropertiesData = useMspECListQuery(
-    { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+    {
+      params: { tenantId },
+      payload: propertyIdToggle ? mspPayloadTenantsQuery : mspPayload,
+      isNewUrl: propertyIdToggle
+    }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid),
       enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isLSP
@@ -114,8 +131,7 @@ export function Brand360 () {
   const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(
       venuesData as { data : BrandVenuesSLA[] },
-      lookupAndMappingData,
-      isMDUEnabled
+      lookupAndMappingData
     )
     : []
   /*
@@ -151,14 +167,7 @@ export function Brand360 () {
   },
   { skip: skipTSQuery }
   )
-  const chartMap: ChartKey[] = ['incident', 'experience']
-  if (isMDUEnabled) {
-    chartMap.push('mdu')
-  } else
-  // istanbul ignore next
-  {
-    chartMap.push('compliance')
-  }
+  const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader
       title={brand}
@@ -191,7 +200,6 @@ export function Brand360 () {
             currData={currData}
             lsp={lsp}
             property={property}
-            isMDU={isMDUEnabled}
           />
         </Loader>
       </GridCol>)}
@@ -200,7 +208,6 @@ export function Brand360 () {
           initialSlas={data || {}}
           currentSlas={settings}
           setCurrentSlas={setSettings}
-          isMDU={isMDUEnabled}
         />
       </GridCol>
       <GridCol col={{ span: 24 }}>
@@ -212,7 +219,6 @@ export function Brand360 () {
           isLSP={isLSP}
           lspLabel={lsp}
           propertyLabel={property}
-          isMDU={isMDUEnabled}
         />
       </GridCol>
     </GridRow>
