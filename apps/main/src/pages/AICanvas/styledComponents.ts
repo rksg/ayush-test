@@ -286,11 +286,20 @@ display: flex;
       position: relative;
       margin-right: 10px;
       margin-top: 4px;
+      .welcome-info {
+        position: relative;
+        margin-top: 55px;
+        margin-bottom: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       .placeholder {
         position: absolute;
         bottom: 0px;
         left: 14px;
         div{
+          display: flex;
           background-color: var(--acx-accents-blue-50);
           color: var(--acx-primary-white);
           border-radius: 20px;
@@ -302,6 +311,9 @@ display: flex;
           margin: 4px;
           &:hover{
             background-color: var(--acx-accents-blue-55);
+          }
+          svg {
+            margin-left: 3px;
           }
         }
       }
@@ -345,25 +357,23 @@ display: flex;
       }
       .right .chat-bubble {
         border-radius: 16px 16px 0px 16px;
-        background: #F8F8FA;
-        border: 1px solid #D4D4D4;
+        background: var(--acx-primary-white);
         color: #000;
         margin-right: 5px;
         font-weight: 400;
         align-self: flex-end;
+        padding: 16px;
       }
       .chat-bubble {
-        background: linear-gradient(94deg, #E550A9 -5.07%,
-          #C54DA9 21.24%, #9355C1 49.19%, #2987DF 90.85%);
-        color: var(--acx-primary-white);
         width: fit-content;
         max-width: 90%;
-        padding: 16px;
         border-radius: 16px 16px 16px 0px;
+        padding: 16px 0 0 16px;
         margin: 7px;
         margin-left: 10px;
-        font-weight: 600;
         line-height: 18px;
+        display: flex;
+        align-items: center;
       }
       .chat-bubble {
         align-self: flex-start;
@@ -402,7 +412,8 @@ display: flex;
         grid-template-columns: 1fr auto;
         margin-right: 7px;
         min-height: 25px;
-
+        align-items: center;
+        width: 170px;
         &.fixed {
           width: 300px;
         }
@@ -413,7 +424,7 @@ display: flex;
           align-self: flex-start;
         }
         .timestamp {
-          padding: 6px 0px 0px 0px;
+          // padding: 6px 0px 0px 0px;
         }
       }
       .message-tail {
@@ -425,15 +436,14 @@ display: flex;
       .timestamp {
         color: var(--acx-neutrals-80);
         font-size: 10px;
-        margin-left: 12px;
-        margin-top: -5px;
+        margin-left: 65px;
         &.right{
           justify-content: end;
           margin-right: 7px;
         }
       }
       .message .user-feedback {
-        display: none;
+        // display: none;
       }
       .message:hover .user-feedback {
         display: block;

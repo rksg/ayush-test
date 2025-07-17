@@ -15,7 +15,9 @@ import {
   HistoricalOutlined,
   Close,
   CanvasCollapse,
-  CanvasExpand
+  CanvasExpand,
+  RuckusAiDog,
+  InformationOutlined
 }    from '@acx-ui/icons-new'
 import {
   useStreamChatsAiMutation,
@@ -26,6 +28,8 @@ import {
   useSendFeedbackMutation
 } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
+
+import RuckusAiButton from '../RuckusAiButton'
 
 import Canvas, { CanvasRef, Group }                   from './Canvas'
 import { DraggableChart }                             from './components/WidgetChart'
@@ -75,15 +79,6 @@ const Message = (props:{
     })
   }
 
-  useEffect(() => {
-    if (chatBubbleRef.current && messageTailRef.current) {
-      const isFixed = messageTailRef.current.classList.contains('fixed') ||
-        messageTailRef.current.classList.contains('message-tail')
-      if (!isFixed) {
-        messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
-      }
-    }
-  }, [chat.text, showCanvas])
 
   const streamingMsgKey = chat.role === MessageRole.STREAMING
     ? getStreamingWordingKey(chat.text) : undefined
@@ -93,8 +88,14 @@ const Message = (props:{
     : <div className='message'>
       <div className={`chat-container ${chat.role === MessageRole.USER ? 'right' : ''}`}>
         { chat.role !== MessageRole.STREAMING
-          // eslint-disable-next-line max-len
-          ? <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+          ?
+          <div className='chat-bubble'>
+            {chat.role === MessageRole.AI &&
+              <div style={{ marginRight: '10px' }}><RuckusAiButton /></div>}
+            <div
+              ref={chatBubbleRef}
+              dangerouslySetInnerHTML={{ __html: chat.text }} />
+          </div>
           : <div className='chat-bubble loading' ref={chatBubbleRef} style={{ width: '90%' }}>
             <div className='loader'></div>
             { streamingMsgKey && $t(StreamingMessages[streamingMsgKey]) }
@@ -224,10 +225,24 @@ export default function AICanvasModal (props: {
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
   const questions = [
-    'What can you do?',
-    'Give me a table for the Top 10 clients based on traffic.',
-    'Show me the trending of the network traffic for last week.',
-    'How many clients were connected to my network yesterday?'
+    {
+      text: 'What can you do?'
+    },
+    {
+      text: 'Help me set up my network',
+      tooltip: <div onClick={(event)=>{event?.stopPropagation()}}>
+        <b>Onboarding Assistant</b> automates and optimizes complex network onboarding
+      processes, leading to increased efficiency and productivity.</div>
+    },
+    {
+      text: 'Give me a table for the Top 10 clients based on traffic.'
+    },
+    {
+      text: 'Show me the trending of the network traffic for last week.'
+    },
+    {
+      text: 'How many clients were connected to my network yesterday?'
+    }
   ] // Only support english default questions
 
   const getAllChatsQuery = useGetAllChatsQuery({}, { skip: !isModalOpen })
@@ -682,6 +697,46 @@ export default function AICanvasModal (props: {
                     borderBottomRightRadius: '24px'
                   }}>
                   <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                    {
+                      !chats?.length && !showCanvas &&
+                      <div className='welcome-info'>
+                        <div style={{
+                          height: '100px'
+                        }} >
+                          <RuckusAiDog style={{
+                            width: '90px', height: '90px'
+                          }} />
+                        </div>
+                        <span style={{
+                          fontSize: '24px',
+                          fontWeight: 700,
+                          fontFamily: 'Montserrat',
+                          lineHeight: '45px'
+                        }}>
+                          {/* {`${$t({ defaultMessage: 'Hello' })} ${name},`} */}
+                          Hello
+                        </span>
+                        <span style={{
+                          fontSize: '24px',
+                          fontWeight: 500,
+                          fontFamily: 'Montserrat',
+                          marginBottom: '5px'
+                        }}>
+                          {$t({ defaultMessage: 'Welcome! Let' })}
+                          <span
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 700,
+                              fontFamily: 'Montserrat',
+                              color: '#EC7100',
+                              margin: '0 7px 0 2px'
+                            }}
+                          > {$t({ defaultMessage: 'RUCKUS DSE' })}
+                          </span>
+                          {$t({ defaultMessage: 'simplify your work' })}
+                        </span>
+                      </div>
+                    }
                     <Messages
                       moreloading={moreloading}
                       aiBotLoading={aiBotLoading}
@@ -695,12 +750,18 @@ export default function AICanvasModal (props: {
                       !chats?.length && <div className='placeholder'>
                         {
                           questions.map(question => <div
-                            key={question}
+                            key={question.text}
                             onClick={()=> {
-                              handleSearch(question)
+                              handleSearch(question.text)
                             }}
                           >
-                            {question}
+                            {question.text}
+                            {
+                              question.tooltip &&
+                                <Tooltip overlayStyle={{ minWidth: '365px' }}
+                                  children={<InformationOutlined size='sm' />}
+                                  title={question.tooltip} />
+                            }
                           </div>)
                         }
                       </div>
