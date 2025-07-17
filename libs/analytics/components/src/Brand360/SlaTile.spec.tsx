@@ -25,7 +25,7 @@ import type { FranchisorTimeseries, Response } from './services'
 const tableNoData = [{
   property: 'p',
   lsps: ['l'],
-  p1Incidents: 0,
+  p1Incidents: NaN,
   ssidCompliance: '--' as unknown as [number, number],
   deviceCount: 0,
   avgConnSuccess: '--' as unknown as [number, number],
@@ -299,5 +299,4 @@ describe('SlaTile', () => {
     const tooltipIcon = await screen.findByTestId('InformationOutlined')
     expect(tooltipIcon).toBeInTheDocument()
   })
-
 })
