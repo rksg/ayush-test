@@ -710,13 +710,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       { selectOne: true,
         deviceStatus: [
           ApDeviceStatusEnum.OPERATIONAL,
-          ApDeviceStatusEnum.APPLYING_CONFIGURATION,
-          ApDeviceStatusEnum.APPLYING_FIRMWARE,
           ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED,
-          ApDeviceStatusEnum.HEARTBEAT_LOST,
-          ApDeviceStatusEnum.INITIALIZING,
-          ApDeviceStatusEnum.OFFLINE,
-          ApDeviceStatusEnum.REBOOTING ] }),
+          ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED
+        ] }),
     onClick: async (rows: NewAPModelExtended[]) => {
       const row = rows[0]
       let token = ''
