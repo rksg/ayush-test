@@ -141,8 +141,14 @@ export const Timeline = (props: TimelineProps) => {
       </Descriptions.Item>
     </Descriptions>
     <AntTimeline>
-      {modifiedProps.filter(item => !item.description.includes('CmnCfgCollectorSync'))
-        .map((item, index)=>[
+      {modifiedProps.length > 1
+        ? modifiedProps
+          .filter(item => !item.description.includes('CmnCfgCollectorSync'))
+          .map((item, index) => [
+            StartDot(item, index),
+            EndDot(item, index)
+          ])
+        : modifiedProps.map((item, index) => [
           StartDot(item, index),
           EndDot(item, index)
         ])}

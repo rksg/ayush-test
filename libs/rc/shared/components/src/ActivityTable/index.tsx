@@ -195,8 +195,7 @@ const ActivityTable = ({
       settingsId={settingsId}
       rowKey='requestId'
       columns={columns}
-      dataSource={tableQuery.data?.data.filter(item =>
-        !(item.steps?.length === 1 && item.useCase === 'CmnCfgCollectorSync')) ?? []}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}

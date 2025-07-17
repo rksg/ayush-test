@@ -188,9 +188,7 @@ export default function ActivityButton () {
             return tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
           }
         }}
-        dataSource={tableQuery.data?.data.filter(item =>
-          !(item.steps?.length === 1 && item.useCase === 'CmnCfgCollectorSync')
-        )}
+        dataSource={tableQuery.data?.data}
         renderItem={item => {
           const activity = item as Activity
           return (
