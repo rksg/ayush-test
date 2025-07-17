@@ -22,9 +22,7 @@ export interface Payload {
 }
 
 interface Response <IntentHighlight> {
-  data: {
-    highlights: IntentHighlight
-  }
+  highlights: IntentHighlight
 }
 
 export const api = intentAIApi.injectEndpoints({
@@ -71,7 +69,7 @@ export const api = intentAIApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<IntentHighlight>) =>
-        response.data.highlights
+        response.highlights
     })
   })
 })
