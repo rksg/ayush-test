@@ -734,7 +734,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         setCliModalOpen(true)
       }, 1000)
     }
-  }]: []), {
+  }] : []), {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],
