@@ -1,10 +1,10 @@
 import { useIntl, IntlShape } from 'react-intl'
 
-import { healthApi }                                         from '@acx-ui/analytics/services'
-import { kpiConfig, calculateGranularity }                   from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, SparklineChart, Loader, Tooltip } from '@acx-ui/components'
-import { intlFormats, formatter }                            from '@acx-ui/formatter'
-import type { AnalyticsFilter }                              from '@acx-ui/utils'
+import { healthApi }                                                           from '@acx-ui/analytics/services'
+import { kpiConfig, calculateGranularity, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, SparklineChart, Loader, Tooltip }                   from '@acx-ui/components'
+import { intlFormats, formatter }                                              from '@acx-ui/formatter'
+import type { AnalyticsFilter }                                                from '@acx-ui/utils'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 
@@ -85,9 +85,8 @@ export function KpiWidget ({
   const intl = useIntl()
 
   // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
-  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
 
   const historgramQuery = useKpiHistogramQuery({
     ...filters,

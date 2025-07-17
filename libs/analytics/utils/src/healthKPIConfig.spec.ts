@@ -3,7 +3,8 @@ import { AccountTier }                    from '@acx-ui/utils'
 
 import { multipleBy1000, divideBy100, noFormat,
   kpisForTab, wiredKPIsForTab, wiredKPIsForTabPhase2,
-  numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
+  numberWithPercentSymbol, shouldAddFirmwareFilter,
+  evaluateEnableSwitchFirmwareFilter, createFirmwareVersionMessage } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -280,6 +281,54 @@ describe('Health KPI', () => {
     it('should return true if path name has wired', () => {
       mockPathname.mockReturnValue('/health/wired')
       expect(shouldAddFirmwareFilter()).toBe(true)
+    })
+  })
+
+  describe('evaluateEnableSwitchFirmwareFilter', () => {
+    it('should return true when passed true', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(true)).toBe(true)
+    })
+
+    it('should return false when passed false', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(false)).toBe(false)
+    })
+
+    it('should return false when passed undefined', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(undefined)).toBe(false)
+    })
+
+    it('should return true when passed a function that returns true', () => {
+      const mockFunction = jest.fn().mockReturnValue(true)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(true)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return false when passed a function that returns false', () => {
+      const mockFunction = jest.fn().mockReturnValue(false)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(false)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return undefined when passed a function that returns undefined', () => {
+      const mockFunction = jest.fn().mockReturnValue(undefined)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(undefined)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('createFirmwareVersionMessage', () => {
+    it('should return 10.0.10f when isSwitchHealth10010eEnabled is true', () => {
+      const result = createFirmwareVersionMessage(true)
+      expect(result).toEqual({
+        switchFmwrVersion: '10.0.10f'
+      })
+    })
+
+    it('should return 10.0.10d when isSwitchHealth10010eEnabled is false', () => {
+      const result = createFirmwareVersionMessage(false)
+      expect(result).toEqual({
+        switchFmwrVersion: '10.0.10d'
+      })
     })
   })
 })

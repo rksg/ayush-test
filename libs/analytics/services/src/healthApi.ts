@@ -4,7 +4,8 @@ import {
   getSelectedNodePath,
   getFilterPayload,
   calculateGranularity,
-  kpiConfig
+  kpiConfig,
+  evaluateEnableSwitchFirmwareFilter
 } from '@acx-ui/analytics/utils'
 import { dataApi }              from '@acx-ui/store'
 import { NodesFilter }          from '@acx-ui/utils'
@@ -93,9 +94,7 @@ export const getHistogramQuery =
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
 
-  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const shouldEnableFirmwareFilter = evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
   const additionalArgs = shouldEnableFirmwareFilter
     ? '$enableSwitchFirmwareFilter: Boolean'
     : ''
@@ -155,9 +154,8 @@ export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold
 
 export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
   const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
-  const enableSwitchFirmwareFilter = typeof payload.enableSwitchFirmwareFilter === 'function'
-    ? payload.enableSwitchFirmwareFilter()
-    : payload.enableSwitchFirmwareFilter
+  const enableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(payload.enableSwitchFirmwareFilter)
 
   return {
     filter: { ssids, networkNodes, switchNodes },
@@ -168,9 +166,7 @@ export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
 export const constructTimeSeriesQuery = (payload: Omit<KpiPayload, 'range'>) => {
   const { kpi, threshold, enableSwitchFirmwareFilter } = payload
 
-  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const shouldEnableFirmwareFilter = evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
   const additionalArgs = shouldEnableFirmwareFilter
     ? '$enableSwitchFirmwareFilter: Boolean'
     : ''

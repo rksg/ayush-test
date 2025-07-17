@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
-import { kpiConfig, productNames }                                               from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames, evaluateEnableSwitchFirmwareFilter }           from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import { store }                                                                 from '@acx-ui/store'
 import type { TimeStamp }                                                        from '@acx-ui/types'
@@ -79,9 +79,8 @@ function Histogram ({
   const [ triggerSave ] = healthApi.useSaveThresholdMutation()
 
   // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
-  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
 
   const onButtonReset = useCallback(() => {
     const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]

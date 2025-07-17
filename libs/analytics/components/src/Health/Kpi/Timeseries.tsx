@@ -4,13 +4,13 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { kpiConfig, productNames, limitRange }      from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
-import { noDataDisplay }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import { KPITimeseriesResponse, healthApi }                                        from '@acx-ui/analytics/services'
+import { kpiConfig, productNames, limitRange, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { Loader, MultiLineTimeSeriesChart, NoData }                                from '@acx-ui/components'
+import { formatter }                                                               from '@acx-ui/formatter'
+import type { TimeStamp, TimeStampRange }                                          from '@acx-ui/types'
+import { noDataDisplay }                                                           from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                    from '@acx-ui/utils'
 
 import GenericError from '../../GenericError'
 
@@ -44,9 +44,8 @@ function KpiTimeseries ({
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
 
   // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
-  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
 
   const queryResults = healthApi.useKpiTimeseriesQuery(
     {

@@ -33,14 +33,16 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
   ].some(Boolean)
+  const baseMessage = 'For Wired Health metrics – you are recommended to ensure switches have a ' +
+    'pre-requisite firmware version of <b>{switchFmwrVersion}</b>'
+  const mlisaSuffix = ' and SmartZone version <b>7.x</b> or above at minimum. ' +
+    'Select compliance metrics may need higher firmware levels.'
+  const nonMlisaSuffix = ' or above at minimum. Select compliance metrics may need higher ' +
+    'firmware levels.'
+
   const switchFirmwareVersionMsg = get('IS_MLISA_SA') ?
     <FormattedMessage
-      defaultMessage={
-        'For Wired Health metrics – you are recommended to ensure switches have a ' +
-        'pre-requisite firmware version of <b>{switchFmwrVersion}</b> and SmartZone version ' +
-        '<b>7.x</b> or above at minimum. Select compliance metrics may need higher ' +
-        'firmware levels.'
-      }
+      defaultMessage={baseMessage + mlisaSuffix}
       values={{
         switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
         b: (content) => <b >{content}</b>
@@ -48,11 +50,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
     />
     :
     <FormattedMessage
-      defaultMessage={
-        'For Wired Health metrics – you are recommended to ensure switches have a ' +
-        'pre-requisite firmware version of <b>{switchFmwrVersion}</b> or above at minimum. ' +
-        'Select compliance metrics may need higher firmware levels.'
-      }
+      defaultMessage={baseMessage + nonMlisaSuffix}
       values={{
         switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
         b: (content) => <b >{content}</b>

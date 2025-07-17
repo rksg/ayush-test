@@ -28,6 +28,18 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
+// Helper function to evaluate enableSwitchFirmwareFilter to avoid non-serializable values in Redux
+export const evaluateEnableSwitchFirmwareFilter = (enableSwitchFirmwareFilter: boolean | CallableFunction | undefined): boolean => {
+  return typeof enableSwitchFirmwareFilter === 'function' ? enableSwitchFirmwareFilter() : Boolean(enableSwitchFirmwareFilter)
+}
+
+// Helper function to create firmware version message for health tabs
+export const createFirmwareVersionMessage = (isSwitchHealth10010eEnabled: boolean) => {
+  return {
+    switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d'
+  }
+}
+
 export const shouldAddFirmwareFilter = () =>
   window.location.pathname.includes('/health/wired')
     ? true

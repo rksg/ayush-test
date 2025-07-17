@@ -3,12 +3,12 @@ import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 
-import { KPITimeseriesResponse, healthApi }    from '@acx-ui/analytics/services'
-import { kpiConfig, productNames, limitRange } from '@acx-ui/analytics/utils'
-import { Loader, VerticalBarChart, NoData }    from '@acx-ui/components'
-import { formatter }                           from '@acx-ui/formatter'
-import { noDataDisplay }                       from '@acx-ui/utils'
-import type { AnalyticsFilter }                from '@acx-ui/utils'
+import { KPITimeseriesResponse, healthApi }                                        from '@acx-ui/analytics/services'
+import { kpiConfig, productNames, limitRange, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { Loader, VerticalBarChart, NoData }                                        from '@acx-ui/components'
+import { formatter }                                                               from '@acx-ui/formatter'
+import { noDataDisplay }                                                           from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                    from '@acx-ui/utils'
 
 import GenericError from '../../GenericError'
 
@@ -47,9 +47,8 @@ function BarChart ({
   const startDate = moment(endDate).subtract(6, 'd').tz('UTC').format()
 
   // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
-  const evaluatedEnableSwitchFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
 
   const queryResults = healthApi.useKpiTimeseriesQuery(
     {

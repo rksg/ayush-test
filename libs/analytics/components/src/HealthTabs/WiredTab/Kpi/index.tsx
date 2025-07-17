@@ -48,8 +48,6 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const kpiTabs = isSwitchHealthPhase2Enabled ? wiredKPIsForTabPhase2 : wiredKPIsForTab
 
   const { kpis } = kpiTabs(isSwitchHealth10010eEnabled)[tab as keyof typeof wiredKPIsForTab]
-  // eslint-disable-next-line no-console
-  console.log('kpis:',kpis)
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
