@@ -24,18 +24,16 @@ interface BrandTableProps {
   isLSP?: boolean
   lspLabel: string
   propertyLabel: string
-  isMDU?: boolean
 }
 
 export function BrandTable ({
-  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel, isMDU
+  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel
 }: BrandTableProps) {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
-  const thresholdProspectCount = thresholds['sla-prospect-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
   const pColor = 'var(--acx-primary-black)'
@@ -68,9 +66,7 @@ export function BrandTable ({
         </span>
     },
     {
-      title: isMDU  // istanbul ignore next
-        ? $t({ defaultMessage: 'Resident Experience' })
-        : $t({ defaultMessage: 'Guest Experience' }),
+      title: $t({ defaultMessage: 'Guest Experience' }),
       dataIndex: 'guestExp',
       key: 'guestExp',
       sorter: { compare: sortProp('guestExp', customSort) },
@@ -101,48 +97,25 @@ export function BrandTable ({
         </span>
       </Tooltip>
     },
-    ...(isMDU
-      ?
-      // for demo only
-      // istanbul ignore next
-      [
-        {
-          title: $t({ defaultMessage: '# of Prospects' }),
-          dataIndex: 'prospectCountSLA',
-          key: 'prospectCountSLA',
-          sorter: { compare: sortProp('prospectCountSLA', customSort) },
-          render:
-          // istanbul ignore next
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (_: any, row: Common) =>
-            <span
-              style={{
-                color: row?.prospectCountSLA >= parseInt(thresholdProspectCount as string, 10)
-                  ? pColor : nColor
-              }}
-            >
-              {formatter('countFormat')(row?.prospectCountSLA)}
-            </span>
-        }
-      ] : [{
-        title: $t({ defaultMessage: 'SSID Compliance' }),
-        dataIndex: 'ssidCompliance',
-        key: 'ssidCompliance',
-        sorter: { compare: sortProp('ssidCompliance', customSort) },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render: (_: any, row: Common) =>
-          <span
-            style={{
-              color: !isNaN(row?.ssidCompliance) && !isNull(row?.ssidCompliance)
-                ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
-                  ? pColor
-                  : nColor
-                : noDataColor
-            }}
-          >
-            {formatValues(row?.ssidCompliance, 'percentFormat')}
-          </span>
-      }]),
+    {
+      title: $t({ defaultMessage: 'SSID Compliance' }),
+      dataIndex: 'ssidCompliance',
+      key: 'ssidCompliance',
+      sorter: { compare: sortProp('ssidCompliance', customSort) },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_: any, row: Common) =>
+        <span
+          style={{
+            color: !isNaN(row?.ssidCompliance) && !isNull(row?.ssidCompliance)
+              ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
+          }}
+        >
+          {formatValues(row?.ssidCompliance, 'percentFormat')}
+        </span>
+    },
     {
       title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
