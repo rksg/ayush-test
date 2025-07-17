@@ -117,7 +117,15 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       </Space>
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
-          pagination={{ position: 'bottom' }}
+          pagination={{
+            position: 'bottom',
+            style: {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexWrap: 'wrap'
+            }
+          }}
           // eslint-disable-next-line max-len
           dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
           renderItem={(instance) => (
