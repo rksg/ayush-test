@@ -3,6 +3,7 @@ require('@testing-library/jest-dom')
 require('jest-styled-components')
 
 const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
+jest.mock('@acx-ui/config')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
