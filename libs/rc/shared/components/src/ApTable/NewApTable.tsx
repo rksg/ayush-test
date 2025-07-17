@@ -141,7 +141,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
-  const isApCliSessionEnabled = true // useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
+  const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
 
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
