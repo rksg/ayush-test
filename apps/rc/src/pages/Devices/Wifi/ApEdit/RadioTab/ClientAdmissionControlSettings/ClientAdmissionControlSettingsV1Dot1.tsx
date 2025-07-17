@@ -7,19 +7,17 @@ import { useParams }                    from 'react-router-dom'
 import styled                           from 'styled-components/macro'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
   ClientAdmissionControlLevelEnum
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueClientAdmissionControlQuery,
-  useGetApClientAdmissionControlQuery,
-  useUpdateApClientAdmissionControlMutation,
-  useDeleteApClientAdmissionControlMutation
+  useLazyGetApGroupClientAdmissionControlQuery,
+  useGetApClientAdmissionControl_v1_1Query,
+  useUpdateApClientAdmissionControl_v1_1Mutation
 } from '@acx-ui/rc/services'
-import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
+import { ClientAdmissionControl, ApClientAdmissionControl_v1_1, ApGroupClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
@@ -37,7 +35,6 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
   const { serialNumber } = useParams()
   const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
   const enable50GFieldName = 'enableClientAdmissionControl50G'
@@ -60,24 +57,22 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const { venueData } = useContext(ApDataContext)
+  const { venueData, apData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
   const venueId = venueData?.id
+  const apGroupId = apData?.apGroupId
 
-  const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
-  const getApClientAdmissionControl =
-    useGetApClientAdmissionControlQuery(
-      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
-    )
+  const [getApGroupClientAdmissionControl] = useLazyGetApGroupClientAdmissionControlQuery()
+  const getApClientAdmissionControl = useGetApClientAdmissionControl_v1_1Query(
+    { params: { venueId, serialNumber } }
+  )
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
-    useUpdateApClientAdmissionControlMutation()
-  const [deleteClientAdmissionControl, { isLoading: isDeletingClientAdmissionControl }] =
-    useDeleteApClientAdmissionControlMutation()
+    useUpdateApClientAdmissionControl_v1_1Mutation()
 
-  const venueRef = useRef<VenueClientAdmissionControl>()
-  const initDataRef = useRef<ApClientAdmissionControl>()
-  const isUseVenueSettingsRef = useRef<boolean>(false)
-  const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
+  const apGroupRef = useRef<ApGroupClientAdmissionControl>()
+  const initDataRef = useRef<ApClientAdmissionControl_v1_1>()
+  const isUseApGroupSettingsRef = useRef<boolean>(false)
+  const [isUseApGroupSettings, setIsUseApGroupSettings] = useState(true)
 
   useEffect(() => {
     if(!getApClientAdmissionControl.isLoading) {
@@ -86,12 +81,14 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
         if (clientAdmissionControlData) {
           initDataRef.current = clientAdmissionControlData
           setDataToForm(clientAdmissionControlData)
-          setIsUseVenueSettings(clientAdmissionControlData.useVenueSettings || false)
-          isUseVenueSettingsRef.current = clientAdmissionControlData.useVenueSettings || false
+          // eslint-disable-next-line max-len
+          setIsUseApGroupSettings(clientAdmissionControlData.useVenueOrApGroupSettings || false)
+          // eslint-disable-next-line max-len
+          isUseApGroupSettingsRef.current = clientAdmissionControlData.useVenueOrApGroupSettings || false
         }
-        const venueClientAdmissionCtrl = (await getVenueClientAdmissionCtrl(
-          { params: { venueId }, enableRbac: isUseRbacApi }, true).unwrap())
-        venueRef.current = venueClientAdmissionCtrl
+        const apGroupClientAdmissionControl = (await getApGroupClientAdmissionControl(
+          { params: { venueId, apGroupId } }, true).unwrap())
+        apGroupRef.current = apGroupClientAdmissionControl
       }
       setData()
 
@@ -112,13 +109,13 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
   }
 
   const handleInheritOrCustomize = () => {
-    let isUseVenue = !isUseVenueSettings
-    setIsUseVenueSettings(isUseVenue)
-    isUseVenueSettingsRef.current = isUseVenue
+    let isUseApGroup = !isUseApGroupSettings
+    setIsUseApGroupSettings(isUseApGroup)
+    isUseApGroupSettingsRef.current = isUseApGroup
     let data : ClientAdmissionControl = {}
-    if (isUseVenue) {
-      if (venueRef.current) {
-        data = venueRef.current
+    if (isUseApGroup) {
+      if (apGroupRef.current) {
+        data = apGroupRef.current
       }
     } else {
       if (initDataRef.current) {
@@ -131,17 +128,13 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   const handleUpdateClientAdmissionControl = async () => {
     try {
-      if(isUseVenueSettingsRef.current) {
-        if (isUseRbacApi) {
-          await updateClientAdmissionControl(
-            { params: { venueId, serialNumber },
-              payload: { useVenueSettings: true },
-              enableRbac: isUseRbacApi }).unwrap()
-        } else {
-          await deleteClientAdmissionControl({ params: { serialNumber } }).unwrap()
-        }
+      if(isUseApGroupSettingsRef.current) {
+        await updateClientAdmissionControl(
+          { params: { venueId, serialNumber },
+            payload: { useVenueSettings: true },
+            enableRbac: true }).unwrap()
       } else {
-        const payload: ApClientAdmissionControl = {
+        const payload: ApClientAdmissionControl_v1_1 = {
           enable24G: form.getFieldValue(enable24GFieldName),
           enable50G: form.getFieldValue(enable50GFieldName),
           minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
@@ -150,10 +143,10 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
           minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
           minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
-          useVenueSettings: isUseVenueSettingsRef.current
+          useVenueOrApGroupSettings: isUseApGroupSettingsRef.current
         }
         await updateClientAdmissionControl(
-          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+          { params: { venueId, serialNumber }, payload }
         ).unwrap()
       }
     } catch (error) {
@@ -178,8 +171,8 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   const handleDiscard = () => {
     if (initDataRef.current) {
-      setIsUseVenueSettings(initDataRef.current.useVenueSettings || false)
-      isUseVenueSettingsRef.current = initDataRef.current.useVenueSettings || false
+      setIsUseApGroupSettings(initDataRef.current.useVenueOrApGroupSettings || false)
+      isUseApGroupSettingsRef.current = initDataRef.current.useVenueOrApGroupSettings || false
       setDataToForm(initDataRef.current)
     }
   }
@@ -194,20 +187,20 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
             fontSize: '14px',
             paddingBottom: '20px' }} >
             {
-			  <Radio.Group
-			    data-testid='client-admission-control'
-			    value={isUseVenueSettings}
-			    onChange={handleInheritOrCustomize}
-			    disabled={!isAllowEdit}>
-			    <Space direction='vertical'>
-			      <Radio value={true} data-testid='client-admission-control-inheritSettings'>
-			        <FormattedMessage defaultMessage={'Use inherited settings from venue'} />
-			      </Radio>
-			      <Radio value={false} data-testid='client-admission-control-customizeSettings'>
-			        <FormattedMessage defaultMessage={'Customize settings'} />
-			      </Radio>
-			    </Space>
-			  </Radio.Group>
+              <Radio.Group
+                data-testid='client-admission-control'
+                value={isUseApGroupSettings}
+                onChange={handleInheritOrCustomize}
+                disabled={!isAllowEdit}>
+                <Space direction='vertical'>
+                  <Radio value={true} data-testid='client-admission-control-inheritSettings'>
+                    <FormattedMessage defaultMessage={'Use inherited settings from AP Group'} />
+                  </Radio>
+                  <Radio value={false} data-testid='client-admission-control-customizeSettings'>
+                    <FormattedMessage defaultMessage={'Customize settings'} />
+                  </Radio>
+                </Space>
+              </Radio.Group>
             }
           </Space>
         </Col>
@@ -217,7 +210,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   return (<Loader states={[{
     isLoading: getApClientAdmissionControl.isLoading,
-    isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
+    isFetching: isUpdatingClientAdmissionControl
   }]}>
     {useInheritSettingsOrCustomizeSettings()}
     <Row gutter={0}>
@@ -226,7 +219,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
           level={ClientAdmissionControlLevelEnum.AP_LEVEL}
           type={ClientAdmissionControlTypeEnum.CAC_24G}
-          readOnly={!isAllowEdit || isUseVenueSettings}
+          readOnly={!isAllowEdit || isUseApGroupSettings}
           isEnabled={enable24G}
           isMutuallyExclusive={false}
           enabledFieldName={enable24GFieldName}
@@ -240,7 +233,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
           level={ClientAdmissionControlLevelEnum.AP_LEVEL}
           type={ClientAdmissionControlTypeEnum.CAC_5G}
-          readOnly={!isAllowEdit || isUseVenueSettings}
+          readOnly={!isAllowEdit || isUseApGroupSettings}
           isEnabled={enable50G}
           isMutuallyExclusive={false}
           enabledFieldName={enable50GFieldName}
