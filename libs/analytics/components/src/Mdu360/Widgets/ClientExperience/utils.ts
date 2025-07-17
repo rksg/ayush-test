@@ -44,7 +44,7 @@ export const getConfig = (): Record<SLAKeys, SLAConfig> => {
     },
     [SLAKeys.clientThroughputSLA]: {
       starRatingTitle: $t({ defaultMessage: 'Wireless Client Throughput' }),
-      sparklineTitle: $t({ defaultMessage: 'Throughput Wifi' })
+      sparklineTitle: $t({ defaultMessage: 'Throughput Wi-Fi' })
     },
     [SLAKeys.timeToConnectSLA]: {
       starRatingTitle: $t({ defaultMessage: 'Time to Connect' }),

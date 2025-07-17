@@ -133,7 +133,7 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
           )
       }
     ],
-    [$t, sla]
+    [$t, sparklineSla, starRatingSla]
   )
 
   return (
