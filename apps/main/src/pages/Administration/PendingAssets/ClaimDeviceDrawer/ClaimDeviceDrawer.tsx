@@ -19,8 +19,8 @@ interface Device {
 
 interface DeviceFormData {
   order: number
-  customApName: string
-  tags: string[] | undefined
+  customApName?: string
+  tags?: string[]
   serialNumber: string
   model: string
 }
@@ -51,14 +51,13 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
   const [usePrefixSuffix, setUsePrefixSuffix] = useState<boolean>(false)
   const [prefix, setPrefix] = useState<string>('')
   const [suffix, setSuffix] = useState<string>('')
-
-  // Watch devices field for real-time count updates
-  const formDevices = Form.useWatch('devices', form)
-  const deviceCount = formDevices?.length || devices.length || 0
-
   // API mutations
-  const [importApProvisions] = useImportApProvisionsMutation()
-  const [importSwitchProvisions] = useImportSwitchProvisionsMutation()
+  const [importApProvisions, { isLoading: isImportingAp }] = useImportApProvisionsMutation()
+  const [importSwitchProvisions,
+    { isLoading: isImportingSwitch }] = useImportSwitchProvisionsMutation()
+
+  // Combined loading state
+  const isClaiming = isImportingAp || isImportingSwitch
 
   // Fetch venues list
   const { data: venuesList, isLoading: isVenuesLoading } = useVenuesListQuery({
@@ -72,18 +71,22 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
   })
 
   // Fetch AP groups for selected venue (only for AP devices)
-  const { data: apGroupsList, isLoading: isApGroupsLoading } = useApGroupsListQuery({
-    params: {},
-    payload: {
-      fields: ['name', 'id', 'venueId', 'isDefault'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: selectedVenueId ? { venueId: [selectedVenueId] } : {}
-    }
-  }, {
-    skip: !selectedVenueId || deviceType === 'switch'
-  })
+  const { data: apGroupsList, isLoading: isApGroupsLoading } =
+    useApGroupsListQuery(
+      {
+        params: {},
+        payload: {
+          fields: ['name', 'id', 'venueId', 'isDefault'],
+          pageSize: 10000,
+          sortField: 'name',
+          sortOrder: 'ASC',
+          filters: selectedVenueId ? { venueId: [selectedVenueId] } : {}
+        }
+      },
+      {
+        skip: !selectedVenueId || deviceType === 'switch'
+      }
+    )
 
   // Prepare venue options
   const venueOptions = venuesList?.data?.map(venue => ({
@@ -176,13 +179,14 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
     setUsePrefixSuffix(false)
     setPrefix('')
     setSuffix('')
-
     // Close the drawer
     onClose()
   }
 
   // Initialize form with device data
   useEffect(() => {
+    if (!visible) return // Don't initialize if drawer is not visible
+
     const initialDevices = devices.map((device, index) => ({
       order: index + 1,
       customApName: undefined,
@@ -201,10 +205,12 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
     setUsePrefixSuffix(false)
     setPrefix('')
     setSuffix('')
-  }, [devices, form])
+    setSelectedVenueId('') // Reset selected venue
+  }, [devices, form, visible]) // Add visible as dependency
 
   const handleApply = async () => {
     try {
+      await form.validateFields()
       const useSerialAsName = form.getFieldValue('useSerialAsName')
       const usePrefixSuffix = form.getFieldValue('usePrefixSuffix')
       const prefix = form.getFieldValue('prefix') || ''
@@ -248,20 +254,12 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       const formData = form.getFieldsValue()
       const devices = formData.devices || []
 
-      // First, validate the form fields
-      try {
-        await form.validateFields()
-      } catch (validationError) {
-        // Form validation failed, errors will be displayed automatically
-        return
-      }
-
       // Validate device names and generate final names
       const nameErrors: Array<{ name: string[], errors: string[] }> = []
       const finalNames: string[] = []
 
       devices.forEach((device: DeviceFormData, index: number) => {
-        let finalName = device.customApName
+        let finalName = device.customApName || ''
 
         if (useSerialAsName) {
           // Use serial number as custom AP name
@@ -334,8 +332,15 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
         }).unwrap()
       }
 
-      // Close the drawer after successful claim
+      // Close drawer after successful API call
       onClose()
+
+      // Reset all states after successful API call
+      form.resetFields()
+      setSelectedVenueId('')
+      setUsePrefixSuffix(false)
+      setPrefix('')
+      setSuffix('')
     } catch (error) {
       // Silently handle error without console output
     }
@@ -350,14 +355,15 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       destroyOnClose={true}
       footer={
         <Drawer.FormFooter
+          onCancel={handleCancel}
+          onSave={async () => {
+            await handleApply()
+          }}
           buttonLabel={{
+            cancel: $t({ defaultMessage: 'Cancel' }),
             save: $t({ defaultMessage: 'Claim' })
           }}
-          showSaveButton={true}
-          onCancel={handleCancel}
-          onSave={() => {
-            return handleApply()
-          }}
+          disableCancelBtn={isClaiming}
         />
       }
     >
@@ -449,7 +455,7 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
             >
               <Text>
                 {$t({ defaultMessage: 'Devices ({count})' }, {
-                  count: deviceCount
+                  count: devices.length
                 })}
               </Text>
             </Form.Item>

@@ -1,299 +1,225 @@
 import React from 'react'
 
-import { rest } from 'msw'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { ApGroupDrawer } from './ApGroupDrawer'
 
-// Mock the services
-jest.mock('@acx-ui/rc/services', () => {
-  let currentVenueId = undefined
-  return {
-    useAddApGroupMutation: () => [
-      jest.fn().mockResolvedValue({ unwrap: () => Promise.resolve({}) }),
-      { isLoading: false }
-    ],
-    useVenuesListQuery: () => ({
-      data: {
-        data: [
-          { id: 'venue1', name: 'Venue 1' },
-          { id: 'venue2', name: 'Venue 2' }
-        ]
-      },
-      isLoading: false
-    }),
-    useNewApListQuery: (params) => {
-      const venueId = params?.payload?.filters?.venueId?.[0] || params?.venueId
+// Mock the ApGroupGeneralTab component
+jest.mock('@acx-ui/rc/components', () => ({
+  ApGroupGeneralTab: ({ onFinish }: { onFinish?: () => Promise<boolean | void> }) => (
+    <div data-testid='ap-group-general-tab'>
+      <h2>AP Group General Tab</h2>
+      <button onClick={onFinish} data-testid='on-finish-button'>
+        Submit via onFinish
+      </button>
+      <button data-testid='add-button'>Add</button>
+      <button data-testid='cancel-button'>Cancel</button>
+    </div>
+  ),
+  ApGroupEditContextProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid='ap-group-edit-context-provider'>
+      {children}
+    </div>
+  )
+}))
 
-      if (!venueId) {
-        return { data: { data: [] }, isLoading: false }
-      }
-
-      currentVenueId = venueId
-
-      if (currentVenueId === 'venue1') {
-        return {
-          data: {
-            data: [
-              { serialNumber: 'AP001', name: 'AP 1', apGroupName: null, tags: [] },
-              { serialNumber: 'AP002', name: 'AP 2', apGroupName: 'Group A', tags: [] },
-              { serialNumber: 'AP003', name: 'AP 3', apGroupName: null, tags: [] }
-            ]
-          },
-          isLoading: false
-        }
-      } else if (currentVenueId === 'venue2') {
-        return {
-          data: {
-            data: [
-              { serialNumber: 'AP004', name: 'AP 4', apGroupName: null, tags: [] },
-              { serialNumber: 'AP005', name: 'AP 5', apGroupName: null, tags: [] }
-            ]
-          },
-          isLoading: false
-        }
-      }
-
-      return { data: { data: [] }, isLoading: false }
-    }
-  }
-})
-
-// Mock antd components
-jest.mock('antd', () => {
-  const React = require('react')
-  const antd = jest.requireActual('antd')
-  return {
-    ...antd,
-    message: {
-      success: jest.fn(),
-      error: jest.fn()
-    },
-    Form: Object.assign(
-      ({ children }) => <form>{children}</form>,
-      {
-        useForm: () => [{
-          resetFields: jest.fn(),
-          validateFields: jest.fn().mockResolvedValue({
-            name: 'Test Group',
-            venueId: 'venue1'
-          }),
-          setFieldsValue: jest.fn(),
-          getFieldValue: jest.fn()
-        }],
-        useWatch: () => 'venue1',
-        Item: ({ children, label, name }) => {
-          const React = require('react')
-          const id = name || 'default-id'
-
-          return (
-            <div>
-              {label && <label htmlFor={id}>{label}</label>}
-              {React.Children.map(children, (child) => {
-                if (React.isValidElement(child)) {
-                  return React.cloneElement(child, { id, name: id })
-                }
-                return child
-              })}
-            </div>
-          )
-        }
-      }
-    ),
-    Input: (props) => {
-      const id = props.id || props.name || 'name'
-      return <input {...props} id={id} name={id} />
-    },
-    Select: (props) => {
-      const id = props.id || props.name || 'venueId'
-      const { options, children, placeholder, loading, ...rest } = props
-      return (
-        <select id={id} name={id} {...rest}>
-          <option value=''>{placeholder}</option>
-          {options
-            ? options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))
-            : children}
-        </select>
-      )
-    }
-  }
-})
-
-// Mock the components
-jest.mock('@acx-ui/components', () => {
-  const React = require('react')
-
-  const DrawerComponent = ({ children, title, visible, onClose, footer }) => (
+// Mock the Drawer component
+jest.mock('@acx-ui/components', () => ({
+  Drawer: ({
+    children,
+    title,
+    visible,
+    onClose,
+    footer
+  }: {
+    children: React.ReactNode
+    title: string
+    visible: boolean
+    onClose: () => void
+    footer: React.ReactNode
+  }) => (
     visible ? (
-      <div role='dialog'>
-        <div>
-          <button onClick={onClose}>Close</button>
-          <div>{title}</div>
+      <div data-testid='drawer' role='dialog' aria-modal='true'>
+        <div data-testid='drawer-header'>
+          <h1>{title}</h1>
+          <button onClick={onClose} data-testid='drawer-close-button'>
+            Close Drawer
+          </button>
         </div>
-        <div>{children}</div>
-        {footer}
+        <div data-testid='drawer-content'>
+          {children}
+        </div>
+        {footer && <div data-testid='drawer-footer'>{footer}</div>}
       </div>
     ) : null
   )
-
-  DrawerComponent.FormFooter = ({ buttonLabel, onCancel, onSave }) => (
-    <div>
-      <button onClick={onCancel}>Cancel</button>
-      <button onClick={onSave}>{buttonLabel.save}</button>
-    </div>
-  )
-
-  return {
-    Drawer: DrawerComponent,
-    Loader: ({ children }) => <div>{children}</div>,
-    Transfer: ({ dataSource, targetKeys, onChange, render, showSearch, titles }) => {
-      const [selectedKeys, setSelectedKeys] = React.useState(targetKeys || [])
-
-      React.useEffect(() => {
-        setSelectedKeys(targetKeys || [])
-      }, [targetKeys])
-
-      const handleAdd = (key) => {
-        if (!selectedKeys.includes(key)) {
-          const newKeys = [...selectedKeys, key]
-          setSelectedKeys(newKeys)
-          onChange?.(newKeys)
-        }
-      }
-
-      const handleRemove = (key) => {
-        if (selectedKeys.includes(key)) {
-          const newKeys = selectedKeys.filter(k => k !== key)
-          setSelectedKeys(newKeys)
-          onChange?.(newKeys)
-        }
-      }
-
-      const availableItems = dataSource.filter(item => !selectedKeys.includes(item.key))
-      const selectedItems = dataSource.filter(item => selectedKeys.includes(item.key))
-
-      if (dataSource.length === 0) {
-        return null
-      }
-
-      return (
-        <div>
-          <div>
-            <h4>{titles[0]}</h4>
-            {showSearch && <input placeholder='Search...' />}
-            <div>
-              {availableItems.map((item) => (
-                <div key={item.key} onClick={() => handleAdd(item.key)}>
-                  {render(item)}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4>{titles[1]}</h4>
-            <div>
-              {selectedItems.map((item) => (
-                <div key={item.key} onClick={() => handleRemove(item.key)}>
-                  {render(item)}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    }
-  }
-})
-
-const { ApGroupDrawer } = require('./ApGroupDrawer')
-
-const renderApGroupDrawer = (props = {}) => {
-  return render(
-    <ApGroupDrawer
-      open={true}
-      onClose={jest.fn()}
-      onSuccess={jest.fn()}
-      {...props}
-    />
-  )
-}
+}))
 
 describe('ApGroupDrawer', () => {
+  const defaultProps = {
+    open: true,
+    onClose: jest.fn()
+  }
+
   beforeEach(() => {
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.post('/venues/switches/clients/query', (req, res, ctx) => {
-        return res(ctx.json({ data: [] }))
-      })
-    )
+    jest.clearAllMocks()
   })
 
-  it('should render correctly', async () => {
-    renderApGroupDrawer()
+  describe('Rendering', () => {
+    it('should render correctly when open', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
 
-    await waitFor(() => {
+      expect(screen.getByTestId('drawer')).toBeInTheDocument()
+      expect(screen.getByText('Add AP Group')).toBeInTheDocument()
+      expect(screen.getByTestId('ap-group-edit-context-provider')).toBeInTheDocument()
+      expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
+    })
+
+    it('should not render when closed', () => {
+      render(<ApGroupDrawer {...defaultProps} open={false} />)
+
+      expect(screen.queryByTestId('drawer')).not.toBeInTheDocument()
+    })
+
+    it('should render with correct drawer props', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
+      const drawer = screen.getByTestId('drawer')
+      expect(drawer).toHaveAttribute('role', 'dialog')
+      expect(drawer).toHaveAttribute('aria-modal', 'true')
+    })
+
+    it('should render with correct title', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
       expect(screen.getByText('Add AP Group')).toBeInTheDocument()
     })
-    expect(screen.getByText('Group Details')).toBeInTheDocument()
-    expect(screen.getByText('Group Member')).toBeInTheDocument()
-    expect(screen.getByLabelText('Group Name')).toBeInTheDocument()
-    expect(screen.getByLabelText('Venue')).toBeInTheDocument()
-  })
 
-  it('should show available APs when venue is selected', async () => {
-    renderApGroupDrawer()
+    it('should render ApGroupGeneralTab with onFinish prop', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
 
-    // Select venue
-    const venueSelect = screen.getByLabelText('Venue')
-    fireEvent.change(venueSelect, { target: { value: 'venue1' } })
-
-    // Should show APs
-    await waitFor(() => {
-      expect(screen.getByText('Available APs')).toBeInTheDocument()
-    })
-    expect(screen.getByText('Selected APs')).toBeInTheDocument()
-  })
-
-  it('should show search functionality in available APs list', async () => {
-    renderApGroupDrawer()
-
-    // Select venue
-    const venueSelect = screen.getByLabelText('Venue')
-    fireEvent.change(venueSelect, { target: { value: 'venue1' } })
-
-    // Should show search input
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument()
+      expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
+      expect(screen.getByTestId('on-finish-button')).toBeInTheDocument()
     })
   })
 
-  it('should handle cancel action', async () => {
-    const mockOnClose = jest.fn()
-    renderApGroupDrawer({ onClose: mockOnClose })
+  describe('Drawer close functionality', () => {
+    it('should call onClose when drawer close button is clicked', () => {
+      const mockOnClose = jest.fn()
+      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
 
-    // Click cancel
-    const cancelButton = screen.getByText('Cancel')
-    fireEvent.click(cancelButton)
+      const closeButton = screen.getByTestId('drawer-close-button')
+      fireEvent.click(closeButton)
 
-    expect(mockOnClose).toHaveBeenCalled()
+      expect(mockOnClose).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call onClose when onFinish button is clicked', () => {
+      const mockOnClose = jest.fn()
+      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+
+      const onFinishButton = screen.getByTestId('on-finish-button')
+      fireEvent.click(onFinishButton)
+
+      expect(mockOnClose).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('should show AP group information in transfer list', async () => {
-    renderApGroupDrawer()
+  describe('Props handling', () => {
+    it('should pass correct props to Drawer component', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
 
-    // Select venue
-    const venueSelect = screen.getByLabelText('Venue')
-    fireEvent.change(venueSelect, { target: { value: 'venue1' } })
+      // Check that the drawer is rendered with the expected structure
+      expect(screen.getByTestId('drawer')).toBeInTheDocument()
+      expect(screen.getByTestId('drawer-header')).toBeInTheDocument()
+      expect(screen.getByTestId('drawer-content')).toBeInTheDocument()
 
-    // Wait for APs to load
-    await waitFor(() => {
-      expect(screen.getByText('AP 2')).toBeInTheDocument()
-    }, { timeout: 5000 })
+      // Check that footer is null (as specified in the component)
+      expect(screen.queryByTestId('drawer-footer')).not.toBeInTheDocument()
+    })
 
-    // Should show AP with group information
-    expect(screen.getByText('Group: Group A')).toBeInTheDocument()
+    it('should handle multiple onClose calls correctly', () => {
+      const mockOnClose = jest.fn()
+      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+
+      // Click drawer close button
+      const drawerCloseButton = screen.getByTestId('drawer-close-button')
+      fireEvent.click(drawerCloseButton)
+
+      // Click onFinish button
+      const onFinishButton = screen.getByTestId('on-finish-button')
+      fireEvent.click(onFinishButton)
+
+      expect(mockOnClose).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('Integration with ApGroupGeneralTab', () => {
+    it('should render ApGroupGeneralTab within the drawer', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
+      const drawer = screen.getByTestId('drawer')
+      const apGroupTab = screen.getByTestId('ap-group-general-tab')
+
+      expect(drawer).toContainElement(apGroupTab)
+    })
+
+    it('should render ApGroupEditContextProvider', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
+      expect(screen.getByTestId('ap-group-edit-context-provider')).toBeInTheDocument()
+    })
+
+    it('should pass onFinish to ApGroupGeneralTab', () => {
+      const mockOnClose = jest.fn()
+      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+
+      // The onFinish button in the mocked ApGroupGeneralTab should call the onClose function
+      const onFinishButton = screen.getByTestId('on-finish-button')
+      fireEvent.click(onFinishButton)
+
+      expect(mockOnClose).toHaveBeenCalled()
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('should have proper ARIA attributes', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
+      const drawer = screen.getByTestId('drawer')
+      expect(drawer).toHaveAttribute('role', 'dialog')
+      expect(drawer).toHaveAttribute('aria-modal', 'true')
+    })
+
+    it('should have accessible close button', () => {
+      render(<ApGroupDrawer {...defaultProps} />)
+
+      const closeButton = screen.getByTestId('drawer-close-button')
+      expect(closeButton).toBeInTheDocument()
+      expect(closeButton.tagName).toBe('BUTTON')
+    })
+  })
+
+  describe('Edge cases', () => {
+    it('should handle undefined onClose gracefully', () => {
+      // This should not throw an error
+      expect(() => {
+        render(<ApGroupDrawer open={true} onClose={undefined as unknown as () => void} />)
+      }).not.toThrow()
+    })
+
+    it('should handle null onClose gracefully', () => {
+      // This should not throw an error
+      expect(() => {
+        render(<ApGroupDrawer open={true} onClose={null as unknown as () => void} />)
+      }).not.toThrow()
+    })
+
+    it('should render correctly with minimal props', () => {
+      render(<ApGroupDrawer open={true} onClose={() => {}} />)
+
+      expect(screen.getByTestId('drawer')).toBeInTheDocument()
+      expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
+    })
   })
 })

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -24,6 +24,7 @@ export const PendingSwitch = () => {
   const [ claimDrawerVisible, setClaimDrawerVisible ] = useState(false)
   const [ selectedDevices, setSelectedDevices ] = useState<DeviceProvision[]>([])
   const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
+  const clearSelectionRef = useRef<(() => void) | null>(null)
 
   const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
     { params },
@@ -159,7 +160,7 @@ export const PendingSwitch = () => {
       onClick: (selectedRows, clearSelection) => {
         setSelectedDevices(selectedRows)
         setClaimDrawerVisible(true)
-        clearSelection()
+        clearSelectionRef.current = clearSelection
       }
     },
     {
@@ -209,6 +210,7 @@ export const PendingSwitch = () => {
       </div>
 
       <Table<DeviceProvision>
+        key={refreshAt}
         settingsId={'pending-switches-tab'}
         loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
@@ -234,6 +236,11 @@ export const PendingSwitch = () => {
         onClose={() => {
           setClaimDrawerVisible(false)
           setSelectedDevices([])
+          // Clear selection when drawer closes
+          if (clearSelectionRef.current) {
+            clearSelectionRef.current()
+            clearSelectionRef.current = null
+          }
         }}
         onAddVenue={handleAddVenue}
       />

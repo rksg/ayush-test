@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -7,7 +7,7 @@ import { Button, cssStr, Loader, Table, TableProps }                            
 import { DateFormatEnum, formatter }                                                                                                  from '@acx-ui/formatter'
 import { Sync }                                                                                                                       from '@acx-ui/icons'
 import { useGetApModelsQuery, useGetApProvisionsQuery, useGetApStatusQuery, useHideApProvisionsMutation, useRefreshApStatusMutation } from '@acx-ui/rc/services'
-import { DeviceProvision, HideProvisionsPayload, VenueExtended, AddApGroup }                                                          from '@acx-ui/rc/utils'
+import { DeviceProvision, HideProvisionsPayload, VenueExtended }                                                                      from '@acx-ui/rc/utils'
 import { TimeStamp }                                                                                                                  from '@acx-ui/types'
 import { useTableQuery }                                                                                                              from '@acx-ui/utils'
 
@@ -30,7 +30,8 @@ export const PendingAp = () => {
   const [ selectedDevices, setSelectedDevices ] = useState<{ serial: string; model: string }[]>([])
   const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
   const [ apGroupDrawerVisible, setApGroupDrawerVisible ] = useState(false)
-  const [ selectedVenueId ] = useState<string | undefined>(undefined)
+
+  const clearSelectionRef = useRef<(() => void) | null>(null)
 
   const { data: apStatus, refetch: refetchApStatus } = useGetApStatusQuery(
     { params },
@@ -118,14 +119,7 @@ export const PendingAp = () => {
     setApGroupDrawerVisible(false)
   }
 
-  // Handle AP group creation success
-  const handleApGroupCreated = async (apGroup?: AddApGroup) => {
-    if (apGroup) {
-      // Optionally select the newly created AP group in ClaimDeviceDrawer
-      // This will be handled by the ClaimDeviceDrawer's refetch mechanism
-    }
-    setApGroupDrawerVisible(false)
-  }
+
 
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
@@ -179,12 +173,13 @@ export const PendingAp = () => {
   const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         const devices = selectedRows.map(row => ({
           serial: row.serialNumber,
           model: row.model
         }))
         setSelectedDevices(devices)
+        clearSelectionRef.current = clearSelection
         setClaimDrawerVisible(true)
       }
     },
@@ -235,6 +230,7 @@ export const PendingAp = () => {
       </div>
 
       <Table<DeviceProvision>
+        key={refreshAt}
         settingsId={'pending-aps-tab'}
         loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
@@ -253,7 +249,15 @@ export const PendingAp = () => {
       <ClaimDeviceDrawer
         visible={claimDrawerVisible}
         devices={selectedDevices}
-        onClose={() => setClaimDrawerVisible(false)}
+        onClose={() => {
+          setClaimDrawerVisible(false)
+          // Clear selection when drawer closes
+          if (clearSelectionRef.current) {
+            clearSelectionRef.current()
+            clearSelectionRef.current = null
+          }
+          setSelectedDevices([])
+        }}
         onAddVenue={handleAddVenue}
         onAddApGroup={handleAddApGroup}
       />
@@ -269,9 +273,6 @@ export const PendingAp = () => {
       <ApGroupDrawer
         open={apGroupDrawerVisible}
         onClose={handleApGroupDrawerClose}
-        onSuccess={handleApGroupCreated}
-        venueId={selectedVenueId}
-        tenantId={tenantId}
       />
     </Loader>
   )

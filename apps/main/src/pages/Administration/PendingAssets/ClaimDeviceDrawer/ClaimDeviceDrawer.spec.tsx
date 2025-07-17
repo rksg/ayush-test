@@ -86,10 +86,10 @@ describe('ClaimDeviceDrawer', () => {
       rest.post(WifiUrlsInfo.getApGroupsList.url, (req, res, ctx) => {
         return res(ctx.json(mockApGroupsResponse))
       }),
-      rest.post('/deviceProvisions/venue/:venueId/apGroups/:apGroupId/aps', (req, res, ctx) => {
+      rest.post('/deviceProvisions/venues/:venueId/apGroups/:apGroupId/aps', (req, res, ctx) => {
         return res(ctx.json({ success: true, message: 'AP devices claimed successfully' }))
       }),
-      rest.post('/deviceProvisions/venue/:venueId/switches', (req, res, ctx) => {
+      rest.post('/deviceProvisions/venues/:venueId/switches', (req, res, ctx) => {
         return res(ctx.json({ success: true, message: 'Switch devices claimed successfully' }))
       })
     )
@@ -337,9 +337,9 @@ describe('ClaimDeviceDrawer', () => {
 
     // Fill in custom names
     const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom Switch Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'SWITCH-001-Custom' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'SWITCH-002-Custom' } })
-    fireEvent.change(customNameInputs[2], { target: { value: 'SWITCH-003-Custom' } })
+    fireEvent.change(customNameInputs[0], { target: { value: 'Switch001Custom' } })
+    fireEvent.change(customNameInputs[1], { target: { value: 'Switch002Custom' } })
+    fireEvent.change(customNameInputs[2], { target: { value: 'Switch003Custom' } })
 
     // Click Claim button
     const claimButton = screen.getByText('Claim')
@@ -438,9 +438,9 @@ describe('ClaimDeviceDrawer', () => {
 
     // Fill in custom names
     const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'AP-001-Custom' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'AP-002-Custom' } })
-    fireEvent.change(customNameInputs[2], { target: { value: 'SWITCH-001-Custom' } })
+    fireEvent.change(customNameInputs[0], { target: { value: 'AP001Custom' } })
+    fireEvent.change(customNameInputs[1], { target: { value: 'AP002Custom' } })
+    fireEvent.change(customNameInputs[2], { target: { value: 'Switch001Custom' } })
 
     // Click Claim button
     const claimButton = screen.getByText('Claim')

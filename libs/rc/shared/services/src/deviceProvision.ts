@@ -2,7 +2,9 @@ import {
   CommonResult,
   DeviceProvision,
   DeviceProvisionStatus,
-  DeviceProvisionUrlsInfo
+  DeviceProvisionUrlsInfo,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseDeviceProvisionApi } from '@acx-ui/store'
 import { RequestPayload }         from '@acx-ui/types'
@@ -166,12 +168,44 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
     getApProvisions: build.query<TableResult<DeviceProvision>, RequestPayload>({
       query: createProvisionQuery(DeviceProvisionUrlsInfo.getApProvisions),
       transformResponse: transformTableResponse,
-      providesTags: [{ type: 'deviceProvision', id: 'AP_PROVISIONS' }]
+      providesTags: [{ type: 'deviceProvision', id: 'AP_PROVISIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // eslint-disable-next-line no-console
+          console.log('onSocketActivityChanged:', requestArgs, msg)
+          const activities = [
+            'ImportVenueApsCsv',
+            'HideApProvisions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line no-console
+            console.log('onActivityMessageReceived:', msg, activities)
+            api.dispatch(deviceProvisionApi.util.invalidateTags([
+              { type: 'deviceProvision', id: 'AP_PROVISIONS' },
+              { type: 'deviceProvision', id: 'AP_STATUS' }
+            ]))
+          })
+        })
+      }
     }),
     getSwitchProvisions: build.query<TableResult<DeviceProvision>, RequestPayload>({
       query: createProvisionQuery(DeviceProvisionUrlsInfo.getSwitchProvisions),
       transformResponse: transformTableResponse,
-      providesTags: [{ type: 'deviceProvision', id: 'SWITCH_PROVISIONS' }]
+      providesTags: [{ type: 'deviceProvision', id: 'SWITCH_PROVISIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ImportVenueSwitchesCsv',
+            'HideSwitchProvisions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(deviceProvisionApi.util.invalidateTags([
+              { type: 'deviceProvision', id: 'SWITCH_PROVISIONS' },
+              { type: 'deviceProvision', id: 'SWITCH_STATUS' }
+            ]))
+          })
+        })
+      }
     }),
     importApProvisions: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
