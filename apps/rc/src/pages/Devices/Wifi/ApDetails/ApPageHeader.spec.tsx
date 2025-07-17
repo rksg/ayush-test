@@ -80,6 +80,7 @@ describe('ApPageHeader', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(await within(dialog).findByText(/CLI Session/)).toBeVisible()
+    fireEvent.click(await within(dialog).findByRole('button', { name: /close/i }))
   })
 
   it('click to action button', async () => {
