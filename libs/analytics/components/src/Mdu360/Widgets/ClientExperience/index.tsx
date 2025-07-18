@@ -24,11 +24,10 @@ import { StarRatingContainer, SparklineContainer }             from './styledCom
 import { getConfig, getPercentage, getSparklineData, SLAKeys } from './utils'
 
 interface SLA {
+  title: string
   // starRating
-  starRatingTitle: string
   percentage: number
   // sparkline
-  sparklineTitle: string
   percentageText: string
   data: number[]
   shortText?: string
@@ -55,15 +54,13 @@ const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
     const percentage = getPercentage(value)
     if (percentage.percentage) {
       const {
-        starRatingTitle,
-        sparklineTitle,
+        title,
         shortText
       } = config[slaKey]
       sla[slaKey] = ({
         ...percentage,
-        shortText: shortText,
-        starRatingTitle,
-        sparklineTitle,
+        shortText,
+        title,
         data: value
       })
     }
@@ -92,10 +89,10 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
         children:
           sla.length > 0 ? (
             <StarRatingContainer>
-              {sla.map(({ starRatingTitle, percentage }) => (
+              {sla.map(({ title, percentage }) => (
                 <StarRating
-                  key={`starRated-${starRatingTitle}`}
-                  name={starRatingTitle}
+                  key={`starRated-${title}`}
+                  name={title}
                   percentage={percentage}
                 />
               ))}
@@ -111,10 +108,10 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
           sla.length > 0 ? (
             <SparklineContainer>
               {sla.map(
-                ({ sparklineTitle, percentageText, data, shortText }) => (
+                ({ title, percentageText, data, shortText }) => (
                   <Sparkline
-                    key={`sparkline-${sparklineTitle}`}
-                    name={sparklineTitle}
+                    key={`sparkline-${title}`}
+                    name={title}
                     sparklineData={getSparklineData(data)}
                     percentageText={percentageText}
                     shortText={shortText}

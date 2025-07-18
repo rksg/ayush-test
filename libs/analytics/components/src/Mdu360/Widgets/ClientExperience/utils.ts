@@ -10,8 +10,7 @@ export enum SLAKeys {
 }
 
 interface SLAConfig {
-  starRatingTitle: string
-  sparklineTitle: string
+  title: string
   shortText?: string
 }
 
@@ -33,8 +32,7 @@ export const getConfig = (): Record<SLAKeys, SLAConfig> => {
   const { $t } = getIntl()
   return {
     [SLAKeys.connectionSuccessSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Connection Success' }),
-      sparklineTitle: $t({ defaultMessage: 'Connection Success' }),
+      title: $t({ defaultMessage: 'Connection Success' }),
       shortText: $t(
         { defaultMessage: 'About {threshold}' },
         {
@@ -43,12 +41,10 @@ export const getConfig = (): Record<SLAKeys, SLAConfig> => {
       )
     },
     [SLAKeys.clientThroughputSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Wireless Client Throughput' }),
-      sparklineTitle: $t({ defaultMessage: 'Throughput Wi-Fi' })
+      title: $t({ defaultMessage: 'Wireless Client Throughput' })
     },
     [SLAKeys.timeToConnectSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Time to Connect' }),
-      sparklineTitle: $t({ defaultMessage: 'Time to Connect' }),
+      title: $t({ defaultMessage: 'Time to Connect' }),
       shortText: $t(
         { defaultMessage: 'Under {threshold}' },
         {
