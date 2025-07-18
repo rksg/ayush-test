@@ -148,6 +148,7 @@ export function VenuePropertyTab () {
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
+  const isEnhancedUnitSearch = useIsSplitOn(Features.UNITS_ADVANCED_SEARCH)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
   const hasPropertyUnitPermission = rbacOpsApiEnabled
@@ -159,9 +160,10 @@ export function VenuePropertyTab () {
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
-    defaultPayload: {} as {
+    defaultPayload: isEnhancedUnitSearch ? ({} as {
+    }) : ({} as {
       filters: { name: string|undefined }
-    },
+    }),
     pagination: { settingsId }
   })
 
@@ -472,6 +474,8 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
       searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
         return (
           isMultipleIdentityUnits ? <TenantLink
@@ -485,6 +489,8 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       filterMultiple: false,
+      sorter: true,
+      defaultSortOrder: 'ascend',
       filterable: PropertyUnitStatusOptions,
       render: (_, row) => row.status === PropertyUnitStatus.ENABLED
         ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Suspended' })
@@ -550,35 +556,49 @@ export function VenuePropertyTab () {
     ...isMultipleIdentityUnits ? [{
       key: 'identityCount',
       title: $t({ defaultMessage: 'Identities' }),
-      dataIndex: ['identityCount']
+      dataIndex: ['identityCount'],
+      sorter: true
     }] : [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
-      dataIndex: ['resident', 'name']
+      dataIndex: ['resident', 'name'],
+      searchable: isEnhancedUnitSearch ? true : false,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     },
     {
       key: 'residentEmail',
       title: $t({ defaultMessage: 'Resident Email' }),
-      dataIndex: ['resident', 'email']
+      dataIndex: ['resident', 'email'],
+      searchable: isEnhancedUnitSearch ? true : false,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     },
     {
-      key: 'residentPhone',
+      key: 'residentPhoneNumber',
       title: $t({ defaultMessage: 'Resident Phone' }),
-      dataIndex: ['resident', 'phoneNumber']
+      dataIndex: ['resident', 'phoneNumber'],
+      searchable: isEnhancedUnitSearch ? true : false,
+      sorter: true,
+      defaultSortOrder: 'ascend'
     }
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = queryUnitList.payload
 
-    const customPayload = {
+    const customPayload = isEnhancedUnitSearch ? ({
+      keyword: customSearch?.searchString ?? '',
+      filters: {
+        status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
+      }
+    }) : ({
       filters: {
         name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
         status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
       }
-    }
-
+    })
     queryUnitList.setPayload({
       ...payload,
       ...customPayload

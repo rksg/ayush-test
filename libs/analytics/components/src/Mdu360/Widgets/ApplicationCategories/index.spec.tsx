@@ -49,7 +49,7 @@ const mockEmptyTop10ApplicationCategories: ApplicationCategoriesData = {
   dataUsage: []
 }
 
-function getContainerWithNoChartId (container: HTMLElement) {
+export function getContainerWithNoChartId (container: HTMLElement) {
   const echartsInstances = container.querySelectorAll('[_echarts_instance_]')
   echartsInstances.forEach((element) =>
     element.removeAttribute('_echarts_instance_')

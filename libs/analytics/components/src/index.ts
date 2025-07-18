@@ -84,3 +84,5 @@ export { IntentAIForm, IntentAIDetails, IntentAIWidget } from './IntentAI'
 export const AppInsights = React.lazy(() => import('./AppInsights'))
 
 export { Traffic } from './IdentityOverview/Traffic'
+export { TopApplications } from './IdentityOverview/TopApplications'
+export { IdentityHealth } from './IdentityOverview/IdentityHealth'
