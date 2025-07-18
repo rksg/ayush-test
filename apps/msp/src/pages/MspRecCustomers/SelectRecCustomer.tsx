@@ -9,7 +9,6 @@ import {
   Drawer,
   Loader,
   Table,
-  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
@@ -21,7 +20,8 @@ import {
   MSPUtils,
   MspRecCustomer
 } from '@acx-ui/msp/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }        from '@acx-ui/react-router-dom'
+import type { TableColumn } from '@acx-ui/types'
 
 interface SelectRecCustomerDrawerProps {
   visible: boolean
