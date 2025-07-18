@@ -47,7 +47,7 @@ export function TrafficSnapshot ({ queryResults }:
       <AutoSizer>
         {({ height, width }) => (
           <DonutChart
-            style={{ width, height }}
+            style={{ width, height: Math.min(height, 203) }}
             data={chartData}
             showLegend={true}
             showTotal={true}

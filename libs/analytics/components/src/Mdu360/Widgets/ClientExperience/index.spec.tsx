@@ -1,7 +1,10 @@
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { UseQueryResult }            from '@acx-ui/types'
 
-import { Mdu360TabProps } from '../../types'
+import { Mdu360TabProps, SLAKeys } from '../../types'
+import { slaConfig }               from '../SLA/constants'
+import { SLAData }                 from '../SLA/services'
 
 import { mockEmptyTimeseriesResponseData, mockTimeseriesResponseData } from './__tests__/fixtures'
 import { useClientExperienceTimeseriesQuery }                          from './services'
@@ -18,6 +21,29 @@ const mockFilters: Mdu360TabProps = {
   startDate: '2024-03-23T07:23:00+05:30',
   endDate: '2025-05-24T07:23:00+05:30'
 }
+
+const mockSlaQueryResults = {
+  data: {
+    [SLAKeys.timeToConnectSLA]: {
+      value: 5,
+      isSynced: false
+    },
+    [SLAKeys.clientThroughputSLA]: {
+      value: slaConfig[SLAKeys.clientThroughputSLA].defaultValue,
+      isSynced: true,
+      isDefault: true
+    },
+    [SLAKeys.channelWidthSLA]: {
+      value: 20,
+      isSynced: true
+    },
+    [SLAKeys.channelChangeExperienceSLA]: {
+      value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue,
+      isSynced: true,
+      isDefault: true
+    }
+  }
+} as UseQueryResult<SLAData>
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -41,7 +67,10 @@ describe('ClientExperience', () => {
     })
 
     render(
-      <ClientExperience filters={mockFilters} />,
+      <ClientExperience
+        filters={mockFilters}
+        slaQueryResults={mockSlaQueryResults}
+      />,
       { wrapper: Provider }
     )
 
@@ -69,9 +98,15 @@ describe('ClientExperience', () => {
       data: null
     })
 
-    render(<ClientExperience filters={mockFilters} />, {
-      wrapper: Provider
-    })
+    render(
+      <ClientExperience
+        filters={mockFilters}
+        slaQueryResults={mockSlaQueryResults}
+      />,
+      {
+        wrapper: Provider
+      }
+    )
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
@@ -80,9 +115,36 @@ describe('ClientExperience', () => {
       data: mockEmptyTimeseriesResponseData
     })
 
-    render(<ClientExperience filters={mockFilters} />, {
-      wrapper: Provider
-    })
+    render(
+      <ClientExperience
+        filters={mockFilters}
+        slaQueryResults={mockSlaQueryResults}
+      />,
+      {
+        wrapper: Provider
+      }
+    )
     expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  it('should render threshold values in sparkline view correctly', async () => {
+    mockUseClientExperienceTimeseriesQuery.mockReturnValue({
+      data: mockTimeseriesResponseData
+    })
+
+    render(
+      <ClientExperience
+        filters={mockFilters}
+        slaQueryResults={mockSlaQueryResults}
+      />,
+      { wrapper: Provider }
+    )
+
+    const dataUsageSwitch = await screen.findByRole('radio', {
+      name: 'Sparkline'
+    })
+    fireEvent.click(dataUsageSwitch)
+    expect(screen.getByText(/About 10 Mbps/)).toBeVisible() // throughput wifi
+    expect(screen.getByText('Multiple values')).toBeVisible() // time to connect
   })
 })

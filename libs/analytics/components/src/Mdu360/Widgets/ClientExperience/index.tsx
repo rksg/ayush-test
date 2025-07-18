@@ -10,18 +10,20 @@ import {
   Loader,
   NoData
 } from '@acx-ui/components'
+import { UseQueryResult } from '@acx-ui/types'
 
-import { ContentSwitcherWrapper } from '../../styledComponents'
-import { Mdu360TabProps }         from '../../types'
+import { ContentSwitcherWrapper }  from '../../styledComponents'
+import { Mdu360TabProps, SLAKeys } from '../../types'
+import { SLAData }                 from '../SLA/services'
 
 import {
   FranchisorTimeseries,
   useClientExperienceTimeseriesQuery
 } from './services'
-import Sparkline                                               from './Sparkline'
-import StarRating                                              from './StarRating'
-import { StarRatingContainer, SparklineContainer }             from './styledComponents'
-import { getConfig, getPercentage, getSparklineData, SLAKeys } from './utils'
+import Sparkline                                      from './Sparkline'
+import StarRating                                     from './StarRating'
+import { StarRatingContainer, SparklineContainer }    from './styledComponents'
+import { getConfig, getPercentage, getSparklineData } from './utils'
 
 interface SLA {
   // starRating
@@ -34,8 +36,6 @@ interface SLA {
   shortText?: string
 }
 
-const config = getConfig()
-
 const slaKeysToShow: SLAKeys[] = [
   SLAKeys.connectionSuccessSLA,
   SLAKeys.timeToConnectSLA,
@@ -44,10 +44,14 @@ const slaKeysToShow: SLAKeys[] = [
 
 type SlaMap = Record<SLAKeys, SLA>
 
-const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
+const getSlaMap = (
+  data: FranchisorTimeseries | undefined,
+  thresholds: SLAData
+): SlaMap => {
   if (!data) return {} as SlaMap
 
   const sla: Record<SLAKeys, SLA> = {} as SlaMap
+  const config = getConfig(thresholds)
 
   const { errors, time, ...slaData } = data
   Object.entries(slaData).forEach(([key, value]) => {
@@ -61,7 +65,7 @@ const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
       } = config[slaKey]
       sla[slaKey] = ({
         ...percentage,
-        shortText: shortText,
+        shortText,
         starRatingTitle,
         sparklineTitle,
         data: value
@@ -72,7 +76,15 @@ const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
   return sla
 }
 
-const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
+interface ClientExperienceProps {
+  filters: Mdu360TabProps
+  slaQueryResults: UseQueryResult<SLAData>
+}
+
+const ClientExperience = ({
+  filters,
+  slaQueryResults
+}: ClientExperienceProps) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
 
@@ -81,7 +93,8 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
     end
   })
 
-  const slaData = getSlaMap(queryResults.data)
+  const thresholds = slaQueryResults.data ?? {} as SLAData
+  const slaData = getSlaMap(queryResults.data, thresholds)
   const sla = slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
@@ -131,7 +144,7 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
   )
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults, slaQueryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}>
         <AutoSizer>
           {({ height, width }) => (
