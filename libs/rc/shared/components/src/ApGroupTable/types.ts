@@ -1,5 +1,4 @@
 import { TableProps }                      from '@acx-ui/components'
-import { TableQuery }                      from '@acx-ui/rc/utils'
 import type { ColumnType, RequestPayload } from '@acx-ui/types'
 import { TableQuery }                      from '@acx-ui/utils'
 
