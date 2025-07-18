@@ -58,6 +58,8 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [switch82AvNoteEnable, setSwitch82AvNoteEnable] = useState(false)
   const [switch81XNoteEnable, setSwitch81XNoteEnable] = useState(false)
   const [switch75ZippyNoteEnable, setSwitch75ZippyNoteEnable] = useState(false)
+  const [switch71C08pNoteEnable, setSwitch71C08pNoteEnable] = useState(false)
+  const [icx7150C08pCount, setIcx7150C08pCount] = useState(0)
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -198,16 +200,18 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
     setVersionFieldValue()
     updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
+    setIcx7150C08pCount(icx71C08pGroupedData().reduce((total, group) => total + group.length, 0))
     if (isSupport8100X) {
       updateSwitch81XNoteEnable(form.getFieldValue('selectedICX81Version'))
     }
     if (isSupport7550Zippy) {
       updateSwitch75ZippyNoteEnable(form.getFieldValue('selectedICX7XVersion'))
     }
-  }, [current])
+  }, [current, getSwitchFirmwareList?.data])
 
   const handleICX71Change = (value: RadioChangeEvent) => {
     setSelecteedICX71Version(value.target.value)
+    setSwitch71C08pNoteEnable(value.target.value.startsWith('100'))
     form.setFieldValue('selectedICX71Version', value.target.value)
     form.validateFields()
   }
@@ -249,9 +253,6 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
       return []
     }
-
-  const icx71hasVersionStartingWith100 =
-    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
 
   return (
     <div
@@ -391,16 +392,28 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             value={selectedICX71Version}>
             <Space direction={'vertical'}>
               {
-                getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    {getVersionOptionV1002(intl, v)}
-                  </Radio>)}
+                getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v => {
+                  const only7150C08pWithFW10010 = v.id.startsWith('100') &&
+                      icx7150C08pCount > 0 && icx7150C08pCount === ICX71Count
+                  v.model = only7150C08pWithFW10010
+                    ? SwitchFirmwareModelGroup.ICX71 : undefined
+                  const disabled = v.inUse || only7150C08pWithFW10010
+                  const showAsterisk = v.id.startsWith('100') && icx7150C08pCount > 0 &&
+                      icx7150C08pCount < ICX71Count
+
+                  return (
+                    <Radio value={v.id} key={v.id} disabled={disabled}>
+                      {getVersionOptionV1002(intl, v, showAsterisk ? ' *' : null)}
+                    </Radio>
+                  )
+                })
+              }
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>
             </Space>
           </Radio.Group>
-          {icx71C08pGroupedData().length > 0 && icx71hasVersionStartingWith100 &&
+          {icx7150C08pCount > 0 && icx7150C08pCount < ICX71Count && switch71C08pNoteEnable &&
             <SwitchNote
               type={NotesEnum.NOTE7150_1}
               data={icx71C08pGroupedData()} />
