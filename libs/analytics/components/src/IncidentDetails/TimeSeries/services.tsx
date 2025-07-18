@@ -63,11 +63,20 @@ export const Api = dataApi.injectEndpoints({
             codeMap: [payload.incident.code],
             ...getIncidentTimeSeriesPeriods(payload.incident, payload.buffer),
             path: payload.incident.path,
-            granularity: calculateGranularity(
-              payload.incident.startTime,
-              payload.incident.endTime,
-              payload.minGranularity
-            )
+            granularity: (() => {
+              // For port flap incidents with minGranularity, use it directly (for PT5M case)
+              if (payload.minGranularity && payload.incident.code === 'i-switch-port-flap') {
+                return payload.minGranularity
+              }
+
+              // For all other cases, use the default calculateGranularity function
+              const calculatedGranularity = calculateGranularity(
+                payload.incident.startTime,
+                payload.incident.endTime,
+                payload.minGranularity
+              )
+              return calculatedGranularity
+            })()
           }
         }
       },

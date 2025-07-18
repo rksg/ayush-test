@@ -10,7 +10,8 @@ import { RuckusAiDog }                                                   from '@
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
-import AICanvasModal from '../AICanvas'
+import AICanvasModal   from '../AICanvas'
+import AICanvasModalQ2 from '../AICanvas/archived/AICanvasQ2'
 
 import BasicInformationPage    from './BasicInformationPage'
 import Congratulations         from './Congratulations'
@@ -31,6 +32,7 @@ export default function RuckusAiButton () {
   const { $t } = useIntl()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+  const isCanvasQ3Enabled = useIsSplitOn(Features.CANVAS_Q3)
 
   const [basicFormRef] = Form.useForm()
 
@@ -279,9 +281,11 @@ export default function RuckusAiButton () {
         }}
       />
     }
-    {
-      isModalOpen && <AICanvasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-    }
+    {isModalOpen && (
+      isCanvasQ3Enabled ?
+        <AICanvasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/> :
+        <AICanvasModalQ2 isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+    )}
     <UI.GptModal
       needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
       titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}

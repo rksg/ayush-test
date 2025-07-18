@@ -75,6 +75,8 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
   const isDataConnectorEnabled = useIsSplitOn(Features.RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isAdminSettingsEnabled = useIsSplitOn(
+    Features.RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE)
   return buildMenu([{
     uri: '/dashboard',
     canAccess: canAccess('READ_DASHBOARD'),
@@ -235,7 +237,13 @@ export function useMenuConfig () {
     children: [{
       type: 'group' as const,
       label: $t({ defaultMessage: 'Account Management' }),
-      children: [{
+      children: [...(
+        isAdminSettingsEnabled ? [{
+          canAccess: canAccess('READ_TENANT_SETTINGS'),
+          uri: '/admin/settings',
+          label: $t({ defaultMessage: 'Settings' })
+        }] : []
+      ), {
         canAccess: canAccessOnboardedSystems(),
         uri: '/admin/onboarded',
         label: $t({ defaultMessage: 'Onboarded Systems' })

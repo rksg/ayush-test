@@ -65,6 +65,10 @@ jest.mock('../AICanvas', () => () => {
   return <div data-testid='canvas-editor' />
 })
 
+jest.mock('../AICanvas/archived/AICanvasQ2', () => () => {
+  return <div data-testid='canvas-editor-q2' />
+})
+
 jest.mock(
   'rc/Widgets',
   () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
@@ -299,6 +303,24 @@ describe('Dashboard', () => {
       await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit in Canvas Editor' }))
       expect(await screen.findByTestId('canvas-editor')).toBeVisible()
+    })
+
+    it('should edit dashboard canvas Q2 correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS_Q3)
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      await waitFor(async ()=>{
+        expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+      })
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      await userEvent.click(dashboardMoreBtn[1])
+      await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit in Canvas Editor' }))
+      expect(await screen.findByTestId('canvas-editor-q2')).toBeVisible()
     })
 
     it('should remove dashboard canvas correctly', async () => {
