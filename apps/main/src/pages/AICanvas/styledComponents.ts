@@ -194,7 +194,6 @@ display: flex;
       align-items: center;
       cursor: default;
       span {
-        margin-left: -50px;
         font-family: var(--acx-accent-brand-font);
         font-weight: 600;
         font-size: 15px;
@@ -203,7 +202,7 @@ display: flex;
     .actions{
       display: flex;
       align-items: center;
-      width: 100px;
+      width: 60px;
       justify-content: space-between;
       color: #000;
       svg {

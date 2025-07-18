@@ -33,15 +33,15 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const tableData = [] as SubInterfaceTableData[]
   const edgeNodeList = clusterInfo?.edgeList
   // eslint-disable-next-line max-len
-  const allLagMemberIds = lagData.flatMap(({ lags }) => lags.flatMap(lag => lag.lagMembers.map(member => member.portId)))
+  const allLagMemberIds = lagData.flatMap(({ lags }) => lags.flatMap(lag => lag.lagMembers?.map(member => member.portId)))
 
   Object.entries(portSubInterfaceData).forEach(([serialNumber, subInterfaces = {}]) => {
     Object.entries(subInterfaces).forEach(([portId, subInterface = []]) => {
-      // eslint-disable-next-line max-len
       if(allLagMemberIds.includes(portId)) return
+
       subInterface.forEach((subInterface) => {
         // eslint-disable-next-line max-len
-        const currentPortInfo = Object.values(portData?.[serialNumber])?.find(item => item[0].id === portId)?.[0]
+        const currentPortInfo = Object.values(portData?.[serialNumber] ?? {})?.find(item => item[0].id === portId)?.[0]
         tableData.push({
           ...subInterface,
           serialNumber,
