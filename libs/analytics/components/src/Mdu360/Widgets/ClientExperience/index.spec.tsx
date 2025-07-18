@@ -86,7 +86,7 @@ describe('ClientExperience', () => {
     fireEvent.click(dataUsageSwitch)
     expect(screen.getByText('Sparkline')).toBeVisible()
     expect(screen.getByText(/Connection Success/)).toBeVisible()
-    expect(screen.getByText(/Throughput Wi-Fi/)).toBeVisible()
+    expect(screen.getByText(/Wireless Client Throughput/)).toBeVisible();
     expect(screen.getByText(/Time to Connect/)).toBeVisible()
     expect(screen.getAllByText('16%')).toHaveLength(1) // connection success
     expect(screen.getAllByText('15%')).toHaveLength(1) // ttc

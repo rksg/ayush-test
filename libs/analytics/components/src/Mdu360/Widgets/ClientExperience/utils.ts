@@ -5,8 +5,7 @@ import { SLAKeys } from '../../types'
 import { SLAData } from '../SLA/services'
 
 export interface SLAConfig {
-  starRatingTitle: string
-  sparklineTitle: string
+  title: string
   shortText?: string
 }
 
@@ -57,26 +56,21 @@ export const getConfig = (
   }
   return {
     [SLAKeys.connectionSuccessSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Connection Success' }),
-      sparklineTitle: $t({ defaultMessage: 'Connection Success' })
+      title: $t({ defaultMessage: 'Connection Success' })
     },
     [SLAKeys.clientThroughputSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Wireless Client Throughput' }),
-      sparklineTitle: $t({ defaultMessage: 'Throughput Wi-Fi' }),
+      title: $t({ defaultMessage: 'Wireless Client Throughput' }),
       shortText: getClientThroughputShortText()
     },
     [SLAKeys.timeToConnectSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Time to Connect' }),
-      sparklineTitle: $t({ defaultMessage: 'Time to Connect' }),
+      title: $t({ defaultMessage: 'Time to Connect' }),
       shortText: getTimeToConnectShortText()
     },
     [SLAKeys.channelWidthSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Channel Width Experience' }),
-      sparklineTitle: $t({ defaultMessage: 'Channel Width' })
+      title: $t({ defaultMessage: 'Channel Width Experience' })
     },
     [SLAKeys.channelChangeExperienceSLA]: {
-      starRatingTitle: $t({ defaultMessage: 'Channel Change Experience' }),
-      sparklineTitle: $t({ defaultMessage: 'Channel Change Experience' })
+      title: $t({ defaultMessage: 'Channel Change Experience' })
     }
   }
 }

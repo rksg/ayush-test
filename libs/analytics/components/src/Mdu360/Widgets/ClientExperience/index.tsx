@@ -26,11 +26,10 @@ import { StarRatingContainer, SparklineContainer }    from './styledComponents'
 import { getConfig, getPercentage, getSparklineData } from './utils'
 
 interface SLA {
+  title: string
   // starRating
-  starRatingTitle: string
   percentage: number
   // sparkline
-  sparklineTitle: string
   percentageText: string
   data: number[]
   shortText?: string
@@ -59,15 +58,13 @@ const getSlaMap = (
     const percentage = getPercentage(value)
     if (percentage.percentage) {
       const {
-        starRatingTitle,
-        sparklineTitle,
+        title,
         shortText
       } = config[slaKey]
       sla[slaKey] = ({
         ...percentage,
         shortText,
-        starRatingTitle,
-        sparklineTitle,
+        title,
         data: value
       })
     }
@@ -105,10 +102,10 @@ const ClientExperience = ({
         children:
           sla.length > 0 ? (
             <StarRatingContainer>
-              {sla.map(({ starRatingTitle, percentage }) => (
+              {sla.map(({ title, percentage }) => (
                 <StarRating
-                  key={`starRated-${starRatingTitle}`}
-                  name={starRatingTitle}
+                  key={`starRated-${title}`}
+                  name={title}
                   percentage={percentage}
                 />
               ))}
@@ -124,10 +121,10 @@ const ClientExperience = ({
           sla.length > 0 ? (
             <SparklineContainer>
               {sla.map(
-                ({ sparklineTitle, percentageText, data, shortText }) => (
+                ({ title, percentageText, data, shortText }) => (
                   <Sparkline
-                    key={`sparkline-${sparklineTitle}`}
-                    name={sparklineTitle}
+                    key={`sparkline-${title}`}
+                    name={title}
                     sparklineData={getSparklineData(data)}
                     percentageText={percentageText}
                     shortText={shortText}
