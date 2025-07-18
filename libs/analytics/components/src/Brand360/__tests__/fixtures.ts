@@ -214,7 +214,8 @@ export const propertiesMappingData = { data: [
     integrator: '4',
     integrators: ['1'],
     installerCount: 0,
-    integratorCount: 1
+    integratorCount: 1,
+    propertyCode: 'PropertyCode1'
   },
   {
     id: '2',
@@ -229,7 +230,8 @@ export const propertiesMappingData = { data: [
     integrator: '4',
     integrators: ['1'],
     installerCount: 0,
-    integratorCount: 1
+    integratorCount: 1,
+    propertyCode: 'PropertyCode2'
   },
   {
     id: '3',
@@ -244,7 +246,8 @@ export const propertiesMappingData = { data: [
     integrator: '4',
     integrators: ['1'],
     installerCount: 0,
-    integratorCount: 1
+    integratorCount: 1,
+    propertyCode: 'PropertyCode3'
   },
   {
     id: '4',

@@ -807,6 +807,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const payload = (arg.payload ?? {}) as {
           searchString?: string,
           fields?: string[],
+          filters?: Record<string, unknown[]>,
           page?: number,
           pageSize?: number }
 
@@ -815,6 +816,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: JSON.stringify({
             ...payload,
             filters: {
+              ...payload.filters,
               'venueApGroups.apGroupIds': [apGroupId]
             }
           })
