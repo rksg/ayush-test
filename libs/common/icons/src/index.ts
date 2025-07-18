@@ -253,6 +253,7 @@ export { ReactComponent as MspSubscriptionSolid } from './icons/MspSubscriptionS
 export { ReactComponent as Nest } from './icons/Nest.svg'
 export { ReactComponent as NetworksOutlined } from './icons/NetworksOutlined.svg'
 export { ReactComponent as NetworksSolid } from './icons/NetworksSolid.svg'
+export { ReactComponent as NewChat } from './icons/NewChat.svg'
 export { ReactComponent as Nintendo } from './icons/Nintendo.svg'
 export { ReactComponent as Nortel } from './icons/Nortel.svg'
 export { ReactComponent as NotificationOutlined } from './icons/NotificationOutlined.svg'

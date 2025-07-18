@@ -9,6 +9,8 @@ import {
   Network,
   NetworkType,
   NetworkTypeEnum,
+  networkTypes,
+  SupportNetworkTypes,
   useApContext
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
@@ -17,6 +19,7 @@ import { useTableQuery } from '@acx-ui/utils'
 
 const defaultPayload = {
   searchString: '',
+  searchTargetFields: ['name'],
   fields: [
     'name', 'description', 'nwSubType', 'vlan', 'cog', 'ssid',
     'vlanPool', 'tunnelWlanEnable', 'captiveType', 'venues', 'id'
@@ -32,11 +35,18 @@ export function ApNetworksTab () {
   const tableQuery = useTableQuery({
     useQuery: isWifiRbacEnabled? useGetRbacApNetworkListQuery : useApNetworkListQuery,
     defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    },
     apiParams,
     pagination: { settingsId }
   })
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
+    const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+      return { key: networkType, value: $t(networkTypes[networkType]) }
+    })
+
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
@@ -44,6 +54,7 @@ export function ApNetworksTab () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      searchable: true,
       render: function (_, row) {
         return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
           {row.name}
@@ -59,6 +70,7 @@ export function ApNetworksTab () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
+      filterable: networkTypesOptions,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
@@ -97,6 +109,8 @@ export function ApNetworksTab () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         rowKey='id'
       />
     </Loader>
