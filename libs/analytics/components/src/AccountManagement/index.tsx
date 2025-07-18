@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission }              from '@acx-ui/user'
 
+import { AdminSettings }       from '../AdminSettings'
 import { DevelopersTab }       from '../Developers'
 import { useWebhooks }         from '../Developers/Webhooks'
 import { useOnboardedSystems } from '../OnboardedSystems'
@@ -15,6 +16,7 @@ import { Support }             from '../Support'
 import { useUsers }            from '../Users'
 
 export enum AccountManagementTabEnum {
+  SETTINGS = 'settings',
   ONBOARDED_SYSTEMS = 'onboarded',
   USERS = 'users',
   LABELS = 'labels',
@@ -45,7 +47,15 @@ export const CountContext = createContext({} as CountContextType)
 const useTabs = (): Tab[] => {
   const { $t } = useIntl()
   const tenant = getUserProfile()
+  const isAdminSettingsEnabled = useIsSplitOn(
+    Features.RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE)
 
+  const settingsTab: Tab = {
+    key: AccountManagementTabEnum.SETTINGS,
+    canAccess: hasPermission({ permission: 'READ_TENANT_SETTINGS' }),
+    title: $t({ defaultMessage: 'Settings' }),
+    component: <AdminSettings />
+  }
   const onboardedSystemsTab: Tab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
     canAccess: tenant.tenants
@@ -102,6 +112,7 @@ const useTabs = (): Tab[] => {
   const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
 
   return [
+    ...(isAdminSettingsEnabled ? [settingsTab] : []),
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
     licenseTab, schedulesTab, isJwtEnabled ? developersTab : webhooksTab
   ].filter(tab => tab.canAccess)
