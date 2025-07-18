@@ -14,8 +14,7 @@ import {
   TableProps,
   Modal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DeleteOutlined }         from '@acx-ui/icons'
+import { DeleteOutlined }   from '@acx-ui/icons'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
@@ -23,7 +22,7 @@ import {
   checkItemNotIncluded,
   DnsProxyRule,
   networkWifiDualModeIpRegExp,
-  useConfigTemplate
+  ipModeValidatorSelector
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -210,8 +209,8 @@ export function DnsProxyModalRuleModal (props: {
   const [form] = Form.useForm()
   const { modalState, setModalState } = props
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
-  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
+  const IpAddresslValidator =
+  ipModeValidatorSelector(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
 
   const resetRuleModal = () => {
     setModalState({
@@ -314,8 +313,7 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => (isApIpModeFFEnabled && !isTemplate)
-          ? networkWifiDualModeIpRegExp(value) : networkWifiIpRegExp(value) }
+        { validator: (_, value) => IpAddresslValidator(value) }
       ]}
       validateFirst
       children={<Input />}
