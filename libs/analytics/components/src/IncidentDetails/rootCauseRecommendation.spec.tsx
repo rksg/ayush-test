@@ -18,10 +18,6 @@ import {
   TenantLinkWrapper
 } from './rootCauseRecommendation'
 
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
-
 const baseIncident = fakeIncident({
   id: '1',
   startTime: '2022-08-19T00:00:00.000Z',
@@ -543,6 +539,7 @@ describe('getRootCauseAndRecommendations', () => {
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data when only isLargeMgmtFrameCount is true', () => {
+      jest.mocked(get).mockReturnValue('true')
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: false },
@@ -587,6 +584,7 @@ describe('getRootCauseAndRecommendations', () => {
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data when isLargeMgmtFrameCount and isAclbRaised true', () => {
+      jest.mocked(get).mockReturnValue('true')
       const checks = [
         { isHighDensityWifiDevices: false },
         { isAclbRaised: true },
