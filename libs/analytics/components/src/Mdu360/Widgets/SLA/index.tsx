@@ -41,14 +41,11 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
     }
   }, [initialSLAs])
 
-  const hasUnsynced = Object.values(initialSLAs).some(
-    ({ isSynced }) => !isSynced
-  )
-  const hasDefaultValue = Object.values(initialSLAs).some(
-    ({ isDefault }) => isDefault
-  )
   const hasValuesChanged = !isEqual(currentSLAs, initialSLAs)
-  const haveChanges = hasValuesChanged || hasDefaultValue || hasUnsynced
+  const hasUnsyncedOrDefault = Object.values(initialSLAs).some(
+    ({ isSynced, isDefault }) => !isSynced || isDefault
+  )
+  const haveChanges = hasValuesChanged || hasUnsyncedOrDefault
 
   const onSliderChange = (key: SLAKeys, index: number, splits: number[]) => {
     const value = splits[index]
@@ -60,13 +57,13 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
 
   const resetCurrentSLAs = () => setCurrentSLAs(initialSLAs)
   const applyCurrentSLAs = () => {
-    const slasToUpdate: Record<string, number> = {}
-    for (const [key, { value, isDefault }] of Object.entries(currentSLAs)) {
-      if (!isDefault && isEqual(value, initialSLAs[key as SLAKeys]?.value)) {
-        continue
-      }
-      slasToUpdate[key] = value
-    }
+    const slasToUpdate = Object.fromEntries(
+      Object.entries(currentSLAs)
+        .filter(([key, { value, isDefault, isSynced }]) =>
+          !isSynced || isDefault || !isEqual(value, initialSLAs[key as SLAKeys]?.value)
+        )
+        .map(([key, { value }]) => [key, value])
+    )
 
     if (Object.keys(slasToUpdate).length === 0) {
       return

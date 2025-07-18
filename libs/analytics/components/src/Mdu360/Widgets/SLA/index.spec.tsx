@@ -125,6 +125,19 @@ describe('SLA', () => {
     expect(screen.getByRole('button', { name: 'Reset' })).toBeDisabled()
   })
 
+  it('should show enabled apply when kpi using default values', () => {
+    render(
+      <SLA
+        mspEcIds={[]}
+        queryResults={
+          { data: mockDataWithDefaultAndUnsynced } as UseQueryResult<SLAData>
+        }
+      />)
+
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeDisabled()
+  })
+
   it('should enable apply and reset when kpi is update and call mutation on click', async () => {
     const mockUpdateMutation = jest.fn();
     (useUpdateSlaThresholdsMutation as jest.Mock).mockReturnValue([
@@ -183,4 +196,5 @@ describe('SLA', () => {
     )
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
   })
+
 })
