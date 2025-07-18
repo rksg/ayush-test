@@ -23,7 +23,9 @@ import {
   useConfigTemplate,
   ConfigTemplateUrlsInfo,
   ConfigTemplateType,
-  doProfileDelete
+  doProfileDelete,
+  networkTypes,
+  SupportNetworkTypes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -80,14 +82,20 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
     }
     return _securityProtocol
   }
+
+  const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+    return { key: networkType, value: intl.$t(networkTypes[networkType]) }
+  })
+
   const columns: TableProps<Network|WifiNetwork>['columns'] = [
     {
       key: 'name',
       title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
-      sorter: true,
       fixed: 'left',
+      sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (_, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
           return row.name
@@ -121,6 +129,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
       title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
+      filterable: networkTypesOptions,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
@@ -288,6 +297,7 @@ export const defaultNetworkPayload = {
 
 export const defaultRbacNetworkPayload = {
   searchString: '',
+  searchTargetFields: ['name'],
   fields: [
     'name',
     'description',
@@ -487,13 +497,13 @@ export function NetworkTable ({
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         expandedRowKeys={expandedRowKeys}
         expandIconColumnIndex={-1}
-        expandIcon={
-          () => <></>
-        }
+        expandIcon={() => <></>}
         expandable={expandable}
+        enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
         rowSelection={showRowSelection && {
           type: 'radio',

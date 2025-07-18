@@ -7,7 +7,7 @@ import { MspEc }                               from '@acx-ui/msp/utils'
 import { getIntl, noDataDisplay, TableResult } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
-export type ChartKey = 'incident' | 'experience' | 'compliance' | 'mdu'
+export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
 type SortResult = -1 | 0 | 1
@@ -20,11 +20,13 @@ export interface Common {
   deviceCount: number
   avgConnSuccess: number | null,
   avgTTC: number | null,
-  avgClientThroughput: number | null,
-  prospectCountSLA: number
+  avgClientThroughput: number | null
 }
-export interface Property extends Common {
+export interface Property extends PropertyCode, Common {
   property: string
+}
+export interface PropertyCode {
+  propertyCode: string
 }
 export interface Lsp extends Common {
   propertyCount: number
@@ -35,6 +37,7 @@ interface TransformedItem {
   type: string
   content: object[]
   integrators?: string[]
+  propertyCode?: string
 }
 
 export interface TransformedMap {
@@ -87,8 +90,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       clientThroughput,
       p1Incidents,
       ssidCompliance,
-      deviceCount,
-      prospectCountSLA
+      deviceCount
     } = properties.reduce(
       (acc, cur) => ({
         connSuccess: [
@@ -106,8 +108,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
           acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
           acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
-        deviceCount: acc.deviceCount + checkNaN(cur.deviceCount),
-        prospectCountSLA: acc.prospectCountSLA + cur.prospectCountSLA
+        deviceCount: acc.deviceCount + checkNaN(cur.deviceCount)
       }),
       {
         connSuccess: [0, 0],
@@ -115,8 +116,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
         clientThroughput: [0, 0],
         p1Incidents: 0,
         ssidCompliance: [0, 0],
-        deviceCount: 0,
-        prospectCountSLA: 0
+        deviceCount: 0
       }
     )
     const avgConnSuccess = checkPropertiesForNaN(properties, 'avgConnSuccess', connSuccess)
@@ -141,8 +141,7 @@ export const transformToLspView = (properties: Response[], lspLabel: string): Ls
       p1Incidents: allPropertiesHaveInvalidData ? NaN : p1Incidents,
       ssidCompliance: validatedSsidCompliance,
       deviceCount: allPropertiesHaveInvalidData ? NaN : deviceCount,
-      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput),
-      prospectCountSLA
+      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput)
     }
   })
 }
@@ -162,6 +161,7 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
         : null
     return {
       ...property,
+      propertyCode: property.propertyCode,
       ssidCompliance,
       avgConnSuccess,
       avgClientThroughput,
@@ -190,9 +190,7 @@ export const slaKpiConfig = {
     order: 'asc'
   },
   experience: {
-    getTitle: (isMDU: boolean) => isMDU // istanbul ignore next
-      ? defineMessage({ defaultMessage: 'Resident Experience' })
-      : defineMessage({ defaultMessage: 'Guest Experience' }),
+    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
     dataKey: 'guestExp',
     avg: true,
     formatter: formatter('percentFormat'),
@@ -204,15 +202,6 @@ export const slaKpiConfig = {
     dataKey: 'ssidCompliance',
     avg: true,
     formatter: formatter('percentFormat'),
-    direction: 'high',
-    order: 'desc'
-  },
-  mdu: {
-    getTitle: // istanbul ignore next
-      () => defineMessage({ defaultMessage: '# of Prospects' }),
-    dataKey: 'prospectCountSLA',
-    avg: true,
-    formatter: formatter('countFormat'),
     direction: 'high',
     order: 'desc'
   }
@@ -229,7 +218,8 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
       integrators: groupedById[key][0].integrator
         ? [groupedById[key][0]?.integrator as string]
         : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
-      content: groupedById[key]
+      content: groupedById[key],
+      propertyCode: groupedById[key][0].propertyCode
     }
     return newObj
   }, {} as TransformedMap)
@@ -237,8 +227,7 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
 
 export const transformVenuesData = (
   venuesData: { data: BrandVenuesSLA[] },
-  lookupAndMappingData: TransformedMap,
-  isMDU: boolean
+  lookupAndMappingData: TransformedMap
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
@@ -254,21 +243,16 @@ export const transformVenuesData = (
     mappingData.type === 'MSP_REC' && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
+      propertyCode: mappingData?.propertyCode,
       lsps: mappingData?.integrators?.length
         ? mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
         : ['-'],
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0)
         : NaN,
-      ssidCompliance: isMDU
-        ? [0, 0]
-        : sumData(
-          tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
-        ) as [number, number],
-      prospectCountSLA: isMDU
-        ? tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.prospectCountSLA || 0), 0) : 0
-        : 0,
+      ssidCompliance: sumData(
+        tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
+      ) as [number, number],
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
         (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : NaN,
