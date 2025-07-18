@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -41,6 +43,8 @@ function getIntentAISummaryChartData (data: IntentSummary | undefined): DonutCha
   return hasData(intentAISummaryChartData) ? intentAISummaryChartData : []
 }
 
+// Temporary eslint-disable until filters are used
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function IntentAISummary ({ filters }: { filters: Mdu360TabProps }) {
   const { $t } = useIntl()
 
@@ -48,7 +52,9 @@ export function IntentAISummary ({ filters }: { filters: Mdu360TabProps }) {
     path: [{ type: 'network', name: 'Network' }] // replace this with the path when provided by ResidentExperienceTab
   })
 
-  const chartData: DonutChartData[] = getIntentAISummaryChartData(queryResults.data)
+  const chartData: DonutChartData[] = useMemo(() => {
+    return getIntentAISummaryChartData(queryResults.data)
+  }, [queryResults.data])
 
   return (
     <Loader>

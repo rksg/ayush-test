@@ -11,10 +11,10 @@ export type SummaryItem = {
 }
 
 export type IntentSummary = {
-  rrm?: SummaryItem
-  probeflex?: SummaryItem
-  ops?: SummaryItem
-  ecoflex?: SummaryItem
+  rrm: SummaryItem
+  probeflex: SummaryItem
+  ops: SummaryItem
+  ecoflex: SummaryItem
 }
 
 export interface Payload {
