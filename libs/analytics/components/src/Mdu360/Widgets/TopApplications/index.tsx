@@ -9,7 +9,7 @@ import { formats }                                                              
 import { ContentSwitcherWrapper } from '../../styledComponents'
 import { Mdu360TabProps }         from '../../types'
 
-import { useMduTopNApplicationsQuery }       from './services'
+import { useMduTopNApplicationsQuery }    from './services'
 import { ApplicationData, renderContent } from './utils'
 
 
