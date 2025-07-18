@@ -35,6 +35,13 @@ jest.mock('react-intl', () => {
     defineMessage: mockDefineMessage
   }
 })
+
+const mockUseIsSplitOnWithFeatures = (enabledFeatures: Features[]) => {
+  jest.mocked(useIsSplitOn).mockImplementation(split =>
+    enabledFeatures.includes(split as Features)
+  )
+}
+
 const permissions = Object.keys(raiPermissionsList)
   .filter(v => isNaN(Number(v)))
   .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
@@ -154,6 +161,7 @@ describe('useMenuConfig', () => {
   describe('Administration', () => {
     const getPermissions = (enabled: boolean) => ({
       ...permissions,
+      READ_TENANT_SETTINGS: enabled,
       READ_ONBOARDED_SYSTEMS: enabled,
       READ_USERS: enabled,
       READ_LABELS: enabled,
@@ -164,6 +172,7 @@ describe('useMenuConfig', () => {
       READ_WEBHOOKS: enabled
     })
     const adminRoutes = [
+      { uri: '/admin/settings' },
       { uri: '/admin/onboarded' },
       { uri: '/admin/users' },
       { uri: '/analytics/admin/labels', openNewTab: true },
@@ -184,6 +193,9 @@ describe('useMenuConfig', () => {
         tenants: [{ ...profile.tenants[0], permissions }]
       })
       setRaiPermissions(permissions)
+      mockUseIsSplitOnWithFeatures([
+        Features.RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE
+      ])
       const { result } = renderHook(() => useMenuConfig(), { route: true })
       const configs = flattenConfig(result.current)
       adminRoutes.forEach(route => expect(find(configs, route)).toBeDefined())
@@ -201,10 +213,10 @@ describe('useMenuConfig', () => {
       adminRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
     })
     it('shows Developers menu if JWT is enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation((split) => {
-        if (split === Features.RUCKUS_AI_JWT_TOGGLE) return true
-        return false
-      })
+      mockUseIsSplitOnWithFeatures([
+        Features.RUCKUS_AI_JWT_TOGGLE,
+        Features.RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE
+      ])
       const permissions = getPermissions(true)
       jest.mocked(getUserProfile).mockReturnValue({
         ...profile,
