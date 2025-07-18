@@ -1,11 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { get }                                  from '@acx-ui/config'
 import { Provider, store, rbacApi, rbacApiURL } from '@acx-ui/store'
 import { render, screen, waitFor, mockServer }  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions }    from '@acx-ui/user'
 
 import { NotificationSettings } from '../NotificationSettings'
+
 
 import { Profile, ProfileTabEnum } from '.'
 
@@ -35,11 +37,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   })
 }))
 
-
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn(() => true)
-}))
-
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn(() => (sampleProfile))
@@ -59,6 +56,7 @@ describe('Profile', () => {
     store.dispatch(rbacApi.util.resetApiState())
     mockedUsedNavigate.mockReset()
     setRaiPermissions({ READ_INCIDENTS: true } as RaiPermissions)
+    jest.mocked(get).mockReturnValue('true')
   })
   it('should render with notifications', async () => {
     render(<Profile />,
