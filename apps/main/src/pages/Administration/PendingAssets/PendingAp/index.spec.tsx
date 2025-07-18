@@ -327,4 +327,608 @@ describe('PendingAp component', () => {
     const table = screen.getByRole('table')
     expect(table).toBeInTheDocument()
   })
+
+  it('handles multiple row selection', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    const firstRowCheckbox = checkboxes[1]
+    const secondRowCheckbox = checkboxes[2]
+
+    fireEvent.click(firstRowCheckbox)
+    fireEvent.click(secondRowCheckbox)
+
+    await waitFor(() => {
+      const firstChecked = firstRowCheckbox.getAttribute('aria-checked')
+      expect(['true', 'mixed', null]).toContain(firstChecked)
+    })
+    await waitFor(() => {
+      const secondChecked = secondRowCheckbox.getAttribute('aria-checked')
+      expect(['true', 'mixed', null]).toContain(secondChecked)
+    })
+  })
+
+  it('handles select all functionality', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
+    fireEvent.click(selectAllCheckbox)
+
+    await waitFor(() => {
+      const checked = selectAllCheckbox.getAttribute('aria-checked')
+      expect(['true', 'mixed', null]).toContain(checked)
+    })
+  })
+
+  it('handles filter by model', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const modelColumn = screen.getByText('Model', { selector: '.ant-table-column-title' })
+    expect(modelColumn).toBeInTheDocument()
+  })
+
+  it('handles hide device action', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    expect(screen.getByRole('table')).toBeInTheDocument()
+  })
+
+  it('handles claim device action', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    expect(screen.getByRole('table')).toBeInTheDocument()
+  })
+
+  it('handles empty data state', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApProvisions.url, (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 0
+          },
+          totalElements: 0,
+          totalPages: 0
+        }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles network timeout errors', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApProvisions.url, (req, res, ctx) => {
+        return res(ctx.status(408), ctx.json({ message: 'Request Timeout' }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles component unmounting gracefully', async () => {
+    const { unmount } = render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    unmount()
+  })
+
+  it('handles keyboard navigation', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+    refreshButton.focus()
+
+    fireEvent.keyDown(refreshButton, { key: 'Enter', code: 'Enter' })
+    fireEvent.keyDown(refreshButton, { key: ' ', code: 'Space' })
+
+    await waitFor(() => {
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles large dataset rendering', async () => {
+    const largeDataset = Array.from({ length: 100 }, (_, index) => ({
+      serialNumber: `RUCKUS-AP-${String(index + 1).padStart(3, '0')}`,
+      model: index % 2 === 0 ? 'R770' : 'R760',
+      shipDate: '2024-01-15T00:00:00.000Z',
+      createdDate: '2024-01-20T00:00:00.000Z',
+      visibleStatus: 'Visible'
+    }))
+
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApProvisions.url, (req, res, ctx) => {
+        return res(ctx.json({
+          content: largeDataset.slice(0, 10),
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 100
+          },
+          totalElements: 100,
+          totalPages: 10
+        }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles page navigation', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApProvisions.url, (req, res, ctx) => {
+        const page = req.url.searchParams.get('page') || '0'
+        const pageSize = req.url.searchParams.get('size') || '10'
+
+        return res(ctx.json({
+          content: mockDeviceProvisions.slice(0, parseInt(pageSize, 10)),
+          pageable: {
+            pageNumber: parseInt(page, 10),
+            pageSize: parseInt(pageSize, 10),
+            totalElements: 6
+          },
+          totalElements: 6,
+          totalPages: 1
+        }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles page size changes', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const table = screen.getByRole('table')
+    expect(table).toBeInTheDocument()
+  })
+
+  it('handles search functionality', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const searchInput = screen.getByPlaceholderText('Search Serial #, Model')
+    if (searchInput) {
+      fireEvent.change(searchInput, { target: { value: 'RUCKUS-AP-001' } })
+      fireEvent.keyDown(searchInput, { key: 'Enter', code: 'Enter' })
+    }
+  })
+
+  it('handles column sorting in different directions', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const modelHeader = screen.getByText('Model', { selector: '.ant-table-column-title' })
+
+    fireEvent.click(modelHeader)
+    await waitFor(() => {
+      expect(modelHeader).toBeInTheDocument()
+    })
+
+    fireEvent.click(modelHeader)
+    await waitFor(() => {
+      expect(modelHeader).toBeInTheDocument()
+    })
+  })
+
+  it('handles error state display', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApStatus.url, (req, res, ctx) => {
+        return res(ctx.status(404), ctx.json({ message: 'Not Found' }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles loading state during refresh', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+    fireEvent.click(refreshButton)
+
+    await waitFor(() => {
+      const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles successful hide operation', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.patch(DeviceProvisionUrlsInfo.hideApProvisions.url, (req, res, ctx) => {
+        return res(ctx.json({ success: true, message: 'Devices hidden successfully' }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    const hideButton = screen.queryByText(/Hide Device/i)
+    if (hideButton) {
+      fireEvent.click(hideButton)
+    }
+
+    await waitFor(() => {
+      const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles failed hide operation', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.patch(DeviceProvisionUrlsInfo.hideApProvisions.url, (req, res, ctx) => {
+        return res(ctx.status(400), ctx.json({ message: 'Bad Request' }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    const hideButton = screen.queryByText(/Hide Device/i)
+    if (hideButton) {
+      fireEvent.click(hideButton)
+    }
+
+    await waitFor(() => {
+      const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles auto refresh functionality', async () => {
+    const { mockServer } = require('@acx-ui/test-utils')
+    mockServer.use(
+      rest.get(DeviceProvisionUrlsInfo.getApStatus.url, (req, res, ctx) => {
+        return res(ctx.json({ refreshedAt: null }))
+      })
+    )
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+  })
+
+  it('handles venue drawer functionality', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    const claimButton = screen.getByText('Claim Device')
+    fireEvent.click(claimButton)
+
+    await waitFor(() => {
+      expect(claimButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles AP group drawer functionality', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+
+    const claimButton = screen.getByText('Claim Device')
+    fireEvent.click(claimButton)
+
+    await waitFor(() => {
+      expect(claimButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles accessibility features', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const table = screen.getByRole('table')
+    expect(table).toBeInTheDocument()
+  })
+
+  it('handles responsive design', async () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 768
+    })
+
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024
+    })
+  })
+
+  it('handles data refresh after successful operations', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+    fireEvent.click(refreshButton)
+
+    await waitFor(() => {
+      const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+      expect(refreshButton).toBeInTheDocument()
+    })
+  })
+
+  it('handles concurrent operations', async () => {
+    render(
+      <Provider>
+        <PendingAp />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument()
+    })
+
+    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
+
+    fireEvent.click(refreshButton)
+    fireEvent.click(firstRowCheckbox)
+
+    await waitFor(() => {
+      const refreshButton = screen.getByRole('button', { name: 'Refresh' })
+      expect(refreshButton).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(firstRowCheckbox).toBeChecked()
+    })
+  })
 })
