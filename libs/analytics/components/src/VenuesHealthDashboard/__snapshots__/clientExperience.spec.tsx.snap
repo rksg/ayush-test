@@ -2,7 +2,13 @@
 
 exports[`Client Experience should render for empty data: NoData 1`] = `
 <DocumentFragment>
-  .c3 {
+  .c5 {
+  width: 20px;
+  height: 20px;
+  margin-right: -8px;
+}
+
+.c3 {
   width: 16px;
   height: 16px;
 }
@@ -13,6 +19,17 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
 
 .c3 circle {
   fill: var(--acx-neutrals-50);
+}
+
+.c4 {
+  border: none;
+  padding: 0;
+}
+
+.c4.c4.c4.c4.ant-btn-icon-only {
+  width: 16px;
+  height: 16px;
+  min-width: unset;
 }
 
 .c1 {
@@ -105,14 +122,14 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
   height: 100%;
 }
 
-.c4 {
+.c6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
 
-.c5 {
+.c7 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -126,13 +143,13 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
   min-width: 0;
 }
 
-.c6 .ant-progress-steps-outer .ant-progress-steps-item {
+.c8 .ant-progress-steps-outer .ant-progress-steps-item {
   width: 6px !important;
   border-radius: 2px;
 }
 
-.c6 .ant-progress-inner,
-.c6 .ant-progress-bg {
+.c8 .ant-progress-inner,
+.c8 .ant-progress-bg {
   border-radius: 0px 3px 3px 0px !important;
 }
 
@@ -187,7 +204,22 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only c4"
+                    title="Expand"
+                    type="button"
+                  >
+                    <svg
+                      class="c5"
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -205,27 +237,27 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     Connection Success
                   </div>
                 </div>
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     <div
                       class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
                         gradientmode="completion"
                       >
                         <div
@@ -233,11 +265,10 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                              style="width: 0%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -251,27 +282,27 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     Time To Connect
                   </div>
                 </div>
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     <div
                       class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
                         gradientmode="completion"
                       >
                         <div
@@ -279,11 +310,10 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                              style="width: 0%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -297,27 +327,27 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     Client Throughput
                   </div>
                 </div>
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     <div
                       class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
                         gradientmode="completion"
                       >
                         <div
@@ -325,11 +355,10 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                              style="width: 0%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -343,27 +372,27 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     Online APs
                   </div>
                 </div>
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     <div
                       class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
                         gradientmode="completion"
                       >
                         <div
@@ -371,11 +400,10 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                              style="width: 0%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -389,27 +417,27 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     AP Capacity
                   </div>
                 </div>
                 <div
-                  class="ant-col ant-col-12 c4"
+                  class="ant-col ant-col-12 c6"
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="c5"
+                    class="c7"
                   >
                     <div
                       class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
                         gradientmode="completion"
                       >
                         <div
@@ -417,11 +445,10 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                              style="width: 0%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -719,11 +746,10 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 73.88428515495194%; height: 10px; background: rgb(35, 171, 54);"
+                              style="width: 73.88428515495194%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -765,11 +791,10 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 73.62284333197731%; height: 10px; background: rgb(35, 171, 54);"
+                              style="width: 73.62284333197731%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -811,11 +836,10 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 79.54545454545455%; height: 10px; background: rgb(35, 171, 54);"
+                              style="width: 79.54545454545455%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -857,11 +881,10 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 67.05309396485866%; height: 10px; background: rgb(35, 171, 54);"
+                              style="width: 67.05309396485866%; height: 10px;"
                             />
                           </div>
                         </div>
@@ -903,11 +926,10 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
-                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 52.083333333333336%; height: 10px; background: rgb(249, 195, 75);"
+                              style="width: 52.083333333333336%; height: 10px;"
                             />
                           </div>
                         </div>
