@@ -30,7 +30,6 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 
-
 describe('ClientExperience', () => {
   beforeEach(() => {
     jest.clearAllMocks()

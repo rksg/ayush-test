@@ -36,12 +36,7 @@ interface SLA {
 
 const config = getConfig()
 
-const starRatingSLAKeys: SLAKeys[] = [
-  SLAKeys.connectionSuccessSLA,
-  SLAKeys.clientThroughputSLA,
-  SLAKeys.timeToConnectSLA
-]
-const sparklineSLAKeys: SLAKeys[] = [
+const slaKeysToShow: SLAKeys[] = [
   SLAKeys.connectionSuccessSLA,
   SLAKeys.timeToConnectSLA,
   SLAKeys.clientThroughputSLA
@@ -86,9 +81,8 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
     end
   })
 
-  const sla = getSlaMap(queryResults.data)
-  const starRatingSla = starRatingSLAKeys.map((key) => sla[key]).filter(Boolean)
-  const sparklineSla = sparklineSLAKeys.map((key) => sla[key]).filter(Boolean)
+  const slaData = getSlaMap(queryResults.data)
+  const sla = slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
     () => [
@@ -96,9 +90,9 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
         label: $t({ defaultMessage: 'Star Rated' }),
         value: 'starRated',
         children:
-          starRatingSla.length > 0 ? (
+          sla.length > 0 ? (
             <StarRatingContainer>
-              {starRatingSla.map(({ starRatingTitle, percentage }) => (
+              {sla.map(({ starRatingTitle, percentage }) => (
                 <StarRating
                   key={`starRated-${starRatingTitle}`}
                   name={starRatingTitle}
@@ -114,9 +108,9 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
         label: $t({ defaultMessage: 'Sparkline' }),
         value: 'sparkline',
         children:
-          sparklineSla.length > 0 ? (
+          sla.length > 0 ? (
             <SparklineContainer>
-              {sparklineSla.map(
+              {sla.map(
                 ({ sparklineTitle, percentageText, data, shortText }) => (
                   <Sparkline
                     key={`sparkline-${sparklineTitle}`}
@@ -133,7 +127,7 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
           )
       }
     ],
-    [$t, sparklineSla, starRatingSla]
+    [$t, sla]
   )
 
   return (
