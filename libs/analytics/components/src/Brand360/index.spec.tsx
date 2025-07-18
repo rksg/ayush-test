@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import type { Settings }                                                                               from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, rbacApiURL }                                                            from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
 import { WifiScopes }                                                                                  from '@acx-ui/types'
@@ -218,5 +218,18 @@ describe('Brand360', () => {
     const tiles = await screen.findAllByTestId('brand360Tile')
     const tile = tiles[0]
     expect(tile.textContent?.includes('property')).toBeTruthy()
+  })
+
+  it('uses mspPayloadTenantsQuery when propertyIdToggle is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.MSP_HSP_DISPLAY_UID_TOGGLE) return true
+      return true
+    })
+    services.useMspECListQuery = jest.fn().mockImplementation(({ payload }) => {
+      expect(payload.fields).toContain('propertyCode')
+      return { data: propertiesMappingData }
+    })
+    await render(<Provider><Brand360 /></Provider>)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
   })
 })

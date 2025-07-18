@@ -33,6 +33,9 @@ export default function useNetworksTable () {
   const tableQuery = usePollingTableQuery<Network|WifiNetwork>({
     useQuery: isApCompatibilitiesByModel? useEnhanceWifiNetworkTableQuery : (isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery),
     defaultPayload: (isApCompatibilitiesByModel || isWifiRbacEnabled)? defaultRbacNetworkPayload : defaultNetworkPayload,
+    search: {
+      searchTargetFields: defaultRbacNetworkPayload.searchTargetFields as string[]
+    },
     pagination: { settingsId }
   })
 

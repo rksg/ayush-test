@@ -56,8 +56,6 @@ const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const disabledFFs = [
   Features.G_MAP,
-  Features.WIFI_RBAC_API,
-  Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.EDGE_PIN_HA_TOGGLE,
   Features.EDGE_PIN_ENHANCE_TOGGLE,
@@ -230,86 +228,6 @@ describe('VenueNetworksTab', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('activate Network', async () => {
-    render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-    })
-    const row = await screen.findByRole('row', { name: /test_2/i })
-
-    const requestSpy = jest.fn()
-    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
-    newApGroupData[1].apGroups[0].id = 'test2'
-
-    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
-
-    services.useVenueNetworkListV2Query = jest.fn().mockImplementation(() => {
-      return { data: newMockVenueNetworkData }
-    })
-
-    services.useVenueNetworkTableV2Query = jest.fn().mockImplementation(() => {
-      return { data: newMockVenueNetworkData }
-    })
-
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.json({ requestId: '123' }))
-        }
-      )
-    )
-
-    const toogleButton = await within(row).findByRole('switch', { checked: false })
-    await userEvent.click(toogleButton)
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
-    const rows = await screen.findAllByRole('switch')
-    expect(rows).toHaveLength(2)
-    //await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
-  })
-
-  it('deactivate Network', async () => {
-    render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
-    })
-    const row = await screen.findByRole('row', { name: /test_1/i })
-
-    const requestSpy = jest.fn()
-    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
-    newApGroupData[0].apGroups[0].id = ''
-
-    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
-
-    services.useVenueNetworkListV2Query = jest.fn().mockImplementation(() => {
-      return { data: newMockVenueNetworkData }
-    })
-
-    services.useVenueNetworkTableV2Query = jest.fn().mockImplementation(() => {
-      return { data: newMockVenueNetworkData }
-    })
-
-    mockServer.use(
-      rest.delete(
-        WifiUrlsInfo.deleteNetworkVenue.url,
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.json({ requestId: '456' }))
-        }
-      )
-    )
-
-    const toogleButton = await within(row).findByRole('switch', { checked: true })
-    await userEvent.click(toogleButton)
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
-    const rows = await screen.findAllByRole('switch')
-    expect(rows).toHaveLength(2)
-    //await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-  })
-
   it('click VLAN, APs, Radios, Scheduling', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -344,7 +262,6 @@ describe('VenueNetworksTab', () => {
   })
 
   it('activate Network - rbac API', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
