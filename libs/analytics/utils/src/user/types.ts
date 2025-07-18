@@ -48,7 +48,7 @@ export type Settings = {
   'brand-name': string
   'lsp-name': string
   'property-name': string
-  'sla-prospect-count': string
+  'property-code-name': string
   'enabled-intent-features': string,
   'fetaure-related-events-suppression': string
 }

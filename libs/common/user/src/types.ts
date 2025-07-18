@@ -1,5 +1,5 @@
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { RolesEnum }                    from '@acx-ui/types'
+import { AccountTier, AccountVertical } from '@acx-ui/utils'
 
 export enum DetailLevel {
   BASIC_USER = 'ba',
@@ -205,6 +205,7 @@ export interface TenantDetails {
     mfaStatus: string
   }
   accountTier?: AccountTier;
+  accountVertical?: AccountVertical;
   subscribes?: string;
   extendedTrial?: boolean;
 }
