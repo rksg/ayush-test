@@ -32,16 +32,16 @@ export const getConfig = (): Record<SLAKeys, SLAConfig> => {
   const { $t } = getIntl()
   return {
     [SLAKeys.connectionSuccessSLA]: {
-      title: $t({ defaultMessage: 'Connection Success' }),
+      title: $t({ defaultMessage: 'Connection Success' })
+    },
+    [SLAKeys.clientThroughputSLA]: {
+      title: $t({ defaultMessage: 'Wireless Client Throughput' }),
       shortText: $t(
         { defaultMessage: 'About {threshold}' },
         {
           threshold: formatter('networkSpeedFormat')(defaultThreshold.clientThroughput)
         }
       )
-    },
-    [SLAKeys.clientThroughputSLA]: {
-      title: $t({ defaultMessage: 'Wireless Client Throughput' })
     },
     [SLAKeys.timeToConnectSLA]: {
       title: $t({ defaultMessage: 'Time to Connect' }),
