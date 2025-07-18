@@ -107,14 +107,14 @@ export const api = dataApi.injectEndpoints({
         variables: payload
       }),
       transformResponse: (response: SLAData) => getSlaThresholdValue(response),
-      providesTags: [{ type: 'MDU', id: 'thresholds' }]
+      providesTags: [{ type: 'MDU', id: 'kpi_threshold' }]
     }),
     updateSlaThresholds: build.mutation<SLAData, MutationPayload>({
       query: ({ slasToUpdate, ...payload }) => ({
         document: mduThresholdMutation(slasToUpdate),
         variables: { ...payload, ...slasToUpdate }
       }),
-      invalidatesTags: [{ type: 'MDU', id: 'thresholds' }]
+      invalidatesTags: [{ type: 'MDU', id: 'kpi_threshold' }]
     })
   })
 })
