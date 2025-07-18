@@ -9,14 +9,14 @@ import { formats }                                                              
 import { ContentSwitcherWrapper } from '../../styledComponents'
 import { Mdu360TabProps }         from '../../types'
 
-import { useTopNApplicationsQuery }       from './services'
+import { useMduTopNApplicationsQuery }       from './services'
 import { ApplicationData, renderContent } from './utils'
 
 
 export const TopApplications = ({ filters }: { filters: Mdu360TabProps }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
-  const queryResults = useTopNApplicationsQuery({
+  const queryResults = useMduTopNApplicationsQuery({
     path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
     start,
     end,

@@ -17,9 +17,9 @@ describe('TopApplications services', () => {
   }
 
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', { data: mockTopApplications })
+    mockGraphqlQuery(dataApiURL, 'MDUTopNApplications', { data: mockTopApplications })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.topNApplications.initiate(payload)
+      api.endpoints.mduTopNApplications.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toEqual(mockTopApplications.network.hierarchyNode)
@@ -27,12 +27,12 @@ describe('TopApplications services', () => {
   })
 
   it('should handle when no data', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'MDUTopNApplications', {
       data: { network: { hierarchyNode: {
         topNApplicationByClient: [], topNApplicationByTraffic: [] } } }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.topNApplications.initiate(payload)
+      api.endpoints.mduTopNApplications.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toEqual({ topNApplicationByClient: [], topNApplicationByTraffic: [] })
@@ -40,11 +40,11 @@ describe('TopApplications services', () => {
   })
 
   it('should handle error', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'MDUTopNApplications', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.topNApplications.initiate({} as Payload)
+      api.endpoints.mduTopNApplications.initiate({} as Payload)
     )
     expect(status).toBe('rejected')
     expect(data).toBeUndefined()
