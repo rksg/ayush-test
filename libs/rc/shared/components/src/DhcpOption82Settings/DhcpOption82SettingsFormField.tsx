@@ -280,7 +280,9 @@ export const DhcpOption82SettingsFormField = (props: {
         <UI.FieldLabelFullWidth>
           <DraggableTagField
             name={`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`}
-            options={Object.values(DhcpOption82SubOption1CustomizationType)}
+            options={Object.values(DhcpOption82SubOption1CustomizationType).filter(
+              option => option !== DhcpOption82SubOption1CustomizationType.USER_DEFINED
+            )}
             maxTags={8}
             readonly={readonly}
             onChange={(val) => {
