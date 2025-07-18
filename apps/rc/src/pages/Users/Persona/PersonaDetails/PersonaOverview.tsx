@@ -5,7 +5,7 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { IdentityHealth, Traffic } from '@acx-ui/analytics/components'
+import { IdentityHealth, Traffic, TopApplications } from '@acx-ui/analytics/components'
 import {
   Button,
   Card,
@@ -389,6 +389,11 @@ export function PersonaOverview ({
             </Card>
           </Loader>
         </GridCol>
+        {isIdentityAnalyticsEnabled && (
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <TopApplications />
+          </GridCol>
+        )}
       </GridRow>
       {externalIdentityData !== undefined &&
       <CommonAttributesDrawer
