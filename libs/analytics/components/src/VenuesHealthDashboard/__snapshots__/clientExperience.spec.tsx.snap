@@ -265,10 +265,11 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px;"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
                             />
                           </div>
                         </div>
@@ -310,10 +311,11 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px;"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
                             />
                           </div>
                         </div>
@@ -355,10 +357,11 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px;"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
                             />
                           </div>
                         </div>
@@ -400,10 +403,11 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px;"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
                             />
                           </div>
                         </div>
@@ -445,10 +449,11 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 0%; height: 10px;"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
                             />
                           </div>
                         </div>
@@ -746,10 +751,11 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 73.88428515495194%; height: 10px;"
+                              style="width: 73.88428515495194%; height: 10px; background: rgb(35, 171, 54);"
                             />
                           </div>
                         </div>
@@ -791,10 +797,11 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 73.62284333197731%; height: 10px;"
+                              style="width: 73.62284333197731%; height: 10px; background: rgb(35, 171, 54);"
                             />
                           </div>
                         </div>
@@ -836,10 +843,11 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 79.54545454545455%; height: 10px;"
+                              style="width: 79.54545454545455%; height: 10px; background: rgb(35, 171, 54);"
                             />
                           </div>
                         </div>
@@ -881,10 +889,11 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 67.05309396485866%; height: 10px;"
+                              style="width: 67.05309396485866%; height: 10px; background: rgb(35, 171, 54);"
                             />
                           </div>
                         </div>
@@ -926,10 +935,11 @@ exports[`Client Experience should render widget with proper data 1`] = `
                         >
                           <div
                             class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
                           >
                             <div
                               class="ant-progress-bg"
-                              style="width: 52.083333333333336%; height: 10px;"
+                              style="width: 52.083333333333336%; height: 10px; background: rgb(249, 195, 75);"
                             />
                           </div>
                         </div>
