@@ -19,7 +19,7 @@ import type { AnalyticsFilter }                                      from '@acx-
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import KpiSection from '.'
+import KpiSections, { KpiSection, defaultThreshold } from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -81,7 +81,7 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext }}
       >
-        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+        <KpiSections tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
       </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
     const loaders = await screen.findAllByRole('img', { name: 'loader' })
@@ -107,7 +107,7 @@ describe('Kpi Section', () => {
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ ...filters, filter }} />
+        <KpiSections tab={'overview'} filters={{ ...filters, filter }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -143,7 +143,7 @@ describe('Kpi Section', () => {
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ ...filters, filter }} />
+        <KpiSections tab={'overview'} filters={{ ...filters, filter }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -176,7 +176,7 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext, filter }}
       >
-        <KpiSection tab={'overview'}
+        <KpiSections tab={'overview'}
           filters={{ ...filters, filter, endDate: sampleTS.data[2] as unknown as string }}
         />
       </HealthPageContext.Provider>
@@ -205,7 +205,7 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext }}
       >
-        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+        <KpiSections tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
       </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -239,7 +239,7 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext }}
       >
-        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+        <KpiSections tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
       </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -252,5 +252,272 @@ describe('Kpi Section', () => {
     })
     expect(screen.queryByText('Apply')).not.toBeInTheDocument()
     expect(screen.queryByText('Reset')).not.toBeInTheDocument()
+  })
+
+  it('should render ContentSwitcher for sub-tab KPIs', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    // Mock sub-tab KPIs structure
+    const subTabKpis = {
+      System: ['switchMemoryUtilization', 'switchCpuUtilization'],
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Check that ContentSwitcher tabs are rendered
+    expect(await screen.findByText('System')).toBeInTheDocument()
+    expect(await screen.findByText('Table')).toBeInTheDocument()
+
+    // Check that only first KPI from System tab is shown initially (due to loadMoreState)
+    expect(await screen.findByText(/Memory Compliance/i)).toBeInTheDocument()
+    expect(screen.queryByText(/CPU Compliance/i)).not.toBeInTheDocument()
+  })
+
+  it('should switch between sub-tabs and show correct KPIs', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    const subTabKpis = {
+      System: ['switchMemoryUtilization', 'switchCpuUtilization'],
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Initially System tab should be active
+    expect(await screen.findByText(/Memory Compliance/i)).toBeInTheDocument()
+
+    // Click on Table tab
+    const tableTab = await screen.findByText('Table')
+    await userEvent.click(tableTab)
+
+    // Should show first KPI from Table tab
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Memory Compliance/i)).not.toBeInTheDocument()
+  })
+
+  it('should show "View more" button for sub-tabs and expand on click', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    const subTabKpis = {
+      System: ['switchMemoryUtilization', 'switchCpuUtilization', 'switchesTemperature'],
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Initially only first KPI should be shown
+    expect(await screen.findByText(/Memory Compliance/i)).toBeInTheDocument()
+    expect(screen.queryByText(/CPU Compliance/i)).not.toBeInTheDocument()
+
+    // Click "View more" button
+    const viewMoreButton = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMoreButton)
+
+    // Should now show all KPIs from System tab
+    expect(await screen.findByText(/CPU Compliance/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Temperature Compliance/i)).toBeInTheDocument()
+
+    // "View more" button should be hidden
+    expect(screen.queryByRole('button', { name: 'View more' })).not.toBeInTheDocument()
+  })
+
+  it('should handle multiple sub-tabs with different "View more" states', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    const subTabKpis = {
+      System: ['switchMemoryUtilization', 'switchCpuUtilization'],
+      Table: [
+        'switchIpv4UnicastUtilization',
+        'switchIpv6UnicastUtilization',
+        'switchIpv4MulticastUtilization'
+      ],
+      Network: ['switchPortUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // System tab should show "View more" (2 KPIs)
+    expect(await screen.findByText(/Memory Compliance/i)).toBeInTheDocument()
+    expect(screen.queryByText(/CPU Compliance/i)).not.toBeInTheDocument()
+
+    // Table tab should show "View more" (3 KPIs)
+    const tableTab = await screen.findByText('Table')
+    await userEvent.click(tableTab)
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
+    expect(screen.queryByText(/IPv6 Unicast/i)).not.toBeInTheDocument()
+
+    // Network tab should not show "View more" (1 KPI)
+    const networkTab = await screen.findByText('Network')
+    await userEvent.click(networkTab)
+    expect(await screen.findByText(/Port Utilization/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'View more' })).not.toBeInTheDocument()
+  })
+
+  it('should maintain sub-tab state when switching between tabs', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    const subTabKpis = {
+      System: ['switchMemoryUtilization', 'switchCpuUtilization'],
+      Table: ['switchIpv4UnicastUtilization', 'switchIpv6UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Expand System tab
+    const viewMoreSystem = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMoreSystem)
+    expect(await screen.findByText(/CPU Compliance/i)).toBeInTheDocument()
+
+    // Switch to Table tab
+    const tableTab = await screen.findByText('Table')
+    await userEvent.click(tableTab)
+    expect(await screen.findByText(/IPv4 Unicast/i)).toBeInTheDocument()
+    expect(screen.queryByText(/IPv6 Unicast/i)).not.toBeInTheDocument()
+
+    // Switch back to System tab - should still be expanded
+    const systemTab = await screen.findByText('System')
+    await userEvent.click(systemTab)
+    expect(await screen.findByText(/CPU Compliance/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'View more' })).not.toBeInTheDocument()
+  })
+
+  it('should handle sub-tab KPIs with no histogram config (BarChart rendering)', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { saveThreshold: { success: true } }
+    })
+
+    // Use KPIs that don't have histogram config (like 'onlineAPs')
+    const subTabKpis = {
+      Overview: ['onlineAPs', 'connectionSuccess'],
+      Performance: ['clientThroughput']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Should render BarChart instead of Histogram for KPIs without histogram config
+    expect(await screen.findByText(/Online APs/i)).toBeInTheDocument()
+
+    // Switch to Performance tab
+    const performanceTab = await screen.findByText('Performance')
+    await userEvent.click(performanceTab)
+    expect(await screen.findByText(/Client Throughput/i)).toBeInTheDocument()
   })
 })

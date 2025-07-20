@@ -1,10 +1,10 @@
 import { useIntl, IntlShape } from 'react-intl'
 
-import { healthApi }                                         from '@acx-ui/analytics/services'
-import { kpiConfig, calculateGranularity }                   from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, SparklineChart, Loader, Tooltip } from '@acx-ui/components'
-import { intlFormats, formatter }                            from '@acx-ui/formatter'
-import type { AnalyticsFilter }                              from '@acx-ui/utils'
+import { healthApi }                                                           from '@acx-ui/analytics/services'
+import { kpiConfig, calculateGranularity, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, SparklineChart, Loader, Tooltip }                   from '@acx-ui/components'
+import { intlFormats, formatter }                                              from '@acx-ui/formatter'
+import type { AnalyticsFilter }                                                from '@acx-ui/utils'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 
@@ -83,10 +83,15 @@ export function KpiWidget ({
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
+
   const historgramQuery = useKpiHistogramQuery({
     ...filters,
     kpi: name,
-    enableSwitchFirmwareFilter
+    enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
   }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
@@ -106,7 +111,7 @@ export function KpiWidget ({
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: calculateGranularity(startDate,endDate),
-    enableSwitchFirmwareFilter
+    enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
   }, {
     selectFromResult: (response) => {
       const agg = response.data && transformTSResponse(response.data, { startDate, endDate })
