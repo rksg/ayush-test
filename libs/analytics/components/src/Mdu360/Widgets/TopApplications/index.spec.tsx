@@ -2,13 +2,13 @@ import { Provider }                                            from '@acx-ui/sto
 import { fireEvent, render, screen }                           from '@acx-ui/test-utils'
 import { AnalyticsFilter, DateRange, NodesFilter, SSIDFilter } from '@acx-ui/utils'
 
-import { mockTopApplications }      from './__tests__/fixtures'
-import { useTopNApplicationsQuery } from './services'
+import { mockTopApplications }         from './__tests__/fixtures'
+import { useMduTopNApplicationsQuery } from './services'
 
 import { TopApplications } from './index'
 
 jest.mock('./services', () => ({
-  useTopNApplicationsQuery: jest.fn()
+  useMduTopNApplicationsQuery: jest.fn()
 }))
 
 const mockFilters: AnalyticsFilter = {
@@ -24,7 +24,7 @@ describe('TopApplications', () => {
   })
 
   it('should render client count data correctly', async () => {
-    (useTopNApplicationsQuery as jest.Mock).mockReturnValue({
+    (useMduTopNApplicationsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: mockTopApplications.network.hierarchyNode
     })
@@ -73,7 +73,7 @@ describe('TopApplications', () => {
   })
 
   it('should render no data when there is no data', async () => {
-    (useTopNApplicationsQuery as jest.Mock).mockReturnValue({
+    (useMduTopNApplicationsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: null
     })
@@ -83,7 +83,7 @@ describe('TopApplications', () => {
   })
 
   it('should handle when the data is empty', async () => {
-    (useTopNApplicationsQuery as jest.Mock).mockReturnValue({
+    (useMduTopNApplicationsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         topNApplicationByClient: [],
@@ -95,7 +95,7 @@ describe('TopApplications', () => {
   })
 
   it('should handle when topNApplicationByTraffic is undefined', async () => {
-    (useTopNApplicationsQuery as jest.Mock).mockReturnValue({
+    (useMduTopNApplicationsQuery as jest.Mock).mockReturnValue({
       loading: false,
       data: {
         topNApplicationByClient: [

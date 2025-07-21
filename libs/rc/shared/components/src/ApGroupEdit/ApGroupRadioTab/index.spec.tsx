@@ -21,7 +21,9 @@ import {
   venuelist,
   venueRadioCustomization,
   mockApModelFamilies,
-  apGroupTripleBandMode
+  apGroupTripleBandMode,
+  apGroupClientAdmissionControl,
+  venueClientAdmissionControl
 } from '../__tests__/fixtures'
 import { ApGroupEditContext } from '../context'
 
@@ -31,6 +33,7 @@ const setEditContextDataFn = jest.fn()
 const setEditRadioContextDataFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedGetApGroupRadioCustomization = jest.fn()
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -149,6 +152,14 @@ describe('AP Group Edit Radio', () => {
       rest.get(
         WifiRbacUrlsInfo.getApGroupBandModeSettings.url,
         (_, res, ctx) => res(ctx.json(apGroupTripleBandMode))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings.url,
+        (_, res, ctx) => res(ctx.json(apGroupClientAdmissionControl))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(venueClientAdmissionControl))
       )
     )
   })
@@ -179,7 +190,7 @@ describe('AP Group Edit Radio', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByText(/r760/i)).toBeVisible()
@@ -312,5 +323,32 @@ describe('AP Group Edit Radio', () => {
     await waitFor(() => expect(triBand).toBeChecked())
 
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
+  })
+
+  it('should handle client admission control settings', async () => {
+    render(
+      <Provider>
+        <ApGroupEditContext.Provider value={{
+          ...defaultApGroupCxtdata,
+          isEditMode: true
+        }}>
+          <ApGroupRadioTab />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    // eslint-disable-next-line max-len
+    const customizeClientAdmissionControl = screen.getByTestId('client-admission-control-customizeSettings')
+    userEvent.click(customizeClientAdmissionControl)
+
+    const enable24G = await screen.findByTestId('client-admission-control-enable-24g')
+    const enable50G = await screen.findByTestId('client-admission-control-enable-50g')
+    await userEvent.click(enable24G)
+    await userEvent.click(enable50G)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })
