@@ -125,6 +125,7 @@ export const TransferLayout = styled(Space)`
     border: 1px solid var(--acx-neutrals-40);
     border-radius: 4px;
     height: 100%;
+    overflow-y: auto;
     .ant-table-wrapper {
       height: 100%;
 

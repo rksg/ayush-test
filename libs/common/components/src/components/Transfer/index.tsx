@@ -1,17 +1,25 @@
+import { useMemo, useState } from 'react'
+
 import { TableColumnsType, Transfer as AntTransfer, TransferProps as AntTransferProps } from 'antd'
 import { SelectAllLabel }                                                               from 'antd/es/transfer'
 import { TransferItem }                                                                 from 'antd/lib/transfer'
 import { useIntl }                                                                      from 'react-intl'
 
-import { renderTransferTable } from './renderTypes'
-import * as UI                 from './styledComponents'
+import {
+  flattenTree,
+  renderTransferTable,
+  renderTransferGroupedTree
+} from './renderTypes'
+import * as UI from './styledComponents'
 
 type BaseTransferProps = AntTransferProps<TransferItem> & {
   excludeDisabledInCount?: boolean
+  enableMultiselect?: boolean
+  enableGroupSelect?: boolean
 }
 
 export type TransferProps =
-  | BaseTransferProps & { type?: 'default' }
+  | BaseTransferProps & { type?: 'default' | 'grouped-tree' }
   | BaseTransferProps & {
       type: 'table'
       tableData: TransferItem[]
@@ -76,19 +84,33 @@ export function Transfer (props: TransferProps) {
     )
   ] as SelectAllLabel[]
 
+  const [searchText, setSearchText] = useState('')
+  const flatDataSource = useMemo(() => flattenTree(props.dataSource), [props.dataSource])
+
   return <UI.TransferLayout>
     <AntTransfer
       {...props}
+      dataSource={props.type === 'grouped-tree' ? flatDataSource : props.dataSource}
       titles={[]}
       selectAllLabels={selectAllLabels}
       locale={{
         searchPlaceholder: $t({ defaultMessage: 'Search...' })
       }}
+      filterOption={(inputValue, item) => {
+        if (props.type === 'grouped-tree') {
+          setSearchText(inputValue)
+          return true
+        }
+        return item.title?.toLowerCase().includes(inputValue.toLowerCase()) ?? false
+      }}
     >
       {(transferProps) => {
         return props.type === 'table'
           ? renderTransferTable(props, transferProps)
-          : props?.children?.(transferProps)
+          : (props.type === 'grouped-tree'
+            ? renderTransferGroupedTree(props, transferProps, searchText)
+            : props?.children?.(transferProps)
+          )
       }}
     </AntTransfer>
   </UI.TransferLayout>
