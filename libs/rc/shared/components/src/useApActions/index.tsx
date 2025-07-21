@@ -15,11 +15,13 @@ import {
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
   useLazyApListQuery,
+  useLazyGetApJwtTokenQuery,
   useLazyGetDhcpApQuery,
   useRebootApMutation
 } from '@acx-ui/rc/services'
 import {
   AP,
+  ApCliRequest,
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   APExtended,
@@ -46,6 +48,7 @@ export function useApActions () {
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
   const [ deleteApGroup ] = useDeleteApGroupMutation()
+  const [ getApJwtToken ] = useLazyGetApJwtTokenQuery()
 
   const showRebootAp = (
     serialNumber: string,
@@ -84,6 +87,34 @@ export function useApActions () {
     })
   }
 
+  const showAccessApCli = async (
+    tenantId: string,
+    venueId: string,
+    serialNumber: string,
+    apName: string,
+    callBack: (req: ApCliRequest)=>void
+  ) => {
+    await getApJwtToken({
+      params: {
+        tenantId: tenantId,
+        serialNumber: serialNumber,
+        venueId: venueId
+      }
+    }, true).unwrap().then((res) => {
+      callBack({
+        token: res.id_token || '',
+        serialNumber,
+        apName
+      })
+    }).catch((err) => {
+      console.log(err) // eslint-disable-line no-console
+      callBack({
+        token: '',
+        serialNumber,
+        apName
+      })
+    })
+  }
 
   const showDownloadApLog = (
     serialNumber: string,
@@ -232,6 +263,7 @@ export function useApActions () {
   }
 
   return {
+    showAccessApCli,
     showDeleteAp,
     showDeleteAps,
     showDeleteApGroups,
