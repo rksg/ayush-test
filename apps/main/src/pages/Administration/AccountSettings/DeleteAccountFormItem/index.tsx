@@ -52,7 +52,6 @@ const DeleteAccountFormItem = () => {
       onOk: async () => {
         try {
           await deleteTenant({ params }).unwrap()
-          // Show toast and handle logout logic
           let logoutTimer: NodeJS.Timeout | null = null
           const logout = () => {
             if (logoutTimer) clearTimeout(logoutTimer)
