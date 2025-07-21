@@ -16,7 +16,7 @@ export interface SLAConfig {
   apiMetric: string;
 }
 
-// Default value must be populated to have a slider
+// Default and splits value must be populated to have a slider
 export const slaConfig: Record<SLAKeys, SLAConfig> = {
   [SLAKeys.clientThroughputSLA]: {
     splits: kpiConfig.clientThroughput.histogram.splits,

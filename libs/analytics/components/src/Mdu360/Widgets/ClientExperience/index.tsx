@@ -12,17 +12,15 @@ import {
 } from '@acx-ui/components'
 import { UseQueryResult } from '@acx-ui/types'
 
-import { ContentSwitcherWrapper }  from '../../styledComponents'
-import { Mdu360TabProps, SLAKeys } from '../../types'
-import { SLAData }                 from '../SLA/services'
+import { useClientExperienceTimeseriesQuery } from '../../services'
+import { ContentSwitcherWrapper }             from '../../styledComponents'
+import { Mdu360TabProps, SLAKeys }            from '../../types'
+import { SLAData }                            from '../SLA/types'
 
-import {
-  FranchisorTimeseries,
-  useClientExperienceTimeseriesQuery
-} from './services'
 import Sparkline                                      from './Sparkline'
 import StarRating                                     from './StarRating'
 import { StarRatingContainer, SparklineContainer }    from './styledComponents'
+import { FranchisorTimeseries }                       from './types'
 import { getConfig, getPercentage, getSparklineData } from './utils'
 
 interface SLA {

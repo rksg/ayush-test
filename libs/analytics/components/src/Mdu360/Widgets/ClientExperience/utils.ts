@@ -2,14 +2,9 @@ import { formatter } from '@acx-ui/formatter'
 import { getIntl }   from '@acx-ui/utils'
 
 import { SLAKeys } from '../../types'
-import { SLAData } from '../SLA/services'
+import { SLAData } from '../SLA/types'
 
-export interface SLAConfig {
-  title: string
-  shortText?: string
-}
-
-type TimeseriesData = Array<number | null>
+import { SLAConfig, TimeseriesData } from './types'
 
 export const getSparklineData = (data: TimeseriesData) => data.map((value) => (value ? value : 0))
 
@@ -54,6 +49,7 @@ export const getConfig = (
       )
       : multipleValuesShortText
   }
+
   return {
     [SLAKeys.connectionSuccessSLA]: {
       title: $t({ defaultMessage: 'Connection Success' })

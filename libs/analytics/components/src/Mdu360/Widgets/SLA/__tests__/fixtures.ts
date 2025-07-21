@@ -54,6 +54,29 @@ export const mockQueryResponse: SLAData = {
   }
 }
 
+export const mockQueryResponseWithNullValues = {
+  connectionSuccessSLA: {
+    value: null,
+    isSynced: true
+  },
+  timeToConnectSLA: {
+    value: null,
+    isSynced: true
+  },
+  clientThroughputSLA: {
+    value: null,
+    isSynced: true
+  },
+  channelWidthSLA: {
+    value: null,
+    isSynced: true
+  },
+  channelChangePerDaySLA: {
+    value: null,
+    isSynced: true
+  }
+} as unknown as SLAData
+
 export const mockUpdateSlaThresholdsQuery = {
   query: `mutation SaveMultipleThresholds(
     $mspEcIds: [String],

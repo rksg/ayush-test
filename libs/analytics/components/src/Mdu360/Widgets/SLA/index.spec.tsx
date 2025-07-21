@@ -4,9 +4,10 @@ import { UseQueryResult }            from '@acx-ui/types'
 import { SLAKeys } from '../../types'
 
 import { slaConfig }                               from './constants'
-import { SLAData, useUpdateSlaThresholdsMutation } from './services'
 
 import SLA from '.'
+import { useUpdateSlaThresholdsMutation } from '../../services'
+import { SLAData } from './types'
 
 const mockDataWithDefaultAndUnsynced: SLAData = {
   [SLAKeys.timeToConnectSLA]: {
@@ -48,7 +49,7 @@ const syncedMockData: SLAData = {
   }
 }
 
-jest.mock('./services', () => ({
+jest.mock('../../services', () => ({
   useSlaThresholdsQuery: jest
     .fn()
     .mockReturnValue({ isLoading: false, isFetching: false }),
@@ -170,6 +171,38 @@ describe('SLA', () => {
     })
   })
 
+  it('should only update the kpi that is changed', async () => {
+    const mockUpdateMutation = jest.fn();
+    (useUpdateSlaThresholdsMutation as jest.Mock).mockReturnValue([
+      mockUpdateMutation,
+      { isLoading: false, isFetching: false }
+    ])
+
+    render(
+      <SLA
+        mspEcIds={[]}
+        queryResults={
+          {
+            data: syncedMockData
+          } as UseQueryResult<SLAData>
+        }
+      />
+    )
+
+    const sliderMarkText = screen.getByText('200') // clientThroughputSLA
+    fireEvent.click(sliderMarkText)
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(mockUpdateMutation).toHaveBeenCalledWith({
+      mspEcIds: [],
+      slasToUpdate: expect.objectContaining({
+        clientThroughputSLA: 200000
+      })
+    })
+  })
+
   it('should reset kpi correctly', () => {
     render(
       <SLA
@@ -197,4 +230,39 @@ describe('SLA', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
   })
 
+  it('should not show sla when splits and default value are not populated', () => {
+    render(
+      <SLA
+        mspEcIds={[]}
+        queryResults={
+          {
+            data: {
+              [SLAKeys.connectionSuccessSLA]: {
+                value: 5,
+                isSynced: false
+              }
+            },
+          } as UseQueryResult<SLAData>
+        }
+      />
+    )
+
+    expect(screen.queryByText('Connection Success')).not.toBeInTheDocument()
+  })
+
+  it('should show no data when data is null', () => {
+    render(
+      <SLA
+        mspEcIds={[]}
+        queryResults={
+          {
+            data: null
+          } as unknown as UseQueryResult<SLAData>
+        }
+      />
+    )
+
+    expect(screen.getByText('Service Level Agreement')).toBeVisible()
+    expect(screen.queryByText('No data to display')).toBeVisible()
+  })
 })

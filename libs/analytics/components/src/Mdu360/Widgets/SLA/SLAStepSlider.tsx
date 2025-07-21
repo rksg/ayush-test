@@ -6,16 +6,17 @@ import { SliderLabel, SliderName, StyledSlider } from './styledComponents'
 interface SLAStepSliderProps {
   slaConfig: SLAConfig;
   sliderValue: number;
+  splits: number[];
   onSliderChange: (value: number) => void;
 }
 
 const SLAStepSlider = ({
   slaConfig,
   sliderValue,
+  splits,
   onSliderChange
 }: SLAStepSliderProps) => {
-  const { splits: _splits, title, units } = slaConfig
-  const splits = _splits ?? []
+  const { title, units } = slaConfig
   const { $t } = useIntl()
   const marks = splits.reduce(
     (acc, value, index) => ({

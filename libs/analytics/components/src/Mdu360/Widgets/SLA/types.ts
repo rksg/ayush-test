@@ -1,0 +1,20 @@
+import { SLAKeys } from '../../types'
+
+interface SLAResult {
+  value: number;
+  isSynced: boolean;
+  isDefault?: boolean;
+}
+
+export type SLAData = Partial<{
+  [key in SLAKeys]: SLAResult;
+}>
+
+export interface QueryPayload {
+  mspEcIds: string[];
+}
+
+export interface MutationPayload {
+  mspEcIds: string[];
+  slasToUpdate: Partial<Record<SLAKeys, number>>;
+}

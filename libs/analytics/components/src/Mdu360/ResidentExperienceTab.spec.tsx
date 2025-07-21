@@ -25,11 +25,8 @@ jest.mock('./Widgets/TrafficByRadio/services', () => ({
   useTrafficByRadioQuery: jest.fn().mockReturnValue({ isLoading: false })
 }))
 
-jest.mock('./Widgets/ClientExperience/services', () => ({
-  useClientExperienceTimeseriesQuery: jest.fn().mockReturnValue({ isLoading: false })
-}))
-
-jest.mock('./Widgets/SLA/services', () => ({
+jest.mock('./services', () => ({
+  useClientExperienceTimeseriesQuery: jest.fn().mockReturnValue({ isLoading: false }),
   useSlaThresholdsQuery: jest.fn().mockReturnValue({ isLoading: false }),
   useUpdateSlaThresholdsMutation: jest.fn().mockReturnValue([
     jest.fn(),

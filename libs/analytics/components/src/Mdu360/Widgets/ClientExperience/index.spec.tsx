@@ -2,18 +2,18 @@ import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { UseQueryResult }            from '@acx-ui/types'
 
-import { Mdu360TabProps, SLAKeys } from '../../types'
-import { slaConfig }               from '../SLA/constants'
-import { SLAData }                 from '../SLA/services'
+import { useClientExperienceTimeseriesQuery } from '../../services'
+import { Mdu360TabProps, SLAKeys }            from '../../types'
+import { slaConfig }                          from '../SLA/constants'
+import { SLAData }                            from '../SLA/types'
 
 import { mockEmptyTimeseriesResponseData, mockTimeseriesResponseData } from './__tests__/fixtures'
-import { useClientExperienceTimeseriesQuery }                          from './services'
 
 import ClientExperience from '.'
 
 const mockUseClientExperienceTimeseriesQuery = useClientExperienceTimeseriesQuery as jest.Mock
 
-jest.mock('./services', () => ({
+jest.mock('../../services', () => ({
   useClientExperienceTimeseriesQuery: jest.fn()
 }))
 

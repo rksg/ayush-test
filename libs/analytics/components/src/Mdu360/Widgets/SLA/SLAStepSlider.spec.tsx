@@ -33,6 +33,7 @@ describe('SLAStepSlider', () => {
       <SLAStepSlider
         slaConfig={mockSlaConfig}
         sliderValue={0}
+        splits={mockSlaConfig.splits!}
         onSliderChange={mockOnChange}
       />
     )
@@ -45,6 +46,7 @@ describe('SLAStepSlider', () => {
       <SLAStepSlider
         slaConfig={mockSlaConfig}
         sliderValue={0}
+        splits={mockSlaConfig.splits!}
         onSliderChange={mockOnChange}
       />
     )
@@ -59,6 +61,7 @@ describe('SLAStepSlider', () => {
       <SLAStepSlider
         slaConfig={mockSlaConfig}
         sliderValue={0}
+        splits={mockSlaConfig.splits!}
         onSliderChange={mockOnChange}
       />
     )
@@ -79,6 +82,7 @@ describe('SLAStepSlider', () => {
       <SLAStepSlider
         slaConfig={configWithoutUnits}
         sliderValue={0}
+        splits={mockSlaConfig.splits!}
         onSliderChange={mockOnChange}
       />
     )
@@ -97,6 +101,7 @@ describe('SLAStepSlider', () => {
       <SLAStepSlider
         slaConfig={configWithCustomFormatter}
         sliderValue={0}
+        splits={mockSlaConfig.splits!}
         onSliderChange={mockOnChange}
       />
     )

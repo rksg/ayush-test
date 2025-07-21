@@ -1,29 +1,15 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/store'
+import { calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }              from '@acx-ui/store'
 
-import { SLAKeys } from '../../types'
-
-import { slaConfig } from './constants'
-
-interface SLAResult {
-  value: number;
-  isSynced: boolean;
-  isDefault?: boolean;
-}
-
-export type SLAData = Partial<{
-  [key in SLAKeys]: SLAResult;
-}>
-
-export interface QueryPayload {
-  mspEcIds: string[];
-}
-
-export interface MutationPayload {
-  mspEcIds: string[];
-  slasToUpdate: Partial<Record<SLAKeys, number>>;
-}
+import { SLAKeys }    from './types'
+import {
+  ClientExperienceTimeseriesResponse,
+  TimeseriesPayload
+} from './Widgets/ClientExperience/types'
+import { slaConfig }                              from './Widgets/SLA/constants'
+import { MutationPayload, QueryPayload, SLAData } from './Widgets/SLA/types'
 
 export const getSlaThresholdValue = (data: SLAData) => {
   if (!data) {
@@ -42,11 +28,14 @@ export const getSlaThresholdValue = (data: SLAData) => {
           return []
         }
 
-        return [key, {
-          ...result,
-          value: defaultValue,
-          isDefault: true
-        }]
+        return [
+          key,
+          {
+            ...result,
+            value: defaultValue,
+            isDefault: true
+          }
+        ]
       })
       .filter((entry) => entry.length)
   ) as SLAData
@@ -96,11 +85,48 @@ export const mduThresholdMutation = (
 
   mutationBody += '}'
 
-  return gql`${mutationBody}`
+  return gql`
+    ${mutationBody}
+  `
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
+    // Client Experience services
+    clientExperienceTimeseries: build.query({
+      query: ({ start, end }: TimeseriesPayload) => ({
+        document: gql`
+          query FranchisorTimeseries(
+            $start: DateTime
+            $end: DateTime
+            $granularity: String
+            $severity: [Range]
+          ) {
+            franchisorTimeseries(
+              start: $start
+              end: $end
+              granularity: $granularity
+              severity: $severity
+            ) {
+              time
+              timeToConnectSLA
+              clientThroughputSLA
+              connectionSuccessSLA
+            }
+          }
+        `,
+        variables: {
+          start,
+          end,
+          granularity: calculateGranularity(start, end)
+        }
+      }),
+      transformResponse: (response: ClientExperienceTimeseriesResponse) =>
+        response.franchisorTimeseries,
+      providesTags: [{ type: 'MDU', id: 'kpi_threshold' }]
+    }),
+
+    // SLA services
     slaThresholds: build.query<SLAData, QueryPayload>({
       query: (payload) => ({
         document: mduThresholdQuery(),
@@ -119,4 +145,8 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useSlaThresholdsQuery, useUpdateSlaThresholdsMutation } = api
+export const {
+  useClientExperienceTimeseriesQuery,
+  useSlaThresholdsQuery,
+  useUpdateSlaThresholdsMutation
+} = api
