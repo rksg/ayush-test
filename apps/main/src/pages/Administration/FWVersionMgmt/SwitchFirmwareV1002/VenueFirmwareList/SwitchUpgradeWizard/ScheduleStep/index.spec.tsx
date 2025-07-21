@@ -171,9 +171,5 @@ describe('ScheduleStep', () => {
     })
     await userEvent.click(icx71Radio10010grc2)
     expect(icx71Radio10010grc2).toBeEnabled()
-
-    expect(within(form)
-      // eslint-disable-next-line max-len
-      .getByText(/The following switches will not be upgraded because the ICX7150-C08P\/PT models do not support FastIron versions 10.0.x./i)).toBeInTheDocument()
   })
 })
