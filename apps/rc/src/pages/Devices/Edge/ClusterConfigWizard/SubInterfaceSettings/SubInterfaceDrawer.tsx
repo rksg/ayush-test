@@ -101,7 +101,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
     const value = stepFormRef?.getFieldsValue(true) as SubInterfaceSettingsFormType
     const currentFormData = formRef.getFieldsValue(true) as SubInterface
     // eslint-disable-next-line max-len
-    const result = getAllSubInterfaceData(value?.portSubInterfaces, value?.lagSubInterfaces)[props.serialNumber]
+    const result = getAllSubInterfaceData(value?.portSubInterfaces, value?.lagSubInterfaces)[props.serialNumber] ?? []
 
     // update with current form data and put it to the end of the array
     const currentFormDataIdx = result.findIndex(item => item.id === currentFormData.id)

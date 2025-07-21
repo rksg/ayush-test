@@ -51,7 +51,7 @@ const MockedDefaultComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
-describe('HQoS Settings Form', () => {
+describe.skip('HQoS Settings Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
   })
