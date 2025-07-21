@@ -247,7 +247,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
               // eslint-disable-next-line max-len
               const actions = [activateSdLanForNetwork(serviceId!, sdLanVenueId!, networkId, tunnelProfileId, handleFinally)]
               actions.push(...impactVenueIds.map(impactVenueId =>
-                // eslint-disable-next-line max-len
+              // eslint-disable-next-line max-len
                 activateSdLanForNetwork(serviceId!, impactVenueId, networkId, tunnelProfileId, handleFinally)))
               await Promise.all(actions).catch(() => handleFinally())
 
@@ -261,6 +261,14 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
             // eslint-disable-next-line no-console
             console.error(err)
           }
+        },
+        onCancel: () => {
+          const newActivatedNetworks = cloneDeep(activatedNetworks ?? {})
+          const targetVenueData = newActivatedNetworks[sdLanVenueId!]
+          const targetNetworkData = find(targetVenueData, { networkId: rowData.id })
+          assign(targetNetworkData, { tunnelProfileId: currentNetwork?.forwardingTunnelProfileId })
+          setActivatedNetworks(newActivatedNetworks)
+          handleFinally()
         }
       })
     }).catch(() => handleFinally())

@@ -130,7 +130,7 @@ interface NetworkSelectTableProps {
 
 export const NetworkSelectTable = (props: NetworkSelectTableProps) => {
   const {
-    venueId, onActivateChange, onTunnelProfileChange, validationFormRef, pinNetworkIds,
+    venueId, onActivateChange, onTunnelProfileChange, pinNetworkIds,
     activated = {}, softGreNetworkIds, availableTunnelProfiles = [], dcTunnelProfileId,
     requiredFwMap = {}, edgeClusters = [], isUpdating
   } = props
@@ -220,7 +220,6 @@ export const NetworkSelectTable = (props: NetworkSelectTableProps) => {
 
   const handleTunnelProfileChange = (row: Network, value: string, namePath: NamePath) => {
     onTunnelProfileChange?.(row, value, namePath)
-    validationFormRef?.validateFields([namePath])
   }
 
   const checkCorePortConfigured = (tunnelProfileId?: string) => {

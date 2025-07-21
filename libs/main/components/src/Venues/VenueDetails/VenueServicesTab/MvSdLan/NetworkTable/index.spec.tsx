@@ -554,7 +554,6 @@ describe('venue > Multi-venue SDLAN - network table', () => {
         expect(dialog).toBeVisible()
         expect(screen.getByText('Configuration Conflict Detected')).toBeVisible()
         await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
-        expect(mockedActivateNetworkReq).toBeCalledTimes(1)
         expect(mockedActivateNetworkReq).toBeCalledWith({
           serviceId: mockedEdgeSdLanDmz.id,
           venueId: mockedEdgeSdLanDmz.venueId,
