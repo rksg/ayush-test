@@ -203,9 +203,8 @@ export const getOpsApi = (apiInfo: ApiInfo) => {
     : opsApi
 }
 
-function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
-  // Skip URL transformation in test environment
-  if (process.env.NODE_ENV === 'test') {
+export function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
+  if (process.env.NODE_ENV === 'test' && !process.env.TEST_REC_API_CONVERT) {
     return apiInfo
   }
 
