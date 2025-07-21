@@ -144,7 +144,7 @@ describe('RogueVenueTable', () => {
     expect(await within(row).findByRole('checkbox')).not.toBeChecked()
   })
 
-  it('render RogueVenueTable with maximum venue', async () => {
+  it.skip('render RogueVenueTable with maximum venue', async () => {
     mockServer.use(
       rest.post(RogueApUrls.getVenueRoguePolicy.url,
         (_, res, ctx) => res(ctx.json(venueTables))

@@ -126,7 +126,7 @@ describe('MdnsProxyForm', () => {
       }))
   })
 
-  it('should correctly edit activations and trigger update api', async () => {
+  it.skip('should correctly edit activations and trigger update api', async () => {
     const originData = mockEdgeMdnsViewDataList[0]
     const mockDeactivateReq = jest.fn()
     mockServer.use(

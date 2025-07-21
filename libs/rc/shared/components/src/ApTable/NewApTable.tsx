@@ -33,6 +33,7 @@ import {
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesVenueQuery,
+  useLazyGetApJwtTokenQuery,
   useLazyImportResultQuery,
   useNewApListQuery,
   useWifiCapabilitiesQuery
@@ -69,6 +70,7 @@ import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping, useP
   TableResult
 } from '@acx-ui/utils'
 
+import { ApCliSession }                                                  from '../ApCliSession'
 import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
 import { seriesMappingAP }                                               from '../DevicesWidget/helper'
@@ -139,6 +141,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
 
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -176,6 +179,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   })
 
   const tableQuery = props.tableQuery || apListTableQuery
+
+  const [getApJwtToken] = useLazyGetApJwtTokenQuery()
+  const [cliModalState, setCliModalOpen] = useState(false)
+  const [cliData, setCliData] = useState({
+    token: '',
+    serialNumber: '',
+    apName: ''
+  })
 
   useEffect(() => {
     if(!Boolean(filters) || Object.keys(filters).length === 0) return
@@ -690,7 +701,40 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
-  }, {
+  }, ...(isApCliSessionEnabled ? [{
+    label: $t({ defaultMessage: 'CLI Session' }),
+    scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
+    visible: (rows: NewAPModelExtended[]) => isActionVisible(rows,
+      { selectOne: true,
+        deviceStatus: [
+          ApDeviceStatusEnum.OPERATIONAL,
+          ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED,
+          ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED
+        ] }),
+    onClick: async (rows: NewAPModelExtended[]) => {
+      const row = rows[0]
+      let token = ''
+      try {
+        token = (await getApJwtToken({
+          params: {
+            tenantId: params.tenantId,
+            serialNumber: row.serialNumber,
+            venueId: row.venueId
+          }
+        }, true)
+          .unwrap()).access_token || ''
+      } catch (err) {
+        console.log(err) // eslint-disable-line no-console
+      }
+
+      setCliData({ token, apName: row.name || row.serialNumber, serialNumber: row.serialNumber })
+      setTimeout(() => {
+        setCliModalOpen(true)
+      }, 1000)
+    }
+  }] : []), {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],
@@ -905,6 +949,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           networkId={params.networkId}
           apInfo={selectedApInfo}
           onClose={() => setCompatibilitiesDrawerVisible(false)}
+        />
+        <ApCliSession
+          modalState={cliModalState}
+          setIsModalOpen={setCliModalOpen}
+          serialNumber={cliData.serialNumber}
+          jwtToken={cliData.token}
+          apName={cliData.apName}
         />
       </GroupRowWrapper>
     </Loader>
