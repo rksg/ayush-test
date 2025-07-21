@@ -113,10 +113,10 @@ describe('IntentAISummaryWidget', () => {
   })
 
   it.each([
-    { loading: false, data: undefined , name: 'undefined' },
+    { loading: false, data: undefined, name: 'undefined' },
     { loading: false, data: mockNoIntentAISummaryData, name: 'no data' },
     { loading: false, data: mockNullIntentAISummaryData, name: 'null' }
-  ])('should return no data when query response data is undefined, null or no data',
+  ])('should return no data when query response data is $name',
     async (data) => {
       mockUseIntentAISummaryQuery.mockReturnValue(data)
 
