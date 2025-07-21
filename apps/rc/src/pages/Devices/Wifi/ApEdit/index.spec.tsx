@@ -111,6 +111,22 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
 
+jest.mock('./RadioTab', () => () => {
+  return <div data-testid='RadioTab' />
+})
+
+jest.mock('./NetworkingTab', () => () => {
+  return <div data-testid='NetworkingTab' />
+})
+
+jest.mock('./NetworkControlTab', () => () => {
+  return <div data-testid='NetworkControlTab' />
+})
+
+jest.mock('./AdvancedTab', () => () => {
+  return <div data-testid='AdvancedTab' />
+})
+
 const excludedFlags = [
   Features.WIFI_RBAC_API
 ]
@@ -167,7 +183,7 @@ describe('ApEdit', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        WifiUrlsInfo.getApGroupsList.url,
+        WifiRbacUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => res(ctx.json({
           totalCount: 1, page: 1, data: [
             {
@@ -184,8 +200,18 @@ describe('ApEdit', () => {
         (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
       ),
       rest.get(
+        WifiRbacUrlsInfo.getApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
+      rest.get(
+        WifiUrlsInfo.getApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
+      rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(apDetailsList[0]))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApStickyClientSteering.url,
+        (_, res, ctx) => res(ctx.json(StickyClientSteeringSettings_VenueSettingOff))
       ),
       rest.get(
         WifiRbacUrlsInfo.getApCapabilities.url,
@@ -230,7 +256,7 @@ describe('ApEdit', () => {
           }
         ),
         rest.post(
-          WifiUrlsInfo.getApGroupsList.url,
+          WifiRbacUrlsInfo.getApGroupsList.url,
           (_, res, ctx) => {
             return res(ctx.json({
               totalCount: 1, page: 1, data: [
@@ -335,6 +361,17 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
         ),
         rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
+        ),
+        rest.post(
           WifiUrlsInfo.getApGroupsList.url,
           (_, res, ctx) => res(ctx.json({
             totalCount: 1, page: 1, data: [
@@ -346,7 +383,7 @@ describe('ApEdit', () => {
           }))
         ),
         rest.get(
-          WifiUrlsInfo.getApClientAdmissionControl.url,
+          WifiRbacUrlsInfo.getApClientAdmissionControl.url,
           (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
         rest.get(
           WifiRbacUrlsInfo.getApValidChannel.url,
@@ -368,7 +405,7 @@ describe('ApEdit', () => {
           }
         ),
         rest.get(
-          WifiRbacUrlsInfo.getVenueLoadBalancing.url,
+          WifiUrlsInfo.getVenueLoadBalancing.url,
           (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
         ),
         rest.get(
@@ -567,6 +604,17 @@ describe('ApEdit', () => {
         ),
         rest.post(
           WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
+        ),
+        rest.post(
+          WifiUrlsInfo.getApGroupsList.url,
           (_, res, ctx) => res(ctx.json({
             totalCount: 1, page: 1, data: [
               {
