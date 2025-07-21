@@ -1,9 +1,9 @@
-import AutoSizer from 'react-virtualized-auto-sizer'
-
 import { DonutChart, NoData }  from '@acx-ui/components'
 import type { DonutChartData } from '@acx-ui/components'
 import { formatter }           from '@acx-ui/formatter'
 import { UseQueryResult }      from '@acx-ui/types'
+
+import { ChartWrapper } from '../../styledComponents'
 
 import { TrafficByRadioData } from './services'
 
@@ -37,27 +37,32 @@ function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): Don
   return trafficSnapshotChartData
 }
 
-export function TrafficSnapshot ({ queryResults }:
-  { queryResults: UseQueryResult<TrafficByRadioData> }) {
-
+export function TrafficSnapshot ({
+  queryResults,
+  height,
+  width
+}: {
+  queryResults: UseQueryResult<TrafficByRadioData>,
+  height: number,
+  width: number
+}) {
   const chartData = getTrafficSnapshotChartData(queryResults?.data)
 
-  return (
-    chartData.length ?
-      <AutoSizer>
-        {({ height, width }) => (
-          <DonutChart
-            style={{ width, height }}
-            data={chartData}
-            showLegend={true}
-            showTotal={true}
-            showValue={true}
-            showLabel={true}
-            legend='name-bold-value'
-            dataFormatter={formatter('bytesFormat')}
-            size={'large'}
-          />
-        )}
-      </AutoSizer> : <NoData/>
+  return chartData.length ? (
+    <ChartWrapper height={height} width={width}>
+      <DonutChart
+        style={{ width, height }}
+        data={chartData}
+        showLegend={true}
+        showTotal={true}
+        showValue={true}
+        showLabel={true}
+        legend='name-bold-value'
+        dataFormatter={formatter('bytesFormat')}
+        size={'large'}
+      />
+    </ChartWrapper>
+  ) : (
+    <NoData />
   )
 }

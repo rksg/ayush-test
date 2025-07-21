@@ -1,16 +1,23 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                    from '@acx-ui/analytics/utils'
-import { NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
 import { UseQueryResult }                   from '@acx-ui/types'
+
+import { ChartWrapper } from '../../styledComponents'
 
 import { TrafficByRadioData } from './services'
 
 export function TrafficTrend ({
-  queryResults
-}: { queryResults: UseQueryResult<TrafficByRadioData> }) {
+  queryResults,
+  height,
+  width
+}: {
+  queryResults: UseQueryResult<TrafficByRadioData>,
+  height: number,
+  width: number
+}) {
   const { $t } = useIntl()
 
   type Key = keyof Omit<TrafficByRadioData, 'time'>
@@ -23,16 +30,15 @@ export function TrafficTrend ({
 
   const data = getSeriesData(queryResults.data!, seriesMapping)
 
-  return (
-    (data.length && data[0].data.length) ?
-      <AutoSizer>
-        {({ height, width }) => (
-          <MultiLineTimeSeriesChart
-            style={{ width, height }}
-            data={data}
-            dataFormatter={formatter('bytesFormat')}
-          />
-        )}
-      </AutoSizer> : <NoData/>
+  return (data.length && data[0].data.length) ? (
+    <ChartWrapper height={height} width={width}>
+      <MultiLineTimeSeriesChart
+        style={{ width, height }}
+        data={data}
+        dataFormatter={formatter('bytesFormat')}
+      />
+    </ChartWrapper>
+  ) : (
+    <NoData />
   )
 }

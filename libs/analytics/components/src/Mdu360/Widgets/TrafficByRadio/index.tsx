@@ -28,28 +28,45 @@ export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
     endDate: filters.endDate
   })
 
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
-    {
-      label: $t({ defaultMessage: 'Snapshot' }),
-      children: <TrafficSnapshot queryResults={queryResults}/>,
-      value: 'Snapshot'
-    },
-    {
-      label: $t({ defaultMessage: 'Trend' }),
-      children: <TrafficTrend queryResults={queryResults}/>,
-      value: 'Trend'
-    }
-  ]
-
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
         <AutoSizer>
-          {({ height, width }) => (
-            <ContentSwitcherPaddingWrapper height={height} width={width}>
-              <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
-            </ContentSwitcherPaddingWrapper>
-          )}
+          {({ height, width }) => {
+            const tabDetails: ContentSwitcherProps['tabDetails'] = [
+              {
+                label: $t({ defaultMessage: 'Snapshot' }),
+                value: 'Snapshot',
+                children: (
+                  <TrafficSnapshot
+                    queryResults={queryResults}
+                    height={height}
+                    width={width}
+                  />
+                )
+              },
+              {
+                label: $t({ defaultMessage: 'Trend' }),
+                value: 'Trend',
+                children: (
+                  <TrafficTrend
+                    queryResults={queryResults}
+                    height={height}
+                    width={width}
+                  />
+                )
+              }
+            ]
+            return (
+              <ContentSwitcherPaddingWrapper height={height} width={width}>
+                <ContentSwitcher
+                  tabDetails={tabDetails}
+                  align='right'
+                  size='small'
+                />
+              </ContentSwitcherPaddingWrapper>
+            )
+          }}
         </AutoSizer>
       </HistoricalCard>
     </Loader>
