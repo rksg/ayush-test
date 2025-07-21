@@ -1,6 +1,5 @@
 import { createContext } from 'react'
 
-import { FormInstance } from 'antd'
 
 import { Loader }                     from '@acx-ui/components'
 import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
@@ -14,17 +13,10 @@ import {
 import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
-  doEdgeNetworkInterfacesDryRun,
   EdgeClusterStatus,
-  EdgeLag,
   EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  EdgePort,
-  EdgeSerialNumber,
-  getMergedLagTableDataFromLagForm,
-  IncompatibilityFeatures,
-  SubInterface
-} from '@acx-ui/rc/utils'
+  IncompatibilityFeatures } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
 export interface ClusterConfigWizardContextType {
@@ -38,12 +30,6 @@ export interface ClusterConfigWizardContextType {
   requiredFwMap?: Record<string, string | undefined>
   isLoading: boolean
   isFetching: boolean
-
-  getDryRunResult: (edgeId: EdgeSerialNumber, lag: EdgeLag) => {
-    lags: EdgeLag[],
-    ports: EdgePort[],
-    subInterfaces: SubInterface[]
-  }
 }
 
 export const ClusterConfigWizardContext = createContext({
@@ -150,27 +136,6 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.CORE_ACCESS_SEPARATION]) > -1
   )
 
-  const getDryRunResult = (formRef: FormInstance, edgeId: EdgeSerialNumber, lag: EdgeLag) => {
-    // form data
-    // eslint-disable-next-line max-len
-    const existingPorts = clusterNetworkSettings?.portSettings?.find(l => l.serialNumber === edgeId)?.ports
-    // eslint-disable-next-line max-len
-    const existingLags = clusterNetworkSettings?.lagSettings?.find(l => l.serialNumber === edgeId)?.lags
-    // eslint-disable-next-line max-len
-    const existingSubInterfaces = clusterNetworkSettings?.subInterfaceSettings?.find(l => l.serialNumber === edgeId)
-
-    if(!existingPorts || !existingLags || !existingSubInterfaces) {
-      return clusterNetworkSettings
-    }
-
-    // merge lag into existingLag
-    const updatedLagList = getMergedLagTableDataFromLagForm(existingLags, lag)
-    const dryRunSubInterfaces = existingSubInterfaces.ports.flatMap(p => p.subInterfaces)
-      .concat(existingSubInterfaces.lags.flatMap(l => l.subInterfaces)) as SubInterface[]
-
-    return doEdgeNetworkInterfacesDryRun(updatedLagList, existingPorts, dryRunSubInterfaces)
-  }
-
   const isLoading = isClusterInfoLoading || isPortStatusLoading || isEdgeSdLanLoading ||
     isClusterNetworkSettingsLoading || isClusterSubInterfaceSettingsLoading
   const isFetching = isClusterInfoFetching || isPortStatusFetching || isEdgeSdLanFetching ||
@@ -196,9 +161,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     requiredFwMap,
     isSupportAccessPort,
     isLoading,
-    isFetching,
-
-    getDryRunResult
+    isFetching
   }}>
     <Loader states={[{
       isLoading,

@@ -28,7 +28,8 @@ export const VirtualIpForm = () => {
     form.getFieldValue('lagSettings'),
     form.getFieldValue('portSettings'),
     subInterfaceSettingsFormData,
-    clusterInfo
+    clusterInfo,
+    isEdgeCoreAccessSeparationReady
   )
 
   const header = <Space direction='vertical' size={5}>

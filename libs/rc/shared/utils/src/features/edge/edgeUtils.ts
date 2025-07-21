@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { DefaultOptionType }                                          from 'antd/lib/select'
-import _, { cloneDeep, difference, findIndex, flatMap, isNil, sumBy } from 'lodash'
-import { IntlShape }                                                  from 'react-intl'
+import { DefaultOptionType }                                                 from 'antd/lib/select'
+import { capitalize, cloneDeep, difference, flatMap, isEmpty, isNil, sumBy } from 'lodash'
+import { IntlShape }                                                         from 'react-intl'
 
 import { compareVersions, getIntl } from '@acx-ui/utils'
 
@@ -18,6 +18,7 @@ import {
   EdgeLagStatus,
   EdgeNatPool,
   EdgePort,
+  EdgePortInfo,
   EdgePortStatus,
   EdgePortWithStatus,
   EdgeSdLanApCompatibility,
@@ -139,7 +140,7 @@ export const convertEdgeNetworkIfConfigToApiPayload = (
   formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface,
   isEdgeCoreAccessSeparationReady?: boolean
 ) => {
-  const payload = _.cloneDeep(formData)
+  const payload = cloneDeep(formData)
 
   switch (payload.portType) {
     case EdgePortTypeEnum.WAN:
@@ -229,7 +230,7 @@ export const convertEdgeSubInterfaceToApiPayload = (formData: SubInterface) => {
 }
 
 export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
-  return _.capitalize(port?.interfaceName)
+  return capitalize(port?.interfaceName)
 }
 
 export const isEdgeLag = (port: EdgePortStatus | EdgePort | EdgeLagStatus | EdgeLag) => {
@@ -561,7 +562,7 @@ export const getEdgeAppCurrentVersions = (data: Pick<DhcpStats, 'clusterAppVersi
   } else {
     versions = data?.currentVersion || ''
   }
-  return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
+  return isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
 }
 
 export const getEdgeNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
@@ -585,7 +586,7 @@ export const getEdgeNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | unde
 export const getMergedLagTableDataFromLagForm = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
   let updatedLagData
   if (lagData) {
-    updatedLagData = _.cloneDeep(lagData)
+    updatedLagData = cloneDeep(lagData)
     const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
     if (targetIdx !== -1) {
       updatedLagData[targetIdx] = changedLag
@@ -608,61 +609,93 @@ export const isEdgeMatchedRequiredFirmware = (requiredFw: string | undefined, ed
   return isMatched
 }
 
+export const convertInterfaceStatusToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], physicalOnly?: boolean) => {
+  const data = interfaces.map(item => {
+    const isPhysicalPort = item.hasOwnProperty('interfaceName')
+    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
 
-/**
- * Do a dry run on the network interfaces based on the given LAGs data,
- * It will,
- * - reset the port to initial config
- * - remove the lag member interface sub interface
- * - reset ip / subnet to empty when ip mode is DHCP
- * - reset ip mode to STATIC when port type is LAN and corePortEnabled is false
- * - reset ip mode to DHCP when port type is UNCONFIGURED
- * - disable NAT if port type is not WAN and clear NAT pools if NAT is disabled
- * ...etc.
- * @param lags the LAGs data
- * @param ports the port data
- * @param subInterfaces the sub interface data
- * @returns an object with the dry run result
- */
-export const doEdgeNetworkInterfacesDryRun = (
-  lags: EdgeLag[], ports: EdgePort[], subInterfaces: SubInterface[],
-  isEdgeCoreAccessSeparationReady?: boolean
-): {
-  lags: EdgeLag[],
-  ports: EdgePort[],
-  subInterfaces: SubInterface[]
-} => {
-  const dryRunLags = cloneDeep(lags)
-  const dryRunPorts = cloneDeep(ports)
-  const dryRunSubInterfaces = cloneDeep(subInterfaces)
+    let portName = ''
+    let id = ''
+    let portType: EdgePortTypeEnum
+    let isLagMember = false
+    if (isPhysicalPort) {
+      const ifData = (item as EdgePortStatus)
+      id = ifData.portId
+      portName = ifData.interfaceName ?? ''
+      portType = ifData.type ?? ''
+      isLagMember = !!lagList?.some(lag =>
+        (lag as EdgeLagStatus).lagMembers?.some(member =>
+          member.name === ifData.interfaceName))
+    } else {
+      const ifData = (item as EdgeLagStatus)
+      id = `${ifData.lagId}`
+      portName = ifData.name
+      portType = ifData.portType
+    }
 
-  dryRunLags.forEach((lag, idx) => {
-    lag.lagMembers.forEach(member => {
-      const targetPortIdx = findIndex(dryRunPorts, { id: member.portId })
-      if(targetPortIdx !== -1) {
-      // reset lag member port
-        dryRunPorts[targetPortIdx] = { ...dryRunPorts[targetPortIdx], ...edgePhysicalPortInitialConfigs }
-
-        // remove lag member interface sub interface
-        subInterfaces = subInterfaces.filter(subInterface =>
-          subInterface.interfaceName?.split('.')[0] !== dryRunPorts[targetPortIdx].interfaceName)
-      }
-    })
-
-    dryRunLags[idx] = convertEdgeNetworkIfConfigToApiPayload(lag, isEdgeCoreAccessSeparationReady) as EdgeLag
+    return (physicalOnly && !isPhysicalPort) ? '' : {
+      serialNumber: item.serialNumber ?? '',
+      id,
+      portName,
+      portType,
+      isLag: !isPhysicalPort,
+      isLagMember,
+      ipMode: getEdgePortIpModeEnumValue(item.ipMode),
+      ip: item.ip ?? '',
+      mac: item.mac ?? '',
+      subnet: item.subnet ?? '',
+      vlan: item.vlan,
+      status: item.status,
+      isCorePort: item.isCorePort === 'Enabled',
+      portEnabled: item.adminStatus === 'Enabled',
+      isAccessPort: item.isAccessPort === 'Enabled'
+    }
   })
 
-  dryRunPorts.forEach((port, idx) => {
-    dryRunPorts[idx] = convertEdgeNetworkIfConfigToApiPayload(port, isEdgeCoreAccessSeparationReady) as EdgePort
+  return data.filter(d => !!d) as EdgePortInfo[]
+}
+
+export const convertInterfaceDataToEdgePortInfo = (serialNumber: EdgeSerialNumber, lags: EdgeLag[], ports: EdgePort[]) => {
+  const lagMembers = lags.flatMap(item => item.lagMembers.map(member => member.portId))
+
+  const resolvedLags = lags.map(item => {
+    return {
+      serialNumber,
+      id: item.id + '',
+      portName: `Lag${item.id}`,
+      ipMode: item.ipMode,
+      ip: item.ip,
+      mac: '',
+      subnet: item.subnet,
+      portType: item.portType,
+      isCorePort: item.corePortEnabled,
+      isAccessPort: item.accessPortEnabled,
+      isLag: true,
+      isLagMember: false,
+      portEnabled: item.lagEnabled
+    }
   })
 
-  dryRunSubInterfaces.forEach((subInterface, idx) => {
-    dryRunSubInterfaces[idx] = convertEdgeNetworkIfConfigToApiPayload(subInterface as EdgeSubInterface, isEdgeCoreAccessSeparationReady) as SubInterface
+  const resolvedPorts = ports.map(item => {
+    return {
+      serialNumber,
+      id: item.id,
+      portName: item.interfaceName,
+      ipMode: item.ipMode,
+      ip: item.ip,
+      mac: item.mac,
+      subnet: item.subnet,
+      portType: item.portType,
+      isCorePort: item.corePortEnabled,
+      isAccessPort: item.accessPortEnabled,
+      isLag: false,
+      isLagMember: lagMembers?.includes(item.id) ?? false,
+      portEnabled: item.enabled
+    }
   })
 
   return {
-    lags: lags,
-    ports: dryRunPorts,
-    subInterfaces: dryRunSubInterfaces
+    ports: resolvedPorts.filter(Boolean) as EdgePortInfo[],
+    lags: resolvedLags.filter(Boolean) as EdgePortInfo[]
   }
 }

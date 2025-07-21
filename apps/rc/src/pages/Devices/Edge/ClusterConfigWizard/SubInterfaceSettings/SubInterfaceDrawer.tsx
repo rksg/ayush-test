@@ -19,9 +19,12 @@ import {
   generalSubnetMskRegExp,
   interfaceSubnetValidator,
   serverIpAddressRegExp,
-  validateGatewayInSubnet
+  validateGatewayInSubnet,
+  isSubInterfaceLagMember
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
+
+import { getAllSubInterfaceData } from '../InterfaceSettings/utils'
 
 import { SubInterfaceSettingsFormType } from './types'
 import {
@@ -72,6 +75,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   } = props
   const [formRef] = Form.useForm()
   const { form: stepFormRef } = useStepFormContext<SubInterfaceSettingsFormType>()
+
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const corePortEnabled = Form.useWatch('corePortEnabled', formRef)
@@ -96,11 +100,10 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const getAllSubInterfacesFromForm = useCallback(() => {
     const value = stepFormRef?.getFieldsValue(true) as SubInterfaceSettingsFormType
     const currentFormData = formRef.getFieldsValue(true) as SubInterface
-    const portsSubInterfaces = Object.values(value?.portSubInterfaces[props.serialNumber] || {})
-      .flat() as SubInterface[]
-    const lagsSubInterfaces = Object.values(value?.lagSubInterfaces[props.serialNumber] || {})
-      .flat() as SubInterface[]
-    const result = [...portsSubInterfaces, ...lagsSubInterfaces]
+    // eslint-disable-next-line max-len
+    const result = getAllSubInterfaceData(value?.portSubInterfaces, value?.lagSubInterfaces)[props.serialNumber]
+
+    // update with current form data and put it to the end of the array
     const currentFormDataIdx = result.findIndex(item => item.id === currentFormData.id)
     if(currentFormDataIdx > -1) {
       result.splice(currentFormDataIdx, 1)
@@ -117,6 +120,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { isPortEnabled, hasWanPort, hasCorePort, hasAccessPort } = useMemo(() => {
     const allSubInterfaces = getAllSubInterfacesFromForm()
+    const lagMemberInterfaceNames = allInterface.filter(item => item.isLagMember)
+      .map(item => item.portName.toLocaleLowerCase())
 
     const isPortEnabled = allInterface.some(
       item =>
@@ -132,11 +137,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
     const hasCorePort = allInterface.some(item =>
       item.isCorePort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
-      allSubInterfaces.some(item => item.corePortEnabled)
+      // eslint-disable-next-line max-len
+      allSubInterfaces.some(item => item.corePortEnabled && !isSubInterfaceLagMember(item, lagMemberInterfaceNames))
 
     const hasAccessPort = allInterface.some(item =>
       item.isAccessPort && !item.isLagMember && item.portType === EdgePortTypeEnum.LAN) ||
-      allSubInterfaces.some(item => item.accessPortEnabled)
+      // eslint-disable-next-line max-len
+      allSubInterfaces.some(item => item.accessPortEnabled && !isSubInterfaceLagMember(item, lagMemberInterfaceNames))
 
     return {
       isPortEnabled,
