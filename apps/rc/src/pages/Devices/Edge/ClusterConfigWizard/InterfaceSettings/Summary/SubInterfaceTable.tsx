@@ -3,11 +3,10 @@ import { ReactNode, useContext } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }     from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { CheckMark }             from '@acx-ui/icons'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { SubInterface }          from '@acx-ui/rc/utils'
+import { Table, TableProps }                   from '@acx-ui/components'
+import { Features }                            from '@acx-ui/feature-toggle'
+import { CheckMark }                           from '@acx-ui/icons'
+import { SubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 import { InterfaceSettingsFormType }  from '../types'
@@ -34,15 +33,15 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const tableData = [] as SubInterfaceTableData[]
   const edgeNodeList = clusterInfo?.edgeList
   // eslint-disable-next-line max-len
-  const allLagMemberIds = lagData.flatMap(({ lags }) => lags.flatMap(lag => lag.lagMembers.map(member => member.portId)))
+  const allLagMemberIds = lagData.flatMap(({ lags }) => lags.flatMap(lag => lag.lagMembers?.map(member => member.portId)))
 
   Object.entries(portSubInterfaceData).forEach(([serialNumber, subInterfaces = {}]) => {
     Object.entries(subInterfaces).forEach(([portId, subInterface = []]) => {
-      // eslint-disable-next-line max-len
       if(allLagMemberIds.includes(portId)) return
+
       subInterface.forEach((subInterface) => {
         // eslint-disable-next-line max-len
-        const currentPortInfo = Object.values(portData?.[serialNumber])?.find(item => item[0].id === portId)?.[0]
+        const currentPortInfo = Object.values(portData?.[serialNumber] ?? {})?.find(item => item[0].id === portId)?.[0]
         tableData.push({
           ...subInterface,
           serialNumber,

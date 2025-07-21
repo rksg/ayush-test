@@ -3,6 +3,7 @@ import {
   computePastRange,
   transformLookupAndMappingData,
   transformToPropertyView,
+  transformToLspView,
   transformVenuesData,
   TransformedMap,
   calcSLA,
@@ -91,6 +92,94 @@ describe('helpers', () => {
           lsp: ''
         }
       ])
+    })
+  })
+
+  describe('transformToLspView', () => {
+    it('should return NaN when all properties have invalid data', () => {
+      const properties = [
+        {
+          avgConnSuccess: [0, 0] as [number, number],
+          avgClientThroughput: [0, 0] as [number, number],
+          avgTTC: [0, 0] as [number, number],
+          ssidCompliance: [0, 0] as [number, number],
+          p1Incidents: NaN,
+          deviceCount: NaN,
+          property: 'Property1',
+          tenantId: '1',
+          lsps: ['LSP1'],
+          hasValidData: false
+        },
+        {
+          avgConnSuccess: [0, 0] as [number, number],
+          avgClientThroughput: [0, 0] as [number, number],
+          avgTTC: [0, 0] as [number, number],
+          ssidCompliance: [0, 0] as [number, number],
+          p1Incidents: NaN,
+          deviceCount: NaN,
+          property: 'Property2',
+          tenantId: '2',
+          lsps: ['LSP1'],
+          hasValidData: false
+        }
+      ]
+
+      const result = transformToLspView(properties, 'LSP')
+
+      expect(result).toHaveLength(1)
+      expect(result[0].p1Incidents).toBeNaN()
+      expect(result[0].deviceCount).toBeNaN()
+      expect(result[0].lsp).toBe('LSP1')
+      expect(result[0].propertyCount).toBe(2)
+    })
+
+    it('should return cumulative sum when some properties have valid data', () => {
+      const properties = [
+        {
+          avgConnSuccess: [10, 20] as [number, number],
+          avgClientThroughput: [30, 40] as [number, number],
+          avgTTC: [50, 60] as [number, number],
+          ssidCompliance: [70, 80] as [number, number],
+          p1Incidents: 5,
+          deviceCount: 25,
+          property: 'Property1',
+          tenantId: '1',
+          lsps: ['LSP1'],
+          hasValidData: true
+        },
+        {
+          avgConnSuccess: [0, 0] as [number, number],
+          avgClientThroughput: [0, 0] as [number, number],
+          avgTTC: [0, 0] as [number, number],
+          ssidCompliance: [0, 0] as [number, number],
+          p1Incidents: NaN,
+          deviceCount: NaN,
+          property: 'Property2',
+          tenantId: '2',
+          lsps: ['LSP1'],
+          hasValidData: false
+        },
+        {
+          avgConnSuccess: [15, 25] as [number, number],
+          avgClientThroughput: [35, 45] as [number, number],
+          avgTTC: [55, 65] as [number, number],
+          ssidCompliance: [75, 85] as [number, number],
+          p1Incidents: 3,
+          deviceCount: 15,
+          property: 'Property3',
+          tenantId: '3',
+          lsps: ['LSP1'],
+          hasValidData: true
+        }
+      ]
+
+      const result = transformToLspView(properties, 'LSP')
+
+      expect(result).toHaveLength(1)
+      expect(result[0].p1Incidents).toBe(8)
+      expect(result[0].deviceCount).toBe(40)
+      expect(result[0].lsp).toBe('LSP1')
+      expect(result[0].propertyCount).toBe(3)
     })
   })
   describe('noDataCheck', () => {
@@ -188,11 +277,10 @@ describe('transformLookupAndMappingData', () => {
 
 describe('transformVenuesData', () => {
 
-  it('transforms and sums venue data correctly for non MDU', () => {
+  it('transforms and sums venue data correctly', () => {
     const transformed = transformVenuesData(
       mockVenuesData as { data: BrandVenuesSLA[] },
-      mockLookupAndMappingData as unknown as TransformedMap,
-      false
+      mockLookupAndMappingData as unknown as TransformedMap
     )
     expect(transformed).toEqual([
       {
@@ -206,29 +294,7 @@ describe('transformVenuesData', () => {
         avgClientThroughput: [19, 21],
         id: 'Property1-0',
         tenantId: '1',
-        prospectCountSLA: 0
-      }
-    ])
-  })
-  it('transforms and sums venue data correctly for MDU', () => {
-    const transformed = transformVenuesData(
-      mockVenuesData as { data: BrandVenuesSLA[] },
-      mockLookupAndMappingData as unknown as TransformedMap,
-      true
-    )
-    expect(transformed).toEqual([
-      {
-        property: 'Property1',
-        lsps: ['IntegratorName'],
-        p1Incidents: 8,
-        ssidCompliance: [0, 0],
-        deviceCount: 15,
-        avgConnSuccess: [11, 13],
-        avgTTC: [15, 17],
-        avgClientThroughput: [19, 21],
-        id: 'Property1-0',
-        tenantId: '1',
-        prospectCountSLA: 0
+        hasValidData: true
       }
     ])
   })
@@ -236,27 +302,26 @@ describe('transformVenuesData', () => {
   it('handles empty venue data', () => {
     const transformed = transformVenuesData(
       { data: [] },
-      mockLookupAndMappingData as unknown as TransformedMap,
-      false
+      mockLookupAndMappingData as unknown as TransformedMap
     )
     expect(transformed).toEqual([
       {
         avgClientThroughput: '--',
         avgConnSuccess: '--',
         avgTTC: '--',
-        deviceCount: 0,
+        deviceCount: NaN,
         lsps: ['IntegratorName'],
-        p1Incidents: 0,
+        p1Incidents: NaN,
         property: 'Property1',
         ssidCompliance: '--',
         id: 'Property1-0',
         tenantId: '1',
-        prospectCountSLA: 0
+        hasValidData: false
       }])
   })
 
   it('handles undefined mapping data', () => {
-    const transformed = transformVenuesData(mockVenuesData as { data: BrandVenuesSLA[] }, {}, false)
+    const transformed = transformVenuesData(mockVenuesData as { data: BrandVenuesSLA[] }, {})
     expect(transformed).toEqual([])
   })
   it('calcSLA should handle [0,0]', () => {

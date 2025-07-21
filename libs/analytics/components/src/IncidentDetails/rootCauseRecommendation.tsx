@@ -412,11 +412,11 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
 export const rootCauseRecommendationMap = {
   'assoc': {
     CCD_REASON_NOT_AUTHED: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: commonRecommendations
     },
     CCD_REASON_NOT_ASSOCED: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: commonRecommendations
     },
     CCD_REASON_AUTH_ALG: {
@@ -530,7 +530,7 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>No recommendation.</p>' })
     },
     VARIOUS_REASONS: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
@@ -563,11 +563,11 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_NOT_AUTHED: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: commonRecommendations
     },
     CCD_REASON_NOT_ASSOCED: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: commonRecommendations
     },
     CCD_REASON_AUTH_ALG: {
@@ -680,7 +680,7 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>No recommendation.</p>' })
     },
     VARIOUS_REASONS: {
-      rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
+      rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause. This may be caused by TCM (Transient Client Management), SmartRoam, or ACL (Access Control List) connection failures if configured on your network.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
