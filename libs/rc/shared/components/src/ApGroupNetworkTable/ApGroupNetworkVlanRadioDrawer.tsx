@@ -10,9 +10,9 @@ import { cssStr, Drawer, Select, Tooltip }                      from '@acx-ui/co
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { IsNetworkSupport6g, Network, RadioTypeEnum, VlanType } from '@acx-ui/rc/utils'
 
-import { getCurrentVenue } from '../ApGroupNetworkTable'
-import VLANPoolModal       from '../NetworkForm/VLANPoolInstance/VLANPoolModal'
+import VLANPoolModal from '../NetworkForm/VLANPoolInstance/VLANPoolModal'
 
+import { getCurrentVenue }                from './index'
 import { ApGroupNetworkVlanRadioContext } from './index'
 
 type EditApGroup = {
