@@ -22,8 +22,11 @@ export interface Common {
   avgTTC: number | null,
   avgClientThroughput: number | null
 }
-export interface Property extends Common {
+export interface Property extends PropertyCode, Common {
   property: string
+}
+export interface PropertyCode {
+  propertyCode: string
 }
 export interface Lsp extends Common {
   propertyCount: number
@@ -34,6 +37,7 @@ interface TransformedItem {
   type: string
   content: object[]
   integrators?: string[]
+  propertyCode?: string
 }
 
 export interface TransformedMap {
@@ -157,6 +161,7 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
         : null
     return {
       ...property,
+      propertyCode: property.propertyCode,
       ssidCompliance,
       avgConnSuccess,
       avgClientThroughput,
@@ -213,7 +218,8 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
       integrators: groupedById[key][0].integrator
         ? [groupedById[key][0]?.integrator as string]
         : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
-      content: groupedById[key]
+      content: groupedById[key],
+      propertyCode: groupedById[key][0].propertyCode
     }
     return newObj
   }, {} as TransformedMap)
@@ -237,6 +243,7 @@ export const transformVenuesData = (
     mappingData.type === 'MSP_REC' && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
+      propertyCode: mappingData?.propertyCode,
       lsps: mappingData?.integrators?.length
         ? mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
         : ['-'],

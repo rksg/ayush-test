@@ -4,12 +4,13 @@ import { useIntl }       from 'react-intl'
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter, FormatterType }         from '@acx-ui/formatter'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
-  transformToLspView, transformToPropertyView, Property, Common, Lsp, customSort
+  transformToLspView, transformToPropertyView, Property, PropertyCode, Common, Lsp, customSort
 } from './helpers'
 import {
   Response
@@ -39,6 +40,7 @@ export function BrandTable ({
   const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
 
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data, lspLabel)
@@ -146,35 +148,50 @@ export function BrandTable ({
       width: 100
     }
   ]
-  const propertyCols: TableProps<Pick<Property, 'property' | 'lsp'>>['columns'] = [{
-    title: propertyLabel,
-    dataIndex: 'property',
-    key: 'property',
-    fixed: 'left',
-    searchable: true,
-    sorter: { compare: sortProp('property', defaultSort) },
-    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
-      <span>{highlightFn(row?.property)}</span>
-  }, {
-    title: lspLabel,
-    dataIndex: 'lsp',
-    key: 'lsp',
-    fixed: 'left',
-    searchable: true,
-    sorter: { compare: sortProp('lsp', defaultSort) },
-    render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
-      <span>{highlightFn(row?.lsp)}</span>
-  }
-  ]
+  const propertyCols: TableProps<Pick<Property,
+    'property' | 'propertyCode' | 'lsp'>>['columns'] =
+    [
+      {
+        title: propertyLabel,
+        dataIndex: 'property',
+        key: 'property',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('property', defaultSort) },
+        render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
+          <span>{highlightFn(row?.property)}</span>
+      }, {
+        title: $t({ defaultMessage: 'Property ID' }),
+        dataIndex: 'propertyCode',
+        key: 'propertyCode',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('propertyCode', defaultSort) },
+        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
+          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
+      }, {
+        title: lspLabel,
+        dataIndex: 'lsp',
+        key: 'lsp',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('lsp', defaultSort) },
+        render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
+          <span>{highlightFn(row?.lsp)}</span>
+      }
+    ]
   // Remove lsp column in case of LSP account
   if(isLSP){
     propertyCols.splice(-1)
   }
 
-  return <Table<Property | Lsp>
+  const finalPropertyCols = !propertyIdToggle
+    ? propertyCols.filter(col => col.dataIndex !== 'propertyCode')
+    : propertyCols
+  return <Table<Property | PropertyCode | Lsp>
     columns={[
-      ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
-    ] as unknown as TableProps<Property | Lsp>['columns']}
+      ...(sliceType === 'lsp' ? lspCols : finalPropertyCols), ...commonCols
+    ] as unknown as TableProps<Property | PropertyCode | Lsp>['columns']}
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
     settingsId='property-list-table'

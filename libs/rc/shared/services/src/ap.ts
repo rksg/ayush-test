@@ -98,7 +98,8 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork,
+  ApJwtToken
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -2126,6 +2127,19 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    getApJwtToken: build.query<ApJwtToken, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApJwtToken, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApJwtToken' }]
     })
   })
 })
@@ -2144,6 +2158,7 @@ export const {
   useGetApQuery,
   useGetApOperationalQuery,
   useLazyGetApQuery,
+  useLazyGetApJwtTokenQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListByVenueQuery,

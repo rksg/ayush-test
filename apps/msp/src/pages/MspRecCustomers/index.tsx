@@ -233,7 +233,12 @@ export function MspRecCustomers () {
       dataIndex: 'propertyCode',
       key: 'propertyCode',
       sorter: true,
-      searchable: true
+      searchable: true,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return <div style={{ textAlign: 'center' }}>
+          {row.propertyCode ? row.propertyCode : noDataDisplay}
+        </div>
+      }
     }]),
     {
       title: $t({ defaultMessage: 'Status' }),

@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen }                 from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
@@ -175,6 +176,39 @@ describe('Brand 360 Table', () => {
       }
     })
     expect(await screen.findByText('Property')).toBeVisible()
+    expect(screen.queryByText('LSP')).toBeNull()
+  })
+
+  it('should render table correctly for Property ID account', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.MSP_HSP_DISPLAY_UID_TOGGLE) return true
+      return true
+    })
+    const data = [{
+      id: '1',
+      property: 'p',
+      propertyCode: 'p-id',
+      lsps: ['l'],
+      p1Incidents: 10,
+      ssidCompliance: [10,100] as [number, number],
+      deviceCount: 2,
+      avgConnSuccess: [10,100] as [number, number],
+      avgTTC: [1,10] as [number, number],
+      avgClientThroughput: [1,10] as [number, number]
+    }]
+    await render(<BrandTable
+      sliceType='property'
+      data={data}
+      isLSP={true}
+      {...nameProps}
+    />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    expect(await screen.findByText('Property')).toBeVisible()
+    expect(await screen.findByText('Property ID')).toBeVisible()
     expect(screen.queryByText('LSP')).toBeNull()
   })
 

@@ -81,6 +81,7 @@ export interface MspEc {
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
   accountTier?: MspEcTierEnum;
+  propertyCode?: string;
 }
 
 export interface MspEcData {
