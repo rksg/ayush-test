@@ -130,6 +130,7 @@ export enum Features {
   RBAC_OPERATIONS_API_TOGGLE = 'acx-ui-rbac-allow-operations-api-toggle',
   RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  RUCKUS_AI_SWITCH_HEALTH_PHASE2_TOGGLE = 'ruckus-ai-switch-health-phase2-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'ruckus-ai-lldp-status-toggle',
@@ -145,6 +146,7 @@ export enum Features {
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
+  SWITCH_HEALTH_PHASE2_TOGGLE = 'acx-ui-switch-health-phase2-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle', //'removable-ff',
@@ -235,6 +237,7 @@ export enum Features {
   WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network',
   ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
+  RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE = 'ruckus-ai-feature-related-events-suppression-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE = 'entitlement-adaptive-policy-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE = 'entitlement-pms-integration-toggle',
@@ -299,7 +302,8 @@ export enum Features {
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
-  WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query'
+  WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
+  WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

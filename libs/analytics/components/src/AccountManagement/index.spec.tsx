@@ -24,6 +24,11 @@ jest.mock('../Support', () => ({
   Support: () => <div data-testid='Support' />
 }))
 
+jest.mock('../AdminSettings', () => ({
+  ...jest.requireActual('../AdminSettings'),
+  AdminSettings: () => <div data-testid='AdminSettings' />
+}))
+
 jest.mock('../OnboardedSystems', () => ({
   ...jest.requireActual('../OnboardedSystems'),
   useOnboardedSystems: () => ({
@@ -67,6 +72,7 @@ describe('AccountManagement', () => {
     .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     setRaiPermissions(permissions)
     jest.mocked(getUserProfile).mockReturnValue({
       accountId: 'accountId',
@@ -79,6 +85,20 @@ describe('AccountManagement', () => {
       selectedTenant: { id: 'accountId', permissions } as Tenant,
       tenants: [{ id: 'accountId', permissions }] as Tenant[]
     })
+  })
+  // eslint-disable-next-line max-len
+  it('should render Settings if RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<AccountManagement tab={AccountManagementTabEnum.SETTINGS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('Settings')).toBeVisible()
+  })
+  // eslint-disable-next-line max-len
+  it('should not render Settings if RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<AccountManagement tab={AccountManagementTabEnum.SETTINGS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Settings')).not.toBeInTheDocument()
   })
   it('should render Developers if RUCKUS_AI_JWT_TOGGLE is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
