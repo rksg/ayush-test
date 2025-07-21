@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import { FormInstance }                        from 'antd'
-import { omit }                                from 'lodash'
-import { defineMessage, useIntl }              from 'react-intl'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { FormInstance }           from 'antd'
+import { omit }                   from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
 import { Features }                                                                        from '@acx-ui/feature-toggle'
@@ -12,13 +12,13 @@ import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfig
 import {
   CommonErrorsResult,
   CommonResult,
-  getServiceListRoutePath,
-  LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage,
-  EdgeClusterInfo
+  EdgeClusterInfo,
+  useAfterServiceSaveRedirectPath,
+  ServiceType,
+  useServicePreviousPath,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
-import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
@@ -78,10 +78,10 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
   const { initialValues: formInitialValues, hasPrerequisite = false } = props
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.PIN, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.PIN)
 
   const [validateEdgePinSwitchConfig] = useValidateEdgePinSwitchConfigMutation()
   const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
@@ -209,7 +209,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         await props.onFinish.apply(null, funcArgs).catch(reject)
       })
 
-      redirectPreviousPage(navigate, previousPath, linkToServices)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -219,7 +219,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
     <StepsForm
       editMode={props.editMode}
       form={props.form}
-      onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
+      onCancel={() => navigate(previousPath)}
       onFinish={handleFinish}
       initialValues={formInitialValues}
       hasPrerequisiteStep={hasPrerequisite}
