@@ -10,6 +10,10 @@ import { healthWidgetFixture } from './__tests__/fixtures'
 import { ClientExperience }    from './clientExperience'
 import { api }                 from './services'
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('Client Experience', () => {
   let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const filters:AnalyticsFilter = {
@@ -19,10 +23,9 @@ describe('Client Experience', () => {
     filter: {}
   }
 
-  beforeEach(() => {
-    jest.mocked(get).mockReturnValue('')
+  beforeEach(() =>
     store.dispatch(api.util.resetApiState())
-  })
+  )
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'HealthWidget', {
@@ -45,7 +48,7 @@ describe('Client Experience', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should hide arrow button when READ_HEALTH permission is false', async () => {
-    jest.mocked(get).mockReturnValue('true')
+    mockGet.mockReturnValue('true')
     setRaiPermissions({ READ_HEALTH: false } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'HealthWidget', {
       data: { network: { hierarchyNode: healthWidgetFixture } }

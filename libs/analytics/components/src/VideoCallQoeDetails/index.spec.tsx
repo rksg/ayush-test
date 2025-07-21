@@ -23,6 +23,7 @@ import { clientSearchApi } from '../VideoCallQoe/services'
 import { VideoCallQoeDetails } from '.'
 
 
+jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
 
 describe('VideoCallQoe Details Page', () => {
