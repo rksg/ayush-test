@@ -72,6 +72,13 @@ export const getKPIConfigsData = (kpiConfigs: IntentKPIConfigExtend[], after: Kp
   })
 }
 
+const getValues = (current: KpiResultExtend, previous: KpiResultExtend, key: keyof KpiResultExtend ) => {
+  const currentValue = current[key] ?? 0
+  const previousValue = previous[key] ?? 0
+  const difference = currentValue / previousValue * 100
+  return { currentValue, previousValue, difference }
+}
+
 export const MetricsConfig: IntentKPIConfigExtend[] = [{
   key: 'enabled',
   label: defineMessage({ defaultMessage: 'AI-Optimized APs' }),
@@ -116,12 +123,14 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
   format: formatter('percentFormatRound'),
   deltaSign: '+',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
-    ({
-      value: current.powerSaving,
-      previous: previous.powerSaving,
-      isPill: true
-    }),
+  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) => {
+    const { currentValue, previousValue, difference } = getValues(current, previous, 'powerSaving')
+    return {
+      value: currentValue,
+      previous: previousValue,
+      isPill: difference < 1000 ? true : false
+    }
+  },
   valueFormatter: formatter('countFormat'),
   valueSuffixMessage: defineMessage({ defaultMessage: '/month' }),
   valueSuffixClass: 'ant-statistic-content-suffix-unit'
@@ -173,20 +182,22 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   format: formatter('percentFormatRound'),
   deltaSign: '-',
   valueMessage: defineMessage({ defaultMessage: '{value} kWh' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
-    ({
-      value: current.powerConsumption,
-      previous: previous.powerConsumption,
-      isPill: true
-    }),
+  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) => {
+    const { currentValue, previousValue, difference } = getValues(current, previous, 'powerConsumption')
+    return {
+      value: currentValue,
+      previous: previousValue,
+      isPill: difference < 1000 ? true : false
+    }
+  },
   valueFormatter: formatter('countFormat'),
   tooltip: defineMessage({ defaultMessage: 'Total power consumed by all APs in this zone per day, measured in kilowatt-hours (kWh).' })
 },{
   key: 'maxApPower',
   label: defineMessage({ defaultMessage: 'Max AP Power' }),
-  format: formatter('countFormat'),
+  format: formatter('noFormat'),
   deltaSign: 'none',
-  valueMessage: defineMessage({ defaultMessage: '{value}W' }),
+  valueMessage: defineMessage({ defaultMessage: '{value} W' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
       value: current.maxApPower
@@ -195,16 +206,16 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
 },{
   key: 'minApPower',
   label: defineMessage({ defaultMessage: 'Min AP Power (Standard vs AI)' }),
-  format: formatter('countFormat'),
+  format: formatter('noFormat'),
   deltaSign: 'none',
-  valueMessage: defineMessage({ defaultMessage: '{value}W' }),
+  valueMessage: defineMessage({ defaultMessage: '{value} W' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
       value: current.minApPowerStandard,
       previous: current.minApPowerAi,
       isShowPreviousSpan: true
     }),
-  valueSuffixMessage: defineMessage({ defaultMessage: 'vs <previousSpan>{previous}W</previousSpan>' }),
+  valueSuffixMessage: defineMessage({ defaultMessage: 'vs <previousSpan>{previous} W</previousSpan>' }),
   valueSuffixClass: 'ant-statistic-content-suffix-conj',
   tooltip: defineMessage({ defaultMessage: 'Comparison of the lowest power consumed by an AP with and without AI-Driven Energy Saving.' })
 }]

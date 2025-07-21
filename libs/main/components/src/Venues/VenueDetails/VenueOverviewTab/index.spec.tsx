@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { generatePath }                          from '@acx-ui/react-router-dom'
-import { Provider, store  }                      from '@acx-ui/store'
-import { mockServer, fireEvent, render, screen } from '@acx-ui/test-utils'
+import { venueApi }                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { generatePath }                                   from '@acx-ui/react-router-dom'
+import { Provider, store  }                               from '@acx-ui/store'
+import { mockServer, fireEvent, render, screen }          from '@acx-ui/test-utils'
 
 import { VenueOverviewTab } from '.'
 
@@ -52,7 +52,7 @@ describe('VenueOverviewTab', () => {
         WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
         (_, res, ctx) => res(ctx.json({ enabled: true }))),
       rest.get(
-        WifiUrlsInfo.getVenueRadioCustomization.url,
+        WifiRbacUrlsInfo.getVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json({}))
       )
     )

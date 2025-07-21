@@ -23,10 +23,11 @@ export function SwitchNote (props: NoteProps) {
 
   const noteMesage = {
     [NotesEnum.NOTE7150_1]:
-      $t({
+      $t(
         // eslint-disable-next-line max-len
-        defaultMessage: 'The following switches will not be upgraded because the ICX7150-C08P/PT models do not support FastIron versions 10.0.x. You can still upgrade them to the desired 09.0.10x version by selecting these switches separately.'
-      }),
+        { defaultMessage: 'The following switches will not be upgraded because the <b>ICX7150-C08P/PT</b> models do not support FastIron versions 10.0.10x. You can still upgrade them to the desired 09.0.10x version by selecting these switches separately.' },
+        { b: (chunks: React.ReactNode) => <b>{chunks}</b> }
+      ),
     [NotesEnum.NOTE7550_1]:
     $t({
       // eslint-disable-next-line max-len

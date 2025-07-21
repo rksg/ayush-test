@@ -145,6 +145,25 @@ describe('DonutChart - small', () => {
       expect(await screen.findByText(item.name)).toBeTruthy()
     })
   })
+  it('should use custom legendFormatter when provided', async () => {
+    const customLegendFormatter = jest.fn((name: string) => `Custom ${name}`)
+    render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      title='Donut Chart'
+      legendFormatter={customLegendFormatter}
+      showLegend
+      subTitle='Donut Chart subTitle'
+    />)
+
+    data.forEach(item => {
+      expect(customLegendFormatter).toHaveBeenCalledWith(item.name)
+    })
+
+    data.forEach(async item => {
+      expect(await screen.findByText(`Custom ${item.name}`)).toBeTruthy()
+    })
+  })
   it('should render subTitle', async () => {
     render(<DonutChart
       style={{ width: 238, height: 176 }}

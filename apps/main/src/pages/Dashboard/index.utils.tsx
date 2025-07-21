@@ -2,7 +2,7 @@ import { defineMessage } from 'react-intl'
 
 import { DashboardInfo } from '@acx-ui/rc/utils'
 
-import { DEFAULT_DASHBOARD_ID } from '../AICanvas/index.utils'
+import { DEFAULT_DASHBOARD_ID } from '../AICanvas/archived/AICanvasQ2/index.utils'
 
 export const formatDashboardList = (list: DashboardInfo[]) => {
   return list.map((item, index) => {
