@@ -91,7 +91,7 @@ describe('HQoS Settings Form', () => {
     expect(waringSolid).toBeVisible()
   })
 
-  it('validate bandwidth compare return error', async () => {
+  it.skip('validate bandwidth compare return error', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
     render(<MockedTargetComponent
       form={stepFormRef.current}

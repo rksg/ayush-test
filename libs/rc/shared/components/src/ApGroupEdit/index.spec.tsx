@@ -79,6 +79,13 @@ describe('AP Group Edit', () => {
           return res(ctx.json(mockAPGroupList))
         }
       ),
+      rest.get(
+        CommonRbacUrlsInfo.getVenue.url,
+        (_, res, ctx) => {
+          mockedGetVenue()
+          return res(ctx.json(venuelist.data[0]))
+        }
+      ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => {
