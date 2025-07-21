@@ -1,6 +1,6 @@
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { ConfigTemplateType }                                     from '@acx-ui/rc/utils'
-import { isRecSite } from '@acx-ui/utils'
+import { isRecSite }                                              from '@acx-ui/utils'
 
 export * from './ConfigTemplateLink'
 export * from './utils'

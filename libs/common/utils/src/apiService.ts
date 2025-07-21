@@ -3,11 +3,11 @@ import _                                                                        
 import { generatePath, Params }                                                 from 'react-router-dom'
 
 import { get }                          from '@acx-ui/config'
-import { isRecSite }                    from './pathUtils'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
+import { isRecSite }                         from './pathUtils'
 
 export interface ApiInfo {
   url: string;
