@@ -7,12 +7,12 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from '@acx-ui/analytics/services'
-import { kpiConfig, productNames }       from '@acx-ui/analytics/utils'
-import { Tooltip, ProgressPill, Loader } from '@acx-ui/components'
-import { formatter, FormatterType }      from '@acx-ui/formatter'
-import { InformationOutlined }           from '@acx-ui/icons'
-import { TimeStampRange }                from '@acx-ui/types'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import { kpiConfig, productNames, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { Tooltip, ProgressPill, Loader }                               from '@acx-ui/components'
+import { formatter, FormatterType }                                    from '@acx-ui/formatter'
+import { InformationOutlined }                                         from '@acx-ui/icons'
+import { TimeStampRange }                                              from '@acx-ui/types'
+import type { AnalyticsFilter }                                        from '@acx-ui/utils'
 
 import GenericError from '../../GenericError'
 import * as UI      from '../styledComponents'
@@ -73,8 +73,13 @@ type PillQueryProps = {
 
 export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
   const { histogram, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
+
   const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow,
-    kpi, enableSwitchFirmwareFilter }, {
+    kpi, enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter }, {
     skip: !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
@@ -82,7 +87,7 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
     })
   })
   const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters,
-    kpi, enableSwitchFirmwareFilter }, {
+    kpi, enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,

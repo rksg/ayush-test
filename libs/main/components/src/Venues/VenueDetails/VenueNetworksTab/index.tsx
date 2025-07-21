@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState, useRef } from 'react'
 
-import { Form, Switch }           from 'antd'
-import { assign, cloneDeep, get } from 'lodash'
-import { useIntl }                from 'react-intl'
+import { Form, Switch }                 from 'antd'
+import { assign, cloneDeep, get, omit } from 'lodash'
+import { useIntl }                      from 'react-intl'
 
 import {
   Loader,
@@ -30,11 +30,8 @@ import {
   NetworkTunnelTypeEnum,
   useSoftGreTunnelActions } from '@acx-ui/rc/components'
 import {
-  useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
-  useDeleteNetworkVenueMutation,
   useVenueDetailsHeaderQuery,
-  useVenueNetworkTableV2Query,
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
@@ -68,7 +65,9 @@ import {
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
   WifiRbacUrlsInfo,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  networkTypes,
+  SupportNetworkTypes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                        from '@acx-ui/types'
@@ -79,36 +78,15 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { TableResult, useTableQuery, getOpsApi } from '@acx-ui/utils'
+import { TableResult, useTableQuery, getOpsApi, FILTER, SEARCH } from '@acx-ui/utils'
 
 import { useTunnelColumn } from './useTunnelColumn'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
-    'ssid',
-    'vlanPool',
-    'captiveType',
-    'id',
-    'isOweMaster',
-    'owePairNetworkId',
-    'dsaeOnboardNetwork'
-  ]
-}
-
 const defaultRbacPayload = {
   searchString: '',
+  searchTargetFields: ['name'],
   fields: [
     'check-all',
     'name',
@@ -133,21 +111,8 @@ const defaultRbacPayload = {
 const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) => {
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
-
-  const nonRbacTableQuery = useTableQuery({
-    useQuery: useVenueNetworkTableV2Query,
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    },
-    pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled || !venueId }
-  })
 
   const rbacTableQuery = useTableQuery({
     useQuery: isApCompatibilitiesByModel
@@ -157,13 +122,14 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       ...defaultRbacPayload,
       isTemplate: isTemplate
     },
+    search: {
+      searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
+    },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !venueId }
+    option: { skip: !venueId }
   })
 
-
-
-  return resolvedRbacEnabled? rbacTableQuery : nonRbacTableQuery
+  return rbacTableQuery
 }
 
 const defaultArray: NetworkExtended[] = []
@@ -180,11 +146,9 @@ export function VenueNetworksTab () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isSupportActivationColumnSorting = useIsSplitOn(Features.WIFI_NETWORK_ACTIVATION_QUERY)
 
   const addNetworkOpsApi = getOpsApi(isTemplate
     ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
@@ -246,15 +210,6 @@ export function VenueNetworksTab () {
   })
   const [ deleteRbacNetworkVenue, { isLoading: isDeleteRbacNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteRbacNetworkVenueMutation,
-    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
-  })
-
-  const [ addNetworkVenue, { isLoading: isAddNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useAddNetworkVenueMutation,
-    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
-  })
-  const [ deleteNetworkVenue, { isLoading: isDeleteNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
 
@@ -347,21 +302,13 @@ export function VenueNetworksTab () {
             networkId: newNetworkVenue.networkId
           }
 
-          if (resolvedRbacEnabled) {
-            setIsTableUpdating(true)
-            addRbacNetworkVenue({
-              params: apiParams,
-              payload: newNetworkVenue,
-              enableRbac: true,
-              callback: () => setIsTableUpdating(false)
-            })
-          } else {
-            addNetworkVenue({
-              params: apiParams,
-              payload: newNetworkVenue,
-              enableRbac: false
-            })
-          }
+          setIsTableUpdating(true)
+          addRbacNetworkVenue({
+            params: apiParams,
+            payload: newNetworkVenue,
+            enableRbac: true,
+            callback: () => setIsTableUpdating(false)
+          })
 
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
@@ -373,23 +320,16 @@ export function VenueNetworksTab () {
                 networkVenueId: networkVenue.id
               }
 
-              if (resolvedRbacEnabled) {
-                setIsTableUpdating(true)
-                deleteRbacNetworkVenue({
-                  params: apiParams,
-                  enableRbac: true,
-                  callback: () => {
-                    // refetch all tunnel type data because the tunnel type should be reset after network is deactivated
-                    refetchTunnelInfoData()
-                    setIsTableUpdating(false)
-                  }
-                })
-              } else {
-                deleteNetworkVenue({
-                  params: apiParams,
-                  enableRbac: false
-                })
-              }
+              setIsTableUpdating(true)
+              deleteRbacNetworkVenue({
+                params: apiParams,
+                enableRbac: true,
+                callback: () => {
+                  // refetch all tunnel type data because the tunnel type should be reset after network is deactivated
+                  refetchTunnelInfoData()
+                  setIsTableUpdating(false)
+                }
+              })
             }
           })
         }
@@ -416,19 +356,24 @@ export function VenueNetworksTab () {
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
   }
 
-  // TODO: Waiting for API support
-  // const actions: TableProps<Network>['actions'] = [
-  //   {
-  //     label: $t({ defaultMessage: 'Activate' }),
-  //     onClick: () => {
-  //     }
-  //   },
-  //   {
-  //     label: $t({ defaultMessage: 'Deactivate' }),
-  //     onClick: () => {
-  //     }
-  //   }
-  // ]
+  /*
+  const networkTypesOptions = [
+    { key: NetworkTypeEnum.PSK, value: $t(networkTypes[NetworkTypeEnum.PSK]) },
+    { key: NetworkTypeEnum.DPSK, value: $t(networkTypes[NetworkTypeEnum.DPSK]) },
+    { key: NetworkTypeEnum.AAA, value: $t(networkTypes[NetworkTypeEnum.AAA]) },
+    { key: NetworkTypeEnum.HOTSPOT20, value: $t(networkTypes[NetworkTypeEnum.HOTSPOT20]) },
+    { key: NetworkTypeEnum.CAPTIVEPORTAL, value: $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL]) },
+    { key: NetworkTypeEnum.OPEN, value: $t(networkTypes[NetworkTypeEnum.OPEN]) }
+  ]
+  */
+  const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+    return { key: networkType, value: $t(networkTypes[networkType]) }
+  })
+
+  const activatedOption = [
+    { key: 'activated', value: $t({ defaultMessage: 'Activated' }) },
+    { key: 'deactivated', value: $t({ defaultMessage: 'Deactivated' }) }
+  ]
 
   const actions: TableProps<Network>['actions'] = [
     {
@@ -449,6 +394,7 @@ export function VenueNetworksTab () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      searchable: true,
       render: function (_, row) {
         return !!row?.isOnBoarded ? <span>{row.name}</span> : getTenantLink(row)
       }
@@ -458,22 +404,22 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
+      filterable: networkTypesOptions,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
     },
-    // { // TODO: Waiting for HEALTH feature support
-    //   key: 'health',
-    //   title: $t({ defaultMessage: 'Health' }),
-    //   dataIndex: 'health'
-    // },
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
-      sorter: !isWifiRbacEnabled,
+      sorter: isSupportActivationColumnSorting,
+      filterable: isSupportActivationColumnSorting && activatedOption,
+      filterKey: 'venueApGroups.venueId',
+      filterMultiple: false,
+      filterPlaceholder: $t({ defaultMessage: 'Activated Status' }),
       render: function (__, row) {
         let disabled = false
         let title = ''
@@ -639,7 +585,7 @@ export function VenueNetworksTab () {
         networkId: payload.networkId
       },
       payload: payload,
-      enableRbac: resolvedRbacEnabled
+      enableRbac: true
     }).then(()=>{
       setScheduleModalState({
         visible: false
@@ -665,7 +611,7 @@ export function VenueNetworksTab () {
             newPayload: payload
           }
         },
-        enableRbac: resolvedRbacEnabled
+        enableRbac: true
       }).then(()=>{
         setApGroupModalState({
           visible: false
@@ -706,9 +652,68 @@ export function VenueNetworksTab () {
     }
   }
 
+  const handleTableChange: TableProps<Network>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const customSorter = Array.isArray(sorter)
+      ? sorter[0] : sorter
+
+    tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
+
+    const { columnKey, order } = customSorter
+    if (columnKey === 'activated') {
+      const { current, pageSize } = pagination
+      const customPayload = {
+        ...tableQuery.payload,
+        page: current,
+        pageSize,
+        sortField: 'activated',
+        sortOrder: order === 'ascend' ? 'ASC' : 'DESC',
+        sortParameters: {
+		      venueId: venueId!
+	      }
+      }
+      tableQuery.setPayload(customPayload)
+    }
+  }
+
+  const handleFilterChange = (
+    customFilters: FILTER,
+    customSearch: SEARCH
+  ) => {
+    let excludeFilters = {}
+    let _customFilters = {
+      ...customFilters
+    }
+    const activatedFilters = customFilters['venueApGroups.venueId']
+    if (activatedFilters) {
+      const isActivated = activatedFilters[0] === 'activated'
+      if (isActivated) {
+        _customFilters = {
+          ...customFilters,
+          'venueApGroups.venueId': [venueId!]
+        }
+      } else {
+        _customFilters = omit(customFilters, ['venueApGroups.venueId'])
+        excludeFilters = {
+          'venueApGroups.venueId': [venueId!]
+        }
+      }
+    }
+
+    const customPayload = {
+      ...tableQuery.payload,
+      ...customSearch,
+      filters: _customFilters,
+      excludeFilters: excludeFilters
+    }
+
+    tableQuery.setPayload(customPayload)
+  }
+
   const isFetching = isTableUpdating
     || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
-    || isAddNetworkUpdating || isDeleteNetworkUpdating
+
   return (
     <Loader states={[
       tableQuery,
@@ -724,7 +729,9 @@ export function VenueNetworksTab () {
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
+        onChange={handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
         expandedRowKeys={expandedRowKeys}
         expandIconColumnIndex={-1}
         expandIcon={

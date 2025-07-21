@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
-import { kpiConfig, productNames }                                               from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames, evaluateEnableSwitchFirmwareFilter }           from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import { store }                                                                 from '@acx-ui/store'
 import type { TimeStamp }                                                        from '@acx-ui/types'
@@ -77,6 +77,11 @@ function Histogram ({
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   const [ triggerSave ] = healthApi.useSaveThresholdMutation()
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
+
   const onButtonReset = useCallback(() => {
     const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
     setThresholdValue(defaultConfig)
@@ -112,7 +117,7 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
   const queryResults = healthApi.useKpiHistogramQuery(
-    { ...filters, kpi, enableSwitchFirmwareFilter },
+    { ...filters, kpi, enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
