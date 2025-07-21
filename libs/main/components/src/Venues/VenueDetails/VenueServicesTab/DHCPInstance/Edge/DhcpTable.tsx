@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                               from '@acx-ui/components'
-import { EdgeServiceStatusLight, SimpleListTooltip }                       from '@acx-ui/rc/components'
+import { Table, TableProps, SimpleListTooltip }                            from '@acx-ui/components'
+import { EdgeServiceStatusLight }                                          from '@acx-ui/rc/components'
 import { DhcpStats, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                      from '@acx-ui/react-router-dom'
 

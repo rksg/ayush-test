@@ -5,8 +5,8 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Loader, Table, TableProps }  from '@acx-ui/components'
-import { Drag }                       from '@acx-ui/icons'
+import { Loader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Drag }                                         from '@acx-ui/icons'
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetPrioritizedPoliciesQuery,
@@ -19,8 +19,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { useTableQuery } from '@acx-ui/utils'
-
-import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
 

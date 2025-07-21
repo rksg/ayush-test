@@ -221,13 +221,12 @@ describe('AllRoutes', () => {
     , wrapper: Provider })
     await screen.findByTestId('ZoneDetails')
   })
-  it('should render support correctly', async () => {
-    render(<AllRoutes />, { route: { path: '/ai/admin/support' }, wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('AccountManagement')).toBeVisible()
-  })
-  it('should render support onboarded systems', async () => {
-    render(<AllRoutes />, { route: { path: '/ai/admin/onboarded' }, wrapper: Provider })
+  it.each([
+    { path: '/ai/admin/support', description: 'support' },
+    { path: '/ai/admin/onboarded', description: 'onboarded systems' },
+    { path: '/ai/admin/settings', description: 'account management settings' }
+  ])('should render correctly for $description', async ({ path }) => {
+    render(<AllRoutes />, { route: { path }, wrapper: Provider })
     expect(await screen.findByAltText('Logo')).toBeVisible()
     expect(await screen.findByTestId('AccountManagement')).toBeVisible()
   })
