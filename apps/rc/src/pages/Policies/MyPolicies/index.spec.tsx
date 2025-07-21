@@ -24,7 +24,8 @@ import {
   EthernetPortProfileUrls,
   RulesManagementUrlsInfo,
   MacRegListUrlsInfo,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -107,6 +108,40 @@ describe('MyPolicies', () => {
         AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json({
+          fields: [],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json({
+          fields: [],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (_, res, ctx) => res(ctx.json({
+          fields: [],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json({
+          fields: [],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))),
+      rest.post(SwitchRbacUrlsInfo.getLayer2Acls.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [ ]
+        }))),
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))),
       rest.post(
         ClientIsolationUrls.getEnhancedClientIsolationList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
