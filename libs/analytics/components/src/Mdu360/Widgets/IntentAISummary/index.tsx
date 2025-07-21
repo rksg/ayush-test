@@ -7,8 +7,6 @@ import { DonutChart, HistoricalCard, Loader, NoData } from '@acx-ui/components'
 import type { DonutChartData }                        from '@acx-ui/components'
 import { formatter }                                  from '@acx-ui/formatter'
 
-import { Mdu360TabProps } from '../../types'
-
 import { IntentSummary, useIntentAISummaryQuery } from './services'
 
 function hasData (intentAISummaryChartData: DonutChartData[]) : Boolean {
@@ -43,9 +41,7 @@ function getIntentAISummaryChartData (data: IntentSummary | undefined): DonutCha
   return hasData(intentAISummaryChartData) ? intentAISummaryChartData : []
 }
 
-// Temporary eslint-disable until filters are used
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function IntentAISummary ({ filters }: { filters: Mdu360TabProps }) {
+export function IntentAISummary () {
   const { $t } = useIntl()
 
   const queryResults = useIntentAISummaryQuery({

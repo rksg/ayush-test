@@ -3,10 +3,10 @@ import { IntentAISummary } from './Widgets/IntentAISummary'
 
 import type { Mdu360TabProps } from '.'
 
-const NetworkOverviewTab: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
+const NetworkOverviewTab: React.FC<Mdu360TabProps> = () => {
   return (
     <UI.Grid>
-      <IntentAISummary filters={{ startDate, endDate }}/>
+      <IntentAISummary/>
     </UI.Grid>
   )
 }
