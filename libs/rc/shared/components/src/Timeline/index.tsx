@@ -142,20 +142,12 @@ export const Timeline = (props: TimelineProps) => {
     </Descriptions>
     <AntTimeline>
       {modifiedProps.length > 1
-        ? (() => {
-          const portStatusItems = modifiedProps
-            .filter(item => /Update Switch .* Port Status/.test(item.description))
-          const nonPortStatusItems = modifiedProps
-            .filter(item => !/Update Switch .* Port Status/.test(item.description))
-
-          // Take only first port status item if it exists
-          const itemsToShow = [...nonPortStatusItems, ...(portStatusItems.slice(0, 1))]
-
-          return itemsToShow.map((item, index) => [
+        ? modifiedProps
+          .filter(item => !/Update Switch .* Port Status/.test(item.description))
+          .map((item, index) => [
             StartDot(item, index),
             EndDot(item, index)
           ])
-        })()
         : modifiedProps.map((item, index) => [
           StartDot(item, index),
           EndDot(item, index)
