@@ -5,7 +5,8 @@ import { renderHook }                               from '@acx-ui/test-utils'
 import { useConfigTemplateVisibilityMap } from '.'
 
 const mockedIsRecSite = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   isRecSite: () => mockedIsRecSite()
 }))
 

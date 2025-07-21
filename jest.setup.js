@@ -3,13 +3,6 @@ require('@testing-library/jest-dom')
 require('jest-styled-components')
 
 const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
-jest.mock('@acx-ui/config', () => {
-  const actual = jest.requireActual('@acx-ui/config')
-  return {
-    ...actual,
-    get: jest.fn(actual.get)
-  }
-})
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
@@ -134,8 +127,6 @@ afterEach(() => {
   mockServer.resetHandlers()
   Loader['instance']?.reset()
   mockInstances.clearAll()
-  config.get.mockReset()
-  config.get.mockImplementation(jest.requireActual('@acx-ui/config').get)
 })
 
 afterAll(() => {
