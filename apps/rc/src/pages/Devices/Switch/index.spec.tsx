@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
+import { useEdgeNokiaOltTable } from '../Edge/Olt/OltTable'
 
 import { SwitchTabsEnum } from '.'
 import { SwitchList }     from '.'

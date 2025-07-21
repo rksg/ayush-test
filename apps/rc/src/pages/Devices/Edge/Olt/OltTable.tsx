@@ -2,17 +2,21 @@ import { useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button }                        from '@acx-ui/components'
-import { EdgeNokiaOltTable as OltTable } from '@acx-ui/edge/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { useGetEdgeOltListQuery }        from '@acx-ui/rc/services'
-import { transformDisplayNumber }        from '@acx-ui/rc/utils'
-import { filterByAccess }                from '@acx-ui/user'
-import { TABLE_QUERY_POLLING_INTERVAL }  from '@acx-ui/utils'
 
-export default function useEdgeNokiaOltTable () {
+import { Button }                              from '@acx-ui/components'
+import { EdgeNokiaOltTable as OltTable }       from '@acx-ui/edge/components'
+import { EdgeNewNokiaOltTable as NewOltTable } from '@acx-ui/edge/components'
+import { useIsSplitOn, Features }              from '@acx-ui/feature-toggle'
+import { useGetEdgeOltListQuery }              from '@acx-ui/rc/services'
+import { transformDisplayNumber }              from '@acx-ui/rc/utils'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { filterByAccess }                      from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL }        from '@acx-ui/utils'
+
+export function useEdgeNokiaOltTable () {
   const { $t } = useIntl()
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
   const oltTableRef = useRef<{ openAddDrawer: () => void }>(null)
 
   const { data, isLoading, isFetching } = useGetEdgeOltListQuery({}, {
@@ -24,21 +28,37 @@ export default function useEdgeNokiaOltTable () {
     oltTableRef.current?.openAddDrawer()
   }
 
-  return isEdgeOltEnabled
+  return isNokiaOltEnabled
     ? {
-      title: $t({ defaultMessage: 'Optical ({count})' },
+      title: $t({ defaultMessage: 'Optical List ({count})' },
         { count: transformDisplayNumber(data?.length) }),
       headerExtra: filterByAccess([
-        <Button key='add' type='primary' onClick={handleAddOlt}>
-          { $t({ defaultMessage: 'Add' }) }
-        </Button>
+        <TenantLink to='/devices/optical/add'
+          //rbacOpsIds={[getOpsApi()]} //TODO
+        >
+          <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+        </TenantLink>
       ]),
-      component: <OltTable
-        ref={oltTableRef}
+      component: <NewOltTable
         data={data}
         isLoading={isLoading}
         isFetching={isFetching}
       />
     }
-    : undefined
+    : (
+      isEdgeOltEnabled ? {
+        title: $t({ defaultMessage: 'Optical ({count})' },
+          { count: transformDisplayNumber(data?.length) }),
+        headerExtra: filterByAccess([
+          <Button key='add' type='primary' onClick={handleAddOlt}>
+            { $t({ defaultMessage: 'Add' }) }
+          </Button>
+        ]),
+        component: <OltTable
+          ref={oltTableRef}
+          data={data}
+          isLoading={isLoading}
+          isFetching={isFetching}
+        />
+      } : undefined)
 }

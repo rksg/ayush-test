@@ -18,10 +18,10 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
-import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
-import { WiredTabsEnum }    from './pages/Users/Wired'
-import RcRoutes             from './Routes'
+import { useEdgeNokiaOltTable } from './pages/Devices/Edge/Olt/OltTable'
+import { WirelessTabsEnum }     from './pages/Users/Wifi/ClientList'
+import { WiredTabsEnum }        from './pages/Users/Wired'
+import RcRoutes                 from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
   ...jest.requireActual('./pages/Devices/Wifi/ApsTable'),

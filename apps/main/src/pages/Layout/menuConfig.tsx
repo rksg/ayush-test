@@ -68,6 +68,7 @@ export function useMenuConfig () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
   const isSwitchHealthEnabled = [
@@ -286,7 +287,8 @@ export function useMenuConfig () {
             ...(isEdgeOltMgmtEnabled ? [{
               uri: '/devices/optical',
               isActiveCheck: new RegExp('^/devices/optical'),
-              label: $t({ defaultMessage: 'Optical' })
+              label: isNokiaOltEnabled
+                ? $t({ defaultMessage: 'Optical List' }) : $t({ defaultMessage: 'Optical' })
             }] : []),
             {
               uri: '/devices/switch/reports/wired',

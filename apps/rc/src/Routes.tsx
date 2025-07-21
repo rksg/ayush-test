@@ -93,6 +93,9 @@ import EdgeClusterDetails                           from './pages/Devices/Edge/C
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
+import AddOltForm                                   from './pages/Devices/Edge/NewOlt/AddOltForm'
+import EditOltForm                                  from './pages/Devices/Edge/NewOlt/EditOltForm'
+import { OltDetails }                               from './pages/Devices/Edge/NewOlt/OltDetails'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
@@ -501,11 +504,18 @@ function NetworkRoutes () {
 
 const useEdgeOltRoutes = () => {
   const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
 
-  return isEdgeOltReady ? <>
+  return isNokiaOltEnabled ? <>
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
-    <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
-  </> : null
+    <Route path='devices/optical/add' element={<AddOltForm />} />
+    <Route path='devices/optical/:oltId/edit' element={<EditOltForm />} />
+    <Route path='devices/optical/:oltId/details' element={<OltDetails />} />
+  </>
+    : (isEdgeOltReady ? <>
+      <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
+      <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
+    </> : null)
 }
 
 const useEdgeClusterRoutes = () => {

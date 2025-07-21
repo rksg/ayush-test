@@ -6,7 +6,7 @@ import { EdgeOltFixtures }                             from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { screen, renderHook, render, waitFor, within } from '@acx-ui/test-utils'
 
-import useEdgeNokiaOltTable from './OltTable'
+import { useEdgeNokiaOltTable } from './OltTable'
 
 const { mockOltList } = EdgeOltFixtures
 const mockOpenAddDrawer = jest.fn()

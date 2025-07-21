@@ -112,6 +112,7 @@ export enum Features {
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
+  NOKIA_OLT_MGMT_TOGGLE = 'removable-ff',
   PORTAL_PROFILE_CONSOLIDATION_TOGGLE = 'acx-ui-consolidated-portal-profile-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
