@@ -1,3 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`IntentAI Settings should handle error on save settings for notification preferences 1`] = `Object {}`;
+exports[`IntentAI Settings should handle error on save settings for notification preferences 1`] = `
+Object {
+  "incident": Object {
+    "P1": Array [
+      "email",
+    ],
+    "P2": Array [
+      "email",
+    ],
+  },
+}
+`;
