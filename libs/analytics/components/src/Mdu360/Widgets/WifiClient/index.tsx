@@ -5,8 +5,8 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { DonutChart, ContentSwitcher, Loader, NoData, HistoricalCard } from '@acx-ui/components'
 
-import { ContentSwitcherWrapper } from '../../styledComponents'
-import { Mdu360TabProps }         from '../../types'
+import { ContentSwitcherPaddingWrapper, ChartWrapper } from '../../styledComponents'
+import { Mdu360TabProps }                              from '../../types'
 
 import { useTopNWifiClientQuery } from './services'
 
@@ -37,7 +37,7 @@ export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
       <HistoricalCard type='default' title={title}>
         <AutoSizer>
           {({ height, width }) => (
-            <ContentSwitcherWrapper height={height} width={width}>
+            <ContentSwitcherPaddingWrapper height={height} width={width}>
               <ContentSwitcher
                 tabDetails={tabDetails}
                 value={selectedTab}
@@ -45,25 +45,23 @@ export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
                 size='small'
                 align='right'
               />
-              {chartData && chartData.length > 0 ? (
-                <AutoSizer>
-                  {({ height, width }) => (
-                    <DonutChart
-                      data={chartData}
-                      style={{ width: width, height: height }}
-                      legend='name-bold-value'
-                      size='large'
-                      showLegend
-                      showTotal
-                      showLabel
-                      showValue
-                    />
-                  )}
-                </AutoSizer>
-              ) : (
-                <NoData />
-              )}
-            </ContentSwitcherWrapper>
+              <ChartWrapper height={height} width={width}>
+                {chartData && chartData.length > 0 ? (
+                  <DonutChart
+                    data={chartData}
+                    style={{ width, height }}
+                    legend='name-bold-value'
+                    size='large'
+                    showLegend
+                    showTotal
+                    showLabel
+                    showValue
+                  />
+                ) : (
+                  <NoData />
+                )}
+              </ChartWrapper>
+            </ContentSwitcherPaddingWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>

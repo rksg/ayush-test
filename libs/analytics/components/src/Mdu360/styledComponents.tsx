@@ -16,5 +16,19 @@ export const ContentSwitcherWrapper = styled.div<{
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
   margin-top: -38px;
-  padding-bottom: 10px
+`
+
+export const ContentSwitcherPaddingWrapper = styled(ContentSwitcherWrapper)`
+  padding-bottom: 10px;
+`
+
+export const ChartWrapper = styled.div<{
+  height: number;
+  width: number;
+}>`
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `

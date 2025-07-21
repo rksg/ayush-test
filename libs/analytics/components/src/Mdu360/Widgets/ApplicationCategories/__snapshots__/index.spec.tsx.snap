@@ -200,7 +200,6 @@ exports[`ApplicationCategories should render top 10 application categories corre
   height: 800px;
   width: 1280px;
   margin-top: -38px;
-  padding-bottom: 10px;
 }
 
 <div>
@@ -328,7 +327,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                   >
                     <div
                       class="echarts-for-react "
-                      style="height: 790px; width: 1280px; position: relative;"
+                      style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
                         style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
@@ -1486,7 +1485,6 @@ exports[`ApplicationCategories should render top 10 application categories corre
   height: 800px;
   width: 1280px;
   margin-top: -38px;
-  padding-bottom: 10px;
 }
 
 <div>
@@ -1614,7 +1612,7 @@ exports[`ApplicationCategories should render top 10 application categories corre
                   >
                     <div
                       class="echarts-for-react "
-                      style="height: 790px; width: 1280px; position: relative;"
+                      style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
                         style="position: relative; overflow: hidden; width: 1280px; height: 800px;"

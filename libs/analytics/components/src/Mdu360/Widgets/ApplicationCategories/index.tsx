@@ -33,6 +33,32 @@ export const ApplicationCategories = ({
     n: 10
   })
   const results = queryResults?.data
+  // const results = {
+  //   clientCount: [
+  //     { name: 'Application Service', value: 6 },
+  //     { name: 'Unknown', value: 6 },
+  //     { name: 'Web', value: 6 },
+  //     { name: 'Instant Messaging', value: 4 },
+  //     { name: 'Network Management', value: 4 },
+  //     { name: 'Network Service', value: 4 },
+  //     { name: 'Webmail', value: 2 },
+  //     { name: 'Education', value: 20 },
+  //     { name: 'Medicine', value: 5 },
+  //     { name: 'Transportation', value: 12 }
+  //   ],
+  //   dataUsage: [
+  //     { name: 'Application Service', value: 24605875 },
+  //     { name: 'Unknown', value: 735023714 },
+  //     { name: 'Web', value: 25794416527 },
+  //     { name: 'Instant Messaging', value: 833554 },
+  //     { name: 'Network Management', value: 6574 },
+  //     { name: 'Network Service', value: 540313 },
+  //     { name: 'Webmail', value: 1010014 },
+  //     { name: 'Education', value: 310014112 },
+  //     { name: 'Medicine', value: 10100140 },
+  //     { name: 'Transportation', value: 4400000 }
+  //   ]
+  // }
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
     () => [
       {
