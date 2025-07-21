@@ -4,7 +4,8 @@ import {
   getSelectedNodePath,
   getFilterPayload,
   calculateGranularity,
-  kpiConfig
+  kpiConfig,
+  evaluateEnableSwitchFirmwareFilter
 } from '@acx-ui/analytics/utils'
 import { dataApi }              from '@acx-ui/store'
 import { NodesFilter }          from '@acx-ui/utils'
@@ -24,6 +25,12 @@ export interface KpiThresholdType {
   switchUplinkPortUtilization: number
   switchPortUtilization: number
   clusterLatency: number
+  switchIpv4MulticastUtilization: number
+  switchIpv6MulticastUtilization: number
+  switchIpv4UnicastUtilization: number
+  switchIpv6UnicastUtilization: number
+  switchArpUtilization: number
+  switchMacUtilization: number
 }
 
 type datum = number []
@@ -87,9 +94,7 @@ export const getHistogramQuery =
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
 
-  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const shouldEnableFirmwareFilter = evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
   const additionalArgs = shouldEnableFirmwareFilter
     ? '$enableSwitchFirmwareFilter: Boolean'
     : ''
@@ -135,6 +140,12 @@ interface ThresholdsApiResponse {
   switchUplinkPortUtilizationThreshold?: ThresholdData
   switchPortUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
+  switchIpv4MulticastUtilizationThreshold?: ThresholdData
+  switchIpv6MulticastUtilizationThreshold?: ThresholdData
+  switchIpv4UnicastUtilizationThreshold?: ThresholdData
+  switchIpv6UnicastUtilizationThreshold?: ThresholdData
+  switchArpUtilizationThreshold?: ThresholdData
+  switchMacUtilizationThreshold?: ThresholdData
 }
 
 type KpisHavingThreshold = keyof KpiThresholdType
@@ -143,9 +154,8 @@ export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold
 
 export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
   const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
-  const enableSwitchFirmwareFilter = typeof payload.enableSwitchFirmwareFilter === 'function'
-    ? payload.enableSwitchFirmwareFilter()
-    : payload.enableSwitchFirmwareFilter
+  const enableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(payload.enableSwitchFirmwareFilter)
 
   return {
     filter: { ssids, networkNodes, switchNodes },
@@ -156,9 +166,7 @@ export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
 export const constructTimeSeriesQuery = (payload: Omit<KpiPayload, 'range'>) => {
   const { kpi, threshold, enableSwitchFirmwareFilter } = payload
 
-  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
-    ? enableSwitchFirmwareFilter()
-    : enableSwitchFirmwareFilter
+  const shouldEnableFirmwareFilter = evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
   const additionalArgs = shouldEnableFirmwareFilter
     ? '$enableSwitchFirmwareFilter: Boolean'
     : ''
