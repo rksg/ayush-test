@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
 import {
   FriendlyNameEnum,
   friendlyNameEnumOptions,
-  SimpleListTooltip,
+
   WIFI_OPERATOR_MAX_COUNT
 } from '@acx-ui/rc/components'
 import {

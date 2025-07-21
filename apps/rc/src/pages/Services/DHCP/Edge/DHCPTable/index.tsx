@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                                    from '@acx-ui/components'
-import { EdgeServiceStatusLight, EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, useEdgeDhcpActions, useEdgeDhcpCompatibilityData } from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, SimpleListTooltip, Table, TableProps }                              from '@acx-ui/components'
+import { EdgeServiceStatusLight, EdgeTableCompatibilityWarningTooltip, useEdgeDhcpActions, useEdgeDhcpCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpStatsQuery,
