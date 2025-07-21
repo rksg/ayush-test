@@ -74,6 +74,10 @@ describe('DpskForm', () => {
       rest.post(
         DpskUrls.createDpskWithIdentityGroup.url,
         (req, res, ctx) => res(ctx.json({ ...mockedCreateFormData }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.replace('?size=:pageSize&page=:page&sort=:sort', ''),
+        (req, res, ctx) => res(ctx.json(identityGroupList))
       )
     )
   })

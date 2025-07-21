@@ -261,7 +261,8 @@ describe('Services for health kpis', () => {
     it('should return health filter if firmware filter is not passed', () => {
       const filter=getHealthFilter({ ...props, kpi: 'someKpi' })
       expect(filter).toEqual({
-        filter: {}
+        filter: {},
+        enableSwitchFirmwareFilter: false
       })
     })
   })

@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }           from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { apApi }                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                  from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -23,7 +24,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-const params = { tenantId: 't1', serialNumber: 'v1' }
+const params = { tenantId: 't1', venueId: 'u1', serialNumber: 'v1' }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
@@ -53,6 +54,33 @@ describe('ApPageHeader', () => {
     //   pathname: '/t/t1/devices/wifi/v1/edit/details'
     // }))
     expect(mockNavigate).toBeCalledTimes(1)
+  })
+
+  it('click CLI Session button', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_CLI_SESSION_TOGGLE)
+    mockServer.resetHandlers()
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApJwtToken.url,
+        (_, res, ctx) => res(ctx.json({ id_token: 'token' }))
+      )
+    )
+    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
+
+    await userEvent.click(await screen.findByText('More Actions'))
+    await userEvent.click(await screen.findByText('CLI Session'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/CLI Session/)).toBeVisible()
+    fireEvent.click(await within(dialog).findByRole('button', { name: /close/i }))
   })
 
   it('click to action button', async () => {
