@@ -98,6 +98,7 @@ import {
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
   WifiNetwork,
+  ApJwtToken,
   ApGroupApAntennaTypeSettings,
   ApGroupApExternalAntennaSettings,
   ApExternalAntennaSettingsV1001,
@@ -2215,6 +2216,19 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    getApJwtToken: build.query<ApJwtToken, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApJwtToken, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApJwtToken' }]
     })
   })
 })
@@ -2233,6 +2247,7 @@ export const {
   useGetApQuery,
   useGetApOperationalQuery,
   useLazyGetApQuery,
+  useLazyGetApJwtTokenQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListByVenueQuery,

@@ -513,6 +513,19 @@ export interface LanPort {
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
+export interface ApJwtToken {
+  type: string,
+  id_token: string,
+  access_token: string,
+  expires_in: string
+}
+
+export interface ApCliRequest {
+  token: string,
+  serialNumber: string,
+  apName: string
+}
+
 export enum ApModelTypeEnum {
   INDOOR = 'indoor',
   OUTDOOR = 'outdoor'

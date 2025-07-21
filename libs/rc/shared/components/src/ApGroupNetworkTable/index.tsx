@@ -5,12 +5,14 @@ import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps }                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps }      from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListV2Query,
   useNewApGroupNetworkListQuery,
-  useNewApGroupNetworkListV2Query, useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation
+  useNewApGroupNetworkListV2Query,
+  useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -19,7 +21,11 @@ import {
   NetworkType,
   NetworkTypeEnum,
   useConfigTemplate,
-  ConfigTemplateType, NetworkVenue, useConfigTemplateMutationFnSwitcher
+  ConfigTemplateType,
+  NetworkVenue,
+  useConfigTemplateMutationFnSwitcher,
+  networkTypes,
+  SupportNetworkTypes
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -56,6 +62,7 @@ export const defaultApGroupNetworkPayload = {
 
 export const defaultNewApGroupNetworkPayload = {
   searchString: '',
+  searchTargetFields: ['name'],
   fields: [
     'check-all',
     'name',
@@ -228,6 +235,8 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
             })
           }}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
         <ApGroupNetworkVlanRadioDrawer updateData={handleUpdateAllApGroupVlanRadio} />
       </ApGroupNetworkVlanRadioContext.Provider>
@@ -264,6 +273,9 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
       filters: {
         'venueApGroups.apGroupIds': [apGroupId]
       },
+      search: {
+        searchTargetFields: defaultNewApGroupNetworkPayload.searchTargetFields as string[]
+      },
       isTemplate: isTemplate,
       isTemplateRbacEnabled
     },
@@ -290,6 +302,10 @@ export function useApGroupNetworkColumns (
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
 
+  const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+    return { key: networkType, value: $t(networkTypes[networkType]) }
+  })
+
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -298,6 +314,7 @@ export function useApGroupNetworkColumns (
       sorter: !isEditable,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      searchable: !isEditable,
       render: function (_, row) {
         if (isTemplate) {
           return renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
@@ -318,6 +335,7 @@ export function useApGroupNetworkColumns (
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: !isEditable,
+      filterable: !isEditable && networkTypesOptions,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
