@@ -320,7 +320,15 @@ export const venueCaps = {
     },
     {
       ledOn: true,
-      model: 'E510'
+      model: 'E510',
+      externalAntenna: {
+        enable24G: false,
+        enable50G: false,
+        gain24G: 3,
+        gain50G: 3,
+        supportDisable: true,
+        coupled: false
+      }
     },
     {
       ledOn: true,
@@ -5909,7 +5917,7 @@ export const mockVenueExternalAntennas = [
 ]
 
 export const mockApGroupExternalAntennas = {
-  externalAntenna: {
+  externalAntennaSettings: [{
     enable24G: true,
     enable50G: true,
     gain24G: 8,
@@ -5917,8 +5925,8 @@ export const mockApGroupExternalAntennas = {
     supportDisable: true,
     coupled: false,
     model: 'E510'
-  } as ExternalAntenna,
-  useVenueOrApGroupSettings: true
+  }] as ExternalAntenna[],
+  useVenueSettings: true
 }
 
 export const mockAntennaTypeSettings = [{ model: 'T670SN', antennaType: 'SECTOR' }]
@@ -5933,6 +5941,70 @@ export const mockApGroupAntennaTypeSettings = {
     {
       model: 'R560',
       antennaType: ApAntennaTypeEnum.NARROW
+    }
+  ]
+}
+
+export const mockNetworkViewModelData = {
+  fields: [
+    'description',
+    'isOweMaster',
+    'venueApGroups.apGroupIds',
+    'venueApGroups.venueId',
+    'check-all',
+    'ssid',
+    'captiveType',
+    'vlan',
+    'owePairNetworkId',
+    'name',
+    'cog',
+    'vlanPool',
+    'id',
+    'venueApGroups.isAllApGroups',
+    'dsaeOnboardNetwork',
+    'nwSubType',
+    'clientCount'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'nw-temp',
+      id: '0be9ea6fb0cd47b3add309ec2f84b153',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'nw-temp',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: '29d3d0a0d45f49a4a3ecb2592bcd6096',
+          apGroupIds: [
+            'b20e1a26eec44146b2687417ef5d7f0b',
+            'fb99f472c7d345e7828cbcf8c67e8d8e',
+            'bb16a3c5c79e4cb8a75fc25dc11f7a2e'
+          ],
+          isAllApGroups: true
+        }
+      ]
+    },
+    {
+      name: 'nw-temp-1',
+      id: '316b945113ff45b189c23e0a7f29a8f7',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'nw-temp-1',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: '29d3d0a0d45f49a4a3ecb2592bcd6096',
+          apGroupIds: [
+            'b20e1a26eec44146b2687417ef5d7f0b',
+            'fb99f472c7d345e7828cbcf8c67e8d8e',
+            'bb16a3c5c79e4cb8a75fc25dc11f7a2e'
+          ],
+          isAllApGroups: true
+        }
+      ]
     }
   ]
 }
