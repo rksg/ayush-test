@@ -45,7 +45,7 @@ const mockIntentAISummaryData: IntentSummary = {
   }
 }
 
-const mockEmptyIntentAISummaryData: IntentSummary = {
+const mockNoIntentAISummaryData: IntentSummary = {
   rrm: {
     new: 0,
     active: 0,
@@ -70,6 +70,13 @@ const mockEmptyIntentAISummaryData: IntentSummary = {
     paused: 0,
     verified: 0
   }
+}
+
+const mockNullIntentAISummaryData = {
+  rrm: null,
+  probeflex: null,
+  ops: null,
+  ecoflex: null
 }
 
 describe('IntentAISummaryWidget', () => {
@@ -105,13 +112,15 @@ describe('IntentAISummaryWidget', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
-  it('should return no data when query response data is empty', async () => {
-    mockUseIntentAISummaryQuery.mockReturnValue({
-      loading: false,
-      data: mockEmptyIntentAISummaryData
-    })
+  it.each([
+    { loading: false, data: undefined , name: 'undefined' },
+    { loading: false, data: mockNoIntentAISummaryData, name: 'no data' },
+    { loading: false, data: mockNullIntentAISummaryData, name: 'null' }
+  ])('should return no data when query response data is undefined, null or no data',
+    async (data) => {
+      mockUseIntentAISummaryQuery.mockReturnValue(data)
 
-    render(<IntentAISummary filters={mockFilters} />, { wrapper: Provider })
-    expect(await screen.findByText('No data to display')).toBeVisible()
-  })
+      render(<IntentAISummary filters={mockFilters} />, { wrapper: Provider })
+      expect(await screen.findByText('No data to display')).toBeVisible()
+    })
 })
