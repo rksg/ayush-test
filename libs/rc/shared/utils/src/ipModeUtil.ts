@@ -1,7 +1,7 @@
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useConfigTemplate } from '@acx-ui/rc/utils'
 
-export function ipModeValidatorSelector<T>(
+export function useIpModeValidatorSelector<T>(
     ipv4Validator: (value: T) => Promise<any>,
     ipv6Validator: (value: T) => Promise<any>
   ): (value: T) => Promise<any> {

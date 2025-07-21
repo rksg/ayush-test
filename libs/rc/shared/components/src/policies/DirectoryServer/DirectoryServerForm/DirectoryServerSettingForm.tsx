@@ -20,7 +20,7 @@ import {
   DirectoryServerDiagnosisCommand,
   DirectoryServerDiagnosisCommandEnum,
   splitAttributeMappingsFromData,
-  ipModeValidatorSelector
+  useIpModeValidatorSelector
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -148,7 +148,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }
   }, [])
 
-  const hostValidator = ipModeValidatorSelector(domainNameRegExp, domainNameWithIPv6RegExp)
+  const hostValidator = useIpModeValidatorSelector(domainNameRegExp, domainNameWithIPv6RegExp)
 
   return (
     <Loader states={[{ isLoading }]}>
