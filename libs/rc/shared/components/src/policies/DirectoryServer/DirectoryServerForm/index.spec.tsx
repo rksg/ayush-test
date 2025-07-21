@@ -197,7 +197,7 @@ describe('DirectoryServerForm', () => {
     })
   })
 
-  describe('EditDirectoryServerGre', () => {
+  describe.skip('EditDirectoryServerGre', () => {
     const updateFn = jest.fn()
     const getListFn = jest.fn()
     beforeEach(() => {

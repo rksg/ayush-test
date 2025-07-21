@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { softGreApi }                                                        from '@acx-ui/rc/services'
-import { SoftGreUrls }                                                       from '@acx-ui/rc/utils'
+import { FirmwareUrlsInfo, SoftGreUrls }                                     from '@acx-ui/rc/utils'
 import { Path }                                                              from '@acx-ui/react-router-dom'
 import { Provider, store }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, renderHook, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -36,12 +36,28 @@ const params = {
 
 const user = userEvent.setup()
 
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
+
 describe('SoftGreSettingForm', () => {
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))

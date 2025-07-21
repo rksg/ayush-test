@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps, SimpleListTooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,

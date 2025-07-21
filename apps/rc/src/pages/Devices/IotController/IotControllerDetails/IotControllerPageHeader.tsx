@@ -75,7 +75,7 @@ function IotControllerPageHeader () {
               window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
                 '_blank')
             }
-          >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,
+          >{$t({ defaultMessage: 'Manage IoT Controller' })}</Button>,
           <TenantLink
             to={`/devices/iotController/${iotControllerSettingData?.id}/edit`}
             rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}

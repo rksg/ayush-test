@@ -21,8 +21,8 @@ import {
 import { DashboardInfo } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { ItemTypes }         from '../AICanvas/components/GroupItem'
-import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
+import { ItemTypes }         from '../AICanvas/archived/AICanvasQ2/components/GroupItem'
+import { MAXIMUM_DASHBOARD } from '../AICanvas/archived/AICanvasQ2/index.utils'
 
 import { formatDashboardList, DashboardMessages } from './index.utils'
 import * as UI                                    from './styledComponents'

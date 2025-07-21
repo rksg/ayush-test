@@ -1,9 +1,8 @@
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }               from '@acx-ui/rc/components'
-import { useGetVenuesIpsecPolicyQuery }    from '@acx-ui/rc/services'
+import { Card, Loader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { useGetVenuesIpsecPolicyQuery }                       from '@acx-ui/rc/services'
 import {
   IpsecActivation,
   IpsecViewData,

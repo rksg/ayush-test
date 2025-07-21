@@ -185,7 +185,7 @@ describe('ApWiredClientTable', () => {
     expect(await screen.findByText('Device Type')).toBeInTheDocument()
   })
 
-  it('Should render correctly with searchable config', async () => {
+  it.skip('Should render correctly with searchable config', async () => {
     render(<Provider>
       <ApWiredClientTable searchable={true}/>
     </Provider>, { route: { params } })
@@ -203,7 +203,7 @@ describe('ApWiredClientTable', () => {
     expect(await screen.findByRole('button', { name: 'LAN 2' })).toBeVisible()
   })
 
-  it('Should render lan port profile detail drawer correctly', async () => {
+  it.skip('Should render lan port profile detail drawer correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider>

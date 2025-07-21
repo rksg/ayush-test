@@ -25,6 +25,21 @@ jest.mock('./Widgets/TrafficByRadio/services', () => ({
   useTrafficByRadioQuery: jest.fn().mockReturnValue({ isLoading: false })
 }))
 
+jest.mock('./Widgets/ClientExperience/services', () => ({
+  useClientExperienceTimeseriesQuery: jest.fn().mockReturnValue({ isLoading: false })
+}))
+
+jest.mock('@acx-ui/utils', () => {
+  const reactIntl = jest.requireActual('react-intl')
+  const intl = reactIntl.createIntl({
+    locale: 'en'
+  })
+  return {
+    ...jest.requireActual('@acx-ui/utils'),
+    getIntl: () => intl
+  }
+})
+
 describe('ResidentExperienceTab', () => {
   afterEach(() => jest.restoreAllMocks())
 
@@ -42,5 +57,6 @@ describe('ResidentExperienceTab', () => {
     expect(await screen.findByText('Top 10 Applications')).toBeVisible()
     expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
     expect(await screen.findByText('Traffic By Radio')).toBeVisible()
+    expect(await screen.findByText('Client Experience')).toBeVisible()
   })
 })
