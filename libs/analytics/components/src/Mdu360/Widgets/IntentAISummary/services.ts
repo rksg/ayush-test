@@ -64,9 +64,7 @@ export const api = intentAIApi.injectEndpoints({
             }
           }
         `,
-        variables: {
-          path: payload.path
-        }
+        variables: payload
       }),
       transformResponse: (response: Response<IntentSummary>) =>
         response.highlights
