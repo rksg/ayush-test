@@ -1,13 +1,13 @@
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { UseQueryResult }            from '@acx-ui/types'
 
-import { SLAKeys } from '../../types'
+import { useUpdateSlaThresholdsMutation } from '../../services'
+import { SLAKeys }                        from '../../types'
 
-import { slaConfig }                               from './constants'
+import { slaConfig } from './constants'
+import { SLAData }   from './types'
 
 import SLA from '.'
-import { useUpdateSlaThresholdsMutation } from '../../services'
-import { SLAData } from './types'
 
 const mockDataWithDefaultAndUnsynced: SLAData = {
   [SLAKeys.timeToConnectSLA]: {
@@ -241,7 +241,7 @@ describe('SLA', () => {
                 value: 5,
                 isSynced: false
               }
-            },
+            }
           } as UseQueryResult<SLAData>
         }
       />
