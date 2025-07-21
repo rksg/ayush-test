@@ -1,7 +1,6 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import { Loader }     from '@googlemaps/js-api-loader'
 
-import { get }                                            from '@acx-ui/config'
 import { ApVenueStatusEnum }                              from '@acx-ui/rc/utils'
 import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
@@ -11,6 +10,10 @@ import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
 
 import VenuesMap from '.'
 
+jest.mock('@acx-ui/config', () => ({
+  __esModule: true,
+  get: jest.fn().mockReturnValue('some-key')
+}))
 
 const executeLoaderCallback = async (): Promise<void> => {
   // eslint-disable-next-line testing-library/no-unnecessary-act
@@ -23,8 +26,6 @@ const executeLoaderCallback = async (): Promise<void> => {
 
 describe('VenuesMap', () => {
   beforeEach(() => {
-    jest.mocked(get).mockReturnValue('some-key')
-
     initialize()
   })
 

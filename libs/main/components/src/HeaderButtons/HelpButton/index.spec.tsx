@@ -18,7 +18,7 @@ import HelpButton from './'
 
 describe('Firewall Component', () => {
 
-  const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
+  let params: { tenantId: string }
 
   it('should render <Firewall/> component correctly', async () => {
     render(
@@ -151,6 +151,7 @@ describe('HelpPage Component', () => {
 const originalEnv = process.env
 describe('HelpPage Component URLs', () => {
   beforeEach(() => {
+    jest.resetModules()
     process.env = {
       ...originalEnv,
       NODE_ENV: 'development'
