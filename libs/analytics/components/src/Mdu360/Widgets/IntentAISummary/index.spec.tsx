@@ -1,8 +1,6 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Mdu360TabProps } from '../../types'
-
 import { IntentSummary, useIntentAISummaryQuery } from './services'
 
 import { IntentAISummary } from '.'
@@ -12,11 +10,6 @@ const mockUseIntentAISummaryQuery = useIntentAISummaryQuery as jest.Mock
 jest.mock('./services', () => ({
   useIntentAISummaryQuery: jest.fn()
 }))
-
-const mockFilters: Mdu360TabProps = {
-  startDate: '2025-06-16T07:23:00+05:30',
-  endDate: '2025-06-17T07:23:00+05:30'
-}
 
 const mockIntentAISummaryData: IntentSummary = {
   rrm: {
@@ -90,7 +83,7 @@ describe('IntentAISummaryWidget', () => {
       data: mockIntentAISummaryData
     })
 
-    render(<IntentAISummary filters={mockFilters} />, { wrapper: Provider })
+    render(<IntentAISummary/>, { wrapper: Provider })
 
     expect(await screen.findByText('New:')).toBeVisible()
     expect(await screen.findAllByText('3')).toHaveLength(2)
@@ -102,16 +95,6 @@ describe('IntentAISummaryWidget', () => {
     expect(await screen.findAllByText('24')).toHaveLength(2)
   })
 
-  it('should return no data when query response is undefined', async () => {
-    mockUseIntentAISummaryQuery.mockReturnValue({
-      loading: false,
-      data: undefined
-    })
-
-    render(<IntentAISummary filters={mockFilters} />, { wrapper: Provider })
-    expect(await screen.findByText('No data to display')).toBeVisible()
-  })
-
   it.each([
     { loading: false, data: undefined, name: 'undefined' },
     { loading: false, data: mockNoIntentAISummaryData, name: 'no data' },
@@ -120,7 +103,7 @@ describe('IntentAISummaryWidget', () => {
     async (data) => {
       mockUseIntentAISummaryQuery.mockReturnValue(data)
 
-      render(<IntentAISummary filters={mockFilters} />, { wrapper: Provider })
+      render(<IntentAISummary/>, { wrapper: Provider })
       expect(await screen.findByText('No data to display')).toBeVisible()
     })
 })
