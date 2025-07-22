@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip } from '../Tooltip'
 
 import { SimpleListUl } from './styledComponents'
 

@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   Button,
   PageHeader,
+  SimpleListTooltip,
   Table,
   TableProps,
   Loader,
@@ -10,7 +11,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { MdnsProxyForwardingRulesTable, SimpleListTooltip, ToolTipTableStyle }             from '@acx-ui/rc/components'
+import { MdnsProxyForwardingRulesTable, ToolTipTableStyle }                                from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,

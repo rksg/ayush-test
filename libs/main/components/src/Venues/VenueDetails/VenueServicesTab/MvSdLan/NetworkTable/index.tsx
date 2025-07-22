@@ -12,8 +12,7 @@ import {
   isSdLanLastNetworkInVenue,
   showSdLanGuestFwdConflictModal,
   showSdLanVenueDissociateModal,
-  useEdgeMvSdLanActions,
-  useIsEdgeFeatureReady
+  useEdgeMvSdLanActions
 } from '@acx-ui/rc/components'
 import { useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -22,7 +21,8 @@ import {
   Network,
   NetworkTypeEnum,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 

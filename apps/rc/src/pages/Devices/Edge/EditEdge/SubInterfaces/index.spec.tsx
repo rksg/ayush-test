@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features }                               from '@acx-ui/feature-toggle'
-import { EdgeEditContext, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { edgeApi }                                from '@acx-ui/rc/services'
+import { Features }        from '@acx-ui/feature-toggle'
+import { EdgeEditContext } from '@acx-ui/rc/components'
+import { edgeApi }         from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
@@ -71,11 +71,15 @@ jest.mock('@acx-ui/rc/components', () => {
     EdgeEditContext: original.EdgeEditContext,
     CsvSize: original.CsvSize,
     ImportFileDrawer: original.ImportFileDrawer,
-    ImportFileDrawerType: original.ImportFileDrawerType,
-
-    useIsEdgeFeatureReady: jest.fn()
+    ImportFileDrawerType: original.ImportFileDrawerType
   }
 })
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+}))
 
 const defaultContextData = {
   activeSubTab: {
@@ -125,7 +129,7 @@ describe('EditEdge ports - sub-interface', () => {
     store.dispatch(edgeApi.util.resetApiState())
 
     // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff !== Features.EDGE_DUAL_WAN_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff !== Features.EDGE_DUAL_WAN_TOGGLE)
 
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -475,7 +479,7 @@ describe('EditEdge ports - sub-interface', () => {
 
   it('should be greyout when dual WAN FF is enabled', async () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_DUAL_WAN_TOGGLE)
 
     render(
       <Provider>

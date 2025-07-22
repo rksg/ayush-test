@@ -7,7 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
 import { Features }                                                                        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                           from '@acx-ui/rc/components'
 import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
@@ -17,7 +16,8 @@ import {
   useAfterServiceSaveRedirectPath,
   ServiceType,
   useServicePreviousPath,
-  ServiceOperation
+  ServiceOperation,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
