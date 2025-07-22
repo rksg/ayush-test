@@ -6,12 +6,13 @@ import { useIntl }        from 'react-intl'
 import {
   Button,
   PageHeader,
+  SimpleListTooltip,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useEnforcedStatus }     from '@acx-ui/rc/components'
+import { useEnforcedStatus }                        from '@acx-ui/rc/components'
 import {
   useDeleteDpskMutation,
   useGetEnhancedDpskListQuery,

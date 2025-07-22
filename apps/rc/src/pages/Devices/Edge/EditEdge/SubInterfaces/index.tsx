@@ -5,10 +5,9 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, NoData, Tabs, Tooltip }               from '@acx-ui/components'
-import { Features }                                    from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                       from '@acx-ui/rc/components'
-import { EdgePort, LagSubInterface, PortSubInterface } from '@acx-ui/rc/utils'
+import { Loader, NoData, Tabs, Tooltip }                                      from '@acx-ui/components'
+import { Features }                                                           from '@acx-ui/feature-toggle'
+import { EdgePort, LagSubInterface, PortSubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
 import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
@@ -85,7 +84,7 @@ export const SubInterfaces = () => {
                   return <Tabs.TabPane
                     tab={
                       item.isLagMember
-                        ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+                        ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member
                       and is not available for adding sub-interfaces.` })}>
                           {_.capitalize(item.portName)}
                         </Tooltip>

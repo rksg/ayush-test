@@ -467,7 +467,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
     expect(await screen.findByText(/r760/i)).toBeVisible()
 
@@ -530,7 +530,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()

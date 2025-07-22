@@ -12,7 +12,6 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
-  useIsEdgeFeatureReady,
   VenueLink,
   CertTemplateLink
 } from '@acx-ui/rc/components'
@@ -31,7 +30,7 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup, PersonaUrls, doProfileDelete }                           from '@acx-ui/rc/utils'
+import { PersonaGroup, PersonaUrls, doProfileDelete, useIsEdgeFeatureReady }    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
 import type { TableColumn }                                                     from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier } from '@acx-ui/user'

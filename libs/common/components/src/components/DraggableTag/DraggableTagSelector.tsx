@@ -26,6 +26,7 @@ export type DraggableTagSelectorProps = {
   maxTags: number
   status?: '' | 'error'
   customTagRules: RuleObject[]
+  readonly?: boolean
 }
 
 const type = 'TAG'
@@ -33,42 +34,52 @@ const DraggableTagItem = memo(({
   tag,
   index,
   moveTag,
-  removeTag
+  removeTag,
+  readonly = false
 }: {
   tag: DraggableTag
   index: number
   moveTag: (from: number, to: number) => void
   removeTag: (index: number) => void
+  readonly?: boolean
 }) => {
   const ref = useRef<HTMLDivElement>(null)
+
+  // Only enable drop functionality if not readonly
   const [, drop] = useDrop({
     accept: type,
     hover (item: { index: number }) {
-      if (item.index !== index) {
+      if (!readonly && item.index !== index) {
         moveTag(item.index, index)
         item.index = index
       }
     }
   })
 
+  // Only enable drag functionality if not readonly
   const [{ isDragging }, drag] = useDrag({
     type,
     item: { index },
-    collect: (monitor) => ({ isDragging: monitor.isDragging() })
+    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    canDrag: !readonly // Disable drag when readonly
   })
 
-  drag(drop(ref))
+  // Only apply drag/drop refs if not readonly
+  if (!readonly) {
+    drag(drop(ref))
+  }
 
   return (
     <UI.TagWrapper>
       <Tag
         ref={ref}
-        closable
-        onClose={() => removeTag(index)}
-        closeIcon={<Remove data-testid='close' />}
+        closable={!readonly} // Disable close button when readonly
+        onClose={readonly ? undefined : () => removeTag(index)}
+        closeIcon={readonly ? undefined : <Remove data-testid='close' />}
         className={tag.valid ? '' : 'invalid'}
         style={{
-          opacity: isDragging ? 0.5 : 1
+          opacity: isDragging ? 0.5 : 1,
+          cursor: readonly ? 'default' : 'move' // Change cursor based on readonly state
         }}
       >
         {tag.value}
@@ -83,7 +94,8 @@ export function DraggableTagSelector ({
   options,
   maxTags,
   status = '',
-  customTagRules
+  customTagRules,
+  readonly = false
 }: DraggableTagSelectorProps) {
   const { $t } = useIntl()
   const [selectVisible, setSelectVisible] = useState(false)
@@ -125,7 +137,7 @@ export function DraggableTagSelector ({
   const AddTag = () => {
     return <UI.AddTag
       data-testid='add-tag'
-      onClick={() => setSelectVisible(true)}>
+      onClick={() => !readonly && setSelectVisible(true)}>
       <Plus size='sm' />
     </UI.AddTag>
   }
@@ -133,15 +145,18 @@ export function DraggableTagSelector ({
   const TagPlaceholder = () => {
     return <UI.Placeholder
       onClick={() => {
-        const visible = !values.length && !selectVisible
-        setSelectVisible(visible)
+        if (!readonly) {
+          const visible = !values.length && !selectVisible
+          setSelectVisible(visible)
+        }
       }}
     >
       {$t({ defaultMessage: 'Add attribute' })}
     </UI.Placeholder>
   }
 
-  const showAddMoreTags = values.length < maxTags && values.every(v => v.valid)
+  const showAddMoreTags = !readonly && values.length < maxTags &&
+    values.every(v => v.valid)
   const hasAnyTags = values.length > 0
   const TagAction = () => {
     if (!showAddMoreTags) return null
@@ -163,6 +178,7 @@ export function DraggableTagSelector ({
               index={i}
               moveTag={moveTag}
               removeTag={removeTag}
+              readonly={readonly}
             />
           ))
         }</span>
