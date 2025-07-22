@@ -7,7 +7,7 @@ import { Button, cssStr, Loader, Table, TableProps }                            
 import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
 import { Sync }                                                                                                                                           from '@acx-ui/icons'
 import { useGetSwitchModelsQuery, useGetSwitchProvisionsQuery, useGetSwitchStatusQuery, useHideSwitchProvisionsMutation, useRefreshSwitchStatusMutation } from '@acx-ui/rc/services'
-import {  DeviceProvision,  HideProvisionsPayload, VenueExtended }                                                                                        from '@acx-ui/rc/utils'
+import {  DeviceProvision,  HideProvisionsPayload }                                                                                                       from '@acx-ui/rc/utils'
 import { TimeStamp }                                                                                                                                      from '@acx-ui/types'
 import { useTableQuery }                                                                                                                                  from '@acx-ui/utils'
 
@@ -98,11 +98,7 @@ export const PendingSwitch = () => {
   }
 
   // Handle venue creation success
-  const handleVenueCreated = async (venue?: VenueExtended) => {
-    if (venue) {
-      // Optionally select the newly created venue in ClaimDeviceDrawer
-      // This will be handled by the ClaimDeviceDrawer's refetch mechanism
-    }
+  const handleVenueCreated = async () => {
     setVenueDrawerVisible(false)
   }
 
