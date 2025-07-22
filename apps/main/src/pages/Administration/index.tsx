@@ -48,6 +48,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
+    && tenantType === TenantType.REC
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
   const showPrivacyTab = !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
 
