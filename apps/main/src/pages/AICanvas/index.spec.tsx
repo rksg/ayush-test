@@ -56,6 +56,13 @@ const currentCanvas = {
     ]`
 }
 
+jest.mock('../OnboardingAssistant', () => ({
+  OnboardingAssistantModal: () => <div>OnboardingAssistant</div>,
+  RuckusAiStepsEnum: {
+    VERTICAL: 'VERTICAL',
+    WELCOME: 'WELCOME'
+  }
+}))
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
   const { forwardRef } = jest.requireActual('react')
@@ -309,7 +316,6 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
@@ -356,7 +362,6 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)

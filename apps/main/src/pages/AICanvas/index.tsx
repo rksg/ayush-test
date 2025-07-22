@@ -30,6 +30,8 @@ import {
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 import { useUserProfileContext }                  from '@acx-ui/user'
 
+import { OnboardingAssistantModal, RuckusAiStepsEnum } from '../OnboardingAssistant'
+
 import Canvas, { CanvasRef, Group }                   from './Canvas'
 import { DraggableChart }                             from './components/WidgetChart'
 import HistoryDrawer                                  from './HistoryDrawer'
@@ -53,9 +55,10 @@ const Message = (props:{
     groups: Group[],
     canvasRef?: React.RefObject<CanvasRef>,
     showCanvas: boolean,
+    goOnboardingAssistant: () => void,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
-  const { chat, sessionId, groups, canvasRef, onUserFeedback } = props
+  const { chat, sessionId, groups, canvasRef, onUserFeedback, goOnboardingAssistant } = props
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const messageTailRef = useRef<HTMLDivElement>(null)
   const { $t } = useIntl()
@@ -116,7 +119,7 @@ const Message = (props:{
       {
         chat.role === MessageRole.AI && chat.agent === 'system' &&
         <div className='onboarding-actions'>
-          <div>Start Onboarding Assistant</div>
+          <div onClick={goOnboardingAssistant}>Start Onboarding Assistant</div>
           <div>Maybe later</div>
         </div>
       }
@@ -165,6 +168,7 @@ const Messages = memo((props:{
   groups: Group[],
   canvasRef: React.RefObject<CanvasRef>,
   showCanvas: boolean,
+  goOnboardingAssistant: () => void,
   onUserFeedback: (feedback: string, message: ChatMessage) => void
 })=> {
   const { $t } = useIntl()
@@ -175,12 +179,12 @@ const Messages = memo((props:{
     role: 'AI',
     text: $t({ defaultMessage:
       // eslint-disable-next-line max-len
-      'Let’s get your network up and running! I’ll guide you step by step to set it up quickly and correctly. Just click below to launch the Onboarding Assistant.'
-      // 'I am RUCKUS digital system engineer, you can ask me anything about your network or choose a quick default suggestion.'
+      'I am RUCKUS digital system engineer, you can ask me anything about your network or choose a quick default suggestion.'
     })
   }
 
-  const { moreloading, chats, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
+  const { moreloading, chats, sessionId, groups, canvasRef,
+    showCanvas, onUserFeedback, goOnboardingAssistant } = props
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
@@ -188,12 +192,13 @@ const Messages = memo((props:{
         sessionId={sessionId}
         groups={groups}
         showCanvas={showCanvas}
+        goOnboardingAssistant={goOnboardingAssistant}
         onUserFeedback={onUserFeedback} />
     }
     {moreloading && <div className='loading'><Spin /></div>}
     {chats?.map((i) => (
       // eslint-disable-next-line max-len
-      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} showCanvas={showCanvas} onUserFeedback={onUserFeedback}/>
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} goOnboardingAssistant={goOnboardingAssistant} showCanvas={showCanvas} onUserFeedback={onUserFeedback}/>
     ))}
   </div>})
 
@@ -233,6 +238,7 @@ export default function AICanvasModal (props: {
   const [skipScrollTo, setSkipScrollTo] = useState(false)
   const [streamingMessageIds, setStreamingMessageIds] = useState<string[] | []>([])
   const [isModalOpenInitialized, setIsModalOpenInitialized] = useState(false)
+  const [onboardingVisible, setOnboardingVisible] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -267,6 +273,11 @@ export default function AICanvasModal (props: {
 
   const isChatHistoryLimitReached = !!historyData && historyData.length >= MAXIMUM_CHAT_HISTORY
   const isCanvasLimitReached = !!canvasList && canvasList.length >= MAXIMUM_OWNED_CANVAS
+
+  const goOnboardingAssistant = () => {
+    setIsModalOpen(false)
+    setOnboardingVisible(true)
+  }
 
   const setHistoryData = (data?: ChatHistory[]) => {
     if(data?.length) {
@@ -635,202 +646,212 @@ export default function AICanvasModal (props: {
   const userName = userProfileData?.firstName || userProfileData?.lastName || ''
 
   return (
-    <UI.ChatModal
-      visible={isModalOpen}
-      onCancel={onClose}
-      width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
-      style={{ top: 40, height: 'calc(100vh - 40px)' }}
-      footer={null}
-      closable={false}
-      maskClosable={false}
-      showCanvas={showCanvas}
-      forceRender
-      destroyOnClose={false}
-    >
-      { isModalOpen && <DndProvider backend={HTML5Backend}>
-        <UI.Wrapper showCanvas={showCanvas}>
-          <div className='chat-wrapper'>
-            {
-              historyVisible && <HistoryDrawer
-                visible={historyVisible}
-                onClose={onHistoryDrawer}
-                historyData={historyData as ChatHistory[]}
-                sessionId={sessionId}
-                onClickChat={onClickChat}
-              />
-            }
-            <div className='chat'>
-              <div className='header'>
-                <div className='actions'>
-                  {historyData?.length ?
-                    <>
-                      <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
-                      <Tooltip
-                        placement='right'
-                        title={isChatHistoryLimitReached
-                          ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
-                      Please delete an existing chat to add a new one.` })
-                          : ''}
-                      >
-                        <NewChat
-                          data-testid='newChatIcon'
-                          className={
-                            'newChat' + (isChatHistoryLimitReached ? ' disabled' : '')
-                          }
-                          onClick={onNewChat}
-                        />
-                      </Tooltip>
-                    </> : null
-                  }
-                </div>
-                <div className='title'>
-                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
-                </div>
-                <div className='actions'>
-                  {
-                    showCanvas ? <CanvasCollapse
-                      data-testid='canvasCollapseIcon'
-                      onClick={onClickCanvasMode}
-                    />
-                      : <Tooltip
-                        placement='bottom'
-                        title={$t(
-                          { defaultMessage: 'Expand <b>My Canvas</b> to place widgets' },
-                          { b: (chunks: React.ReactNode[]) => <b>{chunks}</b> }
-                        )}
-                      >
-                        <CanvasExpand
-                          data-testid='canvasExpandIcon'
-                          onClick={onClickCanvasMode}
-                        />
-                      </Tooltip>
-                  }
-                  <Close data-testid='close-icon' onClick={onClickClose}/>
-                </div>
-              </div>
-              <div className='content'>
-                <Loader states={[{ isLoading: isChatsLoading }]}
-                  style={{
-                    borderBottomLeftRadius: '24px',
-                    borderBottomRightRadius: '24px'
-                  }}>
-                  <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                    {
-                      !chats?.length && !showCanvas &&
-                      <div className='welcome-info'>
-                        <div style={{
-                          height: '100px'
-                        }} >
-                          <RuckusAiDog style={{
-                            width: '90px', height: '90px'
-                          }} />
-                        </div>
-                        <span style={{
-                          fontSize: '24px',
-                          fontWeight: 700,
-                          fontFamily: 'Montserrat',
-                          lineHeight: '45px'
-                        }}>
-                          {`${$t({ defaultMessage: 'Hello' })} ${userName},`}
-                        </span>
-                        <span style={{
-                          fontSize: '24px',
-                          fontWeight: 500,
-                          fontFamily: 'Montserrat',
-                          marginBottom: '5px'
-                        }}>
-                          {$t({ defaultMessage: 'Welcome! Let' })}
-                          <span
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 700,
-                              fontFamily: 'Montserrat',
-                              color: '#EC7100',
-                              margin: '0 7px 0 2px'
-                            }}
-                          > {$t({ defaultMessage: 'RUCKUS DSE' })}
-                          </span>
-                          {$t({ defaultMessage: 'simplify your work' })}
-                        </span>
-                      </div>
-                    }
-                    <Messages
-                      moreloading={moreloading}
-                      aiBotLoading={aiBotLoading}
-                      chats={chats}
-                      sessionId={sessionId}
-                      canvasRef={canvasRef}
-                      groups={groups}
-                      showCanvas={showCanvas}
-                      onUserFeedback={cacheUserFeedback} />
-                    {
-                      !chats?.length && <div className='placeholder'>
-                        {
-                          questions.map(question => <div
-                            key={question.text}
-                            onClick={()=> {
-                              handleSearch(question.text)
-                            }}
-                          >
-                            {question.text}
-                            {
-                              question.tooltip &&
-                                <Tooltip overlayStyle={{ minWidth: '365px' }}
-                                  children={<InformationOutlined size='sm' />}
-                                  title={question.tooltip} />
+    <>
+      <UI.ChatModal
+        visible={isModalOpen}
+        onCancel={onClose}
+        width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
+        style={{ top: 40, height: 'calc(100vh - 40px)' }}
+        footer={null}
+        closable={false}
+        maskClosable={false}
+        showCanvas={showCanvas}
+        forceRender
+        destroyOnClose={false}
+      >
+        { isModalOpen && <DndProvider backend={HTML5Backend}>
+          <UI.Wrapper showCanvas={showCanvas}>
+            <div className='chat-wrapper'>
+              {
+                historyVisible && <HistoryDrawer
+                  visible={historyVisible}
+                  onClose={onHistoryDrawer}
+                  historyData={historyData as ChatHistory[]}
+                  sessionId={sessionId}
+                  onClickChat={onClickChat}
+                />
+              }
+              <div className='chat'>
+                <div className='header'>
+                  <div className='actions'>
+                    {historyData?.length ?
+                      <>
+                        <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
+                        <Tooltip
+                          placement='right'
+                          title={isChatHistoryLimitReached
+                            ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
+                        Please delete an existing chat to add a new one.` })
+                            : ''}
+                        >
+                          <NewChat
+                            data-testid='newChatIcon'
+                            className={
+                              'newChat' + (isChatHistoryLimitReached ? ' disabled' : '')
                             }
-                          </div>)
-                        }
-                      </div>
+                            onClick={onNewChat}
+                          />
+                        </Tooltip>
+                      </> : null
                     }
                   </div>
-                  <div className='input'>
-                    <Form form={form} >
-                      <Form.Item
-                        name='searchInput'
-                        children={<UI.Input
-                          ref={searchInputRef}
-                          autoFocus
-                          maxLength={maxSearchTextNumber}
-                          data-testid='search-input'
-                          onKeyDown={onKeyDown}
-                          onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
-                          style={{ height: 90, resize: 'none' }}
-                          placeholder={placeholder}
-                        />}
-                      />
-                    </Form>
+                  <div className='title'>
+                    <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                  </div>
+                  <div className='actions'>
                     {
-                      searchText.length > 0 && <div className='text-counter'>
-                        {searchText.length + '/' + maxSearchTextNumber}</div>
-                    }
-                    <Tooltip title={isStopAllowed ? $t({ defaultMessage: 'Stop generating' }) : ''}>
-                      <UI.SearchButton
-                        data-testid='search-button'
-                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageSolid />}
-                        disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
-                        onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
+                      showCanvas ? <CanvasCollapse
+                        data-testid='canvasCollapseIcon'
+                        onClick={onClickCanvasMode}
                       />
-                    </Tooltip>
+                        : <Tooltip
+                          placement='bottom'
+                          title={$t(
+                            { defaultMessage: 'Expand <b>My Canvas</b> to place widgets' },
+                            { b: (chunks: React.ReactNode[]) => <b>{chunks}</b> }
+                          )}
+                        >
+                          <CanvasExpand
+                            data-testid='canvasExpandIcon'
+                            onClick={onClickCanvasMode}
+                          />
+                        </Tooltip>
+                    }
+                    <Close data-testid='close-icon' onClick={onClickClose}/>
                   </div>
-                </Loader>
+                </div>
+                <div className='content'>
+                  <Loader states={[{ isLoading: isChatsLoading }]}
+                    style={{
+                      borderBottomLeftRadius: '24px',
+                      borderBottomRightRadius: '24px'
+                    }}>
+                    <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                      {
+                        !chats?.length && !showCanvas &&
+                        <div className='welcome-info'>
+                          <div style={{
+                            height: '100px'
+                          }} >
+                            <RuckusAiDog style={{
+                              width: '90px', height: '90px'
+                            }} />
+                          </div>
+                          <span style={{
+                            fontSize: '24px',
+                            fontWeight: 700,
+                            fontFamily: 'Montserrat',
+                            lineHeight: '45px'
+                          }}>
+                            {`${$t({ defaultMessage: 'Hello' })} ${userName},`}
+                          </span>
+                          <span style={{
+                            fontSize: '24px',
+                            fontWeight: 500,
+                            fontFamily: 'Montserrat',
+                            marginBottom: '5px'
+                          }}>
+                            {$t({ defaultMessage: 'Welcome! Let' })}
+                            <span
+                              style={{
+                                fontSize: '24px',
+                                fontWeight: 700,
+                                fontFamily: 'Montserrat',
+                                color: '#EC7100',
+                                margin: '0 7px 0 2px'
+                              }}
+                            > {$t({ defaultMessage: 'RUCKUS DSE' })}
+                            </span>
+                            {$t({ defaultMessage: 'simplify your work' })}
+                          </span>
+                        </div>
+                      }
+                      <Messages
+                        moreloading={moreloading}
+                        aiBotLoading={aiBotLoading}
+                        chats={chats}
+                        sessionId={sessionId}
+                        canvasRef={canvasRef}
+                        groups={groups}
+                        showCanvas={showCanvas}
+                        goOnboardingAssistant={goOnboardingAssistant}
+                        onUserFeedback={cacheUserFeedback} />
+                      {
+                        !chats?.length && <div className='placeholder'>
+                          {
+                            questions.map(question => <div
+                              key={question.text}
+                              onClick={()=> {
+                                handleSearch(question.text)
+                              }}
+                            >
+                              {question.text}
+                              {
+                                question.tooltip &&
+                                  <Tooltip overlayStyle={{ minWidth: '365px' }}
+                                    children={<InformationOutlined size='sm' />}
+                                    title={question.tooltip} />
+                              }
+                            </div>)
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div className='input'>
+                      <Form form={form} >
+                        <Form.Item
+                          name='searchInput'
+                          children={<UI.Input
+                            ref={searchInputRef}
+                            autoFocus
+                            maxLength={maxSearchTextNumber}
+                            data-testid='search-input'
+                            onKeyDown={onKeyDown}
+                            onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
+                            style={{ height: 90, resize: 'none' }}
+                            placeholder={placeholder}
+                          />}
+                        />
+                      </Form>
+                      {
+                        searchText.length > 0 && <div className='text-counter'>
+                          {searchText.length + '/' + maxSearchTextNumber}</div>
+                      }
+                      <Tooltip title={isStopAllowed ?
+                        $t({ defaultMessage: 'Stop generating' }) : ''}>
+                        <UI.SearchButton
+                          data-testid='search-button'
+                          icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageSolid />}
+                          disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
+                          onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
+                        />
+                      </Tooltip>
+                    </div>
+                  </Loader>
+                </div>
               </div>
             </div>
-          </div>
-          {
-            showCanvas && <Canvas
-              ref={canvasRef}
-              getCanvasQuery={getCanvasQuery}
-              canvasHasChanges={canvasHasChanges}
-              onCanvasChange={handleCanvasChange}
-              checkChanges={checkChanges}
-              groups={groups}
-              setGroups={setGroups}
-              editCanvasId={editCanvasId}
-            />
-          }
-        </UI.Wrapper>
-      </DndProvider> }
-    </UI.ChatModal>
+            {
+              showCanvas && <Canvas
+                ref={canvasRef}
+                getCanvasQuery={getCanvasQuery}
+                canvasHasChanges={canvasHasChanges}
+                onCanvasChange={handleCanvasChange}
+                checkChanges={checkChanges}
+                groups={groups}
+                setGroups={setGroups}
+                editCanvasId={editCanvasId}
+              />
+            }
+          </UI.Wrapper>
+        </DndProvider> }
+      </UI.ChatModal>
+      <OnboardingAssistantModal
+        visible={onboardingVisible}
+        setVisible={setOnboardingVisible}
+        setAIChatVisible={setIsModalOpen}
+        initStep={RuckusAiStepsEnum.VERTICAL}
+      />
+    </>
   )
 }
