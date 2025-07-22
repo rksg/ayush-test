@@ -185,8 +185,7 @@ export type {
   AccessSwitchTableDataType
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
-  useEdgeActions,
-  useIsEdgeFeatureReady
+  useEdgeActions
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,
@@ -306,7 +305,6 @@ export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
 export * from './RadioSettings/RadioSettingsUtils'
-export * from './SimpleListTooltip'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './CommonLinkHelper'

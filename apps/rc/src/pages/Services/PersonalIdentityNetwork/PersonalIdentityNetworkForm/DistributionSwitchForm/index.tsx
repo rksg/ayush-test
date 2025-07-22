@@ -3,11 +3,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Form, Input, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
-import { Features }                                                          from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                             from '@acx-ui/rc/components'
-import { useGetEdgeListQuery }                                               from '@acx-ui/rc/services'
-import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
+import { Alert, StepsForm, TableProps, useStepFormContext }                                         from '@acx-ui/components'
+import { Features }                                                                                 from '@acx-ui/feature-toggle'
+import { useGetEdgeListQuery }                                                                      from '@acx-ui/rc/services'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 

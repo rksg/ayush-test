@@ -3,7 +3,6 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { Features }                                         from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                            from '@acx-ui/rc/components'
 import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -53,8 +52,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  ...jest.requireActual('@acx-ui/rc/components')
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 describe('PersonalIdentityNetworkTableEnhanced', () => {
@@ -273,7 +277,7 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
     ]
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
       mockServer.use(
         rest.post(
           TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -282,7 +286,7 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
       )
     })
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should render correctly', async () => {
