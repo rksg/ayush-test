@@ -5,10 +5,10 @@ import { Space, Typography }                              from 'antd'
 import { cloneDeep, isNil, pick, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer }                                                                                   from '@acx-ui/components'
-import { Features }                                                                                 from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanActivatedNetworksTable, showSdLanGuestFwdConflictModal, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum }                                         from '@acx-ui/rc/utils'
+import { Drawer }                                                                  from '@acx-ui/components'
+import { Features }                                                                from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanActivatedNetworksTable, showSdLanGuestFwdConflictModal }       from '@acx-ui/rc/components'
+import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 

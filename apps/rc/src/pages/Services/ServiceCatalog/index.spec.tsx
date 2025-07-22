@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import { IncompatibilityFeatures, ServiceType, useMdnsProxyStateMap, useDhcpStateMap } from '@acx-ui/rc/utils'
 import { Provider }                                                                    from '@acx-ui/store'
 import {
@@ -23,8 +22,15 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeCompatibilityType: {
     ALONE: 'ALONE'
   },
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff),
+  useDhcpStateMap: jest.fn().mockReturnValue({}),
+  useMdnsProxyStateMap: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -32,12 +38,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
-}))
-
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useDhcpStateMap: jest.fn().mockReturnValue({}),
-  useMdnsProxyStateMap: jest.fn().mockReturnValue({})
 }))
 
 describe('ServiceCatalog', () => {
@@ -81,7 +81,7 @@ describe('ServiceCatalog', () => {
   it('should render service catalog with feature flag ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    mockUseIsEdgeFeatureReady.mockReturnValue(true)
 
     render(<Provider>
       <ServiceCatalog />
@@ -97,11 +97,11 @@ describe('ServiceCatalog', () => {
 
     jest.mocked(useIsSplitOn).mockReset()
     jest.mocked(useIsTierAllowed).mockReset()
-    jest.mocked(useIsEdgeFeatureReady).mockReset()
+    mockUseIsEdgeFeatureReady.mockReset()
   })
 
   it('should not render edge-firewall service with the FIREWALL-HA-FF OFF', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockReturnValue(false)
 
     render(
       <ServiceCatalog />, {
@@ -113,7 +113,7 @@ describe('ServiceCatalog', () => {
   })
 
   it('should not render edge-dhcp service with the dhcp-HA-FF OFF', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockReturnValue(false)
 
     render(<Provider>
       <ServiceCatalog />
@@ -149,7 +149,7 @@ describe('ServiceCatalog', () => {
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.SD_LAN)
 
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockReset()
     })
   })
 
@@ -191,7 +191,7 @@ describe('ServiceCatalog', () => {
   describe('Edge PIN', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
     })
 
@@ -219,7 +219,7 @@ describe('ServiceCatalog', () => {
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.PIN)
 
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockReset()
     })
   })
 

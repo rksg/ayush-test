@@ -4,10 +4,9 @@ import { useContext, useEffect, useState } from 'react'
 import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { StepsForm, useStepFormContext }                                                   from '@acx-ui/components'
-import { Features }                                                                        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                           from '@acx-ui/rc/components'
-import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                                          from '@acx-ui/components'
+import { Features }                                                                                               from '@acx-ui/feature-toggle'
+import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp, TunnelProfileViewData, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../../PersonalIdentityNetworkFormContext'
 import { FieldTitle }                         from '../../styledComponents'

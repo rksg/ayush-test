@@ -5,7 +5,6 @@ import { rest }           from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import { Features }                  from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }     from '@acx-ui/rc/components'
 import { edgeApi }                   from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
@@ -13,7 +12,8 @@ import {
   EdgeSdLanFixtures,
   EdgeCompatibilityFixtures,
   EdgeUrlsInfo,
-  EdgePinFixtures } from '@acx-ui/rc/utils'
+  EdgePinFixtures
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -70,14 +70,15 @@ const edgeMvSdlanContextValues = {
   allPins: []
 } as EdgeSdLanContextType
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useHelpPageLink: () => ''
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components')
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff),
+  useHelpPageLink: () => ''
 }))
 
 // eslint-disable-next-line max-len
@@ -353,7 +354,7 @@ describe('Edge SD-LAN form: settings', () => {
 
   it('should be able to use HA AA mode cluster as DMZ cluster when FF on', async () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_HA_AA_DMZ_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_HA_AA_DMZ_TOGGLE)
 
     const expectedClusterId = 'clusterId_1'
     const expectedSdLan = mockedMvSdLanDataList[0]

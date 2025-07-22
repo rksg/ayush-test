@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 
 import { ColumnType }                     from '@acx-ui/components'
 import { Features }                       from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }          from '@acx-ui/rc/components'
 import { EdgeLagFixtures, EdgeLagStatus } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen }                 from '@acx-ui/test-utils'
@@ -30,7 +29,12 @@ jest.mock('@acx-ui/edge/components', () => {
   }
 })
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const params = {
@@ -102,7 +106,7 @@ describe('LagsTab', () => {
 
   it('renders EdgeOverviewLagTable with filterables when isEdgeDualWanEnabled is true', () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_DUAL_WAN_TOGGLE)
 
     const mockData = [{ lagId: 'lag1' }]
 
