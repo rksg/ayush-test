@@ -2,14 +2,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { pinApi }                from '@acx-ui/rc/services'
-import {
-  EdgePinFixtures, EdgePinUrls
-} from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { Features }                     from '@acx-ui/feature-toggle'
+import { pinApi }                       from '@acx-ui/rc/services'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -45,8 +42,10 @@ jest.mock('./PropertyManagementInfo', () => ({
   PropertyManagementInfo: () => <div data-testid='PropertyManagementInfo' />
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 jest.mock('./TunnelDetailsDrawer', () => ({
@@ -135,10 +134,10 @@ describe('PersonalIdentityNetworkForm - EnhancedGeneralSettingsForm', () => {
   describe('test L2GRE case', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     })
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should render tunnel profile dropdown', async () => {

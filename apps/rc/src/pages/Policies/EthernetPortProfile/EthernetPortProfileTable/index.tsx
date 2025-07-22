@@ -4,9 +4,8 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
+import { Loader, SimpleListTooltip, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,

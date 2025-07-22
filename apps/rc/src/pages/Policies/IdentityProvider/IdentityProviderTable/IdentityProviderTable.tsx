@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }         from '@acx-ui/rc/components'
+import { Loader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   useDeleteIdentityProviderMutation,
   useGetAAAPolicyViewModelListQuery,

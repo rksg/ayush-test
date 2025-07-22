@@ -14,7 +14,7 @@ import {
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, LBS_SERVER_PROFILE_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, LBS_SERVER_PROFILE_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
@@ -28,7 +28,8 @@ import {
   getPolicyRoutePath,
   isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping
+  policyTypeLabelMapping,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RadioCardCategory, SwitchScopes, WifiScopes } from '@acx-ui/types'
