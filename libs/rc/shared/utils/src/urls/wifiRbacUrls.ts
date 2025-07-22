@@ -333,6 +333,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/capabilities',
     newApi: true
   },
+  getApPassword: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/passwords',
+    newApi: true
+  },
 
   getApNeighbors: {
     method: 'post',

@@ -12,7 +12,8 @@ import {
   WifiRbacUrlsInfo,
   WifiUrlsInfo,
   AFCStatus,
-  AFCPowerMode
+  AFCPowerMode,
+  ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store  }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -20,6 +21,12 @@ import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/
 import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
 
 import { ApProperties } from '.'
+
+// Mock useUserProfileContext
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: jest.fn()
+}))
 
 const params = {
   venueId: 'venue-id',
@@ -268,6 +275,16 @@ jest.mock('react-router-dom', () => ({
 describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+
+    // Mock userProfile to show Admin Password field
+    const { useUserProfileContext } = require('@acx-ui/user')
+    useUserProfileContext.mockReturnValue({
+      data: {
+        support: true,
+        var: false,
+        dogfood: false
+      }
+    })
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenue.url,
@@ -582,6 +599,101 @@ describe('ApProperties', () => {
     await userEvent.click(button)
     await waitFor(() => {
       expect(apPropertiesDialog).not.toBeVisible()
+    })
+  })
+
+  describe('useGetApPassword hook', () => {
+    const mockCurrentAP = {
+      venueId: 'test-venue-id',
+      serialNumber: 'test-serial-number',
+      name: 'Test AP',
+      deviceGroupId: 'test-group-id',
+      deviceStatus: 'ONLINE',
+      deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
+      meshRole: 'DISABLED',
+      model: 'R650',
+      venueName: 'Test Venue',
+      tags: '',
+      IP: '192.168.1.100',
+      apMac: '00:11:22:33:44:55',
+      apStatusData: {
+        APSystem: {
+          ipType: 'DHCP'
+        }
+      }
+    }
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should return venue settings password when RBAC API is disabled', () => {
+      // Mock feature flags
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_RBAC_API') return false
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return false
+      })
+
+      mockServer.use(
+        rest.get(
+          CommonUrlsInfo.getVenueSettings.url,
+          (_, res, ctx) => res(ctx.json({ apPassword: 'venue-settings-password' }))
+        )
+      )
+
+      render(<Provider>
+        <ApProperties
+          currentAP={mockCurrentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+            fireEvent.click(screen.getByText('More'))
+      expect(screen.getByDisplayValue('venue-settings-password')).toBeInTheDocument()
+    })
+
+
+
+    it('should handle missing venueId in RBAC API mode', () => {
+      const apWithoutVenueId = {
+        venueId: undefined,
+        serialNumber: 'test-serial-number',
+        name: 'Test AP',
+        deviceGroupId: 'test-group-id',
+        deviceStatus: 'ONLINE',
+        meshRole: 'DISABLED',
+        model: 'R650',
+        venueName: 'Test Venue',
+        tags: '',
+        IP: '192.168.1.100',
+        apMac: '00:11:22:33:44:55',
+        apStatusData: {
+          APSystem: {
+            ipType: 'DHCP'
+          }
+        }
+      }
+
+      // Mock feature flags
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_RBAC_API') return true
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return false
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={apWithoutVenueId as never}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      // Should not show password input when venueId is missing
+      expect(screen.queryByDisplayValue('rbac-api-password')).not.toBeInTheDocument()
     })
   })
 })

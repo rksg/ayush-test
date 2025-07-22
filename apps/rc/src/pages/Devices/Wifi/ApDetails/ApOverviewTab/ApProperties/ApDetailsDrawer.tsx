@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Button, Divider, Tooltip } from 'antd'
-import { capitalize, includes }     from 'lodash'
-import { useIntl }                  from 'react-intl'
+import { Button, Divider, Tooltip, Input } from 'antd'
+import { capitalize, includes }            from 'lodash'
+import { useIntl }                         from 'react-intl'
 
 import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
 import { get }                                                           from '@acx-ui/config'
@@ -28,7 +28,8 @@ import {
   useGetApOperationalQuery,
   useGetFlexAuthenticationProfilesQuery,
   useLazyGetApNeighborsQuery,
-  useLazyGetApLldpNeighborsQuery
+  useLazyGetApLldpNeighborsQuery,
+  useGetApPasswordQuery
 } from '@acx-ui/rc/services'
 import {
   ApDetails,
@@ -69,10 +70,17 @@ interface ApDetailsDrawerProps {
 
 const useGetApPassword = (currentAP: ApViewModel) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isPerApPassword = useIsSplitOn(Features.WIFI_AP_PASSWORD_PER_AP_TOGGLE)
+  const isApPasswordVisibility = useIsSplitOn(Features.WIFI_AP_PASSWORD_VISIBILITY_TOGGLE)
+  const isPerApPasswordAndVisibility = isPerApPassword && isApPasswordVisibility
+  const [showPassword, setShowPassword] = useState(false)
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
+
+  const { data: apPasswordData } = useGetApPasswordQuery({ params },
+    { skip: !showPassword || !currentAP?.venueId || !currentAP?.serialNumber })
 
   const { data: venueSettings } = useGetVenueSettingsQuery({ params },
     { skip: isUseRbacApi || !currentAP?.venueId })
@@ -80,7 +88,27 @@ const useGetApPassword = (currentAP: ApViewModel) => {
   const { data: venueRbacApSetings } = useGetApOperationalQuery({ params, enableRbac: isUseRbacApi },
     { skip: !isUseRbacApi || !currentAP?.venueId })
 
-  return isUseRbacApi ? venueRbacApSetings?.loginPassword : venueSettings?.apPassword
+  const handleShowPassword = () => {
+    if (!showPassword && currentAP?.venueId && currentAP?.serialNumber) {
+      setShowPassword(true)
+    }
+  }
+
+  let apPassword
+
+  if (isPerApPasswordAndVisibility) {
+    // TODO: Uncomment when per AP password feature is implemented
+    apPassword = showPassword ? apPasswordData?.expireTime : ''
+    //apPassword = showPassword ? apPasswordData?.apPasswords : ''
+  } else {
+    apPassword = isUseRbacApi ? venueRbacApSetings?.loginPassword : venueSettings?.apPassword
+  }
+
+  return {
+    apPassword,
+    handleShowPassword,
+    isPerApPasswordAndVisibility
+  }
 }
 
 
@@ -159,7 +187,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId
   })
 
-  const apPassword = useGetApPassword(currentAP)
+  const { apPassword, handleShowPassword, isPerApPasswordAndVisibility } = useGetApPassword(currentAP)
 
   const fetchSwitchDetails = async () => {
     if (!hasPermission({
@@ -357,16 +385,30 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
-          (userProfile?.support || userProfile?.var || userProfile?.dogfood) && apPassword &&
+          (userProfile?.support || userProfile?.var || userProfile?.dogfood) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={<UI.DetailsPassword>
-              <PasswordInput
-                readOnly
-                bordered={false}
-                value={apPassword}
-              />
-            </UI.DetailsPassword>}
+            children={
+              isPerApPasswordAndVisibility ? (
+                <UI.DetailsPassword>
+                  <Input.Password
+                    readOnly
+                    bordered={false}
+                    value={apPassword}
+                    onFocus={handleShowPassword}
+                    placeholder={$t({ defaultMessage: 'Click to show password' })}
+                  />
+                </UI.DetailsPassword>
+              ) : (
+                <UI.DetailsPassword>
+                  <PasswordInput
+                    readOnly
+                    bordered={false}
+                    value={apPassword}
+                  />
+                </UI.DetailsPassword>
+              )
+            }
           />
         }
         <Descriptions.Item

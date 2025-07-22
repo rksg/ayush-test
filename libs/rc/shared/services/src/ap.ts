@@ -97,7 +97,7 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork, ApApPassword
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -1460,6 +1460,16 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'USB' }]
     }),
+    getApPassword: build.query<ApApPassword, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, { ...customHeaders, ...ignoreErrorModal })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2168,6 +2178,7 @@ export const {
   useUpdateApLedMutation,
   useResetApLedMutation,
   useGetApUsbQuery,
+  useGetApPasswordQuery,
   useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
