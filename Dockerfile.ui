@@ -75,12 +75,6 @@ RUN source ${ENV_FILE} \
 
 FROM build-base as acx-ui-group-test
 
-# Multistage: trigger run
-COPY --from=build /app/dist/apps ./dist/apps
-
-ARG PRECOMMIT
-ARG GIT_COMMIT_BRANCH
-
 ###############################################################
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
@@ -97,6 +91,9 @@ COPY --from=acx-ui-group-test /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
+
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
 
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
