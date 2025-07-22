@@ -16,8 +16,7 @@ import {
   NetworkSegmentationLink,
   PassphraseViewer,
   PassphraseDrawer,
-  PropertyUnitLink,
-  useIsEdgeFeatureReady
+  PropertyUnitLink
 } from '@acx-ui/rc/components'
 import {
   useAllocatePersonaVniMutation,
@@ -32,9 +31,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup, PersonaUrls }    from '@acx-ui/rc/utils'
-import { getUserProfile, hasAllowedOperations, isCoreTier } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay, useTableQuery }          from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup, PersonaUrls, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { getUserProfile, hasAllowedOperations, isCoreTier }                     from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, useTableQuery }                              from '@acx-ui/utils'
 
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'

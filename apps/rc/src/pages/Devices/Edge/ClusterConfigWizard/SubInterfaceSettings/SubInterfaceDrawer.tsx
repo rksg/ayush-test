@@ -4,12 +4,13 @@ import { Checkbox, Form, Input, InputNumber, Select, Space } from 'antd'
 import { CheckboxChangeEvent }                               from 'antd/lib/checkbox'
 import { useIntl }                                           from 'react-intl'
 
-import { Alert, Drawer, useStepFormContext }                                                             from '@acx-ui/components'
-import { Features }                                                                                      from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Alert, Drawer, useStepFormContext }                                      from '@acx-ui/components'
+import { Features }                                                               from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   EdgeIpModeEnum,
   EdgeLag,
+  useIsEdgeFeatureReady,
   EdgePort,
   EdgePortInfo,
   EdgePortTypeEnum,
@@ -250,7 +251,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.DHCP ? (
           <Alert message={
-            $t({ defaultMessage: `Note: Do not add default route pointing 
+            $t({ defaultMessage: `Note: Do not add default route pointing
               to default gateway provided by server.` })
           }
           type='info'

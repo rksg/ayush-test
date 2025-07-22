@@ -3,10 +3,9 @@ import { useContext } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
-import { ClusterHighAvailabilityModeEnum }         from '@acx-ui/rc/utils'
+import { StepsForm, Subtitle, useStepFormContext }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { ClusterHighAvailabilityModeEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 import { InterfaceSettingsFormType }  from '../types'

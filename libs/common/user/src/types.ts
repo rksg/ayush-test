@@ -1,5 +1,5 @@
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { RolesEnum }                    from '@acx-ui/types'
+import { AccountTier, AccountVertical } from '@acx-ui/utils'
 
 export enum DetailLevel {
   BASIC_USER = 'ba',
@@ -205,6 +205,7 @@ export interface TenantDetails {
     mfaStatus: string
   }
   accountTier?: AccountTier;
+  accountVertical?: AccountVertical;
   subscribes?: string;
   extendedTrial?: boolean;
 }
@@ -263,6 +264,8 @@ export enum raiPermissionsList {
   'READ_OCCUPANCY',
   'WRITE_OCCUPANCY',
 
+  'READ_TENANT_SETTINGS',
+  'WRITE_TENANT_SETTINGS',
   'READ_ONBOARDED_SYSTEMS',
   'READ_USERS',
   'WRITE_USERS',

@@ -3,7 +3,6 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
 import { Features }                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -21,7 +20,8 @@ import {
   PolicyType,
   transformDisplayOnOff,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'

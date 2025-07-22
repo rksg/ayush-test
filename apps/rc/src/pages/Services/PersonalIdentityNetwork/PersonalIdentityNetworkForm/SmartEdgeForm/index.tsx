@@ -6,7 +6,7 @@ import { useNavigate, useParams }                                 from 'react-ro
 
 import { Alert, Button, StepsForm, useStepFormContext }     from '@acx-ui/components'
 import { Features }                                         from '@acx-ui/feature-toggle'
-import { AddEdgeDhcpServiceModal, useIsEdgeFeatureReady }   from '@acx-ui/rc/components'
+import { AddEdgeDhcpServiceModal }                          from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
@@ -15,7 +15,8 @@ import {
   PersonalIdentityNetworkFormData,
   ServiceOperation,
   ServiceType,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission } from '@acx-ui/user'

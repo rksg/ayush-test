@@ -3,9 +3,9 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }                                                         from '@acx-ui/components'
-import { Features }                                                     from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Tabs }                                  from '@acx-ui/components'
+import { Features }                              from '@acx-ui/feature-toggle'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
 import {
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
-  EdgeDhcpHostStatus
+  EdgeDhcpHostStatus,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'

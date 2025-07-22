@@ -1,7 +1,6 @@
 
 import { StepsForm }              from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { EdgeGeneralFixtures }    from '@acx-ui/rc/utils'
 import { render, screen }         from '@acx-ui/test-utils'
 
@@ -27,8 +26,12 @@ jest.mock('./SubInterfaceTable', () => ({
   SubInterfaceTable: () => <div data-testid='SubInterfaceTable' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 describe('InterfaceSettings - Summary', () => {
@@ -75,7 +78,7 @@ describe('InterfaceSettings - Summary', () => {
   })
 
   it('should show SubInterfaceTable when Core Access FF is on', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     render(
       <ClusterConfigWizardContext.Provider value={{
