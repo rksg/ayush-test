@@ -77,7 +77,7 @@ FROM build-base as acx-ui-group-test
 
 ###############################################################
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
-RUN touch lint-done
+RUN touch /app/lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 # FROM build-base as acx-ui-tslint
@@ -87,7 +87,7 @@ RUN touch lint-done
 # RUN touch tslint-done
 ###############################################################
 
-COPY --from=acx-ui-group-test /app/lint-done /tmp/
+RUN cp /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
