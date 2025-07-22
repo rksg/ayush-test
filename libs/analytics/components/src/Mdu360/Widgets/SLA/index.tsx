@@ -3,8 +3,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Card, Loader, NoData } from '@acx-ui/components'
-import { UseQueryResult }               from '@acx-ui/types'
+import { Button, Card, Loader, NoData, showToast } from '@acx-ui/components'
+import { UseQueryResult }                          from '@acx-ui/types'
 
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
@@ -64,6 +64,24 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
   const resetCurrentSLAs = () => setCurrentSLAs(initialSLAs)
   const applyCurrentSLAs = () =>
     updateSlaThresholds({ mspEcIds, slasToUpdate })
+      .unwrap()
+      .then((resp) => {
+        const firstSLAWithError = Object.values(resp).find(
+          ({ error }) => error
+        )
+        if (firstSLAWithError) {
+          showToast({
+            type: 'error',
+            content: $t(
+              {
+                defaultMessage:
+                  'An error occurred while updating SLA thresholds{error}'
+              },
+              { error: `: ${firstSLAWithError.error}` }
+            )
+          })
+        }
+      })
 
   return (
     <Loader

@@ -1,13 +1,14 @@
 import { SLAKeys } from '../../types'
 
 interface SLAResult {
-  value: number;
-  isSynced: boolean;
-  isDefault?: boolean;
+  value: number
+  isSynced: boolean
+  isDefault?: boolean
+  error?: string
 }
 
 export type SLAData = Partial<{
-  [key in SLAKeys]: SLAResult;
+  [key in SLAKeys]: SLAResult
 }>
 
 export interface QueryPayload {

@@ -80,7 +80,7 @@ export const mduThresholdMutation = (
         name: "${slaConfig[key as SLAKeys].apiMetric}"
         value: $${key}
         mspEcIds: $mspEcIds
-      ) { success }`
+      ) { success, error }`
   })
 
   mutationBody += '}'

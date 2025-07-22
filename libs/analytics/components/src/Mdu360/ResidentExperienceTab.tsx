@@ -12,7 +12,7 @@ import type { Mdu360TabProps } from '.'
 
 
 const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
-  const mspEcIds: string[] = []
+  const mspEcIds: string[] = [] // TODO: retrieve from filter
   const slaQueryResults = useSlaThresholdsQuery({ mspEcIds })
 
   return (
