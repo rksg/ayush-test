@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                    from '@acx-ui/rc/components'
+import { Loader, showToast, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useDeleteRadiusAttributeGroupMutation,

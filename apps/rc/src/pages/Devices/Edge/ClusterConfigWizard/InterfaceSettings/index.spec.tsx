@@ -5,9 +5,9 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { edgeApi }                                                                from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { CompatibilityNodeError, CompatibilityStatusEnum } from '@acx-ui/rc/components'
+import { edgeApi }                                         from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
   EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures,
@@ -74,8 +74,13 @@ jest.mock('@acx-ui/rc/components', () => ({
           {JSON.stringify(nodeErr)}
         </div>))
       }
-    </div>,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+    </div>
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const { mockLanInterfaces } = EdgePortConfigFixtures
@@ -188,7 +193,7 @@ describe('InterfaceSettings', () => {
 
   it('should show Sub-Interface setting step when the Core Access FF is ON', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_AA_TOGGLE)
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     render(<Provider>
       <ClusterConfigWizardContext.Provider value={defaultCxtData}>
@@ -214,7 +219,7 @@ describe('InterfaceSettings', () => {
   })
 
   it('should redirect to cluster list page', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff !== Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     jest.spyOn(VirtualIpForm, 'VirtualIpForm')
       .mockImplementationOnce(() => <div data-testid='rc-VirtualIpForm'/>)
@@ -475,11 +480,11 @@ describe('InterfaceSettings', () => {
 
   describe('should popup confirm when dual WAN is removed', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
     })
 
-    afterEach(() => {jest.mocked(useIsEdgeFeatureReady).mockReset()})
+    afterEach(() => {mockUseIsEdgeFeatureReady.mockImplementation(() => false)})
 
     it('when WAN port count is changed to < 2', async () => {
       jest.mocked(PortForm)
@@ -574,7 +579,7 @@ describe('InterfaceSettings', () => {
     })
 
     it('should render dual WAN firmware compatibility check warning', async () => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
 
       const mockCxtData = {

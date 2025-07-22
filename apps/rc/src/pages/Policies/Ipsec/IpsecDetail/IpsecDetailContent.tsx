@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { PasswordInput, SummaryCard } from '@acx-ui/components'
-import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import { PasswordInput, SimpleListTooltip, SummaryCard } from '@acx-ui/components'
 import {
   IpSecAuthEnum,
   IpsecViewData,
