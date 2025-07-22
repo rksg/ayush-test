@@ -7,7 +7,6 @@ import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                               from '@acx-ui/feature-toggle'
 import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -16,7 +15,6 @@ import {
   NetworkType,
   NetworkTypeEnum,
   sortProp,
-  useIsEdgeFeatureReady,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                        from '@acx-ui/types'
@@ -106,7 +104,6 @@ export const EdgeMvSdLanActivatedNetworksTable = (props: EdgeMvSdLanActivatedNet
   } = props
 
   const { $t } = useIntl()
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [detailDrawerVisible, setDetailDrawerOpenVisible] = useState(false)
 
@@ -184,7 +181,7 @@ export const EdgeMvSdLanActivatedNetworksTable = (props: EdgeMvSdLanActivatedNet
         onChange={onActivateChange}
       />
     }
-  }, ...(isGuestTunnelEnabled && !isEdgeL2greReady ? [{
+  }, ...(isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
     tooltip: !detailDrawerVisible
       ? $t(dmzTunnelColumnHeaderTooltip, {
