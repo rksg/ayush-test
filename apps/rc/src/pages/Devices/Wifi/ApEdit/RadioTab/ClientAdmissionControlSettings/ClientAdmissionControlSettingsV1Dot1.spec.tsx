@@ -52,7 +52,9 @@ const defaultContext = {
     updateChanges: jest.fn(),
     discardChanges: jest.fn()
   },
-  setEditContextData: jest.fn()
+  setEditContextData: jest.fn(),
+  editRadioContextData: {},
+  setEditRadioContextData: jest.fn()
 }
 
 describe('ClientAdmissionControlSettingsV1Dot1', () => {
@@ -82,7 +84,7 @@ describe('ClientAdmissionControlSettingsV1Dot1', () => {
     render(
       <Provider>
         <ApEditContext.Provider value={defaultContext}>
-          <ApDataContext.Provider value={{ apData:r760Ap, venueData }}>
+          <ApDataContext.Provider value={{ apData: r760Ap, venueData }}>
             <Form>
               <ClientAdmissionControlSettingsV1Dot1 />
             </Form>
@@ -118,7 +120,7 @@ describe('ClientAdmissionControlSettingsV1Dot1', () => {
     render(
       <Provider>
         <ApEditContext.Provider value={defaultContext}>
-          <ApDataContext.Provider value={{ apData:r760Ap, venueData }}>
+          <ApDataContext.Provider value={{ apData: r760Ap, venueData }}>
             <Form>
               <ClientAdmissionControlSettingsV1Dot1 />
             </Form>
@@ -143,5 +145,65 @@ describe('ClientAdmissionControlSettingsV1Dot1', () => {
       .not.toBeInTheDocument()
     expect(screen.queryByTestId('client-admission-control-min-client-throughput-50g'))
       .not.toBeInTheDocument()
+  })
+
+  it('should handle switching between inherit and custom settings', async () => {
+    const mockSetEditContextData = jest.fn()
+    const mockSetEditRadioContextData = jest.fn()
+
+    const contextWithMocks = {
+      ...defaultContext,
+      setEditContextData: mockSetEditContextData,
+      setEditRadioContextData: mockSetEditRadioContextData
+    }
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={contextWithMocks}>
+          <ApDataContext.Provider value={{ apData: r760Ap, venueData }}>
+            <Form>
+              <ClientAdmissionControlSettingsV1Dot1 />
+            </Form>
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Initially should be using inherited settings
+    expect(await screen.findByTestId('client-admission-control-inheritSettings')).toBeChecked()
+
+    // Click on customize settings to trigger handleInheritOrCustomize
+    const customizeRadio = await screen.findByTestId('client-admission-control-customizeSettings')
+    customizeRadio.click()
+
+    // Should now show editable forms (custom settings mode)
+    expect(await screen.findByTestId('client-admission-control-enable-24g')).toBeVisible()
+    expect(await screen.findByTestId('client-admission-control-enable-50g')).toBeVisible()
+
+    // Should call context update functions
+    expect(mockSetEditContextData).toHaveBeenCalledWith({
+      tabTitle: 'Radio',
+      isDirty: true,
+      unsavedTabKey: 'radio',
+      updateChanges: expect.any(Function),
+      discardChanges: expect.any(Function)
+    })
+    expect(mockSetEditRadioContextData).toHaveBeenCalledWith({
+      updateClientAdmissionControl: expect.any(Function),
+      discardClientAdmissionControlChanges: expect.any(Function)
+    })
+
+    // Click back to inherit settings
+    const inheritRadio = await screen.findByTestId('client-admission-control-inheritSettings')
+    inheritRadio.click()
+
+    // Should show read-only forms again (inherited settings mode)
+    expect(await screen.findByTestId('client-admission-control-enable-read-only-24g'))
+      .toHaveTextContent('Off')
+    expect(await screen.findByTestId('client-admission-control-enable-read-only-50g'))
+      .toHaveTextContent('Off')
   })
 })
