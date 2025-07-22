@@ -9,18 +9,6 @@ import { formatter }                                  from '@acx-ui/formatter'
 
 import { IntentSummary, useIntentAISummaryQuery } from './services'
 
-function hasData (intentAISummaryChartData: DonutChartData[]) : Boolean {
-  if (
-    intentAISummaryChartData[0].value === 0 &&
-    intentAISummaryChartData[1].value === 0 &&
-    intentAISummaryChartData[2].value === 0 &&
-    intentAISummaryChartData[3].value === 0
-  ) {
-    return false
-  }
-  return true
-}
-
 function getIntentAISummaryChartData (data: IntentSummary | undefined): DonutChartData[] {
   const intentAISummaryChartData: DonutChartData[] = [
     { name: 'New', value: 0 },
@@ -29,16 +17,18 @@ function getIntentAISummaryChartData (data: IntentSummary | undefined): DonutCha
     { name: 'Verified', value: 0 }
   ]
 
-  for (const intent in data ) {
-    const currentIntent = data[intent as keyof IntentSummary]
-
-    intentAISummaryChartData[0].value += currentIntent?.new ?? 0
-    intentAISummaryChartData[1].value += currentIntent?.active ?? 0
-    intentAISummaryChartData[2].value += currentIntent?.paused ?? 0
-    intentAISummaryChartData[3].value += currentIntent?.verified ?? 0
+  if (data === undefined) {
+    return []
   }
 
-  return hasData(intentAISummaryChartData) ? intentAISummaryChartData : []
+  for (const intent of Object.values(data!) ) {
+    intentAISummaryChartData[0].value += intent?.new ?? 0
+    intentAISummaryChartData[1].value += intent?.active ?? 0
+    intentAISummaryChartData[2].value += intent?.paused ?? 0
+    intentAISummaryChartData[3].value += intent?.verified ?? 0
+  }
+
+  return intentAISummaryChartData.filter(({ value }) => value > 0)
 }
 
 export function IntentAISummary () {
