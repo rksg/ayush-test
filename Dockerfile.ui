@@ -72,8 +72,15 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
+FROM build-base as acx-ui-group-test
+
+# Multistage: trigger run
+COPY --from=build /app/dist/apps ./dist/apps
+
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
+
 ###############################################################
-FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
@@ -85,20 +92,10 @@ RUN touch lint-done
 # RUN touch tslint-done
 ###############################################################
 
-FROM build-base as build
-# Multistage: trigger run
-# COPY --from=acx-ui-tslint /app/tslint-done /tmp/
 COPY --from=acx-ui-lint /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
-FROM build-base as acx-ui-group-test
-
-# Multistage: trigger run
-COPY --from=build /app/dist/apps ./dist/apps
-
-ARG PRECOMMIT
-ARG GIT_COMMIT_BRANCH
 
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
