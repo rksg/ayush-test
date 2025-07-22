@@ -74,7 +74,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
-      const venueSdLan = formValues.sdLan.newProfileId && isEdgeSdLanSelectionDrawerReady
+      const venueSdLan = formValues.sdLan?.newProfileId && isEdgeSdLanSelectionDrawerReady
         ? formValues.sdLan.newProfile
         : initialVenueSdLanInfo
 

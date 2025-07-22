@@ -3,10 +3,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader }                               from '@acx-ui/components'
-import { Features }                                 from '@acx-ui/feature-toggle'
-import { useEdgePinActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { ServiceType, useServiceListBreadcrumb }    from '@acx-ui/rc/utils'
+import { PageHeader }                                                   from '@acx-ui/components'
+import { Features }                                                     from '@acx-ui/feature-toggle'
+import { useEdgePinActions }                                            from '@acx-ui/rc/components'
+import { ServiceType, useIsEdgeFeatureReady, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,

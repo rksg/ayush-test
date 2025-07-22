@@ -2,8 +2,7 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
+import { Button, Card, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetRadiusAttributeGroupQuery,

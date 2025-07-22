@@ -3,10 +3,10 @@ import { ReactNode } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { CheckMark }                                                from '@acx-ui/icons'
-import { CertificateToolTip, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { CheckMark }                                                        from '@acx-ui/icons'
+import { CertificateToolTip, useEnforcedStatus }                            from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
@@ -62,7 +62,7 @@ export default function AAATable () {
   const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'RADIUS Server' }),
       selectedRows[0].name,
       [
         { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) },

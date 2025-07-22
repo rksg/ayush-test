@@ -20,3 +20,7 @@ export class VenueClientAdmissionControl extends ClientAdmissionControl {
 export class ApClientAdmissionControl extends ClientAdmissionControl {
   useVenueSettings?: boolean
 }
+
+export class ApGroupClientAdmissionControl extends ClientAdmissionControl {
+  useVenueSettings?: boolean
+}

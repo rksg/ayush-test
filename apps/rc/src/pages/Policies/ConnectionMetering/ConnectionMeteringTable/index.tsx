@@ -9,9 +9,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import {
-  SimpleListTooltip
-} from '@acx-ui/rc/components'
+import { SimpleListTooltip }            from '@acx-ui/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
