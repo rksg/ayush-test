@@ -26,7 +26,7 @@ import { hasCreateIdentityGroupPermission }       from '../useIdentityGroupUtils
 import { PersonaGroupDrawer, PersonaGroupSelect } from '../users'
 
 import { AddResidentPortalModal }                       from './AddResidentPortalModal'
-import { getResidentPortalTypeOptions, msgCategoryIds } from './utils'
+import { getResidentPortalTypeOptions, msgCategoryIds, msgCategoryIdsLimited } from './utils'
 
 export interface PropertyManagementFormProps {
   form: FormInstance
@@ -38,6 +38,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const { form, venueId, initialValues } = props
   const { $t } = useIntl()
   const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSuspendNotificationRequired = useIsSplitOn(Features.UNIT_SUSPEND_NOTIFICATION_TOGGLE)
   const dpskRequireIdentityGroupEnabled = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const hasAddResidentPortalPermission = hasServicePermission({
     type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
@@ -236,7 +237,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               valuePropName={'checked'}
               children={<Switch/>}/>
           </StepsForm.FieldLabel>
-          {msgCategoryIds.map(categoryId => venueId &&
+          {(isSuspendNotificationRequired ? msgCategoryIds : msgCategoryIdsLimited)
+            .map(categoryId => venueId &&
             <TemplateSelector
               key={categoryId}
               formItemProps={{ name: categoryId }}
