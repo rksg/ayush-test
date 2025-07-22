@@ -5,9 +5,9 @@ import type { Mdu360TabProps } from '.'
 
 const NetworkOverviewTab: React.FC<Mdu360TabProps> = () => {
   return (
-    <UI.Grid>
+    <UI.NetworkOverviewGrid>
       <IntentAISummary/>
-    </UI.Grid>
+    </UI.NetworkOverviewGrid>
   )
 }
 
