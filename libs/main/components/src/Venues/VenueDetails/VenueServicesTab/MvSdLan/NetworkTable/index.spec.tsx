@@ -102,12 +102,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useIsEdgeFeatureReady: jest.fn()
 }))
 
-const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
-}))
-
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useActivateEdgeMvSdLanNetworkMutation: () => {
@@ -445,10 +439,16 @@ describe('venue > Multi-venue SDLAN - network table', () => {
   })
 
   describe('PIN is ON', () => {
-    it('should greyout when the WLAN is used by PIN', async () => {
-      // eslint-disable-next-line max-len
-      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+        ff === Features.EDGE_PIN_HA_TOGGLE)
+    })
 
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should greyout when the WLAN is used by PIN', async () => {
       mockServer.use(
         rest.post(
           EdgePinUrls.getEdgePinStatsList.url,
