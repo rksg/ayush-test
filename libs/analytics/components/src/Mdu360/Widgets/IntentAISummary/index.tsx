@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -38,29 +38,32 @@ export function IntentAISummary () {
     path: [{ type: 'network', name: 'Network' }] // replace this with the path when provided by ResidentExperienceTab
   })
 
-  const chartData: DonutChartData[] = useMemo(() => {
-    return getIntentAISummaryChartData(queryResults.data)
-  }, [queryResults.data])
+  const chartData: DonutChartData[] = getIntentAISummaryChartData(queryResults.data)
+
+  const IntentAISummaryChart: React.FC<{ data: DonutChartData[] }> = React.memo(({ data }) => {
+    return (
+      <AutoSizer>
+        {({ height, width }) => (
+          <DonutChart
+            style={{ width, height }}
+            data={data}
+            showLegend={true}
+            showTotal={true}
+            showValue={true}
+            showLabel={true}
+            legend='name-bold-value'
+            dataFormatter={formatter('noFormat')}
+            size={'large'}
+          />
+        )}
+      </AutoSizer>
+    )})
 
   return (
     <Loader>
       <HistoricalCard title={$t({ defaultMessage: 'IntentAI Summary' })}>
         {chartData.length ?
-          <AutoSizer>
-            {({ height, width }) => (
-              <DonutChart
-                style={{ width, height }}
-                data={chartData}
-                showLegend={true}
-                showTotal={true}
-                showValue={true}
-                showLabel={true}
-                legend='name-bold-value'
-                dataFormatter={formatter('noFormat')}
-                size={'large'}
-              />
-            )}
-          </AutoSizer> : <NoData/>}
+          <IntentAISummaryChart data={chartData}/> : <NoData/>}
       </HistoricalCard>
     </Loader>
   )
