@@ -462,13 +462,13 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getAllByText(/customize settings/i)
-    userEvent.click(customizeBandMode[0])
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
+    userEvent.click(customizeBandMode)
     expect(await screen.findByText(/r760/i)).toBeVisible()
 
     let customizeRadio = screen.getByText(/customize 2\.4 ghz settings/i)
@@ -525,13 +525,13 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getAllByText(/customize settings/i)
-    userEvent.click(customizeBandMode[0])
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
+    userEvent.click(customizeBandMode)
 
     expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()
 

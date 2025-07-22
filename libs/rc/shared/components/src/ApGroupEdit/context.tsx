@@ -41,6 +41,7 @@ export interface ApGroupRadioContext {
 
   isClientAdmissionControlDataChanged?: boolean,
   updateClientAdmissionControl?: ((callback?: () => void) => void)
+  discardClientAdmissionControl?: (data?: unknown) => void | Promise<void>
 }
 
 export const ApGroupEditContext = createContext({} as {

@@ -12,13 +12,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   EdgeServiceStatusLight,
   CountAndNamesTooltip,
   useEdgePinsCompatibilityData,
-  EdgeTableCompatibilityWarningTooltip,
-  useIsEdgeFeatureReady
+  EdgeTableCompatibilityWarningTooltip
 } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
@@ -44,7 +43,8 @@ import {
   PolicyType,
   ServiceOperation,
   ServiceType,
-  VenueLink
+  VenueLink,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay, useTableQuery }                        from '@acx-ui/utils'

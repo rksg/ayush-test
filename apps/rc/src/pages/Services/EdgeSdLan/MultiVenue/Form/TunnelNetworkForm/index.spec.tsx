@@ -9,7 +9,6 @@ import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps }  from '@acx-ui/components'
 import { Features }                   from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }      from '@acx-ui/rc/components'
 import { tunnelProfileApi, venueApi } from '@acx-ui/rc/services'
 import {
   APCompatibilityFixtures,
@@ -73,8 +72,14 @@ jest.mock('./VenueNetworkTable/NetworksDrawer.tsx', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  TunnelProfileAddModal: () => <div data-testid='TunnelProfileAddModal' />,
+  transformSdLanScopedVenueMap: jest.fn().mockReturnValue({})
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const mockedTunnelProfileViewDataNoDefault = {
@@ -265,7 +270,7 @@ describe('Tunneled Venue Networks Form', () => {
     })
 
     it('dmzTunnelSelector should filter out the tunnel profile with natTraversal TRUE', async () => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation((ff) => ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
 
       const mockedSetFieldValue = jest.fn()

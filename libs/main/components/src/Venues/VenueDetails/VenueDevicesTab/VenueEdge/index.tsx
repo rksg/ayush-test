@@ -2,15 +2,16 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Button }                                                  from '@acx-ui/components'
-import { Features }                                                from '@acx-ui/feature-toggle'
-import { EdgesTable, EdgesTableQueryProps, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Button }                           from '@acx-ui/components'
+import { Features }                         from '@acx-ui/feature-toggle'
+import { EdgesTable, EdgesTableQueryProps } from '@acx-ui/rc/components'
 import {
   useGetVenueEdgeCompatibilitiesQuery,
   useGetVenueEdgeCompatibilitiesV1_1Query
 } from '@acx-ui/rc/services'
 import {
   EdgeUrlsInfo, retrievedEdgeCompatibilitiesOptions,
+  useIsEdgeFeatureReady,
   VenueEdgeCompatibilitiesResponse, VenueEdgeCompatibilitiesResponseV1_1
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'

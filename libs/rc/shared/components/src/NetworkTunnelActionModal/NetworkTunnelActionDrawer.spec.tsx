@@ -18,7 +18,7 @@ import { useIsEdgeFeatureReady } from '../useEdgeActions'
 import { mockDeepNetworkList } from './__tests__/fixtures'
 import { useEdgeMvSdLanData }  from './useEdgeMvSdLanData'
 
-import { NetworkTunnelActionDrawer, NetworkTunnelTypeEnum } from '.'
+import { NetworkTunnelActionDrawer, NetworkTunnelTypeEnum, SoftGreNetworkTunnel } from '.'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockPinStatsList } = EdgePinFixtures
@@ -64,6 +64,7 @@ jest.mock('../ApCompatibility', () => ({
 }))
 
 const { click } = userEvent
+const viewPath = '/:tenantId/t/venues/:venueId/venue-details/networks'
 
 describe('NetworkTunnelDrawer', () => {
   beforeEach(() => {
@@ -416,6 +417,16 @@ describe('NetworkTunnelDrawer', () => {
   })
 
   describe('SoftGRE', () => {
+    const venueId = 'venueId-1'
+    const networkId = 'network_1'
+    const tenantId = 'tenantId-1'
+    const mockedDefaultNetworkData_softGre = {
+      id: networkId,
+      venueId,
+      type: NetworkTypeEnum.OPEN,
+      venueName: 'mock_venue_test'
+    }
+
     beforeEach(() => {
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({ isLoading: false })
       store.dispatch(softGreApi.util.resetApiState())
@@ -426,18 +437,36 @@ describe('NetworkTunnelDrawer', () => {
         || ff === Features.WIFI_R370_TOGGLE)
     })
 
-    it('should not display when SoftGRE run on this venue', async () => {
-      const venueId = 'venueId-1'
-      const networkId = 'network_1'
-      const tenantId = 'tenantId-1'
-      const mockedNetworkData = {
-        id: networkId,
-        venueId,
-        type: NetworkTypeEnum.OPEN,
-        venueName: 'mock_venue_test'
-      }
+    it('should correctly activate SoftGRE', async () => {
+      const cachedSoftGre = [] as SoftGreNetworkTunnel[]
 
-      const viewPath = '/:tenantId/t/venues/:venueId/venue-details/networks'
+      render(
+        <Provider>
+          <NetworkTunnelActionDrawer
+            visible={true}
+            onClose={jest.fn()}
+            network={mockedDefaultNetworkData_softGre}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={cachedSoftGre}
+          />
+        </Provider>,
+        { route: { path: viewPath, params: { venueId, tenantId } } }
+      )
+
+      await checkPageLoaded(mockedDefaultNetworkData_softGre.venueName)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+      await userEvent.click(tunnelingMethod)
+      await userEvent.click(await screen.findByTestId('softgre-option'))
+
+      await click(screen.getByRole('button', { name: 'Add' }))
+      expect(mockedOnFinish).toBeCalledTimes(1)
+      const [firstCall] = mockedOnFinish.mock.calls
+      expect(firstCall[0]).toStrictEqual({
+        tunnelType: NetworkTunnelTypeEnum.SoftGre
+      })
+    })
+
+    it('should not display when SoftGRE run on this venue', async () => {
       const cachedSoftGre = [{
         venueId,
         networkIds: [networkId],
@@ -448,15 +477,15 @@ describe('NetworkTunnelDrawer', () => {
         <Provider>
           <NetworkTunnelActionDrawer
             visible={true}
-            onClose={() => {}}
-            network={mockedNetworkData}
+            onClose={jest.fn()}
+            network={mockedDefaultNetworkData_softGre}
             onFinish={mockedOnFinish}
             cachedSoftGre={cachedSoftGre}
           />
         </Provider>,
         { route: { path: viewPath, params: { venueId, tenantId } } }
       )
-      await checkPageLoaded(mockedNetworkData.venueName)
+      await checkPageLoaded(mockedDefaultNetworkData_softGre.venueName)
       const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
       await userEvent.click(tunnelingMethod)
       await userEvent.click(await screen.findByTestId('softgre-option'))
@@ -470,13 +499,10 @@ describe('NetworkTunnelDrawer', () => {
       const networkId = 'network_1'
       const tenantId = 'tenantId-1'
       const mockedNetworkData = {
-        id: networkId,
-        venueId,
-        type: NetworkTypeEnum.CAPTIVEPORTAL,
-        venueName: 'mock_venue_test'
+        ...mockedDefaultNetworkData_softGre,
+        type: NetworkTypeEnum.CAPTIVEPORTAL
       }
 
-      const viewPath = '/:tenantId/t/venues/:venueId/venue-details/networks'
       const cachedSoftGre = [{
         venueId,
         networkIds: [networkId],
@@ -487,7 +513,7 @@ describe('NetworkTunnelDrawer', () => {
         <Provider>
           <NetworkTunnelActionDrawer
             visible={true}
-            onClose={() => {}}
+            onClose={jest.fn()}
             network={mockedNetworkData}
             onFinish={mockedOnFinish}
             cachedSoftGre={cachedSoftGre}
@@ -511,10 +537,8 @@ describe('NetworkTunnelDrawer', () => {
 
     it('SD-LAN should be selected by default when network is captive portal', async () => {
       const mockedNetworkData = {
-        id: 'mocked-networkId',
-        type: NetworkTypeEnum.CAPTIVEPORTAL,
-        venueId: 'mock_venue',
-        venueName: 'mock_venue_test'
+        ...mockedDefaultNetworkData_softGre,
+        type: NetworkTypeEnum.CAPTIVEPORTAL
       }
 
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({
@@ -546,10 +570,8 @@ describe('NetworkTunnelDrawer', () => {
     // eslint-disable-next-line max-len
     it('SD-LAN should NOT be selected by default when network is captive portal and the venue does not associated with SD-LAN', async () => {
       const mockedNetworkData = {
-        id: 'mocked-networkId',
-        type: NetworkTypeEnum.CAPTIVEPORTAL,
-        venueId: 'mock_venue',
-        venueName: 'mock_venue_test'
+        ...mockedDefaultNetworkData_softGre,
+        type: NetworkTypeEnum.CAPTIVEPORTAL
       }
 
       jest.mocked(useEdgeMvSdLanData).mockReturnValue({

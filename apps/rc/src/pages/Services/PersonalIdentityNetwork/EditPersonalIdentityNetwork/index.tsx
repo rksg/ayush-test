@@ -6,9 +6,9 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, PageHeader }                                                                              from '@acx-ui/components'
 import { Features }                                                                                        from '@acx-ui/feature-toggle'
-import { useEdgePinActions, useIsEdgeFeatureReady }                                                        from '@acx-ui/rc/components'
+import { useEdgePinActions }                                                                               from '@acx-ui/rc/components'
 import { PersonalIdentityNetworkApiVersion, useGetEdgePinByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { ServiceType, useServiceListBreadcrumb }                                                           from '@acx-ui/rc/utils'
+import { ServiceType, useIsEdgeFeatureReady, useServiceListBreadcrumb }                                    from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,

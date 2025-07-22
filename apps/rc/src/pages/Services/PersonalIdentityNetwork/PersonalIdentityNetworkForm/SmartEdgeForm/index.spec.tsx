@@ -2,9 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { StepsForm }    from '@acx-ui/components'
+import { Features }     from '@acx-ui/feature-toggle'
 import {
   EdgeDHCPFixtures, EdgeDhcpPool,
   EdgeDhcpUrls,
@@ -53,6 +52,13 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+}))
+
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   PoolDrawer: (props: {
@@ -76,8 +82,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         props.setVisible(false)
       }}>Add</button>
     </div>
-  },
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  }
 }))
 
 const mockedFinishFn = jest.fn()
@@ -305,10 +310,10 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
   describe('test L2GRE case', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     })
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should show edge cluster field correctly', async () => {
