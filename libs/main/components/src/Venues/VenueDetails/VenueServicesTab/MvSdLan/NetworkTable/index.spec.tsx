@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
 import { NamePath } from 'antd/lib/form/interface'
-import _ from 'lodash'
-import { rest } from 'msw'
+import _            from 'lodash'
+import { rest }     from 'msw'
 
-import { Features } from '@acx-ui/feature-toggle'
+import { Features }              from '@acx-ui/feature-toggle'
 import { NetworkActivationType } from '@acx-ui/rc/components'
 import {
   EdgeCompatibilityFixtures,
