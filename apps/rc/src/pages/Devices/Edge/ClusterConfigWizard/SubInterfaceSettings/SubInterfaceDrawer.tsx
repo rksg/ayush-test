@@ -25,7 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { getAllSubInterfaceData } from '../InterfaceSettings/utils'
+import { getAllSubInterfaceData } from '../utils'
 
 import { SubInterfaceSettingsFormType } from './types'
 import {

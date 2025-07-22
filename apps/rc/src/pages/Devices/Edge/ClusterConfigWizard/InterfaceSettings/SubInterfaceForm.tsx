@@ -14,12 +14,12 @@ import {
   doEdgeNetworkInterfacesDryRun
 } from '@acx-ui/rc/utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
-import { SubInterfaceSettingsForm }   from '../SubInterfaceSettings/SubInterfaceSettingsForm'
+import { ClusterConfigWizardContext }                          from '../ClusterConfigWizardDataProvider'
+import { SubInterfaceSettingsForm }                            from '../SubInterfaceSettings/SubInterfaceSettingsForm'
+import { getAllPhysicalInterfaceData, getAllSubInterfaceData } from '../utils'
 
-import { StyledHiddenFormItem }                                from './styledComponents'
-import { InterfaceSettingsFormType }                           from './types'
-import { getAllPhysicalInterfaceData, getAllSubInterfaceData } from './utils'
+import { StyledHiddenFormItem }      from './styledComponents'
+import { InterfaceSettingsFormType } from './types'
 
 export const SubInterfaceForm = () => {
   const { $t } = useIntl()

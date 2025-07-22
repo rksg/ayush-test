@@ -29,11 +29,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
-import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
+import { defaultHaTimeoutValue } from '../EditEdgeCluster/VirtualIp'
 
-import { StyledCompatibilityWarningTriangleIcon }                                              from './styledComponents'
-import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+import { StyledCompatibilityWarningTriangleIcon }                                              from './InterfaceSettings/styledComponents'
+import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './InterfaceSettings/types'
+import { SubInterfaceSettingsFormType }                                                        from './SubInterfaceSettings/types'
 
 const initialNodeCompatibleResult = {
   nodeId: '',

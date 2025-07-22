@@ -10,8 +10,7 @@ import { useIsEdgeFeatureReady }                     from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { transformFromApiToFormData } from '../SubInterfaceSettings/utils'
-
-import { getAvailableVipInterfaces } from './utils'
+import { getAvailableVipInterfaces }  from '../utils'
 
 export const VirtualIpForm = () => {
   const { $t } = useIntl()
