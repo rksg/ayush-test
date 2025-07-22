@@ -25,7 +25,7 @@ import { TemplateSelector }                       from '../TemplateSelector'
 import { hasCreateIdentityGroupPermission }       from '../useIdentityGroupUtils'
 import { PersonaGroupDrawer, PersonaGroupSelect } from '../users'
 
-import { AddResidentPortalModal }                       from './AddResidentPortalModal'
+import { AddResidentPortalModal }                                              from './AddResidentPortalModal'
 import { getResidentPortalTypeOptions, msgCategoryIds, msgCategoryIdsLimited } from './utils'
 
 export interface PropertyManagementFormProps {
