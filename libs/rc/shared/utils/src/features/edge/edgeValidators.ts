@@ -52,7 +52,7 @@ export async function edgePortIpValidator (ip: string, subnetMask: string) {
     return Promise.reject(error)
   }
 
-  if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
+  if (ip && await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
     return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
   } else {
     // If the subnet is unavailable, either because it's empty or invalid, there's no need to validate broadcast IP further
