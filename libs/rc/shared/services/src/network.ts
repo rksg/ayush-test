@@ -463,6 +463,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    // It needs to keep the non-RBAC API for the RUCKUS AI Onboarding Assistant
     getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
       async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -806,6 +807,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const payload = (arg.payload ?? {}) as {
           searchString?: string,
           fields?: string[],
+          filters?: Record<string, unknown[]>,
           page?: number,
           pageSize?: number }
 
@@ -814,6 +816,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: JSON.stringify({
             ...payload,
             filters: {
+              ...payload.filters,
               'venueApGroups.apGroupIds': [apGroupId]
             }
           })
@@ -2190,6 +2193,7 @@ export const {
   useDeactivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
+  useLazyGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,

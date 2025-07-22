@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard }                                                                         from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useAclTotalCount, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                  from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useAclTotalCount } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -41,7 +41,8 @@ import {
   hasSomePoliciesPermission,
   isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping
+  policyTypeLabelMapping,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import {
   Path,

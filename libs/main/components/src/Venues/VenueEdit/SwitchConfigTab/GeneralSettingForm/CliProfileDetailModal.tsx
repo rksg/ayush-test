@@ -21,9 +21,8 @@ export function CliProfileDetailModal (props: {
   const { formState, setFormState, formData } = props
   const { isTemplate } = useConfigTemplate()
   const profileKeys = getProfilesByKeys(formState.configProfiles, formData.profileId)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : isSwitchRbacEnabled
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : true
   const [ getSwitchConfigProfile ] = useConfigTemplateLazyQueryFnSwitcher<ConfigurationProfile>({
     useLazyQueryFn: useLazyGetSwitchConfigProfileQuery,
     useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateQuery

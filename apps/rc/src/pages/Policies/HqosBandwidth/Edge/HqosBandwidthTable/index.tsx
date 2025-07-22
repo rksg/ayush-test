@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                                                     from '@acx-ui/components'
-import { EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, ToolTipTableStyle, TrafficClassSettingsTable, useEdgeHqosCompatibilityData } from '@acx-ui/rc/components'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip, SimpleListTooltip }               from '@acx-ui/components'
+import { EdgeTableCompatibilityWarningTooltip, ToolTipTableStyle, TrafficClassSettingsTable, useEdgeHqosCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,

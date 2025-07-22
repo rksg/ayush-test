@@ -155,9 +155,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
 
-  const [isLower5gInherit, setIsLower5gInherit] = useState(true)
-  const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
-
   const [isEnable24g, setIsEnable24g] = useState(true)
   const [isEnable5g, setIsEnable5g] = useState(true)
   const [isEnable6g, setIsEnable6g] = useState(true)
@@ -433,9 +430,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
       const dual5GData = data?.radioParamsDual5G
       setIsDual5gMode(!!dual5GData?.enabled)
-
-      setIsLower5gInherit(!!dual5GData?.inheritParamsLower5G)
-      setIsUpper5gInherit(!!dual5GData?.inheritParamsUpper5G)
 
       setEditRadioContextData({
         ...editRadioContextData,
@@ -764,13 +758,14 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           ...(data.radioParamsDual5G?.enabled
             ? {}
             : {
+              enabled: false,
               radioParamsLower5G: { useVenueSettings: false },
               radioParamsUpper5G: { useVenueSettings: false }
             }
           )
         }
       } : {}),
-      ...(defaultRadioSettings?.radioParamsDual5G?.enabled
+      ...(!isDual5gModeRef.current && defaultRadioSettings?.radioParamsDual5G?.enabled
         ? {
           radioParamsDual5G: {
             enabled: false,
@@ -1012,16 +1007,17 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
               style={{ marginBottom: '10px', width: '300px' }}
               children={
                 <Radio.Group
+                  data-testid='band-management'
                   onChange={(e) => {
                     setCurrentApGroupBandModeData( {
                       useVenueSettings: e.target.value,
                       apModelBandModeSettings: currentApGroupBandModeData.apModelBandModeSettings
                     } )}} >
                   <Space direction='vertical'>
-                    <Radio value={true}>
+                    <Radio value={true} data-testid='band-management-useVenueSettings'>
                       <FormattedMessage defaultMessage={'Use inherited settings from <VenueSingular></VenueSingular>'} />
                     </Radio>
-                    <Radio value={false}>
+                    <Radio value={false} data-testid='band-management-customizeSettings'>
                       <FormattedMessage defaultMessage={'Customize settings'} />
                     </Radio>
                   </Space>
@@ -1307,7 +1303,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableLower5g}
                   testId='apgroup-radio-l5g-tab'
-                  inherit5G={isLower5gInherit}
+                  inherit5G={false}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Lower5GHz)}
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings']}
@@ -1325,7 +1321,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableUpper5g}
                   testId='apgroup-radio-u5g-tab'
-                  inherit5G={isUpper5gInherit}
+                  inherit5G={false}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Upper5GHz)}
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings']}

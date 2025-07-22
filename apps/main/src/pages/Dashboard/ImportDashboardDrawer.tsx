@@ -25,7 +25,7 @@ import { noDataDisplay }                     from '@acx-ui/utils'
 import {
   MAXIMUM_OWNED_CANVAS,
   MAXIMUM_DASHBOARD
-} from '../AICanvas/index.utils'
+} from '../AICanvas/archived/AICanvasQ2/index.utils'
 
 import { EditCanvasNameModal } from './EditCanvasNameModal'
 import { DashboardMessages }   from './index.utils'

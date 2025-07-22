@@ -32,7 +32,10 @@ export const mockSourceDataEnabled = {
     subOption1Enabled: true,
     subOption2Enabled: false,
     subOption150Enabled: true,
-    subOption151Enabled: false
+    subOption151Enabled: false,
+    subOption1Customization: {
+      attributes: []
+    }
   }
 }
 

@@ -44,13 +44,13 @@ export function UserConnectionTab () {
           initialValue={1}
           rules={[{
             required: true,
-            message: $t({ defaultMessage: 'Please enter a number from 1 to 10' })
+            message: $t({ defaultMessage: 'Please enter a number from 1 to 1000' })
           }, {
-            type: 'number', max: 10, min: 1,
-            message: $t({ defaultMessage: 'Please enter a number from 1 to 10' })
+            type: 'number', max: 1000, min: 1,
+            message: $t({ defaultMessage: 'Please enter a number from 1 to 1000' })
           }]}
           style={{ marginBottom: '15px' }}
-          children={<InputNumber min={1} max={10} style={{ width: '80px' }} />}
+          children={<InputNumber min={1} max={1000} style={{ width: '80px' }} />}
         />
       </div>
     }

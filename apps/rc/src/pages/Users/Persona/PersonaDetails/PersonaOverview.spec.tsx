@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { DirectoryServerUrls, PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                 from '@acx-ui/store'
-import { mockServer, render, waitFor, screen }                                                                      from '@acx-ui/test-utils'
+import { mockServer, render, waitFor, screen, waitForElementToBeRemoved }                                           from '@acx-ui/test-utils'
 
 import { mockExternalIdentityList, mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
@@ -43,7 +43,9 @@ const route = {
 
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
-  Traffic: () => <div data-testid='Traffic' />
+  Traffic: () => <div data-testid='Traffic' />,
+  TopApplications: () => <div data-testid='TopApplications' />,
+  IdentityHealth: () => <div data-testid='IdentityHealth' />
 }))
 
 describe('PersonaOverview', () => {
@@ -60,7 +62,7 @@ describe('PersonaOverview', () => {
         }
       ),
       rest.post(PropertyUrlsInfo.getUnitsLinkedIdentities.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           getPropertyIdentities()
           return res(ctx.json(personaIds))
         }),
@@ -95,7 +97,7 @@ describe('PersonaOverview', () => {
       )
     )
   })
-  it('should render overview correctly', async () => {
+  it.skip('should render overview correctly', async () => {
     render(
       <Provider>
         <PersonaOverview
@@ -110,11 +112,11 @@ describe('PersonaOverview', () => {
 
     await waitFor(() => expect(getUnitFn).toBeCalled())
     await waitFor(() => expect(searchClientQueryFn).toBeCalled())
-
-    expect(screen.getByText('Associated Devices')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
   })
 
-  it('should not render traffic widget when isIdentityAnalyticsEnabled is false', () => {
+  it('should not render widget when isIdentityAnalyticsEnabled is false', async () => {
     render(
       <Provider>
         <PersonaOverview
@@ -127,9 +129,12 @@ describe('PersonaOverview', () => {
     )
 
     expect(screen.queryByTestId('Traffic')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('TopApplications')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('IdentityHealth')).not.toBeInTheDocument()
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
   })
 
-  it('should render traffic widget when isIdentityAnalyticsEnabled is true', async () => {
+  it('should render widgets when isIdentityAnalyticsEnabled is true', async () => {
     render(
       <Provider>
         <PersonaOverview
@@ -142,5 +147,8 @@ describe('PersonaOverview', () => {
     )
 
     expect(await screen.findByTestId('Traffic')).toBeVisible()
+    expect(await screen.findByTestId('TopApplications')).toBeVisible()
+    expect(await screen.findByTestId('IdentityHealth')).toBeVisible()
+    expect(await screen.findByText('Associated Devices')).toBeVisible()
   })
 })

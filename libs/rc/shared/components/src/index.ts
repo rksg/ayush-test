@@ -28,7 +28,6 @@ export { ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
-  defaultClientPayload,
   defaultRbacClientPayload,
   networkDisplayTransformer,
   isEqualCaptivePortal
@@ -186,8 +185,7 @@ export type {
   AccessSwitchTableDataType
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
-  useEdgeActions,
-  useIsEdgeFeatureReady
+  useEdgeActions
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,
@@ -307,7 +305,6 @@ export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
 export * from './RadioSettings/RadioSettingsUtils'
-export * from './SimpleListTooltip'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './CommonLinkHelper'
@@ -337,3 +334,4 @@ export * from './SoftGRETunnelSettings'
 export { ResourceBanner } from './ResourceBanner'
 export { BandManagement } from './BandManagement'
 export { IotControllerDrawer } from './IotControllerDrawer'
+export { ApCliSession } from './ApCliSession'

@@ -35,11 +35,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  SimpleListTooltip: ({ displayText }: { displayText: string }) =>
+    <div data-testid='SimpleListTooltip' >{displayText}</div>
+}))
 jest.mock('@acx-ui/rc/components', () => ({
   // eslint-disable-next-line max-len
   EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
-  SimpleListTooltip: ({ displayText }: { displayText: string }) =>
-    <div data-testid='SimpleListTooltip' >{displayText}</div>,
   EdgeServiceStatusLight: () => <div data-testid='EdgeServiceStatusLight' />,
   useEdgeDhcpCompatibilityData: () => ({
     compatibilities: mockEdgeDhcpCompatibilities,

@@ -4,10 +4,10 @@ import { Buffer } from 'buffer'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Table, TableProps }                            from '@acx-ui/components'
-import { useIsSplitOn, Features }                                       from '@acx-ui/feature-toggle'
-import { CodeDocument }                                                 from '@acx-ui/icons'
-import { CertificateInfoItem, SamlIdpMetadataModal, SimpleListTooltip } from '@acx-ui/rc/components'
+import { Button, Loader, Table, TableProps, SimpleListTooltip } from '@acx-ui/components'
+import { useIsSplitOn, Features }                               from '@acx-ui/feature-toggle'
+import { CodeDocument }                                         from '@acx-ui/icons'
+import { CertificateInfoItem, SamlIdpMetadataModal }            from '@acx-ui/rc/components'
 import {
   useDeleteSamlIdpProfileMutation,
   useDownloadSamlServiceProviderMetadataMutation,

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgePortTypeEnum } from '@acx-ui/rc/utils'
@@ -6,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { ClusterConfigWizardContext, ClusterConfigWizardContextType } from '../ClusterConfigWizardDataProvider'
 
 import { ClusterInterfaceSettings } from '.'
 
@@ -32,6 +33,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const defaultContext = {
+  clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+  isLoading: false,
+  isFetching: false
+}
+
 describe('ClusterInterfaceSettings', () => {
   let params: { tenantId: string, clusterId:string, settingType:string }
   beforeEach(() => {
@@ -40,13 +47,13 @@ describe('ClusterInterfaceSettings', () => {
       clusterId: 'mocked_cluster_id',
       settingType: 'clusterInterface'
     }
+    mockedUpdateApi.mockClear()
+    mockedUsedNavigate.mockClear()
   })
 
   it('should correctly render', async () => {
     render(
-      <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
-      }}>
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
         <ClusterInterfaceSettings />
       </ClusterConfigWizardContext.Provider>,
       {
@@ -59,9 +66,7 @@ describe('ClusterInterfaceSettings', () => {
 
   it('should Apply & Finish successfully', async () => {
     render(
-      <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
-      }}>
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
         <ClusterInterfaceSettings />
       </ClusterConfigWizardContext.Provider>,
       {
@@ -87,9 +92,7 @@ describe('ClusterInterfaceSettings', () => {
 
   it('should Apply & Continue successfully', async () => {
     render(
-      <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
-      }}>
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
         <ClusterInterfaceSettings />
       </ClusterConfigWizardContext.Provider>,
       {
@@ -113,11 +116,99 @@ describe('ClusterInterfaceSettings', () => {
     expect(mockedUpdateApi).toHaveBeenCalledWith(expectedResult, expect.any(Function))
   })
 
+  it('should navigate to cluster list page when applyAndFinish callback is executed', async () => {
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
+        <ClusterInterfaceSettings />
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply & Finish' }))
+
+    // Get the callback function that was passed to updateClusterInterface
+    const updateCallback = mockedUpdateApi.mock.calls[0][1]
+
+    // Execute the callback to simulate successful API call
+    updateCallback()
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/devices/edge`,
+      search: ''
+    })
+  })
+
+  it('should navigate to select type page when applyAndContinue callback is executed', async () => {
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
+        <ClusterInterfaceSettings />
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
+
+    // Get the callback function that was passed to updateClusterInterface
+    const updateCallback = mockedUpdateApi.mock.calls[0][1]
+
+    // Execute the callback to simulate successful API call
+    updateCallback()
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/devices/edge/cluster/${params.clusterId}/configure`,
+      search: ''
+    })
+  })
+
+  it('should handle API error gracefully in applyAndFinish', async () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation()
+    mockedUpdateApi.mockRejectedValueOnce(new Error('API Error'))
+
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
+        <ClusterInterfaceSettings />
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply & Finish' }))
+
+    // Wait for the async operation to complete
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error))
+    consoleSpy.mockRestore()
+  })
+
+  it('should handle API error gracefully in applyAndContinue', async () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation()
+    mockedUpdateApi.mockRejectedValueOnce(new Error('API Error'))
+
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
+        <ClusterInterfaceSettings />
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
+
+    // Wait for the async operation to complete
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error))
+    consoleSpy.mockRestore()
+  })
+
   it('should back to list page when clicking cancel button', async () => {
     render(
-      <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
-      }}>
+      <ClusterConfigWizardContext.Provider value={defaultContext}>
         <ClusterInterfaceSettings />
       </ClusterConfigWizardContext.Provider>,
       {
@@ -129,6 +220,109 @@ describe('ClusterInterfaceSettings', () => {
       hash: '',
       pathname: `/${params.tenantId}/t/devices/edge`,
       search: ''
+    })
+  })
+
+  // Test cases for nullish coalescing operator branches
+  describe('nullish coalescing operator branches', () => {
+    it('should use default values when clusterInfo.edgeList is null', () => {
+      const clusterInfoWithNullEdgeList = {
+        ...mockEdgeClusterList.data[0],
+        edgeList: null
+      } as unknown as EdgeClusterStatus
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          ...defaultContext,
+          clusterInfo: clusterInfoWithNullEdgeList
+        }}>
+          <ClusterInterfaceSettings />
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        }
+      )
+
+      expect(screen.getByText('Cluster Interface')).toBeVisible()
+    })
+
+    it('should use default values when clusterInfo.edgeList is empty array', () => {
+      const clusterInfoWithEmptyEdgeList = {
+        ...mockEdgeClusterList.data[0],
+        edgeList: []
+      } as unknown as EdgeClusterStatus
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          ...defaultContext,
+          clusterInfo: clusterInfoWithEmptyEdgeList
+        }}>
+          <ClusterInterfaceSettings />
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        }
+      )
+
+      expect(screen.getByText('Cluster Interface')).toBeVisible()
+    })
+
+    it('should use default values when edgeNode.serialNumber is null', () => {
+      const clusterInfoWithNullSerialNumber = {
+        ...mockEdgeClusterList.data[0],
+        edgeList: [
+          {
+            ...mockEdgeClusterList.data[0].edgeList[0],
+            serialNumber: null
+          }
+        ]
+      } as unknown as EdgeClusterStatus
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          ...defaultContext,
+          clusterInfo: clusterInfoWithNullSerialNumber
+        }}>
+          <ClusterInterfaceSettings />
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        }
+      )
+
+      expect(screen.getByText('Cluster Interface')).toBeVisible()
+    })
+
+    it('should use default values when clusterInfo is null', () => {
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          ...defaultContext,
+          clusterInfo: null
+        } as unknown as ClusterConfigWizardContextType}>
+          <ClusterInterfaceSettings />
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        }
+      )
+
+      expect(screen.getByText('Cluster Interface')).toBeVisible()
+    })
+
+    it('should use default values when clusterInfo is undefined', () => {
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          ...defaultContext,
+          clusterInfo: undefined
+        } as unknown as ClusterConfigWizardContextType}>
+          <ClusterInterfaceSettings />
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        }
+      )
+
+      expect(screen.getByText('Cluster Interface')).toBeVisible()
     })
   })
 })

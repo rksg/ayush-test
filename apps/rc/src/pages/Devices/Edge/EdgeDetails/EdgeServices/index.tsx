@@ -3,15 +3,16 @@ import { useContext, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }                from '@acx-ui/components'
-import { Features }                                                          from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }         from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }        from '@acx-ui/components'
+import { Features }                                                  from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, useEdgeDhcpActions }                from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
   EdgeService,
   EdgeServiceTypeEnum,
-  EdgeUrlsInfo
+  EdgeUrlsInfo,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { EdgeScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'

@@ -25,7 +25,65 @@ type Port = {
   vlanText: string
   connectedDevicePort: string
   connectedDevicePortType: string
+  connectedDeviceName: string
+  connectedDeviceMac: string
+  connectedDeviceSerial: string
 }
+
+// Utility functions for data transformation
+const formatConnectedDeviceField = (value: string | null): string => {
+  return value === null || value === 'Unknown' ? '--' : value
+}
+
+const formatPoeDetail = (poeOperState: string): string => {
+  return poeOperState === 'Unknown' ? '--' : poeOperState
+}
+
+const formatVlanText = (flapVlans: string): string => {
+  return flapVlans || '--'
+}
+
+const formatConnectedDeviceName = (name: string): string => {
+  return name || '--'
+}
+
+const formatConnectedDeviceMac = (mac: string): string => {
+  return mac || ''
+}
+
+const formatConnectedDeviceSerial = (serial: string): string => {
+  return serial || ''
+}
+
+const transformPortToTableData = (
+  port: ImpactedSwitchPort,
+  formatVlans: (vlans: string) => string | JSX.Element
+): Port => ({
+  portNumber: port.portNumber,
+  portType: port.type,
+  lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(port.lastFlapTime),
+  poeDetail: formatPoeDetail(port.poeOperState),
+  vlan: formatVlans(port.flapVlans),
+  vlanText: formatVlanText(port.flapVlans),
+  connectedDevicePort: formatConnectedDeviceField(port.connectedDevice.port),
+  connectedDevicePortType: formatConnectedDeviceField(port.connectedDevice.type),
+  connectedDeviceName: formatConnectedDeviceName(port.connectedDevice.name),
+  connectedDeviceMac: formatConnectedDeviceMac(port.connectedDevice.mac),
+  connectedDeviceSerial: formatConnectedDeviceSerial(port.connectedDevice.serial)
+})
+
+const transformPortToCsvData = (port: ImpactedSwitchPort): Omit<Port, 'vlan'> => ({
+  portNumber: port.portNumber,
+  portType: port.type,
+  lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(port.lastFlapTime),
+  poeDetail: formatPoeDetail(port.poeOperState),
+  vlanText: formatVlanText(port.flapVlans),
+  connectedDevicePort: formatConnectedDeviceField(port.connectedDevice.port),
+  connectedDevicePortType: formatConnectedDeviceField(port.connectedDevice.type),
+  connectedDeviceName: formatConnectedDeviceName(port.connectedDevice.name),
+  connectedDeviceMac: formatConnectedDeviceMac(port.connectedDevice.mac),
+  connectedDeviceSerial: formatConnectedDeviceSerial(port.connectedDevice.serial)
+})
 
 /**
  * Displays details of the switch where the incident occurred.
@@ -71,7 +129,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
   const getSwitchDetailsPath = () => {
     const mac = impactedSwitch.data?.mac
     const serial = impactedSwitch.data?.serial
-    if (mac) {
+    if (mac && serial) {
       return `devices/switch/${isMLISA ? mac : mac.toLowerCase()}/${serial}/details/${
         isMLISA ? 'reports' : 'overview'
       }`
@@ -84,54 +142,49 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       {
         key: 'portNumber',
         title: $t({ defaultMessage: 'Port Id' }),
-        extractValue: (row: Port) => row.portNumber
+        extractValue: (row: Omit<Port, 'vlan'>) => row.portNumber
       },
       {
         key: 'portType',
         title: $t({ defaultMessage: 'Port Type' }),
-        extractValue: (row: Port) => row.portType
+        extractValue: (row: Omit<Port, 'vlan'>) => row.portType
       },
       {
         key: 'vlan',
         title: $t({ defaultMessage: 'VLAN' }),
-        extractValue: (row: Port) => row.vlanText
+        extractValue: (row: Omit<Port, 'vlan'>) => row.vlanText
       },
       {
         key: 'poeDetail',
         title: $t({ defaultMessage: 'PoE Detail' }),
-        extractValue: (row: Port) => row.poeDetail
+        extractValue: (row: Omit<Port, 'vlan'>) => row.poeDetail
       },
       {
         key: 'connectedDevicePortType',
         title: $t({ defaultMessage: 'Remote Device Port Type' }),
-        extractValue: (row: Port) => row.connectedDevicePortType
+        extractValue: (row: Omit<Port, 'vlan'>) => row.connectedDevicePortType
       },
       {
         key: 'connectedDevicePort',
         title: $t({ defaultMessage: 'Remote Device Port' }),
-        extractValue: (row: Port) => row.connectedDevicePort
+        extractValue: (row: Omit<Port, 'vlan'>) => row.connectedDevicePort
+      },
+      {
+        key: 'connectedDeviceName',
+        title: $t({ defaultMessage: 'Remote Device Name' }),
+        extractValue: (row: Omit<Port, 'vlan'>) => row.connectedDeviceName
       },
       {
         key: 'lastFlapTimeStamp',
         title: $t({ defaultMessage: 'Last Flap Time Stamp' }),
-        extractValue: (row: Port) => row.lastFlapTimeStamp
+        extractValue: (row: Omit<Port, 'vlan'>) => row.lastFlapTimeStamp
       }
     ]
 
     const csvData = impactedSwitch.data!.ports!.map(port => {
+      const portData = transformPortToCsvData(port)
       const rowData: Record<string, string> = {}
       columnDefinitions.forEach(col => {
-        const portData = {
-          portNumber: port.portNumber,
-          portType: port.type,
-          vlanText: port.flapVlans || '--',
-          poeDetail: port.poeOperState === 'Unknown' ? '--' : port.poeOperState,
-          connectedDevicePortType: port.connectedDevice.type === null ||
-            port.connectedDevice.type === 'Unknown' ? '--' : port.connectedDevice.type,
-          connectedDevicePort: port.connectedDevice.port === null ||
-            port.connectedDevice.port === 'Unknown' ? '--' : port.connectedDevice.port,
-          lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(port.lastFlapTime)
-        }
         rowData[col.title] = col.extractValue(portData)
       })
       return rowData
@@ -158,11 +211,16 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
         <FormattedMessage
           defaultMessage='Port flap detected in {name}'
           values={{
-            name: (
-              <TenantLink to={getSwitchDetailsPath()}>
-                {impactedSwitch.data?.name}
-              </TenantLink>
-            )
+            name: (() => {
+              const switchPath = getSwitchDetailsPath()
+              return switchPath ? (
+                <TenantLink to={switchPath}>
+                  {impactedSwitch.data?.name}
+                </TenantLink>
+              ) : (
+                <span>{impactedSwitch.data?.name}</span>
+              )
+            })()
           }}
         />
       </p>
@@ -187,6 +245,7 @@ function ImpactedSwitchTable (props: {
     }
   }) {
   const { $t } = useIntl()
+  const isMLISA = get('IS_MLISA_SA') === 'true'
   const ports = props.data
 
   const formatVlans = (vlans: string) => {
@@ -200,23 +259,20 @@ function ImpactedSwitchTable (props: {
     )
   }
 
-  const rows: Port[] = ports.map(impactedSwitchPort => {
-    return {
-      portNumber: impactedSwitchPort.portNumber,
-      portType: impactedSwitchPort.type,
-      lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(impactedSwitchPort.lastFlapTime),
-      poeDetail: impactedSwitchPort.poeOperState === 'Unknown' ? '--' :
-        impactedSwitchPort.poeOperState,
-      vlan: formatVlans(impactedSwitchPort.flapVlans),
-      vlanText: impactedSwitchPort.flapVlans || '--',
-      connectedDevicePort: impactedSwitchPort.connectedDevice.port === null ||
-        impactedSwitchPort.connectedDevice.port === 'Unknown' ? '--' :
-        impactedSwitchPort.connectedDevice.port,
-      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === null ||
-        impactedSwitchPort.connectedDevice.type === 'Unknown' ? '--' :
-        impactedSwitchPort.connectedDevice.type
-    }
-  })
+  const getConnectedDevicePath = (mac: string, serial: string) => {
+    if (!mac || !serial) return ''
+    return `devices/switch/${isMLISA ? mac : mac.toLowerCase()}/${serial}/details/${
+      isMLISA ? 'reports' : 'overview'
+    }`
+  }
+
+  // Memoize the rows transformation to avoid unnecessary re-computations
+  const rows: Port[] = useMemo(
+    () => ports.map(impactedSwitchPort =>
+      transformPortToTableData(impactedSwitchPort, formatVlans)
+    ),
+    [ports]
+  )
 
   const columns: TableProps<Port>['columns'] = useMemo(()=>[ {
     key: 'portNumber',
@@ -232,7 +288,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Port Type' }),
     fixed: 'left',
     width: 50,
-    sorter: { compare: sortProp('type', defaultSort) },
+    sorter: { compare: sortProp('portType', defaultSort) },
     searchable: true
   }, {
     key: 'vlan',
@@ -240,7 +296,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'VLAN' }),
     fixed: 'left',
     width: 70,
-    sorter: { compare: sortProp('flapVlans', defaultSort) },
+    sorter: { compare: sortProp('vlanText', defaultSort) },
     searchable: true,
     searchField: 'vlanText',
     render: (_, record, __, highlightFn) => {
@@ -262,7 +318,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'PoE Detail' }),
     fixed: 'left',
     width: 60,
-    sorter: { compare: sortProp('poeOperState', defaultSort) },
+    sorter: { compare: sortProp('poeDetail', defaultSort) },
     searchable: true
   }, {
     key: 'connectedDevicePortType',
@@ -270,7 +326,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Remote Device Port Type' }),
     fixed: 'left',
     width: 90,
-    sorter: { compare: sortProp('connectedDevice.type', defaultSort) },
+    sorter: { compare: sortProp('connectedDevicePortType', defaultSort) },
     searchable: true
   }, {
     key: 'connectedDevicePort',
@@ -278,15 +334,41 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Remote Device Port' }),
     fixed: 'left',
     width: 70,
-    sorter: { compare: sortProp('connectedDevice.port', defaultSort) },
+    sorter: { compare: sortProp('connectedDevicePort', defaultSort) },
     searchable: true
+  }, {
+    key: 'connectedDeviceName',
+    dataIndex: 'connectedDeviceName',
+    title: $t({ defaultMessage: 'Remote Device Name' }),
+    fixed: 'left',
+    width: 120,
+    sorter: { compare: sortProp('connectedDeviceName', defaultSort) },
+    searchable: true,
+    searchField: 'connectedDeviceName',
+    render: (_, record, __, highlightFn) => {
+      if (!record.connectedDeviceName || record.connectedDeviceName === '--') {
+        return '--'
+      }
+      const devicePath = getConnectedDevicePath(
+        record.connectedDeviceMac,
+        record.connectedDeviceSerial
+      )
+      if (!devicePath) {
+        return <span>{highlightFn(record.connectedDeviceName)}</span>
+      }
+      return (
+        <TenantLink to={devicePath}>
+          {highlightFn(record.connectedDeviceName)}
+        </TenantLink>
+      )
+    }
   }, {
     key: 'lastFlapTimeStamp',
     dataIndex: 'lastFlapTimeStamp',
     title: $t({ defaultMessage: 'Last Flap Time Stamp' }),
     fixed: 'left',
     width: 80,
-    sorter: { compare: sortProp('lastFlapTime', defaultSort) },
+    sorter: { compare: sortProp('lastFlapTimeStamp', defaultSort) },
     searchable: true
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps

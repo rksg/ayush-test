@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
-import { baseUrlFor }                                                            from '@acx-ui/config'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { PortalPreviewModal, SimpleListTooltip, getLanguage, initialPortalData } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal, SimpleListTooltip } from '@acx-ui/components'
+import { baseUrlFor }                                                                        from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { PortalPreviewModal, getLanguage, initialPortalData }                                from '@acx-ui/rc/components'
 import {
   useDeletePortalMutation,
   useGetEnhancedPortalProfileListQuery,

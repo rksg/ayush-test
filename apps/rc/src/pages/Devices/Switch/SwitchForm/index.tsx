@@ -87,7 +87,6 @@ export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { $t } = useIntl()
@@ -135,24 +134,24 @@ export function SwitchForm () {
     useState([] as FirmwareSwitchVenueVersionsV1002[])
 
   const getSwitchInfo = useGetSwitchListQuery({ params: { tenantId },
-    payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
-    skip: !editMode || !isSwitchRbacEnabled
+    payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: true }, {
+    skip: !editMode
   })
 
   const isVenueIdEmpty = _.isEmpty(venueId)
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({
       params: { tenantId, switchId, venueId },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, {
-      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
+      skip: !editMode || isVenueIdEmpty
     })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({
       params: { tenantId, switchId, venueId },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, {
-      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
+      skip: !editMode || isVenueIdEmpty
     })
 
   const { data: switchAuth, isLoading: isSwitchAuthLoading, isFetching: isSwitchAuthFetching } =
@@ -227,7 +226,7 @@ export function SwitchForm () {
         params: {
           tenantId: tenantId, venueId
         },
-        payload, enableRbac: isSwitchRbacEnabled
+        payload, enableRbac: true
       }, true))
         .data?.data
         .filter((item: SwitchViewModel) => item.serialNumber !== serialNumber)
@@ -268,7 +267,7 @@ export function SwitchForm () {
     const vlansByVenue = value ?
       (await getVlansByVenue({
         params: { tenantId: tenantId, venueId: value },
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: true
       })).data
         ?.map((item: Vlan) => ({
           label: item.vlanId, value: item.vlanId
@@ -312,7 +311,7 @@ export function SwitchForm () {
         await addSwitch({
           params: { tenantId, venueId: values.venueId },
           payload,
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: true
         }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
@@ -330,7 +329,7 @@ export function SwitchForm () {
       try {
         await addStackMember({
           params,
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: true
         }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
@@ -368,7 +367,7 @@ export function SwitchForm () {
       await updateSwitch({
         params: { tenantId, switchId, venueId: values.venueId },
         payload,
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: true
       }).unwrap()
         .then(() => {
           const updatedFields = checkSwitchUpdateFields(

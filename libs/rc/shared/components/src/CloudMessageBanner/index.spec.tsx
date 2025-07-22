@@ -70,6 +70,10 @@ describe('cloud Message Banner', () => {
       rest.get(
         FirmwareUrlsInfo.getAllApModelFirmwareList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelScheduledFirmwareList.url.replace('?status=scheduled', ''),
+        (req, res, ctx) => res(ctx.json([{ id: '1' }]))
       )
     )
   })

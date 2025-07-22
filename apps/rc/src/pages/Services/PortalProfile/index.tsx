@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs } from '@acx-ui/components'
 import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }    from '@acx-ui/rc/components'
 import {
   ServiceType,
   ServiceOperation,
@@ -11,6 +10,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getServiceAllowedOperation,
   PortalProfileTabsEnum,
+  useIsEdgeFeatureReady,
   useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
