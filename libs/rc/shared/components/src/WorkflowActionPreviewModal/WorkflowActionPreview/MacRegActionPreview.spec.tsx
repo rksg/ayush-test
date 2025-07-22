@@ -5,8 +5,8 @@ import { CommonUrlsInfo, MacRegListUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockMacReg, mockedNetworkList, mockMacRegList } from './__tests__/fixtures'
-import { MacRegActionPreview }                           from './MacRegActionPreview'
+import { mockMacReg, mockedNetworkList, mockMacRegList, mockInvalidMacReg } from './__tests__/fixtures'
+import { MacRegActionPreview }                                              from './MacRegActionPreview'
 
 const getNetworkList = jest.fn()
 const getMacRegList = jest.fn()
@@ -37,12 +37,29 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+
+    await waitFor(() => expect(getMacRegList).toHaveBeenCalled())
     await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
 
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(macAddField).toHaveValue('')
     expect(screen.queryByText('This field is invalid')).toBeFalsy()
   })
+  it('invalid mac reg does not call mac reg list', async () => {
+
+    const macAddLabel = 'Enter the MAC address of your device here'
+    render(<Provider>
+      <MacRegActionPreview data={mockInvalidMacReg} />
+    </Provider>)
+
+    await waitFor(() => expect(getMacRegList).not.toHaveBeenCalled())
+    await waitFor(() => expect(getNetworkList).not.toHaveBeenCalled())
+
+    const macAddField = screen.getByRole('textbox', { name: macAddLabel })
+    expect(macAddField).toHaveValue('')
+    expect(screen.queryByText('This field is invalid')).toBeFalsy()
+  })
+
   it('no alert on valid MAC Address', async () => {
 
     const macAddLabel = 'Enter the MAC address of your device here'
