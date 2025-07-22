@@ -97,7 +97,9 @@ const TunnelProfileDetail = () => {
       }
     }, {
       title: $t({ defaultMessage: 'PMTU Retries' }),
-      content: `${tunnelProfileData.mtuRequestRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      content: tunnelProfileData.mtuRequestRetry ?
+        `${tunnelProfileData.mtuRequestRetry} ${$t({ defaultMessage: 'retries' })}` :
+        ''
     },
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
@@ -118,12 +120,15 @@ const TunnelProfileDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Keep Alive Interval' }),
-      content: `${tunnelProfileData.keepAliveInterval ?? ''}
-        ${$t({ defaultMessage: 'seconds' })}`
+      content: tunnelProfileData.keepAliveInterval ?
+        `${tunnelProfileData.keepAliveInterval} ${$t({ defaultMessage: 'seconds' })}` :
+        ''
     },
     {
       title: $t({ defaultMessage: 'Keep Alive Reties' }),
-      content: `${tunnelProfileData.keepAliveRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      content: tunnelProfileData.keepAliveRetry ?
+        `${tunnelProfileData.keepAliveRetry} ${$t({ defaultMessage: 'retries' })}` :
+        ''
     }
   ]
 
