@@ -1,8 +1,8 @@
 import moment from 'moment-timezone'
 
-import { fakeIncident1 }     from '@acx-ui/analytics/utils'
-import { dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { fakeIncident1, fakeIncidentPortFlap } from '@acx-ui/analytics/utils'
+import { dataApiURL, store }                   from '@acx-ui/store'
+import { mockGraphqlQuery }                    from '@acx-ui/test-utils'
 
 import { buffer6hr }             from './__tests__/fixtures'
 import { TimeSeriesChartTypes }  from './config'
@@ -125,6 +125,37 @@ describe('chartQuery', () => {
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
+  })
+  it('should use minGranularity directly for port flap incidents with minGranularity', async () => {
+    const portFlapCharts = [TimeSeriesChartTypes.SwitchImpactedPortsCount]
+
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          timeSeries: {
+            time: [
+              '2022-04-07T09:15:00.000Z',
+              '2022-04-08T09:30:00.000Z'
+            ],
+            portCount: [1, 2]
+          }
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncidentPortFlap,
+        charts: portFlapCharts,
+        buffer: buffer6hr,
+        minGranularity: 'PT5M'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(error).toBe(undefined)
   })
   it('should getIncidentTimeSeriesPeriods', () => {
     expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer6hr).start).toEqual(

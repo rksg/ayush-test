@@ -87,6 +87,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
+  legendFormatter?: (name: string) => string
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -294,11 +295,11 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: props.size === 'x-large' ? '55%' : '60%',
+      left: props.legendFormatter ? '50%' : props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: !!props.onLegendClick,
-      itemGap: props.size === 'x-large'? 16 : 4,
+      itemGap: props.legendFormatter ? 8 : props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
@@ -318,9 +319,9 @@ export function DonutChart ({
       itemStyle: {
         borderWidth: 0
       },
-      formatter: name => {
+      formatter: props.legendFormatter || (name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
-        switch(props.legend) {
+        switch (props.legend) {
           case 'name': return `{legendNormal|${name}}`
           case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
           case 'name-bold-value':
@@ -329,7 +330,7 @@ export function DonutChart ({
           default:
             return `{legendNormal|${dataFormatter(value)}}`
         }
-      }
+      })
     },
     color: colors[0] ? colors : qualitativeColorSet(),
     series: [

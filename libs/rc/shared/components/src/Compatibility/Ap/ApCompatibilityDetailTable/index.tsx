@@ -5,7 +5,7 @@ import { Space, Typography } from 'antd'
 import { sumBy }             from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps, Tooltip }   from '@acx-ui/components'
+import { SimpleListTooltip, Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueApModelFirmwareListQuery
@@ -29,7 +29,6 @@ import {
   useChangeScheduleVisiblePerApModel,
   useUpdateNowPerApModel
 } from '../../../ApFirmware/VenueFirmwareListPerApModel'
-import { SimpleListTooltip }    from '../../../SimpleListTooltip'
 import { ApModelFamiliesItem }  from '../../CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
 import { getFeatureTypeTag }    from '../../CompatibilityDrawer/utils'
 import {

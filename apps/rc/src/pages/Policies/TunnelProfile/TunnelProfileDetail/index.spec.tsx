@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 
 import { Features, TierFeatures, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
 import { networkApi, tunnelProfileApi }                                                                                  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeTunnelProfileFixtures, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                               from '@acx-ui/store'
@@ -18,8 +17,12 @@ const {
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 jest.mock('@acx-ui/utils', () => ({
@@ -113,7 +116,7 @@ describe('TunnelProfileDetail', () => {
 
   describe('when NAT-Traversal support is ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation(ff =>(ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
     })
 
@@ -131,9 +134,9 @@ describe('TunnelProfileDetail', () => {
 
   describe('when L2GRE is ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         // eslint-disable-next-line max-len
-        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE))
+        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
       jest.mocked(useIsTierAllowed)
         .mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
     })

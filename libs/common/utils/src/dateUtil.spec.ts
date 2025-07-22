@@ -1,4 +1,7 @@
+import moment from 'moment-timezone'
+
 import {
+  trackDateSelection,
   DateRange,
   dateRangeForLast,
   getDateRangeFilter,
@@ -120,6 +123,30 @@ describe('dateUtil', () => {
       expect(transformTimezoneDifference(0)).toEqual('UTC +00:00')
       expect(transformTimezoneDifference(28800)).toEqual('UTC +08:00')
       expect(transformTimezoneDifference(-3600)).toEqual('UTC -01:00')
+    })
+  })
+
+  describe('trackDateSelection', () => {
+    it('does not call pendo.track or throw if pendo is not defined', () => {
+      trackDateSelection(DateRange.last24Hours)
+    })
+    it('calls pendo.track if pendo is defined', () => {
+      window.pendo = {
+        showGuideById: jest.fn(),
+        initialize: jest.fn(),
+        identify: jest.fn(),
+        track: jest.fn()
+      }
+      const startDate = moment('2022-01-01')
+      const endDate = moment('2022-01-02')
+      trackDateSelection(DateRange.last24Hours, startDate, endDate)
+      expect(window.pendo.track).toHaveBeenCalledWith('date-selections', {
+        range: DateRange.last24Hours,
+        env: 'localhost',
+        url: '/',
+        startDate,
+        endDate
+      })
     })
   })
 

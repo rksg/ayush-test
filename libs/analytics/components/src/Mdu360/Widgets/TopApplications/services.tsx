@@ -23,10 +23,10 @@ export interface Payload {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    topNApplications: build.query<HierarchyNodeData, Payload>({
+    mduTopNApplications: build.query<HierarchyNodeData, Payload>({
       query: (payload) => ({
         document: gql`
-          query Network(
+          query MDUTopNApplications(
             $path: [HierarchyNodeInput],
             $start: DateTime,
             $end: DateTime,
@@ -54,4 +54,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useTopNApplicationsQuery } = api
+export const { useMduTopNApplicationsQuery } = api

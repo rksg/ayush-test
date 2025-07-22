@@ -176,7 +176,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 node.data.powerSavingStatus as PowerSavingStatusEnum) &&
                 <Tooltip
                   title={$t(
-                    { defaultMessage: 'Device is controlled by Energy Saving AI. '
+                    { defaultMessage: 'Device is controlled by IntentAI: Energy Saving. '
                       + 'Radio may not be broadcasting.' }
                   )}
                   placement='bottom'

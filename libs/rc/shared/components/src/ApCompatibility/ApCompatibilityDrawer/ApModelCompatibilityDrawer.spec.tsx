@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi, networkApi, apApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                  from '@acx-ui/store'
-import { act, mockServer, render, screen }  from '@acx-ui/test-utils'
+import { venueApi, networkApi, apApi }                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, FirmwareUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                    from '@acx-ui/store'
+import { act, mockServer, render, screen }                    from '@acx-ui/test-utils'
 
 import {
   mockVenueApCompatibilities,
@@ -24,6 +24,19 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
+
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
 
 describe('ApModelCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
@@ -44,6 +57,9 @@ describe('ApModelCompatibilityDrawer', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
     mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
       rest.post(
         WifiRbacUrlsInfo.getVenuePreCheckApCompatibilities.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockVenueApCompatibilities))),

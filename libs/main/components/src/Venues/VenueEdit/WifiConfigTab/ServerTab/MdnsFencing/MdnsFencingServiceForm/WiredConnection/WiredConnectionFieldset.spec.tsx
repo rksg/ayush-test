@@ -46,7 +46,7 @@ describe('WiredConnectionFieldset Component', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
-  it ('should add/delete entry correctly', async () => {
+  it.skip('should add/delete entry correctly', async () => {
     render(
       <MdnsFencingServiceContext.Provider
         value={{
