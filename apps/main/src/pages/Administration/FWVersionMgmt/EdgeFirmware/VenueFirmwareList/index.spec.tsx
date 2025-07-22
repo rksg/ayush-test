@@ -2,7 +2,7 @@ import userEvent             from '@testing-library/user-event'
 import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { EdgeChangeScheduleDialogProps }               from '@acx-ui/rc/components'
 import { firmwareApi }                                 from '@acx-ui/rc/services'
 import { FirmwareUrlsInfo, SwitchFirmwareFixtures }    from '@acx-ui/rc/utils'
@@ -30,15 +30,10 @@ jest.mock('@acx-ui/rc/components', () => {
   return { ...oriComponents, EdgeChangeScheduleDialog }
 })
 
-const mockedUpdateNow = jest.fn()
 const mockedUpdatePreference = jest.fn()
-const mockedUpdateSchedule = jest.fn()
-const mockedSkipUpdate = jest.fn()
 const mockedUpdateNowBatchOperation = jest.fn()
 const mockedUpdateScheduleBatchOperation = jest.fn()
 const mockedSkipUpdateBatchOperation = jest.fn()
-// eslint-disable-next-line max-len
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -61,13 +56,6 @@ describe('Edge venue firmware list', () => {
         FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
         (req, res, ctx) => res(ctx.json(availableVersions))
       ),
-      rest.patch(
-        FirmwareUrlsInfo.updateEdgeFirmware.url,
-        (req, res, ctx) => {
-          mockedUpdateNow()
-          return res(ctx.status(202))
-        }
-      ),
       rest.get(
         FirmwareUrlsInfo.getEdgeUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json(preferenceData))
@@ -76,20 +64,6 @@ describe('Edge venue firmware list', () => {
         FirmwareUrlsInfo.updateEdgeUpgradePreferences.url,
         (req, res, ctx) => {
           mockedUpdatePreference()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        FirmwareUrlsInfo.skipEdgeUpgradeSchedules.url,
-        (req, res, ctx) => {
-          mockedSkipUpdate()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.post(
-        FirmwareUrlsInfo.updateEdgeVenueSchedules.url,
-        (req, res, ctx) => {
-          mockedUpdateSchedule()
           return res(ctx.status(202))
         }
       )
@@ -109,27 +83,6 @@ describe('Edge venue firmware list', () => {
 
     const row = await screen.findAllByRole('row', { name: /My-Venue/i })
     expect(row.length).toBe(3)
-  })
-
-  it('should update the firmware of selected venues', async () => {
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/edgeFirmware' }
-      })
-
-    const row = await screen.findByRole('row', { name: /My-Venue1/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    const updateButton = await screen.findByRole('button', { name: /Update Now/i })
-    await userEvent.click(updateButton)
-
-    const updateDialog = await screen.findByRole('dialog')
-    const updateVenueButton = await within(updateDialog).findByText('Run Update')
-    await userEvent.click(updateVenueButton)
-    await waitFor(() => expect(updateDialog).not.toBeVisible())
-    await waitFor(() => expect(mockedUpdateNow).toBeCalledTimes(1))
   })
 
   it('should not show any update', async () => {
@@ -171,28 +124,6 @@ describe('Edge venue firmware list', () => {
     await waitFor(() => expect(updateDialog).not.toBeVisible())
   })
 
-  it('should update the schedule update time of selected venues', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/edgeFirmware' }
-      })
-
-    const row = await screen.findByRole('row', { name: /My-Venue1/i })
-    await user.click(within(row).getByRole('checkbox'))
-
-    const updateButton = screen.getByRole('button', { name: /Change Update Schedule/i })
-    await user.click(updateButton)
-
-    const updateDialog = await screen.findByRole('dialog')
-    await user.click(within(updateDialog).getByRole('button', { name: 'Save' }))
-    await waitFor(() => expect(mockedUpdateSchedule).toBeCalledTimes(1))
-    await waitFor(() => expect(updateDialog).not.toBeVisible())
-  })
-
-
   it('should cancel schedule update', async () => {
     const user = userEvent.setup()
     render(
@@ -212,27 +143,6 @@ describe('Edge venue firmware list', () => {
     const cancelButton = within(updateDialog).getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
     await waitFor(() => expect(updateDialog).not.toBeVisible())
-  })
-
-  it('should skip update for selected venues', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/edgeFirmware' }
-      })
-
-    const row = await screen.findByRole('row', { name: /My-Venue1/i })
-    await user.click(within(row).getByRole('checkbox'))
-
-    const skipButton = await screen.findByRole('button', { name: /Skip Update/i })
-    await user.click(skipButton)
-
-    const skipDialog = await screen.findByRole('dialog')
-    await user.click(within(skipDialog).getByRole('button', { name: 'Skip' }))
-    await waitFor(() => expect(mockedSkipUpdate).toBeCalledTimes(1))
-    await waitFor(() => expect(skipDialog).not.toBeVisible())
   })
 
   it('should cancel skip update', async () => {
