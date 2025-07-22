@@ -24,14 +24,6 @@ jest.mock('@acx-ui/utils', () => ({
   userLogout: jest.fn()
 }))
 
-jest.mock('@acx-ui/components', () => {
-  const original = jest.requireActual('@acx-ui/components')
-  return {
-    ...original,
-    showToast: jest.fn()
-  }
-})
-
 describe('Delete Account Form Item', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -57,7 +49,6 @@ describe('Delete Account Form Item', () => {
   })
   it('should delete correctly', async () => {
     const mockUserLogout = require('@acx-ui/utils').userLogout
-    const { showToast } = require('@acx-ui/components')
     render(
       <Provider>
         <DeleteAccountFormItem />
@@ -73,11 +64,13 @@ describe('Delete Account Form Item', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: 'Delete Customer' }))
     await waitFor(() => expect(mockMutation).toHaveBeenCalled())
-    await waitFor(() => expect(showToast).toHaveBeenCalled())
-    const call = showToast.mock.calls[0][0]
-    call.onClose()
+    // Wait for the modal to appear in the DOM
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    // Find and click the OK button in the modal
+    const okButton = screen.getByRole('button', { name: /ok/i })
+    await userEvent.click(okButton)
     await waitFor(() => expect(mockUserLogout).toHaveBeenCalled())
-    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('should delete fail', async () => {
@@ -101,8 +94,6 @@ describe('Delete Account Form Item', () => {
     await waitFor(() => expect(mockUserLogout).not.toHaveBeenCalled())
   })
 
-
-
   it('should close modal when cancel button clicked', async () => {
     render(
       <Provider>
@@ -117,8 +108,7 @@ describe('Delete Account Form Item', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should show success toast after deletion', async () => {
-    const { showToast } = require('@acx-ui/components')
+  it('should show success modal after deletion', async () => {
     const mockUserLogout = require('@acx-ui/utils').userLogout
     render(
       <Provider>
@@ -135,23 +125,16 @@ describe('Delete Account Form Item', () => {
     )
 
     await userEvent.click(screen.getByRole('button', { name: 'Delete Customer' }))
-    await waitFor(() => expect(showToast).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'success',
-        content: expect.anything(),
-        duration: 10,
-        closable: true,
-        onClose: expect.any(Function)
-      })
-    ))
-
-    const call = showToast.mock.calls[0][0]
-    call.onClose()
+    // Wait for the modal to appear in the DOM
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    // Find and click the OK button in the modal
+    const okButton = screen.getByRole('button', { name: /ok/i })
+    await userEvent.click(okButton)
     expect(mockUserLogout).toHaveBeenCalled()
   })
 
-  it('should logout when toast onClose is called', async () => {
-    const { showToast } = require('@acx-ui/components')
+  it('should logout when user clicks OK button in the success modal', async () => {
     const mockUserLogout = require('@acx-ui/utils').userLogout
     render(
       <Provider>
@@ -166,19 +149,17 @@ describe('Delete Account Form Item', () => {
       expect(screen.getByRole('button', { name: 'Delete Customer' })).toBeEnabled()
     )
     await userEvent.click(screen.getByRole('button', { name: 'Delete Customer' }))
-    await waitFor(() =>
-      expect(showToast).toHaveBeenCalled()
-    )
-    // Call the onClose handler manually
-    const call = showToast.mock.calls[0][0]
-    call.onClose()
+    // Wait for the modal to appear in the DOM
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    // Find and click the OK button in the modal
+    const okButton = screen.getByRole('button', { name: /ok/i })
+    await userEvent.click(okButton)
     expect(mockUserLogout).toHaveBeenCalled()
   })
 
-  it('logs out after 2 seconds via real timer if toast is not closed manually', async () => {
+  it('logs out after 10 seconds via timer if modal OK is not clicked', async () => {
     const mockUserLogout = require('@acx-ui/utils').userLogout
-    const { showToast } = require('@acx-ui/components')
-
     render(
       <Provider>
         <DeleteAccountFormItem />
@@ -193,15 +174,12 @@ describe('Delete Account Form Item', () => {
       expect(screen.getByRole('button', { name: 'Delete Customer' })).toBeEnabled()
     )
     await userEvent.click(screen.getByRole('button', { name: 'Delete Customer' }))
-
-    // Ensure toast is shown
-    await Promise.resolve()
-    expect(showToast).toHaveBeenCalled()
-
-    // Wait for 2 seconds (real time)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    expect(mockUserLogout).toHaveBeenCalled()
+    // Wait for the modal to appear in the DOM
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    // Do not click the OK button, instead wait for the timer to trigger logout
+    await new Promise(resolve => setTimeout(resolve, 10000))
+    await waitFor(() => expect(mockUserLogout).toHaveBeenCalled())
   })
 
 })

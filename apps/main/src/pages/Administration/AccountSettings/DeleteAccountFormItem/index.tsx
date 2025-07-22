@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { Button, showActionModal, showToast }                from '@acx-ui/components'
+import { Button, showActionModal }                           from '@acx-ui/components'
 import { CloseSymbol }                                       from '@acx-ui/icons'
 import { SpaceWrapper }                                      from '@acx-ui/rc/components'
 import { useDeleteTenantMutation, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
@@ -53,18 +53,24 @@ const DeleteAccountFormItem = () => {
         try {
           await deleteTenant({ params }).unwrap()
           let logoutTimer: NodeJS.Timeout | null = null
+          let modalClosed = false
           const logout = () => {
             if (logoutTimer) clearTimeout(logoutTimer)
-            userLogout()
+            if (!modalClosed) {
+              modalClosed = true
+              userLogout()
+            }
           }
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Your account has been removed successfully' }),
-            duration: 10,
-            closable: true,
-            onClose: logout
+          showActionModal({
+            type: 'info',
+            title: $t({ defaultMessage: 'Account Deleted' }),
+            content: $t({ defaultMessage: 'Your account has been removed successfully.' }),
+            okText: $t({ defaultMessage: 'OK' }),
+            onOk: logout,
+            closable: false,
+            className: 'delete-account-success-modal'
           })
-          logoutTimer = setTimeout(logout, 2000)
+          logoutTimer = setTimeout(logout, 10000)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
