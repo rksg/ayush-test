@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState, useRef } from 'react'
 
-
 import { Col, Form, Radio, Row, Space } from 'antd'
 import { FormattedMessage, useIntl }    from 'react-intl'
 import { useParams }                    from 'react-router-dom'
@@ -20,7 +19,6 @@ import {
 import { ClientAdmissionControl, ApClientAdmissionControl_v1_1, ApGroupClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
-
 
 const { useWatch } = Form
 
@@ -76,6 +74,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
   const initDataRef = useRef<ApClientAdmissionControl_v1_1>()
   const isUseApGroupSettingsRef = useRef<boolean>(false)
   const [isUseApGroupSettings, setIsUseApGroupSettings] = useState(true)
+  const isUseVenueSettingsRef = useRef<boolean>(false)
 
   useEffect(() => {
     if(!getApClientAdmissionControl.isLoading) {
@@ -93,10 +92,10 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           const apGroupClientAdmissionControl = (await getApGroupClientAdmissionControl(
             { params: { venueId, apGroupId } }, true).unwrap())
           apGroupRef.current = apGroupClientAdmissionControl
+          isUseVenueSettingsRef.current = apGroupClientAdmissionControl.useVenueSettings || false
         }
       }
       setData()
-
       setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -199,7 +198,15 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
                 disabled={!isAllowEdit}>
                 <Space direction='vertical'>
                   <Radio value={true} data-testid='client-admission-control-inheritSettings'>
-                    <FormattedMessage defaultMessage={'Use inherited settings from AP Group'} />
+                    <FormattedMessage
+                      defaultMessage={'Use inherited settings from' +
+                        ' <venueOrApGroup></venueOrApGroup>'}
+                      values={{
+                        venueOrApGroup: () => {
+                          return isUseVenueSettingsRef.current ? 'Venue' : 'AP Group'
+                        }
+                      }}
+                    />
                   </Radio>
                   <Radio value={false} data-testid='client-admission-control-customizeSettings'>
                     <FormattedMessage defaultMessage={'Customize settings'} />
