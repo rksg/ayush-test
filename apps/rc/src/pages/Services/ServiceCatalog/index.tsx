@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Typography }             from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard }                                                                                            from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard }                                                                     from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                    from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
 import {
   IncompatibilityFeatures,
   ServiceOperation,
@@ -16,6 +16,7 @@ import {
   serviceTypeLabelMapping,
   serviceTypeDescMapping,
   useDhcpStateMap,
+  useIsEdgeFeatureReady,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { RadioCardCategory }          from '@acx-ui/types'
