@@ -5,15 +5,15 @@ import { TransferListBodyProps } from 'antd/es/transfer/ListBody'
 import { TableRowSelection }     from 'antd/lib/table/interface'
 import { TransferItem }          from 'antd/lib/transfer'
 
-import { TransferProps } from '../index'
+import { TransferProps, TransferType } from '../index'
 
 // eslint-disable-next-line max-len
-export const renderTransferTable = (props: TransferProps, transferProps: TransferListBodyProps<TransferItem> ) => {
+export const renderTransferTable = (props: Extract<TransferProps, { type: TransferType.TABLE }>, transferProps: TransferListBodyProps<TransferItem> ) => {
   const {
     leftColumns,
     rightColumns,
     tableData = []
-  } = props as Extract<TransferProps, { type: 'table' }>
+  } = props as Extract<TransferProps, { type: TransferType.TABLE }>
 
   const {
     direction,
@@ -35,7 +35,9 @@ export const renderTransferTable = (props: TransferProps, transferProps: Transfe
   }
 
   const dataSource = tableData.length > 0 && direction === 'left'
-    ? filteredItems.filter(item => tableData.some(dataItem => dataItem.key === item.key))
+    ? filteredItems.filter(item => tableData.some((dataItem: TransferItem) =>
+      dataItem.key && item.key && dataItem.key === item.key
+    ))
     : filteredItems
 
   return (

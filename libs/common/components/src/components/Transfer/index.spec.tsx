@@ -10,6 +10,28 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { Transfer, TransferType } from '.'
 
+const treeData = [{
+  key: 'group-1',
+  name: 'Group 1',
+  isGroupLevel: true,
+  children: [
+    { key: 'group-1-item-1', name: 'Item 1' },
+    { key: 'group-1-item-2', name: 'Item 2' },
+    { key: 'group-1-item-3', name: 'Item 3' },
+    { key: 'group-1-item-4', name: 'Item 4' },
+    { key: 'group-1-item-5', name: 'Item 5' }
+  ]
+}, {
+  key: 'group-2',
+  name: 'Group 2',
+  isGroupLevel: true,
+  children: [
+    { key: 'group-2-item-1', name: 'Item 1' },
+    { key: 'group-2-item-2', name: 'Item 2' },
+    { key: 'group-2-item-3', name: 'Item 3' },
+    { key: 'group-2-item-4', name: 'Item 4' }
+  ]
+}]
 
 describe('Transfer', () => {
   it('should render correctly', async () => {
@@ -172,4 +194,119 @@ describe('Transfer', () => {
     expect(await screen.findByText('1 available')).toBeVisible()
     expect(await screen.findByText('2 selected')).toBeVisible()
   })
+
+  it('should render grouped tree type with single selection correctly', async () => {
+    const TestTransferComponent = () => {
+      const [targetKeys, setTargetKeys] = useState<string[]>([])
+      const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+      return <IntlProvider locale='en'>
+        <Transfer
+          type={TransferType.GROUPED_TREE}
+          listStyle={{ width: 250, height: 300 }}
+          showSelectAll={false}
+          dataSource={treeData}
+          render={(item) => item.name}
+          operations={['Add', 'Remove']}
+          titles={['Available Items', 'Selected Items']}
+          targetKeys={targetKeys}
+          onChange={setTargetKeys}
+          selectedKeys={selectedKeys}
+          onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+          enableMultiselect={false}
+        />
+      </IntlProvider>
+    }
+
+    render(<TestTransferComponent />)
+
+    expect(await screen.findByText('9 available')).toBeVisible()
+    expect(await screen.findByText('0 selected')).toBeVisible()
+
+    const item3 = await screen.findAllByText(/Item 3/)
+    const item5 = await screen.findAllByText(/Item 5/)
+    await userEvent.click(item3[0])
+    await userEvent.click(item5[0])
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+    expect(await screen.findByText('8 available')).toBeVisible()
+    expect(await screen.findByText('1 selected')).toBeVisible()
+
+  })
+
+  it('should render grouped tree type with multiple selection correctly', async () => {
+    const TestTransferComponent = () => {
+      const [targetKeys, setTargetKeys] = useState<string[]>([])
+      const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+      return <IntlProvider locale='en'>
+        <Transfer
+          type={TransferType.GROUPED_TREE}
+          listStyle={{ width: 250, height: 300 }}
+          showSelectAll={false}
+          dataSource={treeData}
+          render={(item) => item.name}
+          operations={['Add', 'Remove']}
+          titles={['Available Items', 'Selected Items']}
+          targetKeys={targetKeys}
+          onChange={setTargetKeys}
+          selectedKeys={selectedKeys}
+          onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+        />
+      </IntlProvider>
+    }
+
+    render(<TestTransferComponent />)
+
+    expect(await screen.findByText('9 available')).toBeVisible()
+    expect(await screen.findByText('0 selected')).toBeVisible()
+
+    const item3 = await screen.findAllByText(/Item 3/)
+    const item4 = await screen.findAllByText(/Item 4/)
+    const item5 = await screen.findAllByText(/Item 5/)
+    await userEvent.click(item3[0])
+    await userEvent.click(item4[0])
+    await userEvent.click(item5[0])
+    await userEvent.click(item4[0])
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+    expect(await screen.findByText('7 available')).toBeVisible()
+    expect(await screen.findByText('2 selected')).toBeVisible()
+
+  })
+
+  it('should render grouped tree type with selectable group titles correctly', async () => {
+    const TestTransferComponent = () => {
+      const [targetKeys, setTargetKeys] = useState<string[]>([])
+      const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+      return <IntlProvider locale='en'>
+        <Transfer
+          type={TransferType.GROUPED_TREE}
+          listStyle={{ width: 250, height: 300 }}
+          showSelectAll={false}
+          dataSource={treeData}
+          render={(item) => item.name}
+          operations={['Add', 'Remove']}
+          titles={['Available Items', 'Selected Items']}
+          targetKeys={targetKeys}
+          onChange={setTargetKeys}
+          selectedKeys={selectedKeys}
+          onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+          enableGroupSelect={true}
+          enableMultiselect={true}
+        />
+      </IntlProvider>
+    }
+
+    render(<TestTransferComponent />)
+
+    expect(await screen.findByText('9 available')).toBeVisible()
+    expect(await screen.findByText('0 selected')).toBeVisible()
+
+    const group1 = await screen.findByText(/Group 1/)
+    await userEvent.click(group1)
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+    expect(await screen.findByText('4 available')).toBeVisible()
+    expect(await screen.findByText('5 selected')).toBeVisible()
+  })
+
 })

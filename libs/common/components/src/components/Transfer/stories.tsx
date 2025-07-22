@@ -226,7 +226,6 @@ storiesOf('Transfer', module)
       <Transfer
         type={TransferType.GROUPED_TREE}
         listStyle={{ width: 250, height: 300 }}
-        showSearch
         showSelectAll={false}
         dataSource={treeData}
         render={(item) => item.name}

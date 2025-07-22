@@ -127,7 +127,7 @@ export function renderTransferGroupedTree (
     if (!enableMultiselect) {
       const item = flattenedData.find((item: TreeTransferItem) => item.key === key)
       const targetGroupKeys = flattenedData
-        .filter((item: TreeTransferItem) => targetKeys.includes(item?.key || ''))
+        .filter((item: TreeTransferItem) => targetKeys.includes(item.key))
         .map((item: TreeTransferItem) => item.groupKey)
 
       shouldDisabled = targetGroupKeys.includes(item?.groupKey)
@@ -146,7 +146,7 @@ export function renderTransferGroupedTree (
             ? <Checkbox checked={isItemSelected} disabled={shouldDisabled} />
             : <Radio checked={isItemSelected} disabled={shouldDisabled} />
           }
-          {typeof node.name === 'string' ? node.name : node.title}
+          { node.name }
         </UI.TreeItem>
       )
     }

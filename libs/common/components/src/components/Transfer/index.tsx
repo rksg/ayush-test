@@ -103,7 +103,8 @@ export function Transfer (props: TransferProps) {
   const renderTransfer = (transferProps: TransferListBodyProps<TransferItem>) => {
     switch (type) {
       case TransferType.TABLE:
-        return renderTransferTable(props, transferProps)
+        // eslint-disable-next-line max-len
+        return renderTransferTable(props as Extract<TransferProps, { type: TransferType.TABLE }>, transferProps)
       case TransferType.GROUPED_TREE:
         return renderTransferGroupedTree(
           props, transferProps as TransferListBodyProps<TreeTransferItem>
