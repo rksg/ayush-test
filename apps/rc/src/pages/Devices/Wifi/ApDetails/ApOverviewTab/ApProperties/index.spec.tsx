@@ -650,7 +650,7 @@ describe('ApProperties', () => {
           isLoading={false}
         /></Provider>, { route: { params } })
 
-            fireEvent.click(screen.getByText('More'))
+      fireEvent.click(screen.getByText('More'))
       expect(screen.getByDisplayValue('venue-settings-password')).toBeInTheDocument()
     })
 
