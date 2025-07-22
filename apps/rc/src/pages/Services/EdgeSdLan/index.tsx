@@ -1,5 +1,5 @@
 import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { AddEdgeSdLan as AddEdgeSdLanL2oGRE }           from './L2oGRE/AddEdgeSdLan'
 import { EdgeSdLanDetail as EdgeSdLanDetailL2oGRE }     from './L2oGRE/EdgeSdLanDetail'

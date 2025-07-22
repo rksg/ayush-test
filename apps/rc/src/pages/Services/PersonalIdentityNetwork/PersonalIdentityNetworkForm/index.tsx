@@ -7,7 +7,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
 import { Features }                                                                        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                           from '@acx-ui/rc/components'
 import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
@@ -16,7 +15,8 @@ import {
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage,
-  EdgeClusterInfo
+  EdgeClusterInfo,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { RequestPayload }                                 from '@acx-ui/types'

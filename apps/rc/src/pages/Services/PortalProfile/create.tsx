@@ -8,7 +8,6 @@ import {
   StepsForm
 }  from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import {
   getServiceAllowedOperation,
   getSelectServiceRoutePath,
@@ -17,6 +16,7 @@ import {
   PortalProfileTabsEnum,
   getServiceRoutePath,
   LocationExtended,
+  useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'

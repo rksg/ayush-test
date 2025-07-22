@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   useDelSyslogPoliciesMutation,
   useGetVenuesQuery,

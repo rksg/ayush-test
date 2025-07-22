@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, Tooltip }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader, Tooltip, SimpleListTooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, useEnforcedStatus }       from '@acx-ui/rc/components'
 import {
   useDeleteWifiCallingServicesMutation,
   useGetEnhancedWifiCallingServiceListQuery,

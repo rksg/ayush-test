@@ -1,10 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }       from '@acx-ui/components'
-import { SimpleListTooltip }       from '@acx-ui/rc/components'
-import { ApplicationInfo }         from '@acx-ui/rc/utils'
-import { filterByAccess }          from '@acx-ui/user'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { ApplicationInfo }                      from '@acx-ui/rc/utils'
+import { filterByAccess }                       from '@acx-ui/user'
+import { TABLE_DEFAULT_PAGE_SIZE }              from '@acx-ui/utils'
 
 
 type APPTableProps = {

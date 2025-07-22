@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { PageHeader, TableProps, Loader, Table, Button } from '@acx-ui/components'
+import { PageHeader, SimpleListTooltip, TableProps, Loader, Table, Button } from '@acx-ui/components'
 import {
-  SimpleListTooltip,
+
   LBS_SERVER_PROFILE_MAX_COUNT
 } from '@acx-ui/rc/components'
 import {
