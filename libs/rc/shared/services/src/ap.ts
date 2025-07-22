@@ -20,6 +20,7 @@ import {
   ApIot,
   ApIotController,
   ApClientAdmissionControl,
+  ApGroupClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
   ApDetails,
@@ -2012,6 +2013,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     }),
+    getApGroupClientAdmissionControl: build.query<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings, params)
+      },
+      providesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
+    updateApGroupClientAdmissionControl: build.mutation<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApGroupClientAdmissionControlSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
     getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2245,6 +2262,8 @@ export const {
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
+  useGetApGroupClientAdmissionControlQuery,
+  useUpdateApGroupClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,

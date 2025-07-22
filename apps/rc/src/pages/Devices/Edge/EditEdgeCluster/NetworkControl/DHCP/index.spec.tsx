@@ -7,7 +7,6 @@ import { rest }      from 'msw'
 
 import { Button, StepsForm }                                                                              from '@acx-ui/components'
 import { Features }                                                                                       from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                          from '@acx-ui/rc/components'
 import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgePinFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                                                            from '@acx-ui/test-utils'
@@ -15,11 +14,19 @@ import { mockServer, render, screen, waitFor }                                  
 import { DhcpFormItem, useHandleApplyDhcp } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgeDhcpActions: () => ({
+    activateEdgeDhcp: mockedActivateDhcpApi,
+    deactivateEdgeDhcp: mockedDeactivateDhcpApi
+  }),
   ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={onClick} />,
-  EdgeDhcpSelectionForm: () => <div data-testid='EdgeDhcpSelectionForm' />,
-  useIsEdgeFeatureReady: jest.fn()
+  EdgeDhcpSelectionForm: () => <div data-testid='EdgeDhcpSelectionForm' />
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const mockedActivateDhcpApi = jest.fn()
@@ -48,20 +55,6 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     mockedActivateDhcpApi.mockReset()
     mockedDeactivateDhcpApi.mockReset()
     mockServer.use(
-      rest.put(
-        EdgeDhcpUrls.activateDhcpService.url,
-        (req, res, ctx) => {
-          mockedActivateDhcpApi(req.url.pathname)
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeDhcpUrls.deactivateDhcpService.url,
-        (req, res, ctx) => {
-          mockedDeactivateDhcpApi(req.url.pathname)
-          return res(ctx.status(202))
-        }
-      ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
@@ -74,7 +67,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
   })
 
   it('should render correctly by switch on/off', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -107,7 +100,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
   })
 
   it('switch will be on when there is already dhcp configured', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -137,7 +130,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
   })
 
   it('switch should be disabled when there is PIN configured', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -205,7 +198,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
   })
 
   it('should invoke setEdgeFeatureName correctly when click compatibility tooltip', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -247,7 +240,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     // eslint-disable-next-line max-len
-    await waitFor(() => expect(mockedActivateDhcpApi).toBeCalledWith('/edgeDhcpServices/testDhcpId/venues/testVenueId/edgeClusters/testClusterId'))
+    await waitFor(() => expect(mockedActivateDhcpApi).toBeCalledWith('testDhcpId', 'testVenueId', 'testClusterId'))
   })
 
   it('Test deactivate dhcp', async () => {
@@ -263,7 +256,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     // eslint-disable-next-line max-len
-    await waitFor(() => expect(mockedDeactivateDhcpApi).toBeCalledWith('/edgeDhcpServices/testDhcpId/venues/testVenueId/edgeClusters/testClusterId'))
+    await waitFor(() => expect(mockedDeactivateDhcpApi).toBeCalledWith('testDhcpId', 'testVenueId', 'testClusterId'))
   })
 
   it('should not trigger API when there is no change', async () => {

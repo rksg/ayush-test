@@ -14,18 +14,19 @@ import {
 import type { Rule, RuleObject } from 'antd/lib/form'
 
 // eslint-disable-next-line max-len
-type Props = Omit<DraggableTagSelectorProps, 'values' | 'onChange' | 'status' | 'customTagRules'> & {
+type Props = Omit<DraggableTagSelectorProps, 'values' | 'status' | 'customTagRules'> & {
   name: string
   rules?: Rule[]
   customTags?: {
     maxLength?: number
     customRules?: Rule[]
   }
+  readonly?: boolean
 }
 
 const DEFAULT_MAX_LENGTH = 24
-
-export const DraggableTagField = ({ name, rules = [], customTags, ...rest }: Props) => {
+// eslint-disable-next-line max-len
+export const DraggableTagField = ({ name, rules = [], customTags, onChange, readonly = false, ...rest }: Props) => {
   const form = Form.useFormInstance()
   const maxLength = customTags?.maxLength ?? DEFAULT_MAX_LENGTH
   const customRules = customTags?.customRules ?? []
@@ -80,11 +81,13 @@ export const DraggableTagField = ({ name, rules = [], customTags, ...rest }: Pro
               {...rest}
               values={values}
               onChange={(val) => {
+                onChange?.(val)
                 form.setFieldsValue({ [name]: val })
                 form.validateFields([name])
               }}
               status={status}
               customTagRules={customTagRules}
+              readonly={readonly}
             />
           )
         }}

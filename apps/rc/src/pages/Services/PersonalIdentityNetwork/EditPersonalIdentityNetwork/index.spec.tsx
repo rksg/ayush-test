@@ -6,7 +6,6 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { Features }               from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
@@ -62,6 +61,13 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+}))
+
 const mockEditPinRequest = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   useEdgePinActions: () => ({
@@ -74,8 +80,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         }])
       }, 300)
     })
-  }),
-  useIsEdgeFeatureReady: jest.fn()
+  })
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -296,7 +301,7 @@ describe('Edit PersonalIdentityNetwork - L2GRE', () => {
   const mockValidateEdgeClusterConfigFn = jest.fn()
 
   beforeEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     mockedUsedNavigate.mockClear()
     mockValidateEdgePinSwitchConfigMutation.mockClear()
     mockValidateEdgeClusterConfigFn.mockClear()
@@ -314,7 +319,7 @@ describe('Edit PersonalIdentityNetwork - L2GRE', () => {
 
   afterEach(() => {
     jest.mocked(useGetEdgePinByIdQuery).mockReset()
-    jest.mocked(useIsEdgeFeatureReady).mockReset()
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
   })
 
   it('should update PersonalIdentityNetwork successfully', async () => {
