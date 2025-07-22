@@ -49,20 +49,6 @@ console.error = (...args: unknown[]) => {
   originalError(...args)
 }
 
-const generateMockSwitchData = (count: number = 10, startIndex: number = 0) => {
-  return Array.from({ length: count }, (_, i) => ({
-    serialNumber: `SWITCH-${String(startIndex + i + 1).padStart(3, '0')}`,
-    model: (startIndex + i) % 2 === 0 ? 'ICX7550-48' : 'ICX7150-C12P',
-    shipDate: '2024-01-15T00:00:00.000Z',
-    createdDate: '2024-01-20T00:00:00.000Z',
-    visibleStatus: (startIndex + i) % 3 === 0 ? 'Hidden' : 'Visible'
-  }))
-}
-
-
-
-
-
 const mockCommonResult = {
   success: true,
   message: 'Operation completed successfully'

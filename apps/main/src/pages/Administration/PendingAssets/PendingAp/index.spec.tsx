@@ -49,8 +49,6 @@ console.error = (...args: unknown[]) => {
   originalError(...args)
 }
 
-
-
 const mockCommonResult = {
   success: true,
   message: 'Operation completed successfully'
@@ -652,8 +650,6 @@ describe('PendingAp', () => {
   })
 
   it('handles venue creation with venue parameter', async () => {
-    const mockVenue = { id: 'venue-1', name: 'Test Venue' }
-
     render(
       <Provider>
         <PendingAp />
