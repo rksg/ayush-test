@@ -61,9 +61,7 @@ describe('ApGroup Client Admission Control Settings', () => {
       </Provider>,
       { route: { params } }
     )
-    if (screen.queryByLabelText('loader')) {
-      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    }
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(await screen.findByTestId('client-admission-control-useVenueSettings')).toBeChecked()
     expect(
       await screen.findByTestId('client-admission-control-enable-read-only-24g')

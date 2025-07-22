@@ -60,6 +60,21 @@ const mspPayload = {
   sortOrder: 'ASC'
 }
 
+const mspPayloadTenantsQuery = {
+  searchString: '',
+  filters: {
+    tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
+    status: ['Active']
+  },
+  fields: ['id', 'name', 'tenantType', 'status', 'propertyCode'],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
 const getlspPayload = (parentTenantId: string | undefined) => ({
   ...mspPayload,
   filters: {
@@ -93,12 +108,16 @@ export function Brand360 () {
     ssidRegex: ssid,
     toggles: useIncidentToggles()
   }
-
+  const propertyIdToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
   const mspPropertiesData = useMspECListQuery(
-    { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+    {
+      params: { tenantId },
+      payload: propertyIdToggle ? mspPayloadTenantsQuery : mspPayload,
+      isNewUrl: propertyIdToggle
+    }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid),
       enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isLSP

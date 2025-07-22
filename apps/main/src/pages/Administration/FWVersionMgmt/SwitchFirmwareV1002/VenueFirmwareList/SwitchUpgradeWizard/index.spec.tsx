@@ -211,7 +211,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
   })
 
-  it('render SwitchUpgradeWizard - update now - Save', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard

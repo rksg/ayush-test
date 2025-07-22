@@ -144,11 +144,11 @@ h5.c5.ant-typography {
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -495,11 +495,11 @@ h5.c5.ant-typography {
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10f
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -846,7 +846,7 @@ h5.c5.ant-typography {
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
@@ -854,7 +854,7 @@ h5.c5.ant-typography {
               <b>
                 7.x
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -1201,7 +1201,7 @@ h5.c5.ant-typography {
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10f
               </b>
@@ -1209,7 +1209,7 @@ h5.c5.ant-typography {
               <b>
                 7.x
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -1556,11 +1556,11 @@ h5.c5.ant-typography {
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
