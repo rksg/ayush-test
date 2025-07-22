@@ -3,11 +3,10 @@ import React from 'react'
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
+import { SimpleListTooltip }                                                                     from '@acx-ui/components'
 import { ApDeviceStatusEnum, APExtended, NewAPModel, NewAPModelExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
 import { getIntl }                                                                               from '@acx-ui/utils'
-
-import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { APStatus } from '.'
 

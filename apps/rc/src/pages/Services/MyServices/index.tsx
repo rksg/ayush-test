@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { GridCol, GridRow, PageHeader }                                                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader }                                             from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount }      from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -26,6 +26,7 @@ import {
   ServiceOperation,
   ServiceType,
   useDhcpStateMap,
+  useIsEdgeFeatureReady,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
