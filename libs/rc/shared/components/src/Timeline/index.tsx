@@ -143,7 +143,8 @@ export const Timeline = (props: TimelineProps) => {
     <AntTimeline>
       {modifiedProps.length > 1
         ? modifiedProps
-          .filter(item => !/Update Switch .* Port Status/.test(item.description))
+          .filter(item => !(item.status === 'SUCCESS' &&
+              /Update Switch .* Port Status/.test(item.description)))
           .map((item, index) => [
             StartDot(item, index),
             EndDot(item, index)
