@@ -9,8 +9,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { SimpleListTooltip }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                           from '@acx-ui/rc/components'
 import {
   useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation, useGetVenuesQuery,

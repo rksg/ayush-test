@@ -28,6 +28,18 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
+// Helper function to evaluate enableSwitchFirmwareFilter to avoid non-serializable values in Redux
+export const evaluateEnableSwitchFirmwareFilter = (enableSwitchFirmwareFilter: boolean | CallableFunction | undefined): boolean => {
+  return typeof enableSwitchFirmwareFilter === 'function' ? enableSwitchFirmwareFilter() : Boolean(enableSwitchFirmwareFilter)
+}
+
+// Helper function to create firmware version message for health tabs
+export const createFirmwareVersionMessage = (isSwitchHealth10010eEnabled: boolean) => {
+  return {
+    switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d'
+  }
+}
+
 export const shouldAddFirmwareFilter = () =>
   window.location.pathname.includes('/health/wired')
     ? true
@@ -530,6 +542,192 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
+  switchIpv4MulticastUtilization: {
+    text: defineMessage({ defaultMessage: 'IPv4 Multicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchIpv4MulticastUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchIpv4MulticastUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv4 multicast route entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
+  switchIpv6MulticastUtilization: {
+    text: defineMessage({ defaultMessage: 'IPv6 Multicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchIpv6MulticastUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchIpv6MulticastUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv6 multicast route entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
+  switchIpv4UnicastUtilization: {
+    text: defineMessage({ defaultMessage: 'IPv4 Unicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchIpv4UnicastUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchIpv4UnicastUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv4 unicast route entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
+  switchIpv6UnicastUtilization: {
+    text: defineMessage({ defaultMessage: 'IPv6 Unicast Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchIpv6UnicastUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchIpv6UnicastUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where IPv6 unicast route entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
+  switchArpUtilization: {
+    text: defineMessage({ defaultMessage: 'ARP Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchArpUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchArpUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where ARP table entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
+  switchMacUtilization: {
+    text: defineMessage({ defaultMessage: 'MAC Table Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMacUtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchMacUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} Devices are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilization' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({
+        defaultMessage: 'Compliance metric of switches where Mac table entries are within the threshold of the configured/supported capacity.'
+      })
+    }
+  },
   switchCpuUtilization: {
     text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
@@ -779,6 +977,53 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
         'switchesTemperature',
         'switchPoeUtilization'
       ]
+    }
+  }
+  if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchInterfaceAnomalies')
+    kpis.performance.kpis.push('switchStormControl')
+    kpis.connection.kpis.push('switchDhcp')
+  }
+  return kpis
+}
+
+export const wiredKPIsForTabPhase2 = (is10010eKPIsEnabled = false) => {
+  const kpis = {
+    overview: {
+      kpis: [
+        'switchUplinkPortUtilization'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability'
+      ]
+    },
+    connection: {
+      kpis: [
+        'switchAuthentication'
+      ]
+    },
+    performance: {
+      kpis: [
+        'switchPortUtilization',
+        'switchUplinkPortUtilization'
+      ]
+    },
+    infrastructure: {
+      kpis: {
+        System: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ],
+        Table: [
+          'switchIpv4UnicastUtilization',
+          'switchIpv6UnicastUtilization',
+          'switchIpv4MulticastUtilization',
+          'switchIpv6MulticastUtilization',
+          'switchArpUtilization',
+          'switchMacUtilization'
+        ]
+      }
     }
   }
   if (is10010eKPIsEnabled) {

@@ -5,6 +5,7 @@ import styled      from 'styled-components'
 
 import {
   Button,
+  SimpleListTooltip,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -13,8 +14,6 @@ import { ConfigurationSolid }                from '@acx-ui/icons'
 import { useWebAuthTemplateListQuery }       from '@acx-ui/rc/services'
 import { AccessSwitch, defaultTemplateData } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-
-import { SimpleListTooltip } from '../../SimpleListTooltip'
 
 export interface AccessSwitchTableDataType extends AccessSwitch {
   distributionSwitchName: string

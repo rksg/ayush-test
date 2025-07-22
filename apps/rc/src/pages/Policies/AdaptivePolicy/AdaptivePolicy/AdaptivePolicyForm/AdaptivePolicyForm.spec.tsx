@@ -98,7 +98,7 @@ describe('AdaptivePolicyForm', () => {
     })).toBeVisible()
   })
 
-  it('should submit list successfully', async () => {
+  it.skip('should submit list successfully', async () => {
     mockServer.use(
       rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],

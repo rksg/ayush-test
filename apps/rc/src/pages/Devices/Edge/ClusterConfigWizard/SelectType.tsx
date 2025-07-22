@@ -14,11 +14,10 @@ import {
 import {
   ClusterConfigWizardSubtitle,
   EdgeClusterTypeCard,
-  SpaceWrapper,
-  useIsEdgeFeatureReady
+  SpaceWrapper
 } from '@acx-ui/rc/components'
-import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                       from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
 import * as UI                        from './styledComponents'

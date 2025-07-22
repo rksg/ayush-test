@@ -1,9 +1,8 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import {
   useDelVLANPoolPolicyMutation,
   useGetVenuesQuery,

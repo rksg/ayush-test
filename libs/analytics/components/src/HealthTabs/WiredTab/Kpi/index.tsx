@@ -4,7 +4,8 @@ import {
 } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
-  wiredKPIsForTab
+  wiredKPIsForTab,
+  wiredKPIsForTabPhase2
 } from '@acx-ui/analytics/utils'
 import { Loader }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -39,7 +40,14 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
     useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
   ].some(Boolean)
 
-  const { kpis } = wiredKPIsForTab(isSwitchHealth10010eEnabled)[tab as keyof typeof wiredKPIsForTab]
+  const isSwitchHealthPhase2Enabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_PHASE2_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_PHASE2_TOGGLE)
+  ].some(Boolean)
+
+  const kpiTabs = isSwitchHealthPhase2Enabled ? wiredKPIsForTabPhase2 : wiredKPIsForTab
+
+  const { kpis } = kpiTabs(isSwitchHealth10010eEnabled)[tab as keyof typeof wiredKPIsForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
