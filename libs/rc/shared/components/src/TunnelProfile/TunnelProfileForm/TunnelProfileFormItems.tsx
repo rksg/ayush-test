@@ -99,6 +99,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelType = useWatch('tunnelType')
+  const edgeClusterId = useWatch('edgeClusterId')
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -142,7 +143,9 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
       item.serviceType === EdgeServiceTypeEnum.SD_LAN ||
     // eslint-disable-next-line max-len
-    (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
+    (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE))
+    .map(item => item.edgeClusterId)
+    .filter(item => item !== edgeClusterId)
 
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
