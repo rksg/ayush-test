@@ -51,6 +51,7 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+COPY --from=nx-cache /dist /dist
 
 # # Remove files and folders older than 24 hours from the nx cache
 # RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
@@ -87,12 +88,12 @@ RUN touch lint-done
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 # FROM build-base as acx-ui-tslint
 # Multistage: trigger run
-# COPY --from=acx-ui-lint /app/lint-done /tmp/
+# COPY --from=acx-ui-group-test /app/lint-done /tmp/
 # RUN node ./node_modules/.bin/nx run ra:tsc
 # RUN touch tslint-done
 ###############################################################
 
-COPY --from=acx-ui-lint /app/lint-done /tmp/
+COPY --from=acx-ui-group-test /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
