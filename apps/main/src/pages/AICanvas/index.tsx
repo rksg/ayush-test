@@ -28,8 +28,7 @@ import {
   useSendFeedbackMutation
 } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
-
-import RuckusAiButton from '../RuckusAiButton'
+import { useUserProfileContext }                  from '@acx-ui/user'
 
 import Canvas, { CanvasRef, Group }                   from './Canvas'
 import { DraggableChart }                             from './components/WidgetChart'
@@ -56,7 +55,7 @@ const Message = (props:{
     showCanvas: boolean,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
-  const { chat, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
+  const { chat, sessionId, groups, canvasRef, onUserFeedback } = props
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const messageTailRef = useRef<HTMLDivElement>(null)
   const { $t } = useIntl()
@@ -91,8 +90,11 @@ const Message = (props:{
           ?
           <div className='chat-bubble'>
             {chat.role === MessageRole.AI &&
-              <div style={{ marginRight: '10px' }}><RuckusAiButton /></div>}
+              <div style={{ marginRight: '10px', display: 'flex', height: '25px' }}>
+                <RuckusAiDog size='lg'/>
+              </div>}
             <div
+              className='chat-bubble-text'
               ref={chatBubbleRef}
               dangerouslySetInnerHTML={{ __html: chat.text }} />
           </div>
@@ -112,6 +114,13 @@ const Message = (props:{
       removeShadowCard={canvasRef?.current?.removeShadowCard}
       /> }
       {
+        chat.role === MessageRole.AI && chat.agent === 'system' &&
+        <div className='onboarding-actions'>
+          <div>Start Onboarding Assistant</div>
+          <div>Maybe later</div>
+        </div>
+      }
+      {
         chat.created &&
         <div ref={messageTailRef}
           data-testid='messageTail'
@@ -123,7 +132,7 @@ const Message = (props:{
             }
           </div>
           {
-            chat.role === MessageRole.AI &&
+            chat.role === MessageRole.AI && chat.agent !== 'system' &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 data-testid='thumbs-up-btn'
@@ -161,9 +170,14 @@ const Messages = memo((props:{
   const { $t } = useIntl()
   const welcomeMessage = {
     id: 'welcomeMessage',
+    created: moment().toISOString(),
+    agent: 'system',
     role: 'AI',
     text: $t({ defaultMessage:
-      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+      // eslint-disable-next-line max-len
+      'Let’s get your network up and running! I’ll guide you step by step to set it up quickly and correctly. Just click below to launch the Onboarding Assistant.'
+      // 'I am RUCKUS digital system engineer, you can ask me anything about your network or choose a quick default suggestion.'
+    })
   }
 
   const { moreloading, chats, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
@@ -615,6 +629,10 @@ export default function AICanvasModal (props: {
   }
 
   const isStopAllowed = aiBotLoading && !!streamingMessageIds.length
+  const {
+    data: userProfileData
+  } = useUserProfileContext()
+  const userName = userProfileData?.firstName || userProfileData?.lastName || ''
 
   return (
     <UI.ChatModal
@@ -713,8 +731,7 @@ export default function AICanvasModal (props: {
                           fontFamily: 'Montserrat',
                           lineHeight: '45px'
                         }}>
-                          {/* {`${$t({ defaultMessage: 'Hello' })} ${name},`} */}
-                          Hello
+                          {`${$t({ defaultMessage: 'Hello' })} ${userName},`}
                         </span>
                         <span style={{
                           fontSize: '24px',

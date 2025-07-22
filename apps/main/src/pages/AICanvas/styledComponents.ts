@@ -338,6 +338,30 @@ display: flex;
         display: flex;
         flex-direction: column;
       }
+      .onboarding-actions {
+        margin-left: 51px;
+        margin-bottom: 10px;
+        display: flex;
+        div{
+          display: flex;
+          background-color: var(--acx-primary-white);
+          color: var(--acx-accents-blue-55);
+          border: 1.3px solid var(--acx-accents-blue-55);
+          border-radius: 16px;
+          width: fit-content;
+          padding: 6px 9px;
+          cursor: pointer;
+          float: left;
+          margin-right: 10px;
+          box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+          &:hover{
+            // border: 1.3px solid var(--acx-accents-blue-55);
+          }
+          svg {
+            margin-left: 3px;
+          }
+        }
+      }
       .loading {
         display: flex;
         justify-content: center;
@@ -366,14 +390,17 @@ display: flex;
       }
       .chat-bubble {
         width: fit-content;
-        max-width: 90%;
+        max-width: 95%;
         border-radius: 16px 16px 16px 0px;
-        padding: 16px 0 0 16px;
+        padding: 16px 0 0 0px;
         margin: 7px;
         margin-left: 10px;
         line-height: 18px;
         display: flex;
-        align-items: center;
+        .chat-bubble-text {
+          display: flex;
+          align-items: center;
+        }
       }
       .chat-bubble {
         align-self: flex-start;
@@ -410,10 +437,11 @@ display: flex;
       .ai-message-tail {
         display: grid;
         grid-template-columns: 1fr auto;
-        margin-right: 7px;
+        margin-right: 8px;
+        margin-top: -7px;
         min-height: 25px;
         align-items: center;
-        width: 170px;
+        width: 175px;
         &.fixed {
           width: 300px;
         }
@@ -422,9 +450,6 @@ display: flex;
         }
         &.dynamic {
           align-self: flex-start;
-        }
-        .timestamp {
-          // padding: 6px 0px 0px 0px;
         }
       }
       .message-tail {
@@ -436,14 +461,14 @@ display: flex;
       .timestamp {
         color: var(--acx-neutrals-80);
         font-size: 10px;
-        margin-left: 65px;
+        margin-left: 52px;
         &.right{
           justify-content: end;
           margin-right: 7px;
         }
       }
       .message .user-feedback {
-        // display: none;
+        display: none;
       }
       .message:hover .user-feedback {
         display: block;
