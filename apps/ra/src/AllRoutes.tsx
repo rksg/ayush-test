@@ -168,6 +168,11 @@ function AllRoutes () {
       <Route path='occupancy' element={check('READ_OCCUPANCY', <div>Occupancy</div>)} />
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
+        <Route path='settings'
+          element={check('READ_TENANT_SETTINGS',
+            <AccountManagement tab={AccountManagementTabEnum.SETTINGS} />
+          )}
+        />
         <Route path='onboarded'
           element={check(canAccessOnboardedSystems(), <AccountManagement
             tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}

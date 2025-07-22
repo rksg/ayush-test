@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
+import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/utils'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier }                                                                                    from '@acx-ui/user'
 

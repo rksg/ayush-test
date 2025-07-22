@@ -4,14 +4,13 @@ import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Button, GridRow, Loader }               from '@acx-ui/components'
-import { EdgeOverviewLagTable, EdgePermissions } from '@acx-ui/edge/components'
-import { Features }                              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                 from '@acx-ui/rc/components'
-import { EdgeLagStatus, EdgeStatus }             from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes }                            from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
+import { Button, GridRow, Loader }                          from '@acx-ui/components'
+import { EdgeOverviewLagTable, EdgePermissions }            from '@acx-ui/edge/components'
+import { Features }                                         from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgeStatus, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                       from '@acx-ui/types'
+import { hasPermission }                                    from '@acx-ui/user'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 

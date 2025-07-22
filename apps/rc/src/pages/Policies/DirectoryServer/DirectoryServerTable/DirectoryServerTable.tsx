@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
 import {
   useDeleteDirectoryServerMutation,
   useGetDirectoryServerViewDataListQuery,

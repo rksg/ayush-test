@@ -6,7 +6,6 @@ import { Features }                  from '@acx-ui/feature-toggle'
 import {
   EdgeStatusLight,
   useEdgeClusterActions,
-  useIsEdgeFeatureReady,
   EdgeClusterStatusLabel
 } from '@acx-ui/rc/components'
 import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
@@ -24,7 +23,8 @@ import {
   EdgeStatusEnum,
   isOtpEnrollmentRequired,
   ClusterHighAvailabilityModeEnum,
-  EdgeUrlsInfo
+  EdgeUrlsInfo,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
