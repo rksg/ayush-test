@@ -248,6 +248,22 @@ describe('CaptiveNetworkForm-WISPr', () => {
   })
 
   describe('RedirectUrlInput functionality', () => {
+    const params = { tenantId: 'tenant-id' }
+    beforeEach(() => {
+      mockServer.use(
+        rest.get(MspUrlsInfo.getMspEcProfile.url, (_req, res, ctx) =>
+          res(ctx.json(mspEcProfileData))
+        ),
+        rest.post(
+          CommonUrlsInfo.getVenues.url,
+          (_, res, ctx) => res(ctx.json({ data: [{ name: 'venue1' }] }))
+        ),
+        rest.get(CommonUrlsInfo.getExternalProviders.url,
+          (_, res, ctx) => {
+            return res(ctx.json( externalWifiProviders ))
+          })
+      )
+    })
 
     // Mock data for testing
     const mockNetworkWithRedirectUrl = {
@@ -291,7 +307,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
               </StepsFormLegacy>
             </MLOContext.Provider>
           </NetworkFormContext.Provider>
-        </Provider>
+        </Provider>,
+        { route: { params } }
       )
 
       // Check if the redirectCheckbox is checked
@@ -323,7 +340,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
               </StepsFormLegacy>
             </MLOContext.Provider>
           </NetworkFormContext.Provider>
-        </Provider>
+        </Provider>,
+        { route: { params } }
       )
 
       // Check if the redirectCheckbox is checked
@@ -355,7 +373,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
               </StepsFormLegacy>
             </MLOContext.Provider>
           </NetworkFormContext.Provider>
-        </Provider>
+        </Provider>,
+        { route: { params } }
       )
 
       // Check if the redirectCheckbox is not checked
@@ -385,7 +404,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
               </StepsFormLegacy>
             </MLOContext.Provider>
           </NetworkFormContext.Provider>
-        </Provider>
+        </Provider>,
+        { route: { params } }
       )
 
       // Check if the redirectCheckbox is not checked

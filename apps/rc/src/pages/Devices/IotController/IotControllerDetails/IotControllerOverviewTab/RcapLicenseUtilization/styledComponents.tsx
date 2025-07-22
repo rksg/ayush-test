@@ -10,6 +10,6 @@ export const Container = styled.div`
   }
 
   text {
-    font-size: 18px !important
+    font-size: 14px !important
   }
 `

@@ -8,11 +8,12 @@ import { useNavigate, useParams }         from 'react-router-dom'
 import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
 import { emptyDualWanLinkSettings }                                               from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }                        from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
 import {
+  useIsEdgeFeatureReady,
   ClusterHighAvailabilityModeEnum,
   EdgeIpModeEnum,
   EdgeLag,
@@ -357,7 +358,7 @@ export const InterfaceSettings = () => {
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
           content: $t({
-            defaultMessage: `You are about to reduce the number of enabled WAN ports, 
+            defaultMessage: `You are about to reduce the number of enabled WAN ports,
             which will disable the Dual WAN feature.
             Are you sure you want to proceed?`
           }),

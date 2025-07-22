@@ -41,7 +41,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   PortalPreviewModal: () => <div data-testid='PortalPreviewModal' />,
-  SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />,
   getLanguage: () => 'English',
   initialPortalData: {
     network: [],

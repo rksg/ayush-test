@@ -18,10 +18,9 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { useEdgeNokiaOltTable } from './pages/Devices/Edge/Olt/OltTable'
-import { WirelessTabsEnum }     from './pages/Users/Wifi/ClientList'
-import { WiredTabsEnum }        from './pages/Users/Wired'
-import RcRoutes                 from './Routes'
+import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import { WiredTabsEnum }    from './pages/Users/Wired'
+import RcRoutes             from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
   ...jest.requireActual('./pages/Devices/Wifi/ApsTable'),
@@ -46,6 +45,14 @@ jest.mock('./pages/Devices/Wifi/ApGroupsTable', () => ({
 jest.mock('./pages/Devices/Wifi/ApDetails', () => () => {
   return <div data-testid='ApDetails' />
 })
+
+jest.mock('./pages/Devices/Switch/SwitchDetails', () => () => {
+  return <div data-testid='SwitchDetails' />
+})
+
+jest.mock('./pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage', () => ({
+  SwitchClientDetailsPage: () => <div data-testid='SwitchClientDetailsPage' />
+}))
 
 jest.mock('./pages/Devices/Switch/SwitchesTable', () => ({
   ...jest.requireActual('./pages/Devices/Switch/SwitchesTable'),
@@ -198,22 +205,41 @@ jest.mock('./pages/Users/Wifi/GuestManagerPage', () => () => {
   return <div data-testid='GuestManagerPage' />
 })
 
+jest.mock('./pages/Devices/Edge', () => () => {
+  return <div data-testid='Edge' />
+})
 jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
   return <div data-testid='AddEdge' />
 })
-
+jest.mock('./pages/Devices/Edge/AddEdgeCluster', () => () => {
+  return <div data-testid='AddEdgeCluster' />
+})
 jest.mock('./pages/Devices/Edge/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
-
+jest.mock('./pages/Devices/Edge/EditEdgeCluster', () => () => {
+  return <div data-testid='EditEdgeCluster' />
+})
+jest.mock('./pages/Devices/Edge/ClusterConfigWizard', () => () => {
+  return <div data-testid='ClusterConfigWizard' />
+})
+jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
+  return <div data-testid='ClusterDetails' />
+})
+jest.mock('./pages/Devices/Edge/EdgeDetails', () => () => {
+  return <div data-testid='EdgeDetails' />
+})
 jest.mock('./pages/Devices/Edge/Olt/OltDetails', () => ({
   EdgeNokiaOltDetails: () => <div data-testid='EdgeNokiaOltDetails' />
 }))
 
 jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
-  ...jest.requireActual('./pages/Devices/Edge/Olt/OltTable'),
   __esModule: true,
-  default: jest.fn().mockReturnValue(undefined)
+  default: () => ({
+    title: 'EdgeOltTab',
+    headerExtra: [],
+    component: <div data-testid='EdgeNokiaOltTable' />
+  })
 }))
 
 jest.mock('./pages/Devices/IotController', () => ({
@@ -337,10 +363,19 @@ jest.mock('@acx-ui/rc/components', () => ({
   SamlIdpDetail: () => <div data-testid='SamlIdpDetail' />,
   IpsecForm: () => <div data-testid='IpsecForm' />,
   ConnectionMeteringFormMode: {},
-  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
   IdentityForm: () => <div data-testid='IdentityForm' />,
   IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />,
   PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />
+}))
+
+jest.mock('@acx-ui/reports/components', () => ({
+  EmbeddedReport: () => <div data-testid='EmbeddedReport' />,
+  ReportType: {
+    APPLICATIONS: 'applications',
+    WIRELESS: 'wireless',
+    WIRELESS_REPORT: 'wireless/reports/wireless'
+  },
+  usePageHeaderExtra: () => [<div data-testid='PageHeaderExtra' />]
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {
@@ -453,7 +488,8 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useDhcpStateMap: jest.fn(),
-  useMdnsProxyStateMap: jest.fn()
+  useMdnsProxyStateMap: jest.fn(),
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 describe('RcRoutes: Devices', () => {
@@ -602,12 +638,6 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Devices > Edge Optical', () => {
-    jest.mocked(useEdgeNokiaOltTable).mockReturnValue({
-      title: 'EdgeOltTab',
-      headerExtra: [],
-      component: <div data-testid='EdgeNokiaOltTable' />
-    })
-
     test('should navigate to devices edge optical list', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {

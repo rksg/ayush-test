@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }                                                           from '@acx-ui/components'
+import { Button, PageHeader, SimpleListTooltip, Table, TableProps, Loader, showActionModal, Tooltip }                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
-import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                                                                        from '@acx-ui/rc/components'
+import { DEFAULT_GUEST_DHCP_NAME }                                                                                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetDHCPProfileListViewModelWithModeQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
