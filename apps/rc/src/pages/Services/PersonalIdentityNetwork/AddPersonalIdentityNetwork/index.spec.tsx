@@ -4,10 +4,9 @@ import { ReactNode } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgePinUrls }           from '@acx-ui/rc/utils'
-import { Provider }              from '@acx-ui/store'
+import { Features }    from '@acx-ui/feature-toggle'
+import { EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }    from '@acx-ui/store'
 import {
   render,
   screen,
@@ -49,9 +48,15 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+}))
+
 const mockAddPinRequest = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       mockAddPinRequest(req.payload)
@@ -169,7 +174,7 @@ describe('Add PersonalIdentityNetwork - L2GRE', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
   beforeEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     mockedUsedNavigate.mockClear()
     mockAddPinRequest.mockClear()
 
@@ -181,7 +186,7 @@ describe('Add PersonalIdentityNetwork - L2GRE', () => {
   })
 
   afterEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockReset()
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
   })
 
   it('should create PersonalIdentityNetwork successfully', async () => {
