@@ -102,7 +102,8 @@ export interface AP {
   switchId?: string,
   switchName?: string,
   switchPort?: string,
-  switchSerialNumber?: string
+  switchSerialNumber?: string,
+  poeUnderPowered?: boolean
 }
 
 export interface NewAPModel {
@@ -209,7 +210,8 @@ export interface NewAPModelExtended extends NewAPModel {
   incompatible?: number
   compatibilityStatus?: string
   children?: NewAPModel[]
-  deviceGroupName?: string
+  deviceGroupName?: string,
+  poeUnderPowered?: boolean
 }
 export interface NewCelluarInfo {
   activeSim: string,

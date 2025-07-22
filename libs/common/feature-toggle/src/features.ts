@@ -296,6 +296,7 @@ export enum Features {
   PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
+  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle'
 }
 
