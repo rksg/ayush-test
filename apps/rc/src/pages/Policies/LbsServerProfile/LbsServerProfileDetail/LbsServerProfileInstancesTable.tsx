@@ -2,9 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                       from '@acx-ui/rc/components'
-import { useVenuesListQuery }                      from '@acx-ui/rc/services'
+import { Button, Card, Loader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { useVenuesListQuery }                                         from '@acx-ui/rc/services'
 import {
   LbsServerProfileViewModel,
   Venue

@@ -8,7 +8,7 @@ import {
   StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached }               from '@acx-ui/rc/components'
+import { useIsWifiCallingProfileLimitReached }                                      from '@acx-ui/rc/components'
 import {
   ServiceOperation,
   ServiceType,
@@ -17,6 +17,7 @@ import {
   isServiceCardEnabled,
   isServiceCardSetEnabled,
   useDhcpStateMap,
+  useIsEdgeFeatureReady,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'

@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                                         from '@acx-ui/components'
 import { Features }                                                  from '@acx-ui/feature-toggle'
 import { CheckMark }                                                 from '@acx-ui/icons'
-import { useIsEdgeFeatureReady }                                     from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                                     from '@acx-ui/rc/utils'
 import { EdgeIpModeEnum, EdgePortTypeEnum, getEdgePortIpModeString } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'

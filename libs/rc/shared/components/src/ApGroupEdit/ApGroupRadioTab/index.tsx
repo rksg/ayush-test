@@ -2,7 +2,9 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import {
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
@@ -10,15 +12,20 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
+import { getOpsApi }              from '@acx-ui/utils'
 
 import { usePathBasedOnConfigTemplate }           from '../../configTemplates'
 import { useApGroupConfigTemplateOpsApiSwitcher } from '../apGroupConfigTemplateApiSwitcher'
 import { ApGroupEditContext }                     from '../context'
 
-import { RadioSettings } from './RadioSettings'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
+import { RadioSettings }                  from './RadioSettings'
+
 
 export function ApGroupRadioTab () {
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
   const params = useParams()
   const navigate = useNavigate()
 
@@ -28,9 +35,11 @@ export function ApGroupRadioTab () {
   )
 
   const [
-    isAllowEditRadio
+    isAllowEditRadio,
+    isAllowEditClientAdmissionControl
   ] = [
-    hasAllowedOperations([radioSettingsOpsApi])
+    hasAllowedOperations([radioSettingsOpsApi]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)])
   ]
 
   const {
@@ -46,6 +55,8 @@ export function ApGroupRadioTab () {
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
+  const clientAdmissionControlSettingLink = $t({ defaultMessage: 'Client Admission Control' })
+  const clientAdmissionControlSettingsTitle = $t({ defaultMessage: 'Client Admission Control' })
 
   const anchorItems = [{
     title: wifiSettingLink,
@@ -59,9 +70,30 @@ export function ApGroupRadioTab () {
     )
   }]
 
+  if (isApGroupMoreParameterPhase3Enabled) {
+    anchorItems.push({
+      title: clientAdmissionControlSettingLink,
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle id='client-admission-control'>
+            { clientAdmissionControlSettingsTitle }
+            <Tooltip
+              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+                'based on the connectivity thresholds set per radio.' })}
+              placement='right'>
+              <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }} />
+            </Tooltip>
+          </StepsFormLegacy.SectionTitle>
+          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
+        </>
+      )
+    })
+  }
+
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
       await editRadioContextData.updateWifiRadio?.()
+      await editRadioContextData.updateClientAdmissionControl?.()
 
       resetEditContextData()
 
@@ -79,6 +111,7 @@ export function ApGroupRadioTab () {
   const handleDiscardChanges = async () => {
     try {
       await editRadioContextData.discardWifiRadioChanges?.()
+      await editRadioContextData.discardClientAdmissionControl?.()
 
       resetEditContextData()
 
