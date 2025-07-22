@@ -8,7 +8,7 @@ import { TransferItem }          from 'antd/lib/transfer'
 import { TransferProps } from '../index'
 
 // eslint-disable-next-line max-len
-export const renderTransferTable = ( props: Extract<TransferProps, { type: 'table' }>, transferProps: TransferListBodyProps<TransferItem> ) => {
+export const renderTransferTable = (props: TransferProps, transferProps: TransferListBodyProps<TransferItem> ) => {
   const {
     leftColumns,
     rightColumns,

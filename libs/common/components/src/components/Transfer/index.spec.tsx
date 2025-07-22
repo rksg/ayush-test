@@ -8,7 +8,7 @@ import { IntlProvider } from 'react-intl'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Transfer } from '.'
+import { Transfer, TransferType } from '.'
 
 
 describe('Transfer', () => {
@@ -88,7 +88,7 @@ describe('Transfer', () => {
       return <IntlProvider locale='en'>
         <Transfer
           listStyle={{ width: 400, height: 400 }}
-          type={'table'}
+          type={TransferType.TABLE}
           tableData={itemOptions}
           leftColumns={leftColumns}
           rightColumns={rightColumns}

@@ -1,81 +1,53 @@
-import { Checkbox, Radio, Tree } from 'antd'
-import { TransferItem }          from 'antd/lib/transfer'
+import { Checkbox, Radio }  from 'antd'
+import { DataNode }         from 'antd/es/tree'
+import { TransferItem }     from 'antd/lib/transfer'
+import { AntTreeNodeProps } from 'antd/lib/tree'
+import _                    from 'lodash'
+
+import { MinusSquareOutlined, PlusSquareOutlined } from '@acx-ui/icons-new'
+
+import { TransferProps } from '../index'
+import * as UI           from '../styledComponents'
 
 import type { TransferListBodyProps } from 'antd/es/transfer/ListBody'
 
-export function flattenTree (treeData: TransferItem[]): TransferItem[] {
-  const result: TransferItem[] = []
+export type TreeTransferItem = TransferItem & {
+  key: string
+  groupKey?: string
+}
 
-  const traverse = (nodes: TransferItem[]) => {
+export function flattenTree (treeData: TreeTransferItem[]): TreeTransferItem[] {
+  const result: TreeTransferItem[] = []
+  const traverse = (nodes: TreeTransferItem[], parentGroupKey?: string) => {
     nodes.forEach((node) => {
       if (node.children) {
-        traverse(node.children)
+        traverse(node.children, node.key)
       } else {
-        result.push(node)
+        result.push({ ...node, groupKey: parentGroupKey })
       }
     })
   }
-
   traverse(treeData)
   return result
 }
 
-export function filterTree (treeData: TransferItem[], search: string): TransferItem[] {
-  const lowerSearch = search?.toLowerCase() || ''
-
-  const filter = (nodes: TransferItem[]): TransferItem[] => {
-    const result: TransferItem[] = []
-
-    nodes.forEach((node) => {
-      const name = (node.name || node.title || '').toString().toLowerCase()
-      const children = node.children ? filter(node.children) : []
-
-      if (name.includes(lowerSearch) || children.length > 0) {
-        result.push({
-          ...node,
-          children
-        })
-      }
-    })
-
-    return result
-  }
-
-  return search ? filter(treeData) : treeData
-}
-
 export function renderTransferGroupedTree (
   props: TransferProps,
-  transferProps: TransferListBodyProps<TransferItem>,
-  searchText: string
+  transferProps: TransferListBodyProps<TreeTransferItem>
 ) {
-  const { direction } = transferProps
-  if (direction === 'right') {
-    return null
-  }
+  if (transferProps.direction === 'right') return null
 
-  const dataSource = props.dataSource || []
-  const targetKeys = props.targetKeys || []
-  const selectedKeys = props.selectedKeys || []
-  //const onTargetKeysChange = props.onChange
-  const onSelectedKeysChange = props.onSelectChange
+  const {
+    dataSource = [],
+    targetKeys = [],
+    selectedKeys = [],
+    onSelectChange: onSelectedKeysChange,
+    enableGroupSelect = false,
+    enableMultiselect = true
+  } = props
 
-  const enableGroupSelect = props.enableGroupSelect ?? false
-  const enableMultiselect = props.enableMultiselect ?? true
-  const disableGroupSelect = !enableGroupSelect || !enableMultiselect
-
-  const filteredTreeData = filterTree(dataSource, searchText) //TODO: after canel
-
-  const getGroupSelectedMap = () => {
-    const map = new Map<string, string>()
-    targetKeys.forEach((key) => {
-      const [group] = key.split('-item-')
-      map.set(group, key)
-    })
-    return map
-  }
-
-  const groupSelectedMap = enableMultiselect ? new Map() : getGroupSelectedMap()
+  const flattenedData = flattenTree(dataSource as TreeTransferItem[])
+  const isGroupSelectable = enableGroupSelect && enableMultiselect
 
   const handleItemSelect = (key: string) => {
     const alreadyInTarget = targetKeys.includes(key)
@@ -91,111 +63,113 @@ export function renderTransferGroupedTree (
     }
   }
 
-  const getChildrenKeys = (groupKey: string) => {
-    const group = dataSource.find((g: TransferItem) => g.key === groupKey)
-    return group?.children?.map((child: TransferItem) => child.key) || []
-  }
-
   const handleGroupCheck = (groupKey: string) => {
-    const childrenKeys = getChildrenKeys(groupKey)
-    const isAllSelected = childrenKeys.every((key: string) => selectedKeys.includes(key))
+    const availableChildrenKeys = flattenedData
+      .filter(item => item.groupKey === groupKey && !targetKeys.includes(item.key))
+      .map(item => item.key)
+
+    const isAllSelected = availableChildrenKeys.every((key: string) => selectedKeys.includes(key))
     const newSelectedKeys = isAllSelected
-      ? selectedKeys.filter((key) => !childrenKeys.includes(key))
-      : Array.from(new Set([...selectedKeys, ...childrenKeys]))
+      ? selectedKeys.filter((key) => !availableChildrenKeys.includes(key))
+      : Array.from(new Set([...selectedKeys, ...availableChildrenKeys]))
+
     onSelectedKeysChange?.(newSelectedKeys, [])
   }
 
-  const generateTree = (treeNodes: TransferItem[]) =>
-    treeNodes.map((node) => {
-      const { children, key } = node
-      const isGroupLevel = node.isGroupLevel
+  const renderGroupNode = (node: TreeTransferItem) => {
+    const { children, key } = node
+    const childrenKeys = children.map((child: TreeTransferItem) => child.key)
+    const transferredKeys = childrenKeys.filter((key: string) => targetKeys.includes(key))
+    const availableChildrenKeys = _.difference(childrenKeys, transferredKeys)
+    const selectedChildren = _.intersection(availableChildrenKeys, selectedKeys)
 
-      if (isGroupLevel) {
-        const childrenKeys = children.map((child: TransferItem) => child.key)
-        const transferredChildren = childrenKeys.filter((key: string) => targetKeys.includes(key))
-        const leftChildren = childrenKeys.filter((key: string) => !targetKeys.includes(key))
-        const selectedChildren = leftChildren.filter((key: string) => selectedKeys.includes(key))
-        const allTransferred = transferredChildren.length === childrenKeys.length
-        const allSelected = allTransferred
-        || (selectedChildren.length === leftChildren.length && leftChildren.length > 0)
-        const someSelected = !allTransferred
-        && selectedChildren.length > 0 && selectedChildren.length < leftChildren.length
+    const allTransferred = transferredKeys.length === childrenKeys.length
+    const allSelected = allTransferred
+      // eslint-disable-next-line max-len
+      || (selectedChildren.length === availableChildrenKeys.length && availableChildrenKeys.length > 0)
+    const someSelected = !allTransferred
+      && selectedChildren.length > 0 && selectedChildren.length < availableChildrenKeys.length
 
-        return {
-          ...node,
-          title: (
-            <div
-              onClick={(e) => {
-                e.stopPropagation()
-                if (!disableGroupSelect && !allTransferred) {
-                  handleGroupCheck(key)
-                }
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                cursor: disableGroupSelect || allTransferred ? 'not-allowed' : 'pointer',
-                userSelect: 'none'
-              }}
-            >
-              {!disableGroupSelect && (
-                <Checkbox
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  disabled={allTransferred}
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ marginRight: 8 }}
-                />
-              )}
-              {typeof node.name === 'string' ? node.name : node.title}
-            </div>
-          ),
-          children: generateTree(children)
-        }
-      }
+    return {
+      ...node,
+      title: (
+        <UI.TreeItem
+          selectable={isGroupSelectable}
+          disabled={isGroupSelectable && allTransferred}
+          style={{ userSelect: 'none' }}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (isGroupSelectable && !allTransferred) {
+              handleGroupCheck(key)
+            }
+          }}
+        >
+          {isGroupSelectable && (
+            <Checkbox
+              checked={allSelected}
+              indeterminate={someSelected}
+              disabled={allTransferred}
+              style={{ pointerEvents: 'none' }}
+            />
+          )}
+          { node.name }
+        </UI.TreeItem>
+      ),
+      children: generateTree(children)
+    }
+  }
 
-      const [groupKey] = key?.split('-item-')
-      const alreadySelected = targetKeys.includes(key)
-      let disabled = alreadySelected
+  const renderLeafNode = (node: TreeTransferItem) => {
+    const { key } = node
+    const isItemSelected = selectedKeys.includes(key) || targetKeys.includes(key)
+    let shouldDisabled = targetKeys.includes(key)
 
-      if (!enableMultiselect) {
-        const selectedInGroup = groupSelectedMap.get(groupKey)
-        if (selectedInGroup && selectedInGroup !== key) {
-          disabled = true
-        }
-      }
+    if (!enableMultiselect) {
+      const item = flattenedData.find((item: TreeTransferItem) => item.key === key)
+      const targetGroupKeys = flattenedData
+        .filter((item: TreeTransferItem) => targetKeys.includes(item?.key || ''))
+        .map((item: TreeTransferItem) => item.groupKey)
 
-      const isSelected = targetKeys.includes(key) || selectedKeys.includes(key)
+      shouldDisabled = targetGroupKeys.includes(item?.groupKey)
+    }
 
-      return {
-        ...node,
-        checkable: false,
-        disabled,
-        title: (
-          <div
-            onClick={() => !disabled && handleItemSelect(key)}
-            style={{ display: 'flex', alignItems: 'center',
-              cursor: disabled ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {enableMultiselect ? (
-              <Checkbox checked={isSelected} disabled={disabled} style={{ marginRight: 8 }} />
-            ) : (
-              <Radio checked={isSelected} disabled={disabled} style={{ marginRight: 8 }} />
-            )}
-            {typeof node.name === 'string' ? node.name : node.title}
-          </div>
-        )
-      }
-    })
+    return {
+      ...node,
+      checkable: false,
+      disabled: shouldDisabled,
+      title: (
+        <UI.TreeItem
+          disabled={shouldDisabled}
+          onClick={() => !shouldDisabled && handleItemSelect(key)}
+        >
+          { enableMultiselect
+            ? <Checkbox checked={isItemSelected} disabled={shouldDisabled} />
+            : <Radio checked={isItemSelected} disabled={shouldDisabled} />
+          }
+          {typeof node.name === 'string' ? node.name : node.title}
+        </UI.TreeItem>
+      )
+    }
+  }
+
+  const generateTree = (nodes: TreeTransferItem[]): DataNode[] => {
+    return nodes.map(node =>
+      node.isGroupLevel ? renderGroupNode(node) : renderLeafNode(node)
+    )
+  }
 
   return (
-    <Tree
+    <UI.GroupedTree
       defaultExpandAll
       checkable={false}
       checkedKeys={selectedKeys}
-      // treeData={generateTree(dataSource)}
-      treeData={generateTree(filteredTreeData)}
+      treeData={generateTree(dataSource as TreeTransferItem[])}
+      switcherIcon={(props: AntTreeNodeProps) => {
+        return props.expanded
+          ? <MinusSquareOutlined size='sm' />
+          : <PlusSquareOutlined size='sm' />
+      }}
+      className={!enableGroupSelect ? 'disable-group-select' : ''}
     />
   )
 }

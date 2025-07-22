@@ -6,8 +6,8 @@ import _                                              from 'lodash'
 import { useIntl }                                    from 'react-intl'
 import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer, TransferType } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
   useGetApGroupQuery,
@@ -466,7 +466,7 @@ export function ApGroupGeneralTab () {
                 { isApGroupMoreParameterPhase1Enabled
                   ? <Transfer
                     listStyle={{ width: 400, height: 400 }}
-                    type={'table'}
+                    type={TransferType.TABLE}
                     tableData={
                       tableDataOption
                         .filter(option => isHide ? !option.apGroupName : option)
