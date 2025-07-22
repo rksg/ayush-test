@@ -41,6 +41,13 @@ export const checkVersionAtLeast10010gCd1 = (version: string): boolean => {
   return false
 }
 
+export const checkVersionAtLeast10010h = (version: string): boolean => {
+  if (_.isString(version)) {
+    return isVerGEVer(version, '10010h', true)
+  }
+  return false
+}
+
 export const checkVersionAtLeast10020c = (version: string): boolean => {
   if (_.isString(version)) {
     isVerGEVer(version, '10020c', true)
@@ -102,7 +109,7 @@ export const getStackUnitsMinLimitationV1002 = (
         return 8
       }
     } else {
-      if (checkVersionAtLeast10010gCd1(currentFirmware)) {
+      if (checkVersionAtLeast10010h(currentFirmware)) {
         return 8
       }
     }
