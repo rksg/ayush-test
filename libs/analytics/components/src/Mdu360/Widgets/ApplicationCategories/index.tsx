@@ -40,7 +40,7 @@ export const ApplicationCategories = ({
           data={results.clientCount}
           style={{ width, height }}
           legend='name-bold-value'
-          size='medium'
+          size='large'
           showLegend
           showTotal
           showValue
@@ -58,7 +58,7 @@ export const ApplicationCategories = ({
           data={results.dataUsage}
           style={{ width, height }}
           legend='name-bold-value'
-          size='medium'
+          size='large'
           showLegend
           showTotal
           showValue

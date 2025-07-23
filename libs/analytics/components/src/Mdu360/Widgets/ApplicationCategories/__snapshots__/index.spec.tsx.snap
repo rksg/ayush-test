@@ -403,60 +403,70 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             fill="#66B1E8"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M546.1102 133.4211A312 312 0 0 1 661.0202 256.4597L604.1955 285.9039A248 248 0 0 0 512.8568 188.104Z"
                             fill="#EC7100"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M661.0202 256.4597A312 312 0 0 1 695.2727 421.2916L631.4219 416.9241A248 248 0 0 0 604.1955 285.9039Z"
                             fill="#F9C34B"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M695.2727 421.2916A312 312 0 0 1 667.2663 530.7831L609.1604 503.9558A248 248 0 0 0 631.4219 416.9241Z"
                             fill="#61C46E"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M667.2663 530.7831A312 312 0 0 1 602.0919 623.1142L557.3551 577.3472A248 248 0 0 0 609.1604 503.9558Z"
                             fill="#F095FF"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M602.0919 623.1142A312 312 0 0 1 508.3011 686.1699L482.8035 627.4684A248 248 0 0 0 557.3551 577.3472Z"
                             fill="#4D4D4D"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M508.3011 686.1699A312 312 0 0 1 454.4154 703.9501L439.9712 641.6014A248 248 0 0 0 482.8035 627.4684Z"
                             fill="#3C84E0"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M454.4154 703.9501A312 312 0 0 1 72.0808 392.8979L136.0643 394.3547A248 248 0 0 0 439.9712 641.6014Z"
                             fill="#F15854"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M72.0808 392.8979A312 312 0 0 1 106.9798 256.4597L163.8045 285.9039A248 248 0 0 0 136.0643 394.3547Z"
                             fill="#258D36"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M106.9798 256.4597A312 312 0 0 1 384 88L384 152A248 248 0 0 0 163.8045 285.9039Z"
                             fill="#A74EED"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M0 -8l1 0l0 16l-1 0Z"
@@ -1670,60 +1680,70 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             fill="#66B1E8"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M546.1102 133.4211A312 312 0 0 1 661.0202 256.4597L604.1955 285.9039A248 248 0 0 0 512.8568 188.104Z"
                             fill="#EC7100"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M661.0202 256.4597A312 312 0 0 1 695.2727 421.2916L631.4219 416.9241A248 248 0 0 0 604.1955 285.9039Z"
                             fill="#F9C34B"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M695.2727 421.2916A312 312 0 0 1 667.2663 530.7831L609.1604 503.9558A248 248 0 0 0 631.4219 416.9241Z"
                             fill="#61C46E"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M667.2663 530.7831A312 312 0 0 1 602.0919 623.1142L557.3551 577.3472A248 248 0 0 0 609.1604 503.9558Z"
                             fill="#F095FF"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M602.0919 623.1142A312 312 0 0 1 508.3011 686.1699L482.8035 627.4684A248 248 0 0 0 557.3551 577.3472Z"
                             fill="#4D4D4D"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M508.3011 686.1699A312 312 0 0 1 454.4154 703.9501L439.9712 641.6014A248 248 0 0 0 482.8035 627.4684Z"
                             fill="#3C84E0"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M454.4154 703.9501A312 312 0 0 1 72.0808 392.8979L136.0643 394.3547A248 248 0 0 0 439.9712 641.6014Z"
                             fill="#F15854"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M72.0808 392.8979A312 312 0 0 1 106.9798 256.4597L163.8045 285.9039A248 248 0 0 0 136.0643 394.3547Z"
                             fill="#258D36"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M106.9798 256.4597A312 312 0 0 1 384 88L384 152A248 248 0 0 0 163.8045 285.9039Z"
                             fill="#A74EED"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M0 -8l1 0l0 16l-1 0Z"
@@ -2585,60 +2605,70 @@ exports[`ApplicationCategories should render top 10 application categories corre
                             fill="#66B1E8"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M385.7944 88.0052A312 312 0 0 1 439.1071 92.9052L427.8031 155.899A248 248 0 0 0 385.4263 152.0041Z"
                             fill="#EC7100"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M439.1071 92.9052A312 312 0 1 1 360.1829 88.9104L365.0685 152.7236A248 248 0 1 0 427.8031 155.899Z"
                             fill="#F9C34B"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M360.1829 88.9104A312 312 0 0 1 360.2435 88.9058L365.1167 152.72A248 248 0 0 0 365.0685 152.7236Z"
                             fill="#61C46E"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M360.2435 88.9058L365.117 152.7199Z"
                             fill="#F095FF"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M360.244 88.9057A312 312 0 0 1 360.2833 88.9027L365.1483 152.7175A248 248 0 0 0 365.117 152.7199Z"
                             fill="#4D4D4D"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M360.2833 88.9027A312 312 0 0 1 360.3568 88.8971L365.2067 152.7131A248 248 0 0 0 365.1483 152.7175Z"
                             fill="#3C84E0"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M360.3568 88.8971A312 312 0 0 1 382.9425 88.0018L383.1595 152.0014A248 248 0 0 0 365.2067 152.7131Z"
                             fill="#F15854"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M382.9425 88.0018A312 312 0 0 1 383.6791 88.0002L383.7449 152.0001A248 248 0 0 0 383.1595 152.0014Z"
                             fill="#258D36"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M383.6791 88.0002A312 312 0 0 1 384 88L384 152A248 248 0 0 0 383.7449 152.0001Z"
                             fill="#A74EED"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
                           <path
                             d="M0 -8l7 0l0 16l-7 0Z"
