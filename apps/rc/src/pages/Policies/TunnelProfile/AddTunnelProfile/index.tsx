@@ -1,10 +1,8 @@
 
 import { useIntl } from 'react-intl'
 
-import { useTunnelProfileActions }           from '@acx-ui/rc/components'
-import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
-
-import { TunnelProfileForm } from '../TunnelProfileForm'
+import { TunnelProfileForm, useTunnelProfileActions } from '@acx-ui/rc/components'
+import { getTunnelProfileFormDefaultValues }          from '@acx-ui/rc/utils'
 
 const AddTunnelProfile = () => {
   const { $t } = useIntl()
