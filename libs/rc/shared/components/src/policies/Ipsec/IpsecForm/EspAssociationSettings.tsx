@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form, Space } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Button, Select, Subtitle } from '@acx-ui/components'
-import { DeleteOutlinedIcon }       from '@acx-ui/icons'
+import { Button, Select, SimpleListTooltip, Subtitle } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                          from '@acx-ui/icons'
 import {
   Ipsec,
   IpSecDhGroupEnum,
@@ -12,8 +12,6 @@ import {
   IpSecIntegrityAlgorithmEnum,
   IpSecProposalTypeEnum
 } from '@acx-ui/rc/utils'
-
-import { SimpleListTooltip } from '../../../SimpleListTooltip'
 
 import { messageMapping } from './messageMapping'
 

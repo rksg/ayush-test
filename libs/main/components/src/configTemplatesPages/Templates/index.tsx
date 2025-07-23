@@ -32,7 +32,8 @@ import {
   useDeleteSwitchConfigProfileTemplateMutation,
   useDeleteApGroupsTemplateMutation,
   useDelEthernetPortProfileTemplateMutation,
-  useDeleteIdentityGroupTemplateMutation
+  useDeleteIdentityGroupTemplateMutation,
+  useDeleteTunnelProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   ConfigTemplate,
@@ -432,6 +433,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
   const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
   const [ deleteEthernetPortTemplate ] = useDelEthernetPortProfileTemplateMutation()
   const [ deleteIdentityGroupTemplate ] = useDeleteIdentityGroupTemplateMutation()
+  const [ deleteTunnelProfileTemplate ] = useDeleteTunnelProfileTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -453,6 +455,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
     [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate,
-    [ConfigTemplateType.IDENTITY_GROUP]: deleteIdentityGroupTemplate
+    [ConfigTemplateType.IDENTITY_GROUP]: deleteIdentityGroupTemplate,
+    [ConfigTemplateType.TUNNEL_PROFILE]: deleteTunnelProfileTemplate
   }
 }

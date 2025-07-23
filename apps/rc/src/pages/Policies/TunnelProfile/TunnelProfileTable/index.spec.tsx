@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features }                             from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { networkApi, pinApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -15,6 +14,7 @@ import {
   PolicyOperation,
   PolicyType,
   TunnelProfileUrls
+
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -50,8 +50,12 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const mockedSingleDeleteApi = jest.fn()
@@ -328,7 +332,7 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
+      mockUseIsEdgeFeatureReady
         .mockImplementation(ff => ff === Features.EDGE_L2OGRE_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
         )

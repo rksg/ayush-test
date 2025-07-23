@@ -23,10 +23,14 @@ const mockUseIsEdgeFeatureReady = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
   EdgeServiceStatusLight: () => <div data-testid={'rc-EdgeServiceStatusLight'} />,
-  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
   useEdgeDhcpActions: () => ({
     restartEdgeDhcp: jest.fn()
   })
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const { mockEdgeData: currentEdge, mockEdgeServiceList, mockEdgeList } = EdgeGeneralFixtures

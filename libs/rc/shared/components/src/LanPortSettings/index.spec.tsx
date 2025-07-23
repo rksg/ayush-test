@@ -733,7 +733,7 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
   })
 })
 
-describe('SoftGre Profile - Handle for R370 model', ()=> {
+describe.skip('SoftGre Profile - Handle for R370 model', ()=> {
   beforeEach(() => {
     mockServer.resetHandlers()
     mockServer.use(

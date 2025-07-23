@@ -1,5 +1,5 @@
 import { useGetCertificateTemplateQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
-import { CertTempActionContext }                                   from '@acx-ui/rc/utils'
+import { CertTempAction }                                          from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { render, screen }                                          from '@acx-ui/test-utils'
 
@@ -23,7 +23,7 @@ describe('CertTemplateActionPreview', () => {
 
   it('renders network list when multiple networks are available', () => {
     render(<Provider>
-      <CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempActionContext} />
+      <CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempAction} />
     </Provider>)
     expect(screen
       .getByText('Install certificate in order to connect to the following networks:'))
@@ -41,7 +41,7 @@ describe('CertTemplateActionPreview', () => {
       jest.fn(),
       ['SingleNetwork']
     ])
-    render(<CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempActionContext} />)
+    render(<CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempAction} />)
     expect(screen.getByText('Connect to the network')).toBeInTheDocument()
     expect(screen.getByText('Wi-Fi Network name: SingleNetwork')).toBeInTheDocument()
     expect(screen

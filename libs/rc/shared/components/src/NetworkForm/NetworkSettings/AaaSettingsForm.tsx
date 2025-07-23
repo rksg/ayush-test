@@ -62,7 +62,8 @@ import { NetworkMoreSettingsForm }                                              
 import { AccountingServiceInput }                                                                    from '../SharedComponent'
 import * as UI                                                                                       from '../styledComponents'
 
-import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
+import MacRegistrationListComponent from './MacRegistrationListComponent'
+import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
@@ -110,7 +111,9 @@ export function AaaSettingsForm () {
         wlanSecurity: data.wlan?.wlanSecurity,
         managementFrameProtection: data.wlan?.managementFrameProtection,
         // eslint-disable-next-line max-len
-        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
+        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled),
+        isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+        macRegistrationListId: data.wlan?.macRegistrationListId
       }
     })
   }
@@ -145,6 +148,7 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
+  const isMacRegistrationList = useWatch(['wlan', 'isMacRegistrationList'])
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isMultipleCertificateTemplatesEnabled
   = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
@@ -231,6 +235,7 @@ function SettingsForm () {
         {
           (!useCertificateTemplate
             && isWifiIdentityManagementEnable
+            && !isMacRegistrationList
             && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
           <Form.Item>
             <IdentityGroup comboWidth='210px' />
@@ -383,6 +388,8 @@ function AaaService () {
   const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const [ isMacRegistrationList, macRegistrationListId ] =
+    [ useWatch(['wlan', 'isMacRegistrationList']), useWatch(['wlan', 'macRegistrationListId']) ]
   const enableMacAuthentication = useWatch<boolean>(
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
   const [selectedAuthRadius, selectedAcctRadius] =
@@ -395,9 +402,11 @@ function AaaService () {
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
     && isRadSecFeatureTierAllowed
+  const isMacRegistrationEnabled = useIsSplitOn(Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED)
 
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportMacRegistration = isMacRegistrationEnabled && !isTemplate
   const labelWidth = '250px'
 
   const onProxyChange = (value: boolean, fieldName: string) => {
@@ -515,14 +524,36 @@ function AaaService () {
             data-testid='macAuth8021x'/>}
         />
       </UI.FieldLabel>
-      {enableMacAuthentication &&
+      {enableMacAuthentication && supportMacRegistration && (
         <Form.Item
-          label={$t({ defaultMessage: 'MAC Address Format' })}
-          name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
-          initialValue={MacAuthMacFormatEnum.UpperDash}
-          children={<Select children={macAuthOptions} />}
-        />
-      }
+          name={['wlan', 'isMacRegistrationList']}
+          initialValue={!!macRegistrationListId}
+        >
+          <Radio.Group disabled={editMode}>
+            <Space direction='vertical'>
+              <Radio
+                value={true}
+                children={$t({ defaultMessage: 'MAC Registration List' })}
+              />
+              <Radio
+                value={false}
+                children={$t({ defaultMessage: 'External MAC Auth' })}
+              />
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+      )}
+      { enableMacAuthentication &&
+        (isMacRegistrationList ? (
+          <MacRegistrationListComponent inputName={['wlan']} />
+        ) : (
+          <Form.Item
+            label={$t({ defaultMessage: 'MAC Address Format' })}
+            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+            initialValue={MacAuthMacFormatEnum.UpperDash}
+            children={<Select children={macAuthOptions} />}
+          />)
+        )}
     </Space>
   )
 }
