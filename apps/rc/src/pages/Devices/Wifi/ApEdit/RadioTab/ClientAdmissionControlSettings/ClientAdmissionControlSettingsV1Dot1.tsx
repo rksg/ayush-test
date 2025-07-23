@@ -72,8 +72,8 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   const apGroupRef = useRef<ApGroupClientAdmissionControl>()
   const initDataRef = useRef<ApClientAdmissionControl_v1_1>()
-  const isUseApGroupSettingsRef = useRef<boolean>(false)
-  const [isUseApGroupSettings, setIsUseApGroupSettings] = useState(true)
+  const isInheritSettingsRef = useRef<boolean>(false)
+  const [isInheritSettings, setIsInheritSettings] = useState(true)
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
   useEffect(() => {
@@ -84,9 +84,9 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           initDataRef.current = clientAdmissionControlData
           setDataToForm(clientAdmissionControlData)
           // eslint-disable-next-line max-len
-          setIsUseApGroupSettings(clientAdmissionControlData.useVenueOrApGroupSettings || false)
+          setIsInheritSettings(clientAdmissionControlData.useVenueOrApGroupSettings || false)
           // eslint-disable-next-line max-len
-          isUseApGroupSettingsRef.current = clientAdmissionControlData.useVenueOrApGroupSettings || false
+          isInheritSettingsRef.current = clientAdmissionControlData.useVenueOrApGroupSettings || false
         }
         if (venueId && apGroupId) {
           const apGroupClientAdmissionControl = (await getApGroupClientAdmissionControl(
@@ -113,11 +113,11 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
   }
 
   const handleInheritOrCustomize = () => {
-    let isUseApGroup = !isUseApGroupSettings
-    setIsUseApGroupSettings(isUseApGroup)
-    isUseApGroupSettingsRef.current = isUseApGroup
+    let isInherited = !isInheritSettings
+    setIsInheritSettings(isInherited)
+    isInheritSettingsRef.current = isInherited
     let data : ClientAdmissionControl = {}
-    if (isUseApGroup) {
+    if (isInherited) {
       if (apGroupRef.current) {
         data = apGroupRef.current
       }
@@ -132,7 +132,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   const handleUpdateClientAdmissionControl = async () => {
     try {
-      if(isUseApGroupSettingsRef.current) {
+      if(isInheritSettingsRef.current) {
         await updateClientAdmissionControl(
           { params: { venueId, serialNumber },
             payload: { useVenueOrApGroupSettings: true },
@@ -147,7 +147,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
           minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
           minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
-          useVenueOrApGroupSettings: isUseApGroupSettingsRef.current
+          useVenueOrApGroupSettings: isInheritSettingsRef.current
         }
         await updateClientAdmissionControl(
           { params: { venueId, serialNumber }, payload }
@@ -175,8 +175,8 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
 
   const handleDiscard = () => {
     if (initDataRef.current) {
-      setIsUseApGroupSettings(initDataRef.current.useVenueOrApGroupSettings || false)
-      isUseApGroupSettingsRef.current = initDataRef.current.useVenueOrApGroupSettings || false
+      setIsInheritSettings(initDataRef.current.useVenueOrApGroupSettings || false)
+      isInheritSettingsRef.current = initDataRef.current.useVenueOrApGroupSettings || false
       setDataToForm(initDataRef.current)
     }
   }
@@ -193,7 +193,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
             {
               <Radio.Group
                 data-testid='client-admission-control'
-                value={isUseApGroupSettings}
+                value={isInheritSettings}
                 onChange={handleInheritOrCustomize}
                 disabled={!isAllowEdit}>
                 <Space direction='vertical'>
@@ -231,7 +231,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
           level={ClientAdmissionControlLevelEnum.AP_LEVEL}
           type={ClientAdmissionControlTypeEnum.CAC_24G}
-          readOnly={!isAllowEdit || isUseApGroupSettings}
+          readOnly={!isAllowEdit || isInheritSettings}
           isEnabled={enable24G}
           isMutuallyExclusive={false}
           enabledFieldName={enable24GFieldName}
@@ -245,7 +245,7 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
           key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
           level={ClientAdmissionControlLevelEnum.AP_LEVEL}
           type={ClientAdmissionControlTypeEnum.CAC_5G}
-          readOnly={!isAllowEdit || isUseApGroupSettings}
+          readOnly={!isAllowEdit || isInheritSettings}
           isEnabled={enable50G}
           isMutuallyExclusive={false}
           enabledFieldName={enable50GFieldName}
