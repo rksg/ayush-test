@@ -1465,8 +1465,11 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApPassword: build.query<ApApPassword, RequestPayload>({
       query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, { ...customHeaders, ...ignoreErrorModal })
+        const customHeaders = {
+          ... GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2212,6 +2215,7 @@ export const {
   useResetApLedMutation,
   useGetApUsbQuery,
   useGetApPasswordQuery,
+  useLazyGetApPasswordQuery,
   useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
