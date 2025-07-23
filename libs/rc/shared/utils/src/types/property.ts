@@ -39,6 +39,7 @@ export interface PropertyConfigs {
     type: string,
     sendEmail: boolean,
     sendSms: boolean,
+    notifyOnUnitSuspend?: boolean,
     unitAssignmentTemplateId?: string,
     passphraseChangeTemplateId?: string,
     unitAssignmentHtmlRegId?: string,

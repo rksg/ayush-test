@@ -19,7 +19,8 @@ export const defaultPropertyConfigs: PropertyConfigs = {
   communicationConfig: {
     type: 'communicationConfig',
     sendEmail: false,
-    sendSms: false
+    sendSms: false,
+    notifyOnUnitSuspend: false
   }
 }
 
