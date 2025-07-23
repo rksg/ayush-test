@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { Button, showActionModal }                           from '@acx-ui/components'
+import { Button, showActionModal, SpaceWrapper }             from '@acx-ui/components'
 import { CloseSymbol }                                       from '@acx-ui/icons'
-import { SpaceWrapper }                                      from '@acx-ui/rc/components'
 import { useDeleteTenantMutation, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import { userLogout, useTenantId }                           from '@acx-ui/utils'
 

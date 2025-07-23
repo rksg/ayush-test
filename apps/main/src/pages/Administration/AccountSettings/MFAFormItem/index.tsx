@@ -3,9 +3,8 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal }                       from '@acx-ui/components'
+import { Card, showActionModal, SpaceWrapper }         from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { SpaceWrapper }                                from '@acx-ui/rc/components'
 import { administrationApi, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { store }                                       from '@acx-ui/store'

@@ -7,7 +7,7 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { SpaceWrapper }             from '@acx-ui/rc/components'
+import { SpaceWrapper }             from '@acx-ui/components'
 import { TenantAuthenticationType } from '@acx-ui/rc/utils'
 
 interface AuthTypeSelectorProps {
