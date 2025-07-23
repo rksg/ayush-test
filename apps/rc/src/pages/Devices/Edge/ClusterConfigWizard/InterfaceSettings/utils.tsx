@@ -484,49 +484,65 @@ const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
 
 const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
   const subInterfaceSettings = [] as NodeSubInterfaces[]
-  const nodeLagIdsMap = _.reduce(data.lagSettings, (result, lagSetting) => {
-    result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
-    return result
-  }, {} as { [serialNumber: string]: number[] })
-  Object.entries(data.lagSubInterfaces ?? {}).forEach(([serialNumber, lagSubInterfaces = {}]) => {
-    subInterfaceSettings.push({
-      serialNumber,
-      lags: Object.entries(lagSubInterfaces).filter(([lagId]) =>
-        nodeLagIdsMap[serialNumber].includes(Number(lagId)))
-        .map(([lagId, subInterfaces]) => ({
-          lagId: Number(lagId),
-          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+
+  // Process LAG sub-interfaces
+  const processLagSubInterfaces = () => {
+    const nodeLagIdsMap = _.reduce(data.lagSettings, (result, lagSetting) => {
+      result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
+      return result
+    }, {} as { [serialNumber: string]: number[] })
+
+    Object.entries(nodeLagIdsMap).forEach(([serialNumber, lagIds]) => {
+      const lagSubInterfaces = data.lagSubInterfaces?.[serialNumber] ?? {}
+      subInterfaceSettings.push({
+        serialNumber,
+        lags: lagIds.map(lagId => ({
+          lagId,
+          subInterfaces: preProcessSubInterfaceSetting(lagSubInterfaces[lagId] ?? [])
         }))
-    } as NodeSubInterfaces)
-  })
-  const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
-    result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
-    return result
-  }, {} as { [serialNumber: string]: string[] })
-  Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
-    const lagMemberIdsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-      ?.flatMap(lag => lag.lagMembers.map(member => member.portId))
-    const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
-    const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
-    if(currentSubInterfaceItem) {
-      currentSubInterfaceItem.ports = portIds.map(portId => ({
+      } as NodeSubInterfaces)
+    })
+  }
+
+  // Process port sub-interfaces
+  const processPortSubInterfaces = () => {
+    const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
+      result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
+      return result
+    }, {} as { [serialNumber: string]: string[] })
+
+    Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
+      const lagMemberIdsOfCurrentNode = getLagMemberIdsForNode(serialNumber)
+      const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
+      const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
+
+      const portSubInterfaces = portIds.map(portId => ({
         portId,
         subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
           preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
           []
       }))
-    } else {
-      subInterfaceSettings.push({
-        serialNumber,
-        ports: portIds.map(portId => ({
-          portId,
-          subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
-            preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
-            []
-        }))
-      } as NodeSubInterfaces)
-    }
-  })
+
+      if (currentSubInterfaceItem) {
+        currentSubInterfaceItem.ports = portSubInterfaces
+      } else {
+        subInterfaceSettings.push({
+          serialNumber,
+          ports: portSubInterfaces
+        } as NodeSubInterfaces)
+      }
+    })
+  }
+
+  // Helper function to get LAG member IDs for a specific node
+  const getLagMemberIdsForNode = (serialNumber: string): string[] => {
+    return data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+      ?.flatMap(lag => lag.lagMembers.map(member => member.portId)) ?? []
+  }
+
+  processLagSubInterfaces()
+  processPortSubInterfaces()
+
   return subInterfaceSettings
 }
 
