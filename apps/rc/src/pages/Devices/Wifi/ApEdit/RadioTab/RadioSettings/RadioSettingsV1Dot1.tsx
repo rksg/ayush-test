@@ -1060,6 +1060,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         updateRadioParams(payload.apRadioParams50G, supportRadioChannels[ApRadioTypeEnum.Radio5G])
       } else {
         delete payload.apRadioParams50G
+        payload.enable50G = false
       }
 
       if (hasRadio6G) {
@@ -1075,6 +1076,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         }
       } else {
         delete payload.apRadioParams6G
+        payload.enable6G = false
       }
 
       if (hasRadioDual5G) {

@@ -2,13 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { pinApi }                from '@acx-ui/rc/services'
-import {
-  EdgePinFixtures, EdgePinUrls
-} from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { pinApi }                       from '@acx-ui/rc/services'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -42,7 +39,12 @@ jest.mock('antd', () => {
 })
 
 jest.mock('@acx-ui/rc/components',() => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 jest.mock('./PersonalIdentityPreparationListDrawer', () => ({
   PersonalIdentityPreparationListDrawer: (props: { open: boolean, onClose: () => void }) => <div data-testid='PersonalIdentityPreparationListDrawer'>
@@ -208,7 +210,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
 
   describe('PIN enhance FF is enabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      mockUseIsEdgeFeatureReady.mockReturnValue(true)
     })
 
     it('Should render enhanced form', async () => {

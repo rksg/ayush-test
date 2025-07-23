@@ -11,7 +11,7 @@ import { mockServer, render, renderHook, screen }                               
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 
-import { TunnelProfileForm } from './index'
+import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -79,7 +79,7 @@ describe('TunnelProfileForm', () => {
   it('should render TunnelProfileForm successfully', () => {
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
 
@@ -96,7 +96,7 @@ describe('TunnelProfileForm', () => {
     const user = userEvent.setup()
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
     await user.click(screen.getByRole('radio', { name: 'Manual' }))
@@ -109,7 +109,7 @@ describe('TunnelProfileForm', () => {
   it('should show error when ageTime is invalid', async () => {
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
     const ageTimeInput = (await screen.findAllByRole('spinbutton'))[2]
@@ -128,7 +128,7 @@ describe('TunnelProfileForm', () => {
   it('should trigger ageTime validate when change unit', async () => {
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
     const ageTimeInput = (await screen.findAllByRole('spinbutton'))[2]
@@ -146,7 +146,7 @@ describe('TunnelProfileForm', () => {
   it('Input invalid profile name will show error message', async () => {
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
     const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
@@ -177,7 +177,7 @@ describe('TunnelProfileForm', () => {
 
     render(
       <Provider><Form form={formRef.current} initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
 
@@ -196,7 +196,7 @@ describe('TunnelProfileForm', () => {
   it('MTU help message should only display when manual', async () => {
     render(
       <Provider><Form initialValues={defaultValues}>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </Form></Provider>
     )
 
@@ -206,7 +206,7 @@ describe('TunnelProfileForm', () => {
     it('should display network segment type and keep alive related columns', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -220,7 +220,7 @@ describe('TunnelProfileForm', () => {
     it('should show error when mtuRequestTimeout is invalid', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
 
@@ -242,7 +242,7 @@ describe('TunnelProfileForm', () => {
     it('should trigger mtuRequestTime validate when change unit', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       const mtuTimeInput = (await screen.findAllByRole('spinbutton'))
@@ -262,7 +262,7 @@ describe('TunnelProfileForm', () => {
     it('should show error when keepAliveRetry and keepAliveInterval are invalid', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       const keepAliveRetryInput = (await screen.findAllByRole('spinbutton'))
@@ -296,7 +296,7 @@ describe('TunnelProfileForm', () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -311,7 +311,7 @@ describe('TunnelProfileForm', () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -329,7 +329,7 @@ describe('TunnelProfileForm', () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
 
@@ -347,7 +347,7 @@ describe('TunnelProfileForm', () => {
 
       render(<Provider>
         <Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
@@ -383,7 +383,7 @@ describe('TunnelProfileForm', () => {
     it('should show edge cluster select when tunnel type is VxLAN_GPE', async () => {
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -409,7 +409,7 @@ describe('TunnelProfileForm', () => {
 
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -432,7 +432,7 @@ describe('TunnelProfileForm', () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
@@ -451,7 +451,7 @@ describe('TunnelProfileForm', () => {
       formInitValues.disabledFields.push('edgeClusterId')
       render(
         <Provider><Form initialValues={formInitValues}>
-          <TunnelProfileForm />
+          <TunnelProfileFormItems />
         </Form></Provider>
       )
       expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
