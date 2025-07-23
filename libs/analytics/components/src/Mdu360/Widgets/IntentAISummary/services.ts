@@ -3,14 +3,14 @@ import { gql } from 'graphql-request'
 import { intentAIApi } from '@acx-ui/store'
 import { NetworkPath } from '@acx-ui/utils'
 
-export type SummaryItem = {
+interface SummaryItem {
   new: number
   active: number
   paused: number
   verified: number
 }
 
-export type IntentSummary = {
+export interface IntentSummary {
   rrm: SummaryItem
   probeflex: SummaryItem
   ops: SummaryItem

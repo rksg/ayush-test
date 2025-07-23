@@ -5,7 +5,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { DonutChart, HistoricalCard, Loader, NoData } from '@acx-ui/components'
 import type { DonutChartData }                        from '@acx-ui/components'
-import { formatter }                                  from '@acx-ui/formatter'
 
 import { IntentSummary, useIntentAISummaryQuery } from './services'
 
@@ -52,7 +51,6 @@ export function IntentAISummary () {
             showValue
             showLabel
             legend='name-bold-value'
-            dataFormatter={formatter('noFormat')}
             size={'large'}
           />
         )}
@@ -60,7 +58,7 @@ export function IntentAISummary () {
     )})
 
   return (
-    <Loader>
+    <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'IntentAI Summary' })}>
         {chartData.length ?
           <IntentAISummaryChart data={chartData}/> : <NoData/>}
