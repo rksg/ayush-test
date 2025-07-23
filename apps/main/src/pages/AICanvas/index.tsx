@@ -127,8 +127,7 @@ const Message = (props:{
         chat.created &&
         <div ref={messageTailRef}
           data-testid='messageTail'
-          // eslint-disable-next-line max-len
-          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
+          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'}`}>
           <div className={`timestamp ${chat.role === MessageRole.USER ? 'right' : ''}`}>
             { chat.created !== '-' && chat.role !== MessageRole.STREAMING
               ? moment(chat.created).format('hh:mm A') : <>&nbsp;</>

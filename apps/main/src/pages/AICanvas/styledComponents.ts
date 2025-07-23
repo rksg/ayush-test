@@ -442,15 +442,6 @@ display: flex;
         min-height: 25px;
         align-items: center;
         width: 175px;
-        &.fixed {
-          width: 300px;
-        }
-        &.fixed-narrower {
-          width: 200px !important;
-        }
-        &.dynamic {
-          align-self: flex-start;
-        }
       }
       .message-tail {
         align-content: end;
@@ -807,7 +798,20 @@ ${props => props.$type === 'pageview' && css`
 
 `
 
+export const DraggableChart = styled.div`
+  .draggable-chart {
+    box-shadow: none;
+    margin: 3px 7px 10px 50px;
+    .ant-card {
+      border: 1px solid var(--acx-neutrals-30);
+    }
+  }
+`
+
 export const Widget = styled(Card)`
+  &.ant-card {
+    box-shadow: none;
+  }
   transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;

@@ -430,18 +430,6 @@ describe('AICanvas', () => {
       }),
       payload: false
     })
-    const elements = screen.getAllByTestId('messageTail')
-    const fixedNarrowerElements = elements.filter(el => el.classList.contains('fixed-narrower'))
-    expect(fixedNarrowerElements.length).toBe(1)
-    const narrowComputedStyle = window.getComputedStyle(fixedNarrowerElements[0])
-    const narrowWidthInPixels = parseFloat(narrowComputedStyle.width)
-    expect(narrowWidthInPixels).toBe(200)
-    const fixedElements = elements.filter(el => el.classList.contains('ai-message-tail') &&
-      el.classList.contains('fixed') && !el.classList.contains('fixed-narrower'))
-    expect(fixedElements.length).toBe(1)
-    const computedStyle = window.getComputedStyle(fixedElements[0])
-    const widthInPixels = parseFloat(computedStyle.width)
-    expect(widthInPixels).toBe(300)
   })
 })
 
