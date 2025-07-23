@@ -52,10 +52,6 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
-# # Remove files and folders older than 24 hours from the nx cache
-# RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
-#     find /app/node_modules/.cache/nx -type d -empty -delete
-
 COPY tools/tests ./tools/tests
 
 # Copy the tar.xz file if it exists
@@ -72,24 +68,14 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
+###############################################################
 FROM build-base as acx-ui-group-test
 
-###############################################################
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch /app/lint-done
 
-# We should validate the tsc validator in the tsconfig of apps that wont be built yet
-# FROM build-base as acx-ui-tslint
-# Multistage: trigger run
-# COPY --from=acx-ui-group-test /app/lint-done /tmp/
-# RUN node ./node_modules/.bin/nx run ra:tsc
-# RUN touch tslint-done
-###############################################################
-
 RUN cp /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
-
-###############################################################
 
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
@@ -141,6 +127,7 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
 
 RUN mkdir -p /app/coverage
 
+###############################################################
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
