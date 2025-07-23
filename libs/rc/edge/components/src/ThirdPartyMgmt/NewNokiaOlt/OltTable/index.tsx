@@ -15,13 +15,11 @@ import {
   filterByAccessForServicePolicyMutation,
   VenueLink,
   EdgeNokiaOltData,
-  getOltStatusConfig,
-  isOltValidSerialNumber,
-  EdgeNokiaOltStatusEnum
+  isOltValidSerialNumber
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { EdgeNokiaOltStatus } from '../../NokiaOlt/OltStatus'
+import { EdgeNewNokiaOltStatus } from '../OltStatus'
 
 
 interface EdgeNokiaOltTableProps {
@@ -151,9 +149,8 @@ function useColumns () {
       width: 80,
       render: (_, row) =>
         <Row>
-          <EdgeNokiaOltStatus
-            config={getOltStatusConfig()}
-            status={row.status || EdgeNokiaOltStatusEnum.UNKNOWN}
+          <EdgeNewNokiaOltStatus
+            status={row.status}
             showText />
         </Row>
     },

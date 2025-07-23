@@ -10,7 +10,7 @@ import { Provider }                                                             
 import { render, screen, mockServer, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
 
 import { EdgeNewNokiaOltTable } from './index'
-const { mockOltList, mockEmptySnOlt } = EdgeOltFixtures
+const { mockOltList, mockOfflineOlt, mockEmptySnOlt } = EdgeOltFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -85,6 +85,35 @@ describe('EdgeNewNokiaOltTable', () => {
     expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
+  it('should delete OLTs', async () => {
+    const mockedDeleteReq = jest.fn()
+    mockServer.use(
+      rest.delete(
+        EdgeTnmServiceUrls.deleteEdgeOlt.url,
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }))
+
+    render(<Provider>
+      <EdgeNewNokiaOltTable data={[
+        ...mockOltList,
+        {
+          ...mockOfflineOlt,
+          ip: '134.242.136.113'
+        }
+      ]} />
+    </Provider>, { route: { params, path: mockPath } })
+
+    const row = await screen.findByRole('row', { name: /TestOlt/i })
+    const offlineRow = await screen.findByRole('row', { name: /TestOfflineOlt/i })
+    await click(within(row).getByRole('checkbox'))
+    await click(within(offlineRow).getByRole('checkbox'))
+    await click(screen.getByRole('button', { name: 'Delete' }))
+    const dialogTitle = await screen.findByText('Delete "2 OLT Devices"?')
+    expect(dialogTitle).toBeInTheDocument()
+  })
+
   it('should reboot OLT', async () => {
     const mockedDeleteReq = jest.fn()
     mockServer.use(
@@ -103,6 +132,35 @@ describe('EdgeNewNokiaOltTable', () => {
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Reboot' }))
     const dialogTitle = await screen.findByText('Reboot "TestOlt"?')
+    expect(dialogTitle).toBeInTheDocument()
+  })
+
+  it('should reboot OLTs', async () => {
+    const mockedDeleteReq = jest.fn()
+    mockServer.use(
+      rest.delete(
+        EdgeTnmServiceUrls.deleteEdgeOlt.url,
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }))
+
+    render(<Provider>
+      <EdgeNewNokiaOltTable data={[
+        ...mockOltList,
+        {
+          ...mockOfflineOlt,
+          ip: '134.242.136.113'
+        }
+      ]} />
+    </Provider>, { route: { params, path: mockPath } })
+
+    const row = await screen.findByRole('row', { name: /TestOlt/i })
+    const offlineRow = await screen.findByRole('row', { name: /TestOfflineOlt/i })
+    await click(within(row).getByRole('checkbox'))
+    await click(within(offlineRow).getByRole('checkbox'))
+    await click(screen.getByRole('button', { name: 'Reboot' }))
+    const dialogTitle = await screen.findByText('Reboot "2 OLT Devices"?')
     expect(dialogTitle).toBeInTheDocument()
   })
 

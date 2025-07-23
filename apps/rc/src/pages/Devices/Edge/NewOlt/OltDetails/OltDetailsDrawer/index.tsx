@@ -4,6 +4,7 @@ import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Descriptions, Drawer, Subtitle }                                 from '@acx-ui/components'
+import { EdgeNewNokiaOltStatus }                                          from '@acx-ui/edge/components'
 import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
 import { TenantLink }                                                     from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                  from '@acx-ui/utils'
@@ -111,7 +112,12 @@ export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
               <Descriptions labelWidthPercent={50}>
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Status' })}
-                  children={item.status} //TODO
+                  children={
+                    <EdgeNewNokiaOltStatus
+                      status={item.status as EdgeNokiaOltStatusEnum}
+                      showText
+                    />
+                  }
                 />
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Model' })}

@@ -14,12 +14,11 @@ import {
   Tooltip,
   getDefaultEarliestStart
 } from '@acx-ui/components'
-import { EdgeNokiaOltStatus }     from '@acx-ui/edge/components'
+import { EdgeNewNokiaOltStatus }  from '@acx-ui/edge/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeNokiaOltData,
-  EdgeNokiaOltStatusEnum,
-  getOltStatusConfig
+  EdgeNokiaOltStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -138,9 +137,8 @@ export function OltDetailPageHeader (props: {
     <PageHeader
       title={oltDetails?.name || ''}
       titleExtra={
-        <EdgeNokiaOltStatus //TODO
-          config={getOltStatusConfig()}
-          status={oltDetails?.status || EdgeNokiaOltStatusEnum.UNKNOWN}
+        <EdgeNewNokiaOltStatus
+          status={oltDetails?.status}
           showText
         />
       }

@@ -29,7 +29,7 @@ type BaseTransferProps = AntTransferProps<TransferItem> & {
 export type TransferProps =
   | BaseTransferProps & { type?: TransferType.DEFAULT | TransferType.GROUPED_TREE }
   | BaseTransferProps & {
-      type?: TransferType.TABLE
+      type: TransferType.TABLE
       tableData: TransferItem[]
       leftColumns: TableColumnsType<TransferItem>
       rightColumns: TableColumnsType<TransferItem>
