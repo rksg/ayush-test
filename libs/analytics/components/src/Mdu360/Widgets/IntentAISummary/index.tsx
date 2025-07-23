@@ -34,7 +34,7 @@ export function IntentAISummary () {
   const { $t } = useIntl()
 
   const queryResults = useIntentAISummaryQuery({
-    path: [{ type: 'network', name: 'Network' }] // replace this with the path when provided by ResidentExperienceTab
+    path: [{ type: 'network', name: 'Network' }] // replace this with the path when provided by NetworkOverviewTab
   })
 
   const chartData: DonutChartData[] = getIntentAISummaryChartData(queryResults.data)
