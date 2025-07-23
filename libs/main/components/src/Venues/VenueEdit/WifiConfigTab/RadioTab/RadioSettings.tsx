@@ -440,22 +440,24 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
-  const correctedLowerChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
-    if (!channelFrom5G) {
-      return []
-    }
+  const filterChannelsByRange = (
+    channels: Channel50Enum[] | undefined,
+    minChannel: number,
+    maxChannel?: number
+  ): string[] => {
+    if (!channels) return []
+    const filteredChannels = channels
+      .map(Number)
+      .filter(n => maxChannel ? (n >= minChannel && n < maxChannel) : n >= minChannel)
+    return filteredChannels.map(n => n.toString())
+  }
 
-    const channelFrom5GFiltered = channelFrom5G.map(Number).filter(n => n < 100)
-    return channelFrom5GFiltered.map(n => n.toString())
+  const correctedLowerChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
+    return filterChannelsByRange(channelFrom5G, 0, 100)
   }
 
   const correctedUpperChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
-    if (!channelFrom5G) {
-      return []
-    }
-
-    const channelFrom5GFiltered = channelFrom5G.map(Number).filter(n => n >= 100)
-    return channelFrom5GFiltered.map(n => n.toString())
+    return filterChannelsByRange(channelFrom5G, 100)
   }
 
   const syncLower5G = (needSync: boolean) => {
