@@ -17,7 +17,7 @@ export interface IntentSummary {
   ecoflex: SummaryItem
 }
 
-export interface Payload {
+interface Payload {
   path: NetworkPath
 }
 
