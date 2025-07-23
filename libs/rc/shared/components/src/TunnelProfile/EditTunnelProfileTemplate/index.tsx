@@ -3,14 +3,13 @@ import { useMemo } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                     from '@acx-ui/components'
-import { Features }                                   from '@acx-ui/feature-toggle'
-import { TunnelProfileForm, useTunnelProfileActions } from '@acx-ui/rc/components'
+import { Loader }                                from '@acx-ui/components'
+import { Features }                              from '@acx-ui/feature-toggle'
 import {
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
-  useGetTunnelProfileByIdQuery,
-  useGetTunnelProfileViewDataListQuery
+  useGetTunnelProfileTemplateQuery,
+  useGetTunnelProfileTemplateViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
@@ -22,19 +21,23 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-const EditTunnelProfile = () => {
+import { TunnelProfileForm }       from '../TunnelProfileForm'
+import { useTunnelProfileActions } from '../TunnelProfileForm/useTunnelProfileActions'
+
+export const EditTunnelProfileTemplate = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const [form] = Form.useForm()
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
-  const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
+  const { data: tunnelProfileData, isFetching } = useGetTunnelProfileTemplateQuery(
     { params: { id: policyId } }
   )
 
 
-  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileViewDataListQuery(
+  // eslint-disable-next-line max-len
+  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileTemplateViewDataListQuery(
     { payload: { filters: { id: [policyId] } } },
     {
       selectFromResult: ({ data, isFetching }) => ({
@@ -44,7 +47,7 @@ const EditTunnelProfile = () => {
     }
   )
 
-  const { updateTunnelProfileOperation } = useTunnelProfileActions()
+  const { updateTunnelProfileTemplateOperation } = useTunnelProfileActions()
 
 
   const { isSdLanHaUsed, isDMZUsed, isSdLanFetching } = useGetEdgeMvSdLanViewDataListQuery(
@@ -119,7 +122,7 @@ const EditTunnelProfile = () => {
   }, [tunnelProfileData, tunnelProfileViewData, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
 
   const handelOnFinish = (data: TunnelProfileFormType) =>
-    updateTunnelProfileOperation(policyId || '', data, formInitValues)
+    updateTunnelProfileTemplateOperation(policyId || '', data, formInitValues)
 
   // eslint-disable-next-line max-len
   const loaderLoading = isFetching || isSdLanFetching || isPinFetching || isTunnelViewFetching
@@ -130,15 +133,14 @@ const EditTunnelProfile = () => {
     }]}>
       <TunnelProfileForm
         form={form}
-        title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
+        title={$t({ defaultMessage: 'Edit Tunnel Profile Template' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
         initialValues={formInitValues}
         editMode={true}
+        isTemplate
       />
     </Loader>
   )
 }
-
-export default EditTunnelProfile

@@ -4,21 +4,21 @@ import { Col, List, Row, Space, Typography } from 'antd'
 import { QRCodeSVG }                         from 'qrcode.react'
 import { useIntl }                           from 'react-intl'
 
-import { GridCol, GridRow }                             from '@acx-ui/components'
-import { QrCodeSmallIcon }                              from '@acx-ui/icons'
-import { useGetDpskQuery, useLazyNetworkListQuery }     from '@acx-ui/rc/services'
-import { DpskActionContext, GenericActionPreviewProps } from '@acx-ui/rc/utils'
+import { GridCol, GridRow }                         from '@acx-ui/components'
+import { QrCodeSmallIcon }                          from '@acx-ui/icons'
+import { useGetDpskQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
+import { DpskAction, GenericActionPreviewProps }    from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 
-export function DpskActionPreview (props: GenericActionPreviewProps<DpskActionContext>) {
+export function DpskActionPreview (props: GenericActionPreviewProps<DpskAction>) {
   const { $t } = useIntl()
   const { data, ...rest } = props
   const [selectedSsid, setSelectedSsid] = useState<string>('')
 
-  const { data: dpskService } = useGetDpskQuery({
-    params: { serviceId: data?.dpskPoolId }
-  })
+  const { data: dpskService } = useGetDpskQuery(
+    { params: { serviceId: data?.dpskPoolId } },
+    { skip: !data?.dpskPoolId || data.valid === false })
 
   const { Title, Text, Link } = Typography
 
