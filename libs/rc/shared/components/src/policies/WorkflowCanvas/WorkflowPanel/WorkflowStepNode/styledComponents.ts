@@ -91,6 +91,14 @@ export const StartNode = styled(StepNode)`
   div {
     text-align: center;
   }
+
+  ${props => props.attachCandidate
+    ? `
+    border-radius: 4px;
+    border: 1px solid var(--acx-accents-orange-50);
+    background-color: var(--acx-accents-orange-10);
+    `
+    : ''}
 `
 
 export const ActionTypeIcon = styled.div`
