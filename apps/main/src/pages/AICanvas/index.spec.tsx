@@ -56,6 +56,13 @@ const currentCanvas = {
     ]`
 }
 
+jest.mock('../OnboardingAssistant', () => ({
+  OnboardingAssistantModal: () => <div>OnboardingAssistant</div>,
+  RuckusAiStepsEnum: {
+    VERTICAL: 'VERTICAL',
+    WELCOME: 'WELCOME'
+  }
+}))
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
   const { forwardRef } = jest.requireActual('react')
@@ -309,7 +316,6 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
@@ -356,13 +362,12 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
+    expect(await screen.findByText('I am RUCKUS digital system engineer, you can ask me anything about your network or choose a quick default suggestion.')).toBeVisible()
     // eslint-disable-next-line max-len
     const suggestQuestion = await screen.findByText('How many clients were connected to my network yesterday?')
     expect(suggestQuestion).toBeVisible()

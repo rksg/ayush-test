@@ -56,7 +56,8 @@ export interface ChatMessage {
   text: string,
   created?: string,
   widgets?: ChatWidget[],
-  userFeedback?: string
+  userFeedback?: string,
+  agent?: string
 }
 
 export interface HistoryListItem {
