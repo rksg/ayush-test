@@ -32,7 +32,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-      [ConfigTemplateType.IDENTITY_GROUP]: false
+      [ConfigTemplateType.IDENTITY_GROUP]: false,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false
     })
   })
 
@@ -64,7 +65,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-      [ConfigTemplateType.IDENTITY_GROUP]: false
+      [ConfigTemplateType.IDENTITY_GROUP]: false,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false
     })
   })
 
@@ -96,7 +98,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-      [ConfigTemplateType.IDENTITY_GROUP]: false
+      [ConfigTemplateType.IDENTITY_GROUP]: false,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false
     })
   })
 
@@ -130,7 +133,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_CLI]: true,
       [ConfigTemplateType.AP_GROUP]: true,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true,
-      [ConfigTemplateType.IDENTITY_GROUP]: true
+      [ConfigTemplateType.IDENTITY_GROUP]: true,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false
     })
   })
 })
