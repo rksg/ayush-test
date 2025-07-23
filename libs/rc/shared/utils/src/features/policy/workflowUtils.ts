@@ -44,8 +44,10 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
 }
 
 export const findAllFirstSteps = (steps: WorkflowStep[]): WorkflowStep[] | undefined => {
-  return steps.filter(step => step.priorStepId === undefined && !step.splitOptionId)
-    .sort((a) => a.type === StepType.Start ? -1 : 0)
+  const startSteps = steps.filter(step => step.priorStepId === undefined && !step.splitOptionId)
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const sortedStartSteps = startSteps.sort((a, b) => a.type === StepType.Start ? -1 : 1)
+  return sortedStartSteps
 }
 
 export const toStepMap = (steps: WorkflowStep[])
