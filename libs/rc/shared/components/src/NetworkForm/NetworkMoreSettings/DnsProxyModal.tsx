@@ -14,7 +14,7 @@ import {
   TableProps,
   Modal
 } from '@acx-ui/components'
-import { DeleteOutlined }   from '@acx-ui/icons'
+import { DeleteOutlined }        from '@acx-ui/icons'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
@@ -22,7 +22,7 @@ import {
   checkItemNotIncluded,
   DnsProxyRule,
   networkWifiDualModeIpRegExp,
-  useIpModeValidatorSelector
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -210,7 +210,7 @@ export function DnsProxyModalRuleModal (props: {
   const { modalState, setModalState } = props
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const IpAddresslValidator =
-  useIpModeValidatorSelector(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
+  useSelectValidatorByIpModeFF(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
 
   const resetRuleModal = () => {
     setModalState({

@@ -20,7 +20,7 @@ import {
   DirectoryServerDiagnosisCommand,
   DirectoryServerDiagnosisCommandEnum,
   splitAttributeMappingsFromData,
-  useIpModeValidatorSelector
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -148,7 +148,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }
   }, [])
 
-  const hostValidator = useIpModeValidatorSelector(domainNameRegExp, domainNameWithIPv6RegExp)
+  const hostValidator = useSelectValidatorByIpModeFF(domainNameRegExp, domainNameWithIPv6RegExp)
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -218,7 +218,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
                 { required: true },
                 { max: 255 },
                 { validator: (_, value) => hostValidator(value),
-                message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
+                  message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
                 }
               ]}
               label={$t({ defaultMessage: 'FQDN or IP Address' })}
