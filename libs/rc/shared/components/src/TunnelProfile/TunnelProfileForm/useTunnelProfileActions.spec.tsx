@@ -34,6 +34,7 @@ const mockedUpdateFn = jest.fn()
 const mockedCreateTunnelApi = jest.fn()
 const mockedUpdateTunnelApi = jest.fn()
 const mockedActivateTunnelApi = jest.fn()
+const mockedDeactivateTunnelApi = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => {
   const originalModule = jest.requireActual('@acx-ui/rc/services')
@@ -71,8 +72,24 @@ jest.mock('@acx-ui/rc/services', () => {
             unwrap: () => new Promise((resolve) => {
               mockedUpdateFn(req.payload)
               resolve(true)
+            })
+          }
+        },
+        { isLoading: isUpdating }
+      ]
+    },
+    useCreateTunnelProfileTemplateMutation: () => {
+      let isCreating = false
+
+      return [
+        (req: RequestPayload) => {
+          isCreating = true
+          return {
+            unwrap: () => new Promise((resolve) => {
+              mockedAddFn(req.payload)
+              resolve(true)
               setTimeout(() => {
-                isUpdating = false;
+                isCreating = false;
                 (req.callback as Function)({
                   response: { id: 'mock_tunnel_id' }
                 })
@@ -80,7 +97,23 @@ jest.mock('@acx-ui/rc/services', () => {
             })
           }
         },
-        { isLoading: isUpdating }
+        { isLoading: isCreating }
+      ]
+    },
+    useUpdateTunnelProfileTemplateMutation: () => {
+      let isCreating = false
+
+      return [
+        (req: RequestPayload) => {
+          isCreating = true
+          return {
+            unwrap: () => new Promise((resolve) => {
+              mockedUpdateFn(req.payload)
+              resolve(true)
+            })
+          }
+        },
+        { isLoading: isCreating }
       ]
     }
   }
@@ -97,6 +130,13 @@ describe('useTunnelProfileActions', () => {
     type: NetworkSegmentTypeEnum.VXLAN
   }
   beforeEach(() => {
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
+    jest.mocked(mockedAddFn).mockReset()
+    jest.mocked(mockedUpdateFn).mockReset()
+    jest.mocked(mockedActivateTunnelApi).mockReset()
+    jest.mocked(mockedDeactivateTunnelApi).mockReset()
+
     mockServer.use(
       rest.post(
         TunnelProfileUrls.createTunnelProfile.url,
@@ -122,27 +162,18 @@ describe('useTunnelProfileActions', () => {
       rest.delete(
         TunnelProfileUrls.deactivateTunnelProfileByEdgeCluster.url,
         (req, res, ctx) => {
-          mockedActivateTunnelApi()
+          mockedDeactivateTunnelApi()
           return res(ctx.json({ requestId: 'request_id' }))
         }
       )
     )})
 
-
-  it('should render useTunnelProfileActions without errors', () => {
-    const { result } = renderHook(() => useTunnelProfileActions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
-    })
-
-    expect(result.current).toBeDefined()
-    expect(result.current.createTunnelProfileOperation).toBeDefined()
-    expect(result.current.updateTunnelProfileOperation).toBeDefined()
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
   })
 
-  it('should create and activate cluster and handle callback', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
 
+  it('should create and activate cluster and handle callback', async () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
     })
@@ -155,17 +186,12 @@ describe('useTunnelProfileActions', () => {
       await createTunnelProfileOperation(payload)
     })
 
-    await waitFor(() => {
-      expect(mockedAddFn).toHaveBeenCalledWith(mockData)
-    })
-
+    await waitFor(() => expect(mockedAddFn).toHaveBeenCalledWith(mockData))
     await waitFor(() =>expect(isTunnelProfileCreating).toBeFalsy())
+    await waitFor(() => expect(mockedActivateTunnelApi).toBeCalledTimes(1))
   })
 
   it('should update and activate cluster and handle callback', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
-
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
     })
@@ -179,38 +205,50 @@ describe('useTunnelProfileActions', () => {
       await updateTunnelProfileOperation('mock_tunnel_id', payload, mockData)
     })
 
-    await waitFor(() => {
-      expect(mockedUpdateFn).toHaveBeenCalledWith(mockData)
-    })
-
+    await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalledWith(mockData))
     await waitFor(() =>expect(isTunnelProfileUpdating).toBeFalsy())
+    await waitFor(() => expect(mockedActivateTunnelApi).toBeCalledTimes(1))
   })
 
   it('should update and deactivate cluster and handle callback', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
-
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
     })
 
     const { updateTunnelProfileOperation, isTunnelProfileUpdating } = result.current
 
-    mockData.tunnelType = TunnelTypeEnum.L2GRE
-    mockData.mtuType = MtuTypeEnum.MANUAL
-    mockData.natTraversalEnabled = false
-    const initData = _.cloneDeep(mockData)
-    initData.venueId = 'mock_venue_id'
-    initData.edgeClusterId = 'mock_cluster_id'
+    const l2greMockData = _.cloneDeep(mockData)
+    l2greMockData.tunnelType = TunnelTypeEnum.L2GRE
+    l2greMockData.mtuType = MtuTypeEnum.MANUAL
+    l2greMockData.natTraversalEnabled = false
+    l2greMockData.venueId = 'mock_venue_id'
+    l2greMockData.edgeClusterId = 'mock_cluster_id'
+    const initData = _.cloneDeep(l2greMockData)
     await act(async () => {
-      await updateTunnelProfileOperation('mock_tunnel_id', mockData, initData )
+      await updateTunnelProfileOperation('mock_tunnel_id', l2greMockData, initData )
     })
 
-    await waitFor(() => {
-      expect(mockedUpdateFn).toHaveBeenCalledWith(mockData)
-    })
-
+    const { edgeClusterId, venueId, ...rest } = l2greMockData
+    await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalledWith(rest))
     await waitFor(() =>expect(isTunnelProfileUpdating).toBeFalsy())
+    await waitFor(() => expect(mockedDeactivateTunnelApi).toBeCalledTimes(1))
   })
 
+  it('should create tunnel profile template and activate cluster', async () => {
+    const { result } = renderHook(() => useTunnelProfileActions(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
+    })
+
+    const payload = _.cloneDeep(mockData)
+    payload.venueId= 'mock_venue_id'
+    payload.edgeClusterId= 'mock_cluster_id'
+    const { createTunnelProfileTemplateOperation, isTunnelProfileTemplateCreating } = result.current
+    await act(async () => {
+      await createTunnelProfileTemplateOperation(payload)
+    })
+
+    await waitFor(() => expect(mockedAddFn).toHaveBeenCalledWith(mockData))
+    await waitFor(() =>expect(isTunnelProfileTemplateCreating).toBeFalsy())
+    await waitFor(() => expect(mockedActivateTunnelApi).toBeCalledTimes(1))
+  })
 })
