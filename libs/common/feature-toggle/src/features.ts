@@ -47,7 +47,7 @@ export enum Features {
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
   EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
-  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE = 'edge-firmware-notification-batch-operation-toggle',
+  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE = 'removable-ff',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
@@ -114,7 +114,6 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   PORTAL_PROFILE_CONSOLIDATION_TOGGLE = 'acx-ui-consolidated-portal-profile-toggle',
-  NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
   NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
@@ -273,6 +272,7 @@ export enum Features {
   SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
   WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
   WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE = 'wifi-ap-group-more-parameter-phase1-toggle',
+  WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE = 'wifi-ap-group-more-parameter-phase3-toggle',
   SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE = 'acx-ui-support-stack-neighbor-port-toggle',
   WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE = 'wifi-open-network-integrate-identity-group-toggle',
   IDENTITY_COMMON_ATTRIBUTES_TOGGLE = 'acx-ui-identity-common-attributes-toggle',
@@ -304,7 +304,9 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
-  WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle'
+  WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
+  EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
+  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

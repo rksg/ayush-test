@@ -1,7 +1,6 @@
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { ConfigTemplateType }                                     from '@acx-ui/rc/utils'
+import { ConfigTemplateType, useIsEdgeFeatureReady }              from '@acx-ui/rc/utils'
 import { isRecSite }                                              from '@acx-ui/utils'
-
 export * from './ConfigTemplateLink'
 export * from './utils'
 export * from './EnforceTemplateToggle'
@@ -36,6 +35,8 @@ function useMspConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
   const isExtraScope = useIsConfigTemplateExtra()
   const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isTunnelProfileTemplateEnabled = useIsEdgeFeatureReady(Features.EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE)
 
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,
@@ -58,7 +59,8 @@ function useMspConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
     [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
     [ConfigTemplateType.AP_GROUP]: isExtraScope,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled,
-    [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled
+    [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled,
+    [ConfigTemplateType.TUNNEL_PROFILE]: isTunnelProfileTemplateEnabled
   }
 
   return visibilityMap
@@ -93,7 +95,8 @@ function useRecConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
     [ConfigTemplateType.SWITCH_REGULAR]: false,
     [ConfigTemplateType.SWITCH_CLI]: false,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-    [ConfigTemplateType.IDENTITY_GROUP]: false
+    [ConfigTemplateType.IDENTITY_GROUP]: false,
+    [ConfigTemplateType.TUNNEL_PROFILE]: false
   }
 
   return visibilityMap

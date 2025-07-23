@@ -12,7 +12,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => true)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({

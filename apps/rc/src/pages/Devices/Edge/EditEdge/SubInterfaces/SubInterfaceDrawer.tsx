@@ -5,11 +5,11 @@ import { CheckboxChangeEvent }                               from 'antd/lib/chec
 import { useWatch }                                          from 'antd/lib/form/Form'
 import { useIntl }                                           from 'react-intl'
 
-import { Alert, Drawer }                                                                                                                                                                                                     from '@acx-ui/components'
-import { Features }                                                                                                                                                                                                          from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady }                                                                                                                     from '@acx-ui/rc/components'
-import { EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortTypeEnum, IncompatibilityFeatures, SubInterface, edgePortIpValidator, generalSubnetMskRegExp, getEdgeWanInterfaceCount, serverIpAddressRegExp, validateGatewayInSubnet } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                                                                                                                                       from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                                                                                                                                                            from '@acx-ui/components'
+import { Features }                                                                                                                                                                                                                                 from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType }                                                                                                                                                                   from '@acx-ui/rc/components'
+import { EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortTypeEnum, IncompatibilityFeatures, SubInterface, edgePortIpValidator, generalSubnetMskRegExp, getEdgeWanInterfaceCount, serverIpAddressRegExp, useIsEdgeFeatureReady, validateGatewayInSubnet } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                                                                                                              from '@acx-ui/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -179,7 +179,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.DHCP ? (
           <Alert message={
-            $t({ defaultMessage: `Note: Do not add default route pointing 
+            $t({ defaultMessage: `Note: Do not add default route pointing
               to default gateway provided by server.` })
           }
           type='info'
