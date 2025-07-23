@@ -424,16 +424,16 @@ function ApiCollapsePanel (props: {
            label={$t({ defaultMessage: 'RUCKUS Code' })}
            children={errorObj.code} />
       }
-      {errorObj.reason &&
+      {/* {errorObj.reason &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
            children={errorObj.reason} />
-      }
-      {/* {(errorObj.reason || errorObj.message) && Next phase
+      } */}
+      {(errorObj.reason || errorObj.message) &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
            children={errorObj.reason || errorObj.message} />
-      } */}
+      }
       {errorObj.suggestion &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Suggestion' })}
