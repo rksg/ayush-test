@@ -303,35 +303,39 @@ export const isAllPortsLagMember = (portsData: EdgePort[], lagData: EdgeLag[]) =
   return isAllPortsLagMember
 }
 
-export const isLagCorePort = (data: EdgeLag) => {
+export const isCoreLag = (data: EdgeLag) => {
   return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN
     && data.lagEnabled
     && data.lagMembers.some(member => member.portEnabled)
 }
 
-export const isPhysicalCorePort = (data: EdgePort) => {
+export const isCorePhysicalPort = (data: EdgePort) => {
   return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
 }
 
+export const isCoreSubInterface = (data: SubInterface) => {
+  return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN
+}
+
 export const hasCorePhysicalPort = (portsData: EdgePort[]) => {
-  return portsData.some(isPhysicalCorePort)
+  return portsData.some(isCorePhysicalPort)
 }
 
 export const hasCoreLag = (lagData: EdgeLag[]) => {
-  return lagData.some(isLagCorePort)
+  return lagData.some(isCoreLag)
 }
 
-const isAccessLag = (data: EdgeLag) => {
+export const isAccessLag = (data: EdgeLag) => {
   return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
     && data.lagEnabled
-    && data.lagMembers.some(member => member.portEnabled)
+    && data.lagMembers?.some(member => member.portEnabled)
 }
 
-const isAccessPhysicalPort = (data: EdgePort) => {
+export const isAccessPhysicalPort = (data: EdgePort) => {
   return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
 }
 
-const isAccessSubInterface = (data: SubInterface) => {
+export const isAccessSubInterface = (data: SubInterface) => {
   return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
 }
 
@@ -497,14 +501,31 @@ export const genExpireTimeString = (seconds?: number) => {
   )
 }
 
-export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean) => {
+export const getEnabledValidLags = (lagData: EdgeLag[] | undefined): EdgeLag[] => {
   if (!lagData) return []
 
-  const lagWithGateways = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.WAN
-      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? lag.accessPortEnabled : lag.corePortEnabled)))
-  )
+  return lagData.filter(lag => lag.lagEnabled && lag.lagMembers?.some(member => member.portEnabled))
+}
+
+export const getLagAccessPorts = (lagData: EdgeLag[] | undefined): EdgeLag[] => {
+  if (!lagData) return []
+
+  return getEnabledValidLags(lagData).filter(lag => isAccessLag(lag))
+}
+
+export const getLagCorePorts = (lagData: EdgeLag[] | undefined, isCoreAccessEnabled?: boolean): EdgeLag[] => {
+  if (!lagData) return []
+
+  const coreLags = getEnabledValidLags(lagData).filter(lag => isCoreAccessEnabled ? isAccessLag(lag) : isCoreLag(lag))
+  return coreLags
+}
+
+export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean): EdgeLag[] => {
+  if (!lagData) return []
+
+  const lagWans = getEnabledValidLags(lagData).filter(lag => lag.portType === EdgePortTypeEnum.WAN)
+  const lagCorePorts = getLagCorePorts(lagData, isCoreAccessEnabled)
+  const lagWithGateways = includeCorePort ? lagWans.concat(lagCorePorts) : lagWans
   return lagWithGateways
 }
 
