@@ -1,8 +1,9 @@
 import React from 'react'
 
 import { Drawer }        from '@acx-ui/components'
-import { VenuesForm }    from '@acx-ui/main/components'
 import { VenueExtended } from '@acx-ui/rc/utils'
+
+import { VenuesForm } from '../../../Venues'
 
 interface VenueDrawerProps {
   open: boolean
