@@ -149,7 +149,7 @@ const ChatOnlyWidth = '1000px'
 const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
-const ModalInputHeight = '130px'
+const ModalInputHeight = '140px'
 
 export const Wrapper = styled.div<{ showCanvas: boolean }>`
 display: flex;
@@ -230,9 +230,8 @@ display: flex;
       border-bottom-left-radius: 24px;
       ${(props) => !props.showCanvas && `
         border-bottom-right-radius: 24px;
-      `
-}
-      height: 120px;
+      `}
+      height: 130px;
       position: absolute;
       bottom: 0;
       width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
@@ -242,6 +241,22 @@ display: flex;
         right: 35px;
         bottom: 85px;
         color: var(--acx-neutrals-60);
+      }
+      .ant-form-item {
+        margin-bottom: 5px;
+      }
+      .powered-by {
+        display: flex;
+        justify-content: center;
+        color: var(--acx-neutrals-60);
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 18px;
+        .mlisa {
+          color: var(--acx-neutrals-70);
+          font-weight: 600;
+          padding-left: 3px;
+        }
       }
       button {
         min-width: 24px;
@@ -442,15 +457,6 @@ display: flex;
         min-height: 25px;
         align-items: center;
         width: 175px;
-        &.fixed {
-          width: 300px;
-        }
-        &.fixed-narrower {
-          width: 200px !important;
-        }
-        &.dynamic {
-          align-self: flex-start;
-        }
       }
       .message-tail {
         align-content: end;
@@ -807,7 +813,20 @@ ${props => props.$type === 'pageview' && css`
 
 `
 
+export const DraggableChart = styled.div`
+  .draggable-chart {
+    box-shadow: none;
+    margin: 3px 7px 10px 50px;
+    .ant-card {
+      border: 1px solid var(--acx-neutrals-30);
+    }
+  }
+`
+
 export const Widget = styled(Card)`
+  &.ant-card {
+    box-shadow: none;
+  }
   transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;

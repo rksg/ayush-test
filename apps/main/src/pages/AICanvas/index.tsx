@@ -55,7 +55,7 @@ const Message = (props:{
     groups: Group[],
     canvasRef?: React.RefObject<CanvasRef>,
     showCanvas: boolean,
-    goOnboardingAssistant: () => void,
+    goOnboardingAssistant?: () => void,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
   const { chat, sessionId, groups, canvasRef, onUserFeedback, goOnboardingAssistant } = props
@@ -117,7 +117,7 @@ const Message = (props:{
       removeShadowCard={canvasRef?.current?.removeShadowCard}
       /> }
       {
-        chat.role === MessageRole.AI && chat.agent === 'system' &&
+        chat.role === MessageRole.AI && chat.sourceAgent === 'onboarding' &&
         <div className='onboarding-actions'>
           <div onClick={goOnboardingAssistant}>Start Onboarding Assistant</div>
           <div>Maybe later</div>
@@ -127,15 +127,14 @@ const Message = (props:{
         chat.created &&
         <div ref={messageTailRef}
           data-testid='messageTail'
-          // eslint-disable-next-line max-len
-          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
+          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'}`}>
           <div className={`timestamp ${chat.role === MessageRole.USER ? 'right' : ''}`}>
             { chat.created !== '-' && chat.role !== MessageRole.STREAMING
               ? moment(chat.created).format('hh:mm A') : <>&nbsp;</>
             }
           </div>
           {
-            chat.role === MessageRole.AI && chat.agent !== 'system' &&
+            chat.role === MessageRole.AI && chat.sourceAgent !== 'system' &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 data-testid='thumbs-up-btn'
@@ -175,7 +174,7 @@ const Messages = memo((props:{
   const welcomeMessage = {
     id: 'welcomeMessage',
     created: moment().toISOString(),
-    agent: 'system',
+    sourceAgent: 'system',
     role: 'AI',
     text: $t({ defaultMessage:
       // eslint-disable-next-line max-len
@@ -192,7 +191,6 @@ const Messages = memo((props:{
         sessionId={sessionId}
         groups={groups}
         showCanvas={showCanvas}
-        goOnboardingAssistant={goOnboardingAssistant}
         onUserFeedback={onUserFeedback} />
     }
     {moreloading && <div className='loading'><Spin /></div>}
@@ -826,6 +824,10 @@ export default function AICanvasModal (props: {
                           onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
                         />
                       </Tooltip>
+                      <div className='powered-by'>
+                        <span>{$t({ defaultMessage: 'AI-Powered by' })}</span>
+                        <span className='mlisa'>Mlisa</span>
+                      </div>
                     </div>
                   </Loader>
                 </div>
