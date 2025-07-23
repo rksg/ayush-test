@@ -149,7 +149,7 @@ const ChatOnlyWidth = '1000px'
 const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
-const ModalInputHeight = '130px'
+const ModalInputHeight = '140px'
 
 export const Wrapper = styled.div<{ showCanvas: boolean }>`
 display: flex;
@@ -230,9 +230,8 @@ display: flex;
       border-bottom-left-radius: 24px;
       ${(props) => !props.showCanvas && `
         border-bottom-right-radius: 24px;
-      `
-}
-      height: 120px;
+      `}
+      height: 130px;
       position: absolute;
       bottom: 0;
       width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
@@ -242,6 +241,22 @@ display: flex;
         right: 35px;
         bottom: 85px;
         color: var(--acx-neutrals-60);
+      }
+      .ant-form-item {
+        margin-bottom: 5px;
+      }
+      .powered-by {
+        display: flex;
+        justify-content: center;
+        color: var(--acx-neutrals-60);
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 18px;
+        .mlisa {
+          color: var(--acx-neutrals-70);
+          font-weight: 600;
+          padding-left: 3px;
+        }
       }
       button {
         min-width: 24px;

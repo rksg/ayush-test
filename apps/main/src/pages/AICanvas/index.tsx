@@ -55,7 +55,7 @@ const Message = (props:{
     groups: Group[],
     canvasRef?: React.RefObject<CanvasRef>,
     showCanvas: boolean,
-    goOnboardingAssistant: () => void,
+    goOnboardingAssistant?: () => void,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
   const { chat, sessionId, groups, canvasRef, onUserFeedback, goOnboardingAssistant } = props
@@ -117,7 +117,7 @@ const Message = (props:{
       removeShadowCard={canvasRef?.current?.removeShadowCard}
       /> }
       {
-        chat.role === MessageRole.AI && chat.agent === 'system' &&
+        chat.role === MessageRole.AI && chat.sourceAgent === 'onboarding' &&
         <div className='onboarding-actions'>
           <div onClick={goOnboardingAssistant}>Start Onboarding Assistant</div>
           <div>Maybe later</div>
@@ -134,7 +134,7 @@ const Message = (props:{
             }
           </div>
           {
-            chat.role === MessageRole.AI && chat.agent !== 'system' &&
+            chat.role === MessageRole.AI && chat.sourceAgent !== 'system' &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 data-testid='thumbs-up-btn'
@@ -174,7 +174,7 @@ const Messages = memo((props:{
   const welcomeMessage = {
     id: 'welcomeMessage',
     created: moment().toISOString(),
-    agent: 'system',
+    sourceAgent: 'system',
     role: 'AI',
     text: $t({ defaultMessage:
       // eslint-disable-next-line max-len
@@ -191,7 +191,6 @@ const Messages = memo((props:{
         sessionId={sessionId}
         groups={groups}
         showCanvas={showCanvas}
-        goOnboardingAssistant={goOnboardingAssistant}
         onUserFeedback={onUserFeedback} />
     }
     {moreloading && <div className='loading'><Spin /></div>}
@@ -825,6 +824,10 @@ export default function AICanvasModal (props: {
                           onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
                         />
                       </Tooltip>
+                      <div className='powered-by'>
+                        <span>{$t({ defaultMessage: 'AI-Powered by' })}</span>
+                        <span className='mlisa'>Mlisa</span>
+                      </div>
                     </div>
                   </Loader>
                 </div>

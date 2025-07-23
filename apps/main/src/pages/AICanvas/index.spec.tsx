@@ -158,7 +158,14 @@ jest.mock('@acx-ui/rc/services', () => {
             {
               id: 'c135850785b541ab9efbb8f4aedaf4f6',
               role: 'USER',
-              text: 'How many clients were connected to my network yesterday?',
+              text: 'Help me set up my network',
+              created: '2025-02-09T06:32:44.736+00:00'
+            },
+            {
+              id: 'c135850785b541ab9efbb8f4aedaf4f7',
+              role: 'AI',
+              text: 'Just click below to launch the Onboarding Assistant.',
+              sourceAgent: 'onboarding',
               created: '2025-02-09T06:32:44.736+00:00'
             },
             {
@@ -333,6 +340,7 @@ describe('AICanvas', () => {
     fireEvent.click(newChatBtn)
     // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
+    expect(await screen.findByText('Start Onboarding Assistant')).toBeVisible()
     const draggableCharts = await screen.findAllByText('DraggableChart')
     expect(draggableCharts.length).toBe(2)
     expect(draggableCharts[0]).toBeVisible()
@@ -417,11 +425,11 @@ describe('AICanvas', () => {
     expect(feedbackSection).not.toBeVisible()
 
     const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
-    expect(thumbsUpButtons).toHaveLength(3)
+    expect(thumbsUpButtons).toHaveLength(4)
     await userEvent.click(thumbsUpButtons[1])
-    expect(mockedSendFeedback).toBeCalledTimes(0)
+    expect(mockedSendFeedback).toBeCalledTimes(1)
     const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
-    expect(thumbsDownButtons).toHaveLength(3)
+    expect(thumbsDownButtons).toHaveLength(4)
     await userEvent.click(thumbsDownButtons[1])
     expect(mockedSendFeedback).toHaveBeenCalledWith({
       params: expect.objectContaining({
