@@ -14,8 +14,13 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
-import { LanPortPoeSettings, LanPortSettings, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import {
+  LanPortPoeSettings,
+  LanPortSettings,
+  useIpsecProfileLimitedSelection,
+  useSoftGreProfileLimitedSelection
+} from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -24,8 +29,6 @@ import {
   useLazyGetDHCPProfileListViewModelQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortsQuery,
-  useLazyGetVenueSettingsQuery,
-  useResetApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useUpdateApLanPortsMutation,
   useDeactivateClientIsolationOnApMutation,
@@ -39,7 +42,9 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState,
+  mergeLanPortSettings,
+  Voter,
+  SoftGreDuplicationChangeState,
   SoftGreDuplicationChangeDispatcher,
   IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
@@ -51,31 +56,22 @@ import {
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 const useFetchIsVenueDhcpEnabled = () => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
   const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
 
   return async (venueId: string) => {
     let isDhcpEnabled: boolean = false
 
-    if (isWifiRbacEnabled) {
-      const dhcpList = await getDhcpList({
-        payload: {
-          fields: ['id', 'venueIds'],
-          filters: { venueIds: [venueId] }
-        },
-        enableRbac: isServiceRbacEnabled
-      }).unwrap()
+    const dhcpList = await getDhcpList({
+      payload: {
+        fields: ['id', 'venueIds'],
+        filters: { venueIds: [venueId] }
+      },
+      enableRbac: isServiceRbacEnabled
+    }).unwrap()
 
-      isDhcpEnabled = !!dhcpList?.data[0]
-    } else {
-      const venueSettings = (await getVenueSettings({
-        params: { venueId } }, true).unwrap())
-
-      isDhcpEnabled = venueSettings?.dhcpServiceSetting?.enabled ?? false
-    }
+    isDhcpEnabled = !!dhcpList?.data[0]
 
     return isDhcpEnabled
   }
@@ -86,7 +82,6 @@ export function LanPorts (props: ApEditItemProps) {
   const { tenantId, serialNumber } = useParams()
   const { isAllowEdit=true } = props
   const navigate = useNavigate()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
   const isApPoeModeEnabled = useIsSplitOn(Features.WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE)
@@ -114,7 +109,7 @@ export function LanPorts (props: ApEditItemProps) {
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
   useGetApLanPortsWithActivatedProfilesQuery({
     params: { tenantId, serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi,
+    enableRbac: true,
     enableEthernetProfile: isEthernetPortProfileEnabled,
     enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
     enableIpsecOverNetwork: isIpSecOverNetworkEnabled,
@@ -134,8 +129,6 @@ export function LanPorts (props: ApEditItemProps) {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
   const [updateEthernetPortProfile, {
     isLoading: isEthernetPortProfileUpdating }] = useUpdateApEthernetPortsMutation()
-  const [resetApCustomization, {
-    isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
   const [deactivateSoftGreProfileSettings, {
     isLoading: isSoftGreProfileDeactivting }] = useDeactivateSoftGreProfileOnAPMutation()
   const [deactivateIpSecProfileSettings, {
@@ -172,8 +165,8 @@ export function LanPorts (props: ApEditItemProps) {
     duplicationChangeDispatch: React.Dispatch<SoftGreDuplicationChangeDispatcher>,
     formRef?: MutableRefObject<StepsFormLegacyInstance<WifiApSetting>> })
 
-  const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
-  const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
+  const isAllowUpdate = isAllowEdit
+  const isAllowReset = isAllowEdit
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
@@ -200,7 +193,7 @@ export function LanPorts (props: ApEditItemProps) {
             isEthernetClientIsolationEnabled,
             isIpSecOverNetworkEnabled: isIpSecOverNetworkEnabled
           },
-          enableRbac: isUseWifiRbacApi
+          enableRbac: true
         }
 
         const venueLanPortsData = (
@@ -338,65 +331,47 @@ export function LanPorts (props: ApEditItemProps) {
     const { lan, poeMode, poeOut, poeOutMode, useVenueSettings } = values
     const lanPortsNoVni = lan?.filter(lanPort => !lanPort.vni)
 
-    if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
-      const payload: WifiApSetting = {
-        ...apLanPorts,
-        lanPorts: lanPortsNoVni,
-        ...(poeMode ? { poeMode } : {}),
-        ...(poeOut !== undefined ? { poeOut } : {}),
-        ...(poeOut
-          ? (poeOutMode !== undefined ? { poeOutMode } : {})
-          : { poeOutMode: undefined }),
+    const payload: WifiApSetting = {
+      ...apLanPorts,
+      lanPorts: lanPortsNoVni,
+      ...(poeMode ? { poeMode } : {}),
+      ...(poeOut !== undefined ? { poeOut } : {}),
+      ...(poeOut
+        ? (poeOutMode !== undefined ? { poeOutMode } : {})
+        : { poeOutMode: undefined }),
+      useVenueSettings
+    }
+
+    if (isEthernetPortProfileEnabled) {
+
+      // Must deactivate existing SoftGre relation before add new
+      if (isSoftGREOnEthernetEnabled && !isIpSecOverNetworkEnabled) {
+        handleSoftGreDeactivate(values)
+      }
+
+      if (isIpSecOverNetworkEnabled) {
+        handleSoftGreIpSecDeactivate(values)
+      }
+
+      if (isEthernetClientIsolationEnabled) {
+        await handleClientIsolationDeactivate(values)
+      }
+
+      await updateEthernetPortProfile({
+        params: { venueId, serialNumber },
+        payload,
         useVenueSettings
-      }
+      }).unwrap()
 
-      if (isEthernetPortProfileEnabled) {
-
-        // Must deactivate existing SoftGre relation before add new
-        if (isSoftGREOnEthernetEnabled && !isIpSecOverNetworkEnabled) {
-          handleSoftGreDeactivate(values)
-        }
-
-        if (isIpSecOverNetworkEnabled) {
-          handleSoftGreIpSecDeactivate(values)
-        }
-
-        if (isEthernetClientIsolationEnabled) {
-          await handleClientIsolationDeactivate(values)
-        }
-
-        await updateEthernetPortProfile({
-          params: { venueId, serialNumber },
-          payload,
-          useVenueSettings
-        }).unwrap()
-
-        isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
-          state: IpsecOptionChangeState.OnSave
-        })
-      } else {
-        await updateApCustomization({
-          params: { tenantId, serialNumber, venueId },
-          payload,
-          enableRbac: true
-        }).unwrap()
-      }
+      isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
+        state: IpsecOptionChangeState.OnSave
+      })
     } else {
-      if (values?.useVenueSettings) {
-        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
-      } else {
-        const payload: WifiApSetting = {
-          ...apLanPorts,
-          lanPorts: lan,
-          //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
-          ...(poeOut !== undefined ? { poeOut } : {}),
-          ...(poeOut
-            ? (poeOutMode !== undefined ? { poeOutMode } : {})
-            : { poeOutMode: undefined }),
-          useVenueSettings: false
-        }
-        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
-      }
+      await updateApCustomization({
+        params: { tenantId, serialNumber, venueId },
+        payload,
+        enableRbac: true
+      }).unwrap()
     }
   }
 
@@ -560,7 +535,6 @@ export function LanPorts (props: ApEditItemProps) {
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||
-      isApLanPortsResetting ||
       isEthernetPortProfileUpdating ||
       isSoftGreProfileDeactivting ||
       isIpSecProfileDeactivting ||

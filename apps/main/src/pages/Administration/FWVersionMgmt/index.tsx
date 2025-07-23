@@ -30,7 +30,6 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isCore = isCoreTier(accountTier)
 
@@ -49,7 +48,7 @@ const FWVersionMgmt = () => {
 
   const { isAPPLibraryAvailable } = useGetSigPackQuery({
     params: { changesIncluded: 'false' },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   }, {
     skip: isCore,
     selectFromResult: ({ data }) => ({

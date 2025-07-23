@@ -11,7 +11,6 @@ import {
   showActionModal,
   AnchorContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }      from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
@@ -61,9 +60,6 @@ export function ApSnmp (props: ApEditItemProps) {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  // eslint-disable-next-line
-
   const { venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
@@ -79,9 +75,9 @@ export function ApSnmp (props: ApEditItemProps) {
   const [isApSnmpEnable, setIsApSnmpEnable] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   // eslint-disable-next-line max-len
-  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
+  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: true })
   // eslint-disable-next-line max-len
-  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId }, enableRbac: isUseRbacApi },
+  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId }, enableRbac: true },
     { skip: !venueId })
 
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
@@ -102,7 +98,7 @@ export function ApSnmp (props: ApEditItemProps) {
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
           params: { venueId },
-          enableRbac: isUseRbacApi }, true).unwrap()
+          enableRbac: true }, true).unwrap()
         )
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
@@ -195,7 +191,7 @@ export function ApSnmp (props: ApEditItemProps) {
               venueId,
               profileId: apSnmpSettings.apSnmpAgentProfileId
             },
-            enableRbac: isUseRbacApi,
+            enableRbac: true,
             payload: {
               enableApSnmp: false
             }
@@ -204,14 +200,14 @@ export function ApSnmp (props: ApEditItemProps) {
         await resetApSnmpSettings({
           params: { serialNumber, venueId },
           payload: { useVenueSettings: true },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }).unwrap()
       } else {
         if(apSnmpSettings.useVenueSettings && isClickUseVenueSettings.current) {
           await resetApSnmpSettings({
             params: { serialNumber, venueId },
             payload: { useVenueSettings: false },
-            enableRbac: isUseRbacApi
+            enableRbac: true
           }).unwrap()
         }
         if(!(!payload.enableApSnmp && isClickUseVenueSettings.current)) {
@@ -221,7 +217,7 @@ export function ApSnmp (props: ApEditItemProps) {
               venueId,
               profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
             },
-            enableRbac: isUseRbacApi,
+            enableRbac: true,
             payload
           }).unwrap()
         }

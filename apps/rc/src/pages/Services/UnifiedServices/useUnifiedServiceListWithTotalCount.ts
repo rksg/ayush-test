@@ -72,7 +72,6 @@ function useUnifiedServiceTotalCountMap (
   isFetching: boolean
 } {
   const params = useParams()
-  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const defaultQueryArgs = { params, payload: defaultPayload, enableRbac }
@@ -89,7 +88,7 @@ function useUnifiedServiceTotalCountMap (
     [PolicyType.ROGUE_AP_DETECTION]: useEnhancedRoguePoliciesQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.ROGUE_AP_DETECTION) }),
     [PolicyType.SYSLOG]: useSyslogPolicyListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.SYSLOG) }),
     [PolicyType.VLAN_POOL]: useGetVLANPoolPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.VLAN_POOL) }),
-    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
+    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: true }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
     [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: !typeSet.has(PolicyType.TUNNEL_PROFILE) }),
     [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: !typeSet.has(PolicyType.CONNECTION_METERING) }),
     [PolicyType.ADAPTIVE_POLICY_PROFILE]: useAdaptivePolicyTotalCount( { ...params, excludeContent: 'true' }, !typeSet.has(PolicyType.ADAPTIVE_POLICY_PROFILE)),

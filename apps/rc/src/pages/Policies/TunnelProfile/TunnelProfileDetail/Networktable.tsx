@@ -2,21 +2,17 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum }        from '@acx-ui/rc/utils'
-import { TenantLink }                                   from '@acx-ui/react-router-dom'
-import { useTableQuery }                                from '@acx-ui/utils'
+import { Loader, Table, TableProps }                 from '@acx-ui/components'
+import { useWifiNetworkListQuery }                   from '@acx-ui/rc/services'
+import { NetworkType, NetworkTypeEnum, WifiNetwork } from '@acx-ui/rc/utils'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { useTableQuery }                             from '@acx-ui/utils'
 
 interface NetworkTableProps {
   networkIds: string[]
 }
 
 export const NetworkTable = (props: NetworkTableProps) => {
-
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const [isPayloadReady,setIsPayloadReady] = useState(false)
   const defaultNetworkPayload = {
@@ -30,7 +26,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
     filters: { id: props.networkIds }
   }
   const tableQuery = useTableQuery({
-    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
+    useQuery: useWifiNetworkListQuery,
     defaultPayload: defaultNetworkPayload,
     option: {
       skip: !isPayloadReady || props.networkIds.length === 0
@@ -50,7 +46,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
     }
   }, [tableQuery.payload.filters])
 
-  const columns: TableProps<Network>['columns'] = [
+  const columns: TableProps<WifiNetwork>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network' }),
       key: 'name',

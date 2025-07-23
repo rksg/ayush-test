@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableColumn, TableProps }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { APStatus }                                                 from '@acx-ui/rc/components'
-import { useLazyGetApNeighborsQuery, useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
+import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { APStatus }                               from '@acx-ui/rc/components'
+import { useLazyGetApNeighborsQuery }             from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
   SortResult,
@@ -23,11 +22,7 @@ import { apNeighborValueRender } from '.'
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber, venueId } = useApContext()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const apNeighborQuery = isUseWifiRbacApi ?
-    useLazyGetApNeighborsQuery :
-    useLazyGetApRfNeighborsQuery
-  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
+  const [ getApNeighbors, getApNeighborsStates ] = useLazyGetApNeighborsQuery()
   // eslint-disable-next-line max-len
   const { doDetect, isDetecting, handleApiError } = useApNeighbors('rf', serialNumber!, socketHandler, venueId)
 

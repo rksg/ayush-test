@@ -12,7 +12,6 @@ import { ApContext }                                 from '@acx-ui/rc/utils'
 import { useGetApCapabilities } from '../hooks'
 
 export function ApContextProvider (props: { children: ReactNode }) {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const params = useParams()
   const { $t } = useIntl()
@@ -28,7 +27,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
       searchTargetFields: ['apMac', 'serialNumber'],
       searchString: params.apId
     },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: data?.data,
@@ -49,7 +48,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
     params,
     modelName: apData?.model,
     skip: !supportR370,
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   })
 
   //eslint-disable-next-line

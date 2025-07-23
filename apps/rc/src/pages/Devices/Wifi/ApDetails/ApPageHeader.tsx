@@ -42,7 +42,6 @@ import { useGetApCapabilities } from '../hooks'
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
@@ -53,12 +52,12 @@ function ApPageHeader () {
     useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
-  const { data } = useApDetailHeaderQuery({ params, enableRbac: isUseRbacApi })
+  const { data } = useApDetailHeaderQuery({ params, enableRbac: true })
 
   const { data: apCapabilities } = useGetApCapabilities({
     params,
     modelName: model,
-    enableRbac: isUseRbacApi
+    enableRbac: true
   })
   const [cliModalState, setCliModalOpen] = useState(false)
   const [cliData, setCliData] = useState({
@@ -79,7 +78,7 @@ function ApPageHeader () {
 
   const apViewModelQuery = useApViewModelQuery({
     payload: apViewModelPayload,
-    enableRbac: isUseRbacApi
+    enableRbac: true
   })
   const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 

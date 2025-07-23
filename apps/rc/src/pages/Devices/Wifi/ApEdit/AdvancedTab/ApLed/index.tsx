@@ -5,10 +5,13 @@ import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
-import { useGetApLedQuery, useLazyGetVenueLedOnQuery, useResetApLedMutation, useUpdateApLedMutation } from '@acx-ui/rc/services'
-import { ApLedSettings, VenueLed }                                                                    from '@acx-ui/rc/utils'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import {
+  useGetApLedQuery,
+  useLazyGetVenueLedOnQuery,
+  useUpdateApLedMutation
+} from '@acx-ui/rc/services'
+import { ApLedSettings, VenueLed } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 import { FieldLabel }                                    from '../../styledComponents'
@@ -19,7 +22,6 @@ export function ApLed (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { isAllowEdit=true } = props
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -34,11 +36,10 @@ export function ApLed (props: ApEditItemProps) {
   const formRef = useRef<StepsFormLegacyInstance<ApLedSettings>>()
 
   const getApLed = useGetApLedQuery({
-    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+    params: { venueId, serialNumber }, enableRbac: true
   })
 
   const [updateApLed, { isLoading: isUpdatingApLed }] = useUpdateApLedMutation()
-  const [resetApLed, { isLoading: isResetApLed }] = useResetApLedMutation()
 
   const [getVenueLed] = useLazyGetVenueLedOnQuery()
 
@@ -54,7 +55,7 @@ export function ApLed (props: ApEditItemProps) {
     if (apDetails && apLedData) {
       const setData = async () => {
         const venueLed = await getVenueLed(
-          { params: { tenantId, venueId }, enableRbac: isUseRbacApi }, true).unwrap()
+          { params: { tenantId, venueId }, enableRbac: true }, true).unwrap()
 
         setVenueLed(venueLed?.find(apModel => apModel.model === apDetails?.model)
           || { ledEnabled: true } as VenueLed)
@@ -107,14 +108,10 @@ export function ApLed (props: ApEditItemProps) {
       const isUseVenue = isUseVenueSettingsRef.current
 
       if (isUseVenue) {
-        if (isUseRbacApi) {
-          await updateApLed(
-            { params: { venueId, serialNumber },
-              payload: { useVenueSettings: true },
-              enableRbac: isUseRbacApi }).unwrap()
-        } else {
-          await resetApLed({ params: { serialNumber } }).unwrap()
-        }
+        await updateApLed(
+          { params: { venueId, serialNumber },
+            payload: { useVenueSettings: true },
+            enableRbac: true }).unwrap()
       } else {
         const payload = {
           ...values,
@@ -122,7 +119,7 @@ export function ApLed (props: ApEditItemProps) {
         }
 
         await updateApLed(
-          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+          { params: { venueId, serialNumber }, payload, enableRbac: true }
         ).unwrap()
       }
 

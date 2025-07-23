@@ -3,9 +3,8 @@ import { useMemo, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { useLazyGetApNeighborsQuery }                             from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
   defaultSort,
@@ -28,11 +27,7 @@ import type { LldpNeighborsDisplayFields } from './contents'
 export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber, venueId } = useApContext()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const apNeighborQuery = isUseWifiRbacApi ?
-    useLazyGetApNeighborsQuery :
-    useLazyGetApLldpNeighborsQuery
-  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
+  const [ getApNeighbors, getApNeighborsStates ] = useLazyGetApNeighborsQuery()
   // eslint-disable-next-line max-len
   const { doDetect, isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
