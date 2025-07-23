@@ -22,9 +22,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+  EdgeCompatibilityType: {
+    DEVICE: 'Device',
+    VENUE: 'Venue',
+    ALONE: 'ALONE'
+  },
+  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => true)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 jest.mock('./ArpTermination', () => ({
   ArpTerminationFormItem: () => <div data-testid='ArpTerminationFormItem' />,

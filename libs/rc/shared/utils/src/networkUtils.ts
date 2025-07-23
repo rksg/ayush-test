@@ -1,5 +1,14 @@
-import { WlanSecurityEnum }                                     from './constants'
+import { NetworkTypeEnum, WlanSecurityEnum }                    from './constants'
 import { Network, NetworkDetail, NetworkSaveData, WifiNetwork } from './types/network'
+
+export const SupportNetworkTypes = [
+  NetworkTypeEnum.PSK,
+  NetworkTypeEnum.DPSK,
+  NetworkTypeEnum.AAA,
+  NetworkTypeEnum.HOTSPOT20,
+  NetworkTypeEnum.CAPTIVEPORTAL,
+  NetworkTypeEnum.OPEN
+]
 
 const SupportRadio6gSecurityList = [
   WlanSecurityEnum.WPA3,

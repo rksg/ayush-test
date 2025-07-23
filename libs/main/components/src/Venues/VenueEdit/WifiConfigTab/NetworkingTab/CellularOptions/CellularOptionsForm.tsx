@@ -83,7 +83,7 @@ export function CellularOptionsForm (props: VenueWifiConfigItemProps) {
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } },
     { skip: isUseRbacApi })
   const venueInfoData = useGetVenueQuery(
-    { params: { tenantId, venueId }, enableRbac: isUseRbacApi }, { skip: !isUseRbacApi })
+    { params: { tenantId, venueId } }, { skip: !isUseRbacApi })
   const [currentRegion, setCurrentRegion] = useState('')
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)

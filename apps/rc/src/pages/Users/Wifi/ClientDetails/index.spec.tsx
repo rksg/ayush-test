@@ -1,10 +1,15 @@
 import userEvent         from '@testing-library/user-event'
 import { graphql, rest } from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { apApi, clientApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { store, Provider, dataApiURL }                  from '@acx-ui/store'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { apApi, clientApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ClientUrlsInfo,
+  CommonRbacUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { store, Provider, dataApiURL } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -14,7 +19,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  clientList,
   clientApList,
   clientVenueList,
   clientReportList,
@@ -87,13 +91,11 @@ describe('ClientDetails', () => {
         (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventsMeta))),
-      rest.get(ClientUrlsInfo.getClientDetails.url,
-        (_, res, ctx) => res(ctx.json(clientList[0]))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
-      rest.get(WifiUrlsInfo.getNetwork.url,
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList ))),

@@ -73,11 +73,11 @@ exports[`OverviewTab should render correctly 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -176,11 +176,11 @@ exports[`OverviewTab should render correctly when 10010e FF is enabled 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10f
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -279,7 +279,7 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
@@ -287,7 +287,7 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA 1`] = `
               <b>
                 7.x
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -386,7 +386,7 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA and 10010e FF enab
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10f
               </b>
@@ -394,7 +394,7 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA and 10010e FF enab
               <b>
                 7.x
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>
@@ -493,11 +493,11 @@ exports[`OverviewTab should render correctly with filter passed as props 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 
+              For Wired Health metrics – you are recommended to ensure switches have a pre-requisite firmware version of 
               <b>
                 10.0.10d
               </b>
-               or above.
+               or above at minimum. Select compliance metrics may need higher firmware levels.
             </div>
           </div>
         </div>

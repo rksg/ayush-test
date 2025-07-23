@@ -5,7 +5,7 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Traffic } from '@acx-ui/analytics/components'
+import { IdentityHealth, Traffic, TopApplications } from '@acx-ui/analytics/components'
 import {
   Button,
   Card,
@@ -23,7 +23,6 @@ import {
   IdentityGroupLink,
   NetworkSegmentationLink,
   PropertyUnitLink,
-  useIsEdgeFeatureReady,
   ConnectionMeteringLink
 } from '@acx-ui/rc/components'
 import {
@@ -38,10 +37,10 @@ import {
   useLazyGetSamlIdpProfileByIdQuery,
   useLazyGetDirectoryServerByIdQuery
 } from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
-import { getUserProfile, hasAllowedOperations, isCoreTier }                                      from '@acx-ui/user'
-import { getOpsApi, ignoreErrorModal, noDataDisplay }                                            from '@acx-ui/utils'
+import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                   from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations, isCoreTier }                                                             from '@acx-ui/user'
+import { getOpsApi, ignoreErrorModal, noDataDisplay }                                                                   from '@acx-ui/utils'
 
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
 import { MAX_CLIENTS_PER_PAGE }   from './IdentityClientTable'
@@ -353,6 +352,17 @@ export function PersonaOverview ({
           </GridCol>
         }
       </GridRow>
+      {isIdentityAnalyticsEnabled && (
+        <GridRow>
+          <GridCol col={{ span: 24 }}/>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <IdentityHealth />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+            <Traffic />
+          </GridCol>
+        </GridRow>
+      )}
       <GridRow>
         <GridCol col={{ span: 24 }}/>
         <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
@@ -380,7 +390,7 @@ export function PersonaOverview ({
         </GridCol>
         {isIdentityAnalyticsEnabled && (
           <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
-            <Traffic />
+            <TopApplications />
           </GridCol>
         )}
       </GridRow>

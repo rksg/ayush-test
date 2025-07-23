@@ -7,6 +7,9 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testPathIgnorePatterns: [
+    '/.*\\/archived\\/.*/'
+  ],
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: './test-results', outputName: 'main.xml' }]

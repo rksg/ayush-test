@@ -5,8 +5,8 @@ import { ItemType }    from 'antd/lib/menu/hooks/useItems'
 import moment          from 'moment'
 import { useIntl }     from 'react-intl'
 
-import { getUserProfile, isCoreTier }                                    from '@acx-ui/user'
-import { DateRange, dateRangeMap, defaultCoreTierRanges, defaultRanges } from '@acx-ui/utils'
+import { getUserProfile, isCoreTier }                                                        from '@acx-ui/user'
+import { DateRange, dateRangeMap, defaultCoreTierRanges, defaultRanges, trackDateSelection } from '@acx-ui/utils'
 
 import { Dropdown, Button, CaretDownSolidIcon } from '../..'
 
@@ -76,7 +76,11 @@ export const TimeRangeDropDown: React.FC = () => {
       key='timerange-dropdown'
       overlay={
         <Menu
-          onClick={(e) => setTimeRangeDropDownRange(e.key as DateRange)}
+          onClick={(e) => {
+            const key = e.key as DateRange
+            setTimeRangeDropDownRange(key)
+            trackDateSelection(key)
+          }}
           items={
             availableRanges.map((key) => ({
               key,
