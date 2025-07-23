@@ -4,7 +4,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   HistoricalCard,
   Loader,
-  ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
 import { ContentSwitcherPaddingWrapper } from '../../styledComponents'
@@ -28,45 +27,46 @@ export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
     endDate: filters.endDate
   })
 
+  const getTabDetails = (height: number, width: number) => [
+    {
+      label: $t({ defaultMessage: 'Snapshot' }),
+      value: 'Snapshot',
+      children: (
+        <TrafficSnapshot
+          queryResults={queryResults}
+          height={height}
+          width={width}
+        />
+      )
+    },
+    {
+      label: $t({ defaultMessage: 'Trend' }),
+      value: 'Trend',
+      children: (
+        <TrafficTrend
+          queryResults={queryResults}
+          height={height}
+          width={width}
+        />
+      )
+    }
+  ]
+
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
         <AutoSizer>
-          {({ height, width }) => {
-            const tabDetails: ContentSwitcherProps['tabDetails'] = [
-              {
-                label: $t({ defaultMessage: 'Snapshot' }),
-                value: 'Snapshot',
-                children: (
-                  <TrafficSnapshot
-                    queryResults={queryResults}
-                    height={height}
-                    width={width}
-                  />
-                )
-              },
-              {
-                label: $t({ defaultMessage: 'Trend' }),
-                value: 'Trend',
-                children: (
-                  <TrafficTrend
-                    queryResults={queryResults}
-                    height={height}
-                    width={width}
-                  />
-                )
-              }
-            ]
-            return (
-              <ContentSwitcherPaddingWrapper height={height} width={width}>
-                <ContentSwitcher
-                  tabDetails={tabDetails}
-                  align='right'
-                  size='small'
-                />
-              </ContentSwitcherPaddingWrapper>
-            )
-          }}
+          {({ height, width }) => (
+            <ContentSwitcherPaddingWrapper height={height} width={width}>
+              <ContentSwitcher
+                tabDetails={getTabDetails}
+                align='right'
+                size='small'
+                height={height}
+                width={width}
+              />
+            </ContentSwitcherPaddingWrapper>
+          )}
         </AutoSizer>
       </HistoricalCard>
     </Loader>

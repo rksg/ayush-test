@@ -683,7 +683,10 @@ function DeviceWidgetsAndMapWidget (props: {
       tabId={'dashboard-devices'}
       tabDetails={tabDetails}
       size='large'
-      defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+      defaultValue={
+        localStorage.getItem('dashboard-tab') ||
+        (Array.isArray(tabDetails) ? tabDetails[0].value : 'ap')
+      }
       onChange={onTabChange}
       extra={
         <UI.Wrapper>

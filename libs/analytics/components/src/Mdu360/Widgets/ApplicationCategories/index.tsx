@@ -3,7 +3,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
   ContentSwitcher,
-  ContentSwitcherProps,
   DonutChart,
   HistoricalCard,
   Loader,
@@ -32,63 +31,64 @@ export const ApplicationCategories = ({
   })
   const results = queryResults?.data
 
+  const getTabDetails = (height: number, width: number) => [
+    {
+      label: $t({ defaultMessage: 'Client Count' }),
+      value: 'clientCount',
+      children: results?.clientCount.length ? (
+        <DonutChart
+          data={results.clientCount}
+          style={{ width, height }}
+          legend='name-bold-value'
+          size='medium'
+          showLegend
+          showTotal
+          showValue
+          showLabel
+        />
+      ) : (
+        <NoData />
+      )
+    },
+    {
+      label: $t({ defaultMessage: 'Data Usage' }),
+      value: 'dataUsage',
+      children: results?.dataUsage.length ? (
+        <DonutChart
+          data={results.dataUsage}
+          style={{ width, height }}
+          legend='name-bold-value'
+          size='medium'
+          showLegend
+          showTotal
+          showValue
+          showLabel
+          dataFormatter={(value) =>
+            formats.bytesFormat(value as number)}
+        />
+      ) : (
+        <NoData />
+      )
+    }
+  ]
+
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Top 10 Application Categories' })}
       >
         <AutoSizer>
-          {({ height, width }) => {
-            const tabDetails: ContentSwitcherProps['tabDetails'] = [
-              {
-                label: $t({ defaultMessage: 'Client Count' }),
-                value: 'clientCount',
-                children: results?.clientCount.length ? (
-                  <DonutChart
-                    data={results.clientCount}
-                    style={{ width, height }}
-                    legend='name-bold-value'
-                    size='medium'
-                    showLegend
-                    showTotal
-                    showValue
-                    showLabel
-                  />
-                ) : (
-                  <NoData />
-                )
-              },
-              {
-                label: $t({ defaultMessage: 'Data Usage' }),
-                value: 'dataUsage',
-                children: results?.dataUsage.length ? (
-                  <DonutChart
-                    data={results.dataUsage}
-                    style={{ width, height }}
-                    legend='name-bold-value'
-                    size='medium'
-                    showLegend
-                    showTotal
-                    showValue
-                    showLabel
-                    dataFormatter={(value) =>
-                      formats.bytesFormat(value as number)}
-                  />
-                ) : (
-                  <NoData />
-                )
-              }
-            ]
-            return (
-              <ContentSwitcherWrapper height={height} width={width}>
-                <ContentSwitcher
-                  tabDetails={tabDetails}
-                  align='right'
-                  size='small'
-                />
-              </ContentSwitcherWrapper>
-            )
-          }}
+          {({ height, width }) => (
+            <ContentSwitcherWrapper height={height} width={width}>
+              <ContentSwitcher
+                tabDetails={getTabDetails}
+                align='right'
+                size='small'
+                height={height}
+                width={width}
+              />
+            </ContentSwitcherWrapper>
+          )}
         </AutoSizer>
       </HistoricalCard>
     </Loader>
