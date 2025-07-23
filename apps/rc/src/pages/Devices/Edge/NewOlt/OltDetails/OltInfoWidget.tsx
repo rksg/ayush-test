@@ -114,7 +114,7 @@ export const OltInfoWidget = (props: EdgeNokiaOltDetailsPageHeaderProps) => {
           <GridRow style={{ flexGrow: '1', justifyContent: 'center' }}>
             {/* TODO */}
             {infoWidgetConfig.map((item) => (
-              <GridCol col={{ span: 4 }}>
+              <GridCol col={{ span: 4 }} key={item.title}>
                 <EdgeOverviewDonutWidget
                   title={item.title}
                   data={item.data}

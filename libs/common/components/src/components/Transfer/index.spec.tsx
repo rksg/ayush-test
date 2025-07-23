@@ -303,7 +303,10 @@ describe('Transfer', () => {
     expect(await screen.findByText('0 selected')).toBeVisible()
 
     const group1 = await screen.findByText(/Group 1/)
+    const group2 = await screen.findByText(/Group 2/)
+    await userEvent.click(group2)
     await userEvent.click(group1)
+    await userEvent.click(group2)
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
     expect(await screen.findByText('4 available')).toBeVisible()
     expect(await screen.findByText('5 selected')).toBeVisible()

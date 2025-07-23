@@ -7,7 +7,7 @@ import { useNavigate, useTenantLink }                     from '@acx-ui/react-ro
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
-import { useEdgeNokiaOltTable } from '../Edge/Olt/OltTable'
+import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
 
 import useSwitchesTable from './SwitchesTable'
 

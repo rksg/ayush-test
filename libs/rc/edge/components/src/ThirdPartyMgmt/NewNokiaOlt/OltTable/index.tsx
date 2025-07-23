@@ -1,5 +1,3 @@
-import { forwardRef } from 'react'
-
 import { Row, Button } from 'antd'
 import { useIntl }     from 'react-intl'
 
@@ -32,7 +30,7 @@ interface EdgeNokiaOltTableProps {
   isFetching?: boolean
 }
 const settingsId = 'edge-nokia-olt-table'
-export const EdgeNewNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps) => {
+export const EdgeNewNokiaOltTable = (props: EdgeNokiaOltTableProps) => {
   const { $t } = useIntl()
   const { data, isLoading = false, isFetching = false } = props
 
@@ -56,8 +54,8 @@ export const EdgeNewNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps) =
         showActionModal({
           type: 'confirm',
           title: rows.length === 1
-            ? $t({ defaultMessage: 'Reboot “{name}”?' }, { name: rows[0].name }) //TODO: confirm with design
-            : $t({ defaultMessage: 'Reboot “2 OLT Devices”?' }),
+            ? $t({ defaultMessage: 'Reboot "{name}"?' }, { name: rows[0].name }) //TODO: confirm with design
+            : $t({ defaultMessage: 'Reboot "{num} OLT Devices"?' }, { num: rows.length }),
           content: rows.length === 1
             ? $t({ defaultMessage: 'Are you sure you want to reboot this OLT device?' })
             : $t({ defaultMessage: 'Are you sure you want to reboot these OLT devices?' }),
@@ -117,7 +115,7 @@ export const EdgeNewNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps) =
       rowSelection={{ type: 'checkbox' }}
     />
   </Loader>
-})
+}
 
 function useColumns () {
   const { $t } = useIntl()

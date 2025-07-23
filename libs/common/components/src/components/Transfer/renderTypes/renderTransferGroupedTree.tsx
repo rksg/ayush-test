@@ -38,7 +38,7 @@ export function renderTransferGroupedTree (
   if (transferProps.direction === 'right') return null
 
   const {
-    dataSource = [],
+    dataSource,
     targetKeys = [],
     selectedKeys = [],
     onSelectChange: onSelectedKeysChange,

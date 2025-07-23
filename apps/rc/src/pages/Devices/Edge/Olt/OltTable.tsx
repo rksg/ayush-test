@@ -13,7 +13,7 @@ import { TenantLink }                          from '@acx-ui/react-router-dom'
 import { filterByAccess }                      from '@acx-ui/user'
 import { TABLE_QUERY_POLLING_INTERVAL }        from '@acx-ui/utils'
 
-export function useEdgeNokiaOltTable () {
+export default function useEdgeNokiaOltTable () {
   const { $t } = useIntl()
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)

@@ -43,7 +43,6 @@ export const OltForm = (props: {
   data?: EdgeNokiaOltCreateFormData
   form: FormInstance
   onFinish: (values: EdgeNokiaOltCreateFormData) => Promise<boolean | void>
-
 }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
