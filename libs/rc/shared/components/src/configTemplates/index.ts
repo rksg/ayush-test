@@ -1,5 +1,5 @@
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { ConfigTemplateType }                                     from '@acx-ui/rc/utils'
+import { ConfigTemplateType, useIsEdgeFeatureReady }              from '@acx-ui/rc/utils'
 
 export * from './ConfigTemplateLink'
 export * from './utils'
@@ -28,6 +28,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
   const isExtraScope = useIsConfigTemplateExtra()
   const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isTunnelProfileTemplateEnabled = useIsEdgeFeatureReady(Features.EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE)
 
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,
@@ -50,7 +52,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
     [ConfigTemplateType.AP_GROUP]: isExtraScope,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled,
-    [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled
+    [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled,
+    [ConfigTemplateType.TUNNEL_PROFILE]: isTunnelProfileTemplateEnabled
   }
 
   return visibilityMap
