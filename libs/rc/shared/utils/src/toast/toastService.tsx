@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-import { LoadingOutlined }   from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showActionModal }   from 'libs/common/components/src/components/ActionModal'
 import { isEmpty, template } from 'lodash'
 import { IntlShape }         from 'react-intl'
 import { generatePath }      from 'react-router-dom'
 import styled                from 'styled-components/macro'
 
-import { showActionModal }                     from '@acx-ui/components'
 import { RolesEnum }                           from '@acx-ui/types'
 import { hasRoles }                            from '@acx-ui/user'
 import {
