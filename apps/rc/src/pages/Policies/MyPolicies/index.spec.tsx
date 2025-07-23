@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 
 import { Features, useIsBetaEnabled, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   connectionMeteringApi,
   policyApi
@@ -19,6 +18,7 @@ import {
   SoftGreUrls,
   SyslogUrls,
   SwitchUrlsInfo,
+
   VlanPoolRbacUrls,
   WifiUrlsInfo,
   EthernetPortProfileUrls,
@@ -62,8 +62,22 @@ const mockNewTableResult = {
 }
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  ApCompatibilityToolTip: () => <div data-testid='rc-ApCompatibilityToolTip' />,
+  EdgeCompatibilityDrawer: () => <div data-testid='rc-EdgeCompatibilityDrawer' />,
+  EdgeCompatibilityType: {
+    DEVICE: 'Device',
+    VENUE: 'Venue'
+  },
+  useAclTotalCount: jest.fn().mockReturnValue({
+    data: { totalCount: 5 },
+    isFetching: false
+  })
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -326,7 +340,7 @@ describe('MyPolicies', () => {
   })
 
   it('should render edge hqos bandwidth correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+    mockUseIsEdgeFeatureReady.mockImplementation(ff =>
       [Features.EDGE_QOS_TOGGLE].includes(ff as Features))
     jest.mocked(useIsBetaEnabled).mockReturnValue(true)
 
@@ -362,7 +376,7 @@ describe('MyPolicies', () => {
   })
 
   it('should render Authentication correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
     )
@@ -398,7 +412,7 @@ describe('MyPolicies', () => {
     expect(await screen.findByText('Port Authentication (1)')).toBeVisible()
   })
   it('should render Port Profile correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
       ff === Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE

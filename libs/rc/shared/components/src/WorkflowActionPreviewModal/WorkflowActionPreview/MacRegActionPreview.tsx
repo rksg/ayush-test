@@ -96,7 +96,7 @@ export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegActi
     }
   })
   const loadMacRegNetworks = useCallback((macRegListId: string) => {
-    if (!macRegListId) {
+    if (!macRegListId || !data?.valid) {
       return
     }
     getMacRegPool({
