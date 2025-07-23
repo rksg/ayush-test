@@ -47,10 +47,10 @@ export function IntentAISummary () {
           <DonutChart
             style={{ width, height }}
             data={data}
-            showLegend={true}
-            showTotal={true}
-            showValue={true}
-            showLabel={true}
+            showLegend
+            showTotal
+            showValue
+            showLabel
             legend='name-bold-value'
             dataFormatter={formatter('noFormat')}
             size={'large'}
