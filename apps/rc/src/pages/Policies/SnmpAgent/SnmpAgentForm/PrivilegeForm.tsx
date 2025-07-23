@@ -7,7 +7,7 @@ import {
   networkWifiDualModeIpRegExp,
   SnmpNotificationTypeEnum,
   SnmpV2Agent, SnmpV3Agent,
-  useIpModeValidatorSelector
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 
 const { useWatch } = Form
@@ -40,7 +40,7 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
     useWatch<boolean>('trapPrivilege')]
 
   const targetAddresslValidator =
-  useIpModeValidatorSelector(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
+  useSelectValidatorByIpModeFF(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
 
   return (<>
     <Form.Item label={$t({ defaultMessage: 'Privilege' })} style={{ marginBottom: '0' }}>
