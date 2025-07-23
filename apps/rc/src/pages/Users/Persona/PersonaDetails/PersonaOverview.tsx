@@ -23,7 +23,6 @@ import {
   IdentityGroupLink,
   NetworkSegmentationLink,
   PropertyUnitLink,
-  useIsEdgeFeatureReady,
   ConnectionMeteringLink
 } from '@acx-ui/rc/components'
 import {
@@ -38,10 +37,10 @@ import {
   useLazyGetSamlIdpProfileByIdQuery,
   useLazyGetDirectoryServerByIdQuery
 } from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
-import { getUserProfile, hasAllowedOperations, isCoreTier }                                      from '@acx-ui/user'
-import { getOpsApi, ignoreErrorModal, noDataDisplay }                                            from '@acx-ui/utils'
+import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                   from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations, isCoreTier }                                                             from '@acx-ui/user'
+import { getOpsApi, ignoreErrorModal, noDataDisplay }                                                                   from '@acx-ui/utils'
 
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
 import { MAX_CLIENTS_PER_PAGE }   from './IdentityClientTable'

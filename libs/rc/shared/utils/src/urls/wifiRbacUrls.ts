@@ -114,6 +114,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getApGroupClientAdmissionControlSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apClientAdmissionControlSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateApGroupClientAdmissionControlSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apClientAdmissionControlSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getAp: {
     method: 'get',
     // url: '/venues/aps/:serialNumber?operational=false',
@@ -131,6 +149,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     //url: '/venues/aps/:serialNumber/channels',
     url: '/venues/:venueId/aps/:serialNumber/wifiAvailableChannels',
+    newApi: true
+  },
+  getApJwtToken: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/jwtToken',
     newApi: true
   },
   getWifiCapabilities: {

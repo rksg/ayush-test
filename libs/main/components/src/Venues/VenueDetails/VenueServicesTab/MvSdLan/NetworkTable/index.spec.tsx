@@ -3,7 +3,6 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { Features }                                                                                                              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                 from '@acx-ui/rc/components'
 import { EdgeMvSdLanViewData, EdgePinFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                              from '@acx-ui/store'
 import {
@@ -33,7 +32,6 @@ const mockedDisableFnParams = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   EdgeMvSdLanActivatedNetworksTable: (props:
     { isUpdating: boolean,
       disabled: Function,
@@ -62,6 +60,12 @@ jest.mock('@acx-ui/rc/components', () => ({
       }
     </div>
   }
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 jest.mock('@acx-ui/rc/services', () => ({
@@ -385,7 +389,7 @@ describe('venue > Multi-venue SDLAN - network table', () => {
   describe('PIN is ON', () => {
     it('should greyout when the WLAN is used by PIN', async () => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
 
       mockServer.use(
         rest.post(

@@ -7,7 +7,8 @@ import { mockServer, render, screen, waitFor }                                  
 import { adaptivePolicyList, prioritizedPolicies, templateList } from './__test__/fixtures'
 import { AccessPolicyTable }                                     from './AccessPolicyTable'
 
-jest.mock('../SimpleListTooltip', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />
 }))
 jest.mock('./AdaptivePolicySelectDrawer', () => ({

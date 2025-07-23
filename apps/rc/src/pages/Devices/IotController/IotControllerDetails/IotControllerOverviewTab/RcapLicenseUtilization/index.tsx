@@ -11,7 +11,7 @@ import { useParams }                                              from '@acx-ui/
 import * as UI from './styledComponents'
 
 // eslint-disable-next-line max-len
-export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicenseUtilizationData): DonutChartData[] => {
+export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicenseUtilizationData): { data: DonutChartData[], value?: string } => {
   const seriesMapping = [
     { key: RcapLicenseUtilizationEnum.USED,
       name: 'Used',
@@ -21,7 +21,14 @@ export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicens
       color: cssStr('--acx-accents-orange-30') }
   ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
+  let total = 0
+
   if (rcapSummary) {
+    // Calculate total first
+    const used = rcapSummary[RcapLicenseUtilizationEnum.USED] as number || 0
+    const available = rcapSummary[RcapLicenseUtilizationEnum.AVAILABLE] as number || 0
+    total = used + available
+
     seriesMapping.forEach(({ key, name, color }) => {
       if (rcapSummary[key as keyof RcapLicenseUtilizationData]) {
         if (key === RcapLicenseUtilizationEnum.AVAILABLE) {
@@ -41,7 +48,11 @@ export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicens
       }
     })
   }
-  return chartData
+
+  // Return "Unlimited" if total exceeds 100,0000
+  const value = total >= 1000000 ? 'Unlimited' : undefined
+
+  return { data: chartData, value }
 }
 
 export function RcapLicenseUtilization () {
@@ -50,13 +61,17 @@ export function RcapLicenseUtilization () {
   const overviewQuery = useIotControllerLicenseStatusQuery({
     params: useParams()
   }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getRcapLicenseUtilizationDonutChartData(data),
-      ...rest
-    })
+    selectFromResult: ({ data, ...rest }) => {
+      const result = getRcapLicenseUtilizationDonutChartData(data)
+      return {
+        data: result.data,
+        value: result.value,
+        ...rest
+      }
+    }
   })
 
-  const { data } = overviewQuery
+  const { data, value } = overviewQuery
 
   const subTitle = <Space style={{ alignSelf: 'center', marginTop: '18px' }}>
     <Badge
@@ -79,7 +94,9 @@ export function RcapLicenseUtilization () {
                 <DonutChart
                   style={{ width, height: height - 50 }}
                   size={'medium'}
-                  data={data}/>
+                  data={data}
+                  value={value}
+                  showTotal={!value}/>
                 {subTitle}
               </UI.Container>
               : <NoActiveData text={$t({ defaultMessage: 'No RCAP License Utilization' })}/>

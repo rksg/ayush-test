@@ -513,6 +513,19 @@ export interface LanPort {
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
+export interface ApJwtToken {
+  type: string,
+  id_token: string,
+  access_token: string,
+  expires_in: string
+}
+
+export interface ApCliRequest {
+  token: string,
+  serialNumber: string,
+  apName: string
+}
+
 export enum ApModelTypeEnum {
   INDOOR = 'indoor',
   OUTDOOR = 'outdoor'
@@ -997,37 +1010,65 @@ export interface ApStickyClientSteering extends StickyClientSteering {
 }
 
 export enum DhcpOption82SubOption1Enum {
-  SUBOPT1_AP_INFO_LOCATION = 'SUBOPT1_AP_INFO_LOCATION',
-  SUBOPT1_AP_INFO = 'SUBOPT1_AP_INFO',
-  SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE',
-  SUBOPT1_AP_MAC_HEX = 'SUBOPT1_AP_MAC_hex',
-  SUBOPT1_AP_MAC_HEX_ESSID = 'SUBOPT1_AP_MAC_hex_ESSID',
-  SUBOPT1_ESSID = 'SUBOPT1_ESSID',
-  SUBOPT1_AP_MAC = 'SUBOPT1_AP_MAC',
-  SUBOPT1_AP_MAC_ESSID = 'SUBOPT1_AP_MAC_ESSID',
-  SUBOPT1_AP_NAME_ESSID = 'SUBOPT1_AP_Name_ESSID',
+  SUBOPT1_AP_INFO_LOCATION = 'AP_INFO_LOCATION',
+  SUBOPT1_AP_INFO = 'AP_INFO',
+  SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'AP_MAC_ESSID_PRIVACYTYPE',
+  SUBOPT1_AP_MAC_HEX = 'AP_MAC_HEX',
+  SUBOPT1_AP_MAC_HEX_ESSID = 'AP_MAC_HEX_ESSID',
+  SUBOPT1_ESSID = 'ESSID',
+  SUBOPT1_AP_MAC = 'AP_MAC',
+  SUBOPT1_AP_MAC_ESSID = 'AP_MAC_ESSID',
+  SUBOPT1_AP_NAME_ESSID = 'AP_NAME_ESSID',
+  SUBOPT1_CUSTOMIZED = 'CUSTOMIZED'
 }
 
 export enum DhcpOption82SubOption2Enum {
-  SUBOPT2_CLIENT_MAC = 'SUBOPT2_CLIENT_MAC',
-  SUBOPT2_CLIENT_MAC_HEX = 'SUBOPT2_CLIENT_MAC_hex',
-  SUBOPT2_CLIENT_MAC_HEX_ESSID = 'SUBOPT2_CLIENT_MAC_hex_ESSID',
-  SUBOPT2_AP_MAC = 'SUBOPT2_AP_MAC',
-  SUBOPT2_AP_MAC_HEX = 'SUBOPT2_AP_MAC_hex',
-  SUBOPT2_AP_MAC_HEX_ESSID = 'SUBOPT2_AP_MAC_hex_ESSID',
-  SUBOPT2_AP_MAC_ESSID = 'SUBOPT2_AP_MAC_ESSID',
-  SUBOPT2_AP_NAME = 'SUBOPT2_AP_Name',
+  SUBOPT2_CLIENT_MAC = 'CLIENT_MAC',
+  SUBOPT2_CLIENT_MAC_HEX = 'CLIENT_MAC_HEX',
+  SUBOPT2_CLIENT_MAC_HEX_ESSID = 'CLIENT_MAC_HEX_ESSID',
+  SUBOPT2_AP_MAC = 'AP_MAC',
+  SUBOPT2_AP_MAC_HEX = 'AP_MAC_HEX',
+  SUBOPT2_AP_MAC_HEX_ESSID = 'AP_MAC_HEX_ESSID',
+  SUBOPT2_AP_MAC_ESSID = 'AP_MAC_ESSID',
+  SUBOPT2_AP_NAME = 'AP_NAME',
 }
 
 export enum DhcpOption82SubOption151Enum {
-  SUBOPT151_AREA_NAME = 'SUBOPT151_AREA_NAME',
-  SUBOPT151_ESSID = 'SUBOPT151_ESSID',
+  SUBOPT151_AREA_NAME = 'AREA_NAME',
+  SUBOPT151_ESSID = 'ESSID',
 }
 
 export enum DhcpOption82MacEnum {
   COLON = 'COLON',
   HYPHEN = 'HYPHEN',
   NODELIMITER = 'NODELIMITER',
+}
+
+export interface DhcpOption82SubOption1CustomizationAttribute {
+  type: string
+  text?: string
+}
+
+export enum DhcpOption82SubOption1CustomizationType {
+  INTERFACE = 'INTERFACE',
+  INTERFACE_NO_PREFIX = 'INTERFACE_NO_PREFIX',
+  VLAN = 'VLAN',
+  ESSID = 'ESSID',
+  AP_MODEL = 'AP_MODEL',
+  AP_NAME = 'AP_NAME',
+  AP_MAC = 'AP_MAC',
+  USER_DEFINED = 'USER_DEFINED'
+}
+
+export enum DhcpOption82SubOption1CustomizationDelimiter {
+  DELIMITER_COLON = 'COLON',
+  DELIMITER_SEMICOLON = 'SEMICOLON'
+}
+
+export interface DhcpOption82SubOption1Customization {
+  // Hide this property till we support other options.
+  // delimiter: DhcpOption82SubOption1CustomizationDelimiter
+  attributes: DhcpOption82SubOption1CustomizationAttribute[]
 }
 
 export interface DhcpOption82Settings {
@@ -1040,6 +1081,7 @@ export interface DhcpOption82Settings {
   subOption2Enabled:	boolean
   subOption150Enabled:	boolean
   subOption151Enabled:	boolean
+  subOption1Customization: DhcpOption82SubOption1Customization
 }
 
 export interface VenueApModelLanPortSettingsV1 {

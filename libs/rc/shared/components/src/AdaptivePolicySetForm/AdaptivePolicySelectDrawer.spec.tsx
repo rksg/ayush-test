@@ -11,7 +11,8 @@ import { AdaptivePoliciesSelectDrawer }     from './AdaptivePolicySelectDrawer'
 jest.mock('./AdaptivePolicyFormDrawer', () => ({
   AdaptivePolicyFormDrawer: () => <div data-testid='AdaptivePolicyFormDrawer' />
 }))
-jest.mock('../SimpleListTooltip', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />
 }))
 

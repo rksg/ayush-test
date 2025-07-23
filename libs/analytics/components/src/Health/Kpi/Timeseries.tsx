@@ -4,13 +4,13 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { kpiConfig, productNames, limitRange }      from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
-import { noDataDisplay }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import { KPITimeseriesResponse, healthApi }                                        from '@acx-ui/analytics/services'
+import { kpiConfig, productNames, limitRange, evaluateEnableSwitchFirmwareFilter } from '@acx-ui/analytics/utils'
+import { Loader, MultiLineTimeSeriesChart, NoData }                                from '@acx-ui/components'
+import { formatter }                                                               from '@acx-ui/formatter'
+import type { TimeStamp, TimeStampRange }                                          from '@acx-ui/types'
+import { noDataDisplay }                                                           from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                    from '@acx-ui/utils'
 
 import GenericError from '../../GenericError'
 
@@ -42,8 +42,18 @@ function KpiTimeseries ({
 }) {
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+
+  // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
+  const evaluatedEnableSwitchFirmwareFilter =
+  evaluateEnableSwitchFirmwareFilter(enableSwitchFirmwareFilter)
+
   const queryResults = healthApi.useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: threshold as unknown as string, enableSwitchFirmwareFilter },
+    {
+      ...filters,
+      kpi,
+      threshold: threshold as unknown as string,
+      enableSwitchFirmwareFilter: evaluatedEnableSwitchFirmwareFilter
+    },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

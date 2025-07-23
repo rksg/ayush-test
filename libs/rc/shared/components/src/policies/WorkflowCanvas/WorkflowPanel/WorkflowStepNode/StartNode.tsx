@@ -20,7 +20,7 @@ export function StartNode (props: NodeProps) {
   }
 
   return (
-    <UI.StartNode {...props} onClick={onClick}>
+    <UI.StartNode {...props} attachCandidate={props.data?.attachCandidate} onClick={onClick}>
       <Space
         direction={'horizontal'}
         align={'center'}

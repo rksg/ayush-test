@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
 import { Features }                                                                                        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
 import { edgeApi }                                                                                         from '@acx-ui/rc/services'
 import { ClusterHighAvailabilityModeEnum, ClusterNetworkSettings, EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                 from '@acx-ui/store'
@@ -29,9 +28,10 @@ jest.mock('antd', () => ({
   </div>
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
@@ -44,7 +44,7 @@ describe('SelectType', () => {
       clusterId: 'mocked_cluster_id'
     }
     mockedUsedNavigate.mockReset()
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     store.dispatch(edgeApi.util.resetApiState())
   })
 
@@ -224,7 +224,7 @@ describe('SelectType', () => {
     mockedIncompatibleData.data[0].edgeList[0].memoryTotalKb = 26156250
     mockedIncompatibleData.data[0].edgeList[1].memoryTotalKb = 22250000
 
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
       feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(
@@ -276,7 +276,7 @@ describe('SelectType', () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
 
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
       feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(
@@ -307,7 +307,7 @@ describe('SelectType', () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
 
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
       feature === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
     render(
@@ -332,7 +332,7 @@ describe('SelectType', () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
 
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
       feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(

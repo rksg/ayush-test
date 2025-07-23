@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                         from '@acx-ui/components'
-import { Features }                                       from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useTunnelProfileActions } from '@acx-ui/rc/components'
+import { Loader }                                     from '@acx-ui/components'
+import { Features }                                   from '@acx-ui/feature-toggle'
+import { TunnelProfileForm, useTunnelProfileActions } from '@acx-ui/rc/components'
 import {
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
@@ -17,11 +17,10 @@ import {
   getTunnelProfileFormDefaultValues,
   TunnelProfileFormType,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { TunnelProfileForm } from '../TunnelProfileForm'
 
 const EditTunnelProfile = () => {
   const { $t } = useIntl()
