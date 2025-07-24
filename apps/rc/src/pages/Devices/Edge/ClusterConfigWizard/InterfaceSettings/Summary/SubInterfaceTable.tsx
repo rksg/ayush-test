@@ -3,10 +3,10 @@ import { ReactNode, useContext } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                   from '@acx-ui/components'
-import { Features }                            from '@acx-ui/feature-toggle'
-import { CheckMark }                           from '@acx-ui/icons'
-import { SubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { Table, TableProps }                                   from '@acx-ui/components'
+import { Features }                                            from '@acx-ui/feature-toggle'
+import { CheckMark }                                           from '@acx-ui/icons'
+import { EdgeIpModeEnum, SubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 import { InterfaceSettingsFormType }  from '../types'
@@ -94,12 +94,18 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      render: (_data: ReactNode, row: SubInterfaceTableData) => {
+        return row.ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
+      }
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
-      dataIndex: 'subnet'
+      dataIndex: 'subnet',
+      render: (_data: ReactNode, row: SubInterfaceTableData) => {
+        return row.ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
+      }
     },
     {
       title: $t({ defaultMessage: 'VLAN' }),
