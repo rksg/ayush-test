@@ -1,6 +1,6 @@
 import { RolesEnum as Role } from '@acx-ui/types'
 
-import { hasRoles, Profile } from './userProfile'
+import { hasRoles as hasRolesFn, Profile } from './userProfile'
 
 // Because we are unable to define scopes for GraphQL APIs in RCG config
 // (https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/ruckus-cloud-gateway/browse/configs/ruckus-cloud-gateway/configmaps/base/ruckus-cloud-gateway-config-routes.yaml),
@@ -89,10 +89,14 @@ const aiOperations = [
   }
 ]
 
-export function getAIAllowedOperations (profile: Profile | undefined) {
+export function getAIAllowedOperations (userProfile: Profile) {
+  const { profile } = userProfile
+
+  const hasRoles = (roles: string | string[]) => hasRolesFn(roles, userProfile)
+
   return aiOperations.filter(op => {
-    if (hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR], profile)) return true
-    if (op.role && hasRoles(op.role, profile)) return true
+    if (hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])) return true
+    if (op.role && hasRoles(op.role)) return true
     return op.scope.some(scope => profile?.scopes?.includes(scope) || false)
   })
 }
