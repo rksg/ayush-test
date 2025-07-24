@@ -282,7 +282,7 @@ const getTabViewParams = (tx:Transaction) => {
 }
 
 const skipToast = (tx: Transaction): boolean => {
-  if (tx.useCase === 'ImportApsCsv' && tx.status === 'FAIL' &&
+  if (['ImportApsCsv', 'ImportVenueApsCsv'].includes(tx.useCase) && tx.status === 'FAIL' &&
   ((tx.steps?.find((step) => {
     return step.id === 'PostProcessedImportAps'
   })?.status !== 'IN_PROGRESS'))) {
