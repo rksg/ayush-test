@@ -156,7 +156,7 @@ export function ApLed (props: ApEditItemProps) {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingApLed || isResetApLed
+    isFetching: isUpdatingApLed
   }]}>
     <StepsFormLegacy
       formRef={formRef}

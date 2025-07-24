@@ -39,9 +39,14 @@ export function ApContextProvider (props: { children: ReactNode }) {
 
   const { data: apValidChannels }
     = useGetApValidChannelQuery({
-      params: { tenantId: params.tenantId, serialNumber: apData.serialNumber }
+      params: {
+        tenantId: params.tenantId,
+        venueId: apData.venueId,
+        serialNumber: apData.serialNumber
+      },
+      enableRbac: true
     }, {
-      skip: !apData.serialNumber
+      skip: !apData.serialNumber || !apData.venueId
     })
 
   const { data: capabilities } = useGetApCapabilities({
