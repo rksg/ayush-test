@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { rest }       from 'msw'
 import { createRoot } from 'react-dom/client'
 
-import { AdministrationUrlsInfo, TenantType }                 from '@acx-ui/rc/utils'
-import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                       from '@acx-ui/user'
+import { AdministrationUrlsInfo, TenantType }                          from '@acx-ui/rc/utils'
+import { act, screen, mockServer, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                from '@acx-ui/user'
 
 import * as bootstrap from './bootstrap'
 
@@ -33,12 +33,14 @@ jest.mock('@acx-ui/user', () => ({
     {...props}
     data-testid='user-profile-provider'
   />,
-  useUserProfileContext: () => ({
+  useUserProfileContext: jest.fn(() => ({
     isUserProfileLoading: false,
+    isFeatureFlagsLoading: false,
     data: { preferredLanguage: 'en-US' },
     allowedOperations: ['some-operation'],
-    accountTier: 'Gold'
-  })
+    accountTier: 'Gold',
+    rbacOpsApiEnabled: false
+  }))
 }))
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 
@@ -100,6 +102,7 @@ describe('bootstrap.init', () => {
   })
   afterEach(() => {
     mockServer.resetHandlers()
+    cleanup()
   })
   it('calls pendo and renders', async () => {
     const rootEl = document.createElement('div')
@@ -131,6 +134,60 @@ describe('bootstrap.init', () => {
         varTenantId: '9c2718296e134c628c0c8949b1f87f3b',
         version: '1.0.0'
       }
+    })
+  })
+
+  describe('isFeatureFlagsLoading', () => {
+    it('should wait for feature flags to load before rendering UI', async () => {
+      const mockUseUserProfileContext = require('@acx-ui/user')
+        .useUserProfileContext as jest.Mock
+      mockUseUserProfileContext.mockImplementation(() => ({
+        isUserProfileLoading: false,
+        isFeatureFlagsLoading: true,
+        data: { preferredLanguage: 'en-US' },
+        allowedOperations: ['some-operation'],
+        accountTier: 'Gold',
+        rbacOpsApiEnabled: false
+      }))
+
+      const rootEl = document.createElement('div')
+      rootEl.id = 'root'
+      document.body.appendChild(rootEl)
+      const root = createRoot(rootEl)
+
+      await act(() => bootstrap.init(root))
+
+      const loaders = screen.getAllByRole('img', { name: 'loader' })
+      expect(loaders.length).toBeGreaterThan(0)
+      expect(loaders[0]).toBeVisible()
+      expect(screen.queryByTestId('all-routes')).not.toBeInTheDocument()
+    })
+
+    it('should render UI when feature flags are loaded', async () => {
+      const mockUseUserProfileContext = require('@acx-ui/user')
+        .useUserProfileContext as jest.Mock
+      mockUseUserProfileContext.mockImplementation(() => ({
+        isUserProfileLoading: false,
+        isFeatureFlagsLoading: false,
+        data: { preferredLanguage: 'en-US' },
+        allowedOperations: ['some-operation'],
+        accountTier: 'Gold',
+        rbacOpsApiEnabled: false
+      }))
+
+      const rootEl = document.createElement('div')
+      rootEl.id = 'root'
+      document.body.appendChild(rootEl)
+      const root = createRoot(rootEl)
+
+      await act(() => bootstrap.init(root))
+      await waitForElementToBeRemoved(() =>
+        screen.queryAllByRole('img', { name: 'loader' })[0]
+      )
+
+      const allRoutesElements = screen.getAllByTestId('all-routes')
+      expect(allRoutesElements.length).toBeGreaterThan(1)
+      expect(allRoutesElements[0]).toBeVisible()
     })
   })
 })
