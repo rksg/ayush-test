@@ -190,21 +190,21 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
   }
 
   return (
-    <div
+    <UI.DraggableChart
       ref={drag}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: 'grab'
       }}
     >
-      <div style={{
-        margin: '7px',
-        marginLeft: '10px',
-        height: getChartHeight(),
-        width: data.chartType === 'pie' ? '200px' : '300px' }}>
+      <div
+        className='draggable-chart'
+        style={{
+          height: getChartHeight(),
+          width: data.chartType === 'pie' ? '200px' : '300px' }}>
         <WidgetChart data={data} />
       </div>
-    </div>
+    </UI.DraggableChart>
   )
 }
 
