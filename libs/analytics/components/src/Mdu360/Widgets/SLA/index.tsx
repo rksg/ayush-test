@@ -65,11 +65,9 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
     updateSlaThresholds({ mspEcIds, slasToUpdate })
       .unwrap()
       .then((resp) => {
-        console.log('resp', resp)
         const firstSLAWithError = Object.values(resp).find(
           ({ error }) => error
         )
-        console.log('firstSLAWithError', firstSLAWithError)
         if (firstSLAWithError) {
           showToast({
             type: 'error',
