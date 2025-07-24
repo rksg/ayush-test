@@ -22,6 +22,7 @@ import { setUserProfile, hasRoles, hasAccess }        from './userProfile'
 export interface UserProfileContextProps {
   data: UserProfile | undefined
   isUserProfileLoading: boolean
+  isFeatureFlagsLoading: boolean
   allowedOperations: string[]
   hasRole: typeof hasRoles
   hasAccess: typeof hasAccess
@@ -168,6 +169,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data: profile,
       isUserProfileLoading: isUserProfileFetching,
+      isFeatureFlagsLoading: isFeatureFlagStatesLoading,
       allowedOperations,
       hasRole,
       isPrimeAdmin,
