@@ -43,14 +43,14 @@ export const checkVersionAtLeast10010gCd1 = (version: string): boolean => {
 
 export const checkVersionAtLeast10010h = (version: string): boolean => {
   if (_.isString(version)) {
-    return isVerGEVer(version, '10010h', true)
+    return version.includes('10010h') || isVerGEVer(version, '10010h', true)
   }
   return false
 }
 
 export const checkVersionAtLeast10020c = (version: string): boolean => {
   if (_.isString(version)) {
-    isVerGEVer(version, '10020c', true)
+    return version.includes('10020c') || isVerGEVer(version, '10020c', true)
   }
   return false
 }
