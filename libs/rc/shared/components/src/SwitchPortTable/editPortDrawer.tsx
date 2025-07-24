@@ -1551,6 +1551,16 @@ export function EditPortDrawer ({
 
             { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
+            <Space>
+              <Alert message={
+                $t({ defaultMessage: `Note: When "Port Authentication" is enabled at the 
+                  port level, the "Auth Default VLAN" cannot be changed at the switch level.` })
+              }
+              type='info'
+              showIcon
+              style={{ alignItems: 'flex-start' }}
+              />
+            </Space>
             { getFieldTemplate({
               field: 'authenticationProfileId',
               content: <Form.Item
