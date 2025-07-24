@@ -27,7 +27,9 @@ import {
   EditEthernetPortProfile,
   EthernetPortProfileDetail,
   IdentityGroupForm,
-  PersonaGroupDetails
+  PersonaGroupDetails,
+  AddTunnelProfileTemplate,
+  EditTunnelProfileTemplate
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -490,6 +492,24 @@ export function ConfigTemplatesRoutes () {
             element={<PersonaGroupDetails />}
           />
         </>}
+        {
+          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_PROFILE] && <>
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.CREATE
+              })}
+              element={<AddTunnelProfileTemplate />}
+            />
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.EDIT
+              })}
+              element={<EditTunnelProfileTemplate />}
+            />
+          </>
+        }
       </Route>
     </Route>
   )
