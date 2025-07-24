@@ -27,7 +27,7 @@ export default function PublishReadinessProgress (props: {
         {isWorkflowReady ? <LargeCheck className='icon'/> : <LargeX className='icon' />}
       </UI.PublishReadinessBox>
       :
-      // text variant
+      // text variant --
       <>
         { isWorkflowReady ? $t({ defaultMessage: 'Ready' }) : $t({ defaultMessage: 'Not Ready' }) }
       </>

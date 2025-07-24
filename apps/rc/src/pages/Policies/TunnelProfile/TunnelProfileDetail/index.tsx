@@ -3,7 +3,6 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
 import { Features }                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -21,7 +20,8 @@ import {
   PolicyType,
   transformDisplayOnOff,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -88,7 +88,7 @@ const TunnelProfileDetail = () => {
     {
       title: $t({ defaultMessage: 'PMTU Timeout' }),
       content: () => {
-        if(!tunnelProfileData.mtuRequestTimeout) return
+        if(!tunnelProfileData.mtuRequestTimeout) return noDataDisplay
         const result = mtuRequestTimeoutUnitConversion(tunnelProfileData.mtuRequestTimeout)
         return $t({ defaultMessage: '{value} {unit}' }, {
           value: result?.value,
@@ -97,7 +97,9 @@ const TunnelProfileDetail = () => {
       }
     }, {
       title: $t({ defaultMessage: 'PMTU Retries' }),
-      content: `${tunnelProfileData.mtuRequestRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      content: tunnelProfileData.mtuRequestRetry ?
+        `${tunnelProfileData.mtuRequestRetry} ${$t({ defaultMessage: 'retries' })}` :
+        noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
@@ -108,7 +110,7 @@ const TunnelProfileDetail = () => {
     {
       title: $t({ defaultMessage: 'Tunnel Idle Timeout' }),
       content: () => {
-        if(!tunnelProfileData.ageTimeMinutes) return
+        if(!tunnelProfileData.ageTimeMinutes) return noDataDisplay
         const result = ageTimeUnitConversion(tunnelProfileData.ageTimeMinutes)
         return $t({ defaultMessage: '{value} {unit}' }, {
           value: result?.value,
@@ -118,12 +120,15 @@ const TunnelProfileDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Keep Alive Interval' }),
-      content: `${tunnelProfileData.keepAliveInterval ?? ''}
-        ${$t({ defaultMessage: 'seconds' })}`
+      content: tunnelProfileData.keepAliveInterval ?
+        `${tunnelProfileData.keepAliveInterval} ${$t({ defaultMessage: 'seconds' })}` :
+        noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Keep Alive Reties' }),
-      content: `${tunnelProfileData.keepAliveRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      content: tunnelProfileData.keepAliveRetry ?
+        `${tunnelProfileData.keepAliveRetry} ${$t({ defaultMessage: 'retries' })}` :
+        noDataDisplay
     }
   ]
 

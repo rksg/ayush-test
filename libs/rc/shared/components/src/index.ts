@@ -185,8 +185,7 @@ export type {
   AccessSwitchTableDataType
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
-  useEdgeActions,
-  useIsEdgeFeatureReady
+  useEdgeActions
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,
@@ -336,3 +335,5 @@ export { ResourceBanner } from './ResourceBanner'
 export { BandManagement } from './BandManagement'
 export { IotControllerDrawer } from './IotControllerDrawer'
 export { ApCliSession } from './ApCliSession'
+export { AddTunnelProfileTemplate } from './TunnelProfile/AddTunnelProfileTemplate'
+export { EditTunnelProfileTemplate } from './TunnelProfile/EditTunnelProfileTemplate'
