@@ -170,6 +170,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.VLAN_POOL]: false,
       [ConfigTemplateType.WIFI_CALLING]: false,
       [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SWITCH_REGULAR]: false,
