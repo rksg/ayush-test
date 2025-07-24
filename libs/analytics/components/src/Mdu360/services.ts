@@ -32,8 +32,7 @@ export const getSlaThresholdValue = (data: SLAData) => {
           key,
           {
             ...result,
-            value: defaultValue,
-            isDefault: true
+            value: defaultValue
           }
         ]
       })

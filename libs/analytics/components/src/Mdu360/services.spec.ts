@@ -106,23 +106,19 @@ describe('SLA services', () => {
       expect(data).toEqual({
         timeToConnectSLA: {
           value: slaConfig[SLAKeys.timeToConnectSLA].defaultValue!,
-          isSynced: true,
-          isDefault: true
+          isSynced: true
         },
         clientThroughputSLA: {
           value: slaConfig[SLAKeys.clientThroughputSLA].defaultValue!,
-          isSynced: true,
-          isDefault: true
+          isSynced: true
         },
         channelWidthSLA: {
           value: slaConfig[SLAKeys.channelWidthSLA].defaultValue!,
-          isSynced: true,
-          isDefault: true
+          isSynced: true
         },
         channelChangePerDaySLA: {
           value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
-          isSynced: true,
-          isDefault: true
+          isSynced: true
         }
       })
     })

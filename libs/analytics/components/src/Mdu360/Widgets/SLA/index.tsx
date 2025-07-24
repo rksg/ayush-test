@@ -51,9 +51,8 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
   const slasToUpdate = Object.fromEntries(
     Object.entries(currentSLAs)
       .filter(
-        ([key, { value, isDefault, isSynced }]) =>
+        ([key, { value, isSynced }]) =>
           !isSynced ||
-          isDefault ||
           !isEqual(value, initialSLAs[key as SLAKeys]?.value)
       )
       .map(([key, { value }]) => [key, value])
@@ -66,9 +65,11 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
     updateSlaThresholds({ mspEcIds, slasToUpdate })
       .unwrap()
       .then((resp) => {
+        console.log('resp', resp)
         const firstSLAWithError = Object.values(resp).find(
           ({ error }) => error
         )
+        console.log('firstSLAWithError', firstSLAWithError)
         if (firstSLAWithError) {
           showToast({
             type: 'error',

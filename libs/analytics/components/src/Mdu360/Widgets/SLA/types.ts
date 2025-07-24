@@ -3,7 +3,6 @@ import { SLAKeys } from '../../types'
 interface SLAResult {
   value: number
   isSynced: boolean
-  isDefault?: boolean
   error?: string
 }
 

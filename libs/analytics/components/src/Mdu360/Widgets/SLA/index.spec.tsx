@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
-import { UseQueryResult }            from '@acx-ui/types'
+import { showToast }                               from '@acx-ui/components'
+import { act, fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UseQueryResult }                          from '@acx-ui/types'
 
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
@@ -16,8 +17,7 @@ const mockDataWithDefaultAndUnsynced: SLAData = {
   },
   [SLAKeys.clientThroughputSLA]: {
     value: slaConfig[SLAKeys.clientThroughputSLA].defaultValue!,
-    isSynced: true,
-    isDefault: true
+    isSynced: true
   },
   [SLAKeys.channelWidthSLA]: {
     value: 20,
@@ -25,8 +25,7 @@ const mockDataWithDefaultAndUnsynced: SLAData = {
   },
   [SLAKeys.channelChangeExperienceSLA]: {
     value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
-    isSynced: true,
-    isDefault: true
+    isSynced: true
   }
 }
 
@@ -49,18 +48,30 @@ const syncedMockData: SLAData = {
   }
 }
 
+const mockUnwrap = jest.fn().mockImplementation(async () => {})
+const mockUseUpdateSlaThresholdsMutation = useUpdateSlaThresholdsMutation as jest.Mock
 jest.mock('../../services', () => ({
   useSlaThresholdsQuery: jest
     .fn()
     .mockReturnValue({ isLoading: false, isFetching: false }),
   useUpdateSlaThresholdsMutation: jest
     .fn()
-    .mockReturnValue([jest.fn(), { isLoading: false, isFetching: false }])
+    .mockReturnValue([
+      jest.fn().mockImplementation(() => ({ unwrap: mockUnwrap })),
+      { isLoading: false, isFetching: false }
+    ])
+}))
+
+const mockShowToast = showToast as jest.Mock
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
 }))
 
 describe('SLA', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockShowToast.mockClear()
   })
 
   afterEach(() => {
@@ -140,8 +151,12 @@ describe('SLA', () => {
   })
 
   it('should enable apply and reset when kpi is update and call mutation on click', async () => {
-    const mockUpdateMutation = jest.fn();
-    (useUpdateSlaThresholdsMutation as jest.Mock).mockReturnValue([
+    const mockUpdateMutation = jest
+      .fn()
+      .mockImplementation(() => ({
+        unwrap: mockUnwrap.mockResolvedValueOnce({ success: true })
+      }))
+    mockUseUpdateSlaThresholdsMutation.mockReturnValue([
       mockUpdateMutation,
       { isLoading: false, isFetching: false }
     ])
@@ -172,8 +187,12 @@ describe('SLA', () => {
   })
 
   it('should only update the kpi that is changed', async () => {
-    const mockUpdateMutation = jest.fn();
-    (useUpdateSlaThresholdsMutation as jest.Mock).mockReturnValue([
+    const mockUpdateMutation = jest
+      .fn()
+      .mockImplementation(() => ({
+        unwrap: mockUnwrap.mockResolvedValueOnce({ success: true })
+      }))
+    mockUseUpdateSlaThresholdsMutation.mockReturnValue([
       mockUpdateMutation,
       { isLoading: false, isFetching: false }
     ])
@@ -264,5 +283,56 @@ describe('SLA', () => {
 
     expect(screen.getByText('Service Level Agreement')).toBeVisible()
     expect(screen.queryByText('No data to display')).toBeVisible()
+  })
+
+  it('should show error toast when update fails', async () => {
+    const mockUpdateMutation = jest
+      .fn()
+      .mockImplementation(() => ({
+        unwrap: mockUnwrap.mockResolvedValue({
+          ...Object.fromEntries(
+            Object.keys(syncedMockData).map((key) => [key, { success: true }])
+          ),
+          [SLAKeys.clientThroughputSLA]: {
+            success: false,
+            error: 'something went wrong!'
+          }
+        })
+      }))
+    mockUseUpdateSlaThresholdsMutation.mockReturnValue([
+      mockUpdateMutation,
+      { isLoading: false, isFetching: false }
+    ])
+
+    render(
+      <SLA
+        mspEcIds={[]}
+        queryResults={
+          {
+            data: syncedMockData
+          } as UseQueryResult<SLAData>
+        }
+      />
+    )
+    const sliderMarkText = screen.getByText('200') // clientThroughputSLA
+    fireEvent.click(sliderMarkText)
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+
+    expect(mockUpdateMutation).toHaveBeenCalledWith({
+      mspEcIds: [],
+      slasToUpdate: expect.objectContaining({
+        clientThroughputSLA: 200000
+      })
+    })
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith({
+        type: 'error',
+        content: expect.stringContaining('An error occurred while updating SLA thresholds')
+      })
+    })
   })
 })
