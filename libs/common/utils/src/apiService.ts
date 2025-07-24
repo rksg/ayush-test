@@ -78,13 +78,14 @@ export const isShowApiError = (request?: Request) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isShowImprovedErrorSuggestion = (errors: any) => {
   const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0
-    && (errors.errors[0].suggestion || errors.errors[0].reason)
-  const hasError = errors.error && (errors.error.suggestion || errors.error.reason)
+    && (errors.errors[0]?.suggestion || errors.errors[0]?.reason || errors.errors[0]?.message)
+  const hasError = errors.error && (errors.error.suggestion || errors.error.reason ||
+    errors.error.message)
   return Boolean((getEnabledDialogImproved()) && (hasErrors || hasError))
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isIntEnv() || isDev()
+  return true
 }
 
 export const getEnabledActivityErrorImproved = () => {
