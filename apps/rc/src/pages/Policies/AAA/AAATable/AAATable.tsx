@@ -61,7 +61,7 @@ export default function AAATable () {
   const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'RADIUS Server' }),
       selectedRows[0].name,
       [
         { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) },
