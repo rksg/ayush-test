@@ -4,7 +4,17 @@ import { renderHook }                               from '@acx-ui/test-utils'
 
 import { useConfigTemplateVisibilityMap } from '.'
 
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
+}))
+
 describe('useIsConfigTemplateOnByType', () => {
+  beforeEach(() => {
+    mockedIsRecSite.mockReturnValue(false)
+  })
+
   it('should return the correct map when the BETA user is OFF', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -135,6 +145,38 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true,
       [ConfigTemplateType.IDENTITY_GROUP]: true,
       [ConfigTemplateType.TUNNEL_PROFILE]: false
+    })
+  })
+
+  it('should return the correct map for the rec site', () => {
+    mockedIsRecSite.mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => (ff === Features.CONFIG_TEMPLATE_REC_P1))
+
+    const { result } = renderHook(() => useConfigTemplateVisibilityMap())
+
+    expect(result.current).toEqual({
+      [ConfigTemplateType.NETWORK]: true,
+      [ConfigTemplateType.VENUE]: true,
+      [ConfigTemplateType.DPSK]: true,
+      [ConfigTemplateType.AP_GROUP]: false,
+      [ConfigTemplateType.PORTAL]: false,
+      [ConfigTemplateType.RADIUS]: false,
+      [ConfigTemplateType.DHCP]: false,
+      [ConfigTemplateType.ACCESS_CONTROL]: false,
+      [ConfigTemplateType.LAYER_2_POLICY]: false,
+      [ConfigTemplateType.LAYER_3_POLICY]: false,
+      [ConfigTemplateType.APPLICATION_POLICY]: false,
+      [ConfigTemplateType.DEVICE_POLICY]: false,
+      [ConfigTemplateType.VLAN_POOL]: false,
+      [ConfigTemplateType.WIFI_CALLING]: false,
+      [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.TUNNEL_PROFILE]: false,
+      [ConfigTemplateType.CLIENT_ISOLATION]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
+      [ConfigTemplateType.SWITCH_REGULAR]: false,
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+      [ConfigTemplateType.IDENTITY_GROUP]: false
     })
   })
 })
