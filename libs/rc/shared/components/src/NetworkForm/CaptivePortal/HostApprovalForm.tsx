@@ -83,9 +83,31 @@ export function HostApprovalForm () {
     const domainOrEmail = e.target.value
     if (domainOrEmail === 'domain'){
       form.setFieldValue(['guestPortal','hostGuestConfig', 'hostEmails'], undefined)
+      setData && setData({
+        ...data,
+        guestPortal: {
+          ...data?.guestPortal,
+          hostGuestConfig: {
+            ...data?.guestPortal?.hostGuestConfig!,
+            hostEmails: [],
+            hostApprovalType: domainOrEmail
+          }
+        }
+      })
     }
     if (domainOrEmail === 'email') {
       form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'], undefined)
+      setData && setData({
+        ...data,
+        guestPortal: {
+          ...data?.guestPortal,
+          hostGuestConfig: {
+            ...data?.guestPortal?.hostGuestConfig!,
+            hostDomains: [],
+            hostApprovalType: domainOrEmail
+          }
+        }
+      })
     }
     form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], domainOrEmail)
   }
