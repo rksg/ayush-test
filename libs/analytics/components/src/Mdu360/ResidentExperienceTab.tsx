@@ -16,7 +16,7 @@ const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate })
   const slaQueryResults = useSlaThresholdsQuery({ mspEcIds })
 
   return (
-    <UI.Grid>
+    <UI.ResidentExperienceGrid>
       <UI.FullWidthGridItem>
         <ClientExperience
           filters={{ startDate, endDate }}
@@ -29,7 +29,7 @@ const ResidentExperienceTab: React.FC<Mdu360TabProps> = ({ startDate, endDate })
       <ApplicationCategories filters={{ startDate, endDate }} />
       <TrafficByRadio filters={{ startDate, endDate }} />
       <SLA mspEcIds={mspEcIds} queryResults={slaQueryResults} />
-    </UI.Grid>
+    </UI.ResidentExperienceGrid>
   )
 }
 
