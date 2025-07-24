@@ -6,8 +6,8 @@ import {
   Loader,
   ContentSwitcher } from '@acx-ui/components'
 
-import { ContentSwitcherPaddingWrapper } from '../../styledComponents'
-import { Mdu360TabProps }                from '../../types'
+import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { useTrafficByRadioQuery } from './services'
 import { TrafficSnapshot }        from './TrafficSnapshot'
@@ -57,15 +57,13 @@ export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
       <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <ContentSwitcherPaddingWrapper height={height} width={width}>
+            <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher
-                tabDetails={getTabDetails}
+                tabDetails={getTabDetails(height - 10, width)}
                 align='right'
                 size='small'
-                height={height}
-                width={width}
               />
-            </ContentSwitcherPaddingWrapper>
+            </ContentSwitcherWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>

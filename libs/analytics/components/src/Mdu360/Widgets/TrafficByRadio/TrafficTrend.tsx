@@ -5,8 +5,6 @@ import { MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
 import { UseQueryResult }                   from '@acx-ui/types'
 
-import { ChartWrapper } from '../../styledComponents'
-
 import { TrafficByRadioData } from './services'
 
 export function TrafficTrend ({
@@ -31,13 +29,11 @@ export function TrafficTrend ({
   const data = getSeriesData(queryResults.data!, seriesMapping)
 
   return (data.length && data[0].data.length) ? (
-    <ChartWrapper height={height} width={width}>
-      <MultiLineTimeSeriesChart
-        style={{ width, height }}
-        data={data}
-        dataFormatter={formatter('bytesFormat')}
-      />
-    </ChartWrapper>
+    <MultiLineTimeSeriesChart
+      style={{ width, height }}
+      data={data}
+      dataFormatter={formatter('bytesFormat')}
+    />
   ) : (
     <NoData />
   )

@@ -14,8 +14,8 @@ import {
 import type { DonutChartData } from '@acx-ui/components'
 import { intlFormats }         from '@acx-ui/formatter'
 
-import { ContentSwitcherPaddingWrapper } from '../../styledComponents'
-import { Mdu360TabProps }                from '../../types'
+import { ContentSwitcherWrapper } from '../../styledComponents'
+import { Mdu360TabProps }         from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
 interface DistributionData {
@@ -168,9 +168,9 @@ export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate })
       <HistoricalCard title={$t({ defaultMessage: 'Wi-Fi Generation' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <ContentSwitcherPaddingWrapper height={height} width={width}>
+            <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
-            </ContentSwitcherPaddingWrapper>
+            </ContentSwitcherWrapper>
           )}
         </AutoSizer>
       </HistoricalCard>

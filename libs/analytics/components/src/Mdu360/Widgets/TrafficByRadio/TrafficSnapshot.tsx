@@ -3,8 +3,6 @@ import type { DonutChartData } from '@acx-ui/components'
 import { formatter }           from '@acx-ui/formatter'
 import { UseQueryResult }      from '@acx-ui/types'
 
-import { ChartWrapper } from '../../styledComponents'
-
 import { TrafficByRadioData } from './services'
 
 function sumOfTraffic (trafficData: number[]) {
@@ -49,19 +47,17 @@ export function TrafficSnapshot ({
   const chartData = getTrafficSnapshotChartData(queryResults?.data)
 
   return chartData.length ? (
-    <ChartWrapper height={height} width={width}>
-      <DonutChart
-        style={{ width, height }}
-        data={chartData}
-        showLegend={true}
-        showTotal={true}
-        showValue={true}
-        showLabel={true}
-        legend='name-bold-value'
-        dataFormatter={formatter('bytesFormat')}
-        size={'large'}
-      />
-    </ChartWrapper>
+    <DonutChart
+      style={{ width, height }}
+      data={chartData}
+      showLegend
+      showTotal
+      showValue
+      showLabel
+      legend='name-bold-value'
+      dataFormatter={formatter('bytesFormat')}
+      size={'large'}
+    />
   ) : (
     <NoData />
   )

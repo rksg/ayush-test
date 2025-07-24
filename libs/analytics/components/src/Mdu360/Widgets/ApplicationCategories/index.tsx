@@ -81,11 +81,9 @@ export const ApplicationCategories = ({
           {({ height, width }) => (
             <ContentSwitcherWrapper height={height} width={width}>
               <ContentSwitcher
-                tabDetails={getTabDetails}
+                tabDetails={getTabDetails(height, width)}
                 align='right'
                 size='small'
-                height={height}
-                width={width}
               />
             </ContentSwitcherWrapper>
           )}
