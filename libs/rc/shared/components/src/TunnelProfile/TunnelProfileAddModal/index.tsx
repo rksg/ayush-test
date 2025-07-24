@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, Modal, ModalType, showToast, StepsForm }   from '@acx-ui/components'
 import { getTunnelProfileFormDefaultValues, TunnelProfileFormType } from '@acx-ui/rc/utils'
 
-import { TunnelProfileForm }       from '../TunnelProfileForm'
+import { TunnelProfileFormItems }  from '../TunnelProfileForm/TunnelProfileFormItems'
 import { useTunnelProfileActions } from '../TunnelProfileForm/useTunnelProfileActions'
 
 interface TunnelProfileAddModalProps {
@@ -39,7 +39,7 @@ export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
       initialValues={formInitValues}
     >
       <StepsForm.StepForm>
-        <TunnelProfileForm />
+        <TunnelProfileFormItems />
       </StepsForm.StepForm>
     </StepsForm>
   </Loader>
