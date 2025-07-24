@@ -8,6 +8,7 @@ import { AAAForm, AAAPolicyDetail,
 import { CONFIG_TEMPLATE_LIST_PATH, ConfigTemplateType, getConfigTemplatePath, getPolicyRoutePath, getServiceRoutePath, LayoutWithConfigTemplateContext, PolicyOperation, PolicyType, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate }                                                                                                                                                                          from '@acx-ui/react-router-dom'
 
+import { ConfigTemplatePage }                  from '../pages/ConfigTemplates'
 import { VenueDetails, VenuesForm, VenueEdit } from '../pages/Venues'
 
 export default function RecConfigTemplateRoutes () {
@@ -19,7 +20,7 @@ export default function RecConfigTemplateRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} />}
         />
-        <Route path='templates' element={<div>ConfigTemplatePage</div>} />
+        <Route path='templates' element={<ConfigTemplatePage />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
