@@ -85,7 +85,7 @@ export const isShowImprovedErrorSuggestion = (errors: any) => {
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isIntEnv() || isDev()
+  return true
 }
 
 export const getEnabledActivityErrorImproved = () => {
