@@ -1,6 +1,6 @@
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { ConfigTemplateType, useIsEdgeFeatureReady }              from '@acx-ui/rc/utils'
-import { isRecSite }                                              from '@acx-ui/react-router-dom'
+import { isRecSite }                                              from '@acx-ui/utils'
 export * from './ConfigTemplateLink'
 export * from './utils'
 export * from './EnforceTemplateToggle'

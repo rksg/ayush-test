@@ -8,9 +8,6 @@ import { MemoryRouter, Route, Routes } from '@acx-ui/react-router-dom'
 import { ConfigTemplateContext }           from './ConfigTemplateContext'
 import { LayoutWithConfigTemplateContext } from './ConfigTemplateRouteLayout'
 
-
-
-
 describe('LayoutWithConfigTemplateContext', () => {
   const mockedSaveFn = jest.fn()
 

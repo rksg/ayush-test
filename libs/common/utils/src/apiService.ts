@@ -3,11 +3,11 @@ import _                                                                        
 import { generatePath, Params }                                                 from 'react-router-dom'
 
 import { get }                          from '@acx-ui/config'
-import { isRecSite }                    from '@acx-ui/react-router-dom'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
+import { isRecSite }                         from './pathUtils'
 
 
 export interface ApiInfo {
@@ -79,13 +79,14 @@ export const isShowApiError = (request?: Request) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isShowImprovedErrorSuggestion = (errors: any) => {
   const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0
-    && (errors.errors[0].suggestion || errors.errors[0].reason)
-  const hasError = errors.error && (errors.error.suggestion || errors.error.reason)
+    && (errors.errors[0]?.suggestion || errors.errors[0]?.reason || errors.errors[0]?.message)
+  const hasError = errors.error && (errors.error.suggestion || errors.error.reason ||
+    errors.error.message)
   return Boolean((getEnabledDialogImproved()) && (hasErrors || hasError))
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isIntEnv() || isDev()
+  return true
 }
 
 export const getEnabledActivityErrorImproved = () => {
@@ -199,12 +200,16 @@ export const getUrlForTest = (apiInfo: ApiInfo) => {
 export const getOpsApi = (apiInfo: ApiInfo) => {
   const { opsApi = '' } = apiInfo
 
-  return isRecSite() && opsApi.includes(':/templates')
+  return isRecSite()
     ? opsApi.replace(':/templates', ':/rec/templates')
     : opsApi
 }
 
-function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
+export function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
+  if (process.env.NODE_ENV === 'test' && !process.env.TEST_REC_API_CONVERT) {
+    return apiInfo
+  }
+
   const { url, ...rest } = apiInfo
 
   return {
