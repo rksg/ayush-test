@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createContext }       from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -19,11 +20,15 @@ enum OverviewInfoType {
     LINE = 'Line'
 }
 
+export const OltDetailsContext = createContext({} as {
+  oltDetailsContextData: EdgeNokiaOltData,
+  // setOltDetailsContextData: (data: EdgeNokiaOltData) => void
+})
+
 export const OltDetails = () => {
   const { $t } = useIntl()
   const { oltId } = useParams()
   const { activeSubTab } = useParams()
-  // const oltDetails = useLocation().state as EdgeNokiaOltData
 
   // temp
   const { data: oltDetails } = useGetEdgeOltListQuery({}, {
@@ -78,7 +83,9 @@ export const OltDetails = () => {
     />
   }]
 
-  return <>
+  return <OltDetailsContext.Provider value={{
+    oltDetailsContextData: oltDetails
+  }}>
     <OltDetailPageHeader
       oltDetails={oltDetails}
     />
@@ -107,5 +114,5 @@ export const OltDetails = () => {
         </Tabs.TabPane>
       ))}
     </Tabs>
-  </>
+  </OltDetailsContext.Provider>
 }

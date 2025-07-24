@@ -1,17 +1,18 @@
-// import { useIntl } from 'react-intl'
+import { useContext } from 'react'
 
 import { GridCol, GridRow } from '@acx-ui/components'
 
-import { OltFrontRearView } from './OltFrontRearView'
-// import {} from '../styledComponents'
+import { OltDetailsContext } from '../index'
+
+import { OltFrontPanel } from './OltFrontPanel'
 
 export const OltOverviewTab = () => {
-  // const { $t } = useIntl()
+  const { oltDetailsContextData } = useContext(OltDetailsContext)
 
   return (<>
     <GridRow>
-      <GridCol col={{ span: 24 }}>
-        <OltFrontRearView />
+      <GridCol col={{ span: 24 }} style={{ marginTop: '24px' }}>
+        <OltFrontPanel oltDetails={oltDetailsContextData} />
       </GridCol>
     </GridRow>
     <GridRow>
@@ -21,9 +22,3 @@ export const OltOverviewTab = () => {
     </GridRow>
   </>)
 }
-
-// const OltStatisticNoDataWidget = (props: { title: string }) => {
-//   return <HistoricalCard title={props.title}>
-//     <NoData />
-//   </HistoricalCard>
-// }
