@@ -25,11 +25,14 @@ type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
   options?: Array<{ label: string, value: unknown }>
   loading?: boolean
+  getPopupContainer?: (trigger: HTMLElement) => HTMLElement
 }>
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+  const Select = ({
+    loading, children, onChange, options, getPopupContainer, ...props
+  }: MockSelectProps) => (
     <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
       {children ? <><option value={undefined}></option>{children}</> : null}
       {options?.map((option, index) => (
@@ -41,7 +44,17 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-describe.skip('Venue mDNS Fencing', () => {
+jest.mock('@acx-ui/rc/components', () => ({
+  ConfigTemplateEnforcementContext: require('react').createContext({
+    isEnforced: false
+  }),
+  useEnforcedStatus: () => ({
+    isEnforced: false,
+    isEnforcedByTemplate: false
+  })
+}))
+
+describe('Venue mDNS Fencing', () => {
   let editContextData = {} as EditContext
   const setEditContextData = jest.fn()
   let editServerContextData = {} as ServerSettingContext
