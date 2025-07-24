@@ -407,6 +407,12 @@ describe('AP Group Edit Radio', () => {
       expect(screen.getByTestId('band-management-mock')).toBeInTheDocument()
     })
 
+    await waitFor(() => {
+      const lastCall = mockBandManagement.mock.calls[mockBandManagement.mock.calls.length - 1]
+      const props = lastCall[0]
+      expect(props.existingTriBandApModels).toHaveLength(2)
+    })
+
     // Extract props from mock calls
     const lastCall = mockBandManagement.mock.calls[mockBandManagement.mock.calls.length - 1]
     const props = lastCall[0]
@@ -414,7 +420,6 @@ describe('AP Group Edit Radio', () => {
     // Verify the correct models
     expect(props.existingTriBandApModels).toContain('R760')
     expect(props.existingTriBandApModels).toContain('R560')
-    expect(props.existingTriBandApModels).toHaveLength(2)
 
     // Clean up only the mocks created in this test
     bandManagementSpy.mockRestore()
