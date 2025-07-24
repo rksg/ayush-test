@@ -93,11 +93,12 @@ import {
 } from '@acx-ui/utils'
 
 import AICanvasModal                                                     from '../AICanvas'
-import { CardInfo, layoutConfig, Section, Group }                        from '../AICanvas/Canvas'
-import Layout                                                            from '../AICanvas/components/Layout'
-import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/index.utils'
-import { PreviewDashboardModal }                                         from '../AICanvas/PreviewDashboardModal'
-import * as CanvasUI                                                     from '../AICanvas/styledComponents'
+import AICanvasModalQ2                                                   from '../AICanvas/archived/AICanvasQ2'
+import { CardInfo, layoutConfig, Section, Group }                        from '../AICanvas/archived/AICanvasQ2/Canvas'
+import Layout                                                            from '../AICanvas/archived/AICanvasQ2/components/Layout'
+import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/archived/AICanvasQ2/index.utils'
+import { PreviewDashboardModal }                                         from '../AICanvas/archived/AICanvasQ2/PreviewDashboardModal'
+import * as CanvasUI                                                     from '../AICanvas/archived/AICanvasQ2/styledComponents'
 
 import { DashboardDrawer }       from './DashboardDrawer'
 import { ImportDashboardDrawer } from './ImportDashboardDrawer'
@@ -229,6 +230,7 @@ function DashboardPageHeader (props: {
   const { $t } = useIntl()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+  const isCanvasQ3Enabled = useIsSplitOn(Features.CANVAS_Q3)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const { isCustomPrivilegeGroup } = useUserProfileContext()
@@ -500,14 +502,19 @@ function DashboardPageHeader (props: {
         setVisible={setPreviewModalVisible}
         DefaultDashboard={DefaultDashboard}
       />
-
-      <AICanvasModal
-        isModalOpen={canvasModalVisible}
-        setIsModalOpen={setCanvasModalVisible}
-        editCanvasId={editCanvasId}
-        openNewCanvas={editCanvasId ? !editCanvasId : true}
-      />
-
+      {isCanvasQ3Enabled ?
+        <AICanvasModal
+          isModalOpen={canvasModalVisible}
+          setIsModalOpen={setCanvasModalVisible}
+          editCanvasId={editCanvasId}
+          openNewCanvas={editCanvasId ? !editCanvasId : true}
+        /> : <AICanvasModalQ2
+          isModalOpen={canvasModalVisible}
+          setIsModalOpen={setCanvasModalVisible}
+          editCanvasId={editCanvasId}
+          openNewCanvas={editCanvasId ? !editCanvasId : true}
+        />
+      }
     </>}
 
   </>

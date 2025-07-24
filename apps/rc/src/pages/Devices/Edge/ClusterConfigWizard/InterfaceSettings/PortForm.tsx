@@ -4,12 +4,13 @@ import { Form, Space, Typography } from 'antd'
 import _, { flatten }              from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Loader, useStepFormContext }                                       from '@acx-ui/components'
-import { Features }                                                         from '@acx-ui/feature-toggle'
-import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Loader, useStepFormContext }                from '@acx-ui/components'
+import { Features }                                  from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components'
 import {
   validateEdgeClusterLevelGateway,
   EdgePort, EdgeLag, SubInterface,
+  useIsEdgeFeatureReady,
   natPoolRangeClusterLevelValidator,
   edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
@@ -28,7 +29,7 @@ export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
       {$t({ defaultMessage: 'Port General Settings' })}
     </Typography.Title>
     <Typography.Text>
-      {$t({ defaultMessage: `Configure the port general settings for 
+      {$t({ defaultMessage: `Configure the port general settings for
       all RUCKUS Edges in this cluster:` })}
     </Typography.Text>
   </Space>

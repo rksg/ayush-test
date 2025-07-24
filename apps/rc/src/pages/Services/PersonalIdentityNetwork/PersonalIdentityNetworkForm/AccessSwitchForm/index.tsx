@@ -12,9 +12,9 @@ import {
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
-import { Features }                                                            from '@acx-ui/feature-toggle'
-import { AccessSwitchTable, AccessSwitchTableDataType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData }   from '@acx-ui/rc/utils'
+import { Features }                                                                                 from '@acx-ui/feature-toggle'
+import { AccessSwitchTable, AccessSwitchTableDataType }                                             from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 

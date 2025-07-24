@@ -18,11 +18,10 @@ import {
   useDeactivateNetworkTunnelByType,
   useEdgeAllPinData,
   useGetIpsecScopeVenueMap,
-  useGetSoftGreScopeVenueMap,
-  useIsEdgeFeatureReady
+  useGetSoftGreScopeVenueMap
 } from '@acx-ui/rc/components'
-import { useVenuesListQuery }                                                      from '@acx-ui/rc/services'
-import { EdgeMvSdLanViewData, Network, NetworkTypeEnum, useConfigTemplate, Venue } from '@acx-ui/rc/utils'
+import { useVenuesListQuery }                                                                             from '@acx-ui/rc/services'
+import { EdgeMvSdLanViewData, Network, NetworkTypeEnum, useConfigTemplate, useIsEdgeFeatureReady, Venue } from '@acx-ui/rc/utils'
 
 import { NetworkTunnelButton } from './NetworkTunnelButton'
 

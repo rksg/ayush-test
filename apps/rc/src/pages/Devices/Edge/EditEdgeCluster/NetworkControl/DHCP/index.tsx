@@ -6,9 +6,9 @@ import { useIntl }                                     from 'react-intl'
 import { Loader, StepsForm, useStepFormContext }                                                    from '@acx-ui/components'
 import { EdgePermissions }                                                                          from '@acx-ui/edge/components'
 import { Features }                                                                                 from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { ApCompatibilityToolTip, EdgeDhcpSelectionForm, useEdgeDhcpActions }                        from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures }                                               from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, IncompatibilityFeatures, useIsEdgeFeatureReady }                        from '@acx-ui/rc/utils'
 import { hasPermission }                                                                            from '@acx-ui/user'
 
 export const DhcpFormItem = (props: {
