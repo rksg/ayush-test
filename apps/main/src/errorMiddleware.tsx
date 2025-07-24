@@ -183,8 +183,9 @@ export const getErrorContent = (action: ErrorAction) => {
       errors: CatchErrorDetails[],
        error: CatchErrorDetails }
     const description =
-      errorObj.errors?.[0].suggestion || errorObj.errors?.[0].reason ||
-      errorObj.error?.suggestion || errorObj.error?.reason || ''
+      errorObj.errors?.[0]?.suggestion || errorObj.errors?.[0]?.reason ||
+      errorObj.error?.suggestion || errorObj.error?.reason ||
+      errorObj.errors?.[0]?.message || errorObj.error?.message || ''
     content = description ? <span>{description}</span> : content
   }
 

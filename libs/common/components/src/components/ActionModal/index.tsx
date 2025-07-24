@@ -377,12 +377,12 @@ function ApiCollapsePanel (props: {
       result += `${$t({ defaultMessage: 'RUCKUS Code' })}: ${errorObj.code}\n`
     }
 
-    if (errorObj.reason) {
-      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
-    }
-    // if (errorObj.reason || errorObj.message) { // Next phase
-    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    // if (errorObj.reason) {
+    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
     // }
+    if (errorObj.reason || errorObj.message) { // Next phase
+      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    }
 
     if (errorObj.suggestion) {
       result += `${$t({ defaultMessage: 'Suggestion' })}: ${errorObj.suggestion}\n`
