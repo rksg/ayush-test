@@ -115,7 +115,7 @@ describe('Add PersonalIdentityNetwork', () => {
     })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/${params.tenantId}/t/services/services/personalIdentityNetwork/list`,
+      pathname: `/${params.tenantId}/t/services/personalIdentityNetwork/list`,
       search: ''
     }, { replace: true }))
   })
