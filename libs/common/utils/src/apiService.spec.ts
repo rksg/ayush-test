@@ -11,8 +11,12 @@ import {
   getUrlForTest,
   getOpsApi,
   batchApi,
-  isShowImprovedErrorSuggestion
+  isShowImprovedErrorSuggestion,
+  convertApiInfoForRecConfigTemplate
 } from './apiService'
+import * as pathUtils from './pathUtils'
+
+const mockedIsRecSite = jest.spyOn(pathUtils, 'isRecSite')
 
 const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
 unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockResolvedValue('success')
@@ -21,6 +25,10 @@ const fetchWithBQFail: (arg: string | FetchArgs) => MaybePromise<QueryReturnValu
 unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockRejectedValue('error')
 
 describe('ApiInfo', () => {
+  beforeEach(() => {
+    mockedIsRecSite.mockReturnValue(true)
+  })
+
   it('Check the envrionment', async () => {
     expect(isLocalHost()).toBe(true)
     expect(isDev()).toBe(false)
@@ -116,6 +124,8 @@ describe('ApiInfo', () => {
       url: '/venues/aaaServers/query'
     }
 
+    expect(getUrlForTest(apiInfo1)).toBe('/venues/aaaServers/query')
+
     expect(getUrlForTest({
       ...apiInfo1,
       newApi: true
@@ -127,18 +137,108 @@ describe('ApiInfo', () => {
     })).toBe('/api/switch/tenant/:tenantId/aaaServer/query')
   })
 
-  it('test getOpsApi', async () => {
-    const apiInfo1 = {
-      method: 'post',
-      url: '/venues/aaaServers/query'
-    }
+  describe('getOpsApi', () => {
+    it('should return empty string when opsApi is not provided', () => {
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query'
+      }
 
-    expect(getOpsApi(apiInfo1)).toBe('')
-    expect(getOpsApi({
-      ...apiInfo1,
-      opsApi: 'POST:/venues/aaaServers/query'
-    })).toBe('POST:/venues/aaaServers/query')
+      expect(getOpsApi(apiInfo)).toBe('')
+    })
+
+    it('should return opsApi value when isRecSite returns false', () => {
+      mockedIsRecSite.mockReturnValue(false)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: 'POST:/venues/aaaServers/query'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe('POST:/venues/aaaServers/query')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return opsApi value when isRecSite returns false and opsApi does not contain templates', () => {
+      mockedIsRecSite.mockReturnValue(false)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: 'POST:/nonrec/api'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe('POST:/nonrec/api')
+    })
+
+    it('should replace :/templates with :/rec/templates when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: 'POST:/templates/api'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe('POST:/rec/templates/api')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should replace :/templates with :/rec/templates when isRecSite returns true and opsApi contains multiple templates', () => {
+      mockedIsRecSite.mockReturnValue(true)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: 'POST:/templates/api/templates/another'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe(
+        'POST:/rec/templates/api/templates/another'
+      )
+    })
+
+    it('should not replace other parts of opsApi when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: 'POST:/templates/api:/other/path'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe(
+        'POST:/rec/templates/api:/other/path'
+      )
+    })
+
+    it('should handle empty opsApi when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: ''
+      }
+
+      expect(getOpsApi(apiInfo)).toBe('')
+    })
+
+    it('should handle opsApi with only :/templates when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+
+      const apiInfo = {
+        method: 'post',
+        url: '/venues/aaaServers/query',
+        opsApi: ':/templates'
+      }
+
+      expect(getOpsApi(apiInfo)).toBe(':/rec/templates')
+    })
   })
+
+
 
   it('batchApi: success', async () => {
     expect(await batchApi(
@@ -168,4 +268,55 @@ describe('ApiInfo', () => {
     )).toEqual('error')
   })
 
+  describe('convertApiInfoForRecConfigTemplate', () => {
+    beforeEach(() => {
+      process.env.TEST_REC_API_CONVERT = 'true'
+    })
+
+    afterEach(() => {
+      delete process.env.TEST_REC_API_CONVERT
+    })
+    it('should return apiInfo unchanged when isRecSite returns false', () => {
+      mockedIsRecSite.mockReturnValue(false)
+      const apiInfo = {
+        method: 'post',
+        url: '/templates/api'
+      }
+      const result = convertApiInfoForRecConfigTemplate(apiInfo)
+      expect(result).toEqual(apiInfo)
+    })
+    it('should replace /templates with /rec/templates when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+      const apiInfo = {
+        method: 'post',
+        url: '/templates/api'
+      }
+      const result = convertApiInfoForRecConfigTemplate(apiInfo)
+      expect(result).toEqual({
+        method: 'post',
+        url: '/rec/templates/api'
+      })
+    })
+    it('should replace multiple occurrences of /templates when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+      const apiInfo = {
+        method: 'post',
+        url: '/templates/api/templates/another'
+      }
+      const result = convertApiInfoForRecConfigTemplate(apiInfo)
+      expect(result).toEqual({
+        method: 'post',
+        url: '/rec/templates/api/templates/another'
+      })
+    })
+    it('should handle url without /templates when isRecSite returns true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+      const apiInfo = {
+        method: 'post',
+        url: '/other/api'
+      }
+      const result = convertApiInfoForRecConfigTemplate(apiInfo)
+      expect(result).toEqual(apiInfo)
+    })
+  })
 })
