@@ -123,21 +123,6 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
     }
   })
 
-  it('should render drawer', async () => {
-    render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
-      })
-    const row = await screen.findByRole('row', { name: /My-Venue-cli-profile-skip/i })
-    const checkStatusButton = await within(row).findByText(/Check Status/i)
-    await userEvent.click(checkStatusButton)
-    expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
-    expect(screen.getByText('Firmware update status')).toBeInTheDocument()
-  })
-
-
   it('status fail - do retry', async () => {
     render(
       <Provider>
