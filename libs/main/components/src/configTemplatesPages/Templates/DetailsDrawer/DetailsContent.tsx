@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { Divider, Space, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { cssStr, Descriptions, Loader }                                from '@acx-ui/components'
+import { Button, cssStr, Descriptions, Loader }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }                                     from '@acx-ui/msp/services'
 import { AccessControlSubPolicyVisibility }                            from '@acx-ui/rc/components'
@@ -11,6 +11,7 @@ import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@ac
 import { noDataDisplay }                                               from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps }                                                                                                                        from '../..'
+import { useConfigTemplateListContext }                                                                                                                   from '../ConfigTemplateListContext'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
 import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
@@ -104,12 +105,18 @@ export function DetailsContent (props: DetailsContentProps) {
 
 function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[] }) {
   const { $t } = useIntl()
+  const { setAppliedToViewVisible } = useConfigTemplateListContext()
+  const maxItemsToShow = 25
 
   const mspEcTenantsPayload = {
     filters: {
       ...useEcFilters(),
       id: appliedOnTenants
     },
+    page: 1,
+    pageSize: maxItemsToShow,
+    sortField: 'name',
+    sortOrder: 'ASC',
     fields: ['id', 'name']
   }
 
@@ -122,6 +129,8 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
     title={$t({ defaultMessage: 'Applied to' })}
     items={data?.data.map(mspEcTenant => mspEcTenant.name) || []}
     isLoading={isLoading}
+    showMore={(data?.totalCount ?? 0) > maxItemsToShow}
+    showMoreCallback={() => setAppliedToViewVisible(true)}
   />
 }
 
@@ -129,10 +138,15 @@ export interface DetailsItemListProps {
   title: string
   items: string[]
   isLoading?: boolean
+  showMore?: boolean
+  showMoreCallback?: () => void
 }
 
-export function DetailsItemList ({ title, items = [], isLoading = false }: DetailsItemListProps) {
+export function DetailsItemList (
+  { title, items = [], isLoading = false, showMore = false, showMoreCallback }: DetailsItemListProps
+) {
   const sortedItems = [...items].sort((a, b) => a.localeCompare(b))
+  const { $t } = useIntl()
 
   return <Space direction='vertical' size={6}>
     <span style={{ fontWeight: 700, color: cssStr('--acx-neutrals-60') }}>
@@ -145,5 +159,12 @@ export function DetailsItemList ({ title, items = [], isLoading = false }: Detai
         )) : noDataDisplay}
       </Space>
     </Loader>
+    {showMore &&
+      <Button
+        type='link'
+        size='small'
+        onClick={showMoreCallback}
+      >{$t({ defaultMessage: 'Show More' })}</Button>
+    }
   </Space>
 }
