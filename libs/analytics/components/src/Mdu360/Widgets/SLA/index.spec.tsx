@@ -1,6 +1,6 @@
-import { showToast }                               from '@acx-ui/components'
-import { act, fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
-import { UseQueryResult }                          from '@acx-ui/types'
+import { showToast }                          from '@acx-ui/components'
+import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UseQueryResult }                     from '@acx-ui/types'
 
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
