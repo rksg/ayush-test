@@ -34,7 +34,7 @@ export interface EdgeSdLanFormProps {
   onFinish: (values: EdgeSdLanFormType, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
 }
 
-const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
+export const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
   const isEditMode = Boolean(editData)
