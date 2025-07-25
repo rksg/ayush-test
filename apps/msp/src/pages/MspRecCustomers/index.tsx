@@ -218,7 +218,7 @@ export function MspRecCustomers () {
       </div>)
     }
   }
-  
+
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
