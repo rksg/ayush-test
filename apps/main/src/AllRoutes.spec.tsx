@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
 import { MspUrlsInfo, MspRbacUrlsInfo }                                from '@acx-ui/msp/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { render, screen, cleanup, mockServer }                         from '@acx-ui/test-utils'
@@ -191,8 +191,6 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(<Provider><AllRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/services/some-page',
@@ -204,7 +202,6 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to policies/* if the feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -299,7 +296,6 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to ruckus-wan-gateway/*', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><AllRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/ruckus-wan-gateway'

@@ -11,7 +11,7 @@ import {
   icx8200AvGroupedData,
   icx8100XGroupedData,
   icx7550ZippyGroupedData
-} from '../../__test__/fixtures'
+} from '../../__tests__/fixtures'
 
 import { NotesEnum, SwitchNote } from '.'
 

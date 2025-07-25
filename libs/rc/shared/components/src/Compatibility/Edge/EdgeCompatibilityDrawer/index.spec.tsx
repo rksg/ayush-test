@@ -13,7 +13,7 @@ import { FeatureItemProps }       from '../../CompatibilityDrawer/CompatibilityI
 
 import {
   mockApFeatureCompatibilities
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '.'
 

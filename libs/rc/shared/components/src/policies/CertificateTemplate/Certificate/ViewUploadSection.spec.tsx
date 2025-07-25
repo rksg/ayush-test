@@ -1,7 +1,7 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { certificateAuthority } from '../__test__/fixtures'
+import { certificateAuthority } from '../__tests__/fixtures'
 
 import ViewUploadSection from './ViewUploadSection'
 

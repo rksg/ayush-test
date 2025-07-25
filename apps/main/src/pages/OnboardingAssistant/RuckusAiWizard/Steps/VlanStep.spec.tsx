@@ -12,7 +12,7 @@ import {
   mockServer
 } from '@acx-ui/test-utils'
 
-import { mock_response, mock_payload, mock_vlan } from './__test__/VlanStepFixtures'
+import { mock_response, mock_payload, mock_vlan } from './__tests__/VlanStepFixtures'
 import { VlanStep }                               from './VlanStep'
 
 jest.mock('@acx-ui/rc/components', () => ({
