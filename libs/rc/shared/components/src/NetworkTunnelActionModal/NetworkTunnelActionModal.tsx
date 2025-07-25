@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Tooltip, Typography } from 'antd'
 
-import { Loader, Modal }  from '@acx-ui/components'
-import { Features }       from '@acx-ui/feature-toggle'
+import { Loader, Modal, SpaceWrapper } from '@acx-ui/components'
+import { Features }                    from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
@@ -17,7 +17,6 @@ import { TenantLink }         from '@acx-ui/react-router-dom'
 import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { SpaceWrapper }          from '../SpaceWrapper'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeSdLanRadioOption }                           from './EdgeSdLanRadioOption'
