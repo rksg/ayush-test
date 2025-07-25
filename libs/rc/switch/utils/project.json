@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/rc/switch/utils/src",
   "projectType": "library",
-  "tags": ["no-acx-lib-deps"],
+  "tags": ["no-acx-lib-deps", "type:utils"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",

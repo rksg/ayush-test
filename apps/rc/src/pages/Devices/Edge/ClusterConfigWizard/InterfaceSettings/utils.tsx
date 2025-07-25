@@ -22,7 +22,8 @@ import {
   VirtualIpSetting,
   SubInterface,
   EdgeStatus,
-  isEdgeMatchedRequiredFirmware
+  isEdgeMatchedRequiredFirmware,
+  EdgeIpModeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -477,6 +478,10 @@ const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
   return settings.map(subInterface => {
     if(subInterface.id?.startsWith('new_')) {
       delete subInterface.id
+    }
+    if(subInterface.ipMode === EdgeIpModeEnum.DHCP) {
+      subInterface.ip = ''
+      subInterface.subnet = ''
     }
     return subInterface
   })

@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                                  from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import type { ToastProps }                             from '@acx-ui/utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
