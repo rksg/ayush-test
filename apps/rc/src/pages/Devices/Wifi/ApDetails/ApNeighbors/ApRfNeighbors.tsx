@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableColumn, TableProps }                   from '@acx-ui/components'
+import { Loader, Table, TableProps }                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { APStatus }                                                 from '@acx-ui/rc/components'
 import { useLazyGetApNeighborsQuery, useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
@@ -11,7 +11,7 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                  from '@acx-ui/types'
+import { WifiScopes, TableColumn }     from '@acx-ui/types'
 import { filterByAccess }              from '@acx-ui/user'
 import { getIntl, CatchErrorResponse } from '@acx-ui/utils'
 
