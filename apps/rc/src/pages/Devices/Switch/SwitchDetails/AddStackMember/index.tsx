@@ -130,6 +130,17 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+
+  const baseModelNotSupportStack =
+  ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
+    'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
+    'ICX8100-48P-X', 'ICX8100-C08PF-X']
+
+  const modelNotSupportStack = isSupport8100Phase2
+    ? baseModelNotSupportStack.filter(model => !model.endsWith('-X'))
+    : baseModelNotSupportStack
+
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -160,7 +171,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,
-                activeSerialNumber: switchDetail?.activeSerial
+                activeSerialNumber: switchDetail?.activeSerial,
+                modelNotSupportStack: modelNotSupportStack
               }
               return validatorSwitchModel(switchModelParams)}
             },
