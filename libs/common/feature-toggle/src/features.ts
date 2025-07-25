@@ -303,7 +303,8 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
-  WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle'
+  WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
+  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
