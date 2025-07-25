@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
+import { SpaceWrapper }                                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { useGetApModelFamiliesQuery }                                                         from '@acx-ui/rc/services'
 import { ApIncompatibleFeature, ApRequirement, CompatibilityDeviceEnum, IncompatibleFeature } from '@acx-ui/rc/utils'
 
-import { SpaceWrapper } from '../../../SpaceWrapper'
-import * as UI          from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import { ApModelFamiliesItem } from './ApModelFamiliesItem'
 
