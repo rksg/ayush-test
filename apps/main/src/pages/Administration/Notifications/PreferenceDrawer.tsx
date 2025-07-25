@@ -4,10 +4,9 @@ import { Checkbox, Form, Switch } from 'antd'
 import { CheckboxChangeEvent }    from 'antd/es/checkbox'
 import { useIntl }                from 'react-intl'
 
-import { Drawer, Subtitle }                                             from '@acx-ui/components'
+import { Drawer, Subtitle, SpaceWrapper }                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetMspAggregationsQuery, useUpdateMspAggregationsMutation } from '@acx-ui/msp/services'
-import { SpaceWrapper }                                                 from '@acx-ui/rc/components'
 
 interface PreferenceDrawerProps {
   visible: boolean
