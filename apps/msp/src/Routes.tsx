@@ -27,11 +27,14 @@ import {
   EditEthernetPortProfile,
   EthernetPortProfileDetail,
   IdentityGroupForm,
-  PersonaGroupDetails
+  PersonaGroupDetails,
+  AddTunnelProfileTemplate,
+  EditTunnelProfileTemplate
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   ConfigTemplateType,
+  LayoutWithConfigTemplateContext,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -44,27 +47,27 @@ import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams }
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { SwitchScopes }                                                          from '@acx-ui/types'
-import { AuthRoute }                                                             from '@acx-ui/user'
+import { aiOpsApis, AuthRoute, hasPermission }                                   from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
-import HspContext, { HspActionTypes }              from './HspContext'
-import { hspReducer }                              from './HspReducer'
-import { ConfigTemplatePage }                      from './pages/ConfigTemplates'
-import { DeviceInventory }                         from './pages/DeviceInventory'
-import { Integrators }                             from './pages/Integrators'
-import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
-import { ManageCustomer }                          from './pages/ManageCustomer'
-import { ManageIntegrator }                        from './pages/ManageIntegrator'
-import Mdu360                                      from './pages/Mdu360'
-import { MspCustomers }                            from './pages/MspCustomers'
-import { MspRecCustomers }                         from './pages/MspRecCustomers'
-import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
-import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
-import { NewManageCustomer }                       from './pages/NewManageCustomer'
-import { NewManageIntegrator }                     from './pages/NewManageIntegrator'
-import { Subscriptions }                           from './pages/Subscriptions'
-import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
-import { VarCustomers }                            from './pages/VarCustomers'
+import HspContext, { HspActionTypes } from './HspContext'
+import { hspReducer }                 from './HspReducer'
+import { ConfigTemplatePage }         from './pages/ConfigTemplates'
+import { DeviceInventory }            from './pages/DeviceInventory'
+import { Integrators }                from './pages/Integrators'
+import Layout                         from './pages/Layout'
+import { ManageCustomer }             from './pages/ManageCustomer'
+import { ManageIntegrator }           from './pages/ManageIntegrator'
+import Mdu360                         from './pages/Mdu360'
+import { MspCustomers }               from './pages/MspCustomers'
+import { MspRecCustomers }            from './pages/MspRecCustomers'
+import { AddRecCustomer }             from './pages/MspRecCustomers/AddRecCustomer'
+import { NewDeviceInventory }         from './pages/NewDeviceInventory'
+import { NewManageCustomer }          from './pages/NewManageCustomer'
+import { NewManageIntegrator }        from './pages/NewManageIntegrator'
+import { Subscriptions }              from './pages/Subscriptions'
+import { AssignMspLicense }           from './pages/Subscriptions/AssignMspLicense'
+import { VarCustomers }               from './pages/VarCustomers'
 
 export function Init () {
   const {
@@ -72,7 +75,10 @@ export function Init () {
   } = useContext(HspContext)
 
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -93,6 +99,10 @@ export default function MspRoutes () {
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
   const newDeviceInventory =
     useIsSplitOn(Features.VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE)
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -159,7 +169,7 @@ export default function MspRoutes () {
           : <DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
-      <Route path='brand360' element={<Brand360 />} />
+      {isBrand360Enabled && <Route path='brand360' element={<Brand360 />} />}
       <Route path='mdu360/*' element={<Mdu360 />} />
       {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
@@ -483,6 +493,24 @@ export function ConfigTemplatesRoutes () {
             element={<PersonaGroupDetails />}
           />
         </>}
+        {
+          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_PROFILE] && <>
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.CREATE
+              })}
+              element={<AddTunnelProfileTemplate />}
+            />
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.EDIT
+              })}
+              element={<EditTunnelProfileTemplate />}
+            />
+          </>
+        }
       </Route>
     </Route>
   )

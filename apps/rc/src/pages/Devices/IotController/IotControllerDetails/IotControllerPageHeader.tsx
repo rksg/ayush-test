@@ -11,8 +11,8 @@ import {
   useParams,
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi }                             from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getOpsApi }      from '@acx-ui/utils'
 
 import IotControllerTabs from './IotControllerTabs'
 
@@ -53,7 +53,6 @@ function IotControllerPageHeader () {
   const iotControllerSettingData = availableIotControllers?.find((item: IotControllerSetting) => item.id === iotId)
 
   const iotControllerActions = useIotControllerActions()
-  const { isCustomRole } = useUserProfileContext()
 
   return (
     <PageHeader
@@ -69,21 +68,20 @@ function IotControllerPageHeader () {
               iotControllerActions.refreshIotController()
             }
           >{$t({ defaultMessage: 'Refresh' })}</Button>,
-          ...(isCustomRole ? []
-            : [<Button
-              type='default'
-              onClick={() =>
-                // eslint-disable-next-line max-len
-                window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
-                  '_blank')
-              }
-            >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,
-            <TenantLink
-              to={`/devices/iotController/${iotControllerSettingData?.id}/edit`}
-              rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}
-            >
-              <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-            </TenantLink>])])
+          <Button
+            type='default'
+            onClick={() =>
+              // eslint-disable-next-line max-len
+              window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
+                '_blank')
+            }
+          >{$t({ defaultMessage: 'Manage IoT Controller' })}</Button>,
+          <TenantLink
+            to={`/devices/iotController/${iotControllerSettingData?.id}/edit`}
+            rbacOpsIds={[getOpsApi(IotUrlsInfo.updateIotController)]}
+          >
+            <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>])
       ]}
       // eslint-disable-next-line max-len
       footer={<IotControllerTabs iotControllerSetting={iotControllerSettingData as IotControllerSetting} />}

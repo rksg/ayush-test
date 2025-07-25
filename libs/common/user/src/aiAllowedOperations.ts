@@ -1,7 +1,6 @@
 import { RolesEnum as Role } from '@acx-ui/types'
 
-import { UserProfile } from './types'
-import { hasRoles }    from './userProfile'
+import { hasRoles as hasRolesFn, Profile } from './userProfile'
 
 // Because we are unable to define scopes for GraphQL APIs in RCG config
 // (https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/ruckus-cloud-gateway/browse/configs/ruckus-cloud-gateway/configmaps/base/ruckus-cloud-gateway-config-routes.yaml),
@@ -21,10 +20,12 @@ export const opsApis = {
   deleteVideoCallQoe: 'DELETE:/videoCallQoe/{id}',
   createReportSchedules: 'POST:/reportSchedules',
   updateReportSchedules: 'PATCH:/reportSchedules/{id}',
-  deleteReportSchedules: 'DELETE:/reportSchedules/{id}'
+  deleteReportSchedules: 'DELETE:/reportSchedules/{id}',
+  readBrand360Dashboard: 'GET:/brand360Dashboard',
+  updateBrand360Dashboard: 'PATCH:/brand360Dashboard/{id}'
 }
 
-// Operations available for each scope
+// Operations available for each scope / role
 const aiOperations = [
   {
     scope: ['ai.incidents-u'],
@@ -72,12 +73,30 @@ const aiOperations = [
     uri: [
       opsApis.deleteReportSchedules
     ]
+  },
+  {
+    role: [Role.READ_ONLY],
+    scope: ['brand360.dashboard-r'],
+    uri: [
+      opsApis.readBrand360Dashboard
+    ]
+  },
+  {
+    scope: ['brand360.dashboard-u'],
+    uri: [
+      opsApis.updateBrand360Dashboard
+    ]
   }
 ]
 
-export function getAIAllowedOperations (profile: UserProfile | undefined) {
+export function getAIAllowedOperations (userProfile: Profile) {
+  const { profile } = userProfile
+
+  const hasRoles = (roles: string | string[]) => hasRolesFn(roles, userProfile)
+
   return aiOperations.filter(op => {
     if (hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])) return true
+    if (op.role && hasRoles(op.role)) return true
     return op.scope.some(scope => profile?.scopes?.includes(scope) || false)
   })
 }

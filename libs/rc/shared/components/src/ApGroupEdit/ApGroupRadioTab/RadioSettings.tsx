@@ -114,9 +114,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const { $t } = useIntl()
   const { isAllowEdit=true } = props
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
@@ -156,9 +154,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const isDual5gModeRef = useRef<boolean>(true)
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
-
-  const [isLower5gInherit, setIsLower5gInherit] = useState(true)
-  const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
 
   const [isEnable24g, setIsEnable24g] = useState(true)
   const [isEnable5g, setIsEnable5g] = useState(true)
@@ -255,7 +250,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       [ApRadioTypeEnum.RadioUpper5G]: supportChUpper5g
     }
 
-    const radio6GBandwidth = supportWifi7_320MHz
+    const radio6GBandwidth = ap70BetaFlag
       ? channelBandwidth6GOptions
       : dropRight(channelBandwidth6GOptions)
 
@@ -274,7 +269,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       bandwidthRadioOptions,
       isSupport6GCountry
     }
-  }, [supportChannelsData, supportWifi7_320MHz])
+  }, [supportChannelsData, ap70BetaFlag])
 
   useEffect(() => {
     if (isEmpty(venueData)) {
@@ -436,9 +431,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       const dual5GData = data?.radioParamsDual5G
       setIsDual5gMode(!!dual5GData?.enabled)
 
-      setIsLower5gInherit(!!dual5GData?.inheritParamsLower5G)
-      setIsUpper5gInherit(!!dual5GData?.inheritParamsUpper5G)
-
       setEditRadioContextData({
         ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
@@ -477,28 +469,22 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       return
     }
 
-    // special case
+
+    setInitApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: apGroupBandModeSavedData.apModelBandModeSettings ?? []
+    })
+    setCurrentApGroupBandModeData({
+      useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: [...(apGroupBandModeSavedData.apModelBandModeSettings ?? [])]
+    })
+
     if (dual5gApModels.length > 0) {
-      const dual5GData = venueSavedChannelsData.radioParamsDual5G
-
-      const updatedApGroupBandModeSettings = handleDual5GBandModeSpecialCase(
-        apGroupBandModeSavedData.apModelBandModeSettings,
-        dual5gApModels,
-        dual5GData
-      )
-      setInitApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: updatedApGroupBandModeSettings
-      })
-      setCurrentApGroupBandModeData({
-        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-        apModelBandModeSettings: [...updatedApGroupBandModeSettings]
-      })
-
+      const venueDual5GData = venueSavedChannelsData.radioParamsDual5G
       const updatedVenueBandModeSettings = handleDual5GBandModeSpecialCase(
         venueBandModeSavedData,
         dual5gApModels,
-        dual5GData
+        venueDual5GData
       )
       setInitVenueBandModeData([ ...updatedVenueBandModeSettings ])
     }
@@ -772,13 +758,14 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           ...(data.radioParamsDual5G?.enabled
             ? {}
             : {
+              enabled: false,
               radioParamsLower5G: { useVenueSettings: false },
               radioParamsUpper5G: { useVenueSettings: false }
             }
           )
         }
       } : {}),
-      ...(defaultRadioSettings?.radioParamsDual5G?.enabled
+      ...(!isDual5gModeRef.current && defaultRadioSettings?.radioParamsDual5G?.enabled
         ? {
           radioParamsDual5G: {
             enabled: false,
@@ -1020,16 +1007,17 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
               style={{ marginBottom: '10px', width: '300px' }}
               children={
                 <Radio.Group
+                  data-testid='band-management'
                   onChange={(e) => {
                     setCurrentApGroupBandModeData( {
                       useVenueSettings: e.target.value,
                       apModelBandModeSettings: currentApGroupBandModeData.apModelBandModeSettings
                     } )}} >
                   <Space direction='vertical'>
-                    <Radio value={true}>
+                    <Radio value={true} data-testid='band-management-useVenueSettings'>
                       <FormattedMessage defaultMessage={'Use inherited settings from <VenueSingular></VenueSingular>'} />
                     </Radio>
-                    <Radio value={false}>
+                    <Radio value={false} data-testid='band-management-customizeSettings'>
                       <FormattedMessage defaultMessage={'Customize settings'} />
                     </Radio>
                   </Space>
@@ -1315,7 +1303,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableLower5g}
                   testId='apgroup-radio-l5g-tab'
-                  inherit5G={isLower5gInherit}
+                  inherit5G={false}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Lower5GHz)}
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings']}
@@ -1333,7 +1321,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 <ApGroupSingleRadioSettings
                   isEnabled={isEnableUpper5g}
                   testId='apgroup-radio-u5g-tab'
-                  inherit5G={isUpper5gInherit}
+                  inherit5G={false}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Upper5GHz)}
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings']}

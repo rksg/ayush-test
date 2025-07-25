@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import _                           from 'lodash'
+import { omit, get, isNil }        from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { useStepFormContext }                from '@acx-ui/components'
@@ -13,15 +13,18 @@ import {
   validateEdgeAllPortsEmptyLag,
   natPoolRangeClusterLevelValidator,
   useIsEdgeFeatureReady,
-  getMergedLagTableDataFromLagForm
+  getMergedLagTableDataFromLagForm,
+  edgeWanSyncIpModeValidator,
+  getEdgeWanInterfaces,
+  EdgePort
 } from '@acx-ui/rc/utils'
 import { EdgeScopes } from '@acx-ui/types'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { ClusterConfigWizardContext }      from '../ClusterConfigWizardDataProvider'
+import { getAllPhysicalInterfaceFormData } from '../utils'
 
 import * as UI                                                            from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
-import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
@@ -57,8 +60,9 @@ interface LagSettingViewProps {
 }
 
 const LagSettingView = (props: LagSettingViewProps) => {
-  const { value, onChange } = props
+  const { value: lagSettings, onChange } = props
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const {
     clusterInfo, isSupportAccessPort, clusterNetworkSettings
@@ -105,12 +109,12 @@ const LagSettingView = (props: LagSettingViewProps) => {
         }
       }
 
-      const isUnconfigPort = _.get(portSettings, serialNumber)
+      const isUnconfigPort = get(portSettings, serialNumber)
         ?.[member.portId]?.[0]?.portType === EdgePortTypeEnum.UNCONFIGURED
 
       if (!isUnconfigPort && portInterfaceName) {
         const data = {
-          ...(_.get(portSettings, [serialNumber, portInterfaceName, '0'])),
+          ...(get(portSettings, [serialNumber, portInterfaceName, '0'])),
           ...edgePhysicalPortInitialConfigs
         }
 
@@ -120,10 +124,18 @@ const LagSettingView = (props: LagSettingViewProps) => {
     })
   }
 
+  const deleteLagSubInterface = (serialNumber: string, lagId: string) => {
+    // should also delete the lag sub interface
+    const updatedLagSubInterfaces = omit(lagSubInterfaces?.[serialNumber], lagId)
+
+    // update Form.List need to use setFieldValue
+    form.setFieldValue(['lagSubInterfaces', serialNumber], updatedLagSubInterfaces)
+  }
+
   const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
         lags: [...(targetLagSettings?.lags ?? []), lagData]
@@ -135,9 +147,9 @@ const LagSettingView = (props: LagSettingViewProps) => {
   }
 
   const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
         lags: [...(targetLagSettings?.lags.filter(item => item.id !== lagData.id) ?? []), lagData]
@@ -148,15 +160,18 @@ const LagSettingView = (props: LagSettingViewProps) => {
     cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
-  const handleDelete = async (serialNumber: string, id: string) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+  const handleDelete = async (serialNumber: string, lagId: string) => {
+    const targetLagSettings = lagSettings?.find(item => item.serialNumber === serialNumber)
+
     onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      ...(lagSettings?.filter(item => item.serialNumber !== serialNumber) ?? []),
       {
         serialNumber,
-        lags: targetLagSettings?.lags.filter(item => item.id !== Number(id))
+        lags: targetLagSettings?.lags.filter(item => item.id !== Number(lagId))
       }
     ])
+
+    deleteLagSubInterface(serialNumber, lagId)
   }
 
   return (
@@ -164,7 +179,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
       nodeList={clusterInfo?.edgeList}
       content={
         (serialNumber) => {
-          const lagList = value?.find(item => item.serialNumber === serialNumber)?.lags
+          const lagList = lagSettings?.find(item => item.serialNumber === serialNumber)?.lags
           const portList = portSettings?.[serialNumber]
             ? Object.values(portSettings?.[serialNumber]).flat()
             : []
@@ -197,7 +212,6 @@ const LagSettingView = (props: LagSettingViewProps) => {
               children={<input hidden/>}
             />
             <EdgeLagTable
-              clusterId={clusterInfo?.clusterId}
               serialNumber={serialNumber}
               lagList={lagList}
               portList={portList}
@@ -234,6 +248,23 @@ const LagSettingView = (props: LagSettingViewProps) => {
                 portSettings: originalPortData,
                 lagSettings: originalLagData
               }}
+            />
+            <Form.Item
+              name='multiWanIpModeCheck'
+              rules={[
+                ...(isEdgeDualWanEnabled
+                  ? [{ validator: () => {
+                    // only check when all WAN is LAG
+                    const allWans = getEdgeWanInterfaces(portList, lagList)
+                    // eslint-disable-next-line max-len
+                    const isAllLagWan = allWans.every((wan: EdgePort | EdgeLag) => !isNil((wan as EdgeLag).lagEnabled))
+                    if (!isAllLagWan) return Promise.resolve()
+
+                    return edgeWanSyncIpModeValidator(portList ?? [], lagList ?? [])
+                  } }]
+                  : [])
+              ]}
+              children={<></>}
             />
           </>
         }

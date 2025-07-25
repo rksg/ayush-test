@@ -222,6 +222,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       Accept: 'application/vnd.ruckus.v1+json'
     }
   },
+  getAllApModelScheduledFirmwareList: {
+    method: 'get',
+    url: '/apModelFirmwares?status=scheduled',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
   patchVenueApModelFirmwares: {
     method: 'PATCH',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',

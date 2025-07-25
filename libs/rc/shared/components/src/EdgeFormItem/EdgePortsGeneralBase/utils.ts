@@ -1,7 +1,10 @@
-import { NamePath } from 'antd/lib/form/interface'
-import _, { isNil } from 'lodash'
+import { NamePath }                       from 'antd/lib/form/interface'
+import { flatMap, forEach, isNil, keyBy } from 'lodash'
 
-import { EdgeLag, EdgePort, EdgePortTypeEnum, SubInterface } from '@acx-ui/rc/utils'
+import {
+  doEdgeNetworkInterfacesDryRun,
+  EdgeLag, EdgePort, EdgePortTypeEnum, SubInterface
+} from '@acx-ui/rc/utils'
 
 import { EdgePortConfigFormType } from '.'
 
@@ -13,71 +16,71 @@ export const getFieldFullPath = (
 
 export const transformApiDataToFormListData =
 (apiData: EdgePort[]): EdgePortConfigFormType => {
-  const mapByIfName = _.keyBy(apiData, 'interfaceName')
+  const mapByIfName = keyBy(apiData, 'interfaceName')
   const formData:EdgePortConfigFormType = {}
 
-  _.forEach(mapByIfName, (val, key) => {
+  forEach(mapByIfName, (val, key) => {
     formData[key] = [val]
   })
   return formData
 }
 export const transformFormListDataToApiData =
 (formData: EdgePortConfigFormType): EdgePort[] => {
-  return _.flatMap(formData, (v) => v)
+  return flatMap(formData, (v) => v)
 }
 
 export const getEnabledCorePortInfo = (
-  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[]
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  isEdgeCoreAccessSeparationReady: boolean
 ) : {
     key: string | undefined,
-    isLag: boolean,
-    physicalPortId: string | undefined,
-    isExistingCorePortInLagMember: boolean
   } => {
-  const physicalCorePort = portsData.filter(item =>
+
+  const {
+    lags: resolvedLags,
+    ports: resolvedPorts,
+    subInterfaces: resolvedSubInterfaces
+    // eslint-disable-next-line max-len
+  } = doEdgeNetworkInterfacesDryRun(lagData, portsData, subInterfaceData, isEdgeCoreAccessSeparationReady)
+
+  const physicalCorePort = resolvedPorts.filter(item =>
     item.corePortEnabled && item.enabled && item.portType === EdgePortTypeEnum.LAN)
-  const lagCorePort = lagData.filter(item =>
+  const lagCorePort = resolvedLags.filter(item =>
     item.corePortEnabled && item.lagEnabled && item.portType === EdgePortTypeEnum.LAN)
-  const subInterfaceCorePort = subInterfaceData.find(item =>
+  const subInterfaceCorePort = resolvedSubInterfaces.find(item =>
     item.corePortEnabled && item.portType === EdgePortTypeEnum.LAN)
-  const lagCorePortEnabled = lagCorePort[0]?.id !== undefined
+
   const corePortKey = physicalCorePort[0]?.interfaceName ||
     (!isNil(lagCorePort[0]?.id) && lagCorePort[0]?.id + '') ||
     subInterfaceCorePort?.interfaceName
-  const isLag = physicalCorePort[0]?.interfaceName ? false : lagCorePort[0]?.id !== undefined
-  const physicalCorePortId = isLag ? undefined : physicalCorePort[0]?.id
-  const isExistingCorePortInLagMember = lagData?.some(lag => lag.lagMembers
-    ? lag.lagMembers.filter(member => member?.portId === physicalCorePortId).length > 0
-    : false) ?? false
 
   return {
-    key: isExistingCorePortInLagMember
-      ? (lagCorePortEnabled ? (lagCorePort[0].id + '') : undefined)
-      : corePortKey,
-    isLag: isExistingCorePortInLagMember ? lagCorePortEnabled : isLag,
-    physicalPortId: isExistingCorePortInLagMember ? undefined : physicalCorePortId,
-    isExistingCorePortInLagMember
+    key: corePortKey
   }
 }
 
 
 export const getEnabledAccessPortInfo = (
-  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[]
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  isEdgeCoreAccessSeparationReady: boolean
+
 ) : {
     key: string | undefined
   } => {
-  const lagMemberIds = lagData.flatMap(lag => lag.lagMembers?.map(member => member.portId))
-  const lagMemberInterfaceName = portsData.filter(item => lagMemberIds.includes(item.id))
-    .map(item => item.interfaceName)
-  const physicalAccessPort = portsData.find(item =>
-    item.accessPortEnabled && item.enabled && item.portType === EdgePortTypeEnum.LAN &&
-    !lagMemberIds.includes(item.id))
-  const lagAccessPort = lagData.find(item =>
+  const {
+    lags: resolvedLags,
+    ports: resolvedPorts,
+    subInterfaces: resolvedSubInterfaces
+    // eslint-disable-next-line max-len
+  } = doEdgeNetworkInterfacesDryRun(lagData, portsData, subInterfaceData, isEdgeCoreAccessSeparationReady)
+
+  const physicalAccessPort = resolvedPorts.find(item =>
+    item.accessPortEnabled && item.enabled && item.portType === EdgePortTypeEnum.LAN)
+  const lagAccessPort = resolvedLags.find(item =>
     item.accessPortEnabled && item.lagEnabled && item.portType === EdgePortTypeEnum.LAN)
-  const subInterfaceAccessPort = subInterfaceData.find(item =>
-    item.accessPortEnabled && item.portType === EdgePortTypeEnum.LAN &&
-    !lagMemberInterfaceName.includes(item.interfaceName?.split('.')?.[0])
-  )
+  const subInterfaceAccessPort = resolvedSubInterfaces.find(item =>
+    item.accessPortEnabled && item.portType === EdgePortTypeEnum.LAN)
+
   const accessPortKey = physicalAccessPort?.interfaceName ||
     (!isNil(lagAccessPort?.id) && lagAccessPort?.id + '') ||
     subInterfaceAccessPort?.interfaceName

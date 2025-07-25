@@ -1,5 +1,8 @@
 import { DraggableTagField } from './DraggableTagField'
 
+import type { DraggableTag } from './DraggableTagSelector'
+
 export {
-  DraggableTagField
+  DraggableTagField,
+  DraggableTag
 }

@@ -3,17 +3,23 @@ import { useContext, useMemo } from 'react'
 import { Form, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                                       from '@acx-ui/components'
-import { Features }                                                                 from '@acx-ui/feature-toggle'
-import { NodesTabs, TypeForm, useIsEdgeFeatureReady }                               from '@acx-ui/rc/components'
-import { validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway } from '@acx-ui/rc/utils'
+import { useStepFormContext }     from '@acx-ui/components'
+import { Features }               from '@acx-ui/feature-toggle'
+import { NodesTabs, TypeForm }    from '@acx-ui/rc/components'
+import {
+  validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway,
+  useIsEdgeFeatureReady,
+  EdgePort, EdgeLag, SubInterface, EdgeSerialNumber, EdgePortInfo,
+  convertInterfaceDataToEdgePortInfo,
+  doEdgeNetworkInterfacesDryRun
+} from '@acx-ui/rc/utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
-import { SubInterfaceSettingsForm }   from '../SubInterfaceSettings/SubInterfaceSettingsForm'
+import { ClusterConfigWizardContext }                          from '../ClusterConfigWizardDataProvider'
+import { SubInterfaceSettingsForm }                            from '../SubInterfaceSettings/SubInterfaceSettingsForm'
+import { getAllPhysicalInterfaceData, getAllSubInterfaceData } from '../utils'
 
-import { StyledHiddenFormItem }              from './styledComponents'
-import { InterfaceSettingsFormType }         from './types'
-import { getAllInterfaceAsPortInfoFromForm } from './utils'
+import { StyledHiddenFormItem }      from './styledComponents'
+import { InterfaceSettingsFormType } from './types'
 
 export const SubInterfaceForm = () => {
   const { $t } = useIntl()
@@ -46,45 +52,63 @@ const SubInterfaceSettingView = () => {
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+  Form.useWatch('portSubInterfaces', form)
+  Form.useWatch('lagSubInterfaces', form)
 
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
-  Form.useWatch('portSubInterfaces', form)
-  Form.useWatch('lagSubInterfaces', form)
+
   // eslint-disable-next-line max-len
   const portSubInterfaceSettings = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
   // eslint-disable-next-line max-len
   const lagSubInterfaceSettings = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
-  const allInterface = getAllInterfaceAsPortInfoFromForm(form)
 
   const {
     allPortsData,
     allLagsData,
-    allSubInterfaceData
+    allSubInterfaceData,
+    allInterfaceMap
   } = useMemo(() => {
     // eslint-disable-next-line max-len
-    const allPortsData = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)).flat():[]
-    const allLagsData = lagSettings?.flatMap(lag => lag.lags) ?? []
+    const { ports: nodePortsMap, lags: nodeLagsMap } = getAllPhysicalInterfaceData(portSettings, lagSettings)
     // eslint-disable-next-line max-len
-    const allLagMemberIds = allLagsData.flatMap(lag => lag.lagMembers.map(member => member.portId))
-    const allPortSubInterfaceValues = portSubInterfaceSettings ?
-      Object.values(portSubInterfaceSettings)
-        .flatMap(subInterfaceData => Object.entries(subInterfaceData)
-          .flatMap(([portId, subInterfaces = []]) => {
-            return allLagMemberIds.includes(portId) ? [] : subInterfaces
-          })): []
-    const allLagSubInterfaceValues = lagSubInterfaceSettings ?
-      Object.values(lagSubInterfaceSettings)
-        .flatMap(subInterfaceData => Object.values(subInterfaceData))
-        .flat() : []
-    const allSubInterfaceData = allPortSubInterfaceValues.concat(allLagSubInterfaceValues)
+    const nodeSubInterfacesMap = getAllSubInterfaceData(portSubInterfaceSettings, lagSubInterfaceSettings)
+
+    const allPortsData: EdgePort[] = []
+    const allLagsData: EdgeLag[] = []
+    const allSubInterfaceData: SubInterface[] = []
+    const allInterfaceMap: Record<EdgeSerialNumber, EdgePortInfo[]> = {}
+
+    // loop each entries of nodePortsMap to concat their values into corresponding new array
+    Object.entries(nodePortsMap).forEach(([edgeId, ports]) => {
+      const {
+        ports: dryRunPorts,
+        lags: dryRunLags,
+        subInterfaces: dryRunSubInterfaces
+      // eslint-disable-next-line max-len
+      } = doEdgeNetworkInterfacesDryRun(nodeLagsMap[edgeId], ports, nodeSubInterfacesMap[edgeId], isEdgeCoreAccessSeparationReady)
+
+      allPortsData.push(...dryRunPorts)
+      allLagsData.push(...dryRunLags)
+      allSubInterfaceData.push(...dryRunSubInterfaces)
+
+      const {
+        ports: portsInfo,
+        lags: lagsInfo
+      } = convertInterfaceDataToEdgePortInfo(edgeId, dryRunLags, dryRunPorts)
+
+      allInterfaceMap[edgeId] = [...portsInfo, ...lagsInfo]
+    })
+
     return {
       allPortsData,
       allLagsData,
-      allSubInterfaceData
+      allSubInterfaceData,
+      allInterfaceMap
     }
   }, [portSettings, lagSettings, portSubInterfaceSettings, lagSubInterfaceSettings])
+
 
   return <>
     <StyledHiddenFormItem
@@ -119,8 +143,8 @@ const SubInterfaceSettingView = () => {
               ?.find(settings => settings.serialNumber === serialNumber)
               ?.ports ?? []
             }
-            portStatus={allInterface[serialNumber]?.filter(item => !item.isLag)}
-            lagStatus={allInterface[serialNumber]?.filter(item => item.isLag)}
+            portStatus={allInterfaceMap[serialNumber]?.filter(item => !item.isLag)}
+            lagStatus={allInterfaceMap[serialNumber]?.filter(item => item.isLag)}
             isSupportAccessPort={isSupportAccessPort}
             originalInterfaceData={{
               portSettings: originalPortData,

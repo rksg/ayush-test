@@ -1,7 +1,8 @@
-import { getAIAllowedOperations, opsApis } from './aiAllowedOperations'
-import { hasRoles }                        from './userProfile'
+import { RolesEnum as Role } from '@acx-ui/types'
 
-import type { UserProfile } from './types'
+import { getAIAllowedOperations, opsApis } from './aiAllowedOperations'
+import { UserProfile }                     from './types'
+import { hasRoles, Profile }               from './userProfile'
 
 jest.mock('./userProfile', () => ({
   ...jest.requireActual('./userProfile'),
@@ -9,8 +10,8 @@ jest.mock('./userProfile', () => ({
 }))
 
 const mockProfile = (scopes: string[] = []) => ({
-  scopes
-} as UserProfile)
+  profile: { scopes } as UserProfile
+} as Profile)
 
 describe('getAIAllowedOperations', () => {
   it('should allow all operations for PRIME_ADMIN and ADMINISTRATOR role', () => {
@@ -25,6 +26,16 @@ describe('getAIAllowedOperations', () => {
     const expectedUris = [
       opsApis.updateIncident,
       opsApis.updateIntentAI
+    ]
+    const result = getAIAllowedOperations(profile)
+    expect(result.flatMap(op => op.uri).sort()).toEqual(expectedUris.sort())
+  })
+
+  it('should allow operations based on user role', () => {
+    jest.mocked(hasRoles).mockImplementation((roles) => roles.includes(Role.READ_ONLY))
+    const profile = mockProfile(['brand360.dashboard-r'])
+    const expectedUris = [
+      opsApis.readBrand360Dashboard
     ]
     const result = getAIAllowedOperations(profile)
     expect(result.flatMap(op => op.uri).sort()).toEqual(expectedUris.sort())
@@ -75,7 +86,7 @@ describe('getAIAllowedOperations', () => {
 
   it('should not allow operations if the profile is undefined', () => {
     jest.mocked(hasRoles).mockReturnValue(false)
-    const result = getAIAllowedOperations(undefined)
+    const result = getAIAllowedOperations({} as Profile)
     expect(result.flatMap(op => op.uri)).toEqual([])
   })
 })

@@ -1,12 +1,8 @@
 import '@testing-library/jest-dom'
-import { useContext } from 'react'
 
-import userEvent                       from '@testing-library/user-event'
-import { rest }                        from 'msw'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { ConfigTemplateContext }                                 from '@acx-ui/rc/utils'
 import { Provider, rbacApiURL }                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor }        from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
@@ -14,7 +10,7 @@ import { AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/u
 
 import HspContext from '../../HspContext'
 
-import Layout, { LayoutWithConfigTemplateContext } from '.'
+import Layout from '.'
 
 
 
@@ -192,7 +188,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
 }))
 
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+jest.mocked(useIsSplitOn).mockImplementation(() => true)
 
 describe('Layout', () => {
   let params: { tenantId: string }
@@ -456,59 +452,4 @@ describe('Layout', () => {
 
     expect(await screen.findByText('My Customers')).toBeVisible()
   })
-
-  describe('LayoutWithConfigTemplateContext', () => {
-    const mockedSaveFn = jest.fn()
-
-    beforeEach(() => {
-      mockedSaveFn.mockClear()
-    })
-
-    it('should provide correct context values', async () => {
-      render(
-        <MemoryRouter initialEntries={['/']}>
-          <Routes>
-            <Route element={<LayoutWithConfigTemplateContext />}>
-              <Route
-                path='/'
-                element={
-                  <TestLayoutWithConfigTemplateContextConsumer
-                    mockedFn={mockedSaveFn}
-                    targetId='template123'
-                  />
-                }
-              />
-            </Route>
-          </Routes>
-        </MemoryRouter>
-      )
-
-      expect(screen.getByText('isTemplate: true')).toBeInTheDocument()
-      await userEvent.click(screen.getByRole('button'))
-      expect(mockedSaveFn).toHaveBeenCalledWith('template123')
-    })
-  })
 })
-
-
-// eslint-disable-next-line max-len
-export function TestLayoutWithConfigTemplateContextConsumer (props: { mockedFn: jest.Mock, targetId: string }) {
-  // eslint-disable-next-line max-len
-  const { isTemplate, setSaveEnforcementConfigFn, saveEnforcementConfig } = useContext(ConfigTemplateContext)
-
-  setSaveEnforcementConfigFn?.((templateId: string) => {
-    props.mockedFn(templateId)
-    return Promise.resolve()
-  })
-
-  const handleClick = async () => {
-    await (saveEnforcementConfig?.(props.targetId))
-  }
-
-  return (
-    <div>
-      <p>isTemplate: {isTemplate ? 'true' : 'false'}</p>
-      <button onClick={handleClick}>Trigger Save</button>
-    </div>
-  )
-}

@@ -5,10 +5,10 @@ import { findIndex, find }                                         from 'lodash'
 import { useIntl }                                                 from 'react-intl'
 import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext, Loader }                       from '@acx-ui/components'
-import { Features }                                                              from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                      from '@acx-ui/icons'
-import { SpaceWrapper, CompatibilityWarningTriangleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader, SpaceWrapper } from '@acx-ui/components'
+import { Features }                                                      from '@acx-ui/feature-toggle'
+import { InformationSolid }                                              from '@acx-ui/icons'
+import { CompatibilityWarningTriangleIcon }                              from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeFeatureSetsQuery,
@@ -19,7 +19,8 @@ import {
   useHelpPageLink,
   EdgeMvSdLanFormModel,
   ClusterHighAvailabilityModeEnum,
-  IncompatibilityFeatures } from '@acx-ui/rc/utils'
+  IncompatibilityFeatures,
+  useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 import { TenantLink }      from '@acx-ui/react-router-dom'
 import { compareVersions } from '@acx-ui/utils'
 

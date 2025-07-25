@@ -11,14 +11,14 @@ import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import type { Filter }                                                    from '@acx-ui/types'
+import type { Filter, TableColumn }                                       from '@acx-ui/types'
 import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
-import type { TableColumn, RecordWithChildren } from './types'
+import type { RecordWithChildren } from './types'
 
 
 export const MIN_SEARCH_LENGTH = 2

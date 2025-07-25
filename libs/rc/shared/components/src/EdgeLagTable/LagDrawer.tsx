@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { Form, Space }             from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, find, get } from 'lodash'
-import { useIntl }                 from 'react-intl'
+import { Form, Space }          from 'antd'
+import TextArea                 from 'antd/lib/input/TextArea'
+import { cloneDeep, find, get } from 'lodash'
+import { useIntl }              from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -24,7 +24,8 @@ import {
   isInterfaceInVRRPSetting,
   validateEdgeGateway,
   getMergedLagTableDataFromLagForm,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }                      from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -35,7 +36,7 @@ import { useIsEdgeFeatureReady }                       from '../useEdgeActions'
 import { LagMembersComponent } from './LagMembersComponent'
 
 interface LagDrawerProps {
-  clusterId: string
+  clusterInfo: EdgeClusterStatus
   serialNumber?: EdgeSerialNumber
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -47,7 +48,6 @@ interface LagDrawerProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
   originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
@@ -59,6 +59,7 @@ const defaultFormValues = {
   lacpTimeout: EdgeLagTimeoutEnum.SHORT,
   portType: EdgePortTypeEnum.WAN,
   corePortEnabled: false,
+  accessPortEnabled: false,
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
   lagEnabled: true,
@@ -69,11 +70,11 @@ const defaultFormValues = {
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
-    clusterId = '', serialNumber = '', visible, setVisible,
+    clusterInfo, serialNumber = '', visible, setVisible,
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo, isSupportAccessPort,
+    isSupportAccessPort,
     formFieldsProps, originalInterfaceData
   } = props
   const isEditMode = data?.id !== undefined
@@ -89,7 +90,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
     edgeSdLanData
-  } = useGetEdgeSdLanByClusterId(clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo.clusterId)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
@@ -114,10 +115,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
   useEffect(() => {
     if(visible) {
       form.resetFields()
-      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList)
+      // eslint-disable-next-line max-len
+      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList, isEdgeCoreAccessSeparationReady)
       const hasCorePortEnabled = !!corePortInfo.key
 
-      if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
+      if (hasCorePortEnabled) {
         form.setFieldsValue({
           ...defaultFormValues,
           portType: EdgePortTypeEnum.LAN,
@@ -387,6 +389,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
+            ipMode: {
+              // ONLY do ip mode sync checking when add new LAG
+              // cannot do this check on edit LAG because user may change ip mode, which will trigger this check in LAG table(across all LAGs)
+              rules: isDualWanEnabled && !isEditMode
+                ? [{ validator: () => edgeWanSyncIpModeValidator(portList, updatedLagList) }]
+                : []
+            },
             natStartIp: {
               rules: isClusterWizard && get(formFieldsProps, 'natStartIp')
                 ? [{ validator: natPoolClusterLevelValidator }]
@@ -440,9 +449,9 @@ export const LagDrawer = (props: LagDrawerProps) => {
 }
 
 const forceUpdateCondition = (prev:unknown, cur: unknown) => {
-  return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
-        || _.get(prev, 'portType') !== _.get(cur, 'portType')
-        || _.get(prev, 'lagMembers') !== _.get(cur, 'lagMembers')
-        || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
-        || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
+  return get(prev, 'corePortEnabled') !== get(cur, 'corePortEnabled')
+        || get(prev, 'portType') !== get(cur, 'portType')
+        || get(prev, 'lagMembers') !== get(cur, 'lagMembers')
+        || get(prev, 'lagEnabled') !== get(cur, 'lagEnabled')
+        || get(prev, 'ipMode') !== get(cur, 'ipMode')
 }

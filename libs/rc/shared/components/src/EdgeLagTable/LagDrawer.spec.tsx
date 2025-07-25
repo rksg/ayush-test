@@ -1,6 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features }   from '@acx-ui/feature-toggle'
 import {
@@ -31,7 +31,7 @@ const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const { click } = userEvent
-const mockEdgeCorePortPortConfig = _.cloneDeep(mockEdgePortConfig.ports)
+const mockEdgeCorePortPortConfig = cloneDeep(mockEdgePortConfig.ports)
 mockEdgeCorePortPortConfig.splice(0, 1)
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -91,6 +91,10 @@ describe('Edge LAG table drawer', () => {
     )
   })
 
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
+  })
+
   it('should correctly render', async () => {
     render(
       <Provider>
@@ -102,7 +106,9 @@ describe('Edge LAG table drawer', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await checkLoaded()
+    await checkEditLagLoaded()
+    const wanPortType = screen.getByRole('option', { name: 'WAN' })
+    expect(wanPortType).toBeDisabled()
   })
 
   it('should correctly reset core port enabled when the core port member unselected', async () => {
@@ -179,6 +185,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '0',
         ip: '1.2.3.4',
         ipMode: EdgeIpModeEnum.STATIC,
@@ -213,7 +220,8 @@ describe('Edge LAG table drawer', () => {
       {
         ...mockedEdgeLagList.content[1],
         gateway: '',
-        natEnabled: false
+        natEnabled: false,
+        accessPortEnabled: false
       })
     expect(setVisibleSpy).toHaveBeenCalledWith(false)
   })
@@ -266,9 +274,9 @@ describe('Edge LAG table drawer', () => {
   })
 
   it('different speed port should be disable when an port checked', async () => {
-    const mockEdgeLag = _.cloneDeep(mockedEdgeLagList.content[0])
+    const mockEdgeLag = cloneDeep(mockedEdgeLagList.content[0])
     mockEdgeLag.lagMembers = []
-    const mockEdgePortConfigDifferentMaxSpeed = _.cloneDeep(mockEdgePortConfig.ports)
+    const mockEdgePortConfigDifferentMaxSpeed = cloneDeep(mockEdgePortConfig.ports)
     mockEdgePortConfigDifferentMaxSpeed[0].maxSpeedCapa = 100.111
     mockEdgePortConfigDifferentMaxSpeed[1].maxSpeedCapa = 222.222
     render(
@@ -309,7 +317,7 @@ describe('Edge LAG table drawer', () => {
     // eslint-disable-next-line max-len
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
 
-    const mock2WanPorts = _.cloneDeep(mockEdgePortConfig.ports)
+    const mock2WanPorts = cloneDeep(mockEdgePortConfig.ports)
     mock2WanPorts[0].portType = EdgePortTypeEnum.WAN
 
     const setVisibleSpy = jest.fn()
@@ -353,6 +361,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '1',
         ip: '10.12.3.4',
         gateway: '10.12.3.127',
@@ -415,6 +424,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '2',
         ip: '12.12.12.11',
         ipMode: EdgeIpModeEnum.STATIC,
@@ -473,13 +483,92 @@ describe('Edge LAG table drawer', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('At least one port must be enabled and configured to WAN or Access port to form a cluster.')).toBeVisible()
   })
+
+  describe('when dual WAN enabled', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    })
+
+    const mockEdgeStaticWanPortConfig = cloneDeep(mockEdgePortConfig.ports)
+    mockEdgeStaticWanPortConfig.splice(1, 1)
+
+    it('In create mode, should validate if multi WAN have consistent IP mode', async () => {
+      render(
+        <Provider>
+          <LagDrawer
+            {...mockDefaultProps}
+            portList={mockEdgeStaticWanPortConfig as EdgePort[]}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await screen.findByText('Add LAG')
+      await userEvent.selectOptions(
+        screen.getByRole('combobox', { name: '' }),
+        '2'
+      )
+
+      expect(screen.getByRole('combobox', { name: 'Port Type' })).toHaveValue('WAN')
+
+      // select member
+      const port3 = screen.getByRole('checkbox', { name: 'Port3' })
+      await click(port3)
+
+      expect(screen.getByRole('radio', { name: 'DHCP' })).toBeChecked()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+      const error = await screen.findByRole('alert')
+      expect(error).toBeVisible()
+      expect(error).toHaveTextContent('IP modes must be consistent across all WAN interfaces.')
+    })
+
+
+    // eslint-disable-next-line max-len
+    it('In edit mode, should be able to change IP mode even it will be inconsistent IP mode', async () => {
+      const mockEdgeDhcpWanPortConfig = cloneDeep(mockEdgePortConfig.ports)
+      mockEdgeDhcpWanPortConfig.splice(1, 1)
+      mockEdgeDhcpWanPortConfig[0].ipMode = mockedEdgeLagList.content[0].ipMode
+
+      const mockOnEdit = jest.fn()
+      render(
+        <Provider>
+          <LagDrawer
+            {...mockDefaultProps}
+            data={mockedEdgeLagList.content[0] as EdgeLag}
+            portList={mockEdgeStaticWanPortConfig as EdgePort[]}
+            existedLagList={mockedEdgeLagList.content as EdgeLag[]}
+            onEdit={mockOnEdit}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkEditLagLoaded()
+
+      // change IP mode to static
+      const staticMode = await screen.findByRole('radio', { name: 'Static/Manual' })
+      await userEvent.click(staticMode)
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'IP Address' }),
+        '15.1.1.11'
+      )
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'Subnet Mask' }),
+        '255.255.255.0'
+      )
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'Gateway' }),
+        '15.1.1.127'
+      )
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      await waitFor(() => expect(mockOnEdit).toHaveBeenCalledTimes(1))
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+  })
 })
 
-const checkLoaded = async (): Promise<void> => {
+const checkEditLagLoaded = async (): Promise<void> => {
   await screen.findByText('Edit LAG')
   const portTypeSelect = screen.getByRole('combobox', { name: 'Port Type' })
-  const wanPortType = await screen.findByRole('option', { name: 'WAN' })
-  expect(wanPortType).toBeDisabled()
+  await screen.findByRole('option', { name: 'WAN' })
   expect(portTypeSelect).toHaveValue('WAN')
   const dhcp = await screen.findByRole('radio', { name: 'DHCP' })
   expect(dhcp).toBeChecked()

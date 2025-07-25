@@ -7,7 +7,6 @@ import { useParams }                                              from 'react-ro
 
 import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
 import { Features }                     from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
 import {
   useGetAvailableSwitchesQuery,
   useGetDhcpStatsQuery,
@@ -36,7 +35,8 @@ import {
   TunnelProfileViewData,
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
-  isDsaeOnboardingNetwork
+  isDsaeOnboardingNetwork,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 

@@ -12,13 +12,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   EdgeServiceStatusLight,
   CountAndNamesTooltip,
   useEdgePinsCompatibilityData,
-  EdgeTableCompatibilityWarningTooltip,
-  useIsEdgeFeatureReady
+  EdgeTableCompatibilityWarningTooltip
 } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
@@ -44,7 +43,8 @@ import {
   PolicyType,
   ServiceOperation,
   ServiceType,
-  VenueLink
+  VenueLink,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay, useTableQuery }                        from '@acx-ui/utils'
@@ -103,7 +103,6 @@ const PersonalIdentityNetworkTableEnhanced = () => {
   const settingsId = 'services-pin-table'
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
@@ -158,7 +157,7 @@ const PersonalIdentityNetworkTableEnhanced = () => {
 
   const { switchOptions } = useSwitchListQuery(
     { payload: switchDefaultPayload,
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, {
       selectFromResult: ({ data }) => ({
         switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name })) ?? []

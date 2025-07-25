@@ -3,7 +3,7 @@ import styled      from 'styled-components/macro'
 
 import { GridCol, GridRow, PageHeader }                                             from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
+import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount }      from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -26,15 +26,15 @@ import {
   ServiceOperation,
   ServiceType,
   useDhcpStateMap,
+  useIsEdgeFeatureReady,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { RadioCardCategory }          from '@acx-ui/types'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
-import { ServiceCard }                                                         from '../ServiceCard'
-import { AddProfileButton }                                                    from '../UnifiedServices/MyServices'
-import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
+import { ServiceCard }      from '../ServiceCard'
+import { AddProfileButton } from '../UnifiedServices/MyServices'
 
 const defaultPayload = {
   fields: ['id']
@@ -51,7 +51,6 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const dhcpStateMap = useDhcpStateMap()
@@ -82,9 +81,9 @@ export default function MyServices () {
     {
       type: ServiceType.MDNS_PROXY_CONSOLIDATION,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      totalCount: useMdnsProxyConsolidationTotalCount({
-        params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }, !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]).data?.totalCount,
+      totalCount: useMdnsProxyConsolidationTotalCount(
+        !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
+      ).data?.totalCount,
       disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
     },
     {
@@ -108,9 +107,9 @@ export default function MyServices () {
     {
       type: ServiceType.DHCP_CONSOLIDATION,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      totalCount: useDhcpConsolidationTotalCount({
-        params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }, !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]).data?.totalCount,
+      totalCount: useDhcpConsolidationTotalCount(
+        !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
+      ).data?.totalCount,
       disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
     },
     {
@@ -166,7 +165,7 @@ export default function MyServices () {
       totalCount: (useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
       }).data?.totalCount ?? 0) + (useWebAuthTemplateListQuery({
-        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+        params, payload: { ...defaultPayload }, enableRbac: true
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount ?? 0),
@@ -184,7 +183,7 @@ export default function MyServices () {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.EDGE],
       totalCount: useWebAuthTemplateListQuery({
-        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+        params, payload: { ...defaultPayload }, enableRbac: true
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount,

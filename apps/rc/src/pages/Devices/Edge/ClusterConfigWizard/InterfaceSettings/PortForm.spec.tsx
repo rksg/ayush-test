@@ -1,36 +1,40 @@
+/* eslint-disable max-len */
 import userEvent           from '@testing-library/user-event'
 import { Form }            from 'antd'
 import { cloneDeep, find } from 'lodash'
 
-import { StepsForm }                                   from '@acx-ui/components'
-import { Features }                                    from '@acx-ui/feature-toggle'
-import { EdgePortsGeneralBase, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { StepsForm }                                from '@acx-ui/components'
+import { Features }                                 from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase }                     from '@acx-ui/rc/components'
 import {
   EdgeClusterStatus, EdgeFormFieldsPropsType,
   EdgeGeneralFixtures, EdgePortConfigFixtures,
   EdgePortTypeEnum, EdgeSdLanFixtures,
-  EdgeMvSdLanViewData, EdgeStatus
+  EdgeMvSdLanViewData, EdgeStatus, EdgeIpModeEnum
 } from '@acx-ui/rc/utils'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockClusterConfigWizardData } from '../__tests__/fixtures'
-import { ClusterConfigWizardContext }  from '../ClusterConfigWizardDataProvider'
+import { mockClusterConfigWizardData, mockDualWanClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }                                      from '../ClusterConfigWizardDataProvider'
+import { transformFromApiToFormData }                                      from '../utils'
 
-import { PortForm }                   from './PortForm'
-import { transformFromApiToFormData } from './utils'
+import { PortForm } from './PortForm'
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedMvSdLanServiceDmz } = EdgeSdLanFixtures
-// eslint-disable-next-line max-len
 const mockedHaWizardNetworkSettings = transformFromApiToFormData(mockedHaNetworkSettings)
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  // eslint-disable-next-line max-len
-  EdgePortsGeneralBase: jest.fn().mockImplementation(() => <div data-testid='rc-EdgePortsGeneralBase'></div>),
-  useIsEdgeFeatureReady: jest.fn()
+  EdgePortsGeneralBase: jest.fn().mockImplementation(() => <div data-testid='rc-EdgePortsGeneralBase'></div>)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const defaultCxtData = {
@@ -48,6 +52,10 @@ describe('InterfaceSettings - PortForm', () => {
       clusterId: 'mocked_cluster_id',
       settingType: 'interface'
     }
+  })
+
+  afterEach(() => {
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
   })
 
   it('should correctly render', async () => {
@@ -148,21 +156,14 @@ describe('InterfaceSettings - PortForm', () => {
 
     expect(screen.getByText('Port General Settings')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    // eslint-disable-next-line max-len
     await screen.findByText('Each Edge at least one port must be enabled and configured to WAN or Core port to form a cluster.')
   })
 
   describe('Core Access', () => {
     beforeEach(() => {
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     })
 
-    afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
-    })
-
-    // eslint-disable-next-line max-len
     it('should not be blocked when node does not exist valid gateway setting when access port FF is on', async () => {
       const mockFinishFn = jest.fn()
       const mockNoWanPortData = cloneDeep(mockedHaWizardNetworkSettings)
@@ -187,13 +188,11 @@ describe('InterfaceSettings - PortForm', () => {
           </StepsForm>
         </ClusterConfigWizardContext.Provider>,
         {
-          // eslint-disable-next-line max-len
           route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
         })
 
       expect(screen.getByText('Port General Settings')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-      // eslint-disable-next-line max-len
       await waitFor(() => expect(mockFinishFn).toBeCalledTimes(1))
     })
   })
@@ -209,12 +208,8 @@ describe('InterfaceSettings - PortForm', () => {
     }
 
     beforeEach(() => {
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
       jest.mocked(EdgePortsGeneralBase).mockImplementation((props) => <MockComponent {...props}/>)
-    })
-    afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
     })
 
     const mockNatPoolOverlapData = cloneDeep(mockClusterConfigWizardData)
@@ -224,12 +219,10 @@ describe('InterfaceSettings - PortForm', () => {
     // mock 2 ports in diff node pool overlapped
     mockNatPoolOverlapData.portSettings[node1Sn].port1[0].portType = EdgePortTypeEnum.WAN
     mockNatPoolOverlapData.portSettings[node1Sn].port1[0].natEnabled = true
-    // eslint-disable-next-line max-len
     mockNatPoolOverlapData.portSettings[node1Sn].port1[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
 
     mockNatPoolOverlapData.portSettings[node2Sn].port1[0].portType = EdgePortTypeEnum.WAN
     mockNatPoolOverlapData.portSettings[node2Sn].port1[0].natEnabled = true
-    // eslint-disable-next-line max-len
     mockNatPoolOverlapData.portSettings[node2Sn].port1[0].natPools = [{ startIpAddress: '1.1.1.10', endIpAddress: '1.1.1.20' }]
 
     it('should validate if NAT pool overlap between edges', async () => {
@@ -242,7 +235,6 @@ describe('InterfaceSettings - PortForm', () => {
           </StepsForm>
         </ClusterConfigWizardContext.Provider>,
         {
-          // eslint-disable-next-line max-len
           route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
         })
 
@@ -254,8 +246,49 @@ describe('InterfaceSettings - PortForm', () => {
       const edge1Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node1Sn })?.name
       const edge2Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node2Sn })?.name
 
-      // eslint-disable-next-line max-len
       expect(error).toHaveTextContent(`NAT pool ranges on ${edge1Name} overlap with those on ${edge2Name}`)
+    })
+  })
+
+  describe('when dual WAN enabled', () => {
+
+    const MockIpModeComponent = ({ formFieldsProps }: { formFieldsProps?: EdgeFormFieldsPropsType }) => {
+      return <Form.Item
+        data-testid='port-table'
+        name='test-multi-wan-ip-mode'
+        {...formFieldsProps?.ipMode}
+        children={<span></span>}
+      />
+    }
+
+    beforeEach(() => {
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      jest.mocked(EdgePortsGeneralBase).mockImplementation((props) => <MockIpModeComponent {...props}/>)
+    })
+
+    it('should validate if multi WAN have consistent IP mode', async () => {
+      const mockDiffIpModeWansData = cloneDeep(mockDualWanClusterConfigWizardData)
+      const node1Sn = mockedHaNetworkSettings.portSettings[0].serialNumber
+      mockDiffIpModeWansData.portSettings[node1Sn].port1[0].ipMode = EdgeIpModeEnum.STATIC
+
+      render(
+        <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+          <StepsForm initialValues={mockDiffIpModeWansData}>
+            <StepsForm.StepForm>
+              <PortForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(screen.getByText('Port General Settings')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+      const error = await screen.findByRole('alert')
+      expect(error).toBeVisible()
+      expect(error).toHaveTextContent('IP modes must be consistent across all WAN interfaces.')
     })
   })
 })

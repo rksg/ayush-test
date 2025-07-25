@@ -23,12 +23,12 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }                                 from '@acx-ui/msp/utils'
-import { getConfigTemplatePath, hasConfigTemplateAccess }  from '@acx-ui/rc/utils'
-import { TenantType }                                      from '@acx-ui/react-router-dom'
-import { RolesEnum }                                       from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles  } from '@acx-ui/user'
-import { AccountType, getOpsApi  }                         from '@acx-ui/utils'
+import { MspRbacUrlsInfo }                                                           from '@acx-ui/msp/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess }                            from '@acx-ui/rc/utils'
+import { TenantType }                                                                from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                 from '@acx-ui/types'
+import { aiOpsApis, getUserProfile, hasAllowedOperations, hasPermission, hasRoles  } from '@acx-ui/user'
+import { AccountType, getOpsApi  }                                                   from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -38,7 +38,10 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])

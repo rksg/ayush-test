@@ -82,6 +82,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       filterKey: workflowValidationEnhancementFFToggle ? 'status' : undefined,
       filterable:
         workflowValidationEnhancementFFToggle ? publicationStatusFilterOptions : undefined,
+      filterMultiple: false,
       render: (_, row) => $t({ defaultMessage: `{
         status, select,
         PUBLISHED {Published}
@@ -102,14 +103,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       sorter: false,
       render: (_: React.ReactNode, row: Workflow) => {
         return workflowMap.get(row.id!)?.publishedDetails?.version
-          ? <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.WORKFLOW,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!!,
-              activeTab: WorkflowDetailsTabKey.OVERVIEW
-            })}
-          >{workflowMap.get(row.id!)?.publishedDetails?.version}</TenantLink>
+          ? workflowMap.get(row.id!)?.publishedDetails?.version
           : noDataDisplay
       }
     },
@@ -122,12 +116,11 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       width: 50,
       filterKey: 'validationStatus',
       filterable: publishReadinessFilterOptions,
+      filterMultiple: false,
       render: (node: React.ReactNode, record:Workflow) => {
         return {
           props: {
             style: {
-              background: record?.statusReasons && record.statusReasons.length > 0
-                ? 'var(--acx-semantics-red-10)' : '',
               padding: '0px'
             }
           },
@@ -162,9 +155,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
 export default function WorkflowTable () {
   const { $t } = useIntl()
   const [workflowMap, setWorkflowMap] = useState(new Map<string, Workflow>())
-  const [deleteWorkflows,
-    { isLoading: isDeleteWorkflowing }
-  ] = useDeleteWorkflowsMutation()
+  const [deleteWorkflows, { isLoading: isDeleteWorkflowLoading }] = useDeleteWorkflowsMutation()
   const [cloneWorkflow] = useCloneWorkflowMutation()
   const [getWorkflowStepsById]= useLazyGetWorkflowStepsByIdQuery()
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
@@ -179,11 +170,14 @@ export default function WorkflowTable () {
     defaultPayload: {},
     pagination: { settingsId }
   })
+  const [versionMapLoading, setVersionMapLoading] = useState<boolean>(false)
+
 
   const isWorkflowTemplateEnable = useIsSplitOn(Features.WORKFLOW_TEMPLATE_TOGGLE)
 
   const fetchVersionHistory = async (workflows: Workflow[]) => {
     try {
+      setVersionMapLoading(true)
       const result = await searchVersionedWorkflows(
         { params: { excludeContent: 'false' }, payload: workflows.map(workflow => workflow.id) }
       ).unwrap()
@@ -194,7 +188,10 @@ export default function WorkflowTable () {
           }
         })
       }
-    } catch (e) {}
+      setVersionMapLoading(false)
+    } catch (e) {
+      setVersionMapLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -335,7 +332,8 @@ export default function WorkflowTable () {
     <Loader
       states={[
         tableQuery,
-        { isLoading: false, isFetching: isDeleteWorkflowing }
+        { isLoading: false, isFetching: isDeleteWorkflowLoading },
+        { isLoading: false, isFetching: versionMapLoading }
       ]}
     >
       <PageHeader

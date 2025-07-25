@@ -5,7 +5,6 @@ import { useIntl }                    from 'react-intl'
 
 import { StepsForm, useStepFormContext }        from '@acx-ui/components'
 import { Features }                             from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanFormModel,
@@ -13,6 +12,7 @@ import {
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
+  useIsEdgeFeatureReady,
   NetworkSegmentTypeEnum
 } from '@acx-ui/rc/utils'
 

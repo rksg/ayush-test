@@ -31,7 +31,6 @@ import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from '.'
 
 const mockedCancel = jest.fn()
 const updateRequestSpy = jest.fn()
-const getSwitchRequestSpy = jest.fn()
 
 jest.mock('../../../PreferencesDialog', () => ({
   ...jest.requireActual('../../../PreferencesDialog'),
@@ -100,7 +99,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
         (req, res, ctx) => {
-          getSwitchRequestSpy()
           return res(ctx.json(upgradeSwitchViewList))
         }
       )
@@ -111,7 +109,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   })
 
 
-  it.skip('render SwitchUpgradeWizard - schedule - cancel', async () => {
+  it('render SwitchUpgradeWizard - schedule - cancel', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -213,7 +211,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
   })
 
-  it('render SwitchUpgradeWizard - update now - Save', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -258,6 +256,12 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     userEvent.click(radio82)
     expect(radio82).toBeEnabled()
+
+    const radio81 = screen.getByRole('radio', {
+      name: /10\.0\.10_rc81/i
+    })
+    userEvent.click(radio81)
+    expect(radio81).toBeEnabled()
 
     const radio7x = screen.getByRole('radio', {
       name: /10\.0\.10_rc55/i

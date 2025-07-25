@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
-import type { TableHighlightFnArgs }                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader, Button } from '@acx-ui/components'
+import type { TableHighlightFnArgs }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useGetSwitchClientListQuery,
@@ -22,7 +22,8 @@ import {
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                     from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }              from '@acx-ui/types'
+import type { ColumnType, RequestPayload }           from '@acx-ui/types'
+import { SwitchScopes }                              from '@acx-ui/types'
 import { hasPermission }                             from '@acx-ui/user'
 import { getOpsApi, useTrackLoadTime, widgetsMapping,
   usePollingTableQuery, FILTER, SEARCH, TableQuery } from '@acx-ui/utils'

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Typography } from 'antd'
 
-import { Drawer, Loader }             from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Drawer, Loader, SpaceWrapper } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   EdgePinUrls,
   getServiceDetailsLink,
@@ -17,9 +17,7 @@ import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import { SpaceWrapper }                                                                                from '../SpaceWrapper'
 import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
-
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
 import { messageMappings }                                from './messageMappings'
@@ -38,6 +36,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     cachedActs, cachedSoftGre
   } = props
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeSdLanSelectionDrawerReady = useIsEdgeFeatureReady(Features.EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
@@ -61,7 +61,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
   const {
     tunnelType: tunnelTypeInitVal,
-    venueSdLanInfo,
+    venueSdLanInfo: initialVenueSdLanInfo,
     networkVlanPool,
     venuePinInfo,
     isLoading
@@ -73,17 +73,22 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
+      const venueSdLan = formValues.sdLan?.newProfileId && isEdgeSdLanSelectionDrawerReady
+        ? formValues.sdLan.newProfile
+        : initialVenueSdLanInfo
 
-      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
+      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }
   }
 
+  const isSdLanConfigurable = isEdgeSdLanSelectionDrawerReady ? true : !!initialVenueSdLanInfo
+
   // If network is captive portal, SD-LAN should be selected by default and unchangeable
   // due to SoftGRE is not supported on captive portal
-  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && !!venueSdLanInfo
+  const shouldSdLanBeSelectedByDefault = hiddenSoftGre && isSdLanConfigurable
 
   useEffect(() => {
     const isTunnelTypeTouched = form.isFieldTouched('tunnelType')
@@ -95,7 +100,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
       form.setFieldValue('tunnelType',
         tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? defaultTunnelType : tunnelTypeInitVal)
     }
-  }, [visible, tunnelTypeInitVal, venueSdLanInfo])
+  }, [visible, tunnelTypeInitVal, initialVenueSdLanInfo])
 
   const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
@@ -158,7 +163,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               <Select.Option
                 data-testid='sd-lan-option'
                 value={NetworkTunnelTypeEnum.SdLan}
-                disabled={!hasEdgeSdLanPermission || isPinNetwork || !!!venueSdLanInfo}>
+                disabled={!hasEdgeSdLanPermission || isPinNetwork || !isSdLanConfigurable}>
                 <Tooltip
                   title={isPinNetwork
                     ? $t(messageMappings.disable_pin_network)
@@ -191,7 +196,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             networkId={networkId!}
             networkVenueId={networkVenueId!}
             networkType={networkType!}
-            venueSdLan={venueSdLanInfo}
+            venueSdLan={initialVenueSdLanInfo}
             networkVlanPool={networkVlanPool}
             disabledInfo={(!hasEdgeSdLanPermission || isPinNetwork)
               ? {

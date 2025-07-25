@@ -21,7 +21,8 @@ import {
   getEdgePortIpModeString,
   isInterfaceInVRRPSetting,
   sortProp,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  EdgeIpModeEnum
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -37,19 +38,19 @@ interface EdgeLagTableType extends EdgeLag {
 }
 
 interface EdgeLagTableProps {
-  clusterId?: string
-  serialNumber?: EdgeSerialNumber
-  lagList?: EdgeLag[]
-  lagStatusList?: EdgeLagStatus[]
-  portList?: EdgePort[]
-  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  serialNumber: EdgeSerialNumber | undefined
+  lagList: EdgeLag[] | undefined
+  portList: EdgePort[] | undefined
+  clusterInfo: EdgeClusterStatus
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
+
+  lagStatusList?: EdgeLagStatus[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   actionScopes?: { [key in string]: ScopeKeys }
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
   formFieldsProps?: EdgeFormFieldsPropsType
   originalInterfaceData?: EdgePortCommonFormProps['originalInterfaceData']
@@ -57,7 +58,7 @@ interface EdgeLagTableProps {
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    clusterId = '', serialNumber = '', lagList,
+    serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
@@ -136,13 +137,15 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: { compare: sortProp('ip', defaultSort) }
+      sorter: { compare: sortProp('ip', defaultSort) },
+      render: (_data, { ipMode }) => ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
       dataIndex: 'subnet',
-      sorter: { compare: sortProp('subnet', defaultSort) }
+      sorter: { compare: sortProp('subnet', defaultSort) },
+      render: (_data, { ipMode }) => ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
@@ -285,7 +288,6 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         rowKey='id'
       />
       <LagDrawer
-        clusterId={clusterId}
         serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}

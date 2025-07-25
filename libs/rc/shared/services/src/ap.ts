@@ -20,6 +20,7 @@ import {
   ApIot,
   ApIotController,
   ApClientAdmissionControl,
+  ApGroupClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
   ApDetails,
@@ -52,13 +53,11 @@ import {
   GetApiVersionHeader,
   GetUploadFormDataApiVersionHeader,
   ImportErrorRes,
-  MdnsProxyUrls,
   MeshUplinkAp,
   NewAPExtendedGrouped,
   NewAPModel,
   NewAPModelExtended,
   NewDhcpAp,
-  NewMdnsProxyData,
   NewPacketCaptureState,
   PacketCaptureOperationResponse,
   PacketCaptureState,
@@ -99,7 +98,8 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork,
+  ApJwtToken
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -464,19 +464,6 @@ export const apApi = baseApApi.injectEndpoints({
         if(apData) {
           apData.serialNumber = params?.serialNumber ?? ''
           apData.venueId = params?.venueId ?? ''
-          const mDnsProxyPayload = {
-            fields: ['name', 'activations', 'rules', 'id'],
-            filters: {
-              'activations.apSerialNumbers': [params?.serialNumber]
-            }
-          }
-          const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
-          const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
-          const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
-          const targetMdnsData = mDnsProxyList?.[0]
-          if (targetMdnsData) {
-            apData.multicastDnsProxyServiceProfileId = targetMdnsData.id
-          }
         }
         return { data: apData }
       },
@@ -486,9 +473,7 @@ export const apApi = baseApApi.injectEndpoints({
           const activities = [
             'UpdateAp',
             'UpdateApCustomization',
-            'ResetApCustomization',
-            'ActivateMulticastDnsProxyProfile',
-            'DeactivateMulticastDnsProxyProfile'
+            'ResetApCustomization'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
@@ -1909,13 +1894,12 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     downloadApsCSV: build.mutation<Blob, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        if(customHeaders) {
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        if (customHeaders) {
           customHeaders.Accept = 'text/vnd.ruckus.v1+csv'
         }
-        const req = createHttpRequest(urlsInfo.downloadApsCSV, params, customHeaders)
+        const req = createHttpRequest(CommonRbacUrlsInfo.downloadApsCSV, params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload),
@@ -2029,6 +2013,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     }),
+    getApGroupClientAdmissionControl: build.query<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings, params)
+      },
+      providesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
+    updateApGroupClientAdmissionControl: build.mutation<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApGroupClientAdmissionControlSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
     getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2127,6 +2127,19 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    getApJwtToken: build.query<ApJwtToken, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApJwtToken, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApJwtToken' }]
     })
   })
 })
@@ -2145,6 +2158,7 @@ export const {
   useGetApQuery,
   useGetApOperationalQuery,
   useLazyGetApQuery,
+  useLazyGetApJwtTokenQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListByVenueQuery,
@@ -2248,6 +2262,8 @@ export const {
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
+  useGetApGroupClientAdmissionControlQuery,
+  useUpdateApGroupClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,

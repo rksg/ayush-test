@@ -74,7 +74,8 @@ import {
   VenueDefaultRegulatoryChannels,
   useConfigTemplate,
   ScanMethodEnum,
-  useSupportedApModelTooltip
+  useSupportedApModelTooltip,
+  Channel50Enum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -95,9 +96,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { isAllowEdit=true } = props
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
   const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
@@ -204,7 +203,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       [ApRadioTypeEnum.RadioUpper5G]: supportChUpper5g
     }
 
-    const radio6GBandwidth = supportWifi7_320MHz
+    const radio6GBandwidth = ap70BetaFlag
       ? channelBandwidth6GOptions
       : dropRight(channelBandwidth6GOptions)
 
@@ -223,7 +222,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       bandwidthRadioOptions,
       isSupport6GCountry
     }
-  }, [supportChannelsData, supportWifi7_320MHz])
+  }, [supportChannelsData, ap70BetaFlag])
 
 
   const afcProps = useMemo(() => {
@@ -441,7 +440,57 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
+  const filterChannelsByRange = (
+    channels: Channel50Enum[] | undefined,
+    minChannel: number,
+    maxChannel?: number
+  ): string[] => {
+    if (!channels) return []
+    const filteredChannels = channels
+      .map(Number)
+      .filter(n => maxChannel ? (n >= minChannel && n < maxChannel) : n >= minChannel)
+    return filteredChannels.map(n => n.toString())
+  }
+
+  const correctedLowerChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
+    return filterChannelsByRange(channelFrom5G, 0, 100)
+  }
+
+  const correctedUpperChannels = (channelFrom5G: Channel50Enum[] | undefined) => {
+    return filterChannelsByRange(channelFrom5G, 100)
+  }
+
+  const syncLower5G = (needSync: boolean) => {
+    if (!needSync) return
+
+    const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
+    if (radioData) {
+      const radio5GData = radioData.radioParams50G
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G'], {
+        ...radio5GData,
+        allowedIndoorChannels: correctedLowerChannels(radio5GData.allowedIndoorChannels || radioData.radioParamsDual5G?.radioParamsLower5G?.allowedIndoorChannels),
+        allowedOutdoorChannels: correctedLowerChannels(radio5GData.allowedOutdoorChannels || radioData.radioParamsDual5G?.radioParamsLower5G?.allowedOutdoorChannels)
+      })
+    }
+  }
+
+  const syncUpper5G = (needSync: boolean) => {
+    if (!needSync) return
+
+    const radioData = formRef.current?.getFieldsValue() as VenueRadioCustomization
+    if (radioData) {
+      const radio5GData = radioData.radioParams50G
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G'], {
+        ...radio5GData,
+        allowedIndoorChannels: correctedUpperChannels(radio5GData.allowedIndoorChannels),
+        allowedOutdoorChannels: correctedUpperChannels(radio5GData.allowedOutdoorChannels)
+      })
+    }
+  }
+
   const onTabChange = (tab: string) => {
+    if (tab === 'Lower5GHz') syncLower5G(isLower5gInherit)
+    if (tab === 'Upper5GHz') syncUpper5G(isUpper5gInherit)
     setCurrentTab(tab)
   }
 
@@ -454,10 +503,12 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
 
   const onLower5gTypeChange = (e: RadioChangeEvent) => {
     setIsLower5gInherit(e.target.value)
+    syncLower5G(e.target.value)
   }
 
   const onUpper5gTypeChange = (e: RadioChangeEvent) => {
     setIsUpper5gInherit(e.target.value)
+    syncUpper5G(e.target.value)
   }
 
   const update5gData = (formData: VenueRadioCustomization) => {

@@ -17,7 +17,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { switchVenueV1002 }    from '../../../__tests__/fixtures'
+import { switchFirmwareList, switchVenueV1002 } from '../../../__tests__/fixtures'
 import {
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
@@ -49,7 +49,7 @@ describe('ScheduleStep', () => {
       ),
       rest.post(
         FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json(switchFirmwareList))
       ))
   })
 
@@ -142,4 +142,34 @@ describe('ScheduleStep', () => {
     jest.useRealTimers()
   })
 
+  it('render UpdateNowStep - 7150-C08P note visible', async () => {
+    render(
+      <Provider>
+        <Form>
+          <ScheduleStep
+            setShowSubTitle={jest.fn()}
+            visible={true}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
+            hasVenue={true}
+            // eslint-disable-next-line max-len
+            upgradeVenueList={switchVenueV1002.filter(v => v.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]}
+            upgradeSwitchList={[]}
+            data={switchVenueV1002 as FirmwareSwitchVenueV1002[]}
+          />
+        </Form>
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const form = screen.getByTestId('schedule-step')
+    expect(within(form)
+      .getByText(/Firmware available for ICX 7150 Series/i)).toBeInTheDocument()
+
+    const icx71Radio10010grc2 = within(form).getByRole('radio', {
+      name: /10.0.10g_rc2/i
+    })
+    await userEvent.click(icx71Radio10010grc2)
+    expect(icx71Radio10010grc2).toBeEnabled()
+  })
 })

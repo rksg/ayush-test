@@ -2,7 +2,6 @@
 import { rest } from 'msw'
 
 import { Features }                                             from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                from '@acx-ui/rc/components'
 import { edgeApi }                                              from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                      from '@acx-ui/store'
@@ -29,9 +28,10 @@ jest.mock('@acx-ui/rc/services', () => ({
     unwrap: async () => mockedPatchApi()
   })])
 }))
-jest.mock('libs/rc/shared/components/src/useEdgeActions', () => ({
-  ...jest.requireActual('libs/rc/shared/components/src/useEdgeActions'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 describe('Edit Edge Cluster - HaSettings', () => {
@@ -51,11 +51,11 @@ describe('Edit Edge Cluster - HaSettings', () => {
       )
     )
 
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
   })
 
   it('should render EdgeHaSettingsForm correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+    mockUseIsEdgeFeatureReady.mockImplementation(ff =>
       ff === Features.EDGE_HA_AA_FALLBACK_TOGGLE)
 
     render(

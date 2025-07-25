@@ -9,7 +9,6 @@ import {
   Drawer,
   Loader,
   Table,
-  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
@@ -21,7 +20,9 @@ import {
   MSPUtils,
   MspRecCustomer
 } from '@acx-ui/msp/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }        from '@acx-ui/react-router-dom'
+import type { TableColumn } from '@acx-ui/types'
+import { noDataDisplay }    from '@acx-ui/utils'
 
 interface SelectRecCustomerDrawerProps {
   visible: boolean
@@ -109,7 +110,10 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       key: 'propertyCode',
       sorter: { compare: sortProp('propertyCode', defaultSort) },
       searchable: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
+        return row.propertyCode ? row.propertyCode : noDataDisplay
+      }
     }])
   const columns: TableProps<MspRecCustomer>['columns'] = [
     {

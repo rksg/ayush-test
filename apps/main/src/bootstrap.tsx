@@ -94,6 +94,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
+        userProfile.isFeatureFlagsLoading ||
         (rbacOpsApiEnabled ? !Boolean(userProfile.allowedOperations.length) : false) ||
         !Boolean(userProfile.accountTier)
     }]}

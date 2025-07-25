@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features }                                                                         from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                            from '@acx-ui/rc/components'
 import { EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeSubInterface, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                         from '@acx-ui/store'
 import {
@@ -36,8 +35,18 @@ jest.mock('@acx-ui/utils', () => {
 })
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn()
+  EdgeCompatibilityDrawer: () => <div data-testid='rc-EdgeCompatibilityDrawer' />,
+  ApCompatibilityToolTip: () => <div data-testid='rc-ApCompatibilityToolTip' />,
+  EdgeCompatibilityType: {
+    DEVICE: 'Device',
+    VENUE: 'Venue'
+  }
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const mockedPortsConfig = mockEdgePortConfig.ports[0]
@@ -218,11 +227,11 @@ describe('EditEdge ports - sub-interface', () => {
   describe('Core Access', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     })
 
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should show core port and access port fields when FF is on', async () => {

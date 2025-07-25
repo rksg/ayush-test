@@ -18,7 +18,6 @@ import {
   IncompatibilityFeatures,
   SubInterface,
   edgePortIpValidator,
-  edgeWanSyncIpModeValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
   interfaceSubnetValidator,
@@ -79,7 +78,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
-  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {
@@ -126,9 +124,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     return !hasPortSetting && !hasLagSetting
   }, [originalInterfaceData])
 
-  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList)
+  // eslint-disable-next-line max-len
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList, isEdgeCoreAccessSeparationReady)
   const hasCorePortEnabled = !!corePortInfo.key
-  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList)
+  // eslint-disable-next-line max-len
+  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList, isEdgeCoreAccessSeparationReady)
   const hasAccessPortEnabled = !!accessPortInfo.key
   const existingLagMember = lagData?.flatMap(lag => lag.lagMembers
     ?.map(member => member?.portId)) ?? []
@@ -145,7 +145,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
   const hasWANPort = wanPortsInfo.length > 0
 
-  const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+  const hasCorePortLimitation = hasCorePortEnabled
   const hasCorePortOnOthers = hasCorePortEnabled && !corePortEnabled
   const hasAccessPortOnOthers = hasAccessPortEnabled && !accessPortEnabled
 
@@ -187,12 +187,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
+            {..._.omit(_.get(formFieldsProps, 'ipMode'), 'rules')}
             rules={[
               { required: true },
-              // eslint-disable-next-line max-len
-              ...(isEdgeDualWanEnabled ? [{ validator: () => edgeWanSyncIpModeValidator(portsData, lagData ?? []) }] : [])
+              ...(_.get(formFieldsProps, 'ipMode.rules') as FormItemProps['rules'] ?? [])
             ]}
-            {..._.get(formFieldsProps, 'ipMode')}
             children={
               <Radio.Group>
                 <Space direction='vertical'>
@@ -326,6 +325,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       {({ getFieldValue }) => {
         const _portType = getFieldValue(getFieldFullPath('portType'))
         const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
+        // console.log( hasWANPort,
+        //   isEdgeSdLanRun,
+        //   isNewNode,
+        //   hasCorePortOnOthers,
+        //   hasCorePortEnabled)
 
         return (
           _portType === EdgePortTypeEnum.LAN ||
@@ -393,14 +397,12 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     {..._.get(formFieldsProps, 'corePortEnabled')}
                   >
                     <Checkbox
-                      disabled={!corePortInfo.isExistingCorePortInLagMember
-                        && (
-                          (hasWANPort && !corePortEnabled)
+                      disabled={
+                        (hasWANPort && !corePortEnabled)
                           || (isEdgeSdLanRun
                             ? hasCorePortEnabled
                             // eslint-disable-next-line max-len
                             : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
-                        )
                       }
                     >
                       {

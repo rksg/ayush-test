@@ -40,6 +40,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   showValue: boolean,
+  labelFormat: 'name' | 'name-bold-value',
   legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
@@ -50,6 +51,7 @@ const defaultProps: DonutChartOptionalProps = {
   showLabel: false,
   showTotal: true,
   showValue: false,
+  labelFormat: 'name',
   legend: 'value',
   size: 'small'
 }
@@ -85,6 +87,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
+  legendFormatter?: (name: string) => string
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -292,11 +295,11 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: props.size === 'x-large' ? '55%' : '60%',
+      left: props.legendFormatter ? '50%' : props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: !!props.onLegendClick,
-      itemGap: props.size === 'x-large'? 16 : 4,
+      itemGap: props.legendFormatter ? 8 : props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
@@ -316,9 +319,9 @@ export function DonutChart ({
       itemStyle: {
         borderWidth: 0
       },
-      formatter: name => {
+      formatter: props.legendFormatter || (name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
-        switch(props.legend) {
+        switch (props.legend) {
           case 'name': return `{legendNormal|${name}}`
           case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
           case 'name-bold-value':
@@ -327,7 +330,7 @@ export function DonutChart ({
           default:
             return `{legendNormal|${dataFormatter(value)}}`
         }
-      }
+      })
     },
     color: colors[0] ? colors : qualitativeColorSet(),
     series: [
@@ -342,8 +345,20 @@ export function DonutChart ({
         label: {
           show: props.showLabel,
           ...styles.label,
+          rich: {
+            bold: {
+              ...styles.label,
+              fontWeight: cssNumber('--acx-body-font-weight-bold')
+            }
+          },
           formatter: (params) => {
-            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+            switch (props.labelFormat) {
+              case 'name-bold-value':
+                return `${params.name} {bold|${dataFormatter(params.value)}}`
+              case 'name': //fallthrough
+              default:
+                return props.showValue ? `${dataFormatter(params.value)}` : params.name
+            }
           }
         },
         tooltip: {
