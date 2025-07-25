@@ -22,7 +22,7 @@ import {
   preference,
   switchReleaseV1002,
   upgradeSwitchViewList
-} from '../__test__/fixtures'
+} from '../__tests__/fixtures'
 
 import { SwitchScheduleDrawer } from '.'
 

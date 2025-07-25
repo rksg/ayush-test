@@ -23,7 +23,7 @@ import {
   preference,
   switchReleaseV1002,
   switchUpgradeStatusDetails_KittoVenue1
-} from '../__test__/fixtures'
+} from '../__tests__/fixtures'
 
 const retryRequestSpy = jest.fn()
 
