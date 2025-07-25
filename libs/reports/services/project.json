@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/reports/services/src",
   "projectType": "library",
-  "tags": ["acx-lib"],
+  "tags": ["acx-lib", "type:services"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
