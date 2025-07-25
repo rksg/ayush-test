@@ -159,7 +159,7 @@ export function DetailsItemList (
         )) : noDataDisplay}
       </Space>
     </Loader>
-    {showMore &&
+    {showMore && showMoreCallback &&
       <Button
         type='link'
         size='small'
