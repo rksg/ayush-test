@@ -1,11 +1,9 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr, StackedBarChart } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
-
-import { SpaceWrapper } from '../SpaceWrapper'
+import { cssStr, StackedBarChart, SpaceWrapper } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { EntitlementDeviceType }                 from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponent'
 
