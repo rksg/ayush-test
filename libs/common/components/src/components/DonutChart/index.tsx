@@ -379,7 +379,7 @@ export function DonutChart ({
         },
         labelLine: {
           show: props.showLabel,
-          length: isSmall ? props.showLegend ? 5 : 10 : 15,
+          length: isSmall ? 10 : 15,
           length2: isSmall ? 5 : 10
         },
         itemStyle: {
