@@ -1,23 +1,15 @@
-import { message } from 'antd'
-import moment      from 'moment-timezone'
+import moment from 'moment-timezone'
 
-import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { BrowserRouter } from '@acx-ui/react-router-dom'
 import {
-  act,
   screen,
   renderHook,
-  render,
-  waitForElementToBeRemoved
+  render
 } from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
 import { fixedEncodeURIComponent }                                   from './encodeURIComponent'
-
-
-
-import { showToast } from '.'
-
 
 
 const original = Date.now
@@ -184,28 +176,4 @@ describe('getDateRangeFilter', () => {
       range: 'Custom'
     })
   })
-})
-
-describe('Toast', () => {
-  afterEach((done) => {
-    const toast = screen.queryByRole('img')
-    if (toast) {
-      waitForElementToBeRemoved(toast).then(done)
-      message.destroy()
-    } else {
-      done()
-    }
-  })
-
-  it('renders content success', async () => {
-    act(() => {
-      showToast({
-        type: 'success',
-        key: 'test',
-        content: 'This is a toast'
-      })
-    })
-    expect(await screen.findByText('This is a toast')).toBeInTheDocument()
-  })
-
 })
