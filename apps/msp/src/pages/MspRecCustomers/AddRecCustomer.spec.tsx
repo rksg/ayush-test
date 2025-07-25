@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                                                                                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, PrivilegeGroup }                                                             from '@acx-ui/rc/utils'
 import { Provider }                                                                                           from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor }                                                     from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                          from '@acx-ui/types'
+import type { ToastProps }                                                                                    from '@acx-ui/utils'
 
 import { AddRecCustomer } from './AddRecCustomer'
 
