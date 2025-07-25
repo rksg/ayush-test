@@ -1,5 +1,6 @@
 import React from 'react'
 
+import moment   from 'moment'
 import { rest } from 'msw'
 
 import { DeviceProvisionUrlsInfo }            from '@acx-ui/rc/utils'
@@ -8,46 +9,7 @@ import { render, fireEvent, waitFor, screen } from '@acx-ui/test-utils'
 
 import { PendingAp } from '.'
 
-// eslint-disable-next-line no-console
-const originalWarn = console.warn
-// eslint-disable-next-line no-console
-console.warn = (...args: unknown[]) => {
-  const warningMsg =
-    'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format'
-  const mswWarningMsg = '[MSW] Warning: captured a request without a matching request handler'
-
-  if (typeof args[0] === 'string' &&
-      (args[0].includes(warningMsg) || args[0].includes(mswWarningMsg))) {
-    return
-  }
-  originalWarn(...args)
-}
-
-// eslint-disable-next-line no-console
-const originalError = console.error
-// eslint-disable-next-line no-console
-console.error = (...args: unknown[]) => {
-  const useFormWarning =
-    'Warning: Instance created by `useForm` is not connected to any Form element'
-  const connectionError = 'Error: connect ECONNREFUSED 127.0.0.1:80'
-  const antdTableWarning =
-    '[antd: Table] `dataSource` length is less than `pagination.total` ' +
-    'but large than `pagination.pageSize`'
-  const rtkQueryError = 'Error encountered handling the endpoint'
-  const queryFnError = 'queryFn returned an object containing neither a valid error and result'
-  const dataUndefinedError = 'Object returned was: { data: undefined }'
-
-  if (typeof args[0] === 'string' &&
-      (args[0].includes(useFormWarning) ||
-       args[0].includes(connectionError) ||
-       args[0].includes(antdTableWarning) ||
-       args[0].includes(rtkQueryError) ||
-       args[0].includes(queryFnError) ||
-       args[0].includes(dataUndefinedError))) {
-    return
-  }
-  originalError(...args)
-}
+moment.suppressDeprecationWarnings = true
 
 const mockCommonResult = {
   success: true,
@@ -110,6 +72,155 @@ describe('PendingAp', () => {
       }),
       rest.patch(DeviceProvisionUrlsInfo.hideApProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockCommonResult))
+      }),
+      rest.get('*/deviceProvisions/statusReports/aps', (req, res, ctx) => {
+        return res(ctx.json({
+          refreshedAt: null
+        }))
+      }),
+      rest.post('*/deviceProvisions/statusReports/aps', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.get('*/deviceProvisions/aps/models', (req, res, ctx) => {
+        return res(ctx.json([
+          'R510',
+          'R610',
+          'R710',
+          'R750',
+          'R760',
+          'R770'
+        ]))
+      }),
+      rest.post('*/venues/query', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 0
+          },
+          totalElements: 0,
+          totalPages: 0
+        }))
+      }),
+      rest.get('*/venues', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 0
+          },
+          totalElements: 0,
+          totalPages: 0
+        }))
+      }),
+      rest.get('*/users', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 0
+          },
+          totalElements: 0,
+          totalPages: 0
+        }))
+      }),
+      rest.get('*/networks', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 10,
+            totalElements: 0
+          },
+          totalElements: 0,
+          totalPages: 0
+        }))
+      }),
+      rest.get('*/services', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/policies', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/timeline', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/analytics', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/reports', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/msp', (req, res, ctx) => {
+        return res(ctx.json({
+          items: [],
+          total: 0
+        }))
+      }),
+      rest.get('*/health', (req, res, ctx) => {
+        return res(ctx.json({ status: 'ok' }))
+      }),
+      rest.get('*/config', (req, res, ctx) => {
+        return res(ctx.json({ version: '1.0.0' }))
+      }),
+      rest.post('*/auth/login', (req, res, ctx) => {
+        return res(ctx.json({ token: 'mock-token' }))
+      }),
+      rest.post('*/auth/logout', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.post('*/upload', (req, res, ctx) => {
+        return res(ctx.json({ url: 'mock-upload-url' }))
+      }),
+      rest.get('*/download/:id', (req, res, ctx) => {
+        return res(ctx.json({ url: 'mock-download-url' }))
+      }),
+      rest.post('*/search', (req, res, ctx) => {
+        return res(ctx.json({ items: [], total: 0 }))
+      }),
+      rest.post('*/batch', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.get('*/stats', (req, res, ctx) => {
+        return res(ctx.json({ total: 0, active: 0, inactive: 0 }))
+      }),
+      rest.get('*/logs', (req, res, ctx) => {
+        return res(ctx.json({ items: [], total: 0 }))
+      }),
+      rest.get('*/notifications', (req, res, ctx) => {
+        return res(ctx.json({ items: [], total: 0 }))
+      }),
+      rest.post('*/notifications', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.get('*/settings', (req, res, ctx) => {
+        return res(ctx.json({ theme: 'light', language: 'en' }))
+      }),
+      rest.put('*/settings', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.all('*', (req, res, ctx) => {
+        // eslint-disable-next-line no-console
+        console.warn(`[MSW] Unhandled ${req.method} request to ${req.url}`)
+        return res(ctx.json({ message: 'Mock response for unhandled request' }))
       })
     )
   })
