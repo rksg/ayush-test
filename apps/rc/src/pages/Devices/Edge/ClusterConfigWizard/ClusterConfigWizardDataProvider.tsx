@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 
+
 import { Loader }                     from '@acx-ui/components'
 import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
@@ -15,8 +16,7 @@ import {
   EdgeClusterStatus,
   EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  IncompatibilityFeatures
-} from '@acx-ui/rc/utils'
+  IncompatibilityFeatures } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
 export interface ClusterConfigWizardContextType {
@@ -158,8 +158,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
-    isSupportAccessPort,
     requiredFwMap,
+    isSupportAccessPort,
     isLoading,
     isFetching
   }}>

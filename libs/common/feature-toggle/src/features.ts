@@ -30,6 +30,7 @@ export enum Features {
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
+  CONFIG_TEMPLATE_REC_P1 = 'acx-ui-config-template-rec-p1',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   MULTIPLE_CERTIFICATE_TEMPLATE = 'multiple-certificate-template',
   CONNECTION_METERING = 'connection-metering-enabled',
@@ -304,6 +305,8 @@ export enum Features {
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
+  EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
+  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
   SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
 }
 

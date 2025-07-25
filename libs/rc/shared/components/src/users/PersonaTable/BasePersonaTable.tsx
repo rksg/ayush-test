@@ -4,10 +4,10 @@ import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { useIdentityListQuery }                                               from '@acx-ui/cloudpath/components'
-import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                   from '@acx-ui/icons'
+import { useIdentityListQuery }                                  from '@acx-ui/cloudpath/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                      from '@acx-ui/icons'
 import {
   useDeletePersonasMutation,
   useGetPersonaGroupByIdQuery,
@@ -20,6 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls }                          from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                     from '@acx-ui/react-router-dom'
+import type { TableColumn }                                                                  from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier }              from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping, FILTER, SEARCH } from '@acx-ui/utils'
 

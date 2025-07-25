@@ -1,3 +1,5 @@
+import { rest } from 'msw'
+
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateType, PolicyOperation,
@@ -5,9 +7,9 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { NavigateProps }  from '@acx-ui/react-router-dom'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { NavigateProps }              from '@acx-ui/react-router-dom'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import HspContext                                 from './HspContext'
 import MspRoutes, { Init, ConfigTemplatesRoutes } from './Routes'
@@ -63,7 +65,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   EthernetPortProfileDetail: () => <div>EthernetPortProfileDetail</div>,
   SyslogDetailView: () => <div>SyslogDetailView</div>,
   RogueAPDetectionDetailView: () => <div>RogueAPDetectionDetailView</div>,
-  ApGroupDetails: () => <div>ApGroupDetails</div>
+  ApGroupDetails: () => <div>ApGroupDetails</div>,
+  AddTunnelProfileTemplate: () => <div>AddTunnelProfileTemplate</div>,
+  EditTunnelProfileTemplate: () => <div>EditTunnelProfileTemplate</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -103,13 +107,21 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.SWITCH_CLI]: false,
   [ConfigTemplateType.AP_GROUP]: false,
   [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-  [ConfigTemplateType.IDENTITY_GROUP]: false
+  [ConfigTemplateType.IDENTITY_GROUP]: false,
+  [ConfigTemplateType.TUNNEL_PROFILE]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)
 jest.mocked(useIsTierAllowed).mockReturnValue(false)
 
 describe('Init', () => {
+  beforeEach(() => {
+    mockServer.use(rest.get(
+      '/locales/compiled/en-US.json',
+      (req, res, ctx) => res(ctx.json({ language: 'Language' }))
+    ))
+  })
+
   it('navigates to dashboard if brand360 is not available', async () => {
     render(<Init />, {
       route: {
@@ -439,5 +451,42 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('ApGroupEdit')).toBeVisible()
+  })
+
+  it('should navigate to the create Tunnel Profile config template page', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.TUNNEL_PROFILE]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('AddTunnelProfileTemplate')).toBeVisible()
+  })
+
+  it('should navigate to the edit Tunnel Profile config template page', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.TUNNEL_PROFILE]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })
+        ),
+        params: { policyId: 'test-id' },
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('EditTunnelProfileTemplate')).toBeVisible()
   })
 })
