@@ -124,9 +124,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     return !hasPortSetting && !hasLagSetting
   }, [originalInterfaceData])
 
-  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList)
+  // eslint-disable-next-line max-len
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList, isEdgeCoreAccessSeparationReady)
   const hasCorePortEnabled = !!corePortInfo.key
-  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList)
+  // eslint-disable-next-line max-len
+  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList, isEdgeCoreAccessSeparationReady)
   const hasAccessPortEnabled = !!accessPortInfo.key
   const existingLagMember = lagData?.flatMap(lag => lag.lagMembers
     ?.map(member => member?.portId)) ?? []
@@ -143,7 +145,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
   const hasWANPort = wanPortsInfo.length > 0
 
-  const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+  const hasCorePortLimitation = hasCorePortEnabled
   const hasCorePortOnOthers = hasCorePortEnabled && !corePortEnabled
   const hasAccessPortOnOthers = hasAccessPortEnabled && !accessPortEnabled
 
@@ -323,6 +325,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       {({ getFieldValue }) => {
         const _portType = getFieldValue(getFieldFullPath('portType'))
         const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
+        // console.log( hasWANPort,
+        //   isEdgeSdLanRun,
+        //   isNewNode,
+        //   hasCorePortOnOthers,
+        //   hasCorePortEnabled)
 
         return (
           _portType === EdgePortTypeEnum.LAN ||
@@ -390,14 +397,12 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     {..._.get(formFieldsProps, 'corePortEnabled')}
                   >
                     <Checkbox
-                      disabled={!corePortInfo.isExistingCorePortInLagMember
-                        && (
-                          (hasWANPort && !corePortEnabled)
+                      disabled={
+                        (hasWANPort && !corePortEnabled)
                           || (isEdgeSdLanRun
                             ? hasCorePortEnabled
                             // eslint-disable-next-line max-len
                             : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
-                        )
                       }
                     >
                       {

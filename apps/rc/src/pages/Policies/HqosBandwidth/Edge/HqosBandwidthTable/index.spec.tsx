@@ -35,20 +35,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => {
-  const rcComponents = jest.requireActual('@acx-ui/rc/components')
-  return {
-    SimpleListTooltip: rcComponents.SimpleListTooltip,
-    TrafficClassSettingsTable: rcComponents.TrafficClassSettingsTable,
-    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
-    useEdgeHqosCompatibilityData: () => ({
-      compatibilities: mockEdgeHqosCompatibilities,
-      isLoading: false
-    }),
-    // eslint-disable-next-line max-len
-    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />
-  }
-})
+jest.mock('@acx-ui/rc/components', () => ({
+  TrafficClassSettingsTable: () => <div data-testid='TrafficClassSettingsTable' />,
+  ToolTipTableStyle: {
+    ToolTipStyle: () => <div data-testid='ToolTipStyle' />
+  },
+  useEdgeHqosCompatibilityData: () => ({
+    compatibilities: mockEdgeHqosCompatibilities,
+    isLoading: false
+  }),
+  // eslint-disable-next-line max-len
+  EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />
+}))
 
 const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
 jest.mock('@acx-ui/rc/utils', () => ({
