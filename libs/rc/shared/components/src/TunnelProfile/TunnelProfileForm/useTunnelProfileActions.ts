@@ -1,35 +1,27 @@
-import { cloneDeep, isEqual, isNil } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 
-import { Features }                                                                                                                                                                                                                                       from '@acx-ui/feature-toggle'
-import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useCreateTunnelProfileTemplateMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useUpdateTunnelProfileMutation, useUpdateTunnelProfileTemplateMutation } from '@acx-ui/rc/services'
-import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                                                                                                       from '@acx-ui/rc/utils'
-import { CatchErrorDetails }                                                                                                                                                                                                                              from '@acx-ui/utils'
+import { Features }                        from '@acx-ui/feature-toggle'
+import {
+  useActivateTunnelProfileByEdgeClusterMutation,
+  useCreateTunnelProfileMutation,
+  useCreateTunnelProfileTemplateMutation,
+  useDeactivateTunnelProfileByEdgeClusterMutation,
+  useUpdateTunnelProfileMutation,
+  useUpdateTunnelProfileTemplateMutation
+} from '@acx-ui/rc/services'
+import {
+  AgeTimeUnit,
+  CommonErrorsResult,
+  CommonResult,
+  executeWithCallback,
+  MtuRequestTimeoutUnit,
+  MtuTypeEnum,
+  TunnelProfileFormType,
+  TunnelTypeEnum
+} from '@acx-ui/rc/utils'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-
-// Utility function to handle async operations with callback-based error handling
-const executeWithCallback = async <T>(
-  operation: (
-    callback: (result: T | CommonErrorsResult<CatchErrorDetails> | void) => void
-  ) => Promise<void>
-): Promise<T> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await operation((result) => {
-        if (
-          isNil(result) ||
-          (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0
-        ) {
-          reject(result)
-        } else {
-          resolve(result as T)
-        }
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
 
 export const useTunnelProfileActions = () => {
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
