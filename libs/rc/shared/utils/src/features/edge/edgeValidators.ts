@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                   from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../models/EdgeEnum'
+import { IpUtilsService } from '../../ipUtilsService'
+import { EdgeIpModeEnum } from '../../models/EdgeEnum'
 import {
   EdgeLag,
   EdgeNatPool,
@@ -30,7 +30,13 @@ import {
   hasAccessLag,
   hasAccessPhysicalPort,
   hasAccessSubInterface,
-  getEdgeNatPools
+  getEdgeNatPools,
+  isCorePhysicalPort,
+  isAccessPhysicalPort,
+  isAccessSubInterface,
+  isAccessLag,
+  isCoreLag,
+  isCoreSubInterface
 } from './edgeUtils'
 
 const Netmask = require('netmask').Netmask
@@ -52,7 +58,7 @@ export async function edgePortIpValidator (ip: string, subnetMask: string) {
     return Promise.reject(error)
   }
 
-  if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
+  if (ip && await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
     return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
   } else {
     // If the subnet is unavailable, either because it's empty or invalid, there's no need to validate broadcast IP further
@@ -434,12 +440,15 @@ export const validateCoreAndAccessPortsConfiguration = (
   lagData: EdgeLag[],
   subInterfaceData: SubInterface[]
 ) => {
-  const corePortCount = portsData.filter(port => port.enabled && port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled).length +
-    lagData.filter(lag => lag.lagEnabled && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled).length +
-    subInterfaceData.filter(subInterface => subInterface.corePortEnabled).length
-  const accessPortCount = portsData.filter(port => port.enabled && port.portType === EdgePortTypeEnum.LAN && port.accessPortEnabled).length +
-    lagData.filter(lag => lag.lagEnabled && lag.portType === EdgePortTypeEnum.LAN && lag.accessPortEnabled).length +
-    subInterfaceData.filter(subInterface => subInterface.accessPortEnabled).length
+
+  const corePortCount = portsData.filter(port => isCorePhysicalPort(port)).length +
+    lagData.filter(lag => isCoreLag(lag)).length +
+    subInterfaceData.filter(subInterface => isCoreSubInterface(subInterface)).length
+
+  const accessPortCount = portsData.filter(port => isAccessPhysicalPort(port)).length +
+    lagData.filter(lag => isAccessLag(lag)).length +
+    subInterfaceData.filter(subInterface => isAccessSubInterface(subInterface)).length
+
   if(corePortCount !== accessPortCount) {
     const { $t } = getIntl()
     return Promise.reject($t({ defaultMessage: 'Core and Access ports must be configured simultaneously.' }))
