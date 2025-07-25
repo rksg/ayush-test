@@ -19,7 +19,8 @@ import styled      from 'styled-components'
 import {
   StepsForm,
   Subtitle,
-  useStepFormContext
+  useStepFormContext,
+  SpaceWrapper
 } from '@acx-ui/components'
 import {
   EdgeDhcpPool,
@@ -29,7 +30,6 @@ import {
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { SpaceWrapper } from '../SpaceWrapper'
 import { ToggleButton } from '../ToggleButton'
 
 import DHCPHostTable   from './DhcpHost'
