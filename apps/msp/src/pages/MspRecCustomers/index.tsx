@@ -205,20 +205,6 @@ export function MspRecCustomers () {
       : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
         : 'mspAdminCount' )) : 'mspAdminCount'
 
-  const propertyIdColumn: TableProps<MspEc>['columns'][0] = {
-    title: $t({ defaultMessage: 'Property ID' }),
-    dataIndex: 'propertyCode',
-    key: 'propertyCode',
-    sorter: true,
-    searchable: true,
-    render: function (_, row, __, highlightFn) {
-      const text = row.propertyCode ? row.propertyCode : noDataDisplay
-      return (<div style={{ textAlign: 'center' }}>
-        {(row.status === 'Active') ? highlightFn(text) : text}
-      </div>)
-    }
-  }
-
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -242,7 +228,19 @@ export function MspRecCustomers () {
         )
       }
     },
-    ...(!mspHspDisplayToggle ? [] : [propertyIdColumn]),
+    ...(!mspHspDisplayToggle ? [] : [{
+      title: $t({ defaultMessage: 'Property ID' }),
+      dataIndex: 'propertyCode',
+      key: 'propertyCode',
+      sorter: true,
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        const text = row.propertyCode ? row.propertyCode : noDataDisplay
+        return (<div style={{ textAlign: 'center' }}>
+          {(row.status === 'Active') ? highlightFn(text) : text}
+        </div>)
+      }
+    }] as TableProps<MspEc>['columns']),
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
