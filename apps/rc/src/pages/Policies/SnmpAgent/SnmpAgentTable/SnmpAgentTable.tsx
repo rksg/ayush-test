@@ -4,7 +4,6 @@ import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import {
   Button,
-  ColumnType,
   Loader,
   PageHeader,
   Table,
@@ -30,6 +29,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import type { ColumnType }           from '@acx-ui/types'
 import { useTableQuery }             from '@acx-ui/utils'
 
 const rbacSnmpFields = [

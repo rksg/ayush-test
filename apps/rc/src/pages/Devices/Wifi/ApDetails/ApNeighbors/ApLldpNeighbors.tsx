@@ -3,18 +3,18 @@ import { useMemo, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { useLazyGetApNeighborsQuery }                             from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { useLazyGetApNeighborsQuery }                from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
   defaultSort,
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { TenantLink }         from '@acx-ui/react-router-dom'
-import { WifiScopes }         from '@acx-ui/types'
-import { filterByAccess }     from '@acx-ui/user'
-import { CatchErrorResponse } from '@acx-ui/utils'
+import { TenantLink }                   from '@acx-ui/react-router-dom'
+import { WifiScopes, type TableColumn } from '@acx-ui/types'
+import { filterByAccess }               from '@acx-ui/user'
+import { CatchErrorResponse }           from '@acx-ui/utils'
 
 import { NewApNeighborTypes, defaultPagination } from './constants'
 import { lldpNeighborsFieldLabelMapping }        from './contents'

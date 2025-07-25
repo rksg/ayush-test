@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { APStatus }                               from '@acx-ui/rc/components'
-import { useLazyGetApNeighborsQuery }             from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }  from '@acx-ui/components'
+import { APStatus }                   from '@acx-ui/rc/components'
+import { useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
   SortResult,
@@ -10,7 +10,7 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                  from '@acx-ui/types'
+import { WifiScopes, TableColumn }     from '@acx-ui/types'
 import { filterByAccess }              from '@acx-ui/user'
 import { getIntl, CatchErrorResponse } from '@acx-ui/utils'
 

@@ -7,9 +7,9 @@ import { find, isNil, merge }  from 'lodash'
 import { AlignType }           from 'rc-table/lib/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
-import { transToOptions }                                                     from '@acx-ui/edge/components'
-import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
+import { Loader, Select, Table, TableProps, useStepFormContext } from '@acx-ui/components'
+import { transToOptions }                                        from '@acx-ui/edge/components'
+import { useVenueNetworkActivationsViewModelListQuery }          from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
   defaultSort,
@@ -23,6 +23,7 @@ import {
   TunnelTypeEnum,
   useHelpPageLink
 } from '@acx-ui/rc/utils'
+import type { TableColumn }                        from '@acx-ui/types'
 import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 
 import { EdgeSdLanFormType }               from '../../..'
