@@ -995,9 +995,8 @@ export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber
     }else{
       ackMsg = isEmpty(newSerialNumber) ?
         $t({ defaultMessage: 'Additional switch detected: {newSerialNumber}' }, { newSerialNumber }) :
-        $t({ defaultMessage:
-          'Member switch replacement detected. Old S/N: {serialNumber}  > New S/N: {newSerialNumber}' },
-        { serialNumber, newSerialNumber })
+        $t({ defaultMessage: 'Switch replacement detected: {serialNumber} to {newSerialNumber}' },
+          { serialNumber, newSerialNumber })
     }
   }
   return ackMsg
