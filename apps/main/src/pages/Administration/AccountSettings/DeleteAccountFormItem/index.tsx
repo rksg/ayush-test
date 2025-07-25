@@ -51,7 +51,25 @@ const DeleteAccountFormItem = () => {
       onOk: async () => {
         try {
           await deleteTenant({ params }).unwrap()
-          userLogout()
+          let logoutTimer: NodeJS.Timeout | null = null
+          let modalClosed = false
+          const logout = () => {
+            if (logoutTimer) clearTimeout(logoutTimer)
+            if (!modalClosed) {
+              modalClosed = true
+              userLogout()
+            }
+          }
+          showActionModal({
+            type: 'info',
+            title: $t({ defaultMessage: 'Account Deleted' }),
+            content: $t({ defaultMessage: 'Your account has been removed successfully.' }),
+            okText: $t({ defaultMessage: 'OK' }),
+            onOk: logout,
+            closable: false,
+            className: 'delete-account-success-modal'
+          })
+          logoutTimer = setTimeout(logout, 10000)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }

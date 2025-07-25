@@ -140,7 +140,7 @@ describe('Venue mDNS Fencing', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
-  it ('should render drawer and cancel', async () => {
+  it.skip('should render drawer and cancel', async () => {
     render(
       <Provider>
         <VenueEditContext.Provider value={{

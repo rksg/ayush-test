@@ -21,7 +21,8 @@ import {
   getEdgePortIpModeString,
   isInterfaceInVRRPSetting,
   sortProp,
-  EdgeFormFieldsPropsType
+  EdgeFormFieldsPropsType,
+  EdgeIpModeEnum
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -136,13 +137,15 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: { compare: sortProp('ip', defaultSort) }
+      sorter: { compare: sortProp('ip', defaultSort) },
+      render: (_data, { ipMode }) => ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
       dataIndex: 'subnet',
-      sorter: { compare: sortProp('subnet', defaultSort) }
+      sorter: { compare: sortProp('subnet', defaultSort) },
+      render: (_data, { ipMode }) => ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
