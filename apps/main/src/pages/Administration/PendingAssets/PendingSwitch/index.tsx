@@ -108,7 +108,8 @@ export const PendingSwitch = () => {
       title: 'Serial #',
       dataIndex: 'serialNumber',
       sorter: true,
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       key: 'model',

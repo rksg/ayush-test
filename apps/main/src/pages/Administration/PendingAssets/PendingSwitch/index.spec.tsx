@@ -12,29 +12,6 @@ import { PendingSwitch } from '.'
 
 moment.suppressDeprecationWarnings = true
 
-// Mock formatter to avoid date format warnings
-jest.mock('@acx-ui/utils', () => {
-  const originalUtils = jest.requireActual('@acx-ui/utils')
-  return {
-    ...originalUtils,
-    formatter: (formatType: string) => (value: unknown) => {
-      if (value === null || value === undefined) {
-        return 'No data'
-      }
-      // If value is already a formatted string, return it as is to avoid double formatting
-      if (typeof value === 'string' &&
-          (value.includes('2024-01-01') || value.match(/^\d{2}\/\d{2}\/\d{4}/))) {
-        return value
-      }
-      // Always return a safe formatted date for any date formatting to avoid moment warnings
-      if (formatType.includes('DateTime') || formatType.includes('DateFormat')) {
-        return '2024-01-01 12:00:00'
-      }
-      return String(value)
-    }
-  }
-})
-
 const mockCommonResult = {
   success: true,
   message: 'Operation completed successfully'

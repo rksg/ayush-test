@@ -123,7 +123,8 @@ export const PendingAp = () => {
       title: 'Serial #',
       dataIndex: 'serialNumber',
       sorter: true,
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       key: 'model',
