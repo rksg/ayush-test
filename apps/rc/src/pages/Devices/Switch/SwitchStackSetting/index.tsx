@@ -371,7 +371,7 @@ export function SwitchStackSetting (props: {
                   title={$t({ defaultMessage: 'The "Auth Default VLAN" cannot be changed when "Port Authentication" is enabled at the port level.' })}
                 >
                   <span>
-                    <Input disabled={true} value={authDefaultVlan} />
+                    <Input disabled={true} defaultValue={authDefaultVlan} />
                   </span>
                 </Tooltip>
                 : <Input disabled={readOnly} />
