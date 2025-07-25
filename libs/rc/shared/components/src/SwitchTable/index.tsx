@@ -11,7 +11,6 @@ import {
   TableProps,
   Loader,
   deviceStatusColors,
-  ColumnType,
   PasswordInput,
   showToast,
   cssStr
@@ -48,7 +47,8 @@ import {
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
+import type { ColumnType, RequestPayload }                   from '@acx-ui/types'
+import { RolesEnum, SwitchScopes }                           from '@acx-ui/types'
 import { filterByAccess, hasPermission, hasRoles }           from '@acx-ui/user'
 import {
   exportMessageMapping,

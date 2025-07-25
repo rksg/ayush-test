@@ -8,7 +8,6 @@ import { useIntl }                       from 'react-intl'
 
 import {
   Button,
-  ColumnType,
   cssStr,
   Loader,
   PageHeader,
@@ -40,6 +39,7 @@ import {
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import type { ColumnType }                    from '@acx-ui/types'
 import {
   EdgeScopes,
   RequestPayload,

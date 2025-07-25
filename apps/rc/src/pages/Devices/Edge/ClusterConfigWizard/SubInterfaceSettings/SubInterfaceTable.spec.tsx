@@ -291,5 +291,19 @@ describe('SubInterfaceTable', () => {
       await userEvent.click(subInterface)
       expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
     })
+
+    it('should hide ip and subnet when ipMode is DHCP', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('subInterfaces', [{
+          ...mockEdgeSubInterfaces.content[4],
+          ipMode: 'DHCP'
+        }])
+        return form
+      })
+      renderTable(mockProps, formRef.current)
+
+      expect(screen.getByRole('row', { name: '1 LAN DHCP 88' })).toBeVisible()
+    })
   })
 })

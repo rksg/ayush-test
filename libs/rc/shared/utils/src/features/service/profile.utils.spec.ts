@@ -1,10 +1,5 @@
 import { getDisabledActionMessage } from './profile.utils'
 
-const mockShowActionModal = jest.fn()
-jest.mock('@acx-ui/components', () => ({
-  showActionModal: (props) => mockShowActionModal(props)
-}))
-
 describe('profileUtils', () => {
   describe('getDisabledActionMessage', () => {
 
