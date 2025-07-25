@@ -81,9 +81,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
         />
       </div>
       {
-        tabDetailsArray.find((tabDetail: TabDetail) => {
-          return tabDetail.value === (value || activeContent)
-        })?.children
+        tabDetailsArray.find((tabDetail) => tabDetail.value === (value || activeContent))?.children
       }
     </>
   )

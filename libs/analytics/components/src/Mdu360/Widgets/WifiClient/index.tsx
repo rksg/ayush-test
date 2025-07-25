@@ -10,7 +10,6 @@ import { Mdu360TabProps }         from '../../types'
 
 import { useTopNWifiClientQuery } from './services'
 
-
 export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
   const { $t } = useIntl()
   const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
@@ -48,7 +47,7 @@ export const WifiClient = ({ filters }: { filters: Mdu360TabProps }) => {
               {chartData && chartData.length > 0 ? (
                 <DonutChart
                   data={chartData}
-                  style={{ width, height }}
+                  style={{ width, height: height - 10 }}
                   legend='name-bold-value'
                   size='large'
                   showLegend
