@@ -986,3 +986,9 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const baseModelNotSupportStack = [
+  'ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
+  'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
+  'ICX8100-48P-X', 'ICX 8100-48PF-X', 'ICX8100-C08PF-X'
+]
