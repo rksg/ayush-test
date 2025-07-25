@@ -1014,4 +1014,82 @@ describe('data transformer', () => {
       subInterfaceSettings: expectedSubInterfaceSettings
     })
   })
+
+  it('should clear ip and subnet when ipMode is DHCP', () => {
+    const mockData = _.cloneDeep(mockGivenData)
+
+    // eslint-disable-next-line max-len
+    mockData.portSettings[mockEdgeClusterList.data[0].edgeList[0].serialNumber]['port1'][0].corePortEnabled = true
+    mockData.portSubInterfaces = {
+      ...mockSubInterfaceFormData.portSubInterfaces,
+      'serialNumber-2': {
+        ...mockSubInterfaceFormData.portSubInterfaces['serialNumber-2'],
+        port_id_0: [
+          {
+            id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7ba11',
+            ip: '1.1.2.1',
+            ipMode: 'DHCP',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1,
+            interfaceName: 'port1.1'
+          }
+        ]
+      }
+    }
+    mockData.lagSubInterfaces = {
+      ...mockSubInterfaceFormData.lagSubInterfaces,
+      'serialNumber-2': {
+        ...mockSubInterfaceFormData.lagSubInterfaces['serialNumber-2'],
+        1: [
+          ...mockSubInterfaceFormData.lagSubInterfaces['serialNumber-2'][1],
+          {
+            id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7ba12',
+            ip: '1.1.2.1',
+            ipMode: 'DHCP',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1,
+            interfaceName: 'lag1.1'
+          }
+        ]
+      }
+    }
+    const result = transformFromFormToApiData(
+      mockData as unknown as InterfaceSettingsFormType,
+      ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
+      true
+    )
+
+    const expectLags = getExpectLags(mockData.lagSettings)
+    const expectPorts = getExpectedPorts(mockData.portSettings)
+    const expectedSubInterfaceSettings = cloneDeep(expectedSubInterfaceData)
+
+    // Add the DHCP sub-interfaces that were added in the test
+    expectedSubInterfaceSettings[1].lags[0].subInterfaces.push({
+      id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7ba12',
+      ip: '',
+      ipMode: 'DHCP',
+      portType: 'LAN',
+      subnet: '',
+      vlan: 1,
+      interfaceName: 'lag1.1'
+    })
+    expectedSubInterfaceSettings[1].ports[0].subInterfaces.push({
+      id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7ba11',
+      ip: '',
+      ipMode: 'DHCP',
+      portType: 'LAN',
+      subnet: '',
+      vlan: 1,
+      interfaceName: 'port1.1'
+    })
+
+    expect(result).toStrictEqual({
+      lagSettings: expectLags,
+      portSettings: expectPorts,
+      multiWanSettings: undefined,
+      subInterfaceSettings: expectedSubInterfaceSettings
+    })
+  })
 })

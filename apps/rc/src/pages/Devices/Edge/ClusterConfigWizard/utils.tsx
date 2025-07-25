@@ -23,6 +23,7 @@ import {
   SubInterface,
   EdgeStatus,
   isEdgeMatchedRequiredFirmware,
+  EdgeIpModeEnum,
   doEdgeNetworkInterfacesDryRun,
   getMergedLagTableDataFromLagForm,
   convertInterfaceDataToEdgePortInfo
@@ -468,6 +469,10 @@ const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
   return settings.map(subInterface => {
     if(subInterface.id?.startsWith('new_')) {
       delete subInterface.id
+    }
+    if(subInterface.ipMode === EdgeIpModeEnum.DHCP) {
+      subInterface.ip = ''
+      subInterface.subnet = ''
     }
     return subInterface
   })
