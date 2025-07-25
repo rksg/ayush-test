@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { ReportType }   from '@acx-ui/reports/components'
-import { Provider }     from '@acx-ui/store'
+import { ReportType } from '@acx-ui/reports/components'
+import { Provider }   from '@acx-ui/store'
 import {
   render,
   screen,

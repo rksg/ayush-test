@@ -212,6 +212,11 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
       })
 
     expect(await screen.findByText('auto11')).toBeInTheDocument()
+    const showMoreBtn = screen.getByText('Show More')
+    expect(showMoreBtn).toBeInTheDocument()
+    await userEvent.click(showMoreBtn)
+    expect(await screen.findByText('Show Less')).toBeInTheDocument()
+
   })
 
 })

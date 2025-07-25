@@ -1,5 +1,5 @@
-import userEvent    from '@testing-library/user-event'
-import { rest }     from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { policyApi }     from '@acx-ui/rc/services'
 import {
@@ -23,7 +23,8 @@ import {
 
 import LbsServerProfileTable from './LbsServerProfileTable'
 
-const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })
+const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
+  type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })
 
 describe('LbsServerProfileTable', () => {
   beforeEach(async () => {

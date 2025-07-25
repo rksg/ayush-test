@@ -1,4 +1,4 @@
-import { rest }     from 'msw'
+import { rest } from 'msw'
 
 import { venueApi, policyApi } from '@acx-ui/rc/services'
 import {

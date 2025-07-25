@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
-import userEvent    from '@testing-library/user-event'
-import { rest }     from 'msw'
-import { Path, To } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
