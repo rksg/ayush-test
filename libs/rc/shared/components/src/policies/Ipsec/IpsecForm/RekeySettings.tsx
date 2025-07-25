@@ -7,7 +7,8 @@ import { useIntl }                       from 'react-intl'
 import { GridCol, GridRow, Tooltip, Select } from '@acx-ui/components'
 import { Ipsec, IpSecRekeyTimeUnitEnum }     from '@acx-ui/rc/utils'
 
-import { messageMapping } from './messageMapping'
+import { messageMapping }          from './messageMapping'
+import { getRekeyTimeUnitOptions } from './utils'
 
 
 interface ReKeySettingsFormProps {
@@ -22,11 +23,7 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
   const form = Form.useFormInstance()
   const [ikeRekeyTimeEnabled, setIkeRekeyTimeEnabled] = useState(false)
   const [espRekeyTimeEnabled, setEspRekeyTimeEnabled] = useState(false)
-  const rekeyTimeUnitOptions = [
-    { label: $t({ defaultMessage: 'Day(s)' }), value: IpSecRekeyTimeUnitEnum.DAY },
-    { label: $t({ defaultMessage: 'Hour(s)' }), value: IpSecRekeyTimeUnitEnum.HOUR },
-    { label: $t({ defaultMessage: 'Minute(s)' }), value: IpSecRekeyTimeUnitEnum.MINUTE }
-  ]
+  const rekeyTimeUnitOptions = getRekeyTimeUnitOptions()
 
   useEffect(() => {
     const ikeRekeyTimeEnabledChk = form.getFieldValue('ikeRekeyTimeEnabledCheckbox')
