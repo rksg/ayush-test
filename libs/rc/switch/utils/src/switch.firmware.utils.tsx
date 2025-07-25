@@ -1,7 +1,10 @@
 import _ from 'lodash'
 
-import { FirmwareSwitchVenueVersionsV1002,
-  SwitchFirmwareModelGroup } from './types'
+import {
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup
+} from './types'
+
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -128,7 +131,6 @@ export const compareSwitchVersion = (compareVersion?: string, targetVersion?: st
   }
   return 0
 }
-
 
 export const convertSwitchVersionFormat = (version: string) => {
   // eslint-disable-next-line max-len

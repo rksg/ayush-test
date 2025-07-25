@@ -32,7 +32,13 @@ import {
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
+  checkSwitchUpdateFields,
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel,
+  getSwitchFwGroupVersionV1002,
+  isFirmwareVersionAbove10010f,
+  isSpecific8100Model,
   isOperationalSwitch
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -42,19 +48,13 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  checkSwitchUpdateFields,
-  checkVersionAtLeast09010h,
-  convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
   SwitchFirmwareModelGroup,
-  getSwitchFwGroupVersionV1002,
   createSwitchSerialPattern,
-  createSwitchSerialPatternForSpecific8100Model,
-  isSpecific8100Model
+  createSwitchSerialPatternForSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,

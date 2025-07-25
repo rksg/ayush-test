@@ -24,6 +24,12 @@ import {
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   isFirmwareVersionAbove10020bCd2,
+  isRodanAv,
+  isBabyRodanX,
+  is7550Zippy,
+  isBabyRodanXSubModel,
+  is7550ZippySubModel,
+  isSpecific8100Model,
   vlanPortsParser,
   getFamilyAndModel,
   createSwitchSerialPattern,
@@ -74,6 +80,7 @@ describe('switch.utils', () => {
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
+      expect(isStrictOperationalSwitch(SwitchStatusEnum.FIRMWARE_UPD_FAIL, true, true)).toBeTruthy()
     })
   })
 
@@ -96,6 +103,7 @@ describe('switch.utils', () => {
   describe('Test getSwitchPortLabel function', () => {
     it('should render correctly', async () => {
       expect(getSwitchPortLabel('ICX7150-C12P', 1)).toEqual('')
+      expect(getSwitchPortLabel('ICX7150-C12P', 0)).toEqual('')
     })
   })
 
@@ -208,6 +216,8 @@ describe('Test isFirmwareVersionAbove10010f function', () => {
     expect(isFirmwareVersionAbove10010f('10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10020b_rc35')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010f('')).toBe(false)
   })
 })
 
@@ -223,6 +233,8 @@ describe('Test isFirmwareVersionAbove10020b function', () => {
     expect(isFirmwareVersionAbove10020b('SPR10020b_rc35')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_b205')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10020b('')).toBe(false)
   })
 })
 
@@ -240,6 +252,8 @@ describe('Test isFirmwareVersionAbove10010gOr10020b function', () => {
     expect(isFirmwareVersionAbove10010gOr10020b('SPR10020b_rc35')).toBe(true)
     expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_b205')).toBe(true)
     expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010gOr10020b('')).toBe(false)
   })
 })
 
@@ -259,6 +273,8 @@ describe('Test isFirmwareVersionAbove10010gCd1Or10020bCd1 function', () => {
 
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_cd1')).toBe(true)
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('')).toBe(false)
   })
 })
 
@@ -277,6 +293,7 @@ describe('Test isFirmwareVersionAbove10020bCd2 function', () => {
     expect(isFirmwareVersionAbove10020bCd2('TNR10020b_b205')).toBe(false)
 
     expect(isFirmwareVersionAbove10020bCd2('TNR10020b_cd2')).toBe(true)
+    expect(isFirmwareVersionAbove10020bCd2('')).toBe(false)
   })
 })
 
@@ -468,5 +485,47 @@ describe('macAclRulesParser', () => {
 
     const result = macAclRulesParser(rules)
     expect(result).toEqual({ permit: 2, deny: 2 })
+  })
+})
+
+describe('isRodanAv', () => {
+  it('should return correctly', () => {
+    expect(isRodanAv('ICX8200-24PV')).toEqual(true)
+    expect(isRodanAv('ICX7550-48ZP')).toEqual(false)
+  })
+})
+
+describe('isBabyRodanX', () => {
+  it('should return correctly', () => {
+    expect(isBabyRodanX('ICX8100-24-X')).toEqual(true)
+    expect(isBabyRodanX('ICX7550-48ZP')).toEqual(false)
+  })
+})
+
+describe('isBabyRodanXSubModel', () => {
+  it('should return correctly', () => {
+    expect(isBabyRodanXSubModel('24-X')).toEqual(true)
+    expect(isBabyRodanXSubModel('24')).toEqual(false)
+  })
+})
+
+describe('is7550Zippy', () => {
+  it('should return correctly', () => {
+    expect(is7550Zippy('ICX7550-24XZP')).toEqual(true)
+    expect(is7550Zippy('ICX7550-48ZP')).toEqual(false)
+  })
+})
+
+describe('is7550ZippySubModel', () => {
+  it('should return correctly', () => {
+    expect(is7550ZippySubModel('24XZP')).toEqual(true)
+    expect(is7550ZippySubModel('48ZP')).toEqual(false)
+  })
+})
+
+describe('isSpecific8100Model', () => {
+  it('should return correctly', () => {
+    expect(isSpecific8100Model('FNY3224R0AG')).toEqual(true)
+    expect(isSpecific8100Model('FEK3224R0AG')).toEqual(false)
   })
 })

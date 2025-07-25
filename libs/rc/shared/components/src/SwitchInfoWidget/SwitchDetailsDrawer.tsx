@@ -4,16 +4,16 @@ import { Divider, Form, Select } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }   from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
-  getSwitchModel
+  getSwitchModel,
+  isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/switch/utils'
 import {
   SwitchViewModel,
   getAdminPassword,
-  getStackMemberStatus,
-  isFirmwareSupportAdminPassword
+  getStackMemberStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'

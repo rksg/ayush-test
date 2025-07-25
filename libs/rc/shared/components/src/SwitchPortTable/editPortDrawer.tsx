@@ -37,6 +37,13 @@ import {
   useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
 import {
+  isFirmwareVersionAbove10010f,
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010gOr10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  isVerGEVer
+} from '@acx-ui/rc/switch/utils'
+import {
   EditPortMessages,
   FlexAuthMessages,
   FlexAuthVlanLabel,
@@ -51,16 +58,11 @@ import {
   SWITCH_DEFAULT_VLAN_NAME,
   ProfileTypeEnum,
   PortSettingModel,
-  isFirmwareVersionAbove10010f,
-  isVerGEVer,
   validateVlanExcludingReserved,
   Vlan,
   VlanModalType,
-  isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
   SwitchUrlsInfo,
-  isFirmwareVersionAbove10010gOr10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1,
   SchedulerTypeEnum,
   PoeSchedulerType,
   allMultipleEditableFields,

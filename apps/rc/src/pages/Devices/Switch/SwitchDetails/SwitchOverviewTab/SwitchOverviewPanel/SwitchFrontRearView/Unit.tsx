@@ -15,10 +15,10 @@ import {
 import {
   getPoeUsage,
   getSwitchModel,
+  getSwitchPortLabel,
   isEmpty
 } from '@acx-ui/rc/switch/utils'
 import {
-  getSwitchPortLabel,
   StackMember,
   SwitchFrontView,
   SwitchModelInfo,

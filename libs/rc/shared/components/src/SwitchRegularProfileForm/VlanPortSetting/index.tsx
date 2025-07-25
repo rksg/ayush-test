@@ -5,12 +5,12 @@ import _                                            from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
 import { ArrowExpand, ArrowChevronRight }                from '@acx-ui/icons-new'
+import { getFamilyAndModel }                             from '@acx-ui/rc/switch/utils'
 import {
   defaultSort,
   sortProp,
   SWITCH_DEFAULT_VLAN_NAME,
-  Vlan,
-  getFamilyAndModel
+  Vlan
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
