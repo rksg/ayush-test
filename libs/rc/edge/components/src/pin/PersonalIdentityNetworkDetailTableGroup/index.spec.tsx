@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIdentityListQuery } from '@acx-ui/cloudpath/components'
-import { useApListQuery }       from '@acx-ui/rc/services'
+import { useApListQuery } from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
   PersonalIdentityNetworks,
@@ -23,11 +22,7 @@ jest.mock('@acx-ui/rc/services', () => ({
     data: { totalCount: 2 }
   })
 }))
-jest.mock('@acx-ui/cloudpath/components', () => ({
-  useIdentityListQuery: jest.fn().mockReturnValue({
-    data: {}
-  })
-}))
+
 jest.mock('./ApsTable', () => ({
   ApsTable: () => <div data-testid='ApsTable' />
 }))
@@ -55,13 +50,6 @@ describe('PersonalIdentityNetwork DetailTableGroup', () => {
     }),
     { wrapper: ({ children }) => <Provider children={children} /> })
 
-  const { result: personaTableQueryResult } = renderHook(
-    () => useIdentityListQuery({
-      personaGroupId: 'mock-persona-group-id'
-    }),
-    { wrapper: ({ children }) => <Provider children={children} /> })
-
-
   it('should display loader when isLoading is true', async () => {
     render(
       <Provider>
@@ -69,7 +57,7 @@ describe('PersonalIdentityNetwork DetailTableGroup', () => {
           pinData={mockPinData as unknown as PersonalIdentityNetworks}
           apListTableQuery={apTableQueryResult.current}
           // eslint-disable-next-line max-len
-          personaListTableQuery={personaTableQueryResult.current as TableQuery<Persona, { keyword: string, groupId: string }, unknown>}
+          personaListTableQuery={{} as TableQuery<Persona, { keyword: string, groupId: string }, unknown>}
           isLoading
         />
       </Provider>
@@ -85,7 +73,7 @@ describe('PersonalIdentityNetwork DetailTableGroup', () => {
           pinData={mockPinData as unknown as PersonalIdentityNetworks}
           apListTableQuery={apTableQueryResult.current}
           // eslint-disable-next-line max-len
-          personaListTableQuery={personaTableQueryResult.current as TableQuery<Persona, { keyword: string, groupId: string }, unknown>}
+          personaListTableQuery={{} as TableQuery<Persona, { keyword: string, groupId: string }, unknown>}
           isLoading={false}
         />
       </Provider>

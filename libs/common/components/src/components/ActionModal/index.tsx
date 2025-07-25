@@ -377,12 +377,12 @@ function ApiCollapsePanel (props: {
       result += `${$t({ defaultMessage: 'RUCKUS Code' })}: ${errorObj.code}\n`
     }
 
-    if (errorObj.reason) {
-      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
-    }
-    // if (errorObj.reason || errorObj.message) { // Next phase
-    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    // if (errorObj.reason) {
+    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
     // }
+    if (errorObj.reason || errorObj.message) { // Next phase
+      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    }
 
     if (errorObj.suggestion) {
       result += `${$t({ defaultMessage: 'Suggestion' })}: ${errorObj.suggestion}\n`
@@ -424,22 +424,22 @@ function ApiCollapsePanel (props: {
            label={$t({ defaultMessage: 'RUCKUS Code' })}
            children={errorObj.code} />
       }
-      {errorObj.reason &&
+      {/* {errorObj.reason &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
            children={errorObj.reason} />
-      }
-      {/* {(errorObj.reason || errorObj.message) && Next phase
+      } */}
+      {(errorObj.reason || errorObj.message) &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
            children={errorObj.reason || errorObj.message} />
-      } */}
+      }
       {errorObj.suggestion &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Suggestion' })}
            children={errorObj.suggestion} />
       }
-      { !(errorObj.reason || errorObj.suggestion ) &&
+      { !(errorObj.message || errorObj.reason || errorObj.suggestion ) &&
       <>
         <Descriptions.Item
           label={'Error Response'}

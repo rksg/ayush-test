@@ -2,7 +2,13 @@ import { Checkbox, Form, Input, InputNumber, Radio, Space } from 'antd'
 import _                                                    from 'lodash'
 import { useIntl }                                          from 'react-intl'
 
-import { networkWifiIpRegExp, SnmpNotificationTypeEnum, SnmpV2Agent, SnmpV3Agent } from '@acx-ui/rc/utils'
+import {
+  networkWifiIpRegExp,
+  networkWifiDualModeIpRegExp,
+  SnmpNotificationTypeEnum,
+  SnmpV2Agent, SnmpV3Agent,
+  useSelectValidatorByIpModeFF
+} from '@acx-ui/rc/utils'
 
 const { useWatch } = Form
 
@@ -32,6 +38,9 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
   const [readPrivilege, trapPrivilege] = [
     useWatch<boolean>('readPrivilege'),
     useWatch<boolean>('trapPrivilege')]
+
+  const targetAddresslValidator =
+  useSelectValidatorByIpModeFF(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
 
   return (<>
     <Form.Item label={$t({ defaultMessage: 'Privilege' })} style={{ marginBottom: '0' }}>
@@ -88,7 +97,7 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
           style={{ display: 'inline-block', width: '250px', paddingRight: '10px' }}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => targetAddresslValidator(value) }
           ]}
           children={<Input />}
         />

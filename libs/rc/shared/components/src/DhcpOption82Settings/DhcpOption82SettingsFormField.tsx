@@ -37,7 +37,7 @@ interface DhcpOption82FormField {
   dhcpOption82SubOption150EnabledFieldName: NamePath
   dhcpOption82SubOption151EnabledFieldName: NamePath
   dhcpOption82SubOption151FormatFieldName: NamePath
-  dhcpOption82SubOption151InputFieldName: NamePath
+  dhcpOption82SubOption151TextFieldName: NamePath
   dhcpOption82MacFormat: NamePath
 }
 
@@ -51,7 +51,7 @@ const defaultDhcpOption82FormField = {
   dhcpOption82SubOption150EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled'],
   dhcpOption82SubOption151EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled'],
   dhcpOption82SubOption151FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Format'],
-  dhcpOption82SubOption151InputFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Input'],
+  dhcpOption82SubOption151TextFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Text'],
   dhcpOption82MacFormat: ['wlan','advancedCustomization','dhcpOption82MacFormat']
 } as DhcpOption82FormField
 
@@ -67,7 +67,7 @@ const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOpt
       dhcpOption82SubOption150EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled'],
       dhcpOption82SubOption151EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled'],
       dhcpOption82SubOption151FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format'],
-      dhcpOption82SubOption151InputFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Input'],
+      dhcpOption82SubOption151TextFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text'],
       dhcpOption82MacFormat: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings','macFormat']
     } as DhcpOption82FormField
   }
@@ -109,7 +109,7 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption150EnabledFieldName,
     dhcpOption82SubOption151EnabledFieldName,
     dhcpOption82SubOption151FormatFieldName,
-    dhcpOption82SubOption151InputFieldName,
+    dhcpOption82SubOption151TextFieldName,
     dhcpOption82MacFormat
   } = selectDhcpOption82FormField(context, index)
 
@@ -371,7 +371,7 @@ export const DhcpOption82SettingsFormField = (props: {
           }
           { DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME === dhcpOption82SubOption151Format &&
             <Form.Item
-              name={dhcpOption82SubOption151InputFieldName}
+              name={dhcpOption82SubOption151TextFieldName}
               style={{ marginLeft: '10px' }}
               rules={[
                 { required: true, message: $t({ defaultMessage: 'Please enter Area Name' }) }

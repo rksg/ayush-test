@@ -1,9 +1,7 @@
 import { Badge, Row, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr } from '@acx-ui/components'
-
-import { SpaceWrapper } from '../../SpaceWrapper'
+import { cssStr, SpaceWrapper } from '@acx-ui/components'
 
 import DcDmzDiagramHorizontal from './assets/images/edge-sd-lan-dc-dmz-horizontal.svg'
 import DcDmzDiagramVertical   from './assets/images/edge-sd-lan-dc-dmz-vertical.svg'

@@ -25,7 +25,7 @@ type Permission = {
   needGlobalPermission: boolean
 }
 
-type Profile = {
+export type Profile = {
   profile: UserProfile
   allowedOperations: string []
   accountTier?: string
@@ -230,10 +230,8 @@ export function hasScope (userScopes: ScopeKeys) {
   return true
 }
 
-
-export function hasRoles (roles: string | string[]) {
-  const { profile, abacEnabled } = getUserProfile()
-
+export function hasRoles (roles: string | string[], userProfile?: Profile) {
+  const { profile, abacEnabled } = userProfile || getUserProfile()
 
   if (!Array.isArray(roles)) roles = [roles]
 

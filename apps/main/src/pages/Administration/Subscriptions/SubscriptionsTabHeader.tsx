@@ -3,10 +3,11 @@ import { useIntl }  from 'react-intl'
 
 import {
   Loader,
-  Subtitle
+  Subtitle,
+  SpaceWrapper
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
