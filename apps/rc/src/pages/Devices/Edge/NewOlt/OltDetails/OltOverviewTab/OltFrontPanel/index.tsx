@@ -15,31 +15,55 @@ enum SlotType {
 
 type SlotData = {
   type: SlotType,
-  ports: SlotPort[]
+  ports: SlotCage[]
 }
 
-export type SlotPort = {
+export type SlotCage = {
   label: string,
   status?: string,
   info?: string,
-  portSpeed?: string
+  portSpeed?: string,
+  taggedVlan?: string,
+  unTaggedVlan?: string
 }
 
 const mockNetworkTermination = [
   {
     type: SlotType.NC,
     ports: [{
-      label: 'TOD'
+      label: 'TOD',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
     }, {
-      label: 'ALM'
+      label: 'ALM',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
     }, {
-      label: 'OOB'
+      label: 'OOB',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
     }, {
-      label: 'LEMI'
+      label: 'LEMI',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
     }, {
-      label: 'UPLINK'
+      label: 'UPLINK',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec',
+      taggedVlan: '2,3,4',
+      unTaggedVlan: '1'
     }, {
-      label: 'UPLINK'
+      label: 'UPLINK',
+      status: 'UP',
+      info: '%info%',
+      portSpeed: '1 Gb/sec',
+      taggedVlan: '2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17',
+      unTaggedVlan: '1'
     }]
   }
 ]
@@ -57,7 +81,7 @@ const mockLineTermination = [
   {
     type: SlotType.LC,
     ports: Array.from({ length: 16 }, (_, index) => ({
-      label: `S1/${index + 1}`,
+      label: `S2/${index + 1}`,
       status: 'UP',
       info: '%info%',
       portSpeed: '1 Gb/sec'
@@ -69,7 +93,7 @@ export const OltFrontPanel = (props: { oltDetails: EdgeNokiaOltData }) => {
   const { oltDetails } = props
   return <UI.Card>
     <UI.CardTitle>
-      <Subtitle level={5}>{ oltDetails.model }</Subtitle>
+      <Subtitle level={5}>{ oltDetails?.model }</Subtitle>
       <div>
         <Tooltip title='Front Panel'>
           <QuestionMarkCircleOutlined size='sm' />
@@ -85,9 +109,8 @@ export const OltFrontPanel = (props: { oltDetails: EdgeNokiaOltData }) => {
       })}
     </UI.Wrapper>
 
-    <br />
-
-    {/* <UI.Wrapper>
+    {/* <br />
+    <UI.Wrapper>
       { mockNetworkTermination.concat(mockNetworkTermination).map((item, index) => {
         return <Slot index={index+1} data={item} />
       })}

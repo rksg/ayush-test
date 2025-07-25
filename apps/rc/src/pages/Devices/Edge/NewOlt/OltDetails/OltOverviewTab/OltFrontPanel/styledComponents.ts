@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Card as CardComponent } from '@acx-ui/components'
+import { Card as CardComponent, Descriptions } from '@acx-ui/components'
 
 const UNIT_WIDTH = 24
 const UNIT_HEIGHT = 20
@@ -22,14 +22,14 @@ export const CardTitle = styled.div`
 `
 
 export const Wrapper = styled.div`
-  width: 70%;
-  min-width: 750px;
-  max-width: 1000px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  width: 70%;
+  min-width: 750px;
+  max-width: 1000px;
   margin: 0 auto;
   border-radius: 8px;
   border: 2px solid var(--acx-neutrals-50);
@@ -83,18 +83,21 @@ export const UnitWrapper = styled.div`
 `
 
 export const Unit = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: ${UNIT_WIDTH}px;
   height: ${UNIT_HEIGHT}px;
   border: 1px solid var(--acx-neutrals-50);
-  border-radius: 4px;
+  border-radius: 2px;
 `
 
 export const UnitTitle = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   color: var(--acx-neutrals-60);
+`
+
+export const TooltipStyle = styled(Descriptions)`
+  .ant-descriptions-item-content,
+  .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+    color: var(--acx-primary-white) !important;
+  }
 `
