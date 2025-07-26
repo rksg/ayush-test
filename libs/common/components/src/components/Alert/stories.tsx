@@ -7,6 +7,7 @@ storiesOf('Alert', module)
     <>
       <Alert message='Success Tips' type='success' showIcon closable/>
       <Alert message='Informational Notes' type='info' showIcon closable />
+      <Alert message='Primary/Blue Information' type='primary' showIcon closable />
       <Alert message='This is a warning notice' type='warning' showIcon closable />
       <Alert message='Error' type='error' showIcon closable />
     </>
