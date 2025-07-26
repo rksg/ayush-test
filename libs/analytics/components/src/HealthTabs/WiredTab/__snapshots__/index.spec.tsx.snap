@@ -25,6 +25,16 @@ exports[`WiredTab should render correctly 1`] = `
   color: var(--acx-accents-orange-50);
 }
 
+.c2.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-alert-primary svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-blue-50);
+}
+
 h1.c5.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
@@ -376,6 +386,16 @@ exports[`WiredTab should render correctly when 10010e FF is enabled 1`] = `
   color: var(--acx-accents-orange-50);
 }
 
+.c2.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-alert-primary svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-blue-50);
+}
+
 h1.c5.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
@@ -725,6 +745,16 @@ exports[`WiredTab should render correctly when IS_MLISA_SA 1`] = `
 
 .c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
   color: var(--acx-accents-orange-50);
+}
+
+.c2.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-alert-primary svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-blue-50);
 }
 
 h1.c5.ant-typography {
@@ -1082,6 +1112,16 @@ exports[`WiredTab should render correctly when IS_MLISA_SA and 10010e FF enabled
   color: var(--acx-accents-orange-50);
 }
 
+.c2.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-alert-primary svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-blue-50);
+}
+
 h1.c5.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
@@ -1435,6 +1475,16 @@ exports[`WiredTab should render correctly with filter passed as props 1`] = `
 
 .c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
   color: var(--acx-accents-orange-50);
+}
+
+.c2.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-alert-primary svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-blue-50);
 }
 
 h1.c5.ant-typography {

@@ -24,4 +24,14 @@ export const AlertStyle = styled(Alert)`
   }
 }
 
+&.ant-alert-primary {
+  background-color: var(--acx-accents-blue-10);
+  border: 1px solid var(--acx-accents-blue-25);
+  color: var(--acx-accents-blue-60);
+
+  svg.ant-alert-icon path:nth-child(-n+2) {
+    color: var(--acx-accents-blue-50);
+  }
+}
+
 `
