@@ -36,7 +36,6 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     extra, noPadding, tabPersistence } = props
 
   const initValue = defaultValue || formInitValue
-
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
