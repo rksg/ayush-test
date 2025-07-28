@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import _ from 'lodash'
-// import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import _             from 'lodash'
+import { IntlShape } from 'react-intl'
 
 import {
   ICX_MODELS_INFORMATION
@@ -984,3 +984,20 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, tooltip: boolean, $t: IntlShape['$t']) => {
+  let ackMsg: React.ReactNode = ''
+  if (needAck) {
+    if(tooltip) {
+      ackMsg = isEmpty(newSerialNumber) ?
+        <>{$t({ defaultMessage: 'Additional switch detected: <li>S/N: {newSerialNumber}</li>' }, { newSerialNumber, li: (text: React.ReactNode[]) => <li>{text}</li> })}</> :
+        <>{$t({ defaultMessage: 'Member switch replacement detected. <li>Old S/N: {serialNumber}</li><li>New S/N: {newSerialNumber}</li>' }, { serialNumber, newSerialNumber, li: (text: React.ReactNode[]) => <li>{text}</li> })}</>
+    }else{
+      ackMsg = isEmpty(newSerialNumber) ?
+        $t({ defaultMessage: 'Additional switch detected: {newSerialNumber}' }, { newSerialNumber }) :
+        $t({ defaultMessage: 'Switch replacement detected: {serialNumber} to {newSerialNumber}' },
+          { serialNumber, newSerialNumber })
+    }
+  }
+  return ackMsg
+}
