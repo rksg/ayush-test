@@ -391,7 +391,7 @@ export const isEmpty = (params?: unknown) => {
   return false
 }
 
-const getSwitchModelInfo = (switchModel: string) => {
+export const getSwitchModelInfo = (switchModel: string) => {
   const [ family, model ] = getFamilyAndModel(switchModel)
 
   const modelFamilyInfo = ICX_MODELS_INFORMATION[family]
