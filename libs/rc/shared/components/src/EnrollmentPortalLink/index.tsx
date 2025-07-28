@@ -11,10 +11,10 @@ import { CopyOutlined }           from '@acx-ui/icons-new'
 
 import { StyledChatbotLink, StyledQRLink } from './styledComponents'
 
-export function EnrollmentPortalLink (props: { url: string }) {
+export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const { Link } = Typography
   const workFlowQrCodeGenerate = useIsSplitOn(Features.WORKFLOW_QRCODE_GENERATE)
-  const { url } = props
+  const { url, name } = props
   const id = 'portalLink_' + url
   const { $t } = useIntl()
   const copyButtonTooltipDefaultText = $t({ defaultMessage: 'Copy URL' })
@@ -25,6 +25,9 @@ export function EnrollmentPortalLink (props: { url: string }) {
   const openUrlTooltipDefaultText = $t({ defaultMessage: 'Open the URL in a new tab or window' })
   const [openUrlTooltip, setOpenUrlTooltip] = useState(qrCodeTooltipDefaultText)
   const qrRef = useRef<HTMLDivElement | null>(null)
+  const maxLabelLength = 25
+  const truncatedWorkflowName =
+    name.length > maxLabelLength ? name.slice(0, maxLabelLength) + '...' : name
 
   const handleDownloadQr = () => {
     const svg = qrRef.current?.querySelector('svg')
@@ -40,26 +43,33 @@ export function EnrollmentPortalLink (props: { url: string }) {
     img.onload = () => {
       const border = 20
       const qrSize = 360
-      const canvasSize = qrSize + border * 2
+      const labelHeight = 40
+      const canvasWidth = qrSize + border * 2
+      const canvasHeight = qrSize + border * 2 + labelHeight
       const canvas = document.createElement('canvas')
-      canvas.width = canvasSize
-      canvas.height = canvasSize
+      canvas.width = canvasWidth
+      canvas.height = canvasHeight
       const ctx = canvas.getContext('2d')
       if (ctx) {
         ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(img, border, border, qrSize, qrSize)
+        // Use truncatedWorkflowName for the label
+        ctx.fillStyle = '#000'
+        ctx.font = '20px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'top'
+        ctx.fillText(truncatedWorkflowName, canvas.width / 2, border)
+        ctx.drawImage(img, border, border + labelHeight, qrSize, qrSize)
         canvas.toBlob((blob) => {
           if (blob) {
             const pngUrl = URL.createObjectURL(blob)
-            // Download
             const link = document.createElement('a')
+            // Use truncatedWorkflowName for the filename
             link.href = pngUrl
-            link.download = 'qr-code.png'
+            link.download = truncatedWorkflowName + '.png'
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
-            // Open in new tab after download
             setTimeout(() => {
               window.open(pngUrl, '_blank')
               URL.revokeObjectURL(pngUrl)
@@ -139,8 +149,10 @@ export function EnrollmentPortalLink (props: { url: string }) {
           </Tooltip>
           {/* Hidden QR code for download */}
           <div ref={qrRef} style={{ display: 'none' }} aria-hidden='true'>
+            <label style={{ display: 'block', textAlign: 'center', marginBottom: 8 }}>
+              {truncatedWorkflowName}</label>
             <QRCodeSVG
-              value={url}
+              value={JSON.stringify({ name, url })}
               size={240}
               bgColor={'#ffffff'}
               fgColor={'#000000'}
