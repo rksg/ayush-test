@@ -27,4 +27,21 @@ describe('PreviewDashboardModal', () => {
     )
     expect(await screen.findByText('Dashboard Canvas copy 1')).toBeVisible()
   })
+  it('should render default dashboard correctly', async () => {
+    render(
+      <Provider>
+        <PreviewDashboardModal
+          data={[{
+            id: 'default-dashboard-id',
+            name: 'Default Dashboard',
+            content: ''
+          }]}
+          DefaultDashboard={()=><div>Default Dashboard</div>}
+          visible={true}
+          setVisible={()=>{}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Default Dashboard')).toBeVisible()
+  })
 })
