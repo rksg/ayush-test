@@ -20,7 +20,7 @@ import {
 import { switchFirmwareList, switchVenueV1002 } from '../../../__tests__/fixtures'
 import {
   availableVersions_hasInUse
-} from '../../__test__/fixtures'
+} from '../../__tests__/fixtures'
 
 import { UpdateNowStep } from '.'
 

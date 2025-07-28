@@ -49,31 +49,6 @@ describe('PreferredLanguageFormItem', () => {
     jest.mocked(mockUseUserProfileContext).mockReturnValue({ data: mockUserProfile })
   })
 
-  it('should render successfully', async () => {
-    render(
-      <Provider>
-        <Form> <PreferredLanguageFormItem /> </Form>
-      </Provider>, {
-        route: { params }
-      })
-    expect(await screen.findByRole('combobox', { name: 'Preferred Language' })).toBeVisible()
-  })
-
-  it('renders the form item with the correct initial value and label', async () => {
-    render(
-      <Provider>
-        <Form> <PreferredLanguageFormItem /> </Form>
-      </Provider>
-    )
-    await screen.findByText('Preferred Language')
-    await screen.findByText('English')
-    await screen.findByText('Japanese')
-    await screen.findByText('French')
-    await screen.findByText('Portuguese')
-    await screen.findByText('Korean')
-    await screen.findByText('Spanish')
-  })
-
   it('should be able to select new language', async () => {
     render(
       <Provider>

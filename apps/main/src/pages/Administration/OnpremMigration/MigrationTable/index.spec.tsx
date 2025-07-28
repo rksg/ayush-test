@@ -26,6 +26,12 @@ import MigrationTable from '.'
 describe('Migration Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+  })
+
+  it('should render table', async () => {
     mockServer.use(
       rest.get(
         MigrationUrlsInfo.getZdMigrationList.url,
@@ -36,12 +42,7 @@ describe('Migration Table', () => {
         (req, res, ctx) => res(ctx.json(configurations))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-  })
 
-  it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
         <MigrationTable />

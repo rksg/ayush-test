@@ -58,7 +58,8 @@ const Message = (props:{
     goOnboardingAssistant?: () => void,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
-  const { chat, sessionId, groups, canvasRef, onUserFeedback, goOnboardingAssistant } = props
+  const { chat, sessionId, groups, canvasRef, onUserFeedback, goOnboardingAssistant,
+    showCanvas } = props
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const messageTailRef = useRef<HTMLDivElement>(null)
   const { $t } = useIntl()
@@ -115,6 +116,7 @@ const Message = (props:{
       }}
       groups={groups}
       removeShadowCard={canvasRef?.current?.removeShadowCard}
+      chatOnly={!showCanvas}
       /> }
       {
         chat.role === MessageRole.AI && chat.sourceAgent === 'onboarding' &&
