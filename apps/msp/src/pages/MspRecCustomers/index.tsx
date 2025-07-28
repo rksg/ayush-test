@@ -228,18 +228,19 @@ export function MspRecCustomers () {
         )
       }
     },
-    ...(!mspHspDisplayToggle ? [] :[{
+    ...(!mspHspDisplayToggle ? [] : [{
       title: $t({ defaultMessage: 'Property ID' }),
       dataIndex: 'propertyCode',
       key: 'propertyCode',
       sorter: true,
       searchable: true,
-      render: function (_: React.ReactNode, row: MspEc) {
-        return <div style={{ textAlign: 'center' }}>
-          {row.propertyCode ? row.propertyCode : noDataDisplay}
-        </div>
+      render: function (_, row, __, highlightFn) {
+        const text = row.propertyCode ? row.propertyCode : noDataDisplay
+        return (<div style={{ textAlign: 'center' }}>
+          {(row.status === 'Active') ? highlightFn(text) : text}
+        </div>)
       }
-    }]),
+    }] as TableProps<MspEc>['columns']),
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',

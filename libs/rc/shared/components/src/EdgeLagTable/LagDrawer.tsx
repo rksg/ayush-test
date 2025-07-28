@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { Form, Space }             from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, find, get } from 'lodash'
-import { useIntl }                 from 'react-intl'
+import { Form, Space }          from 'antd'
+import TextArea                 from 'antd/lib/input/TextArea'
+import { cloneDeep, find, get } from 'lodash'
+import { useIntl }              from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -59,6 +59,7 @@ const defaultFormValues = {
   lacpTimeout: EdgeLagTimeoutEnum.SHORT,
   portType: EdgePortTypeEnum.WAN,
   corePortEnabled: false,
+  accessPortEnabled: false,
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
   lagEnabled: true,
@@ -114,10 +115,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
   useEffect(() => {
     if(visible) {
       form.resetFields()
-      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList)
+      // eslint-disable-next-line max-len
+      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList, isEdgeCoreAccessSeparationReady)
       const hasCorePortEnabled = !!corePortInfo.key
 
-      if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
+      if (hasCorePortEnabled) {
         form.setFieldsValue({
           ...defaultFormValues,
           portType: EdgePortTypeEnum.LAN,
@@ -447,9 +449,9 @@ export const LagDrawer = (props: LagDrawerProps) => {
 }
 
 const forceUpdateCondition = (prev:unknown, cur: unknown) => {
-  return _.get(prev, 'corePortEnabled') !== _.get(cur, 'corePortEnabled')
-        || _.get(prev, 'portType') !== _.get(cur, 'portType')
-        || _.get(prev, 'lagMembers') !== _.get(cur, 'lagMembers')
-        || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
-        || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
+  return get(prev, 'corePortEnabled') !== get(cur, 'corePortEnabled')
+        || get(prev, 'portType') !== get(cur, 'portType')
+        || get(prev, 'lagMembers') !== get(cur, 'lagMembers')
+        || get(prev, 'lagEnabled') !== get(cur, 'lagEnabled')
+        || get(prev, 'ipMode') !== get(cur, 'ipMode')
 }

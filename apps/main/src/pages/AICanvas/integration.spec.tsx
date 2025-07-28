@@ -15,7 +15,13 @@ import {
 
 import AICanvas from '.'
 
-
+jest.mock('../OnboardingAssistant', () => ({
+  OnboardingAssistantModal: () => <div>OnboardingAssistant</div>,
+  RuckusAiStepsEnum: {
+    VERTICAL: 'VERTICAL',
+    WELCOME: 'WELCOME'
+  }
+}))
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 
 jest.mock('./components/WidgetChart', () => ({

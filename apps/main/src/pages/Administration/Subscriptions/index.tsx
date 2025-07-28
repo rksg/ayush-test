@@ -9,14 +9,14 @@ import {
   Loader,
   Table,
   TableProps,
-  showToast
+  showToast,
+  SpaceWrapper
 } from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
 import { useGetMspEcProfileQuery, useGetMspProfileQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                                       from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                   from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,

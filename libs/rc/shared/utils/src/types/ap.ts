@@ -73,6 +73,7 @@ export interface AP {
   tags: string,
   venueId: string,
   venueName: string,
+  apGroupId?: string,
   description?: string,
   deviceGps?: DeviceGps,
   deviceStatusSeverity?: ApVenueStatusEnum,
@@ -1066,7 +1067,7 @@ export interface DhcpOption82SubOption1Customization {
 }
 
 export interface DhcpOption82Settings {
-  subOption151Input:	string
+  subOption151Text:	string
   subOption151Format:	DhcpOption82SubOption151Enum
   subOption2Format:	DhcpOption82SubOption2Enum
   subOption1Format:	DhcpOption82SubOption1Enum
