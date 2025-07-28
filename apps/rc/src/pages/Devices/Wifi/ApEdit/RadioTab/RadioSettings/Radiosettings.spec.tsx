@@ -40,7 +40,7 @@ import {
   triBandApCap,
   tripleBandMode,
   validRadioChannels,
-  venuelist,
+  venueList,
   venueRadioCustomization,
   venueRadioDetail
 } from '../../../../__tests__/fixtures'
@@ -113,7 +113,7 @@ describe('RadioSettingsTab', ()=> {
       mockServer.use(
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
-          (_, res, ctx) => res(ctx.json(venuelist))),
+          (_, res, ctx) => res(ctx.json(venueList))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json(apDeviceRadio))),
@@ -427,7 +427,7 @@ describe('RadioSettingsTab', ()=> {
       mockServer.use(
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
-          (_, res, ctx) => res(ctx.json(venuelist))),
+          (_, res, ctx) => res(ctx.json(venueList))),
         rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         //rest.get(
@@ -591,7 +591,7 @@ describe('RadioSettingsTab', ()=> {
       mockServer.use(
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
-          (_, res, ctx) => res(ctx.json(venuelist))),
+          (_, res, ctx) => res(ctx.json(venueList))),
         rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(

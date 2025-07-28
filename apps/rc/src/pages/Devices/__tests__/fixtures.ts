@@ -29,7 +29,7 @@ export const mockVenue = {
   id: 'venue-id'
 }
 
-export const venuelist = {
+export const venueList = {
   totalCount: 5,
   page: 1,
   data: [

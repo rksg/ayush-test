@@ -8,7 +8,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
-import { venuelist }                    from '../../../../__tests__/fixtures'
+import { venueList }                    from '../../../../__tests__/fixtures'
 
 import { AntennaSection } from './AntennaSection'
 
@@ -91,7 +91,7 @@ describe('AP Antenna Type Section', () => {
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venuelist.data[0] }
+  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venueList.data[0] }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())

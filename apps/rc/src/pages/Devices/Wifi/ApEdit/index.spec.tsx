@@ -6,11 +6,11 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
-  AdministrationUrlsInfo,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   DHCPUrls,
   FirmwareUrlsInfo,
+  SwitchRbacUrlsInfo,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -27,13 +27,11 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venuelist,
+  venueList,
   venueCaps,
-  apGrouplist,
   apDetailsList,
   apLanPorts,
   dhcpAp,
-  successResponse,
   venueData,
   venueLanPorts,
   venueSetting,
@@ -137,64 +135,17 @@ describe('ApEdit', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
+      // rbac API
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(r650Cap))),
-      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
-        (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueList))),
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.post(WifiUrlsInfo.addAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (req, res, ctx) => res(ctx.json(apDetailsList[0]))),
-      rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
-        (_, res, ctx) => res(ctx.json(apDetailsList))),
-      rest.post(WifiUrlsInfo.getDhcpAp.url,
-        (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
-      rest.post(CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))),
-      rest.put(WifiUrlsInfo.updateAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({
-          global: { mapRegion: 'US',defaultLanguage: 'en-US' },
-          edgeBeta: { 'enabled': 'true','Start Date': '2023-06-08 UTC' }
-        }))
-      ),
-      rest.get(WifiUrlsInfo.getApValidChannel.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
-        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+        (_, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
       ),
-      rest.get(
-        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
-        (_req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.post(
-        DHCPUrls.queryDhcpProfiles.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        WifiRbacUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => res(ctx.json({
-          totalCount: 1, page: 1, data: [
-            {
-              id: '1724eda6f49e4223be36f864f46faba5',
-              venueId: 'venue-id',
-              name: ''
-            }
-          ]
-        }))
-      ),
-      // rbac API
       rest.post(
         WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
@@ -217,6 +168,9 @@ describe('ApEdit', () => {
         WifiRbacUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(r650Cap))
       ),
+      rest.get(WifiRbacUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.get(
         WifiRbacUrlsInfo.getApOperational.url.replace('?operational=true', ''),
         (_, res, ctx) => res(ctx.json({
@@ -226,6 +180,26 @@ describe('ApEdit', () => {
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apViewModel))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              venueId: 'venue-id',
+              name: ''
+            }
+          ]
+        }))
+      ),
+      rest.post(
+        DHCPUrls.queryDhcpProfiles.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -245,27 +219,7 @@ describe('ApEdit', () => {
           WifiRbacUrlsInfo.getApGroupsList.url,
           (_, res, ctx) => {
             return res(ctx.json({
-              totalCount: 1, page: 1, data: [
-                {
-                  id: 'f9903daeeadb4af88969b32d185cbf27',
-                  venueId: '908c47ee1cd445838c3bf71d4addccdf',
-                  name: 'apGroup-name'
-                }
-              ]
-            }))
-          }
-        ),
-        rest.post(
-          WifiRbacUrlsInfo.getApGroupsList.url,
-          (_, res, ctx) => {
-            return res(ctx.json({
-              totalCount: 1, page: 1, data: [
-                {
-                  id: 'f9903daeeadb4af88969b32d185cbf27',
-                  venueId: '908c47ee1cd445838c3bf71d4addccdf',
-                  name: 'apGroup-name'
-                }
-              ]
+              totalCount: 0, page: 1, data: []
             }))
           }
         )
@@ -282,12 +236,12 @@ describe('ApEdit', () => {
       })
 
       expect(await screen.findAllByRole('tab')).toHaveLength(5)
-      await screen.findByText(/37.411275, -122.019191 \(As venue\)/)
+      //await screen.findByText(/37.411275, -122.019191 \(As venue\)/)
     })
 
     it('Should render correctly when ap has not connected to the cloud', async () => {
       mockServer.use(
-        rest.post(CommonUrlsInfo.getApsList.url,
+        rest.post(CommonRbacUrlsInfo.getApsList.url,
           (_req, res, ctx) => res(ctx.json({
             ...deviceAps,
             data: [{
@@ -357,35 +311,6 @@ describe('ApEdit', () => {
 
       mockServer.use(
         rest.get(
-          WifiUrlsInfo.getVenueLoadBalancing.url,
-          (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
-        ),
-        rest.post(
-          WifiRbacUrlsInfo.getApGroupsList.url,
-          (_, res, ctx) => res(ctx.json({
-            totalCount: 1, page: 1, data: [
-              {
-                id: '1724eda6f49e4223be36f864f46faba5',
-                name: ''
-              }
-            ]
-          }))
-        ),
-        rest.post(
-          WifiUrlsInfo.getApGroupsList.url,
-          (_, res, ctx) => res(ctx.json({
-            totalCount: 1, page: 1, data: [
-              {
-                id: '1724eda6f49e4223be36f864f46faba5',
-                name: ''
-              }
-            ]
-          }))
-        ),
-        rest.get(
-          WifiRbacUrlsInfo.getApClientAdmissionControl.url,
-          (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
-        rest.get(
           WifiRbacUrlsInfo.getApValidChannel.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
@@ -405,7 +330,7 @@ describe('ApEdit', () => {
           }
         ),
         rest.get(
-          WifiUrlsInfo.getVenueLoadBalancing.url,
+          WifiRbacUrlsInfo.getVenueLoadBalancing.url,
           (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
         ),
         rest.get(

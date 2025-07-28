@@ -24,7 +24,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venuelist,
+  venueList,
   venueCaps,
   aplist,
   apGrouplist,
@@ -119,7 +119,7 @@ describe('AP Form - Add', () => {
     initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist))),
+        (_, res, ctx) => res(ctx.json(venueList))),
       rest.get(WifiUrlsInfo.getWifiCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
