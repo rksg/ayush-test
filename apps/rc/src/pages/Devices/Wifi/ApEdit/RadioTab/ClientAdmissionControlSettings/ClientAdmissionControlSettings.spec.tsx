@@ -4,7 +4,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { venueApi, apApi }                from '@acx-ui/rc/services'
-import { WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
@@ -48,19 +48,6 @@ describe('Ap Client Admission Control', () => {
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVenueClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
-      rest.get(
-        WifiUrlsInfo.getApClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
-      rest.get(
-        WifiUrlsInfo.updateApClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(
-        WifiUrlsInfo.deleteApClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      // RBAC API
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
@@ -110,7 +97,7 @@ describe('Ap Client Admission Control', () => {
 
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getApClientAdmissionControl.url,
+        WifiRbacUrlsInfo.getApClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json({
           ...mockApClientAdmissionControl,
           useVenueSettings: false

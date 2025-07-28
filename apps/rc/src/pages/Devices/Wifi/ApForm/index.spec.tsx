@@ -3,13 +3,14 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { administrationApi, apApi, firmwareApi, venueApi } from '@acx-ui/rc/services'
+import { administrationApi, apApi, firmwareApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   AdministrationUrlsInfo,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   FirmwareUrlsInfo,
-  WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
@@ -116,26 +117,25 @@ describe('AP Form - Add', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(firmwareApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
     initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueList))),
-      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.post(CommonUrlsInfo.getApsList.url,
+      rest.post(CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
-      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
-        (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.post(WifiUrlsInfo.addAp.url,
+      rest.post(WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({ data: apGrouplist }))),
+      rest.post(WifiRbacUrlsInfo.addAp.url,
         (_, res, ctx) => {
           addRequestSpy()
           return res(ctx.json(successResponse))
         }),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
-      rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
+      rest.get(WifiRbacUrlsInfo.getAp.url.split(':serialNumber')[0],
         (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
@@ -154,6 +154,9 @@ describe('AP Form - Add', () => {
       rest.get(
         FirmwareUrlsInfo.getVenueApModelFirmwares.url,
         (_req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })
@@ -263,7 +266,7 @@ describe('AP Form - Add', () => {
   describe('handle error occurred', () => {
     it('should handle error occurred', async () => {
       mockServer.use(
-        rest.post(WifiUrlsInfo.addAp.url,
+        rest.post(WifiRbacUrlsInfo.addAp.url,
           (_, res, ctx) => {
             return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
           })
@@ -285,7 +288,7 @@ describe('AP Form - Add', () => {
     })
     it('should handle request locking error', async () => {
       mockServer.use(
-        rest.post(WifiUrlsInfo.addAp.url,
+        rest.post(WifiRbacUrlsInfo.addAp.url,
           (_, res, ctx) => {
             return res(ctx.status(423), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
           })

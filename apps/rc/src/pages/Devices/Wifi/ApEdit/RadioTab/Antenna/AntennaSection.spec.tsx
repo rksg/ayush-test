@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                       from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, WifiUrlsInfo }                       from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, WifiRbacUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -98,13 +98,13 @@ describe('AP Antenna Type Section', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueAntennaType.url,
+        WifiRbacUrlsInfo.getVenueAntennaType.url,
         (_, res, ctx) => res(ctx.json(mockVenueAntennaType))),
       rest.get(
-        WifiUrlsInfo.getApAntennaTypeSettings.url,
+        WifiRbacUrlsInfo.getApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json(mockApAntennaType))),
       rest.put(
-        WifiUrlsInfo.updateApAntennaTypeSettings.url,
+        WifiRbacUrlsInfo.updateApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })

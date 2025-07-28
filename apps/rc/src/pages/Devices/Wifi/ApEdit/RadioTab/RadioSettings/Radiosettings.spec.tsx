@@ -18,10 +18,9 @@ import {
   ApRadioParams24G,
   ApRadioParams50G,
   ApRadioParams6G,
-  CommonUrlsInfo,
+  CommonRbacUrlsInfo,
   FirmwareUrlsInfo,
-  WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -112,27 +111,12 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getVenuesList.url,
+          CommonRbacUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venueList))),
-        rest.get(
-          WifiUrlsInfo.getApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
-        rest.get(
-          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getApValidChannel.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getVenueRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
-        rest.put(
-          WifiUrlsInfo.updateApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json({}))),
         rest.post(
           FirmwareUrlsInfo.getApModelFamilies.url,
           (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
-        rest.get(CommonUrlsInfo.getVenue.url,
+        rest.get(CommonRbacUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueData))),
         // rbac
         rest.get(
@@ -426,31 +410,10 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getVenuesList.url,
+          CommonRbacUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venueList))),
-        rest.get(CommonUrlsInfo.getVenue.url,
+        rest.get(CommonRbacUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
-        //rest.get(
-        //  WifiUrlsInfo.getAp.url,
-        //  (_, res, ctx) => res(ctx.json(r760Ap))),
-        //rest.get(
-        //  WifiUrlsInfo.getApCapabilities.url,
-        //  (_, res, ctx) => res(ctx.json(triBandApCap))),
-        rest.get(
-          WifiUrlsInfo.getApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
-        rest.get(
-          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getApValidChannel.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getVenueRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
-        rest.put(
-          WifiUrlsInfo.updateApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json({}))),
         rest.post(
           FirmwareUrlsInfo.getApModelFamilies.url,
           (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
@@ -590,26 +553,10 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getVenuesList.url,
+          CommonRbacUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venueList))),
-        rest.get(CommonUrlsInfo.getVenue.url,
+        rest.get(CommonRbacUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
-        rest.get(
-          WifiUrlsInfo.getApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
-        rest.get(
-          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getApValidChannel.url,
-          (_, res, ctx) => res(ctx.json(validRadioChannels))),
-        rest.get(
-          WifiUrlsInfo.getVenueRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
-        rest.put(
-          WifiUrlsInfo.updateApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json({}))),
-        // rbac
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),

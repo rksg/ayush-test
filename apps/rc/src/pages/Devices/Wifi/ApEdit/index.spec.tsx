@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
-import _         from 'lodash'
+import { omit }  from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { apApi, venueApi }        from '@acx-ui/rc/services'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { apApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
@@ -125,17 +125,12 @@ jest.mock('./AdvancedTab', () => () => {
   return <div data-testid='AdvancedTab' />
 })
 
-const excludedFlags = [
-  Features.WIFI_RBAC_API
-]
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockServer.use(
-      // rbac API
       rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -152,9 +147,6 @@ describe('ApEdit', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
-      rest.get(
-        WifiUrlsInfo.getApClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
       rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -245,7 +237,7 @@ describe('ApEdit', () => {
           (_req, res, ctx) => res(ctx.json({
             ...deviceAps,
             data: [{
-              ...(_.omit(deviceAps?.data?.[0], ['model']))
+              ...(omit(deviceAps?.data?.[0], ['model']))
             }]
           })))
       )
@@ -307,8 +299,6 @@ describe('ApEdit', () => {
     })
 
     describe('Ap Edit - Radio', () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
-
       mockServer.use(
         rest.get(
           WifiRbacUrlsInfo.getApValidChannel.url,
