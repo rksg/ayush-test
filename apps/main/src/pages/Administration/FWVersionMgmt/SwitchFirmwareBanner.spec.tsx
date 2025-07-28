@@ -35,8 +35,6 @@ describe('Switch Firmware Banner', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-
-
   it('should render correctly', async () => {
     render(
       <Provider>
@@ -45,11 +43,11 @@ describe('Switch Firmware Banner', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    await screen.findByText('10.0.10b')
-    await screen.findByText('9.0.10h_cd2')
+    screen.getByText('10.0.10b')
+    screen.getByText('9.0.10h_cd2')
 
     await userEvent.click(await screen.findByText('Show more'))
     await screen.findByText('10.0.10c_cd1')
-    await screen.findByText('9.0.10d_b262')
+    screen.getByText('9.0.10d_b262')
   })
 })
