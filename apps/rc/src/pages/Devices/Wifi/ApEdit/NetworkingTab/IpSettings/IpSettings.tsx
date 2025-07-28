@@ -7,7 +7,14 @@ import { useParams }                                       from 'react-router-do
 import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
-import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }       from '@acx-ui/rc/utils'
+import {
+  APNetworkSettings,
+  networkWifiIpRegExp,
+  networkWifiDualModeIpRegExp,
+  subnetMaskIpRegExp,
+  dualModeSubnetMaskIpRegExp,
+  useSelectValidatorByIpModeFF
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
@@ -51,6 +58,11 @@ export function IpSettings (props: ApEditItemProps) {
   const [dynamicIpAddr, setDynamicIpAddr] = useState('')
   const [dynamicDns1, setDynamicDns1] = useState('')
   const [dynamicDns2, setDynamicDns2] = useState('')
+
+  // Use the hook to select the appropriate validator based on IP mode feature flag
+  const ipValidator = useSelectValidatorByIpModeFF(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
+  const subnetMaskValidator =
+    useSelectValidatorByIpModeFF(subnetMaskIpRegExp, dualModeSubnetMaskIpRegExp)
 
   const apIpTypes= [
     {
@@ -214,7 +226,7 @@ export function IpSettings (props: ApEditItemProps) {
                 label={$t({ defaultMessage: 'IP Address' })}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                  { validator: (_, value) => ipValidator(value) }
                 ]}
                 children={<Input disabled={!isAllowEdit} />}
               />
@@ -223,7 +235,7 @@ export function IpSettings (props: ApEditItemProps) {
                 label={$t({ defaultMessage: 'Network Mask' })}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => subnetMaskIpRegExp(value) }
+                  { validator: (_, value) => subnetMaskValidator(value) }
                 ]}
                 children={<Input disabled={!isAllowEdit} />}
               />
@@ -232,7 +244,7 @@ export function IpSettings (props: ApEditItemProps) {
                 label={$t({ defaultMessage: 'Gateway' })}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                  { validator: (_, value) => ipValidator(value) }
                 ]}
                 children={<Input disabled={!isAllowEdit} />}
               />
@@ -241,7 +253,7 @@ export function IpSettings (props: ApEditItemProps) {
                 label={$t({ defaultMessage: 'Primary DNS' })}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                  { validator: (_, value) => ipValidator(value) }
                 ]}
                 children={<Input disabled={!isAllowEdit} />}
               />
@@ -249,7 +261,7 @@ export function IpSettings (props: ApEditItemProps) {
                 name='secondaryDnsServer'
                 label={$t({ defaultMessage: 'Secondary DNS' })}
                 rules={[
-                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                  { validator: (_, value) => ipValidator(value) }
                 ]}
                 children={<Input disabled={!isAllowEdit} />}
               />

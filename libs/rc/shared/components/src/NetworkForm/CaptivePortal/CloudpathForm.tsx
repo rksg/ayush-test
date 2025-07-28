@@ -18,7 +18,9 @@ import {
   NetworkSaveData,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  URLProtocolRegExp
+  HttpURLRegExp,
+  HttpDualModeURLRegExp,
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -43,6 +45,9 @@ export function CloudpathForm () {
   const networkSecurity = useWatch('networkSecurity', form)
   const enableAccountingProxy = useWatch('enableAccountingProxy', form)
   const enableAccountingService = useWatch('enableAccountingService', form)
+
+  // Use the hook to select the appropriate validator based on IP mode feature flag
+  const urlValidator = useSelectValidatorByIpModeFF(HttpURLRegExp, HttpDualModeURLRegExp)
 
   useEffect(()=>{
     if((editMode || cloneMode) && data){
@@ -76,7 +81,7 @@ export function CloudpathForm () {
           name={['guestPortal','externalPortalUrl']}
           rules={
             [{ required: true, message: $t(validationMessages.validateURL) },
-              { validator: (_, value) => URLProtocolRegExp(value) }]
+              { validator: (_, value) => urlValidator(value) }]
           }
           label={<>
             {$t({ defaultMessage: 'Enrollment Workflow URL' })}

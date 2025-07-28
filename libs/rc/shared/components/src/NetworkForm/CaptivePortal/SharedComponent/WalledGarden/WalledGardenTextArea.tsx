@@ -10,7 +10,11 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button }                     from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { walledGardensRegExp }        from '@acx-ui/rc/utils'
+import {
+  walledGardensRegExp,
+  walledGardensDualModeRegExp,
+  useSelectValidatorByIpModeFF
+} from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 
@@ -121,6 +125,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
   }
 
   const [state, dispatch] = useReducer(actionRunner, statesCollection.initialState)
+  const walledGardensValidator = useSelectValidatorByIpModeFF(walledGardensRegExp, walledGardensDualModeRegExp)
 
   /**
    * Initialize the component state based on the current mode and props.
@@ -164,7 +169,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       name={['walledGardensString']}
       rules={[
         { required, message: $t({ defaultMessage: 'Walled Garden is required' }) },
-        { validator: (_, value) => walledGardensRegExp(value) }
+        { validator: (_, value) => walledGardensValidator(value) }
       ]}
       label={<>
         {$t({ defaultMessage: 'Walled Garden' })}

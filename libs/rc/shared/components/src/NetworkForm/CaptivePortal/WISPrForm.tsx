@@ -22,7 +22,9 @@ import {
   NetworkTypeEnum,
   Providers,
   Regions,
-  URLProtocolRegExp,
+  HttpURLRegExp,
+  HttpDualModeURLRegExp,
+  useSelectValidatorByIpModeFF,
   AuthRadiusEnum,
   WisprPage
 } from '@acx-ui/rc/utils'
@@ -64,6 +66,9 @@ export function WISPrForm () {
   const [isOtherProvider, setIsOtherProvider]=useState(false)
   const [isMspEc, setIsMspEc]=useState(false)
   const isDataPopulatedRef = useRef(false)
+
+  // Use the hook to select the appropriate validator based on IP mode feature flag
+  const urlValidator = useSelectValidatorByIpModeFF(HttpURLRegExp, HttpDualModeURLRegExp)
 
   const [state, dispatch] = useReducer(
     (curr: WISPrAuthAccServerState, incoming: WISPrAuthAccServerState) => incoming,
@@ -321,7 +326,7 @@ export function WISPrForm () {
           name={['guestPortal','wisprPage','captivePortalUrl']}
           rules={
             [{ required: true, message: $t(validationMessages.validateURL) },
-              { validator: (_, value) => URLProtocolRegExp(value) }]
+              { validator: (_, value) => urlValidator(value) }]
           }
           label={<>
             {$t({ defaultMessage: 'Captive Portal URL' })}
