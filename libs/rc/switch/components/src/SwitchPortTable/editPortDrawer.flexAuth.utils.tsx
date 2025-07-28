@@ -5,16 +5,6 @@ import {
   Descriptions
 } from '@acx-ui/components'
 import {
-  FlexAuthMessages,
-  FlexAuthVlanLabel,
-  FlexibleAuthentication,
-  SwitchDefaultVlan,
-  SwitchPortViewModel,
-  PortSettingModel
-} from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
-
-import {
   AuthenticationType,
   authenticationTypeLabel,
   AuthFailAction,
@@ -24,7 +14,17 @@ import {
   checkVlanDiffFromTargetVlan,
   PortControl,
   portControlTypeLabel
-} from '../FlexibleAuthentication'
+} from '@acx-ui/rc/components'
+import {
+  FlexAuthMessages,
+  FlexAuthVlanLabel,
+  FlexibleAuthentication,
+  SwitchDefaultVlan,
+  SwitchPortViewModel,
+  PortSettingModel
+} from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
+
 
 import {
   getDefaultVlanMapping,

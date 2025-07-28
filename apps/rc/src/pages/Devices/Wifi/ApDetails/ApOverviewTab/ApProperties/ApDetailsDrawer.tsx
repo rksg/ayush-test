@@ -9,14 +9,7 @@ import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@
 import { get }                                                           from '@acx-ui/config'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
-  defaultSwitchPayload,
-  EditPortDrawer,
-  getInactiveTooltip,
-  isLAGMemberPort,
-  SwitchLagModal,
-  SwitchLagParams,
-  isOperationalSwitchPort,
-  isStackPort
+  defaultSwitchPayload
 } from '@acx-ui/rc/components'
 import {
   useGetVenueQuery,
@@ -46,7 +39,16 @@ import {
   useApContext,
   ApLldpNeighbor,
   ApRfNeighbor } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import {
+  EditPortDrawer,
+  getInactiveTooltip,
+  isLAGMemberPort,
+  SwitchLagModal,
+  SwitchLagParams,
+  isOperationalSwitchPort,
+  isStackPort
+} from '@acx-ui/switch/components'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { useUserProfileContext, hasPermission }         from '@acx-ui/user'
 import { getOpsApi, CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'

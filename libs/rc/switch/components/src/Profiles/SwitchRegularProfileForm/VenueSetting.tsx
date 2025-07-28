@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
+import { useEnforcedStatus }      from '@acx-ui/rc/components'
 import {
   useGetCliFamilyModelsQuery,
   useGetSwitchTemplateCliFamilyModelsQuery,
@@ -27,7 +28,6 @@ import {
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { useTableQuery }                 from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 import * as UI                             from './styledComponents'

@@ -7,13 +7,11 @@ import {
   ConnectedClientsTable,
   defaultRbacClientPayload,
   defaultRbacNetworkPayload,
-  defaultSwitchClientPayload,
   defaultSwitchPayload,
   eventDefaultSearch,
   EventTable,
   NetworkTable,
   newDefaultApPayload,
-  ClientsTable as SwitchClientTable,
   SwitchTable,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
@@ -37,6 +35,10 @@ import {
   Venue,
   WifiNetwork
 } from '@acx-ui/rc/utils'
+import {
+  defaultSwitchClientPayload,
+  ClientsTable as SwitchClientTable
+} from '@acx-ui/switch/components'
 import { RequestPayload } from '@acx-ui/types'
 import {
   useTableQuery

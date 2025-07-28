@@ -6,6 +6,12 @@ import _                         from 'lodash'
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
+  ConfigurationProfileFormContext,
+  DefaultVlanDrawer,
+  VlanSettingDrawer,
+  checkVlanRange
+} from '@acx-ui/rc/components'
+import {
   Vlan,
   SwitchModel,
   SpanningTreeProtocolName,
@@ -15,9 +21,6 @@ import {
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getIntl }                       from '@acx-ui/utils'
 
-import { DefaultVlanDrawer }                 from '../../DefaultVlanDrawer'
-import { VlanSettingDrawer, checkVlanRange } from '../../VlanSettingDrawer'
-import { ConfigurationProfileFormContext }   from '../ConfigurationProfileFormContext'
 
 import * as UI from './styledComponents'
 

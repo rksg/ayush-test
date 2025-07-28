@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal }   from '@acx-ui/components'
 import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }                     from '@acx-ui/rc/components'
 import {
   useAddSwitchConfigProfileMutation, // wait
   useUpdateSwitchConfigProfileMutation, //wait
@@ -31,7 +32,6 @@ import {
   useConfigTemplate } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
