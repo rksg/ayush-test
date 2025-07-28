@@ -7,7 +7,7 @@ import { mockServer, render, screen }                                           
 import { RolesEnum, WifiScopes }                                                 from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                                        from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateList, certificateTemplateList, serverCertificateList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateList, certificateTemplateList, serverCertificateList } from '../__tests__/fixtures'
 
 import CertificateTemplateList from './CertificateTemplateList'
 

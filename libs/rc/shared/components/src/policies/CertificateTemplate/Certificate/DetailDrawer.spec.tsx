@@ -5,7 +5,7 @@ import { CertificateCategoryType, CertificateUrls } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
-import { certificate, certificateAuthority, certificateAuthorityList, certificateTemplate } from '../__test__/fixtures'
+import { certificate, certificateAuthority, certificateAuthorityList, certificateTemplate } from '../__tests__/fixtures'
 
 import { DetailDrawer } from './DetailDrawer'
 
