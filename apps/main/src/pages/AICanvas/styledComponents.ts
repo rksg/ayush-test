@@ -415,6 +415,7 @@ display: flex;
         .chat-bubble-text {
           display: flex;
           align-items: center;
+          gap: 3px;
         }
       }
       .chat-bubble {
