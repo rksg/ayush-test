@@ -127,15 +127,26 @@ describe('AP Ext Antenna Settings', () => {
         WifiUrlsInfo.getVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json(mockVenueExtAntenna))),
       rest.get(
+        WifiRbacUrlsInfo.getApGroupExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(mockVenueExtAntenna))),
+      rest.get(
         WifiRbacUrlsInfo.getApExternalAntennaSettings.url,
         (_, res, ctx) => res(ctx.json(mockApExtAntenna))),
       rest.put(
         WifiRbacUrlsInfo.updateApExternalAntennaSettings.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiRbacUrlsInfo.getApExternalAntennaSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json(mockApExtAntennaV1001))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApExternalAntennaSettingsV1001.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
 
   it('should render correctly when use venue settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>
@@ -157,6 +168,8 @@ describe('AP Ext Antenna Settings', () => {
   })
 
   it('should render correctly when use custom settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>

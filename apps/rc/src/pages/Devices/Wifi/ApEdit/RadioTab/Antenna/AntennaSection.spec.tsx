@@ -115,6 +115,12 @@ describe('AP Antenna Type Section', () => {
         WifiUrlsInfo.getVenueAntennaType.url,
         (_, res, ctx) => res(ctx.json(mockVenueAntennaType))),
       rest.get(
+        WifiRbacUrlsInfo.getApGroupAntennaType.url,
+        (_, res, ctx) => res(ctx.json(mockApGroupAntennaType))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApAntennaTypeSettingsV1001.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
         WifiUrlsInfo.getApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json(mockApAntennaType))),
       rest.put(
@@ -124,6 +130,8 @@ describe('AP Antenna Type Section', () => {
   })
 
   it('should render correctly when use venue settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>
@@ -143,6 +151,8 @@ describe('AP Antenna Type Section', () => {
   })
 
   it('should render correctly when use custom settings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
     render(
       <Provider>
         <ApEditContext.Provider value={defaultApEditCtxData}>
@@ -154,7 +164,7 @@ describe('AP Antenna Type Section', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
-    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ } ))
 

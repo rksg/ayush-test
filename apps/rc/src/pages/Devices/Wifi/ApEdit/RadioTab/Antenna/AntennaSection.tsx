@@ -97,10 +97,12 @@ export function AntennaSection () {
           enableRbac: isUseRbacApi
         }, true).unwrap())
 
-        const apGroupAntType = (await getApGroupAntennaType({
-          // eslint-disable-next-line max-len
-          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase3Enabled
-        }, true).unwrap())
+        let apGroupAntType = { antennaTypeSettings: [] as VenueApAntennaTypeSettings[] }
+        if (apDetails.apGroupId && isApGroupMoreParameterPhase3Enabled) {
+          apGroupAntType = (await getApGroupAntennaType({
+            params: { venueId, apGroupId: apDetails.apGroupId }
+          }, true).unwrap())
+        }
 
         // eslint-disable-next-line max-len
         const findSettings = find(
@@ -111,6 +113,7 @@ export function AntennaSection () {
           venueAntennaTypeRef.current = findSettings
         }
 
+        console.log('apAntType', apAntType)
         const venueOrApGroupSettings = isApGroupMoreParameterPhase3Enabled
           ? (apAntType as ApAntennaTypeSettingsV1001).useVenueOrApGroupSettings
           : (apAntType as ApAntennaTypeSettings).useVenueSettings

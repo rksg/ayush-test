@@ -110,10 +110,12 @@ export function ExternalAntennaSettings () {
 
         const venueExtAnt = (await getVenueExtAntenna({ params: { venueId } }, true).unwrap())
 
-        const apGroupExtAnt = (await getApGroupExtAntenna({
-          // eslint-disable-next-line max-len
-          params: { venueId, apGroupId: apDetails.apGroupId }, skip: !isApGroupMoreParameterPhase3Enabled
-        }, true).unwrap())
+        let apGroupExtAnt = { externalAntennaSettings: [] as ExternalAntenna[] }
+        if (apDetails.apGroupId && isApGroupMoreParameterPhase3Enabled) {
+          apGroupExtAnt = (await getApGroupExtAntenna({
+            params: { venueId, apGroupId: apDetails.apGroupId }
+          }, true).unwrap())
+        }
 
         // eslint-disable-next-line max-len
         const findSettings = find(
