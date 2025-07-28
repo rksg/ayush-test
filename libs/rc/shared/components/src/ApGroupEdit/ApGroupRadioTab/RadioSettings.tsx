@@ -1156,7 +1156,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     // 5. update EditContext
     handleChange()
   }
-  console.log('existingTriBandApModels', existingTriBandApModels)
   return (
     <Loader states={[{
       isLoading: isLoadingVenueData || isLoadingApGroupData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData)),
