@@ -6,7 +6,7 @@ import { CommonUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                           from '@acx-ui/store'
 import { mockRestApiQuery, render, waitFor, screen } from '@acx-ui/test-utils'
 
-import { mockActivityApCompatibilityTable } from '../__test__/fixtures'
+import { mockActivityApCompatibilityTable } from '../__tests__/fixtures'
 
 import {  ActivityApCompatibilityTable } from '.'
 
