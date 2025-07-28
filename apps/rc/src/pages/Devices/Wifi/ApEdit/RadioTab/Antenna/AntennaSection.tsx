@@ -113,7 +113,6 @@ export function AntennaSection () {
           venueAntennaTypeRef.current = findSettings
         }
 
-        console.log('apAntType', apAntType)
         const venueOrApGroupSettings = isApGroupMoreParameterPhase3Enabled
           ? (apAntType as ApAntennaTypeSettingsV1001).useVenueOrApGroupSettings
           : (apAntType as ApAntennaTypeSettings).useVenueSettings
