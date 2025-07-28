@@ -11,7 +11,7 @@ import {
   mockServer
 } from '@acx-ui/test-utils'
 
-import { mock_payload }   from './__test__/WlanDetailStepFixtures'
+import { mock_payload }   from './__tests__/WlanDetailStepFixtures'
 import { WlanDetailStep } from './WlanDetailStep'
 
 const mockedUsedNavigate = jest.fn()
