@@ -119,7 +119,7 @@ export default function SnmpAgentInstancesTable () {
             columns={columnsForVenueTable}
             pagination={tableQueryForVenueActivation.pagination}
             dataSource={tableQueryForVenueActivation.data?.data}
-            rowKey='apId'
+            rowKey='venueId'
           />
 
         </div>
