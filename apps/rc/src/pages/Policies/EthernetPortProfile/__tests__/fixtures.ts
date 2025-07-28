@@ -56,42 +56,6 @@ export const mockedApsResult = {
   }]
 }
 
-export const mockedSwitchResult = {
-  totalCount: 4,
-  page: 1,
-  data: [
-    {
-      clientMac: 'D4:C1:9E:14:BF:7B',
-      switchId: 'd4:c1:9e:14:bf:7b',
-      switchName: 'ICX7650-48ZP Router',
-      switchPort: '1/1/26',
-      switchSerialNumber: 'EZC3307P010'
-    },
-    {
-      clientMac: '00:33:58:2D:3F:50',
-      switchId: '3c:46:a1:13:9e:7a',
-      switchName: 'ICX8200-24P Router',
-      switchPort: '2/1/5',
-      switchSerialNumber: 'FND4342U0PR'
-    },
-    {
-      clientMac: '38:EA:A7:75:CB:69',
-      switchId: 'd4:c1:9e:14:bf:7b',
-      switchName: 'ICX7650-48ZP Router',
-      switchPort: '1/1/25',
-      switchSerialNumber: 'EZC3307P010'
-    },
-    {
-      clientMac: '64:3E:8C:39:9B:A0',
-      switchId: '3c:46:a1:13:9e:7a',
-      switchName: 'ICX8200-24P Router',
-      switchPort: '2/1/1',
-      switchSerialNumber: 'FND4342U0PR'
-    }
-  ]
-}
-
-
 export const dummyEthernetPortProfileTrunk = {
   id: mockEthernetPortProfileId,
   name: mockEthernetPortProfileId,

@@ -87,13 +87,6 @@ describe('EthernetPortProfileTable', ()=>{
         (req, res, ctx) => {
           return res(ctx.json(mockedApsResult))
         }
-      ),
-
-      rest.post(
-        SwitchRbacUrlsInfo.getSwitchClientList.url,
-        (req, res, ctx) => {
-          return res(ctx.json(mockedSwitchResult))
-        }
       )
     )
   })
