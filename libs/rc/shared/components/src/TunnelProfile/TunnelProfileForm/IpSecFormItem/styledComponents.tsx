@@ -10,7 +10,7 @@ export const StyledSpace = styled(Space)`
   }
 `
 
-export const IpSecFormOutline = styled.div`
+export const IpsecFormOutline = styled.div`
     position: absolute;
     background: transparent;
     height: calc(100% - 20px);
@@ -31,7 +31,7 @@ export const StyledTunnelEncryptionWrapper = styled(Col)`
   }
 `
 
-export const StyledIpSecProfileViewWrapper = styled.div`
+export const StyledIpsecProfileViewWrapper = styled.div`
   background-color: #f5f5f5;
   padding: 16px;
   border-radius: 6px;

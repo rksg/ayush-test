@@ -10,18 +10,18 @@ import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import IpsecDrawer         from '../../../policies/Ipsec/IpsecForm/IpsecDrawer'
 import { FormItemWrapper } from '../styledComponents'
 
-import { IpSecProfileSelector } from './IpSecProfileSelector'
-import { IpSecProfileView }     from './IpSecProfileView'
+import { IpsecProfileSelector } from './IpsecProfileSelector'
+import { IpsecProfileView }     from './IpsecProfileView'
 import * as UI                  from './styledComponents'
 
-interface IpSecFormItemProps {
+interface IpsecFormItemProps {
   disabled?: boolean
   checked?: boolean
   onChange?: (checked: boolean) => void
   handleTunnelEncryptionChange?: (checked: boolean) => void
 }
 
-export const IpSecFormItem = (props: IpSecFormItemProps) => {
+export const IpsecFormItem = (props: IpsecFormItemProps) => {
   const { $t } = useIntl()
   const { disabled = false, handleTunnelEncryptionChange } = props
   const [ipsecDrawerVisible, setIpsecDrawerVisible] = useState(false)
@@ -59,7 +59,7 @@ export const IpSecFormItem = (props: IpSecFormItemProps) => {
   }
 
   return <div>
-    {tunnelEncryptionEnabled && <UI.IpSecFormOutline />}
+    {tunnelEncryptionEnabled && <UI.IpsecFormOutline />}
     <Row style={{ marginBottom: tunnelEncryptionEnabled ? '20px' : '0px' }}>
       <UI.StyledTunnelEncryptionWrapper span={24}>
         <UI.StyledSpace align='center'>
@@ -89,7 +89,7 @@ export const IpSecFormItem = (props: IpSecFormItemProps) => {
               }
             ]}
           >
-            <IpSecProfileSelector
+            <IpsecProfileSelector
               options={ipsecOptions}
               isLoading={isIpsecLoading}
               disabled={disabled}
@@ -103,7 +103,7 @@ export const IpSecFormItem = (props: IpSecFormItemProps) => {
             // eslint-disable-next-line max-len
             const selectedIpsecProfile = find(ipsecData, { id: getFieldValue('ipsecProfileId') })
             return <Col span={24}>
-              <IpSecProfileView selectedIpsecProfile={selectedIpsecProfile} />
+              <IpsecProfileView selectedIpsecProfile={selectedIpsecProfile} />
             </Col>}
           }
         </Form.Item>

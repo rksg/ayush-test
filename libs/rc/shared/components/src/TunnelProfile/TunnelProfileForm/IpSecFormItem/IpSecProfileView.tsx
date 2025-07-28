@@ -7,7 +7,7 @@ import { IpsecViewData }                          from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
-export const IpSecProfileView = (props: {
+export const IpsecProfileView = (props: {
   selectedIpsecProfile: IpsecViewData | undefined
 }) => {
   const { $t } = useIntl()
@@ -15,7 +15,7 @@ export const IpSecProfileView = (props: {
     selectedIpsecProfile
   } = props
 
-  return <UI.StyledIpSecProfileViewWrapper>
+  return <UI.StyledIpsecProfileViewWrapper>
     <Row gutter={[0, 12]}>
       {selectedIpsecProfile
         ? <>
@@ -65,5 +65,5 @@ export const IpSecProfileView = (props: {
         </Col>
       }
     </Row>
-  </UI.StyledIpSecProfileViewWrapper>
+  </UI.StyledIpsecProfileViewWrapper>
 }

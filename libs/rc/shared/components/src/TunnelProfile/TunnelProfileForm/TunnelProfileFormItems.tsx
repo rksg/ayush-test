@@ -36,7 +36,7 @@ import { ApCompatibilityToolTip }                         from '../../ApCompatib
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility'
 import { useIsEdgeFeatureReady }                          from '../../useEdgeActions'
 
-import { IpSecFormItem }  from './IpSecFormItem'
+import { IpsecFormItem }  from './IpsecFormItem'
 import { MessageMapping } from './MessageMapping'
 import * as UI            from './styledComponents'
 
@@ -94,7 +94,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
 
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
-  const isEdgeIpsecVxlanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
   const { isDefaultTunnelProfile = false } = props
   const form = Form.useFormInstance()
@@ -210,7 +210,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
       venueId: edgeData?.venueId
     })
 
-    if (isEdgeIpsecVxlanReady && isHaAbCluster) {
+    if (isEdgeIpsecVxLanReady && isHaAbCluster) {
       form.setFieldValue('tunnelEncryptionEnabled', false)
     }
 
@@ -358,7 +358,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             </Row>
           </Col>
         }
-        { isEdgeIpsecVxlanReady &&
+        { isEdgeIpsecVxLanReady &&
         (!isEdgeL2greReady || !!!isL2greType) &&
         <Col span={14}>
           <Form.Item noStyle dependencies={['type', 'edgeClusterId']}>
@@ -368,7 +368,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
               // eslint-disable-next-line max-len
               const isHaAbCluster = clusterData?.find(item => item.clusterId === edgeClusterId)?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
-              return <IpSecFormItem
+              return <IpsecFormItem
                 disabled={isDefaultTunnelProfile ||
                 !!disabledFields?.includes('tunnelEncryptionEnabled') ||
                  nsgType === NetworkSegmentTypeEnum.VXLAN ||
@@ -405,7 +405,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
               {({ getFieldValue }) => {
                 const netSegType = getFieldValue('type')
                 // eslint-disable-next-line max-len
-                const tunnelEncryptionEnabled = isEdgeIpsecVxlanReady &&getFieldValue('tunnelEncryptionEnabled')
+                const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady &&getFieldValue('tunnelEncryptionEnabled')
 
                 return <Form.Item
                   name='natTraversalEnabled'

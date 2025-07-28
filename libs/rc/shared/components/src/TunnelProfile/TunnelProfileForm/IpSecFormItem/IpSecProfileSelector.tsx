@@ -3,7 +3,7 @@ import { useIntl }       from 'react-intl'
 
 import { Select } from '@acx-ui/components'
 
-export const IpSecProfileSelector = (props: {
+export const IpsecProfileSelector = (props: {
   value?: string  // provided by form
   onChange?: (value: string) => void // provided by form
   options: { label: string, value: string }[]
