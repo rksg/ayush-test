@@ -55,6 +55,13 @@ const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo
 }
 
+const customHeaders = {
+  v2: {
+    'Content-Type': 'application/vnd.ruckus.v2+json',
+    'Accept': 'application/vnd.ruckus.v2+json'
+  }
+}
+
 
 export function useDelegateToMspEcPath () {
   const delegateToMspEcPath = async (ecTenantId: string) => {
@@ -1077,6 +1084,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getCalculatedLicencesV2: build.mutation<LicenseCalculatorDataResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const header = customHeaders.v2
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, header)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
     updateMspEcDelegations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspRbacUrlsInfo.updateMspEcDelegations, params)
@@ -1269,6 +1286,7 @@ export const {
   useUpdateSolutionTokenSettingsMutation,
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
+  useGetCalculatedLicencesV2Mutation,
   useUpdateMspEcDelegationsMutation,
   useUpdateMspMultipleEcDelegationsMutation,
   useGetLicenseMileageReportsQuery,

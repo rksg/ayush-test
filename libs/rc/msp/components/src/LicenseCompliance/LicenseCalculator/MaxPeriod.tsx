@@ -5,13 +5,13 @@ import { isNumber }                                              from 'lodash'
 import moment                                                    from 'moment'
 import { useIntl }                                               from 'react-intl'
 
-import { Button, DatePicker, Loader, showToast } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { useGetCalculatedLicencesMutation }      from '@acx-ui/msp/services'
-import { LicenseCalculatorData }                 from '@acx-ui/msp/utils'
-import { EntitlementDeviceType }                 from '@acx-ui/rc/utils'
-import { noDataDisplay }                         from '@acx-ui/utils'
+import { Button, DatePicker, Loader, showToast }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
+import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
+import { LicenseCalculatorData }                                                from '@acx-ui/msp/utils'
+import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                        from '@acx-ui/utils'
 
 export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
@@ -19,17 +19,27 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const [ maxPeriod, setMaxPeriod ] = useState<string>()
 
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+  const multiLicenseFFToggled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+
+  const hasSolutionTokenLicenses = multiLicenseFFToggled && solutionTokenFFToggled
 
   const [
     getCalculatedLicense,
     { isLoading }
   ] = useGetCalculatedLicencesMutation()
 
+  const [
+    getCalculatedLicenseV2,
+    { isLoading: isLoadingV2 }
+  ] = useGetCalculatedLicencesV2Mutation()
+
   async function calculatePeriod () {
     form.validateFields()
     const startDate = form.getFieldsValue().startDate
     const noOfLicenses = form.getFieldsValue().noOfLicenses
     const isTrial = form.getFieldsValue().licenses === 'extendedTrialLicenses'
+    const isSltn = hasSolutionTokenLicenses &&
+      form.getFieldsValue().licenses === 'solutionTokenLicenses'
     if (startDate && isNumber(noOfLicenses)) {
       const payload = {
         operator: 'MAX_PERIOD',
@@ -37,24 +47,41 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
         quantity: noOfLicenses,
         filters: {
           usageType: 'ASSIGNED',
-          licenseType: EntitlementDeviceType.APSW,
+          licenseType: isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW,
           isTrial
         }
       }
-      await getCalculatedLicense({ payload })
-        .unwrap()
-        .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
-          if (!message) {
-            setMaxPeriod(data?.expirationDate)
-          } else {
-            setMaxPeriod('')
-            showError(message)
-          }
-        }).catch(error => {
-          if(error.data.message) {
-            showError(error.data.message)
-          }
-        })
+      if( multiLicenseFFToggled ) {
+        await getCalculatedLicenseV2({ payload })
+          .unwrap()
+          .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+            if (!message) {
+              setMaxPeriod(data?.expirationDate)
+            } else {
+              setMaxPeriod('')
+              showError(message)
+            }
+          }).catch(error => {
+            if(error.data.message) {
+              showError(error.data.message)
+            }
+          })
+      } else {
+        await getCalculatedLicense({ payload })
+          .unwrap()
+          .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+            if (!message) {
+              setMaxPeriod(data?.expirationDate)
+            } else {
+              setMaxPeriod('')
+              showError(message)
+            }
+          }).catch(error => {
+            if(error.data.message) {
+              showError(error.data.message)
+            }
+          })
+      }
     }
   }
 
@@ -82,6 +109,10 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
             <Radio value={'extendedTrialLicenses'}>{solutionTokenFFToggled
               ? $t({ defaultMessage: 'Device Networking Extended Trial Licenses' })
               : $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
+            { hasSolutionTokenLicenses &&
+              <Radio value={'solutionTokenLicenses'}>{
+                $t({ defaultMessage: 'Solution Tokens Paid Licenses' }) }</Radio>
+            }
           </Space>
         </Radio.Group>}/> }
       <Form.Item
@@ -142,7 +173,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
       <Col>
         <Typography.Title style={{
           margin: '0px'
-        }}> <Loader states={[{ isLoading }]}>
+        }}> <Loader states={[{ isLoading: isLoading || isLoadingV2 }]}>
             { maxPeriod ? formatter(DateFormatEnum.DateFormat)(maxPeriod) : noDataDisplay }
           </Loader> </Typography.Title>
       </Col>

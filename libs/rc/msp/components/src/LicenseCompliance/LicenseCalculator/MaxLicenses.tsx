@@ -4,12 +4,12 @@ import { Col, DatePickerProps, Form, Radio, Row, Space, Typography } from 'antd'
 import moment                                                        from 'moment'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, DatePicker, Loader, showToast } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useGetCalculatedLicencesMutation }      from '@acx-ui/msp/services'
-import { LicenseCalculatorData }                 from '@acx-ui/msp/utils'
-import { EntitlementDeviceType }                 from '@acx-ui/rc/utils'
-import { noDataDisplay }                         from '@acx-ui/utils'
+import { Button, DatePicker, Loader, showToast }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
+import { LicenseCalculatorData }                                                from '@acx-ui/msp/utils'
+import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                        from '@acx-ui/utils'
 
 export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
@@ -18,6 +18,8 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const [ maxLicenceCount, setMaxLicenceCount ] = useState<number>()
 
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+  const multiLicenseFFToggled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+  const hasSolutionTokenLicenses = multiLicenseFFToggled && solutionTokenFFToggled
 
   const onDateChange: DatePickerProps['onChange'] = (dateString: moment.Moment | null) => {
     if (dateString) {
@@ -31,11 +33,19 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
     { isLoading }
   ] = useGetCalculatedLicencesMutation()
 
+  const [
+    getCalculatedLicenseV2,
+    { isLoading: isLoadingV2 }
+  ] = useGetCalculatedLicencesV2Mutation()
+
   async function calculateLicences () {
     form.validateFields()
     const startDate = form.getFieldsValue().startDate
     const endDate = form.getFieldsValue().endDate
     const isTrial = form.getFieldsValue().licenses === 'extendedTrialLicenses'
+    const isSltn = hasSolutionTokenLicenses &&
+      form.getFieldsValue().licenses === 'solutionTokenLicenses'
+
     if (startDate && endDate) {
       const diff = startDate.diff(endDate)
       if (diff < 0) {
@@ -45,25 +55,42 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
           expirationDate: moment(endDate).format('YYYY-MM-DD'),
           filters: {
             usageType: 'ASSIGNED',
-            licenseType: EntitlementDeviceType.APSW,
+            licenseType: isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW,
             isTrial
           }
         }
+        if( multiLicenseFFToggled ) {
+          await getCalculatedLicenseV2({ payload })
+            .unwrap()
+            .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+              if (!message) {
+                setMaxLicenceCount(data?.quantity || 0)
+              } else {
+                setMaxLicenceCount(undefined)
+                showError(message)
+              }
+            }).catch(error => {
+              if(error.data.message) {
+                showError(error.data.message)
+              }
+            })
+        } else {
+          await getCalculatedLicense({ payload })
+            .unwrap()
+            .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+              if (!message) {
+                setMaxLicenceCount(data?.quantity || 0)
+              } else {
+                setMaxLicenceCount(undefined)
+                showError(message)
+              }
+            }).catch(error => {
+              if(error.data.message) {
+                showError(error.data.message)
+              }
+            })
+        }
 
-        await getCalculatedLicense({ payload })
-          .unwrap()
-          .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
-            if (!message) {
-              setMaxLicenceCount(data?.quantity || 0)
-            } else {
-              setMaxLicenceCount(undefined)
-              showError(message)
-            }
-          }).catch(error => {
-            if(error.data.message) {
-              showError(error.data.message)
-            }
-          })
       }
     }
   }
@@ -93,6 +120,10 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
               solutionTokenFFToggled
                 ? $t({ defaultMessage: 'Device Networking Extended Trial Licenses' })
                 : $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
+            { hasSolutionTokenLicenses &&
+              <Radio value={'solutionTokenLicenses'}>{
+                $t({ defaultMessage: 'Solution Tokens Paid Licenses' }) }</Radio>
+            }
           </Space>
         </Radio.Group>}/>}
       <Form.Item
@@ -159,7 +190,7 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
       <Col>
         <Typography.Title style={{
           margin: '0px'
-        }}> <Loader states={[{ isLoading }]}>
+        }}> <Loader states={[{ isLoading: isLoadingV2 || isLoading }]}>
             {maxLicenceCount || noDataDisplay}
           </Loader> </Typography.Title>
       </Col>
