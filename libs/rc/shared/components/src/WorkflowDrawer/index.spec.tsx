@@ -49,8 +49,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 
 describe('WorkflowDrawer', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockUpdateWorkflowApi.mockClear()
     mockServer.use(
       rest.post(

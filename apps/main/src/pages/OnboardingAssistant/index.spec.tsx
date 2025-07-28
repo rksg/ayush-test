@@ -6,7 +6,7 @@ import { IntlProvider }              from 'react-intl'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { Provider }               from '@acx-ui/store'
 
-import OnboardingAssistantModal from '.'
+import OnboardingAssistantModal, { RuckusAiStepsEnum } from '.'
 
 jest.mock('./BasicInformationPage', () => () => <div>BasicInformationPage Component</div>)
 jest.mock('./Congratulations', () => () => <div>Congratulations Component</div>)
@@ -72,6 +72,19 @@ describe('OnboardingAssistantModal', () => {
     expect(screen.getByText('WelcomePage Component')).toBeInTheDocument()
   })
 
+  it('renders the configuration page', () => {
+    renderWithIntl(
+      <Provider>
+        <OnboardingAssistantModal
+          visible={true}
+          setVisible={() => {}}
+          initStep={RuckusAiStepsEnum.CONFIGURATION} />
+      </Provider>
+    )
+
+    expect(screen.getByText('RuckusAiWizard Component')).toBeInTheDocument()
+  })
+
   it('navigates through steps and validates form actions', async () => {
     renderWithIntl(
       <Provider>
@@ -86,6 +99,13 @@ describe('OnboardingAssistantModal', () => {
     await screen.findByText('VerticalPage Component')
 
     const nextButton = screen.getByRole('button', { name: 'Next' })
+    fireEvent.click(nextButton)
+    await screen.findByText('BasicInformationPage Component')
+
+    const backButton = screen.getByRole('button', { name: 'Back' })
+    fireEvent.click(backButton)
+    await screen.findByText('VerticalPage Component')
+
     fireEvent.click(nextButton)
     await screen.findByText('BasicInformationPage Component')
 

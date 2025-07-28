@@ -31,6 +31,7 @@ interface WidgetListProps {
   groups?: Group[]
   removeShadowCard?: ()=>void
   changeWidgetProperty?: (data: WidgetProperty)=> void
+  chatOnly?: boolean
 }
 
 interface WidgetCategory {
@@ -133,7 +134,8 @@ export const getChartConfig = (data: WidgetListData) => {
   return ChartConfig[data.chartType]
 }
 
-export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, removeShadowCard }) => {
+export const DraggableChart: React.FC<WidgetListProps> = (
+  { data, groups, removeShadowCard, chatOnly }) => {
   const { $t } = useIntl()
   const canDragtoCanvas = () => {
     if(groups) {
@@ -182,12 +184,52 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
     preview(getEmptyImage(), { captureDraggingState: true })
   }, [preview])
 
-  const getChartHeight = () => {
-    if(data.chartType === 'bar') {
-      return data?.chartOption?.source?.length > 30 ? '500px' : '250px'
+  const getChartHeightWidth = (data: WidgetListData, chatOnly: boolean) => {
+    if(chatOnly) {
+      if(data.chartType === 'table') {
+        return {
+          height: '400px',
+          width: '90%'
+        }
+      } else if(data.chartType === 'line') {
+        return {
+          height: '330px',
+          width: '600px'
+        }
+      } else if(data.chartType === 'bar') {
+        let height = '300px'
+        let width = '600px'
+        if(data?.chartOption?.source?.length > 30) {
+          height = '500px'
+        }else if(data?.chartOption?.source?.length > 15) {
+          height = '400px'
+        }
+        return {
+          height,
+          width
+        }
+      }
+      return { // pie chart
+        height: '245px',
+        width: '300px'
+      }
+    } else {
+      let height = '165px'
+      let width = '300px'
+      if(data.chartType === 'bar') {
+        height = data?.chartOption?.source?.length > 30 ? '500px' : '250px'
+      }
+      if(data.chartType === 'pie') {
+        width = '200px'
+      }
+      return {
+        height,
+        width
+      }
     }
-    return '165px'
   }
+
+  const { height, width } = getChartHeightWidth(data, !!chatOnly)
 
   return (
     <UI.DraggableChart
@@ -200,8 +242,8 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
       <div
         className='draggable-chart'
         style={{
-          height: getChartHeight(),
-          width: data.chartType === 'pie' ? '200px' : '300px' }}>
+          height,
+          width }}>
         <WidgetChart data={data} />
       </div>
     </UI.DraggableChart>

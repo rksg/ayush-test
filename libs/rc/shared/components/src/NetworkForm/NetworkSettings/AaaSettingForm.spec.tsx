@@ -10,7 +10,7 @@ import { Provider }                                                             
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor }      from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                                                from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__tests__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
