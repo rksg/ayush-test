@@ -206,7 +206,8 @@ export function IncidentTable ({ filters }: {
   const queryResults = useIncidentsListQuery({ ...filters, toggles })
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
-  const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const [filteredData, setFilteredData] = useState<IncidentNodeData>(queryResults.data ?? [])
+  const [drawerSelection, setDrawerSelection] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident, { isLoading }] = useMuteIncidentsMutation()
   const [selectedRowsData, setSelectedRowsData] = useState<IncidentRowData[]>(
@@ -436,9 +437,8 @@ export function IncidentTable ({ filters }: {
           icon: <DownloadOutlined />,
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-          onClick: () => {
-            downloadIncidentList(queryResults.data as IncidentNodeData, ColumnHeaders, filters)
-          } }}
+          onClick: () => downloadIncidentList(filteredData, ColumnHeaders, filters)
+        }}
         rowSelection={
           hasRowSelection && {
             type: 'checkbox',
@@ -460,6 +460,7 @@ export function IncidentTable ({ filters }: {
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
+        onDisplayRowChange={setFilteredData}
         onResetState={() => setSelectedRowsData([])}
         filterableWidth={100}
         searchableWidth={240}
