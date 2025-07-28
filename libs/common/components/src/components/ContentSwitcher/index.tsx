@@ -37,7 +37,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
 
   const initValue = defaultValue || formInitValue
 
-  const options: SelectionControlOptionProps[] = tabDetails.map((tabDetail: TabDetail) => {
+  const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
       value: tabDetail.value,
