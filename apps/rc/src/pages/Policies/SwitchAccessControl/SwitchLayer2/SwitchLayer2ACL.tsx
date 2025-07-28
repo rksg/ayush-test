@@ -13,10 +13,12 @@ import {
 } from '@acx-ui/components'
 import { useDeleteLayer2AclMutation, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
 import {
+  macAclRulesParser
+} from '@acx-ui/rc/switch/utils'
+import {
   getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   MacAcl,
-  macAclRulesParser,
   PolicyOperation,
   PolicyType,
   SwitchUrlsInfo } from '@acx-ui/rc/utils'

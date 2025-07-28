@@ -10,19 +10,21 @@ import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }                  from '@acx-ui/rc/components'
 import { useBatchGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
-  AVAILABLE_SLOTS,
   compareSwitchVersion,
+  getSwitchModelGroup,
+  invalidVersionFor75Zippy,
+  invalidVersionFor81X,
+  invalidVersionFor82Av,
+  is7550Zippy,
+  isBabyRodanX,
+  isRodanAv
+} from '@acx-ui/rc/switch/utils'
+import {
+  AVAILABLE_SLOTS,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   SwitchFirmwareModelGroup,
-  getSwitchModelGroup,
-  SwitchFirmwareV1002,
-  invalidVersionFor82Av,
-  invalidVersionFor81X,
-  invalidVersionFor75Zippy,
-  isRodanAv,
-  isBabyRodanX,
-  is7550Zippy
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
 import * as UI                   from '../../styledComponents'
