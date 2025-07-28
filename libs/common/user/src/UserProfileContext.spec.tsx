@@ -534,6 +534,100 @@ describe('UserProfileContext', () => {
     expect(screen.queryByText(/POST:\/tenants\/chatbot\/idtoken/)).toBeVisible()
     expect(screen.queryByText(/PATCH:\/incidents\/{id}/)).toBeVisible()
   })
+
+  describe('isFeatureFlagsLoading state', () => {
+    const TestFeatureFlagsComponent = (props: TestUserProfileChildComponentProps) => {
+      const {
+        isFeatureFlagsLoading,
+        rbacOpsApiEnabled,
+        abacEnabled,
+        activityAllVenuesEnabled
+      } = props.userProfileCtx
+      return <>
+        <div>{`isFeatureFlagsLoading:${isFeatureFlagsLoading}`}</div>
+        <div>{`rbacOpsApiEnabled:${rbacOpsApiEnabled}`}</div>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`activityAllVenuesEnabled:${activityAllVenuesEnabled}`}</div>
+      </>
+    }
+
+    it('should handle isFeatureFlagsLoading state correctly', async () => {
+      services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+        return {
+          data: undefined,
+          isLoading: true,
+          isFetching: true
+        }
+      })
+
+      render(<TestUserProfile ChildComponent={TestFeatureFlagsComponent}/>, { wrapper, route })
+
+      expect(await screen.findByText('isFeatureFlagsLoading:true')).toBeVisible()
+      expect(screen.queryByText('rbacOpsApiEnabled:false')).toBeVisible()
+      expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    })
+
+    it('should handle feature flags loading completion', async () => {
+      services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+        return {
+          data: {
+            'abac-policies-toggle': true,
+            'acx-ui-rbac-allow-operations-api-toggle': true,
+            'acx-ui-activity-all-venues-toggle': false,
+            'acx-ui-selective-early-access-toggle': true
+          },
+          isLoading: false,
+          isFetching: false
+        }
+      })
+
+      render(<TestUserProfile ChildComponent={TestFeatureFlagsComponent}/>, { wrapper, route })
+      await checkDataRendered()
+
+      expect(await screen.findByText('isFeatureFlagsLoading:false')).toBeVisible()
+      expect(screen.queryByText('rbacOpsApiEnabled:true')).toBeVisible()
+      expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+      expect(screen.queryByText('activityAllVenuesEnabled:false')).toBeVisible()
+    })
+
+    it('should handle feature flags loading with partial data', async () => {
+      services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+        return {
+          data: {
+            'abac-policies-toggle': true,
+            // Missing rbacOpsApiEnabled flag
+            'acx-ui-activity-all-venues-toggle': false
+          },
+          isLoading: false,
+          isFetching: false
+        }
+      })
+
+      render(<TestUserProfile ChildComponent={TestFeatureFlagsComponent}/>, { wrapper, route })
+      await checkDataRendered()
+
+      expect(await screen.findByText('isFeatureFlagsLoading:false')).toBeVisible()
+      expect(screen.queryByText('rbacOpsApiEnabled:false')).toBeVisible() // default value
+      expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    })
+
+    it('should handle feature flags loading with undefined data', async () => {
+      services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+        return {
+          data: undefined,
+          isLoading: false,
+          isFetching: false
+        }
+      })
+
+      render(<TestUserProfile ChildComponent={TestFeatureFlagsComponent}/>, { wrapper, route })
+      await checkDataRendered()
+
+      expect(await screen.findByText('isFeatureFlagsLoading:false')).toBeVisible()
+      expect(screen.queryByText('rbacOpsApiEnabled:false')).toBeVisible() // default value
+      expect(screen.queryByText('abacEnabled:false')).toBeVisible() // default value
+    })
+  })
 })
 
 const checkDataRendered = async () => {

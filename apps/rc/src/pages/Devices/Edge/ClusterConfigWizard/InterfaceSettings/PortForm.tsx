@@ -15,11 +15,11 @@ import {
   edgeWanSyncIpModeValidator
 } from '@acx-ui/rc/utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { ClusterConfigWizardContext }      from '../ClusterConfigWizardDataProvider'
+import { getAllPhysicalInterfaceFormData } from '../utils'
 
 import { StyledHiddenFormItem }                                           from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
-import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()

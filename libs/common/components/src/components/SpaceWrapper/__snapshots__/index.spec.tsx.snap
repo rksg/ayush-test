@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SpaceWrapper Should render SpaceWrapper successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: auto;
+  height: auto;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
+  >
+    <div
+      class="ant-space-item"
+      style="margin-right: 8px;"
+    >
+      <div>
+        Child 1
+      </div>
+    </div>
+    <div
+      class="ant-space-item"
+    >
+      <div>
+        Child 2
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

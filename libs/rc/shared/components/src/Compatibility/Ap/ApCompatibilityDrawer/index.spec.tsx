@@ -16,7 +16,7 @@ import {
   mockApCompatibilitiesVenue,
   mockApCompatibilitiesNetwork,
   mockApFeatureCompatibilities
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 
 import { ApGeneralCompatibilityDrawer, ApCompatibilityType } from '.'
 

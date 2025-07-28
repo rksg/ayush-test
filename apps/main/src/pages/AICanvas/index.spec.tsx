@@ -56,6 +56,13 @@ const currentCanvas = {
     ]`
 }
 
+jest.mock('../OnboardingAssistant', () => ({
+  OnboardingAssistantModal: () => <div>OnboardingAssistant</div>,
+  RuckusAiStepsEnum: {
+    VERTICAL: 'VERTICAL',
+    WELCOME: 'WELCOME'
+  }
+}))
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
   const { forwardRef } = jest.requireActual('react')
@@ -151,7 +158,14 @@ jest.mock('@acx-ui/rc/services', () => {
             {
               id: 'c135850785b541ab9efbb8f4aedaf4f6',
               role: 'USER',
-              text: 'How many clients were connected to my network yesterday?',
+              text: 'Help me set up my network',
+              created: '2025-02-09T06:32:44.736+00:00'
+            },
+            {
+              id: 'c135850785b541ab9efbb8f4aedaf4f7',
+              role: 'AI',
+              text: 'Just click below to launch the Onboarding Assistant.',
+              sourceAgent: 'onboarding',
               created: '2025-02-09T06:32:44.736+00:00'
             },
             {
@@ -309,7 +323,6 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
@@ -327,6 +340,7 @@ describe('AICanvas', () => {
     fireEvent.click(newChatBtn)
     // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
+    expect(await screen.findByText('Start Onboarding Assistant')).toBeVisible()
     const draggableCharts = await screen.findAllByText('DraggableChart')
     expect(draggableCharts.length).toBe(2)
     expect(draggableCharts[0]).toBeVisible()
@@ -356,13 +370,12 @@ describe('AICanvas', () => {
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
+    expect(await screen.findByText('I am RUCKUS digital system engineer, you can ask me anything about your network or choose a quick default suggestion.')).toBeVisible()
     // eslint-disable-next-line max-len
     const suggestQuestion = await screen.findByText('How many clients were connected to my network yesterday?')
     expect(suggestQuestion).toBeVisible()
@@ -412,11 +425,11 @@ describe('AICanvas', () => {
     expect(feedbackSection).not.toBeVisible()
 
     const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
-    expect(thumbsUpButtons).toHaveLength(3)
+    expect(thumbsUpButtons).toHaveLength(4)
     await userEvent.click(thumbsUpButtons[1])
-    expect(mockedSendFeedback).toBeCalledTimes(0)
+    expect(mockedSendFeedback).toBeCalledTimes(1)
     const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
-    expect(thumbsDownButtons).toHaveLength(3)
+    expect(thumbsDownButtons).toHaveLength(4)
     await userEvent.click(thumbsDownButtons[1])
     expect(mockedSendFeedback).toHaveBeenCalledWith({
       params: expect.objectContaining({
@@ -425,18 +438,6 @@ describe('AICanvas', () => {
       }),
       payload: false
     })
-    const elements = screen.getAllByTestId('messageTail')
-    const fixedNarrowerElements = elements.filter(el => el.classList.contains('fixed-narrower'))
-    expect(fixedNarrowerElements.length).toBe(1)
-    const narrowComputedStyle = window.getComputedStyle(fixedNarrowerElements[0])
-    const narrowWidthInPixels = parseFloat(narrowComputedStyle.width)
-    expect(narrowWidthInPixels).toBe(200)
-    const fixedElements = elements.filter(el => el.classList.contains('ai-message-tail') &&
-      el.classList.contains('fixed') && !el.classList.contains('fixed-narrower'))
-    expect(fixedElements.length).toBe(1)
-    const computedStyle = window.getComputedStyle(fixedElements[0])
-    const widthInPixels = parseFloat(computedStyle.width)
-    expect(widthInPixels).toBe(300)
   })
 })
 

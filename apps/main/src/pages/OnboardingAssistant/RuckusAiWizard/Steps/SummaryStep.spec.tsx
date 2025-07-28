@@ -7,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mock_payload } from './__test__/SummaryStepFixtures'
+import { mock_payload } from './__tests__/SummaryStepFixtures'
 import { SummaryStep }  from './SummaryStep'
 
 

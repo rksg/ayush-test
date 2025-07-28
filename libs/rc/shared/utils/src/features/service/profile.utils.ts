@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
-import { defineMessage } from 'react-intl'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showActionModal } from 'libs/common/components/src/components/ActionModal'
+import { defineMessage }   from 'react-intl'
 
-import { showActionModal } from '@acx-ui/components'
-import { getIntl }         from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 const profileInUsedMessage = defineMessage({
   defaultMessage: `You are unable to {action} {count, plural,
