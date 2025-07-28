@@ -7,7 +7,7 @@ import { Provider }                               from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 
-import { certificateAuthorityList } from '../__test__/fixtures'
+import { certificateAuthorityList } from '../__tests__/fixtures'
 
 import MoreSettingsForm from './MoreSettingsForm'
 

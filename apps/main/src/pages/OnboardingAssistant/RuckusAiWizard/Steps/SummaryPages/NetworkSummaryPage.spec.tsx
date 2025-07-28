@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockNetwork1Data }   from './__test__/NetworkSummaryFixtures'
+import { mockNetwork1Data }   from './__tests__/NetworkSummaryFixtures'
 import { NetworkSummaryPage } from './NetworkSummaryPage'
 
 

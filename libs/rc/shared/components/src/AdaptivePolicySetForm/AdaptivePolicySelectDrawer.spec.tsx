@@ -5,7 +5,7 @@ import { RulesManagementUrlsInfo }                     from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { adaptivePolicyList, templateList } from './__test__/fixtures'
+import { adaptivePolicyList, templateList } from './__tests__/fixtures'
 import { AdaptivePoliciesSelectDrawer }     from './AdaptivePolicySelectDrawer'
 
 jest.mock('./AdaptivePolicyFormDrawer', () => ({

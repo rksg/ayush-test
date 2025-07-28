@@ -9,7 +9,7 @@ import { RolesEnum, WifiScopes }                                   from '@acx-ui
 import { setUserProfile, getUserProfile }                          from '@acx-ui/user'
 import { useTableQuery }                                           from '@acx-ui/utils'
 
-import { certificateList, certificateTemplate } from '../__test__/fixtures'
+import { certificateList, certificateTemplate } from '../__tests__/fixtures'
 
 import { CertificateTable } from './CertificateTable'
 

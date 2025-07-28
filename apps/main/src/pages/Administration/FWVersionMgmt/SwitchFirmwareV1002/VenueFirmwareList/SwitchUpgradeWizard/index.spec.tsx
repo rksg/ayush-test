@@ -24,7 +24,7 @@ import {
   preference,
   upgradeSwitchViewList,
   switchReleaseV1002
-} from '../__test__/fixtures'
+} from '../__tests__/fixtures'
 
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from '.'
 
