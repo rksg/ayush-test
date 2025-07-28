@@ -7,7 +7,7 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 import { RolesEnum, WifiScopes }                                                  from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../__tests__/fixtures'
 
 import CertificateAuthorityTable from './CertificateAuthorityTable'
 

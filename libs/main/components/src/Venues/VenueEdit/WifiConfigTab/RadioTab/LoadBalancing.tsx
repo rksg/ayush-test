@@ -218,7 +218,7 @@ export function LoadBalancing (props: {
                   showActionModal({
                     type: 'warning',
                     width: 450,
-                    content: <p data-testId='load-balancing-off-warning-text'>
+                    content: <p data-testid='load-balancing-off-warning-text'>
                       {
                         $t({ defaultMessage: `Please be aware that disabling the load balancing \n
                       functionality in this <venueSingular></venueSingular> will also deactivate the sticky client steering \n

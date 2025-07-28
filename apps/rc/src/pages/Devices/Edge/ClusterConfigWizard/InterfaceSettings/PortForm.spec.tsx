@@ -16,9 +16,9 @@ import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockClusterConfigWizardData, mockDualWanClusterConfigWizardData } from '../__tests__/fixtures'
 import { ClusterConfigWizardContext }                                      from '../ClusterConfigWizardDataProvider'
+import { transformFromApiToFormData }                                      from '../utils'
 
-import { PortForm }                   from './PortForm'
-import { transformFromApiToFormData } from './utils'
+import { PortForm } from './PortForm'
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures

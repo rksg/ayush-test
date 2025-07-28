@@ -1,10 +1,10 @@
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 
-import { Features }                                                                                          from '@acx-ui/feature-toggle'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
-import { render, screen, within }                                                                            from '@acx-ui/test-utils'
-import { EdgeScopes, SwitchScopes, WifiScopes }                                                              from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                                                                    from '@acx-ui/user'
+import { Features }                                                                                                          from '@acx-ui/feature-toggle'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgeLagFixtures, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { render, screen, within }                                                                                            from '@acx-ui/test-utils'
+import { EdgeScopes, SwitchScopes, WifiScopes }                                                                              from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                                                                    from '@acx-ui/user'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -141,6 +141,25 @@ describe('EdgeLagTable', () => {
 
       expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
+
+    it('should hide ip and subnet when ipMode is DHCP', async () => {
+      render(<EdgeLagTable
+        {...mockDefaultProps}
+        lagList={mockedEdgeLagList.content.map(lag => ({
+          ...lag,
+          ipMode: EdgeIpModeEnum.DHCP
+        }))}
+      />)
+
+      expect(screen.getByRole(
+        'row',
+        { name: 'LAG 1 string LACP (Active) 2 WAN DHCP Enabled' }
+      )).toBeVisible()
+      expect(screen.getByRole(
+        'row',
+        { name: 'LAG 2 string LACP (Active) 0 LAN DHCP Enabled' }
+      )).toBeVisible()
     })
   })
 })
