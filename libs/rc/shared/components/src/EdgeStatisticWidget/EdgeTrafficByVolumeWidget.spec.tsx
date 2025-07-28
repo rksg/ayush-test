@@ -6,7 +6,7 @@ import { EdgeUrlsInfo }                                                    from 
 import { Provider, store }                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitFor,  waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import * as EdgeTestCase from './__test__/fixture'
+import * as EdgeTestCase from './__tests__/fixture'
 
 import { EdgeTrafficByVolumeWidget } from './'
 

@@ -4,9 +4,9 @@ import _, { cloneDeep } from 'lodash'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
-import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
-import { mockedEdgeLagList }                      from './__tests__/fixtures/lag'
-import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
+import { EdgeAlarmFixtures, EdgeGeneralFixtures }                from './__tests__/fixtures'
+import { mockedEdgeLagList, createMockLag, createMockLagMember } from './__tests__/fixtures/lag'
+import { mockEdgePortConfig }                                    from './__tests__/fixtures/portsConfig'
 import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
@@ -23,7 +23,8 @@ import {
   isAllPortsLagMember,
   isEdgeMatchedRequiredFirmware,
   isInterfaceInVRRPSetting,
-  optionSorter
+  optionSorter,
+  getLagGateways
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -167,7 +168,7 @@ describe('isAllPortsLagMember', () => {
   describe('false case', () => {
     it('when lag member is undefined', async () => {
       const mockLags = _.cloneDeep(mockLanLags[0])
-      mockLags.lagMembers = undefined
+      mockLags.lagMembers = []
 
       expect(isAllPortsLagMember([mockSinglePort], [mockLags])).toBe(false)
     })
@@ -588,5 +589,469 @@ describe('isEdgeMatchedRequiredFirmware', () => {
   it('returns false with edge list containing null or undefined firmware versions', () => {
     const edgeList = [{ firmwareVersion: null }, { firmwareVersion: '1.1.0' }] as EdgeStatus[]
     expect(isEdgeMatchedRequiredFirmware('1.0.0', edgeList)).toBe(false)
+  })
+})
+
+describe('getLagGateways', () => {
+  describe('undefined lagData', () => {
+    it('should return empty array when lagData is undefined', () => {
+      // Act
+      const result = getLagGateways(undefined)
+
+      // Assert
+      expect(result).toEqual([])
+    })
+
+    it('should return empty array when lagData is undefined with includeCorePort false', () => {
+      // Act
+      const result = getLagGateways(undefined, false)
+
+      // Assert
+      expect(result).toEqual([])
+    })
+
+    it('should return empty array when lagData is undefined with isCoreAccessEnabled true', () => {
+      // Act
+      const result = getLagGateways(undefined, true, true)
+
+      // Assert
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('empty lagData', () => {
+    it('should return empty array when lagData is empty', () => {
+      // Arrange
+      const lagData: EdgeLag[] = []
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('LAG filtering conditions', () => {
+    it('should filter out LAGs that are not enabled', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({ lagEnabled: false, lagMembers: [createMockLagMember('port-1')] }),
+        createMockLag({ lagEnabled: true, lagMembers: [createMockLagMember('port-2')] })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].lagEnabled).toBe(true)
+    })
+
+    it('should filter out LAGs with no members', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({ lagMembers: [] }),
+        createMockLag({ lagMembers: [createMockLagMember('port-1')] })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].lagMembers).toHaveLength(1)
+    })
+
+    it('should filter out LAGs where no members are enabled', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          lagMembers: [
+            createMockLagMember('port-1', false),
+            createMockLagMember('port-2', false)
+          ]
+        }),
+        createMockLag({
+          lagMembers: [
+            createMockLagMember('port-3', false),
+            createMockLagMember('port-4', true)
+          ]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].lagMembers).toHaveLength(2)
+      expect(result[0].lagMembers.some(member => member.portEnabled)).toBe(true)
+    })
+  })
+
+  describe('WAN port type', () => {
+    it('should include WAN LAGs regardless of other conditions', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.WAN,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.WAN)
+    })
+
+    it('should include WAN LAGs even when includeCorePort is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.WAN,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, false)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.WAN)
+    })
+
+    it('should include WAN LAGs even when isCoreAccessEnabled is true', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.WAN,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, true)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.WAN)
+    })
+  })
+
+  describe('LAN port type with includeCorePort', () => {
+    it('should include LAN LAGs when includeCorePort is true and corePortEnabled is true', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.LAN)
+      expect(result[0].corePortEnabled).toBe(true)
+    })
+
+    it('should exclude LAN LAGs when includeCorePort is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, false)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
+
+    it('should exclude LAN LAGs when includeCorePort is true but corePortEnabled is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: false,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
+  })
+
+  describe('LAN port type with isCoreAccessEnabled', () => {
+    it('should use accessPortEnabled when isCoreAccessEnabled is true', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          accessPortEnabled: true,
+          corePortEnabled: false,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, true)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].accessPortEnabled).toBe(true)
+    })
+
+    it('should use corePortEnabled when isCoreAccessEnabled is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          accessPortEnabled: false,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, false)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].corePortEnabled).toBe(true)
+    })
+
+    it('should exclude LAN LAGs when isCoreAccessEnabled is true but accessPortEnabled is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          accessPortEnabled: false,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, true)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
+
+    it('should exclude LAN LAGs when isCoreAccessEnabled is false but corePortEnabled is false', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          accessPortEnabled: true,
+          corePortEnabled: false,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, false)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
+  })
+
+  describe('complex scenarios', () => {
+    it('should handle mixed LAG types correctly', () => {
+      // Arrange
+      const lagData = [
+        // WAN LAG - should be included
+        createMockLag({
+          portType: EdgePortTypeEnum.WAN,
+          lagMembers: [createMockLagMember('port-1')]
+        }),
+        // LAN LAG with core enabled - should be included
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-2')]
+        }),
+        // LAN LAG with core disabled - should be excluded
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: false,
+          lagMembers: [createMockLagMember('port-3')]
+        }),
+        // Disabled LAG - should be excluded
+        createMockLag({
+          lagEnabled: false,
+          lagMembers: [createMockLagMember('port-4')]
+        }),
+        // LAG with no enabled members - should be excluded
+        createMockLag({
+          lagMembers: [
+            createMockLagMember('port-5', false),
+            createMockLagMember('port-6', false)
+          ]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true)
+
+      // Assert
+      expect(result).toHaveLength(2)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.WAN)
+      expect(result[1].portType).toBe(EdgePortTypeEnum.LAN)
+      expect(result[1].corePortEnabled).toBe(true)
+    })
+
+    it('should handle core/access separation correctly', () => {
+      // Arrange
+      const lagData = [
+        // Core port enabled, access disabled
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          accessPortEnabled: false,
+          lagMembers: [createMockLagMember('port-1')]
+        }),
+        // Core port disabled, access enabled
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: false,
+          accessPortEnabled: true,
+          lagMembers: [createMockLagMember('port-2')]
+        })
+      ]
+
+      // Act - test with isCoreAccessEnabled = true (should use accessPortEnabled)
+      const resultWithAccess = getLagGateways(lagData, true, true)
+
+      // Assert
+      expect(resultWithAccess).toHaveLength(1)
+      expect(resultWithAccess[0].accessPortEnabled).toBe(true)
+
+      // Act - test with isCoreAccessEnabled = false (should use corePortEnabled)
+      const resultWithCore = getLagGateways(lagData, true, false)
+
+      // Assert
+      expect(resultWithCore).toHaveLength(1)
+      expect(resultWithCore[0].corePortEnabled).toBe(true)
+    })
+
+    it('should handle includeCorePort = false correctly', () => {
+      // Arrange
+      const lagData = [
+        // WAN LAG - should still be included
+        createMockLag({
+          portType: EdgePortTypeEnum.WAN,
+          lagMembers: [createMockLagMember('port-1')]
+        }),
+        // LAN LAG with core enabled - should be excluded when includeCorePort = false
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          lagMembers: [createMockLagMember('port-2')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, false)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].portType).toBe(EdgePortTypeEnum.WAN)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('should handle LAGs with multiple members where only some are enabled', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          lagMembers: [
+            createMockLagMember('port-1', false),
+            createMockLagMember('port-2', true),
+            createMockLagMember('port-3', false)
+          ]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].lagMembers).toHaveLength(3)
+      expect(result[0].lagMembers.some(member => member.portEnabled)).toBe(true)
+    })
+
+    it('should handle LAGs with all members disabled', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          lagMembers: [
+            createMockLagMember('port-1', false),
+            createMockLagMember('port-2', false),
+            createMockLagMember('port-3', false)
+          ]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
+
+    it('should handle undefined isCoreAccessEnabled parameter', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.LAN,
+          corePortEnabled: true,
+          accessPortEnabled: false,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData, true, undefined)
+
+      // Assert
+      expect(result).toHaveLength(1)
+      expect(result[0].corePortEnabled).toBe(true)
+    })
+
+    it('should handle LAGs with UNCONFIGURED port type', () => {
+      // Arrange
+      const lagData = [
+        createMockLag({
+          portType: EdgePortTypeEnum.UNCONFIGURED,
+          lagMembers: [createMockLagMember('port-1')]
+        })
+      ]
+
+      // Act
+      const result = getLagGateways(lagData)
+
+      // Assert
+      expect(result).toHaveLength(0)
+    })
   })
 })

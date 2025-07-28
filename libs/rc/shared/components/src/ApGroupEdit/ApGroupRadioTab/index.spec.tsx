@@ -1,3 +1,5 @@
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -59,8 +61,6 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-
-
 const venueData = venuelist.data[0]
 const venueId = venueData.id
 
@@ -94,6 +94,27 @@ describe('AP Group Edit Radio', () => {
     activeTab: 'radio'
   }
 
+  const apListData = {
+    data: [
+      {
+        id: 'ap-1',
+        name: 'AP-1',
+        model: 'R760',
+        apGroupId: params.apGroupId,
+        venueId: venueId,
+        serialNumber: 'SN001'
+      },
+      {
+        id: 'ap-2',
+        name: 'AP-2',
+        model: 'R560', // Fixed: Changed from 'R670' to 'R560'
+        apGroupId: params.apGroupId,
+        venueId: venueId,
+        serialNumber: 'SN002'
+      }
+    ]
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
     mockedUsedNavigate.mockClear()
@@ -122,10 +143,10 @@ describe('AP Group Edit Radio', () => {
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))),
+        (_, res, ctx) => res(ctx.json(apListData))),
       // rbac
       rest.post(CommonRbacUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))),
+        (_, res, ctx) => res(ctx.json(apListData))),
       rest.get(
         WifiRbacUrlsInfo.getApRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(apDeviceRadio))),
@@ -350,5 +371,57 @@ describe('AP Group Edit Radio', () => {
     await userEvent.click(enable50G)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+  })
+
+  it('should pass correct existingTriBandApModels for BandManagement', async () => {
+    const mockBandManagement = jest.fn(({ existingTriBandApModels }) => {
+      return (
+        <div data-testid='band-management-mock'>
+          <div data-testid='existing-tri-band-models'>
+            {existingTriBandApModels?.join(', ') || 'none'}
+          </div>
+        </div>
+      )
+    })
+
+    const BandManagementModule = require('../../BandManagement')
+    // eslint-disable-next-line max-len
+    const bandManagementSpy = jest.spyOn(BandManagementModule, 'BandManagement').mockImplementation(mockBandManagement)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SWITCHABLE_RF_TOGGLE)
+
+    render(
+      <Provider>
+        <ApGroupEditContext.Provider value={{ ...defaultApGroupCxtdata, isEditMode: true }}>
+          <ApGroupRadioTab />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
+
+    await waitFor(() => {
+      expect(screen.getByTestId('band-management-mock')).toBeInTheDocument()
+    })
+
+    await waitFor(() => {
+      const lastCall = mockBandManagement.mock.calls[mockBandManagement.mock.calls.length - 1]
+      const props = lastCall[0]
+      expect(props.existingTriBandApModels).toHaveLength(2)
+    })
+
+    // Extract props from mock calls
+    const lastCall = mockBandManagement.mock.calls[mockBandManagement.mock.calls.length - 1]
+    const props = lastCall[0]
+
+    // Verify the correct models
+    expect(props.existingTriBandApModels).toContain('R760')
+    expect(props.existingTriBandApModels).toContain('R560')
+
+    // Clean up only the mocks created in this test
+    bandManagementSpy.mockRestore()
   })
 })

@@ -6,7 +6,7 @@ import { RadiusAttributeGroupUrlsInfo }                              from '@acx-
 import { Provider }                                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
-import { groupList }                        from './__test__/fixtures'
+import { groupList }                        from './__tests__/fixtures'
 import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
 
 describe('RadiusAttributeGroupDrawer', () => {

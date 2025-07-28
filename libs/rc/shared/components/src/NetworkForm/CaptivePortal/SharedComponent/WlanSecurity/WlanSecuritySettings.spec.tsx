@@ -11,7 +11,7 @@ import { render, screen, cleanup } from '@acx-ui/test-utils'
 import { MLOContext }     from '../../../NetworkForm'
 import NetworkFormContext from '../../../NetworkFormContext'
 
-import { MockNetworkSetting }    from './__test__/fixture'
+import { MockNetworkSetting }    from './__tests__/fixture'
 import { WlanSecurityFormItems } from './WlanSecuritySettings'
 
 describe('WlanSecuritySettings Unit Test', () => {

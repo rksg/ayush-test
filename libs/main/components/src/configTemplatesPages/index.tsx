@@ -2,8 +2,9 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, TableColumn } from '@acx-ui/components'
-import { ConfigTemplate }          from '@acx-ui/rc/utils'
+import { PageHeader }       from '@acx-ui/components'
+import { ConfigTemplate }   from '@acx-ui/rc/utils'
+import type { TableColumn } from '@acx-ui/types'
 
 import { ConfigTemplateList } from './Templates'
 
