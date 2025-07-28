@@ -78,13 +78,23 @@ function CustomKpiSection (props: {
           children: (
             <div style={{ marginTop: '16px' }}>
               <Alert
-                message={$t({
-                  defaultMessage: 'Additional Wired AI Health compliance KPIs – IPv4 Unicast ' +
-                    'Table Compliance, IPv6 Unicast Table Compliance, IPv4 Multicast Table ' +
-                    'Compliance, IPv6 Multicast Table Compliance, ARP Table Compliance, MAC ' +
-                    'Table Compliance available on upgrading switches to FastIron version ' +
-                    '10.0.10h or greater.'
-                })}
+                className='top-aligned-icon'
+                message={
+                  <div>
+                    {$t({
+                      defaultMessage: 'Additional Wired AI Health compliance KPIs below are ' +
+                        'available on upgrading switches to FastIron version 10.0.10h or greater.'
+                    })}
+                    <ul style={{ marginTop: '8px', marginBottom: '0', paddingLeft: '20px' }}>
+                      <li>IPv4 Unicast Table Compliance</li>
+                      <li>IPv6 Unicast Table Compliance</li>
+                      <li>IPv4 Multicast Table Compliance</li>
+                      <li>IPv6 Multicast Table Compliance</li>
+                      <li>ARP Table Compliance</li>
+                      <li>MAC Table Compliance</li>
+                    </ul>
+                  </div>
+                }
                 type='primary'
                 showIcon
               />
