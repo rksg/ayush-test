@@ -17,7 +17,6 @@ import {
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
-  baseModelNotSupportStack,
   getSwitchModel
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -133,9 +132,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
 
-  const modelNotSupportStack = isSupport8100Phase2
-    ? baseModelNotSupportStack.filter(model => !model.endsWith('-X'))
-    : baseModelNotSupportStack
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -166,8 +162,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,
-                activeSerialNumber: switchDetail?.activeSerial,
-                modelNotSupportStack: modelNotSupportStack
+                isSupport8100Phase2: isSupport8100Phase2,
+                activeSerialNumber: switchDetail?.activeSerial
               }
               return validatorSwitchModel(switchModelParams)}
             },

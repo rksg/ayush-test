@@ -33,8 +33,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
-  isOperationalSwitch,
-  baseModelNotSupportStack
+  isNotSupportStackModel,
+  isOperationalSwitch
 } from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
@@ -423,9 +423,6 @@ export function SwitchForm () {
   }
 
   const serialNumberRegExp = function (value: string) {
-    const modelNotSupportStack = isSupport8100Phase2
-      ? baseModelNotSupportStack.filter(model => !model.endsWith('-X'))
-      : baseModelNotSupportStack
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
@@ -444,7 +441,7 @@ export function SwitchForm () {
       const model = getSwitchModel(value) || ''
       setSwitchModel(model)
       // notSupportStackModel.find(item => model?.indexOf(item) > -1)
-      setIsSupportStack(!(modelNotSupportStack.indexOf(model) > -1))
+      setIsSupportStack(!isNotSupportStackModel(model, isSupport8100Phase2))
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
       setFirmwareType(value)

@@ -987,8 +987,26 @@ export const allMultipleEditableFields = [
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
 
-export const baseModelNotSupportStack = [
-  'ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
-  'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
-  'ICX8100-48P-X', 'ICX 8100-48PF-X', 'ICX8100-C08PF-X', 'ICX8100-C16PF-X'
-]
+export const isNotSupportStackModel = (model: string, isSupport8100Phase2: boolean) => {
+  switch(model) {
+    case 'ICX7150-C08P':
+    case 'ICX7150-C08PT':
+    case 'ICX8100-24':
+    case 'ICX8100-24P':
+    case 'ICX8100-48':
+    case 'ICX8100-48P':
+    case 'ICX8100-C08PF':
+    case 'ICX 8100-48PF':
+      return true
+    case 'ICX8100-24-X':
+    case 'ICX8100-24P-X':
+    case 'ICX8100-48-X':
+    case 'ICX8100-48P-X':
+    case 'ICX8100-48PF-X':
+    case 'ICX8100-C08PF-X':
+    case 'ICX8100-C16PF-X':
+      return !isSupport8100Phase2
+    default:
+      return false
+  }
+}
