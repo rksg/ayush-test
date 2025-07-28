@@ -34,4 +34,8 @@ export const AlertStyle = styled(Alert)`
   }
 }
 
+&.top-aligned-icon .ant-alert-icon {
+  align-self: flex-start;
+}
+
 `
