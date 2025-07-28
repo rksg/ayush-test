@@ -18,6 +18,7 @@ import {
   PolicyOperation,
   PolicyType,
   redirectPreviousPage,
+  useAfterPolicySaveRedirectPath,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -36,6 +37,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
   const location = useLocation()
   const [form] = Form.useForm()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.IPSEC)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.IPSEC)
   const tablePath = getPolicyRoutePath({
     type: PolicyType.IPSEC,
@@ -131,7 +133,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
       } else {
         await createIpsec({ params, payload: data }).unwrap()
       }
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

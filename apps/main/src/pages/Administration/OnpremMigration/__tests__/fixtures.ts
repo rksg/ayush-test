@@ -50,6 +50,20 @@ export const migrations = [
         validationErrors: ''
       }
     ]
+  },
+  {
+    taskId: '3e6e39c9-20a5-462f-a924-e0cba0f11722',
+    completedTime: 1683625826145,
+    state: 'Qualified',
+    tenantId: '523227343adc42a7be6f93a45a45285d',
+    apImportResults: [
+      {
+        serial: '0',
+        apName: 'ap-0',
+        state: 'Valid',
+        validationErrors: ''
+      }
+    ]
   }
 ]
 
@@ -61,6 +75,20 @@ export const configurations = {
       state: 'Qualified',
       tenantId: '523227343adc42a7be6f93a45a45285d',
       fileName: 'ruckus_db_042823_18_16.bak',
+      apImportResults: [
+        {
+          serial: '0',
+          apName: 'ap-0',
+          state: 'Valid',
+          validationErrors: ''
+        }
+      ]
+    },
+    {
+      taskId: '3e6e39c9-20a5-462f-a924-e0cba0f11722',
+      completedTime: 1683625826145,
+      state: 'Qualified',
+      tenantId: '523227343adc42a7be6f93a45a45285d',
       apImportResults: [
         {
           serial: '0',
