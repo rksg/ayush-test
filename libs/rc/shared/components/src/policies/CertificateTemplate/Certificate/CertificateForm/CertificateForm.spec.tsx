@@ -10,7 +10,7 @@ import {
   certificateAuthorityList,
   certificateTemplateList,
   mockPersonaGroupWithIdentity, mockPersonaList
-} from '../../__test__/fixtures'
+} from '../../__tests__/fixtures'
 
 import { CertificateForm } from './CertificateForm'
 

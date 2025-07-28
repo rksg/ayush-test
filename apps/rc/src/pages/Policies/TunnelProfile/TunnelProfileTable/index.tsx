@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgePinViewDataListQuery,
@@ -28,9 +27,11 @@ import {
   PolicyType,
   transformDisplayOnOff,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TableColumn }                             from '@acx-ui/types'
 import { noDataDisplay, useTableQuery }                 from '@acx-ui/utils'
 
 const defaultTunnelProfileTablePayload = {}

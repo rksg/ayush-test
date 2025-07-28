@@ -3,7 +3,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { Features, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                      from '@acx-ui/rc/components'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -33,8 +32,17 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+const mockedUseDhcpStateMap = jest.fn()
+const mockedUseMdnsProxyStateMap = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff),
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
+  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -42,14 +50,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
-}))
-
-const mockedUseDhcpStateMap = jest.fn()
-const mockedUseMdnsProxyStateMap = jest.fn()
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useDhcpStateMap: () => mockedUseDhcpStateMap(),
-  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
 }))
 
 describe('Select Service Form', () => {
@@ -127,7 +127,7 @@ describe('Select Service Form', () => {
 
   it('should not render edge-dhcp with the dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
@@ -139,7 +139,7 @@ describe('Select Service Form', () => {
 
   it('should not render edge-pin with the pin-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff !== Features.EDGE_PIN_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
@@ -152,7 +152,7 @@ describe('Select Service Form', () => {
   it('should not render features bound with FF when FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockReturnValue(false)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -180,7 +180,7 @@ describe('Select Service Form', () => {
   })
 
   it('should display Edge TNM service when its FF ON', async () => {
-    jest.mocked(useIsEdgeFeatureReady)
+    mockUseIsEdgeFeatureReady
       .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
     render(<SelectServiceForm />, {
       route: { params, path }

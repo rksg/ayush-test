@@ -7,9 +7,9 @@ import { useParams }     from 'react-router-dom'
 
 import { Loader }                                                                    from '@acx-ui/components'
 import { Features }                                                                  from '@acx-ui/feature-toggle'
-import { EdgeLagTable, useIsEdgeFeatureReady }                                       from '@acx-ui/rc/components'
+import { EdgeLagTable }                                                              from '@acx-ui/rc/components'
 import { useAddEdgeLagMutation, useDeleteEdgeLagMutation, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
-import { EdgeLag }                                                                   from '@acx-ui/rc/utils'
+import { EdgeLag, useIsEdgeFeatureReady }                                            from '@acx-ui/rc/utils'
 
 import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
 import { EditEdgeDataContext }    from '../EditEdgeDataProvider'

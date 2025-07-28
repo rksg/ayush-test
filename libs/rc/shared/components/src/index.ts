@@ -44,7 +44,6 @@ export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
 export { useExportCsv as useEdgeExportCsv } from './EdgesTable/useExportCsv'
 export type { EdgesTableQueryProps } from './EdgesTable'
-export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
@@ -185,8 +184,7 @@ export type {
   AccessSwitchTableDataType
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
-  useEdgeActions,
-  useIsEdgeFeatureReady
+  useEdgeActions
 } from './useEdgeActions'
 export {
   useEdgeSdLansCompatibilityData,
@@ -306,7 +304,6 @@ export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
 export * from './RadioSettings/RadioSettingsUtils'
-export * from './SimpleListTooltip'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './CommonLinkHelper'
@@ -337,3 +334,5 @@ export { ResourceBanner } from './ResourceBanner'
 export { BandManagement } from './BandManagement'
 export { IotControllerDrawer } from './IotControllerDrawer'
 export { ApCliSession } from './ApCliSession'
+export { AddTunnelProfileTemplate } from './TunnelProfile/AddTunnelProfileTemplate'
+export { EditTunnelProfileTemplate } from './TunnelProfile/EditTunnelProfileTemplate'

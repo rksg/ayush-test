@@ -234,6 +234,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLanPortsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apModelLanPortSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

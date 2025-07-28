@@ -5,7 +5,7 @@ import { CertificateCategoryType, CertificateUrls } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }      from '@acx-ui/test-utils'
 
-import { certificate, certificateAuthority } from '../__test__/fixtures'
+import { certificate, certificateAuthority } from '../__tests__/fixtures'
 
 import DownloadSection from './DownloadSection'
 

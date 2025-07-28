@@ -2,10 +2,9 @@ import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 import { cloneDeep }          from 'lodash'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { Provider }              from '@acx-ui/store'
+import { StepsForm } from '@acx-ui/components'
+import { Features }  from '@acx-ui/feature-toggle'
+import { Provider }  from '@acx-ui/store'
 import {
   render,
   renderHook,
@@ -23,7 +22,12 @@ jest.mock('./PropertyManagementDrawer', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 // eslint-disable-next-line max-len
@@ -129,10 +133,10 @@ describe('PropertyManagementInfo', () => {
   describe('test L2GRE case', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     })
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should render venue name correctly', async () => {

@@ -3,9 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { StepsForm } from '@acx-ui/components'
+import { Features }  from '@acx-ui/feature-toggle'
 import {
   EdgePinFixtures,
   EdgePinUrls
@@ -54,8 +53,13 @@ jest.mock('antd', () => {
 })
 
 jest.mock('@acx-ui/rc/components', () => ({
-  AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const mockedFinishFn = jest.fn()
@@ -195,10 +199,10 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
   describe('test L2GRE case', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
     })
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should render correctly', async () => {

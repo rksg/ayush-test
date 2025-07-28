@@ -45,6 +45,7 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
 
 export const findAllFirstSteps = (steps: WorkflowStep[]): WorkflowStep[] | undefined => {
   return steps.filter(step => step.priorStepId === undefined && !step.splitOptionId)
+    .sort((a) => a.type === StepType.Start ? -1 : 0)
 }
 
 export const toStepMap = (steps: WorkflowStep[])
@@ -79,6 +80,8 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon,
   [ActionType.SAML_AUTH]: SamlAuthActionTypeIcon
 }
+
+export const START_NODE_TITLE = defineMessage({ defaultMessage: 'Start' })
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
