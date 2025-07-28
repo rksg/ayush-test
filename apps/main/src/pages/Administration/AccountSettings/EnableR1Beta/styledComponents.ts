@@ -5,7 +5,7 @@ import {
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { SpaceWrapper } from '@acx-ui/components'
 
 
 export const Wrapper = styled.div`

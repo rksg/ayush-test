@@ -7,8 +7,7 @@ import classNames                                                            fro
 import { IntlShape, useIntl }                                                from 'react-intl'
 import styled                                                                from 'styled-components'
 
-import { cssStr, Drawer, Fieldset } from '@acx-ui/components'
-import { SpaceWrapper }             from '@acx-ui/rc/components'
+import { cssStr, Drawer, Fieldset, SpaceWrapper } from '@acx-ui/components'
 import {
   AddressType,
   AccessAction,

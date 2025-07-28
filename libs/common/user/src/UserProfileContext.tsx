@@ -16,8 +16,8 @@ import {
   useGetAllowedOperationsQuery,
   useGetTenantDetailsQuery
 } from './services'
-import { FeatureAPIResults, TenantType, UserProfile } from './types'
-import { setUserProfile, hasRoles, hasAccess }        from './userProfile'
+import { FeatureAPIResults, TenantType, UserProfile }   from './types'
+import { setUserProfile, hasRoles, hasAccess, Profile } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -96,7 +96,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     undefined,
     { skip: !rbacOpsApiEnabled })
   const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op => op?.uri) || []
-  const aiOpsUri = rbacOpsApiEnabled ? getAIAllowedOperations(profile).flatMap(op => op.uri) : []
+  const aiOpsUri = rbacOpsApiEnabled
+    ? getAIAllowedOperations({ profile, abacEnabled } as Profile).flatMap((op) => op.uri)
+    : []
   const allowedOperations = [...new Set([...rcgOpsUri, ...aiOpsUri])]
 
   const getHasAllVenues = () => {
