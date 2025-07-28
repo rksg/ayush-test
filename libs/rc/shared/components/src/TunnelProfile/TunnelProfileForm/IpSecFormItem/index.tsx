@@ -71,7 +71,7 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
             valuePropName='checked'
             children={<Switch
               disabled={disabled}
-              onChange={handleTunnelEncryptionChange}
+              onChange={(checked) => handleTunnelEncryptionChange?.(checked)}
             />}
           />
         </UI.StyledSpace>

@@ -1,4 +1,4 @@
-import { cloneDeep, isEqual, isNil } from 'lodash'
+import { cloneDeep, isEqual, isNil, omit } from 'lodash'
 
 import { Features }                                                                                                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
 import { useActivateTunnelProfileByEdgeClusterMutation, useActivateTunnelProfileByIpsecProfileMutation, useCreateTunnelProfileMutation, useCreateTunnelProfileTemplateMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useDeactivateTunnelProfileByIpsecProfileMutation, useUpdateTunnelProfileMutation, useUpdateTunnelProfileTemplateMutation } from '@acx-ui/rc/services'
@@ -6,6 +6,11 @@ import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, M
 import { CatchErrorDetails }                                                                                                                                                                                                                                                                                                                                from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+
+export const nonTunnelProfileConfigKeys = [
+  'edgeClusterId', 'venueId',
+  'tunnelEncryptionEnabled', 'ipsecProfileId'
+]
 
 export const useTunnelProfileActions = () => {
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
@@ -60,6 +65,11 @@ export const useTunnelProfileActions = () => {
       }
     }
 
+    if (isEdgeIpsecVxLanReady) {
+      delete result.ipsecProfileId
+      delete result.tunnelEncryptionEnabled
+    }
+
     delete result.mtuRequestTimeoutUnit
     delete result.ageTimeUnit
     //remove for acitvate api params
@@ -105,6 +115,7 @@ export const useTunnelProfileActions = () => {
     const venueId = data.venueId
     const clusterId = data.edgeClusterId
     const payload = requestPreProcess(data)
+
     return await createTunnelProfile({
       payload,
       callback: async (addResponse: CommonResult) => {
@@ -141,9 +152,8 @@ export const useTunnelProfileActions = () => {
     initData: TunnelProfileFormType) => {
     try {
       const compareResult = compareConfigChanges(data, initData)
-
       if (compareResult.hasChanges) {
-        await handleUpdateTunnelProfile({ id,data })
+        await handleUpdateTunnelProfile({ id, data })
       }
 
       handleTunnelProfileEdgeClusterAssociation(id, data, initData)
@@ -248,16 +258,17 @@ export const useTunnelProfileActions = () => {
     }
 
     const tunnelProfileId = id
+    const isIpsecChangedDisable = !data.tunnelEncryptionEnabled && initData.ipsecProfileId
 
-    // tunnel type is change into not VXLAN_GPE
-    if (data?.tunnelType !== TunnelTypeEnum.VXLAN_GPE) {
+    // tunnel type is change into not VXLAN_GPE, or ipsec is changed to disabled
+    if (data?.tunnelType !== TunnelTypeEnum.VXLAN_GPE || isIpsecChangedDisable) {
       await disassociationWithIpsecProfile(tunnelProfileId, initData.ipsecProfileId!)
       return
     }
 
     const ipsecProfileId = data.ipsecProfileId
-    const isIpsecProfileChanged = data.tunnelEncryptionEnabled !== initData.tunnelEncryptionEnabled
-     || ipsecProfileId !== initData.ipsecProfileId
+    const isIpsecProfileChanged = data.tunnelEncryptionEnabled
+     && ipsecProfileId !== initData.ipsecProfileId
 
     if(!isIpsecProfileChanged) {
       return
@@ -356,14 +367,9 @@ export const useTunnelProfileActions = () => {
     data: TunnelProfileFormType,
     initData: TunnelProfileFormType
   ): { hasChanges: boolean } => {
-    const preUpdateData = cloneDeep(data)
-    delete preUpdateData.edgeClusterId
-    delete preUpdateData.venueId
-    delete preUpdateData.disabledFields
+    const preUpdateData = omit(data, nonTunnelProfileConfigKeys)
+    const initDataCopy = omit(initData, nonTunnelProfileConfigKeys)
 
-    const initDataCopy = cloneDeep(initData)
-    delete initDataCopy.disabledFields
-    delete initDataCopy.edgeClusterId
     const hasChanges = !isEqual(preUpdateData, initDataCopy)
     return { hasChanges }
   }

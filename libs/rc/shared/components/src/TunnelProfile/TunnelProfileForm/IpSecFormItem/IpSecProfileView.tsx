@@ -24,7 +24,6 @@ export const IpsecProfileView = (props: {
               label={$t({ defaultMessage: 'Pre-Shared Key' })}
               style={{ marginBottom: 0 }}
             >
-
               <PasswordInput
                 readOnly
                 style={{ paddingLeft: 0 }}

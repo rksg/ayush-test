@@ -189,6 +189,10 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
       if (isEdgeNatTraversalP1Ready) {
         form.setFieldsValue({ natTraversalEnabled: false })
       }
+
+      if (isEdgeIpsecVxLanReady) {
+        form.setFieldValue('tunnelEncryptionEnabled', false)
+      }
     }
   }
 
@@ -196,7 +200,9 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     if (e.target.value === TunnelTypeEnum.L2GRE) {
       form.setFieldsValue({
         mtuType: MtuTypeEnum.MANUAL,
-        type: NetworkSegmentTypeEnum.VLAN_VXLAN
+        type: NetworkSegmentTypeEnum.VLAN_VXLAN,
+        natTraversalEnabled: false,
+        tunnelEncryptionEnabled: false
       })
     }
   }
