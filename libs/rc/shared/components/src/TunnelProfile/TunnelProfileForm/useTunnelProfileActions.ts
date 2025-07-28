@@ -1,9 +1,9 @@
 import { cloneDeep, isEqual, isNil } from 'lodash'
 
-import { Features }                                                                                                                                                       from '@acx-ui/feature-toggle'
-import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
-import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                       from '@acx-ui/rc/utils'
-import { CatchErrorDetails }                                                                                                                                              from '@acx-ui/utils'
+import { Features }                                                                                                                                                                                                                                       from '@acx-ui/feature-toggle'
+import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useCreateTunnelProfileTemplateMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useUpdateTunnelProfileMutation, useUpdateTunnelProfileTemplateMutation } from '@acx-ui/rc/services'
+import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                                                                                                       from '@acx-ui/rc/utils'
+import { CatchErrorDetails }                                                                                                                                                                                                                              from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -13,6 +13,10 @@ export const useTunnelProfileActions = () => {
   const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   // eslint-disable-next-line max-len
   const [updateTunnelProfile, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
+  // eslint-disable-next-line max-len
+  const [createTunnelProfileTemplate, { isLoading: isTunnelProfileTemplateCreating }] = useCreateTunnelProfileTemplateMutation()
+  // eslint-disable-next-line max-len
+  const [updateTunnelProfileTemplate, { isLoading: isTunnelProfileTemplateUpdating }] = useUpdateTunnelProfileTemplateMutation()
   const [activateByEdgeCluster] = useActivateTunnelProfileByEdgeClusterMutation()
   const [deactivateByEdgeCluster] = useDeactivateTunnelProfileByEdgeClusterMutation()
   const requestPreProcess = (data: TunnelProfileFormType) => {
@@ -225,6 +229,57 @@ export const useTunnelProfileActions = () => {
     }
   }
 
+  const createTunnelProfileTemplateOperation = async (data: TunnelProfileFormType) => {
+    const venueId = data.venueId
+    const clusterId = data.edgeClusterId
+    const payload = requestPreProcess(data)
+    try {
+      await createTunnelProfileTemplate({
+        payload,
+        callback: async (addResponse: CommonResult) => {
+          const tunnelProfileId = addResponse.response?.id
+          if (!tunnelProfileId) {
+          // eslint-disable-next-line no-console
+            console.error('empty tunnel profile id')
+            return
+          }
+
+          if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
+            return
+          }
+
+          // eslint-disable-next-line max-len
+          await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+        }
+      }).unwrap()
+    } catch(error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
+    }
+  }
+
+  const updateTunnelProfileTemplateOperation = async (id:string,
+    data: TunnelProfileFormType,
+    initData: TunnelProfileFormType) => {
+    try {
+      const compareResult = compareConfigChanges(data, initData)
+
+      if (compareResult.hasChanges) {
+        const pathParams = { id }
+        const payload = requestPreProcess(data)
+        await updateTunnelProfileTemplate({
+          params: pathParams,
+          payload
+        }).unwrap()
+      }
+
+      handleTunnelProfileEdgeClusterAssociation(id, data, initData)
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
+    }
+  }
+
   const compareConfigChanges = (
     data: TunnelProfileFormType,
     initData: TunnelProfileFormType
@@ -244,7 +299,11 @@ export const useTunnelProfileActions = () => {
   return {
     createTunnelProfileOperation,
     updateTunnelProfileOperation,
+    createTunnelProfileTemplateOperation,
+    updateTunnelProfileTemplateOperation,
     isTunnelProfileCreating,
-    isTunnelProfileUpdating
+    isTunnelProfileUpdating,
+    isTunnelProfileTemplateCreating,
+    isTunnelProfileTemplateUpdating
   }
 }

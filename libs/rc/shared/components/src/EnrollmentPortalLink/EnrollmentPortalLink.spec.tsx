@@ -7,11 +7,6 @@ import { render, screen } from '@acx-ui/test-utils'
 import { EnrollmentPortalLink } from '.'
 
 
-jest.mock('@acx-ui/feature-toggle', () => ({
-  ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsSplitOn: jest.fn()
-}))
-
 describe('Enrollment Portal Link', () => {
   beforeEach(() => {
     jest.resetAllMocks()

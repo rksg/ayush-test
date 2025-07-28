@@ -1,6 +1,7 @@
 import { FilterValue } from 'antd/lib/table/interface'
 import { Params }      from 'react-router-dom'
 export * from './RTKQuery'
+export type { ColumnGroupType, ColumnType, TableColumn } from './TableColumnType'
 
 export type TimeStamp = string | number
 export type TimeStampRange = [TimeStamp, TimeStamp]

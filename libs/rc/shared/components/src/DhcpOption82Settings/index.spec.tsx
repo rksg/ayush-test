@@ -94,6 +94,38 @@ describe('DhcpOption82Settings', () => {
 
     expect(screen.queryByTestId('dhcp82toption-icon')).not.toBeInTheDocument()
   })
+
+  it('Should store the current settings and apply them when the drawer is opened', async () => {
+    render(
+      <Provider>
+        <Form>
+          <DhcpOption82Settings
+            index={1}
+            isUnderAPNetworking={false}
+            venueId={venueId}
+            portId={portId}
+            apModel={apModel}
+            readonly={false}
+            sourceData={mockSourceDataDisabled}
+          />
+        </Form>
+      </Provider>
+    )
+
+    // Click the switch to enable DHCP Option 82
+    const switchElement = await screen.findByTestId('dhcpoption82-switch-toggle')
+    fireEvent.click(switchElement)
+
+    // Check the dawer title displayed
+    expect(screen.getByText('DHCP Option 82 Sub Options')).toBeInTheDocument()
+
+    // Click the apply button
+    const applyButton = screen.getByText('Apply')
+    fireEvent.click(applyButton)
+
+    // Check if the settings are applied
+    expect(switchElement).toBeChecked()
+  })
 })
 
 describe('DhcpOption82SettingsFormField', () => {

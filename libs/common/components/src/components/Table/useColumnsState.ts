@@ -2,8 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import _ from 'lodash'
 
+import type { TableColumn } from '@acx-ui/types'
+
 import type {
-  TableColumn,
   ColumnState,
   ColumnStateOption,
   TableColumnState

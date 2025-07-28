@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { FormInstance, Space, Tooltip, Typography } from 'antd'
-import _, { cloneDeep, flatten, reduce }            from 'lodash'
-import moment                                       from 'moment-timezone'
-import { defineMessage, useIntl }                   from 'react-intl'
+import { FormInstance, Space, Tooltip, Typography }                                                      from 'antd'
+import { cloneDeep, difference, every, find, flatten, get, groupBy, isEqual, mergeWith, reduce, values } from 'lodash'
+import moment                                                                                            from 'moment-timezone'
+import { defineMessage, useIntl }                                                                        from 'react-intl'
 
 import { defaultRichTextFormatValues }                                                 from '@acx-ui/components'
 import { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
@@ -22,15 +22,19 @@ import {
   VirtualIpSetting,
   SubInterface,
   EdgeStatus,
-  isEdgeMatchedRequiredFirmware
+  isEdgeMatchedRequiredFirmware,
+  EdgeIpModeEnum,
+  doEdgeNetworkInterfacesDryRun,
+  getMergedLagTableDataFromLagForm,
+  convertInterfaceDataToEdgePortInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
-import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
+import { defaultHaTimeoutValue } from '../EditEdgeCluster/VirtualIp'
 
-import { StyledCompatibilityWarningTriangleIcon }                                              from './styledComponents'
-import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+import { StyledCompatibilityWarningTriangleIcon }                                              from './InterfaceSettings/styledComponents'
+import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './InterfaceSettings/types'
+import { SubInterfaceSettingsFormType }                                                        from './SubInterfaceSettings/types'
 
 const initialNodeCompatibleResult = {
   nodeId: '',
@@ -43,9 +47,9 @@ const initialNodeCompatibleResult = {
 
 export const transformFromApiToFormData =
  (apiData?: ClusterNetworkSettings):InterfaceSettingsFormType => {
-   const portSettings = _.reduce(apiData?.portSettings,
+   const portSettings = reduce(apiData?.portSettings,
      (result, port) => {
-       result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
+       result[port.serialNumber] = groupBy(port.ports, 'interfaceName')
        return result
      }, {} as InterfaceSettingsFormType['portSettings'])
 
@@ -70,11 +74,11 @@ export const transformFromApiToFormData =
 
    apiData?.subInterfaceSettings?.forEach(item => {
      // eslint-disable-next-line max-len
-     portSubInterfaces[item.serialNumber] = _.reduce(item.ports ?? [], (result, portSubInterface) => {
+     portSubInterfaces[item.serialNumber] = reduce(item.ports ?? [], (result, portSubInterface) => {
        result[portSubInterface.portId] = portSubInterface.subInterfaces
        return result
      }, {} as InterfaceSettingsFormType['portSubInterfaces'][EdgeSerialNumber])
-     lagSubInterfaces[item.serialNumber] = _.reduce(item.lags ?? [], (result, lagSubInterface) => {
+     lagSubInterfaces[item.serialNumber] = reduce(item.lags ?? [], (result, lagSubInterface) => {
        result[lagSubInterface.lagId] = lagSubInterface.subInterfaces
        return result
      }, {} as InterfaceSettingsFormType['lagSubInterfaces'][EdgeSerialNumber])
@@ -95,18 +99,29 @@ export const transformFromApiToFormData =
  }
 
 export const getAvailableVipInterfaces = (
-  lagdata?: InterfaceSettingsFormType['lagSettings'],
-  portData?: InterfaceSettingsFormType['portSettings'],
-  subInterfaces?: SubInterfaceSettingsFormType,
-  clusterInfo?: EdgeClusterStatus
+  lagData: InterfaceSettingsFormType['lagSettings'] | undefined,
+  portData: InterfaceSettingsFormType['portSettings'] | undefined,
+  subInterfaces: SubInterfaceSettingsFormType | undefined,
+  clusterInfo: EdgeClusterStatus | undefined,
+  isEdgeCoreAccessSeparationReady: boolean
 ) => {
   const result = {} as { [key: string]: VipInterface[] }
   const edgeNodeList = clusterInfo?.edgeList ?? []
 
   for(let edgeNode of edgeNodeList) {
-    const allLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
-    const lanLags = allLags
-      ?.lags.filter(item => item.portType === EdgePortTypeEnum.LAN)
+    const allLags = lagData?.find(item => item.serialNumber === edgeNode.serialNumber)
+    const allPorts = portData?.[edgeNode.serialNumber] ? Object.values(portData[edgeNode.serialNumber]).flat() : []
+    const allLagSubInterfaces = subInterfaces?.lagSubInterfaces?.[edgeNode.serialNumber] ? Object.values(subInterfaces?.lagSubInterfaces?.[edgeNode.serialNumber]).flat() : []
+    const allPortSubInterfaces = subInterfaces?.portSubInterfaces?.[edgeNode.serialNumber] ? Object.values(subInterfaces?.portSubInterfaces?.[edgeNode.serialNumber]).flat() : []
+    const allSubInterfaces = allLagSubInterfaces.concat(allPortSubInterfaces)
+
+    const {
+      lags: resolvedLags,
+      ports: resolvedPorts,
+      subInterfaces: resolvedSubInterfaces
+    } = doEdgeNetworkInterfacesDryRun(allLags?.lags, allPorts, allSubInterfaces, isEdgeCoreAccessSeparationReady)
+
+    const lanLags = resolvedLags.filter(item => item.portType === EdgePortTypeEnum.LAN)
       .map(item => ({
         interfaceName: `lag${item.id}`,
         ipMode: item.ipMode,
@@ -114,42 +129,19 @@ export const getAvailableVipInterfaces = (
         subnet: item.subnet ?? ''
       })) ?? []
 
-    const lagSubInterfaces = subInterfaces?.lagSubInterfaces?.[edgeNode.serialNumber]
-      ? Object.entries(subInterfaces.lagSubInterfaces[edgeNode.serialNumber])
-        .filter(([lagId]) => allLags?.lags.some(lag => lag.id.toString() === lagId))
-        .map(([, subInterfaces]) => subInterfaces)
-        .flat()
-        .map(subInterface => subInterface as VipInterface) : []
-
-    const lanPorts = portData?.[edgeNode.serialNumber] ?
-      Object.values(portData[edgeNode.serialNumber])
-        .flat().filter(item => item.portType === EdgePortTypeEnum.LAN)
-        .map(item => ({
-          interfaceName: item.interfaceName ?? '',
-          ipMode: item.ipMode,
-          ip: item.ip,
-          subnet: item.subnet
-        })) : []
-
-    const lagMembers = allLags?.lags
-      .flatMap(lag => lag.lagMembers.map(member => member.portId))
-    const nonLagPorts = portData?.[edgeNode.serialNumber]
-      ? Object.values(portData[edgeNode.serialNumber])
-        .flat()
-        .filter(item => !lagMembers?.includes(item.id))
-      : []
-    const nonLagPortSubInterfaces = subInterfaces?.portSubInterfaces?.[edgeNode.serialNumber]
-      ? Object.entries(subInterfaces.portSubInterfaces[edgeNode.serialNumber])
-        .filter(([portId]) => nonLagPorts.some(port => port.id === portId))
-        .map(([, subInterfaces]) => subInterfaces)
-        .flat()
-        .map(subInterface => subInterface as VipInterface) : []
+    const lanPorts = resolvedPorts
+      .filter(item => item.portType === EdgePortTypeEnum.LAN)
+      .map(item => ({
+        interfaceName: item.interfaceName ?? '',
+        ipMode: item.ipMode,
+        ip: item.ip,
+        subnet: item.subnet
+      }))
 
     result[edgeNode.serialNumber] = [
       ...lanLags,
       ...lanPorts,
-      ...lagSubInterfaces,
-      ...nonLagPortSubInterfaces
+      ...resolvedSubInterfaces as VipInterface[]
     ].sort((vif1, vif2) => {
       return interfaceNameComparator(vif1.interfaceName, vif2.interfaceName)
     })
@@ -236,14 +228,14 @@ const getCompatibleCheckResult = (
   countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>,
   isEdgeCoreAccessSeparationReady?: boolean
 ): CompatibilityCheckResult => {
-  let results = _.values(countResult)
+  let results = values(countResult)
   const targetData = results[0]
 
-  const portsCheck = _.every(results,
-    (result) => _.isEqual(result.errors.ports.value, targetData.errors.ports.value))
+  const portsCheck = every(results,
+    (result) => isEqual(result.errors.ports.value, targetData.errors.ports.value))
   // ignore core ports check when edge core access FF is on
-  const corePortsCheck = isEdgeCoreAccessSeparationReady ? true : _.every(results,
-    (result) => _.isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
+  const corePortsCheck = isEdgeCoreAccessSeparationReady ? true : every(results,
+    (result) => isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
 
   // append 'isError' data
   results.forEach((givenData) => {
@@ -256,7 +248,7 @@ const getCompatibleCheckResult = (
       // ignore UNCONFIGURED
       if (pt === EdgePortTypeEnum.UNCONFIGURED) return
       const givenPortType = givenData.errors.portTypes[pt]
-      const res = _.isEqual(givenPortType?.value, targetData.errors.portTypes[pt]?.value)
+      const res = isEqual(givenPortType?.value, targetData.errors.portTypes[pt]?.value)
       if (!res) {
         givenPortType.isError = true
         // when counting not equal, both side should display in error
@@ -265,7 +257,7 @@ const getCompatibleCheckResult = (
     })
 
     // reverse check to find port type only configure on target data
-    const diffPortTypes = _.difference(Object.keys(targetData.errors.portTypes), givenPortTypes)
+    const diffPortTypes = difference(Object.keys(targetData.errors.portTypes), givenPortTypes)
     if (diffPortTypes.length) {
       diffPortTypes.forEach(diffPortType => {
         // ignore UNCONFIGURED
@@ -274,9 +266,9 @@ const getCompatibleCheckResult = (
       })
     }
   })
-  const portTypesCheck = _.every(results, (res) => {
+  const portTypesCheck = every(results, (res) => {
     // check no error
-    return _.values(res.errors.portTypes).some(i => i.isError) === false
+    return values(res.errors.portTypes).some(i => i.isError) === false
   })
 
   return {
@@ -299,9 +291,9 @@ export const interfaceCompatibilityCheck = (
 
   nodeList?.forEach((node) => {
     const { name: nodeName, serialNumber } = node
-    const portsData = _.get(portSettings, serialNumber)
-    const lagData = _.find(lagSettings, { serialNumber })
-    const result = _.cloneDeep(initialNodeCompatibleResult)
+    const portsData = get(portSettings, serialNumber)
+    const lagData = find(lagSettings, { serialNumber })
+    const result = cloneDeep(initialNodeCompatibleResult)
     // append node info
     result.nodeId = serialNumber
     result.nodeName = nodeName
@@ -351,9 +343,9 @@ export const lagSettingsCompatibleCheck = (
 
   nodeList?.forEach((node) => {
     const { name: nodeName, serialNumber } = node
-    const lags = _.find(lagSettings, { serialNumber })
+    const lags = find(lagSettings, { serialNumber })
     const lagsData = lags?.lags
-    const result = _.cloneDeep(initialNodeCompatibleResult)
+    const result = cloneDeep(initialNodeCompatibleResult)
     // append node info
     result.nodeId = serialNumber
     result.nodeName = nodeName
@@ -478,55 +470,75 @@ const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
     if(subInterface.id?.startsWith('new_')) {
       delete subInterface.id
     }
+    if(subInterface.ipMode === EdgeIpModeEnum.DHCP) {
+      subInterface.ip = ''
+      subInterface.subnet = ''
+    }
     return subInterface
   })
 }
 
 const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
   const subInterfaceSettings = [] as NodeSubInterfaces[]
-  const nodeLagIdsMap = _.reduce(data.lagSettings, (result, lagSetting) => {
-    result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
-    return result
-  }, {} as { [serialNumber: string]: number[] })
-  Object.entries(data.lagSubInterfaces ?? {}).forEach(([serialNumber, lagSubInterfaces = {}]) => {
-    subInterfaceSettings.push({
-      serialNumber,
-      lags: Object.entries(lagSubInterfaces).filter(([lagId]) =>
-        nodeLagIdsMap[serialNumber].includes(Number(lagId)))
-        .map(([lagId, subInterfaces]) => ({
-          lagId: Number(lagId),
-          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+
+  // Process LAG sub-interfaces
+  const processLagSubInterfaces = () => {
+    const nodeLagIdsMap = reduce(data.lagSettings, (result, lagSetting) => {
+      result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
+      return result
+    }, {} as { [serialNumber: string]: number[] })
+
+    Object.entries(nodeLagIdsMap).forEach(([serialNumber, lagIds]) => {
+      const lagSubInterfaces = data.lagSubInterfaces?.[serialNumber] ?? {}
+      subInterfaceSettings.push({
+        serialNumber,
+        lags: lagIds.map(lagId => ({
+          lagId,
+          subInterfaces: preProcessSubInterfaceSetting(lagSubInterfaces[lagId] ?? [])
         }))
-    } as NodeSubInterfaces)
-  })
-  const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
-    result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
-    return result
-  }, {} as { [serialNumber: string]: string[] })
-  Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
-    const lagMemberIdsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-      ?.flatMap(lag => lag.lagMembers.map(member => member.portId))
-    const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
-    const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
-    if(currentSubInterfaceItem) {
-      currentSubInterfaceItem.ports = portIds.map(portId => ({
+      } as NodeSubInterfaces)
+    })
+  }
+
+  // Process port sub-interfaces
+  const processPortSubInterfaces = () => {
+    const nodePortIdsMap = reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
+      result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
+      return result
+    }, {} as { [serialNumber: string]: string[] })
+
+    Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
+      const lagMemberIdsOfCurrentNode = getLagMemberIdsForNode(serialNumber)
+      const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
+      const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
+
+      const portSubInterfaces = portIds.map(portId => ({
         portId,
         subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
           preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
           []
       }))
-    } else {
-      subInterfaceSettings.push({
-        serialNumber,
-        ports: portIds.map(portId => ({
-          portId,
-          subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
-            preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
-            []
-        }))
-      } as NodeSubInterfaces)
-    }
-  })
+
+      if (currentSubInterfaceItem) {
+        currentSubInterfaceItem.ports = portSubInterfaces
+      } else {
+        subInterfaceSettings.push({
+          serialNumber,
+          ports: portSubInterfaces
+        } as NodeSubInterfaces)
+      }
+    })
+  }
+
+  // Helper function to get LAG member IDs for a specific node
+  const getLagMemberIdsForNode = (serialNumber: string): string[] => {
+    return data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+      ?.flatMap(lag => lag.lagMembers.map(member => member.portId)) ?? []
+  }
+
+  processLagSubInterfaces()
+  processPortSubInterfaces()
+
   return subInterfaceSettings
 }
 
@@ -599,47 +611,20 @@ export const interfaceNameComparator =
   return 0
 }
 
-// eslint-disable-next-line max-len
+// transform all physical port / LAG interface data as EdgePortInfo from form instance
 export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<EdgeSerialNumber, EdgePortInfo[]> => {
-  // eslint-disable-next-line max-len
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings'] ?? []
-  // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings'] ?? []
 
-  const result =_.reduce(Object.keys(portSettings), (acc, serialNumber) => {
-    const currentLagSettings = lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-    // eslint-disable-next-line max-len
-    const currentLagMembers = currentLagSettings?.flatMap(item => item.lagMembers.map(member => member.portId))
-    const currentPortInfo = Object.values(portSettings[serialNumber]).map(item => ({
-      serialNumber,
-      id: item[0].id,
-      portName: item[0].interfaceName,
-      ipMode: item[0].ipMode,
-      ip: item[0].ip,
-      mac: item[0].mac,
-      subnet: item[0].subnet,
-      portType: item[0].portType,
-      isCorePort: item[0].corePortEnabled,
-      isAccessPort: item[0].accessPortEnabled,
-      isLag: false,
-      isLagMember: currentLagMembers?.includes(item[0].id) ?? false,
-      portEnabled: item[0].enabled
-    })) as EdgePortInfo[]
-    const currentLagInfo = (currentLagSettings?.map(item => ({
-      serialNumber,
-      id: item.id + '',
-      portName: `Lag${item.id}`,
-      ipMode: item.ipMode,
-      ip: item.ip,
-      mac: '',
-      subnet: item.subnet,
-      portType: item.portType,
-      isCorePort: item.corePortEnabled,
-      isAccessPort: item.accessPortEnabled,
-      isLag: true,
-      isLagMember: false,
-      portEnabled: item.lagEnabled
-    })) ?? []) as EdgePortInfo[]
+  const result = reduce(Object.keys(portSettings), (acc, serialNumber) => {
+    const currentLagSettings = lagSettings.find(item => item.serialNumber === serialNumber)?.lags ?? []
+    const currentPortSettings = Object.values(portSettings[serialNumber]).flat()
+
+    const {
+      ports: currentPortInfo,
+      lags: currentLagInfo
+    } = convertInterfaceDataToEdgePortInfo(serialNumber, currentLagSettings, currentPortSettings)
+
     acc[serialNumber] = [...currentPortInfo, ...currentLagInfo]
     return acc
   }, {} as Record<EdgeSerialNumber, EdgePortInfo[]>)
@@ -666,6 +651,29 @@ export const getAllPhysicalInterfaceData = (
     ports: allPortsData,
     lags: allLagsData
   }
+}
+
+
+export const getAllSubInterfaceData = (
+  portSubInterfaces: SubInterfaceSettingsFormType['portSubInterfaces'],
+  lagSubInterfaces: SubInterfaceSettingsFormType['lagSubInterfaces']
+): Record<EdgeSerialNumber, SubInterface[]> => {
+
+  const allPortsData = reduce(portSubInterfaces, (result, values, key) => {
+    result[key] = flatten(Object.values(values))
+    return result
+  }, {} as Record<EdgeSerialNumber, SubInterface[]>)
+
+  const allLagsData = reduce(lagSubInterfaces, (result, values, key) => {
+    result[key] = flatten(Object.values(values))
+    return result
+  }, {} as Record<EdgeSerialNumber, SubInterface[]>)
+
+  const allSubInterfaces = mergeWith(allPortsData, allLagsData, (a, b) => {
+    return a.concat(b)
+  })
+
+  return allSubInterfaces
 }
 
 // get physical port & LAG data from form instance
@@ -704,4 +712,34 @@ export const DualWanStepTitle = (props: {
     </Tooltip>
     }
   </>
+}
+
+export const getDryRunResultWithCurrentLagFormData = (
+  formRef: FormInstance<InterfaceSettingsFormType>,
+  edgeId: EdgeSerialNumber,
+  lag: EdgeLag,
+  isEdgeCoreAccessSeparationReady: boolean
+) => {
+  const networkSettingsFormData = formRef.getFieldsValue(true) as InterfaceSettingsFormType
+
+  const { ports: allPorts, lags: allLags } = getAllPhysicalInterfaceData(networkSettingsFormData.portSettings, networkSettingsFormData.lagSettings)
+  const portSubInterfaces = networkSettingsFormData.portSubInterfaces
+  const lagSubInterfaces = networkSettingsFormData.lagSubInterfaces
+  const allSubInterfaces = getAllSubInterfaceData(portSubInterfaces, lagSubInterfaces)
+
+  const existingPorts = allPorts[edgeId]
+  const existingLags = allLags[edgeId]
+  const existingSubInterfaces = allSubInterfaces[edgeId]
+
+  if(!existingPorts || !existingLags || !existingSubInterfaces) {
+    return {
+      ports: existingPorts,
+      lags: existingLags,
+      subInterfaces: existingSubInterfaces
+    }
+  }
+
+  // merge lag into existingLag
+  const updatedLagList = getMergedLagTableDataFromLagForm(existingLags, lag)
+  return doEdgeNetworkInterfacesDryRun(updatedLagList, existingPorts, existingSubInterfaces, isEdgeCoreAccessSeparationReady)
 }

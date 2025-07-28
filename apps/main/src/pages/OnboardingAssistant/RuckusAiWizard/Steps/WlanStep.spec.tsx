@@ -12,7 +12,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mock_payload, mock_description, mock_addwlan_response } from './__test__/WlanStepFixtures'
+import { mock_payload, mock_description, mock_addwlan_response } from './__tests__/WlanStepFixtures'
 import { WlanStep }                                              from './WlanStep'
 
 describe('WlanStep', () => {

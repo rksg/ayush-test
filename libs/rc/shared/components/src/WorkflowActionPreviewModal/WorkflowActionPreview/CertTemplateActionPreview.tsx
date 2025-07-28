@@ -6,18 +6,19 @@ import { useIntl }                           from 'react-intl'
 
 import { GridCol, GridRow }                                        from '@acx-ui/components'
 import { useGetCertificateTemplateQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
-import { CertTempActionContext, GenericActionPreviewProps }        from '@acx-ui/rc/utils'
+import { CertTempAction, GenericActionPreviewProps }               from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 
 // eslint-disable-next-line max-len
-export function CertTemplateActionPreview (props: GenericActionPreviewProps<CertTempActionContext>) {
+export function CertTemplateActionPreview (props: GenericActionPreviewProps<CertTempAction>) {
   const { $t } = useIntl()
   const { data, ...rest } = props
   const [selectedSsid, setSelectedSsid] = useState<string>('')
 
   const { data: certificateTemplate } = useGetCertificateTemplateQuery({
-    params: { policyId: data?.certTemplateId } })
+    params: { policyId: data?.certTemplateId } },
+  { skip: !data?.certTemplateId || !data?.valid })
 
   const { Title, Text } = Typography
 

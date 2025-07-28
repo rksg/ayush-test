@@ -9,7 +9,6 @@ import {
   Drawer,
   Loader,
   Table,
-  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
@@ -21,8 +20,9 @@ import {
   MSPUtils,
   MspRecCustomer
 } from '@acx-ui/msp/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { useParams }        from '@acx-ui/react-router-dom'
+import type { TableColumn } from '@acx-ui/types'
+import { noDataDisplay }    from '@acx-ui/utils'
 
 interface SelectRecCustomerDrawerProps {
   visible: boolean
@@ -91,7 +91,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
-  function highlightFirstAsterisk (str: string) {
+  function highlightFirstAsterisk (str: string, highlightFn: (text: string) => React.ReactNode) {
     const index = str.indexOf('*')
     if (index === -1) return str
     return (
@@ -100,7 +100,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
           color: 'var(--acx-accents-orange-50)',
           paddingRight: '4px'
         }}>*</span>
-        {str.slice(index + 1)} </span>
+        {highlightFn(str.slice(index + 1))} </span>
     )
   }
   const propertyIdColumn: TableColumn<MspRecCustomer, 'text'>[] = (!mspHspDisplayToggle ? [] :
@@ -111,8 +111,8 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       sorter: { compare: sortProp('propertyCode', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return row.propertyCode ? row.propertyCode : noDataDisplay
+      render: function (_, row,__, highlightFn) {
+        return row.propertyCode ? highlightFn(row.propertyCode) : noDataDisplay
       }
     }])
   const columns: TableProps<MspRecCustomer>['columns'] = [
@@ -123,10 +123,10 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       sorter: { compare: sortProp('account_name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
+      render: function (_, row,__, highlightFn) {
         return (isRecToMspREcConversionEnabled && !row?.is_tenant_onboarded)
-          ? highlightFirstAsterisk(row.account_name)
-          : row.account_name
+          ? highlightFn(highlightFirstAsterisk(row.account_name,highlightFn) as string)
+          : highlightFn(row.account_name)
       }
     },
     ...(propertyIdColumn),
