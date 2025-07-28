@@ -36,7 +36,7 @@ jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () 
 
 jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettingsV1Dot1', () => ({
   ClientAdmissionControlSettingsV1Dot1: () =>
-  <div data-testid={'clientAdmissionControlSettingsV1Dot1'}></div>
+    <div data-testid={'clientAdmissionControlSettingsV1Dot1'}></div>
 }))
 
 jest.mock('./ClientSteering/ClientSteering', () => ({
