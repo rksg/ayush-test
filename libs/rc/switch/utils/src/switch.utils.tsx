@@ -816,7 +816,6 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
   }
 }
 
-
 export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
@@ -856,7 +855,6 @@ export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVers
     return false
   }
 }
-
 
 export const isFirmwareVersionAbove10020bCd2 = function (firmwareVersion?: string) {
   /*

@@ -30,9 +30,10 @@ import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
 import {
+  getAckMsg,
   getSwitchName,
   getSwitchModel,
-  getAckMsg
+  isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/switch/utils'
 import {
   getSwitchStatusString,
@@ -43,7 +44,6 @@ import {
   getFilters,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
-  isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
   getAdminPassword,
   SwitchRbacUrlsInfo,
