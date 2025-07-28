@@ -13,6 +13,7 @@ import {
   useLazySwitchRearViewQuery
 }                                                                                      from '@acx-ui/rc/services'
 import {
+  getAckMsg,
   getPoeUsage,
   getSwitchModel,
   getSwitchPortLabel,
@@ -303,24 +304,11 @@ export function Unit (props:{
         status: switchMember.deviceStatus,
         isOnline,
         needAck: isEmpty(switchMember.needAck) ? false : switchMember.needAck,
-        ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber),
+        ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber || '', false, $t),
         activeStatus: isEmpty(switchMember.unitStatus) ? transformSwitchUnitStatus(defaultStatusEnum) :
           switchMember.unitStatus
       }
     }
-  }
-
-  const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber?:string) => {
-    let ackMsg = ''
-    if (needAck === true) {
-      ackMsg = isEmpty(newSerialNumber) ?
-        $t({ defaultMessage: 'Additional member detected' }) :
-        $t({ defaultMessage:
-          'Member switch replacement detected. Old S/N: {serialNumber}  > New S/N: {newSerialNumber}' },
-        { serialNumber, newSerialNumber }
-        )
-    }
-    return ackMsg
   }
 
   const getPortLabel = (slot: SwitchSlot) => {
@@ -402,7 +390,7 @@ export function Unit (props:{
                     </div>
                     <div className='status'>{unit.unitStatus.ackMsg}</div>
                     <div className='status'>
-                      <span className='unit-button' onClick={onClickAck}>
+                      <span className='ack-button' onClick={onClickAck}>
                         {$t({ defaultMessage: 'Acknowledge' })}
                       </span>
                     </div>
