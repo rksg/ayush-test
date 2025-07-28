@@ -1,12 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   CommonUrlsInfo,
   CommonRbacUrlsInfo,
-  SwitchRbacUrlsInfo,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
@@ -16,7 +14,7 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult, mockedApsResult, mockedSwitchResult } from './__tests__/fixtures'
+import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult, mockedApsResult } from './__tests__/fixtures'
 
 
 import EthernetPortProfile from '.'
