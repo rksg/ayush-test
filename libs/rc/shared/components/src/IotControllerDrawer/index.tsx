@@ -15,14 +15,21 @@ import {
   useGetIotControllerListQuery
 }                            from '@acx-ui/rc/services'
 import {
-  IotControllerStatus
+  IotControllerStatus,
+  IotControllerStatusEnum,
+  IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
+  useNavigate,
+  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-import { useTableQuery }  from '@acx-ui/utils'
+import {
+  getOpsApi,
+  useTableQuery
+} from '@acx-ui/utils'
 
 interface IotControllerDrawerProps {
   visible: boolean
@@ -33,6 +40,8 @@ interface IotControllerDrawerProps {
 export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const linkToIot = useTenantLink('/devices/iotController/add')
   const { visible, setVisible, applyIotController } = props
 
   const payload = {
@@ -85,7 +94,7 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
       sorter: false,
       searchable: true,
       render: function (_, row, __, highlightFn) {
-        return (
+        return row.status !== IotControllerStatusEnum.ONLINE ? row.name : (
           <TenantLink
             to={`/devices/iotController/${row.id}/details/overview`}>
             {highlightFn(row.name)}</TenantLink>
@@ -137,7 +146,11 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
             dataSource={tableQuery?.data?.data}
             rowKey='name'
             actions={filterByAccess([{
-              label: $t({ defaultMessage: 'Add IoT Controller' })
+              label: $t({ defaultMessage: 'Add IoT Controller' }),
+              rbacOpsIds: [getOpsApi(IotUrlsInfo.addIotController)],
+              onClick: () => {
+                navigate(linkToIot, { replace: true })
+              }
             }])}
             rowSelection={{
               type: 'radio',
