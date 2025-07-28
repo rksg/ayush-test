@@ -149,7 +149,7 @@ const sdLanFeatureRequirementPayload = {
   }
 }
 
-const ClusterFirmwareInfo = (props: {
+export const ClusterFirmwareInfo = (props: {
   clusterId: string,
   fwVersion?: string,
 }) => {
