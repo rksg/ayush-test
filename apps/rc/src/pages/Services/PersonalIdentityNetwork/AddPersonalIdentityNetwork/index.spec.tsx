@@ -115,9 +115,9 @@ describe('Add PersonalIdentityNetwork', () => {
     })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
+      pathname: `/${params.tenantId}/t/services/personalIdentityNetwork/list`,
       search: ''
-    }))
+    }, { replace: true }))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -219,8 +219,8 @@ describe('Add PersonalIdentityNetwork - L2GRE', () => {
     })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
+      pathname: `/${params.tenantId}/t/services/personalIdentityNetwork/list`,
       search: ''
-    }))
+    }, { replace: true }))
   })
 })

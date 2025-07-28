@@ -223,6 +223,156 @@ describe('WidgetChart', () => {
     chatId: 'e3ec9fdedc1e47c6b69415265798b457'
   }
 
+  const seventeenBarChartData = {
+    unit: {
+      'Traffic (Total)': 'BYTES'
+    },
+    axisType: 'category',
+    multiSeries: true,
+    chartType: 'bar',
+    chartOption: {
+      dimensions: [
+        'switchModel',
+        'portSpeed',
+        'Traffic (Total)_2.5 Gb/sec',
+        'Traffic (Total)_1 Gb/sec'
+      ],
+      source: [
+        [
+          'ICX7150-C10ZP',
+          '2.5 Gb/sec',
+          118633834,
+          null
+        ],
+        [
+          'ICX7650-48ZP',
+          '1 Gb/sec',
+          null,
+          1238266301
+        ],
+        [
+          'ICX8200-48P',
+          '1 Gb/sec',
+          null,
+          420828315
+        ],
+        [
+          'ICX7150-C10ZP',
+          '1 Gb/sec',
+          null,
+          2247385121
+        ],
+        [],[],[],
+        [],[],[],
+        [],[],[],
+        [],[],[],[]
+      ],
+      seriesEncode: [
+        {
+          x: 'Traffic (Total)_2.5 Gb/sec',
+          y: 'switchModel',
+          seriesName: '2.5 Gb/sec'
+        },
+        {
+          x: 'Traffic (Total)_1 Gb/sec',
+          y: 'switchModel',
+          seriesName: '1 Gb/sec'
+        }
+      ],
+      multiSeries: true
+    },
+    sessionId: '053fd23c-c362-4306-af03-73a26013c61a',
+    id: 'e3ec9fdedc1e47c6b69415265798b457',
+    chatId: 'e3ec9fdedc1e47c6b69415265798b457'
+  }
+
+  const thirtytwoBarChartData = {
+    unit: {
+      'Traffic (Total)': 'BYTES'
+    },
+    axisType: 'category',
+    multiSeries: true,
+    chartType: 'bar',
+    chartOption: {
+      dimensions: [
+        'switchModel',
+        'portSpeed',
+        'Traffic (Total)_2.5 Gb/sec',
+        'Traffic (Total)_1 Gb/sec'
+      ],
+      source: [
+        [
+          'ICX7150-C10ZP',
+          '2.5 Gb/sec',
+          118633834,
+          null
+        ],
+        [
+          'ICX7650-48ZP',
+          '1 Gb/sec',
+          null,
+          1238266301
+        ],
+        [
+          'ICX8200-48P',
+          '1 Gb/sec',
+          null,
+          420828315
+        ],
+        [
+          'ICX7150-C10ZP',
+          '1 Gb/sec',
+          null,
+          2247385121
+        ],
+        [],[],[],[],[],[],
+        [],[],[],[],[],[],
+        [],[],[],[],[],[],
+        [],[],[],[],[],[],
+        [],[],[],[]
+      ],
+      seriesEncode: [
+        {
+          x: 'Traffic (Total)_2.5 Gb/sec',
+          y: 'switchModel',
+          seriesName: '2.5 Gb/sec'
+        },
+        {
+          x: 'Traffic (Total)_1 Gb/sec',
+          y: 'switchModel',
+          seriesName: '1 Gb/sec'
+        }
+      ],
+      multiSeries: true
+    },
+    sessionId: '053fd23c-c362-4306-af03-73a26013c61a',
+    id: 'e3ec9fdedc1e47c6b69415265798b457',
+    chatId: 'e3ec9fdedc1e47c6b69415265798b457'
+  }
+
+  const lineChartData = {
+    axisType: 'time',
+    chartType: 'line',
+    chartOption: [{
+      key: 'time_Total Traffic (MB)',
+      name: 'Total Traffic (MB)',
+      data: [
+        ['2025-07-20T12:00:00.000Z',159.5],
+        ['2025-07-20T18:00:00.000Z',183.9],
+        ['2025-07-21T00:00:00.000Z',257.1],
+        ['2025-07-21T06:00:00.000Z',255],
+        ['2025-07-21T12:00:00.000Z',167.5],
+        ['2025-07-21T18:00:00.000Z',181.8],
+        ['2025-07-22T00:00:00.000Z',253.3],
+        ['2025-07-22T06:00:00.000Z',251.3],
+        ['2025-07-23T00:00:00.000Z',180.3]
+      ] }
+    ],
+    sessionId: '7cd507d5-5c1b-41d6-80ce-8dd3f6bddf55',
+    id: '42f7aaf41cf14eda96d967f00ac7e1d3',
+    chatId: '42f7aaf41cf14eda96d967f00ac7e1d3'
+  }
+
   const tableData = {
     unit: {
       'Total Traffic (Bytes)': 'BYTES'
@@ -301,6 +451,19 @@ describe('WidgetChart', () => {
     )
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
   })
+  it('should render Draggable Pie Chart in chat only mode correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={pieChartData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('DonutChart')).toBeVisible()
+  })
+
   it('should render Draggable Single Bar Chart correctly', async () => {
     renderWithDndProvider(
       <Provider>
@@ -335,12 +498,71 @@ describe('WidgetChart', () => {
     expect(await screen.findByTestId('BarChart')).toBeVisible()
   })
 
+  it('should render Draggable Multiple Bar Chart with 17 bars correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={seventeenBarChartData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('BarChart')).toBeVisible()
+  })
+  it('should render Draggable Multiple Bar Chart with 32 bars correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={thirtytwoBarChartData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('BarChart')).toBeVisible()
+  })
+  it('should render Draggable Multiple Bar Chart in chat only mode correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={multipleBarChartData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('BarChart')).toBeVisible()
+  })
+  it('should render Draggable Line Chart in chat only mode correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={lineChartData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
+        />
+      </Provider>
+    )
+  })
   it('should render Draggable Table correctly', async () => {
     renderWithDndProvider(
       <Provider>
         <DraggableChart
           data={tableData as unknown as WidgetListData}
           groups={groupsData}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('Table')).toBeVisible()
+  })
+  it('should render Draggable Table in chat only mode correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={tableData as unknown as WidgetListData}
+          groups={groupsData}
+          chatOnly={true}
         />
       </Provider>
     )
