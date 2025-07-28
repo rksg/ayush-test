@@ -596,6 +596,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       case 'ICX8100-48P-X':
       case 'ICX8100-48PF-X':
       case 'ICX8100-C08PF-X':
+      case 'ICX8100-C16PF-X':
         return !isSupport8100Phase2
       default:
         return false
