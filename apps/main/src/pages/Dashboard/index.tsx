@@ -668,7 +668,7 @@ function CommonDashboardWidgets () {
 }
 
 function DeviceWidgetsAndMapWidget (props: {
-  tabDetails: Array<{ label: React.ReactNode; value: string; children: React.ReactNode }>,
+  tabDetails: ContentSwitcherProps['tabDetails'],
   onTabChange: (value: string) => void,
   enabledUXOptFeature: boolean
 }) {
@@ -683,10 +683,7 @@ function DeviceWidgetsAndMapWidget (props: {
       tabId={'dashboard-devices'}
       tabDetails={tabDetails}
       size='large'
-      defaultValue={
-        localStorage.getItem('dashboard-tab') ||
-        tabDetails[0].value
-      }
+      defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
       onChange={onTabChange}
       extra={
         <UI.Wrapper>

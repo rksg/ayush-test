@@ -69,37 +69,4 @@ describe('ContentSwitcher',()=>{
     )
     expect(await screen.findByText('Table content')).toBeVisible()
   })
-
-  it('should render component when tabDetails is a function', async () => {
-    const mockTabDetailsFunction = jest.fn(() => [
-      {
-        label: 'Dynamic Chart',
-        value: 'dynamic-chart',
-        icon: <BarChartOutlined />,
-        children: <h1>Dynamic Chart content</h1>
-      },
-      {
-        label: 'Dynamic Table',
-        value: 'dynamic-table',
-        icon: <TableOutlined />,
-        children: <h2>Dynamic Table content</h2>
-      }
-    ])
-
-    render(
-      <ContentSwitcher
-        tabDetails={mockTabDetailsFunction}
-        height={800}
-        width={1200}
-      />
-    )
-
-    expect(mockTabDetailsFunction).toHaveBeenCalledWith(800, 1200)
-    expect(mockTabDetailsFunction).toHaveBeenCalledTimes(1)
-
-    expect(await screen.findByText('Dynamic Chart content')).toBeVisible()
-
-    fireEvent.click(screen.getByText('Dynamic Table'))
-    expect(await screen.findByText('Dynamic Table content')).toBeVisible()
-  })
 })

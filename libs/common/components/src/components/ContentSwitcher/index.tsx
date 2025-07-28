@@ -16,7 +16,7 @@ export interface ContentSwitcherProps {
   tabId?: string
   defaultValue?: string
   formInitValue?: string
-  tabDetails: Array<TabDetail> | ((height: number, width: number) => Array<TabDetail>)
+  tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
   extra?: React.ReactNode;
@@ -24,8 +24,6 @@ export interface ContentSwitcherProps {
   onChange?: (value: string) => void
   noPadding?: boolean
   tabPersistence?: boolean
-  height?: number
-  width?: number
 }
 
 const sizeSpaceMap = {
@@ -35,12 +33,11 @@ const sizeSpaceMap = {
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const { tabId, tabDetails, defaultValue, formInitValue, size, align, value, onChange,
-    extra, noPadding, tabPersistence, height = 0, width = 0 } = props
+    extra, noPadding, tabPersistence } = props
 
   const initValue = defaultValue || formInitValue
 
-  const tabDetailsArray = typeof tabDetails === 'function' ? tabDetails(height, width) : tabDetails
-  const options: SelectionControlOptionProps[] = tabDetailsArray.map((tabDetail: TabDetail) => {
+  const options: SelectionControlOptionProps[] = tabDetails.map((tabDetail: TabDetail) => {
     return {
       label: tabDetail.label,
       value: tabDetail.value,
@@ -81,7 +78,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
         />
       </div>
       {
-        tabDetailsArray.find((tabDetail) => tabDetail.value === (value || activeContent))?.children
+        tabDetails.find((tabDetail) => tabDetail.value === (value || activeContent))?.children
       }
     </>
   )
