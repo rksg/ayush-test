@@ -9,9 +9,10 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Tooltip }                                                                                from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages, SwitchPortViewModel } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                from '@acx-ui/utils'
+import { Tooltip }                                                            from '@acx-ui/components'
+import { getSwitchPortLabel }                                                 from '@acx-ui/rc/switch/utils'
+import { SwitchSlot2 as SwitchSlot, PortStatusMessages, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                            from '@acx-ui/utils'
 
 import { getTooltipTemplate } from '../'
 

@@ -50,6 +50,19 @@ export const TitleBar = styled.div`
     }
   }
 
+  .ack-button {
+    background-color: var(--acx-accents-orange-50);
+    color: var(--acx-primary-white);
+    text-align: center;
+    padding: 2px 12px;
+    margin-top: 3px;
+    margin-right: 50px;
+
+    &:hover:not([disabled]) {
+      cursor: pointer;
+    }
+  }
+
   .view-button {
     flex-grow: 1;
     text-align: end;
