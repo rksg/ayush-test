@@ -55,8 +55,9 @@ COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 COPY tools/tests ./tools/tests
 
 # Copy the tar.xz file if it exists
-ENV CICD_BUILD=true
-COPY nxcache/nxcache.tar.xz* ./
+RUN if [ -f nxcache/nxcache.tar.xz ]; then \
+      CICD_BUILD=true cp nxcache/nxcache.tar.xz ./; \
+    fi
 
 # Extract it only if the file exists
 RUN if [ -f ./nxcache.tar.xz ]; then \
