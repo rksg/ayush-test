@@ -36,6 +36,7 @@ jest.mock('@acx-ui/utils', () => {
 })
 
 jest.mock('@acx-ui/rc/components', () => ({
+  CompatibilityWarningTriangleIcon: () => <div data-testid='rc-CompatibilityWarningTriangleIcon' />,
   EdgeCompatibilityDrawer: () => <div data-testid='rc-EdgeCompatibilityDrawer' />,
   ApCompatibilityToolTip: () => <div data-testid='rc-ApCompatibilityToolTip' />,
   EdgeCompatibilityType: {

@@ -15,15 +15,13 @@ import {
   TableProps,
   Subtitle,
   Loader,
-  showActionModal
+  showActionModal,
+  SpaceWrapper
 } from '@acx-ui/components'
 import {
   formatter,
   DateFormatEnum
 } from '@acx-ui/formatter'
-import {
-  SpaceWrapper
-} from '@acx-ui/rc/components'
 import {
   useGetZdConfigurationListQuery,
   useDeleteMigrationMutation

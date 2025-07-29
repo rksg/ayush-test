@@ -12,7 +12,8 @@ import {
   getPolicyRoutePath,
   redirectPreviousPage,
   SoftGre,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -31,6 +32,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const [form] = Form.useForm()
 
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SOFTGRE)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
   const tablePath = getPolicyRoutePath({
     type: PolicyType.SOFTGRE,
@@ -49,7 +51,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
         await createSoftGre({ params, payload: data }).unwrap()
       }
 
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

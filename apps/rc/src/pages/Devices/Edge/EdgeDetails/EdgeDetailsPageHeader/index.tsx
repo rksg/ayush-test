@@ -116,7 +116,7 @@ export const EdgeDetailsPageHeader = () => {
             scopes: item.scopeKey,
             rbacOpsIds: item.rbacOpsIds
           })
-        ).map(({ showupstatus, scopeKey, ...itemFields }) => {
+        ).map(({ showupstatus, scopeKey, rbacOpsIds, ...itemFields }) => {
           return { ...itemFields }
         })
       }

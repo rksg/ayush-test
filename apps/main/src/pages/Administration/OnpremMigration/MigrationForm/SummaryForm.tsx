@@ -14,11 +14,9 @@ import {
   Subtitle,
   Loader,
   cssStr,
-  StackedBarChart
-} from '@acx-ui/components'
-import {
+  StackedBarChart,
   SpaceWrapper
-} from '@acx-ui/rc/components'
+} from '@acx-ui/components'
 import {
   useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'

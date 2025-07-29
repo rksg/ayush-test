@@ -13,7 +13,7 @@ import {
   mockVenueApCompatibilities,
   mockNetworkApCompatibilities,
   mockFeatureCompatibilities
-} from '../__test__/fixtures'
+} from '../__tests__/fixtures'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 import { ApModelCompatibilityDrawer } from './ApModelCompatibilityDrawer'

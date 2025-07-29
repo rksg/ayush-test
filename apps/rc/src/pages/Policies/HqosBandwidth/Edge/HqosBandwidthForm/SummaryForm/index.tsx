@@ -3,10 +3,9 @@ import React from 'react'
 import { Col, Row, Space, Table, TableProps } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { Descriptions, StepsForm, Subtitle, useStepFormContext }         from '@acx-ui/components'
-import { CheckMark }                                                     from '@acx-ui/icons'
-import { SpaceWrapper }                                                  from '@acx-ui/rc/components'
-import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@acx-ui/rc/utils'
+import { Descriptions, StepsForm, Subtitle, useStepFormContext, SpaceWrapper } from '@acx-ui/components'
+import { CheckMark }                                                           from '@acx-ui/icons'
+import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay }       from '@acx-ui/rc/utils'
 
 import { HqosBandwidthFormModel } from '..'
 
