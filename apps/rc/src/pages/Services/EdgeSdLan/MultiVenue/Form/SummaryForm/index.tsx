@@ -4,11 +4,10 @@ import { Col, Row, Space } from 'antd'
 import { find }            from 'lodash'
 import { useIntl }         from 'react-intl'
 
-import { Descriptions, StepsForm, useStepFormContext, Subtitle, Loader } from '@acx-ui/components'
-import { intlFormats }                                                   from '@acx-ui/formatter'
-import { SpaceWrapper }                                                  from '@acx-ui/rc/components'
-import { useVenuesListQuery }                                            from '@acx-ui/rc/services'
-import { EdgeMvSdLanFormModel, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
+import { Descriptions, StepsForm, useStepFormContext, Subtitle, Loader, SpaceWrapper } from '@acx-ui/components'
+import { intlFormats }                                                                 from '@acx-ui/formatter'
+import { useVenuesListQuery }                                                          from '@acx-ui/rc/services'
+import { EdgeMvSdLanFormModel, EdgeMvSdLanFormNetwork }                                from '@acx-ui/rc/utils'
 
 import { StyledAntdDescriptions } from './styledComponents'
 

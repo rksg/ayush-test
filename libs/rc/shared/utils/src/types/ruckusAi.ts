@@ -1,5 +1,5 @@
 import { BarChartData, TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { DonutChartData, TableColumn }       from '@acx-ui/components'
+import type { TableColumn }                  from '@acx-ui/types'
 
 export interface RuckusAiConversation {
   sessionId: string,
@@ -63,6 +63,12 @@ export interface ChatMessage {
 export interface HistoryListItem {
   duration: string
   history: ChatHistory[]
+}
+
+type DonutChartData = {
+  value: number,
+  name: string,
+  color?: string
 }
 
 export interface ChatWidget {

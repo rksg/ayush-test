@@ -27,7 +27,7 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           await handleCallbackWhenActivityDone({
             api,
             activityData: msg,
-            useCase: 'AddTunnelServiceProfile',
+            useCase: 'AddTunnelServiceProfileTemplate',
             callback: requestArgs.callback,
             failedCallback: requestArgs.failedCallback
           })

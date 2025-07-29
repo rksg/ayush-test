@@ -437,18 +437,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
         })
 
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
-      })
-
-      it('should render network type', async () => {
-        jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-        render(<Provider>
-          <RbacClientProperties
-            clientDetails={clientInfoList[0] as unknown as ClientInfo}
-          />
-        </Provider>, {
-          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
-        })
         expect(await screen.findByText('Captive Portal')).toBeVisible()
       })
     })
