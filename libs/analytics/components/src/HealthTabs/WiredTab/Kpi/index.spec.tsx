@@ -331,7 +331,7 @@ describe('Kpi Section', () => {
       expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
     })
 
-    it('should use primary Alert type for banner', async () => {
+    it('should use info-bg Card type for banner', async () => {
       // Mock low device count response
       mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
         data: { network: { timeSeries: sampleTSWithLowDeviceCount } }
@@ -353,10 +353,12 @@ describe('Kpi Section', () => {
       const tableTab = screen.getByRole('radio', { name: 'Table' })
       await userEvent.click(tableTab)
 
-      // Find the alert and verify it has the primary class
-      const alert = screen.getByRole('alert')
-      expect(alert).toHaveClass('ant-alert-primary')
-      expect(alert).toHaveClass('ant-alert-info') // Should also have info class (mapped type)
+      // Verify the card content is displayed (Card replaced Alert)
+      expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
+
+      // Verify the compliance KPIs content is displayed
+      expect(screen.getByText('IPv4 Unicast Table Compliance')).toBeInTheDocument()
+      expect(screen.getByText('IPv6 Unicast Table Compliance')).toBeInTheDocument()
     })
 
     it('should make API call with correct parameters for device count checking', async () => {
@@ -423,6 +425,51 @@ describe('Kpi Section', () => {
 
       // This proves that shouldCheckDeviceCount logic should be working
       // because the ContentSwitcher is being rendered
+    })
+
+    it('should display compliance information using Card component', async () => {
+      // Mock low device count to trigger compliance card display
+      mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+        data: { network: { timeSeries: sampleTSWithLowDeviceCount } }
+      })
+
+      const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+      render(<Router><Provider>
+        <HealthPageContext.Provider value={{ ...healthContext }}>
+          <KpiSection
+            tab={'infrastructure'}
+            filters={{ ...filters, filter: pathToFilter(path) }}
+          />
+        </HealthPageContext.Provider>
+      </Provider></Router>)
+
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+      // Click the Table tab to trigger compliance card
+      const tableTab = screen.getByRole('radio', { name: 'Table' })
+      await userEvent.click(tableTab)
+
+      // Verify Card displays compliance message (Card replaced Alert)
+      expect(screen.getByText(/Additional Wired AI Health compliance KPIs below are/))
+        .toBeInTheDocument()
+
+      // Verify all compliance KPIs are listed in the Card
+      const kpis = [
+        'IPv4 Unicast Table Compliance',
+        'IPv6 Unicast Table Compliance',
+        'IPv4 Multicast Table Compliance',
+        'IPv6 Multicast Table Compliance',
+        'ARP Table Compliance',
+        'MAC Table Compliance'
+      ]
+
+      kpis.forEach(kpi => {
+        expect(screen.getByText(kpi)).toBeInTheDocument()
+      })
+
+      // Verify upgrade requirement is mentioned
+      expect(screen.getByText(/FastIron version 10.0.10h or greater/))
+        .toBeInTheDocument()
     })
   })
 })

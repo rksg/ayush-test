@@ -10,9 +10,9 @@ import {
   wiredKPIsForTab,
   wiredKPIsForTabPhase2
 } from '@acx-ui/analytics/utils'
-import { Loader, ContentSwitcher, Alert } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import type { AnalyticsFilter }           from '@acx-ui/utils'
+import { Loader, ContentSwitcher, Card } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { KpiSection, defaultThreshold } from '../../../Health/Kpi'
 
@@ -65,7 +65,7 @@ function CustomKpiSection (props: {
   ) || []
   const latestDataPoint = validDataPoints[validDataPoints.length - 1]
   const totalCount = latestDataPoint?.[1] || 0 // totalCount is at index 1
-  const hasDevices = totalCount > 0
+  const hasDevices = totalCount > 30
 
   // If we have phase 2 structure (object kpis), always use ContentSwitcher
   if (shouldCheckDeviceCount) {
@@ -77,27 +77,26 @@ function CustomKpiSection (props: {
           value: key,
           children: (
             <div style={{ marginTop: '16px' }}>
-              <Alert
-                className='top-aligned-icon'
-                message={
-                  <div>
+              <Card
+                type='info-bg'
+              >
+                <div>
+                  <p style={{ marginBottom: '12px' }}>
                     {$t({
                       defaultMessage: 'Additional Wired AI Health compliance KPIs below are ' +
                         'available on upgrading switches to FastIron version 10.0.10h or greater.'
                     })}
-                    <ul style={{ marginTop: '8px', marginBottom: '0', paddingLeft: '20px' }}>
-                      <li>IPv4 Unicast Table Compliance</li>
-                      <li>IPv6 Unicast Table Compliance</li>
-                      <li>IPv4 Multicast Table Compliance</li>
-                      <li>IPv6 Multicast Table Compliance</li>
-                      <li>ARP Table Compliance</li>
-                      <li>MAC Table Compliance</li>
-                    </ul>
-                  </div>
-                }
-                type='primary'
-                showIcon
-              />
+                  </p>
+                  <ul style={{ margin: '0', paddingLeft: '20px' }}>
+                    <li>IPv4 Unicast Table Compliance</li>
+                    <li>IPv6 Unicast Table Compliance</li>
+                    <li>IPv4 Multicast Table Compliance</li>
+                    <li>IPv6 Multicast Table Compliance</li>
+                    <li>ARP Table Compliance</li>
+                    <li>MAC Table Compliance</li>
+                  </ul>
+                </div>
+              </Card>
             </div>
           )
         }
