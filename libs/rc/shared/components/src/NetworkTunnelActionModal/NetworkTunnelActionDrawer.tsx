@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Typography } from 'antd'
 
-import { Drawer, Loader }             from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Drawer, Loader, SpaceWrapper } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   EdgePinUrls,
   getServiceDetailsLink,
@@ -17,7 +17,6 @@ import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import { SpaceWrapper }                                                                                from '../SpaceWrapper'
 import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
@@ -74,7 +73,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
-      const venueSdLan = formValues.sdLan.newProfileId && isEdgeSdLanSelectionDrawerReady
+      const venueSdLan = formValues.sdLan?.newProfileId && isEdgeSdLanSelectionDrawerReady
         ? formValues.sdLan.newProfile
         : initialVenueSdLanInfo
 

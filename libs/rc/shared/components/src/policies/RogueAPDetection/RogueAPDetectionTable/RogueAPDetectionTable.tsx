@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   useDelRoguePoliciesMutation,
   useEnhancedRoguePoliciesQuery,
@@ -26,7 +26,6 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { RequestPayload }                                          from '@acx-ui/types'
 import { useTableQuery }                                           from '@acx-ui/utils'
 
-import { SimpleListTooltip } from '../../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {

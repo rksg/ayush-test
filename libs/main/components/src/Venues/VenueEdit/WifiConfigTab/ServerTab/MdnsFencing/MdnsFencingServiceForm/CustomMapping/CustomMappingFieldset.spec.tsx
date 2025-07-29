@@ -6,6 +6,13 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import { CustomMappingFieldset } from './CustomMappingFieldset'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ConfigTemplateEnforcementContext: require('react').createContext({
+    isEnforced: false
+  }),
+  useEnforcedStatus: () => ({})
+}))
+
 describe('CustomMappingFieldset Component', () => {
   it ('should render correctly', async () => {
     render(

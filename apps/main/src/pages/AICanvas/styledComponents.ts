@@ -149,7 +149,7 @@ const ChatOnlyWidth = '1000px'
 const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
-const ModalInputHeight = '130px'
+const ModalInputHeight = '140px'
 
 export const Wrapper = styled.div<{ showCanvas: boolean }>`
 display: flex;
@@ -194,7 +194,6 @@ display: flex;
       align-items: center;
       cursor: default;
       span {
-        margin-left: -50px;
         font-family: var(--acx-accent-brand-font);
         font-weight: 600;
         font-size: 15px;
@@ -203,7 +202,7 @@ display: flex;
     .actions{
       display: flex;
       align-items: center;
-      width: 100px;
+      width: 60px;
       justify-content: space-between;
       color: #000;
       svg {
@@ -231,9 +230,8 @@ display: flex;
       border-bottom-left-radius: 24px;
       ${(props) => !props.showCanvas && `
         border-bottom-right-radius: 24px;
-      `
-}
-      height: 120px;
+      `}
+      height: 130px;
       position: absolute;
       bottom: 0;
       width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
@@ -243,6 +241,22 @@ display: flex;
         right: 35px;
         bottom: 85px;
         color: var(--acx-neutrals-60);
+      }
+      .ant-form-item {
+        margin-bottom: 5px;
+      }
+      .powered-by {
+        display: flex;
+        justify-content: center;
+        color: var(--acx-neutrals-60);
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 18px;
+        .mlisa {
+          color: var(--acx-neutrals-70);
+          font-weight: 600;
+          padding-left: 3px;
+        }
       }
       button {
         min-width: 24px;
@@ -287,11 +301,20 @@ display: flex;
       position: relative;
       margin-right: 10px;
       margin-top: 4px;
+      .welcome-info {
+        position: relative;
+        margin-top: 55px;
+        margin-bottom: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       .placeholder {
         position: absolute;
         bottom: 0px;
         left: 14px;
         div{
+          display: flex;
           background-color: var(--acx-accents-blue-50);
           color: var(--acx-primary-white);
           border-radius: 20px;
@@ -303,6 +326,9 @@ display: flex;
           margin: 4px;
           &:hover{
             background-color: var(--acx-accents-blue-55);
+          }
+          svg {
+            margin-left: 3px;
           }
         }
       }
@@ -327,6 +353,30 @@ display: flex;
         display: flex;
         flex-direction: column;
       }
+      .onboarding-actions {
+        margin-left: 51px;
+        margin-bottom: 10px;
+        display: flex;
+        div{
+          display: flex;
+          background-color: var(--acx-primary-white);
+          color: var(--acx-accents-blue-55);
+          border: 1.3px solid var(--acx-accents-blue-55);
+          border-radius: 16px;
+          width: fit-content;
+          padding: 6px 9px;
+          cursor: pointer;
+          float: left;
+          margin-right: 10px;
+          box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+          &:hover{
+            // border: 1.3px solid var(--acx-accents-blue-55);
+          }
+          svg {
+            margin-left: 3px;
+          }
+        }
+      }
       .loading {
         display: flex;
         justify-content: center;
@@ -346,25 +396,27 @@ display: flex;
       }
       .right .chat-bubble {
         border-radius: 16px 16px 0px 16px;
-        background: #F8F8FA;
-        border: 1px solid #D4D4D4;
+        background: var(--acx-primary-white);
         color: #000;
         margin-right: 5px;
         font-weight: 400;
         align-self: flex-end;
+        padding: 16px;
       }
       .chat-bubble {
-        background: linear-gradient(94deg, #E550A9 -5.07%,
-          #C54DA9 21.24%, #9355C1 49.19%, #2987DF 90.85%);
-        color: var(--acx-primary-white);
         width: fit-content;
-        max-width: 90%;
-        padding: 16px;
+        max-width: 95%;
         border-radius: 16px 16px 16px 0px;
+        padding: 16px 0 0 0px;
         margin: 7px;
         margin-left: 10px;
-        font-weight: 600;
         line-height: 18px;
+        display: flex;
+        .chat-bubble-text {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+        }
       }
       .chat-bubble {
         align-self: flex-start;
@@ -401,21 +453,11 @@ display: flex;
       .ai-message-tail {
         display: grid;
         grid-template-columns: 1fr auto;
-        margin-right: 7px;
+        margin-right: 8px;
+        margin-top: -7px;
         min-height: 25px;
-
-        &.fixed {
-          width: 300px;
-        }
-        &.fixed-narrower {
-          width: 200px !important;
-        }
-        &.dynamic {
-          align-self: flex-start;
-        }
-        .timestamp {
-          padding: 6px 0px 0px 0px;
-        }
+        align-items: center;
+        width: 175px;
       }
       .message-tail {
         align-content: end;
@@ -426,8 +468,7 @@ display: flex;
       .timestamp {
         color: var(--acx-neutrals-80);
         font-size: 10px;
-        margin-left: 12px;
-        margin-top: -5px;
+        margin-left: 52px;
         &.right{
           justify-content: end;
           margin-right: 7px;
@@ -773,7 +814,20 @@ ${props => props.$type === 'pageview' && css`
 
 `
 
+export const DraggableChart = styled.div`
+  .draggable-chart {
+    box-shadow: none;
+    margin: 3px 7px 10px 50px;
+    .ant-card {
+      border: 1px solid var(--acx-neutrals-30);
+    }
+  }
+`
+
 export const Widget = styled(Card)`
+  &.ant-card {
+    box-shadow: none;
+  }
   transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;

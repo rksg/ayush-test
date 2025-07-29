@@ -1,30 +1,17 @@
 import { rest } from 'msw'
 
 import { ipSecApi }    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType,
+import { PolicyOperation, PolicyType,
   IpsecUrls,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Path }                       from '@acx-ui/react-router-dom'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedNetworkQueryData, mockIpSecDetailFromListQueryById } from '../__tests__/fixtures'
+import { mockIpSecDetailFromListQueryById } from '../__tests__/fixtures'
 
 import IpsecDetail from '.'
 
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
-  search: '',
-  hash: ''
-}
-
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (): Path => mockedTenantPath
-}))
 
 let params: { tenantId: string, policyId: string }
 params = {
@@ -46,10 +33,6 @@ describe('IpSec Detail Page', () => {
         (_, res, ctx) => {
           return res(ctx.json(mockIpSecDetailFromListQueryById))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getWifiNetworksList.url,
-        (_, res, ctx) => res(ctx.json(mockedNetworkQueryData))
       )
     )
   })

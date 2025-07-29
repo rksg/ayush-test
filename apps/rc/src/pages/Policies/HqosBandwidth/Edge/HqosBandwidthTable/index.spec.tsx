@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                        from '@acx-ui/rc/components'
 import { edgeApi, edgeHqosProfilesApi }                 from '@acx-ui/rc/services'
 import {
   EdgeCompatibilityFixtures,
@@ -36,21 +35,24 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => {
-  const rcComponents = jest.requireActual('@acx-ui/rc/components')
-  return {
-    SimpleListTooltip: rcComponents.SimpleListTooltip,
-    TrafficClassSettingsTable: rcComponents.TrafficClassSettingsTable,
-    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
-    useEdgeHqosCompatibilityData: () => ({
-      compatibilities: mockEdgeHqosCompatibilities,
-      isLoading: false
-    }),
-    // eslint-disable-next-line max-len
-    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
-    useIsEdgeFeatureReady: jest.fn()
-  }
-})
+jest.mock('@acx-ui/rc/components', () => ({
+  TrafficClassSettingsTable: () => <div data-testid='TrafficClassSettingsTable' />,
+  ToolTipTableStyle: {
+    ToolTipStyle: () => <div data-testid='ToolTipStyle' />
+  },
+  useEdgeHqosCompatibilityData: () => ({
+    compatibilities: mockEdgeHqosCompatibilities,
+    isLoading: false
+  }),
+  // eslint-disable-next-line max-len
+  EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+}))
 
 const modifiedMockEdgeHqosProfileStatusList = {
   ...mockEdgeHqosCompatibilities,
@@ -75,7 +77,7 @@ describe('HqosBandwidthTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     // eslint-disable-next-line max-len
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }

@@ -79,6 +79,13 @@ describe('AP Group Edit', () => {
           return res(ctx.json(mockAPGroupList))
         }
       ),
+      rest.get(
+        CommonRbacUrlsInfo.getVenue.url,
+        (_, res, ctx) => {
+          mockedGetVenue()
+          return res(ctx.json(venuelist.data[0]))
+        }
+      ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => {
@@ -246,7 +253,7 @@ describe('AP Group Edit', () => {
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(6) // 2 tabs and 4 radio tabs
+    expect(tabs).toHaveLength(7) // 3 tabs and 4 radio tabs
 
     fireEvent.click(await screen.findByRole('tab', { name: 'General' }))
 
@@ -455,12 +462,12 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
     expect(await screen.findByText(/r760/i)).toBeVisible()
 
@@ -523,7 +530,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
 
-    const customizeBandMode = screen.getByText(/customize settings/i)
+    const customizeBandMode = screen.getByTestId('band-management-customizeSettings')
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()

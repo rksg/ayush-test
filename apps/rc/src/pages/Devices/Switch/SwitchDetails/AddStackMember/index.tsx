@@ -17,14 +17,14 @@ import {
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel
 } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
   SwitchTable,
-  checkVersionAtLeast09010h,
-  SwitchViewModel,
-  convertInputToUppercase
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -130,6 +130,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -160,6 +162,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,
+                isSupport8100Phase2: isSupport8100Phase2,
                 activeSerialNumber: switchDetail?.activeSerial
               }
               return validatorSwitchModel(switchModelParams)}

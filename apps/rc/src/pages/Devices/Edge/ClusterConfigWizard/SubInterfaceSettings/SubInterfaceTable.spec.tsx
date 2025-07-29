@@ -2,7 +2,6 @@ import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 
 import { Features }                                    from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                       from '@acx-ui/rc/components'
 import { EdgeSubInterfaceFixtures, SubInterface }      from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -40,8 +39,12 @@ jest.mock('./SubInterfaceDrawer', () => (
 ))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
@@ -240,11 +243,11 @@ describe('SubInterfaceTable', () => {
   describe('Core Access', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     })
 
     afterEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      mockUseIsEdgeFeatureReady.mockImplementation(() => false)
     })
 
     it('should show core port and access port column when FF is on', async () => {
@@ -287,6 +290,20 @@ describe('SubInterfaceTable', () => {
       const subInterface = await screen.findByRole('row', { name: /1 LAN STATIC/i })
       await userEvent.click(subInterface)
       expect(await screen.findByRole('button', { name: 'Delete' })).toBeDisabled()
+    })
+
+    it('should hide ip and subnet when ipMode is DHCP', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('subInterfaces', [{
+          ...mockEdgeSubInterfaces.content[4],
+          ipMode: 'DHCP'
+        }])
+        return form
+      })
+      renderTable(mockProps, formRef.current)
+
+      expect(screen.getByRole('row', { name: '1 LAN DHCP 88' })).toBeVisible()
     })
   })
 })

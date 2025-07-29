@@ -467,10 +467,7 @@ export function ApGroupGeneralTab () {
                   ? <Transfer
                     listStyle={{ width: 400, height: 400 }}
                     type={'table'}
-                    tableData={
-                      tableDataOption
-                        .filter(option => isHide ? !option.apGroupName : option)
-                    }
+                    tableData={tableDataOption}
                     leftColumns={leftColumns}
                     rightColumns={rightColumns}
                     showSearch

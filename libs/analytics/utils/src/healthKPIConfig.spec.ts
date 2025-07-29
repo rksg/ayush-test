@@ -2,8 +2,9 @@ import { getUserProfile, setUserProfile } from '@acx-ui/user'
 import { AccountTier }                    from '@acx-ui/utils'
 
 import { multipleBy1000, divideBy100, noFormat,
-  kpisForTab, wiredKPIsForTab,
-  numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
+  kpisForTab, wiredKPIsForTab, wiredKPIsForTabPhase2,
+  numberWithPercentSymbol, shouldAddFirmwareFilter,
+  evaluateEnableSwitchFirmwareFilter, createFirmwareVersionMessage } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -220,6 +221,50 @@ describe('Health KPI', () => {
       }
     })
   })
+  it('should return correct config for wired phase 2 in RA', () => {
+    expect(wiredKPIsForTabPhase2()).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization'
+        ]
+      },
+      infrastructure: {
+        kpis: {
+          System: [
+            'switchMemoryUtilization',
+            'switchCpuUtilization',
+            'switchesTemperature',
+            'switchPoeUtilization'
+          ],
+          Table: [
+            'switchIpv4UnicastUtilization',
+            'switchIpv6UnicastUtilization',
+            'switchIpv4MulticastUtilization',
+            'switchIpv6MulticastUtilization',
+            'switchArpUtilization',
+            'switchMacUtilization'
+          ]
+        }
+      }
+    })
+  })
+  it('should add 10010e KPIs when is10010eKPIsEnabled is true in wiredKPIsForTabPhase2', () => {
+    const result = wiredKPIsForTabPhase2(true)
+    expect(result.performance.kpis).toContain('switchInterfaceAnomalies')
+    expect(result.performance.kpis).toContain('switchStormControl')
+    expect(result.connection.kpis).toContain('switchDhcp')
+  })
   describe('shouldAddFirmwareFilter', () => {
     const mockPathname = jest.fn()
     Object.defineProperty(window, 'location', {
@@ -236,6 +281,54 @@ describe('Health KPI', () => {
     it('should return true if path name has wired', () => {
       mockPathname.mockReturnValue('/health/wired')
       expect(shouldAddFirmwareFilter()).toBe(true)
+    })
+  })
+
+  describe('evaluateEnableSwitchFirmwareFilter', () => {
+    it('should return true when passed true', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(true)).toBe(true)
+    })
+
+    it('should return false when passed false', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(false)).toBe(false)
+    })
+
+    it('should return false when passed undefined', () => {
+      expect(evaluateEnableSwitchFirmwareFilter(undefined)).toBe(false)
+    })
+
+    it('should return true when passed a function that returns true', () => {
+      const mockFunction = jest.fn().mockReturnValue(true)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(true)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return false when passed a function that returns false', () => {
+      const mockFunction = jest.fn().mockReturnValue(false)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(false)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return undefined when passed a function that returns undefined', () => {
+      const mockFunction = jest.fn().mockReturnValue(undefined)
+      expect(evaluateEnableSwitchFirmwareFilter(mockFunction)).toBe(undefined)
+      expect(mockFunction).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('createFirmwareVersionMessage', () => {
+    it('should return 10.0.10f when isSwitchHealth10010eEnabled is true', () => {
+      const result = createFirmwareVersionMessage(true)
+      expect(result).toEqual({
+        switchFmwrVersion: '10.0.10f'
+      })
+    })
+
+    it('should return 10.0.10d when isSwitchHealth10010eEnabled is false', () => {
+      const result = createFirmwareVersionMessage(false)
+      expect(result).toEqual({
+        switchFmwrVersion: '10.0.10d'
+      })
     })
   })
 })

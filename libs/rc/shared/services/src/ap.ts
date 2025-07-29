@@ -20,6 +20,7 @@ import {
   ApIot,
   ApIotController,
   ApClientAdmissionControl,
+  ApGroupClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
   ApDetails,
@@ -97,7 +98,8 @@ import {
   ApGroupDefaultRegulatoryChannels,
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
-  WifiNetwork
+  WifiNetwork,
+  ApJwtToken
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -1374,13 +1376,13 @@ export const apApi = baseApApi.injectEndpoints({
             }
           }
 
-          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
-            activateRequests!, fetchWithBQ, customHeaders)
-
-          await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
-            overwriteRequests!, fetchWithBQ, customHeaders)
-
           if(!useVenueSettings) {
+            await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+              activateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
+              overwriteRequests!, fetchWithBQ, customHeaders)
+
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
 
@@ -2011,6 +2013,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     }),
+    getApGroupClientAdmissionControl: build.query<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings, params)
+      },
+      providesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
+    updateApGroupClientAdmissionControl: build.mutation<ApGroupClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApGroupClientAdmissionControlSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'ClientAdmissionControl' }]
+    }),
     getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2109,6 +2127,19 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    getApJwtToken: build.query<ApJwtToken, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApJwtToken, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApJwtToken' }]
     })
   })
 })
@@ -2127,6 +2158,7 @@ export const {
   useGetApQuery,
   useGetApOperationalQuery,
   useLazyGetApQuery,
+  useLazyGetApJwtTokenQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListByVenueQuery,
@@ -2230,6 +2262,8 @@ export const {
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
+  useGetApGroupClientAdmissionControlQuery,
+  useUpdateApGroupClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
