@@ -51,6 +51,7 @@ import { getOpsApi, useTableQuery }                                           fr
 import { ConfigTemplateViewProps } from '..'
 
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
+import { ConfigTemplateListContext }                        from './ConfigTemplateListContext'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
 import {
   ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
@@ -190,7 +191,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const allowedRowActions = filterByAccess(rowActions)
 
   return (
-    <>
+    <ConfigTemplateListContext.Provider value={{ setAppliedToViewVisible }}>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
@@ -244,7 +245,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         ShowDriftsView={ShowDriftsView}
         AppliedToListView={AppliedToListView}
       />}
-    </>
+    </ConfigTemplateListContext.Provider>
   )
 }
 

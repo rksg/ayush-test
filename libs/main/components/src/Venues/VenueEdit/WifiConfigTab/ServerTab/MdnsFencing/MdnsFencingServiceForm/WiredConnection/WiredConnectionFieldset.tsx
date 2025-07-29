@@ -468,7 +468,7 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     key: 'deviceMacAddresses',
     render: function (_, row) {
       const { deviceMacAddresses: macAddrs } = row
-      return macAddrs.map(d => <div>{d}</div>)
+      return macAddrs.map(d => <div key={d}>{d}</div>)
     }
   }, {
     title: $t({ defaultMessage: 'Closest AP' }),

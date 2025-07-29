@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
-import userEvent    from '@testing-library/user-event'
-import { rest }     from 'msw'
-import { Path, To } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
@@ -28,22 +27,7 @@ import {
 
 import IdentityProviderTable from './IdentityProviderTable'
 
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/' + mockedTenantId,
-  search: '',
-  hash: ''
-}
-
 const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (to: To): Path => {
-    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
-  }
-}))
 
 describe('IdentityProviderTable', () => {
   const mockDeleteFn = jest.fn()

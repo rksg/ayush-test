@@ -15,6 +15,7 @@ export { isTemplateTypeAllowed } from './Templates/templateUtils'
 export * as ConfigTemplatePageUI from './Templates/styledComponents'
 export { DriftInstance, DriftComparisonSet } from './Templates/driftDetails'
 export { DetailsItemList } from './Templates/DetailsDrawer'
+export { useConfigTemplateListContext } from './Templates/ConfigTemplateListContext'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void

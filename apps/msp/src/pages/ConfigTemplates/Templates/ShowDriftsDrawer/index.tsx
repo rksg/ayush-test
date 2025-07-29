@@ -28,6 +28,8 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   const { $t } = useIntl()
   const [ selectedInstances, setSelectedInstances ] = useState<Array<string>>([])
   const [ selectedFilterValue, setSelectedFilterValue ] = useState<string | undefined>()
+  const [ currentPage, setCurrentPage ] = useState(1)
+  const [ pageSize, setPageSize ] = useState(10)
   const { setVisible, selectedTemplate } = props
   // eslint-disable-next-line max-len
   const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useGetDriftInstancesQuery({
@@ -80,7 +82,12 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const getSyncAllInstances = () => {
-    return driftInstances.map(i => i.id).slice(0, MAX_SYNC_EC_TENANTS)
+    const startIdx = (currentPage - 1) * pageSize
+    const endIdx = startIdx + pageSize
+    return driftInstances
+      .slice(startIdx, endIdx)
+      .map(i => i.id)
+      .slice(0, MAX_SYNC_EC_TENANTS)
   }
 
   const footer = <div>
@@ -119,7 +126,20 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       </Space>
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
-          pagination={{ position: 'bottom' }}
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page)
+              setPageSize(pageSize)
+            },
+            style: {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexWrap: 'wrap'
+            }
+          }}
           // eslint-disable-next-line max-len
           dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
           renderItem={(instance) => (
@@ -156,12 +176,13 @@ function Toolbar (props: ToolbarProps) {
   const { $t } = useIntl()
 
   return <Row justify='space-between' align='middle'>
-    <Col span={12}>
+    <Col span={14}>
       <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
+        {$t({ defaultMessage: 'Select all on this page (up to {max})' },
+          { max: MAX_SYNC_EC_TENANTS })}
       </Checkbox>
     </Col>
-    <Col span={12} style={{ textAlign: 'right' }}>
+    <Col span={10} style={{ textAlign: 'right' }}>
       <Select
         style={{ minWidth: 200, textAlign: 'left' }}
         placeholder={$t({ defaultMessage: 'All Customers' })}

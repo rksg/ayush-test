@@ -8,10 +8,10 @@ import { CommonUrlsInfo, IncompatibilityFeatures, CompatibilityType } from '@acx
 import { Provider, store }                                            from '@acx-ui/store'
 import { act, mockServer, render, screen, within }                    from '@acx-ui/test-utils'
 
-import { mockApCompatibilitiesVenue }              from '../Ap/ApCompatibilityDrawer/__test__/fixtures'
+import { mockApCompatibilitiesVenue }              from '../Ap/ApCompatibilityDrawer/__tests__/fixtures'
 import { CompatibilityItemProps }                  from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }                        from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
-import { transformedMockEdgeCompatibilitiesVenue } from '../Edge/EdgeCompatibilityDrawer/__test__/fixtures'
+import { transformedMockEdgeCompatibilitiesVenue } from '../Edge/EdgeCompatibilityDrawer/__tests__/fixtures'
 
 import { CompatibilityDrawer } from './'
 

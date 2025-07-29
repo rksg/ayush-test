@@ -171,7 +171,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             const stackData = allStacksMember?.data?.data?.find(
               s => s.activeSerial === stack.serialNumber
             )
-            stackMembers[stack.serialNumber] = (stackData?.members || [])
+            stackMembers[stack.serialNumber] = (stackData?.members || []).map(member => ({
+              ...member,
+              venueId: stack.venueId
+            }))
           })
 
         } else {
