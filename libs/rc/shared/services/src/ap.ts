@@ -1376,13 +1376,13 @@ export const apApi = baseApApi.injectEndpoints({
             }
           }
 
-          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
-            activateRequests!, fetchWithBQ, customHeaders)
-
-          await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
-            overwriteRequests!, fetchWithBQ, customHeaders)
-
           if(!useVenueSettings) {
+            await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+              activateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
+              overwriteRequests!, fetchWithBQ, customHeaders)
+
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
 
