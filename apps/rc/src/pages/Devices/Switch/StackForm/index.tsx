@@ -54,10 +54,16 @@ import {
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
+  checkSwitchUpdateFields,
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel,
-  isSameModelFamily,
-  isOperationalSwitch,
+  getSwitchFwGroupVersionV1002,
   getStackUnitsMinLimitationV1002,
+  isFirmwareVersionAbove10010f,
+  isSameModelFamily,
+  isSpecific8100Model,
+  isOperationalSwitch,
   isNotSupportStackModel
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -70,16 +76,10 @@ import {
   VenueMessages,
   SwitchRow,
   SwitchMessages,
-  isFirmwareVersionAbove10010f,
-  checkSwitchUpdateFields,
-  checkVersionAtLeast09010h,
-  convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getSwitchFwGroupVersionV1002,
   SwitchFirmwareModelGroup,
   createSwitchSerialPattern,
-  createSwitchSerialPatternForSpecific8100Model,
-  isSpecific8100Model
+  createSwitchSerialPatternForSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,

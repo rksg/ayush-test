@@ -10,7 +10,7 @@ import {
   mockedFirmwareVenuesPerApModel,
   mockNetworkApCompatibilities,
   mockVenueApCompatibilities
-} from '../ApCompatibilityDrawer/__test__/fixtures'
+} from '../ApCompatibilityDrawer/__tests__/fixtures'
 
 import { ApCompatibilityDetailTable, IsApModelSupported } from '.'
 
