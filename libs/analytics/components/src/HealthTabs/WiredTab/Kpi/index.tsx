@@ -65,7 +65,7 @@ function CustomKpiSection (props: {
   ) || []
   const latestDataPoint = validDataPoints[validDataPoints.length - 1]
   const totalCount = latestDataPoint?.[1] || 0 // totalCount is at index 1
-  const hasDevices = totalCount > 30
+  const hasDevices = totalCount > 0
 
   // If we have phase 2 structure (object kpis), always use ContentSwitcher
   if (shouldCheckDeviceCount) {
