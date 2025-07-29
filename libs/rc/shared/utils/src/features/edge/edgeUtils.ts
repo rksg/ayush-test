@@ -3,13 +3,14 @@ import { DefaultOptionType }                                                 fro
 import { capitalize, cloneDeep, difference, flatMap, isEmpty, isNil, sumBy } from 'lodash'
 import { IntlShape }                                                         from 'react-intl'
 
-import { compareVersions, getIntl } from '@acx-ui/utils'
+import { CatchErrorDetails, compareVersions, getIntl } from '@acx-ui/utils'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 import {
   ApCompatibility,
   ApIncompatibleDevice,
   ClusterNetworkSettings,
+  CommonErrorsResult,
   DhcpStats,
   EdgeAlarmSummary,
   EdgeIncompatibleFeature,
@@ -719,4 +720,27 @@ export const convertInterfaceDataToEdgePortInfo = (serialNumber: EdgeSerialNumbe
     ports: resolvedPorts.filter(Boolean) as EdgePortInfo[],
     lags: resolvedLags.filter(Boolean) as EdgePortInfo[]
   }
+}
+
+export const executeWithCallback = async <T>(
+  operation: (
+    callback: (result: T | CommonErrorsResult<CatchErrorDetails> | void) => void
+  ) => Promise<void>
+): Promise<T> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await operation((result) => {
+        if (
+          isNil(result) ||
+          (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0
+        ) {
+          reject(result)
+        } else {
+          resolve(result as T)
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
 }

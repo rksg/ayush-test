@@ -11,13 +11,15 @@ import {
   useGetSwitchDefaultVersionsQuery
 } from '@acx-ui/rc/services'
 import {
+  compareSwitchVersion,
+  convertSwitchVersionFormat
+} from '@acx-ui/rc/switch/utils'
+import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   SortResult,
   SwitchFirmware,
-  convertSwitchVersionFormat,
   firmwareTypeTrans,
-  compareSwitchVersion,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   FirmwareCategory,
