@@ -46,6 +46,12 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const layer2Data = enhancedLayer2PolicyListResponse.data
 
 describe('Layer2Component', () => {
@@ -237,5 +243,21 @@ describe('Layer2Component', () => {
     await screen.findByText(/mac address \( 1\/128 \)/i)
 
     await userEvent.click(screen.getByText('Cancel'))
+  })
+
+  it('Render Layer2Component component in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Layer2Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

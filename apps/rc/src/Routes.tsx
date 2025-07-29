@@ -1207,28 +1207,10 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath(
-          { type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.LAYER_2_POLICY} oper={PolicyOperation.EDIT}>
-            <Layer2Component editMode={{ isEdit: true, id: '' }} isComponentMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath(
           { type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })}
         element={
           <PolicyAuthRoute policyType={PolicyType.LAYER_3_POLICY} oper={PolicyOperation.CREATE}>
             <Layer3Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath(
-          { type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.LAYER_3_POLICY} oper={PolicyOperation.EDIT}>
-            <Layer3Component editMode={{ isEdit: true, id: '' }} isComponentMode={true}/>
           </PolicyAuthRoute>
         }
       />
@@ -1243,28 +1225,10 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath(
-          { type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.DEVICE_POLICY} oper={PolicyOperation.EDIT}>
-            <DeviceOSComponent editMode={{ isEdit: true, id: '' }} isComponentMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath(
           { type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE })}
         element={
           <PolicyAuthRoute policyType={PolicyType.APPLICATION_POLICY} oper={PolicyOperation.CREATE}>
             <ApplicationComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath(
-          { type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.APPLICATION_POLICY} oper={PolicyOperation.EDIT}>
-            <ApplicationComponent editMode={{ isEdit: true, id: '' }} isComponentMode={true}/>
           </PolicyAuthRoute>
         }
       />

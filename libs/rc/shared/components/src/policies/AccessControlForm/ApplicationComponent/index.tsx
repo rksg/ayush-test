@@ -7,8 +7,8 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import {
-  Button, Drawer, GridCol, GridRow, Loader,
-  PageHeader,showActionModal, StepsForm, Table, TableProps
+  Button, Drawer, GridCol, GridRow,
+  showActionModal, Table, TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
@@ -43,6 +43,7 @@ import { TableResult }               from '@acx-ui/utils'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES }                  from '../../AccessControl/constants'
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
+import { ComponentModeForm }                                           from '../ComponentModeForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
 import PolicyFormItem                                                  from '../PolicyFormItem'
 import { useScrollLock }                                               from '../ScrollLock'
@@ -237,11 +238,14 @@ export const ApplicationComponent = (props: ApplicationComponentProps) => {
     }
   }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
 
+  // eslint-disable-next-line max-len
+  const noAppId = applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)
+  const componentMode = !isComponentMode || policyId !== null
+
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
-    // eslint-disable-next-line max-len
-    skip: (!isComponentMode || policyId !== null) && (!visible || skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId))),
+    skip: componentMode && (!visible || skipFetch || noAppId),
     extraParams: {
       applicationPolicyId: policyId || applicationPolicyId
     },
@@ -772,28 +776,16 @@ export const ApplicationComponent = (props: ApplicationComponentProps) => {
   return (
     <>
       {modelContent()}
-      {isComponentMode && <>
-        <PageHeader
-          title={pageTitle}
-          breadcrumb={breadcrumb}
-        />
-        <Loader states={[{ isLoading: false, isFetching: false }]}>
-          <StepsForm
-            form={form}
-            editMode={editMode.isEdit || localEditMode.isEdit}
-            onCancel={handleContentClose}
-            onFinish={handleContentFinish}
-          >
-            <StepsForm.StepForm
-              name='settings'
-              title={$t({ defaultMessage: 'Settings' })}
-            >
-              {content}
-            </StepsForm.StepForm>
-          </StepsForm>
-        </Loader>
-      </>}
-      {!isComponentMode &&<Drawer
+      {isComponentMode && <ComponentModeForm
+        pageTitle={pageTitle}
+        breadcrumb={breadcrumb}
+        form={form}
+        editMode={editMode.isEdit || localEditMode.isEdit}
+        content={content}
+        handleContentClose={handleContentClose}
+        handleContentFinish={handleContentFinish} />
+      }
+      {!isComponentMode && <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
         onClose={() => handleContentClose()}

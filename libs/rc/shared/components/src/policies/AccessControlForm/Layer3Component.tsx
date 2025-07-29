@@ -62,6 +62,7 @@ import { TableResult }               from '@acx-ui/utils'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
+import { ComponentModeForm }                                                            from './ComponentModeForm'
 import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
 import PolicyFormItem                                                                   from './PolicyFormItem'
 import { useScrollLock }                                                                from './ScrollLock'
@@ -1214,27 +1215,15 @@ export const Layer3Component = (props: Layer3ComponentProps) => {
   return (
     <>
       {modelContent()}
-      {isComponentMode && <>
-        <PageHeader
-          title={pageTitle}
-          breadcrumb={breadcrumb}
-        />
-        <Loader states={[{ isLoading: false, isFetching: false }]}>
-          <StepsForm
-            form={form}
-            editMode={editMode.isEdit || localEditMode.isEdit}
-            onCancel={handleContentClose}
-            onFinish={handleContentFinish}
-          >
-            <StepsForm.StepForm
-              name='settings'
-              title={$t({ defaultMessage: 'Settings' })}
-            >
-              {content}
-            </StepsForm.StepForm>
-          </StepsForm>
-        </Loader>
-      </>}
+      {isComponentMode && <ComponentModeForm
+        pageTitle={pageTitle}
+        breadcrumb={breadcrumb}
+        form={form}
+        editMode={editMode.isEdit || localEditMode.isEdit}
+        content={content}
+        handleContentClose={handleContentClose}
+        handleContentFinish={handleContentFinish} />
+      }
       {!isComponentMode &&<Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}

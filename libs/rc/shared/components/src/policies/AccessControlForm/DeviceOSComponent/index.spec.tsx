@@ -126,6 +126,12 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const selectOptionSet = async (device: string, vendor: string) => {
   await screen.findByRole('combobox', { name: 'Device Type' })
 
@@ -1188,5 +1194,21 @@ describe('DeviceOSComponent', () => {
     await userEvent.click(screen.getAllByText('Cancel')[0])
 
     expect(await screen.findByText('Rules (0)')).toBeInTheDocument()
+  })
+
+  it('Render DeviceOSComponent in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

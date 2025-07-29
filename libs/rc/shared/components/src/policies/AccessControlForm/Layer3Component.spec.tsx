@@ -107,6 +107,12 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const findDrawer = async (label: string) => {
   return await screen.findByRole('dialog', {
     name: (_, el) => el
@@ -438,5 +444,21 @@ describe('Layer3Component', () => {
     await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/layer 3 rules \(1\)/i)
+  })
+
+  it('Render Layer3Component component in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Layer3Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

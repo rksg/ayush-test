@@ -66,6 +66,12 @@ jest.mock('antd', () => {
   return { ...antd, Select, Slider }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const systemDefinedSection = async () => {
   await screen.findByRole('option', { name: 'Web' })
 
@@ -425,6 +431,22 @@ describe('ApplicationDrawer Component', () => {
     await userEvent.click(screen.getByText(/delete rule/i))
 
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
+  })
+
+  it('Render ApplicationComponent in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <ApplicationComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 
 })
