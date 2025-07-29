@@ -44,11 +44,9 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
       const border = 20
       const qrSize = 360
       const labelHeight = 40
-      const canvasWidth = qrSize + border * 2
-      const canvasHeight = qrSize + border * 2 + labelHeight
       const canvas = document.createElement('canvas')
-      canvas.width = canvasWidth
-      canvas.height = canvasHeight
+      canvas.width = qrSize + border * 2
+      canvas.height = qrSize + border * 2 + labelHeight
       const ctx = canvas.getContext('2d')
       if (ctx) {
         ctx.fillStyle = '#fff'
