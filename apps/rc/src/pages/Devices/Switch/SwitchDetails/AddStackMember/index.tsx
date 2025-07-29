@@ -17,14 +17,14 @@ import {
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel
 } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
   SwitchTable,
-  checkVersionAtLeast09010h,
-  SwitchViewModel,
-  convertInputToUppercase
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   useParams

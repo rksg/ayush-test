@@ -73,7 +73,6 @@ export interface AP {
   tags: string,
   venueId: string,
   venueName: string,
-  apGroupId?: string,
   description?: string,
   deviceGps?: DeviceGps,
   deviceStatusSeverity?: ApVenueStatusEnum,
