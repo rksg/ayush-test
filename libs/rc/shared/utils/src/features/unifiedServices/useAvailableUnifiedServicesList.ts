@@ -43,7 +43,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const mdnsProxyStateMap = useMdnsProxyStateMap()
 
   // Policy features
-  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   // eslint-disable-next-line max-len
@@ -160,7 +159,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-        disabled: !supportHotspot20R1 || isCaptivePortalSsoSamlEnabled
+        disabled: isCaptivePortalSsoSamlEnabled
       },
       {
         type: PolicyType.IPSEC,
@@ -239,8 +238,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.WIFI_OPERATOR,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS,
-        disabled: !supportHotspot20R1
+        category: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
       },
       {
         type: PolicyType.WORKFLOW,
