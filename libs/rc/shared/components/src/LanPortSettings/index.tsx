@@ -241,35 +241,35 @@ export function LanPortSettings (props: {
           selectedModelCaps={selectedModelCaps}
           onEthernetPortProfileChanged={onEthernetPortProfileChange}
         />
-        {!isTemplate && isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
-          <SoftGRETunnelSettings
-            readonly={
-              !isEthernetPortEnable ||
+        {!isTemplate && isEthernetSoftgreEnabled && isModelSupportSoftGRE && <SoftGRETunnelSettings
+          readonly={
+            !isEthernetPortEnable ||
                       isDhcpEnabled ||
                       currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT ||
                       (readOnly ?? false) ||
                     hasVni}
-            index={index}
-            portId={selectedModel.lanPorts![index].portId}
-            onGUIChanged={onGUIChanged}
-            toggleButtonToolTip={
-              (currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT)?
-                // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'A port profile cannot be applied to SoftGRE while it is configured with the 802.1X supplicant role.' }):
-                undefined
-            }
-            softGREProfileOptionList={softGREProfileOptionList}
-            serialNumber={serialNumber}
-            venueId={venueId}
-            apModel={(selectedModel as VenueLanPorts)?.model}
-            isUnderAPNetworking={isUnderAPNetworking}
-            optionDispatch={optionDispatch}
-            validateIsFQDNDuplicate={validateIsFQDNDuplicate}
-            usedProfileData={usedProfileData}
-            ipsecOptionList={ipsecOptionList}
-            ipsecOptionDispatch={ipsecOptionDispatch}
-          />
-          {isDhcpOption82Enabled &&
+          index={index}
+          portId={selectedModel.lanPorts![index].portId}
+          onGUIChanged={onGUIChanged}
+          toggleButtonToolTip={
+            (currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT)?
+            // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'A port profile cannot be applied to SoftGRE while it is configured with the 802.1X supplicant role.' }):
+              undefined
+          }
+          softGREProfileOptionList={softGREProfileOptionList}
+          serialNumber={serialNumber}
+          venueId={venueId}
+          apModel={(selectedModel as VenueLanPorts)?.model}
+          isUnderAPNetworking={isUnderAPNetworking}
+          optionDispatch={optionDispatch}
+          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+          usedProfileData={usedProfileData}
+          ipsecOptionList={ipsecOptionList}
+          ipsecOptionDispatch={ipsecOptionDispatch}
+        />
+        }
+        {isDhcpOption82Enabled &&
             <DhcpOption82Settings
               readonly={readOnly ?? false}
               index={index}
@@ -281,8 +281,6 @@ export function LanPortSettings (props: {
               apModel={selectedModelCaps.model}
               sourceData={selectedModel.lanPorts?.[index].dhcpOption82}
             />
-          }
-        </>
         }
         {!isTemplate && isEthernetClientIsolationEnabled &&
           <ClientIsolationSettingsFields

@@ -9,17 +9,17 @@ import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   checkVlanDiffFromTargetVlan
 } from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery }  from '@acx-ui/rc/services'
+import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   isL3FunctionSupported,
-  SwitchPortViewModelQueryFields
+  SwitchPortViewModelQueryFields,
+  isFirmwareVersionAbove10010f
 } from '@acx-ui/rc/switch/utils'
 import {
   FlexAuthMessages,
   FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
-  isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,

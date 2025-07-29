@@ -3,12 +3,12 @@ import { Key, ReactNode, useContext, useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showActionModal, Table, TableProps }                                                                                                                    from '@acx-ui/components'
-import { Features }                                                                                                                                              from '@acx-ui/feature-toggle'
-import { CheckMark }                                                                                                                                             from '@acx-ui/icons'
-import { convertEdgeSubInterfaceToApiPayload, EdgeLag, EdgePort, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                                                            from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                         from '@acx-ui/user'
+import { showActionModal, Table, TableProps }                                                                                                                                    from '@acx-ui/components'
+import { Features }                                                                                                                                                              from '@acx-ui/feature-toggle'
+import { CheckMark }                                                                                                                                                             from '@acx-ui/icons'
+import { convertEdgeSubInterfaceToApiPayload, EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                                                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                         from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
@@ -82,12 +82,18 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      render: (_data: ReactNode, row: SubInterface) => {
+        return row.ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
+      }
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
-      dataIndex: 'subnet'
+      dataIndex: 'subnet',
+      render: (_data: ReactNode, row: SubInterface) => {
+        return row.ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
+      }
     },
     {
       title: $t({ defaultMessage: 'VLAN' }),

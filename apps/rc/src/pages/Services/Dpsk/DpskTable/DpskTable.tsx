@@ -9,8 +9,7 @@ import {
   SimpleListTooltip,
   Table,
   TableProps,
-  Loader,
-  TableColumn
+  Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useEnforcedStatus }                        from '@acx-ui/rc/components'
@@ -41,7 +40,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                               from '@acx-ui/types'
+import { RolesEnum, TableColumn }                                  from '@acx-ui/types'
 import { hasRoles }                                                from '@acx-ui/user'
 import { useTableQuery }                                           from '@acx-ui/utils'
 

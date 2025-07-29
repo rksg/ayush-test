@@ -122,7 +122,36 @@ const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
 }
 }
 
+const meshApList = {
+  fields: [],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '931704001509',
+      name: 'R510-ROOT',
+      model: 'R510',
+      fwVersion: '6.2.1.103.2538',
+      venueId: '101988f2bbcd431884de9a7e6a5875c4',
+      venueName: 'Mesh_setup',
+      deviceStatus: '2_00_Operational',
+      IP: '10.174.116.170',
+      apMac: '0C:F4:D5:27:3B:90',
+      apStatusData: {},
+      meshRole: 'RAP',
+      deviceGroupId: '24d56c947b924a6a9ec001f2d9f414f7',
+      deviceGroupName: '',
+      poePort: '0',
+      healthStatus: 'Excellent'
+    }
+  ]
+}
+
 describe('Floor Plan Plain View', () => {
+  const defaultRoute = {
+    params: { tenantId: '__Tenant__', venueId: '__Venue__' },
+    path: '/:tenantId/:venueId'
+  }
 
   beforeEach(() => {
     mockServer.use(
@@ -132,6 +161,18 @@ describe('Floor Plan Plain View', () => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))
         }
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ ...meshApList }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getMeshAps.url.replace('?mesh=true', ''),
+        (req, res, ctx) => res(ctx.json({ ...mockedMeshAps }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getApMeshTopology.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedApMeshTopologyData }))
       )
     )
     Object.defineProperty(HTMLImageElement.prototype, 'offsetWidth', { value: 300 })
@@ -152,7 +193,11 @@ describe('Floor Plan Plain View', () => {
           networkDevices={networkDevices}
           networkDevicesVisibility={networkDeviceType}
           setCoordinates={jest.fn()}/></DndProvider>
-    </NetworkDeviceContext.Provider></Provider>)
+    </NetworkDeviceContext.Provider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     expect(screen.queryByTestId('floorPlanImage')).toHaveAttribute('alt', list[0]?.name)
 
     await waitFor(() => {
@@ -205,7 +250,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     render(<DndProvider backend={HTML5Backend}><Thumbnail
       key={0}
       floorPlan={list[0]}
@@ -228,7 +277,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByTestId('image-zoom-in')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -247,7 +300,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByTestId('image-zoom-out')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -282,7 +339,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByTestId('image-zoom-original')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(75%)'
@@ -300,7 +361,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByTestId('image-zoom-fit')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(120%)'
@@ -336,7 +401,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByRole('button', { name: /Delete/i })
     fireEvent.click(component)
     expect(deleteHandler).toBeCalledTimes(1)
@@ -353,7 +422,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={editHandler}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = await screen.findByRole('button', { name: /Edit/i })
     await fireEvent.click(component)
 
@@ -375,7 +448,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
     const component = screen.getByRole('img', { name: 'TEST_2' })
     component.onload = onImageLoad
     await fireEvent.load(component)
@@ -420,7 +497,11 @@ describe('Floor Plan Plain View', () => {
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
         setCoordinates={jest.fn()}
-        showRogueAp={true}/></DndProvider></Provider>)
+        showRogueAp={true}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
 
     await waitFor(() => {
       expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
@@ -445,7 +526,11 @@ describe('Floor Plan Plain View', () => {
         onAddEditFloorPlan={jest.fn()}
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+        setCoordinates={jest.fn()}/></DndProvider></Provider>, {
+      route: {
+        ...defaultRoute
+      }
+    })
 
     await waitFor(() => {
       expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
@@ -516,8 +601,7 @@ describe('Floor Plan Plain View', () => {
         setCoordinates={jest.fn()}/>
     </DndProvider></Provider>, {
       route: {
-        params: { tenantId: '__Tenant__', venueId: '__Venue__' },
-        path: '/:tenantId/:venueId'
+        ...defaultRoute
       }
     })
 

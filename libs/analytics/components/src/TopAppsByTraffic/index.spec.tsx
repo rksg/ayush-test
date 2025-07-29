@@ -13,16 +13,6 @@ import { api }                                                    from './servic
 
 import { dataFormatter, TopAppsByTraffic } from './index'
 
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils'),
-  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
-}))
-
-jest.mock('@acx-ui/feature-toggle', () => ({
-  ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsSplitOn: jest.fn()
-}))
-
 describe('TopAppsByTrafficWidget', () => {
   const settingsEnabled = {
     privacyFeatures: [
