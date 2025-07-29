@@ -8,8 +8,7 @@ import { useIntl    }                  from 'react-intl'
 import {
   Button, GridRow, Loader,
   NestedTableExpandableDefaultConfig,
-  Table, TableProps,
-  ColumnType
+  Table, TableProps
 }                                       from '@acx-ui/components'
 import { Features }       from '@acx-ui/feature-toggle'
 import {
@@ -26,6 +25,7 @@ import {
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { ColumnType }        from '@acx-ui/types'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { getDisplayWanRole, getWanLinkStatusString } from '../utils/dualWanUtils'

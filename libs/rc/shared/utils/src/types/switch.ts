@@ -372,6 +372,8 @@ export interface SwitchRow {
   adminPassword?: string
   extIp?: string
   ipAddress?: string
+  needAck?: boolean
+  newSerialNumber?: string
 }
 
 export interface StackMember {

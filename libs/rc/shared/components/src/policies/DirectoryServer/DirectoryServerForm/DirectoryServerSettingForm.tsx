@@ -16,9 +16,11 @@ import {
   checkObjectNotExists,
   DirectoryServerProfileEnum,
   domainNameRegExp,
+  domainNameWithIPv6RegExp,
   DirectoryServerDiagnosisCommand,
   DirectoryServerDiagnosisCommandEnum,
-  splitAttributeMappingsFromData
+  splitAttributeMappingsFromData,
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -146,6 +148,8 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }
   }, [])
 
+  const hostValidator = useSelectValidatorByIpModeFF(domainNameRegExp, domainNameWithIPv6RegExp)
+
   return (
     <Loader states={[{ isLoading }]}>
       <Row>
@@ -213,7 +217,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               rules={[
                 { required: true },
                 { max: 255 },
-                { validator: (_, value) => domainNameRegExp(value),
+                { validator: (_, value) => hostValidator(value),
                   message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
                 }
               ]}
