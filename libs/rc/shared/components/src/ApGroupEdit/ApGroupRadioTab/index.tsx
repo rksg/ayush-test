@@ -84,6 +84,22 @@ export function ApGroupRadioTab () {
       </>
     )
   }, ...(isApGroupMoreParameterPhase3Enabled ? [{
+    title: clientAdmissionControlSettingLink,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-admission-control'>
+          { clientAdmissionControlSettingsTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+                'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }} />
+          </Tooltip>
+        </StepsFormLegacy.SectionTitle>
+        <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
+      </>
+    )
+  }] : []), ...(isApGroupMoreParameterPhase3Enabled ? [{
     title: externalTitle,
     content: (
       <>
@@ -94,26 +110,6 @@ export function ApGroupRadioTab () {
       </>
     )
   }] : [])]
-
-  if (isApGroupMoreParameterPhase3Enabled) {
-    anchorItems.push({
-      title: clientAdmissionControlSettingLink,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='client-admission-control'>
-            { clientAdmissionControlSettingsTitle }
-            <Tooltip
-              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
-                'based on the connectivity thresholds set per radio.' })}
-              placement='right'>
-              <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }} />
-            </Tooltip>
-          </StepsFormLegacy.SectionTitle>
-          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
-        </>
-      )
-    })
-  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
