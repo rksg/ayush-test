@@ -99,10 +99,10 @@ export const NotificationsTable = () => {
 
   const settingsId = 'paginated-notifications-table'
 
-  const _notificationList = useGetNotificationRecipientsQuery({ params },
+  const withoutPaginatdNotificationList = useGetNotificationRecipientsQuery({ params },
     { skip: notificationsPaginatedListToggle })
-  const { data: _notificationList1, isLoading: _notificationListIsLoading1,
-    isFetching: _notificationListIsFetching1,
+  const { data: paginatedNotificationList, isLoading: paginatedNotificationListIsLoading,
+    isFetching: paginatedNotificationListIsFetching,
     handleTableChange, handleFilterChange, pagination } = useTableQuery({
     useQuery: useGetNotificationRecipientsPaginatedQuery,
     defaultPayload,
@@ -113,13 +113,13 @@ export const NotificationsTable = () => {
   const { notificationList,
     notificationListIsLoading,
     notificationListIsFetching } = notificationsPaginatedListToggle
-    ? { notificationList: _notificationList1,
-      notificationListIsLoading: _notificationListIsLoading1,
-      notificationListIsFetching: _notificationListIsFetching1
+    ? { notificationList: paginatedNotificationList,
+      notificationListIsLoading: paginatedNotificationListIsLoading,
+      notificationListIsFetching: paginatedNotificationListIsFetching
     }
-    : { notificationList: _notificationList,
-      notificationListIsLoading: _notificationList.isLoading,
-      notificationListIsFetching: _notificationList.isFetching }
+    : { notificationList: withoutPaginatdNotificationList,
+      notificationListIsLoading: withoutPaginatdNotificationList.isLoading,
+      notificationListIsFetching: withoutPaginatdNotificationList.isFetching }
 
 
   const [deleteRecipient, deleteOneState] = useDeleteNotificationRecipientMutation()
