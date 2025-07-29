@@ -6,6 +6,7 @@ import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter, FormatterType }         from '@acx-ui/formatter'
+import { MspEcTierEnum }                    from '@acx-ui/msp/utils'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
@@ -149,7 +150,7 @@ export function BrandTable ({
     }
   ]
   const propertyCols: TableProps<Pick<Property,
-    'property' | 'propertyCode' | 'lsp'>>['columns'] =
+    'property' | 'propertyCode' | 'lsp' | 'accountTier'>>['columns'] =
     [
       {
         title: propertyLabel,
@@ -178,6 +179,21 @@ export function BrandTable ({
         sorter: { compare: sortProp('lsp', defaultSort) },
         render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
           <span>{highlightFn(row?.lsp)}</span>
+      }, {
+        title: $t({ defaultMessage: 'Service Tier' }),
+        dataIndex: 'accountTier',
+        key: 'accountTier',
+        sorter: { compare: sortProp('accountTier', defaultSort) },
+        render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
+          console.log('row.accountTier', row.accountTier)
+          return row.accountTier === MspEcTierEnum.Essentials
+            ? $t({ defaultMessage: 'Essentials' })
+            : row.accountTier === MspEcTierEnum.Professional
+              ? $t({ defaultMessage: 'Professional' })
+              : row.accountTier === MspEcTierEnum.Core
+                ? $t({ defaultMessage: 'Core' })
+                : noDataDisplay
+        }
       }
     ]
   // Remove lsp column in case of LSP account
