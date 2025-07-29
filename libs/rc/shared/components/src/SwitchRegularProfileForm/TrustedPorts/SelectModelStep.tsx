@@ -6,12 +6,16 @@ import { CheckboxChangeEvent }                                                  
 
 import { Card, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES,
-  TrustedPort,
-  TrustedPortTypeEnum,
-  isBabyRodanXSubModel,
+import {
+  getFamilyAndModel,
   is7550ZippySubModel,
-  getFamilyAndModel } from '@acx-ui/rc/utils'
+  isBabyRodanXSubModel
+} from '@acx-ui/rc/switch/utils'
+import {
+  ICX_MODELS_MODULES,
+  TrustedPort,
+  TrustedPortTypeEnum
+} from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
