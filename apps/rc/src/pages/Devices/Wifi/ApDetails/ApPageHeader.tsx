@@ -120,60 +120,69 @@ function ApPageHeader () {
     }
   }
 
+  const menuItems = isReadOnly? [{
+    label: $t({ defaultMessage: 'Download Log' }),
+    key: 'downloadLog',
+    scopeKey: [WifiScopes.READ],
+    roles: [RolesEnum.READ_ONLY]
+  }, {
+    label: $t({ defaultMessage: 'Blink LEDs' }),
+    key: 'blinkLed',
+    scopeKey: [WifiScopes.READ],
+    roles: [RolesEnum.READ_ONLY]
+  }] :
+    [...(isApCliSessionEnabled ? [{
+      label: $t({ defaultMessage: 'CLI Session' }),
+      key: 'cliSession',
+      scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
+      roles: operationRoles
+    }] : []), {
+      label: $t({ defaultMessage: 'Reboot' }),
+      key: 'reboot',
+      scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
+      roles: operationRoles
+    }, {
+      label: $t({ defaultMessage: 'Download Log' }),
+      key: 'downloadLog',
+      scopeKey: [WifiScopes.READ],
+      roles: [RolesEnum.READ_ONLY, ...operationRoles]
+    }, {
+      label: $t({ defaultMessage: 'Blink LEDs' }),
+      key: 'blinkLed',
+      scopeKey: [WifiScopes.READ],
+      roles: [RolesEnum.READ_ONLY, ...operationRoles]
+    }, {
+      type: 'divider',
+      key: 'divider'
+    }, {
+      label: $t({ defaultMessage: 'Delete AP' }),
+      key: 'delete',
+      scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
+      roles: operationRoles
+    }]
+
+  const filteredMenuItems = menuItems.filter(item => {
+    const { scopeKey: scopes, rbacOpsIds, roles } = item
+    const isHasPermission = hasPermission({ scopes, rbacOpsIds, roles })
+    return (
+      (currentApOperational && isHasPermission) ||
+          (item.key === 'delete' && isHasPermission) ||
+          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+    )
+  }).map(item => {
+    const { rbacOpsIds, ...others } = item
+    return {
+      ...others
+    }
+  })
+
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={(isReadOnly ? [{
-        label: $t({ defaultMessage: 'Download Log' }),
-        key: 'downloadLog',
-        scopeKey: [WifiScopes.READ],
-        roles: [RolesEnum.READ_ONLY]
-      }, {
-        label: $t({ defaultMessage: 'Blink LEDs' }),
-        key: 'blinkLed',
-        scopeKey: [WifiScopes.READ],
-        roles: [RolesEnum.READ_ONLY]
-      }] :
-        [...(isApCliSessionEnabled ? [{
-          label: $t({ defaultMessage: 'CLI Session' }),
-          key: 'cliSession',
-          scopeKey: [WifiScopes.UPDATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-          roles: operationRoles
-        }] : []), {
-          label: $t({ defaultMessage: 'Reboot' }),
-          key: 'reboot',
-          scopeKey: [WifiScopes.UPDATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-          roles: operationRoles
-        }, {
-          label: $t({ defaultMessage: 'Download Log' }),
-          key: 'downloadLog',
-          scopeKey: [WifiScopes.READ],
-          roles: [RolesEnum.READ_ONLY, ...operationRoles]
-        }, {
-          label: $t({ defaultMessage: 'Blink LEDs' }),
-          key: 'blinkLed',
-          scopeKey: [WifiScopes.READ],
-          roles: [RolesEnum.READ_ONLY, ...operationRoles]
-        }, {
-          type: 'divider',
-          key: 'divider'
-        }, {
-          label: $t({ defaultMessage: 'Delete AP' }),
-          key: 'delete',
-          scopeKey: [WifiScopes.DELETE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
-          roles: operationRoles
-        }]).filter(item => {
-        const { scopeKey: scopes, rbacOpsIds, roles } = item
-        const isHasPermission = hasPermission({ scopes, rbacOpsIds, roles })
-        return (
-          (currentApOperational && isHasPermission) ||
-          (item.key === 'delete' && isHasPermission) ||
-          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
-        )
-      })}
+      items={filteredMenuItems}
     />
   )
 

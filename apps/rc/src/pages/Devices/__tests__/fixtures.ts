@@ -4712,6 +4712,17 @@ export const deviceAps = {
   ]
 }
 
+export const rbacDeviceAps = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    serialNumber: '422039000034',
+    name: 'UI team AP',
+    apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
+    status: '2_00_Operational'
+  }]
+}
+
 export const portlistData = {
   data: [{
     adminStatus: 'Up',
