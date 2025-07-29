@@ -102,7 +102,7 @@ export function getFilteredData <RecordType> (
         return false
       }
     }
-    if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
+    if (searchValue && searchValue.trim().length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         const target = row[column.dataIndex as keyof RecordType]
         return typeof target === 'string' && target

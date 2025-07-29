@@ -18,6 +18,9 @@ import { Drawer, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/com
 import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
+  versionAbove10020a
+} from '@acx-ui/rc/switch/utils'
+import {
   SwitchModel,
   SwitchModelPortData,
   SwitchSlot,
@@ -28,8 +31,7 @@ import {
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   validateVlanRangeFormat,
-  Vlan,
-  versionAbove10020a
+  Vlan
 } from '@acx-ui/rc/utils'
 import { filterByAccess }              from '@acx-ui/user'
 import { getIntl, validationMessages } from '@acx-ui/utils'

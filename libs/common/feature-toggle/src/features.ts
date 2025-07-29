@@ -8,7 +8,6 @@ export enum Features {
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
-  AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
@@ -328,6 +327,8 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
+  EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
+  EDGE_DELEGATION = 'EDGE-DELEGATION',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

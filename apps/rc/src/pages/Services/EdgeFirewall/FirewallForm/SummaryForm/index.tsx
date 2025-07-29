@@ -2,8 +2,7 @@ import { Col, Row, Descriptions as AntdDescriptions } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import styled                                         from 'styled-components'
 
-import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }                                          from '@acx-ui/rc/components'
+import { Descriptions, StepsForm, useStepFormContext, Subtitle, SpaceWrapper } from '@acx-ui/components'
 
 import { FirewallFormModel, filterCustomACLRules } from '..'
 

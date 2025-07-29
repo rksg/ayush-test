@@ -1,9 +1,25 @@
-import { cloneDeep, isEqual, isNil, omit } from 'lodash'
+import { cloneDeep, isEqual, omit } from 'lodash'
 
-import { Features }                                                                                                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
-import { useActivateTunnelProfileByEdgeClusterMutation, useActivateTunnelProfileByIpsecProfileMutation, useCreateTunnelProfileMutation, useCreateTunnelProfileTemplateMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useDeactivateTunnelProfileByIpsecProfileMutation, useUpdateTunnelProfileMutation, useUpdateTunnelProfileTemplateMutation } from '@acx-ui/rc/services'
-import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                                                                                                                                                                                                         from '@acx-ui/rc/utils'
-import { CatchErrorDetails }                                                                                                                                                                                                                                                                                                                                from '@acx-ui/utils'
+import { Features }                        from '@acx-ui/feature-toggle'
+import {
+  useActivateTunnelProfileByEdgeClusterMutation, useActivateTunnelProfileByIpsecProfileMutation,
+  useCreateTunnelProfileMutation,
+  useCreateTunnelProfileTemplateMutation,
+  useDeactivateTunnelProfileByEdgeClusterMutation, useDeactivateTunnelProfileByIpsecProfileMutation,
+  useUpdateTunnelProfileMutation,
+  useUpdateTunnelProfileTemplateMutation
+} from '@acx-ui/rc/services'
+import {
+  AgeTimeUnit,
+  CommonErrorsResult,
+  CommonResult,
+  executeWithCallback,
+  MtuRequestTimeoutUnit,
+  MtuTypeEnum,
+  TunnelProfileFormType,
+  TunnelTypeEnum
+} from '@acx-ui/rc/utils'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -82,23 +98,8 @@ export const useTunnelProfileActions = () => {
 
   const createTunnelProfileOperation = async (data: TunnelProfileFormType) => {
     try {
-      await new Promise(async (resolve, reject) => {
-        await handleCreateTunnelProfile({
-          data,
-          callback: (result) => {
-            // callback is after all RBAC related APIs sent
-            if (
-              isNil(result) ||
-            (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0)
-            {
-              reject(result)
-            } else {
-              resolve(true)
-            }
-          }
-        // need to catch basic service profile failed
-        }).catch(reject)
-
+      await executeWithCallback(async (callback) => {
+        await handleCreateTunnelProfile({ data, callback })
       })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -312,32 +313,49 @@ export const useTunnelProfileActions = () => {
   }
 
   const createTunnelProfileTemplateOperation = async (data: TunnelProfileFormType) => {
-    const venueId = data.venueId
-    const clusterId = data.edgeClusterId
-    const payload = requestPreProcess(data)
     try {
-      await createTunnelProfileTemplate({
-        payload,
-        callback: async (addResponse: CommonResult) => {
-          const tunnelProfileId = addResponse.response?.id
-          if (!tunnelProfileId) {
-          // eslint-disable-next-line no-console
-            console.error('empty tunnel profile id')
-            return
-          }
-
-          if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
-            return
-          }
-
-          // eslint-disable-next-line max-len
-          await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-        }
-      }).unwrap()
+      await executeWithCallback(async (callback) => {
+        await handleCreateTunnelProfileTemplate(data, callback)
+      })
     } catch(error) {
       // eslint-disable-next-line no-console
       console.log(error)
     }
+  }
+
+  const handleCreateTunnelProfileTemplate = async (
+    data: TunnelProfileFormType,
+    callback?: (res: (CommonResult | CommonErrorsResult<CatchErrorDetails> | void)) => void
+  ) => {
+    const venueId = data.venueId
+    const clusterId = data.edgeClusterId
+    const payload = requestPreProcess(data)
+
+    return await createTunnelProfileTemplate({
+      payload,
+      callback: async (addResponse: CommonResult) => {
+        const tunnelProfileId = addResponse.response?.id
+        if (!tunnelProfileId) {
+          // eslint-disable-next-line no-console
+          console.error('empty tunnel profile id')
+          callback?.()
+          return
+        }
+
+        if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
+          callback?.()
+          return
+        }
+
+        try {
+          // eslint-disable-next-line max-len
+          const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+          callback?.(reqResult)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
+      }
+    }).unwrap()
   }
 
   const updateTunnelProfileTemplateOperation = async (id:string,
