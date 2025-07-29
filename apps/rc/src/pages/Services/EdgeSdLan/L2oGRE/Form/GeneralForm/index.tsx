@@ -9,7 +9,6 @@ import { InformationSolid }                                from '@acx-ui/icons'
 import { CompatibilityWarningTriangleIcon }                from '@acx-ui/rc/components'
 import { useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeMvSdLanFormModel,
   IncompatibilityFeatures,
   servicePolicyNameRegExp,
   TunnelTypeEnum,
@@ -27,7 +26,7 @@ import * as UI from './styledComponents'
 
 export const GeneralForm = () => {
   const { $t } = useIntl()
-  const { form, editMode } = useStepFormContext<EdgeMvSdLanFormModel>()
+  const { form, editMode } = useStepFormContext()
   const { availableTunnelProfiles, associatedEdgeClusters } = useEdgeSdLanContext()
   const helpUrl = useHelpPageLink()
   const tunnelProfileId = Form.useWatch('tunnelProfileId', form)
