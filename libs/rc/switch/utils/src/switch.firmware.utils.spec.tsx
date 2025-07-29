@@ -167,6 +167,80 @@ describe('switch.firmware.utils', () => {
     expect(getStackUnitsMinLimitationV1002('ICX7150-C12P', '10010g_cd1')).toBe(8)
   })
 
+  it('should handle ICX8100 models correctly', () => {
+    // ICX8100 with 10020 firmware - should return 8 if version >= 10020c, else 4
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10020c_cd1_rc11')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10020c')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-24-X', '10020b_cd2')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10020a_rc22')).toBe(4)
+
+    // ICX8100 without 10020 firmware - should return 8 if version >= 10010h, else 4
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-24-x', '10010h_cd1')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010g_cd1')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-24-x', '10010f_b467')).toBe(4)
+  })
+
+  it('should handle ICX8200 models with different firmware versions', () => {
+    // ICX8200 - should return 12 if version >= 10010b, else 4
+    expect(getStackUnitsMinLimitationV1002('ICX8200-48P', '10010b')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', '10010c_cd3')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-48P', '10010f_cd2')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', '10010a_b3')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8200-48P', '09010h_cd1')).toBe(4)
+  })
+
+  it('should handle ICX7150 models with different firmware versions', () => {
+    // ICX7150 with version >= 10010g_cd1 should return 8
+    expect(getStackUnitsMinLimitationV1002('ICX7150-24P', '10010g_cd1')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-48P', '10010h')).toBe(8)
+
+    // ICX7150 with version >= 09010h but < 10010g_cd1 should return 4
+    expect(getStackUnitsMinLimitationV1002('ICX7150-24P', '09010h')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-48P', '10010f_b467')).toBe(4)
+
+    // ICX7150 with version < 09010h should return 2
+    expect(getStackUnitsMinLimitationV1002('ICX7150-24P', '09010f_b401')).toBe(2)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-48P', '09010e_b392')).toBe(2)
+  })
+
+  it('should handle other ICX models (7550, 7650, 7850) correctly', () => {
+    // Version >= 10010c should return 12
+    expect(getStackUnitsMinLimitationV1002('ICX7550-24', '10010c')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX7650-48ZP', '10010c_cd3_rc36')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('ICX7850-48FS', '10010f_cd2')).toBe(12)
+
+    // Version >= 09010h but < 10010c should return 8
+    expect(getStackUnitsMinLimitationV1002('ICX7550-48', '09010h')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX7650-24ZP', '10010b_b37')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX7850-48FS', '09010h_cd2_b4')).toBe(8)
+
+    // Version < 09010h should return 4
+    expect(getStackUnitsMinLimitationV1002('ICX7550-24', '09010f_b401')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7650-48ZP', '09010e_b392')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7850-48FS', '09010f_b19')).toBe(4)
+  })
+
+  it('should handle edge cases and invalid inputs', () => {
+    // Empty firmware version
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', '')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-24P', '')).toBe(2)
+    expect(getStackUnitsMinLimitationV1002('ICX7550-48', '')).toBe(4)
+
+    // Undefined/null model (should fall through to default case)
+    expect(getStackUnitsMinLimitationV1002('', '10010c_cd3')).toBe(12)
+    expect(getStackUnitsMinLimitationV1002('UNKNOWN-MODEL', '10010c_cd3')).toBe(12)
+
+    // Case sensitivity for ICX8100 regex
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10010h')).toBe(8)
+
+    // Invalid firmware format should default to lower limits
+    expect(getStackUnitsMinLimitationV1002('ICX8200-24P', 'invalid')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX7150-24P', 'invalid')).toBe(2)
+    expect(getStackUnitsMinLimitationV1002('ICX7550-48', 'invalid')).toBe(4)
+  })
+
   it('should convert switch version format correctly', () => {
     expect(convertSwitchVersionFormat('09010h_cd2')).toBe('9.0.10h_cd2')
     expect(convertSwitchVersionFormat('10020a_cd1')).toBe('10.0.20a_cd1')

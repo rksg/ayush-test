@@ -338,13 +338,12 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       sortOrder: 'ASC',
       filters
     }
-
     if (apList) {
       apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
         .then((res)=>{
           const { data } = res || {}
           if (data) {
-            const existingTriBandApModels = data.filter((ap: APExtended) => ap.apGroupId === apGroupId)
+            const existingTriBandApModels = data.filter((ap: APExtended) => ap.deviceGroupId === apGroupId)
               .map((ap: APExtended) => ap.model)
             setExistingTriBandApModels(uniq(existingTriBandApModels))
           }
@@ -1157,7 +1156,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     // 5. update EditContext
     handleChange()
   }
-
   return (
     <Loader states={[{
       isLoading: isLoadingVenueData || isLoadingApGroupData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData)),
