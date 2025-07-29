@@ -25,21 +25,20 @@ import {
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   isFirmwareVersionAbove10020bCd2,
-  vlanPortsParser,
-  getFamilyAndModel,
-  createSwitchSerialPattern,
-  createSwitchSerialPatternForSpecific8100Model,
-  // Add missing function imports
-  convertPoeUsage,
-  getSwitchModelInfo,
-  calculatePortOrderValue,
-  checkSwitchUpdateFields,
   isRodanAv,
   isBabyRodanX,
   is7550Zippy,
   isBabyRodanXSubModel,
   is7550ZippySubModel,
-  isSpecific8100Model
+  isSpecific8100Model,
+  vlanPortsParser,
+  getFamilyAndModel,
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model,
+  convertPoeUsage,
+  getSwitchModelInfo,
+  calculatePortOrderValue,
+  checkSwitchUpdateFields
 } from '.'
 
 const switchRow ={
@@ -86,6 +85,7 @@ describe('switch.utils', () => {
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
+      expect(isStrictOperationalSwitch(SwitchStatusEnum.FIRMWARE_UPD_FAIL, true, true)).toBeTruthy()
     })
   })
 
@@ -108,6 +108,7 @@ describe('switch.utils', () => {
   describe('Test getSwitchPortLabel function', () => {
     it('should render correctly', async () => {
       expect(getSwitchPortLabel('ICX7150-C12P', 1)).toEqual('')
+      expect(getSwitchPortLabel('ICX7150-C12P', 0)).toEqual('')
     })
   })
 
@@ -220,6 +221,8 @@ describe('Test isFirmwareVersionAbove10010f function', () => {
     expect(isFirmwareVersionAbove10010f('10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10020b_rc35')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010f('')).toBe(false)
   })
 })
 
@@ -235,6 +238,8 @@ describe('Test isFirmwareVersionAbove10020b function', () => {
     expect(isFirmwareVersionAbove10020b('SPR10020b_rc35')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_b205')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10020b('')).toBe(false)
   })
 })
 
@@ -252,6 +257,8 @@ describe('Test isFirmwareVersionAbove10010gOr10020b function', () => {
     expect(isFirmwareVersionAbove10010gOr10020b('SPR10020b_rc35')).toBe(true)
     expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_b205')).toBe(true)
     expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010gOr10020b('')).toBe(false)
   })
 })
 
@@ -271,6 +278,8 @@ describe('Test isFirmwareVersionAbove10010gCd1Or10020bCd1 function', () => {
 
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_cd1')).toBe(true)
     expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_cd1')).toBe(true)
+
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('')).toBe(false)
   })
 })
 
@@ -289,6 +298,7 @@ describe('Test isFirmwareVersionAbove10020bCd2 function', () => {
     expect(isFirmwareVersionAbove10020bCd2('TNR10020b_b205')).toBe(false)
 
     expect(isFirmwareVersionAbove10020bCd2('TNR10020b_cd2')).toBe(true)
+    expect(isFirmwareVersionAbove10020bCd2('')).toBe(false)
   })
 })
 
@@ -439,7 +449,7 @@ describe('Test getFamilyAndModel function', () => {
   })
 })
 
-describe('macAclRulesParser', () => {
+describe('Test macAclRulesParser', () => {
   it('should return zero counts when no rules are provided', () => {
     const result = macAclRulesParser([])
     expect(result).toEqual({ permit: 0, deny: 0 })

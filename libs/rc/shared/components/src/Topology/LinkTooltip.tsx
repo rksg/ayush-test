@@ -1,11 +1,12 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow, Tabs }                   from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol }                              from '@acx-ui/icons'
-import { DeviceTypes, Link, LinkConnectionInfo, Node, vlanPortsParser } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow, Tabs }  from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }             from '@acx-ui/icons'
+import { vlanPortsParser }                             from '@acx-ui/rc/switch/utils'
+import { DeviceTypes, Link, LinkConnectionInfo, Node } from '@acx-ui/rc/utils'
+import { useTenantLink }                               from '@acx-ui/react-router-dom'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
