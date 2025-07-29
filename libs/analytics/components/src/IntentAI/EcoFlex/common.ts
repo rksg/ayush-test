@@ -131,7 +131,7 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
       isPill: difference < 1000 ? true : false
     }
   },
-  valueFormatter: formatter('countFormat'),
+  valueFormatter: formatter('noFormat'),
   valueSuffixMessage: defineMessage({ defaultMessage: '/month' }),
   valueSuffixClass: 'ant-statistic-content-suffix-unit'
 }]
