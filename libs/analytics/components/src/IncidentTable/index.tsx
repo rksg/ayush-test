@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 
 import { stringify }                                from 'csv-stringify/browser/esm/sync'
 import { omit }                                     from 'lodash'
@@ -16,9 +16,9 @@ import {
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip, Button, Table } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { Loader, TableProps, Drawer, Tooltip, Button, Table, ColumnState } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   EyeOpenOutlined,
@@ -210,9 +210,16 @@ export function IncidentTable ({ filters }: {
   const [drawerSelection, setDrawerSelection] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident, { isLoading }] = useMuteIncidentsMutation()
-  const [selectedRowsData, setSelectedRowsData] = useState<IncidentRowData[]>(
-    []
-  )
+  const [selectedRowsData, setSelectedRowsData] = useState<IncidentRowData[]>([])
+
+  const onColumnStateChange = (state: ColumnState) => {
+    const visibleColumnKeys = new Set(
+      Object.keys(state).filter((key) => state[key])
+    )
+    visibleColumns.current = columnHeaders.filter(({ key }) =>
+      visibleColumnKeys.has(key)
+    )
+  }
 
   const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
     permission: 'WRITE_INCIDENTS',
@@ -281,7 +288,7 @@ export function IncidentTable ({ filters }: {
     muteSelectedIncidents
   ])
 
-  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
+  const columnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
@@ -413,6 +420,8 @@ export function IncidentTable ({ filters }: {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
 
+  const visibleColumns = useRef<TableProps<IncidentTableRow>['columns']>(columnHeaders)
+
   useTrackLoadTime({
     itemName: widgetsMapping.INCIDENT_TABLE,
     states: [queryResults],
@@ -431,13 +440,14 @@ export function IncidentTable ({ filters }: {
         settingsId='incident-table'
         type='tall'
         dataSource={queryResults.data}
-        columns={ColumnHeaders}
+        columns={columnHeaders}
         rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-          onClick: () => downloadIncidentList(filteredData, ColumnHeaders, filters)
+          onClick: () =>
+            downloadIncidentList(filteredData, visibleColumns.current, filters)
         }}
         rowSelection={
           hasRowSelection && {
@@ -466,6 +476,7 @@ export function IncidentTable ({ filters }: {
         searchableWidth={240}
         optionLabelProp='label'
         columnsToFilterChildrenRowBasedOnParentRow={['isMuted']}
+        columnState={{ onChange: onColumnStateChange }}
       />
       <Drawer
         visible={!!drawerSelection}
