@@ -22,7 +22,7 @@ import {
   preference,
   switchReleaseV1002,
   upgradeSwitchViewList
-} from '../__test__/fixtures'
+} from '../__tests__/fixtures'
 
 import { SwitchScheduleDrawer } from '.'
 
@@ -169,10 +169,6 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
         (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       ),
-      rest.post(
-        FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
-      ),
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatestV1002))
@@ -216,7 +212,11 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
       })
 
     expect(await screen.findByText('auto11')).toBeInTheDocument()
-  })
+    const showMoreBtn = screen.getByText('Show More')
+    expect(showMoreBtn).toBeInTheDocument()
+    await userEvent.click(showMoreBtn)
+    expect(await screen.findByText('Show Less')).toBeInTheDocument()
 
+  })
 
 })

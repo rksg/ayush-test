@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockSwitchConfig1Data }          from './__test__/SwitchConfigurationSummaryFixtures'
+import { mockSwitchConfig1Data }          from './__tests__/SwitchConfigurationSummaryFixtures'
 import { SwitchConfigurationSummaryPage } from './SwitchConfigurationSummaryPage'
 
 

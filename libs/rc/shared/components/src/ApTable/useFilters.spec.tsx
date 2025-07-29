@@ -5,7 +5,7 @@ import { CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }    from '@acx-ui/test-utils'
 
-import { networkList } from './__test__/fixtures'
+import { networkList } from './__tests__/fixtures'
 import { useFilters }  from './useFilters'
 
 describe('ApTable > useFilters', () => {

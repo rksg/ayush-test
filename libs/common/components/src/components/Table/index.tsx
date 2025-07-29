@@ -8,7 +8,7 @@ import Highlighter                                                    from 'reac
 import { useIntl }                                                    from 'react-intl'
 
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
-import type { Filter }                                               from '@acx-ui/types'
+import type { Filter, TableColumn, ColumnGroupType, ColumnType }     from '@acx-ui/types'
 import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { getTitleWithIndicator }               from '../BetaIndicator'
@@ -30,10 +30,7 @@ import * as UI                                                                fr
 import { defaultColumnWidth, settingsKey, settingsKeyWidth, useColumnsState } from './useColumnsState'
 
 import type {
-  TableColumn,
   TableColumnState,
-  ColumnType,
-  ColumnGroupType,
   ColumnStateOption,
   TableAction,
   TableRowAction,
@@ -49,10 +46,7 @@ import type {
 import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
-  ColumnType,
-  ColumnGroupType,
   RecordWithChildren,
-  TableColumn,
   ColumnState
 } from './types'
 

@@ -6,7 +6,7 @@ import { CertificateUrls }            from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { serverCertificateList } from '../../__test__/fixtures'
+import { serverCertificateList } from '../../__tests__/fixtures'
 
 import { UploadCertificate } from './UploadCertificate'
 
