@@ -305,7 +305,8 @@ export enum Features {
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
-  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle'
+  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
+  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
