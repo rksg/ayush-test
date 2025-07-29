@@ -118,9 +118,6 @@ describe('ClientDetails', () => {
 
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-      key === 'clientStatus' ? 'connected' : null
-    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
@@ -168,9 +165,6 @@ describe('ClientDetails', () => {
 
   it('should render correctly with featureToggle off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-      key === 'clientStatus' ? 'connected' : null
-    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
