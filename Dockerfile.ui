@@ -59,8 +59,8 @@ COPY nxcache/nxcache.tar.xz* ./
 
 # Extract it only if the file exists
 RUN if [ -f ./nxcache.tar.xz ]; then \
-      CICD_BUILD=true mkdir -p ./node_modules/.cache/nx && \
-      CICD_BUILD=true tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+      mkdir -p ./node_modules/.cache/nx && \
+      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
     fi
 
 # dump git information
