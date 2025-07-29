@@ -21,9 +21,8 @@ import {
   getTargetInterfaceFromInterfaceSettingsFormData,
   mockClusterConfigWizardData,
   mockFailedNetworkConfig
-} from '../__tests__/fixtures'
-
-import { CompatibilityCheckResult, InterfaceSettingsFormType } from './types'
+} from './__tests__/fixtures'
+import { CompatibilityCheckResult, InterfaceSettingsFormType } from './InterfaceSettings/types'
 import {
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,

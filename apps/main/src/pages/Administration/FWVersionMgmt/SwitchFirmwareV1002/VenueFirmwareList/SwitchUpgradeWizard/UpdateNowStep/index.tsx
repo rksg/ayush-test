@@ -14,16 +14,18 @@ import { useSwitchFirmwareUtils }                  from '@acx-ui/rc/components'
 import { useBatchGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
+  invalidVersionFor75Zippy,
+  invalidVersionFor81X,
+  invalidVersionFor82Av,
+  is7550Zippy,
+  isBabyRodanX,
+  isRodanAv
+} from '@acx-ui/rc/switch/utils'
+import {
   SwitchFirmwareVersion1002,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareV1002,
-  invalidVersionFor82Av,
-  invalidVersionFor81X,
-  invalidVersionFor75Zippy,
-  isRodanAv,
-  isBabyRodanX,
-  is7550Zippy
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
 import * as UI                   from '../../styledComponents'

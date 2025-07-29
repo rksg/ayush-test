@@ -185,6 +185,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '0',
         ip: '1.2.3.4',
         ipMode: EdgeIpModeEnum.STATIC,
@@ -219,7 +220,8 @@ describe('Edge LAG table drawer', () => {
       {
         ...mockedEdgeLagList.content[1],
         gateway: '',
-        natEnabled: false
+        natEnabled: false,
+        accessPortEnabled: false
       })
     expect(setVisibleSpy).toHaveBeenCalledWith(false)
   })
@@ -359,6 +361,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '1',
         ip: '10.12.3.4',
         gateway: '10.12.3.127',
@@ -421,6 +424,7 @@ describe('Edge LAG table drawer', () => {
       'test-edge',
       {
         corePortEnabled: false,
+        accessPortEnabled: false,
         id: '2',
         ip: '12.12.12.11',
         ipMode: EdgeIpModeEnum.STATIC,

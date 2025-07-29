@@ -3,9 +3,9 @@ import { useContext, useEffect, useState } from 'react'
 import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useIntl }                                              from 'react-intl'
 
-import { Button, PageHeader, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features }                               from '@acx-ui/feature-toggle'
-import { formatter }                              from '@acx-ui/formatter'
+import { Button, PageHeader, StepsForm, Tooltip, SpaceWrapper } from '@acx-ui/components'
+import { Features }                                             from '@acx-ui/feature-toggle'
+import { formatter }                                            from '@acx-ui/formatter'
 import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon,
@@ -13,8 +13,7 @@ import {
 } from '@acx-ui/icons'
 import {
   ClusterConfigWizardSubtitle,
-  EdgeClusterTypeCard,
-  SpaceWrapper
+  EdgeClusterTypeCard
 } from '@acx-ui/rc/components'
 import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                       from '@acx-ui/react-router-dom'

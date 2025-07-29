@@ -14,13 +14,15 @@ import {
   TableProps,
   Modal
 } from '@acx-ui/components'
-import { DeleteOutlined } from '@acx-ui/icons'
+import { DeleteOutlined }        from '@acx-ui/icons'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
   checkObjectNotExists,
   checkItemNotIncluded,
-  DnsProxyRule
+  DnsProxyRule,
+  networkWifiDualModeIpRegExp,
+  useSelectValidatorByIpModeFF
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -207,6 +209,8 @@ export function DnsProxyModalRuleModal (props: {
   const [form] = Form.useForm()
   const { modalState, setModalState } = props
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
+  const IpAddresslValidator =
+  useSelectValidatorByIpModeFF(networkWifiIpRegExp, networkWifiDualModeIpRegExp)
 
   const resetRuleModal = () => {
     setModalState({
@@ -309,7 +313,7 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => networkWifiIpRegExp(value) }
+        { validator: (_, value) => IpAddresslValidator(value) }
       ]}
       validateFirst
       children={<Input />}

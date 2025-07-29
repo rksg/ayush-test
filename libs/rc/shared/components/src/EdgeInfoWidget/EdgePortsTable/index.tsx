@@ -4,7 +4,7 @@ import { SortOrder } from 'antd/lib/table/interface'
 import { find }      from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Button, ColumnType, Table, TableProps } from '@acx-ui/components'
+import { Button, Table, TableProps } from '@acx-ui/components'
 import {
   EdgeWanLinkHealthDetailsDrawer,
   EdgeWanLinkHealthStatusLight,
@@ -21,8 +21,9 @@ import {
   sortProp,
   transformDisplayOnOff
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import type { ColumnType } from '@acx-ui/types'
+import { noDataDisplay }   from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 

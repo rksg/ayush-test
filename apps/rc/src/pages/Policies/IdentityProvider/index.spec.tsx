@@ -39,14 +39,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 describe('IdentityProvider', () => {
   const params = { tenantId: mockedTenantId }
 
-  const mockDeleteFn = jest.fn()
-
   beforeEach(async () => {
-
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(policyApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    mockDeleteFn.mockClear()
 
     mockServer.use(
       rest.post(
@@ -77,6 +73,9 @@ describe('IdentityProvider', () => {
       }
     )
 
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
+
     // eslint-disable-next-line max-len
     expect(screen.getByRole('button', { name: 'Add HS2.0 IdP' })).toBeVisible()
 
@@ -92,17 +91,4 @@ describe('IdentityProvider', () => {
     })
   })
 
-  it('should render breadcrumb correctly', async () => {
-
-    render(
-      <Provider>
-        <IdentityProvider currentTabType={IdentityProviderTabType.Hotspot20}/>
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: tablePath }
-      }
-    )
-
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-  })
 })
