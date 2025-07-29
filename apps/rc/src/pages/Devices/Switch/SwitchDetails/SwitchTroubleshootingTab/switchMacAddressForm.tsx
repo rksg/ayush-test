@@ -18,7 +18,9 @@ import {
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
-  sortPortFunction,
+  sortPortFunction
+} from '@acx-ui/rc/switch/utils'
+import {
   TroubleshootingMacAddressOptionsEnum,
   TroubleshootingType
 } from '@acx-ui/rc/utils'

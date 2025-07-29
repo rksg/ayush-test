@@ -16,6 +16,11 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
+jest.mock('../TunnelProfileForm/useTunnelProfileActions', () => ({
+  useTunnelProfileActions: jest.fn().mockReturnValue({
+    createTunnelProfileTemplateOperation: jest.fn().mockResolvedValue({})
+  })
+}))
 
 const createViewPath = '/:tenantId/t/policies/tunnelProfile/create'
 

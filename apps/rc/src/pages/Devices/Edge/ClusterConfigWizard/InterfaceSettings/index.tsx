@@ -31,6 +31,17 @@ import { getOpsApi }     from '@acx-ui/utils'
 import { VirtualIpFormType }                                               from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext }                                      from '../ClusterConfigWizardDataProvider'
 import { getSubInterfaceCompatibilityFields, subInterfaceCompatibleCheck } from '../SubInterfaceSettings/utils'
+import {
+  DualWanStepTitle,
+  getAllInterfaceAsPortInfoFromForm,
+  getAllPhysicalInterfaceData,
+  getLagFormCompatibilityFields,
+  getPortFormCompatibilityFields,
+  interfaceCompatibilityCheck,
+  lagSettingsCompatibleCheck,
+  transformFromApiToFormData,
+  transformFromFormToApiData
+} from '../utils'
 
 import { DualWanForm }                     from './DualWan'
 import { getDualWanDataFromClusterWizard } from './DualWan/utils'
@@ -46,17 +57,6 @@ import {
   InterfaceSettingsFormType,
   InterfaceSettingsTypeEnum
 } from './types'
-import {
-  DualWanStepTitle,
-  getAllInterfaceAsPortInfoFromForm,
-  getAllPhysicalInterfaceData,
-  getLagFormCompatibilityFields,
-  getPortFormCompatibilityFields,
-  interfaceCompatibilityCheck,
-  lagSettingsCompatibleCheck,
-  transformFromApiToFormData,
-  transformFromFormToApiData
-} from './utils'
 import { VirtualIpForm } from './VirtualIpForm'
 
 

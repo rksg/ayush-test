@@ -8,7 +8,6 @@ export enum Features {
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
-  AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
@@ -30,6 +29,7 @@ export enum Features {
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
+  CONFIG_TEMPLATE_REC_P1 = 'acx-ui-config-template-rec-p1',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   MULTIPLE_CERTIFICATE_TEMPLATE = 'multiple-certificate-template',
   CONNECTION_METERING = 'connection-metering-enabled',
@@ -305,7 +305,8 @@ export enum Features {
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
-  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle'
+  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
+  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -326,6 +327,8 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
+  EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
+  EDGE_DELEGATION = 'EDGE-DELEGATION',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

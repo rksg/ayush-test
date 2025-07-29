@@ -81,6 +81,14 @@
                 "notDependOnLibsWithTags": ["rc-components"]
               },
               {
+                "sourceTag": "type:utils",
+                "notDependOnLibsWithTags": ["common-components"]
+              },
+              {
+                "sourceTag": "type:services",
+                "notDependOnLibsWithTags": ["common-components"]
+              },
+              {
                 "sourceTag": "acx-app",
                 "notDependOnLibsWithTags": ["rc-common-components"]
               },

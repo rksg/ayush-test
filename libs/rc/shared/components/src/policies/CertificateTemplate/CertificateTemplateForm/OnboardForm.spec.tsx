@@ -7,7 +7,7 @@ import { Provider }                                              from '@acx-ui/s
 import { mockServer, render, renderHook, screen }                from '@acx-ui/test-utils'
 
 import { mockPersonaGroupTableResult }            from '../../../users/__tests__/fixtures'
-import { certificateTemplateList, policySetList } from '../__test__/fixtures'
+import { certificateTemplateList, policySetList } from '../__tests__/fixtures'
 
 import OnboardForm from './OnboardForm'
 

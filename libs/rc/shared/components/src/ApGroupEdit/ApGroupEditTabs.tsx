@@ -40,18 +40,20 @@ export function ApGroupEditTabs () {
 
   const ApGroupEditTabKeys = [
     'general',
+    'vlanRadio',
     ...(isApGroupMoreParameterPhase1Enabled
       ? ['radio']
-      : ['vlanRadio']
+      : []
     )
   ]
 
   const tabTitleMap = (tabkey: string) => {
     const tabTitle = {
       general: $t({ defaultMessage: 'General' }),
+      vlanRadio: $t({ defaultMessage: 'VLAN & Radio' }),
       ...(isApGroupMoreParameterPhase1Enabled
         ? { radio: $t({ defaultMessage: 'Radio' }) }
-        : { vlanRadio: $t({ defaultMessage: 'VLAN & Radio' }) }
+        : {}
       )
     }
 

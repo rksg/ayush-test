@@ -10,7 +10,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { radiusAttributeList, vendorList } from './__test__/fixtures'
+import { radiusAttributeList, vendorList } from './__tests__/fixtures'
 import { RadiusAttributeDialog }           from './RadiusAttributeDialog'
 
 describe('RadiusAttributeDialog', () => {

@@ -17,11 +17,11 @@ import {
   useLazyGetSwitchVenueVersionListV1001Query
 }                         from '@acx-ui/rc/services'
 import {
-  getStackUnitsMinLimitationV1002
+  getStackUnitsMinLimitationV1002,
+  getSwitchModelGroup
 } from '@acx-ui/rc/switch/utils'
 import {
   FirmwareSwitchVenueVersionsV1002,
-  getSwitchModelGroup,
   SwitchRbacUrlsInfo,
   SwitchRow,
   SwitchStatusEnum,

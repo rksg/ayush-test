@@ -4,10 +4,10 @@ import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason }                     from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip }         from '@acx-ui/components'
-import type { TableColumn }                    from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
 import { formatter }                           from '@acx-ui/formatter'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
+import type { TableColumn }                    from '@acx-ui/types'
 import { getIntl, NetworkPath, noDataDisplay } from '@acx-ui/utils'
 
 import { ConnectionEventPopover } from '../../../ClientTroubleshooting/ConnectionEvent'
