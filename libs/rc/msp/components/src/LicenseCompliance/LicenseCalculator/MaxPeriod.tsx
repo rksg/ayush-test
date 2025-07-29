@@ -9,7 +9,7 @@ import { Button, DatePicker, Loader, showToast }                                
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
 import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
-import { LicenseCalculatorData }                                                from '@acx-ui/msp/utils'
+import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                        from '@acx-ui/utils'
 
@@ -17,6 +17,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [ maxPeriod, setMaxPeriod ] = useState<string>()
+  const [licenseV2Data, setLicenseV2Data] = useState<LicenseCalculatorDataV2[]>([])
 
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   const multiLicenseFFToggled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
@@ -54,12 +55,18 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
       if( multiLicenseFFToggled ) {
         await getCalculatedLicenseV2({ payload })
           .unwrap()
-          .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
-            if (!message) {
-              setMaxPeriod(data?.expirationDate)
+          .then(( { data }) => {
+            if (data.length > 0) {
+              setLicenseV2Data(data)
             } else {
-              setMaxPeriod('')
-              showError(message)
+              setLicenseV2Data([{
+                effectiveDate: '',
+                expirationDate: '',
+                licenseType: EntitlementDeviceType.APSW,
+                isTrial: false,
+                maxQuantity: 0,
+                quantity: 0
+              }])
             }
           }).catch(error => {
             if(error.data.message) {
@@ -160,23 +167,57 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
         htmlType='submit'
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
-    <Row style={{
-      alignItems: 'center'
-    }}>
-      <Col style={{
-        marginRight: '4px'
+
+
+
+    {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
+      {licenseV2Data.map((item) => {
+        return <Row style={{
+          alignItems: 'center'
+        }}>
+          <Col style={{
+            marginRight: '4px'
+          }}>
+            {item.skuTier ? <Typography.Text>
+              { $t({ defaultMessage: 'End Date for {skuTier} Tier:' },
+                { skuTier: item.skuTier }) }
+            </Typography.Text> : <Typography.Text>
+              { $t({ defaultMessage: 'End Date:' }) }
+            </Typography.Text>
+            }
+          </Col>
+          <Col>
+            <Typography.Title style={{
+              margin: '0px',
+              fontSize: '20px'
+            }}> {item.expirationDate ?
+                formatter(DateFormatEnum.DateFormat)(item.expirationDate) : noDataDisplay}
+            </Typography.Title>
+          </Col>
+        </Row>
+      })}
+    </Loader>}
+
+    {
+      !multiLicenseFFToggled &&
+      <Row style={{
+        alignItems: 'center'
       }}>
-        <Typography.Text>
-          { $t({ defaultMessage: 'End Date:' }) }
-        </Typography.Text>
-      </Col>
-      <Col>
-        <Typography.Title style={{
-          margin: '0px'
-        }}> <Loader states={[{ isLoading: isLoading || isLoadingV2 }]}>
-            { maxPeriod ? formatter(DateFormatEnum.DateFormat)(maxPeriod) : noDataDisplay }
-          </Loader> </Typography.Title>
-      </Col>
-    </Row>
+        <Col style={{
+          marginRight: '4px'
+        }}>
+          <Typography.Text>
+            { $t({ defaultMessage: 'End Date:' }) }
+          </Typography.Text>
+        </Col>
+        <Col>
+          <Typography.Title style={{
+            margin: '0px'
+          }}> <Loader states={[{ isLoading: isLoading || isLoadingV2 }]}>
+              { maxPeriod ? formatter(DateFormatEnum.DateFormat)(maxPeriod) : noDataDisplay }
+            </Loader> </Typography.Title>
+        </Col>
+      </Row>
+    }
   </div>
 }

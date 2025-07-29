@@ -33,7 +33,8 @@ import {
   RecommendFirmwareUpgradeByApModel,
   LicenseCalculatorDataResponse,
   MileageReportsResponse,
-  SolutionTokenSettings
+  SolutionTokenSettings,
+  LicenseCalculatorDataResponseV2
 } from '@acx-ui/msp/utils'
 import {
   CommonResult,
@@ -1084,13 +1085,13 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
-    getCalculatedLicencesV2: build.mutation<LicenseCalculatorDataResponse, RequestPayload>({
+    getCalculatedLicencesV2: build.mutation<LicenseCalculatorDataResponseV2, RequestPayload>({
       query: ({ payload }) => {
         const header = customHeaders.v2
-        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, header)
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences)//, {}, header)
         return {
           ...request,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

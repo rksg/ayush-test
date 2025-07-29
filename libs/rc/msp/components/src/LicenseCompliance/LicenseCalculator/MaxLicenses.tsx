@@ -7,7 +7,7 @@ import { useIntl }                                                   from 'react
 import { Button, DatePicker, Loader, showToast }                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
-import { LicenseCalculatorData }                                                from '@acx-ui/msp/utils'
+import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                        from '@acx-ui/utils'
 
@@ -16,6 +16,7 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const [form] = Form.useForm()
   const [ selectedDate, setSelectedDate ] = useState(moment().endOf('day'))
   const [ maxLicenceCount, setMaxLicenceCount ] = useState<number>()
+  const [licenseV2Data, setLicenseV2Data] = useState<LicenseCalculatorDataV2[]>([])
 
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   const multiLicenseFFToggled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
@@ -62,16 +63,18 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         if( multiLicenseFFToggled ) {
           await getCalculatedLicenseV2({ payload })
             .unwrap()
-            .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
-              if (!message) {
-                setMaxLicenceCount(data?.quantity || 0)
+            .then(( { data }) => {
+              if (data.length > 0) {
+                setLicenseV2Data(data)
               } else {
-                setMaxLicenceCount(undefined)
-                showError(message)
-              }
-            }).catch(error => {
-              if(error.data.message) {
-                showError(error.data.message)
+                setLicenseV2Data([{
+                  effectiveDate: '',
+                  expirationDate: '',
+                  licenseType: EntitlementDeviceType.APSW,
+                  isTrial: false,
+                  maxQuantity: 0,
+                  quantity: 0
+                }])
               }
             })
         } else {
@@ -177,23 +180,51 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         onClick={calculateLicences}
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
-    <Row style={{
-      alignItems: 'center'
-    }}>
-      <Col style={{
-        marginRight: '4px'
+    {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
+      {licenseV2Data.map((item) => {
+        return <Row style={{
+          alignItems: 'center'
+        }}>
+          <Col style={{
+            marginRight: '4px'
+          }}>
+            {item.skuTier ? <Typography.Text>
+              { $t({ defaultMessage: 'Available Licenses for {skuTier} Tier:' },
+                { skuTier: item.skuTier }) }
+            </Typography.Text> : <Typography.Text>
+              { $t({ defaultMessage: 'Available Licenses:' }) }
+            </Typography.Text>
+            }
+          </Col>
+          <Col>
+            <Typography.Title style={{
+              margin: '0px'
+            }}> {item.quantity} </Typography.Title>
+          </Col>
+        </Row>
+      })}
+    </Loader>}
+
+    {
+      !multiLicenseFFToggled && <Row style={{
+        alignItems: 'center'
       }}>
-        <Typography.Text>
-          { $t({ defaultMessage: 'Available Licenses:' }) }
-        </Typography.Text>
-      </Col>
-      <Col>
-        <Typography.Title style={{
-          margin: '0px'
-        }}> <Loader states={[{ isLoading: isLoadingV2 || isLoading }]}>
-            {maxLicenceCount || noDataDisplay}
-          </Loader> </Typography.Title>
-      </Col>
-    </Row>
+        <Col style={{
+          marginRight: '4px'
+        }}>
+          <Typography.Text>
+            { $t({ defaultMessage: 'Available Licenses:' }) }
+          </Typography.Text>
+        </Col>
+        <Col>
+          <Typography.Title style={{
+            margin: '0px'
+          }}> <Loader states={[{ isLoading: isLoading }]}>
+              {maxLicenceCount || noDataDisplay}
+            </Loader> </Typography.Title>
+        </Col>
+      </Row>
+    }
+
   </div>
 }
