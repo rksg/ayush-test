@@ -924,7 +924,17 @@ export const apApi = baseApApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'ApGroup', id: 'RADIO' }]
+      invalidatesTags: [{ type: 'ApGroup', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if(msg.steps?.find((step) =>
+            (step.id === 'UpdateApGroupRadioSettings')) && (msg.status === 'SUCCESS')) {
+            if (typeof requestArgs.callback === 'function') {
+              requestArgs.callback()
+            }
+          }
+        })
+      }
     }),
     getApGroupDefaultRegulatoryChannels: build.query<ApGroupDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
