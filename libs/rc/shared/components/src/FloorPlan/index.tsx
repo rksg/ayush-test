@@ -92,7 +92,6 @@ export function FloorPlan () {
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
-  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
@@ -140,12 +139,11 @@ export function FloorPlan () {
       filters: { venueId: [params.venueId] }
     },
     enableRbac: isUseWifiRbacApi
-  }, { skip: !isApMeshTopologyFFOn,
-    pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
+  }, { pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   // Set mesh role for unplaced AP
   useEffect(() => {
-    if (!isApMeshTopologyFFOn || !apsList?.data || isEmpty(unplacedDevicesState.ap)) return
+    if (!apsList?.data || isEmpty(unplacedDevicesState.ap)) return
 
     if (unplacedDevicesState.ap.some(ap => ap.meshRole)) return //XXX  Don't proceed if there is any AP has been set the mesh role
 
@@ -161,7 +159,7 @@ export function FloorPlan () {
       ap: apDevices
     })
 
-  }, [isApMeshTopologyFFOn, apsList?.data, unplacedDevicesState])
+  }, [apsList?.data, unplacedDevicesState])
 
   useEffect(() => {
     setFloorPlans([])

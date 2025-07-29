@@ -10,10 +10,11 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, Tooltip }                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
-import { validateDuplicateVlanId, validateVlanExcludingReserved, Vlan, versionAbove10020a } from '@acx-ui/rc/utils'
+import { Drawer, Alert, Tooltip }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                   from '@acx-ui/icons'
+import { versionAbove10020a }                                           from '@acx-ui/rc/switch/utils'
+import { validateDuplicateVlanId, validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
 export interface DefaultVlanDrawerProps {
   defaultVlan?: Vlan

@@ -6,7 +6,6 @@ import { useIntl }                                      from 'react-intl'
 import { useParams }                                    from 'react-router-dom'
 
 import { Button, Loader, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   AccessPointWiFiOutlined,
   ApplicationsSolid,
@@ -91,9 +90,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   const [fitContainerSize, setFitContanierSize] = useState(0)
   const [imageUrl, setImageUrl] = useState('')
   const { venueId } = useParams()
-  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
-  // eslint-disable-next-line max-len
-  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
+  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(true)
 
   const prepareImageTofit = useCallback((floorPlan: FloorPlanDto) => {
     zoom(ImageMode.ORIGINAL)
@@ -274,14 +271,14 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           { hasAccess() && !showRogueAp &&
           <Space split={<Divider type='vertical' />}>
             {[
-              isApMeshTopologyFFOn && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
-                  {$t({ defaultMessage: 'Show Mesh Topology' })}
-                </div>
-              ),
+              <div key='mesh-topology'
+                style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
+                {$t({ defaultMessage: 'Show Mesh Topology' })}
+              </div>,
               hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateFloorplan)]) && (
                 <AddEditFloorplanModal
+                  key='edit-floorplan'
                   buttonTitle={$t({ defaultMessage: 'Edit' })}
                   onAddEditFloorPlan={onEditFloorPlanHandler}
                   isEditMode={true}
