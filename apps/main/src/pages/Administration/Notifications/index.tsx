@@ -10,13 +10,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
-import { MSPUtils }                        from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }               from '@acx-ui/msp/services'
+import { MSPUtils }                            from '@acx-ui/msp/utils'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
-  useDeleteNotificationRecipientMutation
+  useDeleteNotificationRecipientMutation,
+  useGetNotificationRecipientsPaginatedQuery
 } from '@acx-ui/rc/services'
 import {
   NotificationRecipientUIModel,
@@ -31,7 +32,7 @@ import {
   filterByAccess,
   hasCrossVenuesPermission
 } from '@acx-ui/user'
-import { noDataDisplay, getOpsApi } from '@acx-ui/utils'
+import { noDataDisplay, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import AddRecipientDrawer       from './AddRecipientDrawer'
 import { AINotificationDrawer } from './AINotificationDrawer'
@@ -69,6 +70,8 @@ export const NotificationsTable = () => {
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   const notificationAdminContextualEnabled =
     useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
+  const notificationsPaginatedListToggle =
+  useIsSplitOn(Features.MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -81,7 +84,43 @@ export const NotificationsTable = () => {
     }
   }, [])
 
-  const notificationList = useGetNotificationRecipientsQuery({ params })
+  const defaultPayload = {
+    page: 0,
+    pageStartZero: true,
+    pageSize: 20,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: [
+      'name'
+    ],
+    searchString: '',
+    filters: {}
+  }
+
+  const settingsId = 'paginated-notifications-table'
+
+  const _notificationList = useGetNotificationRecipientsQuery({ params },
+    { skip: notificationsPaginatedListToggle })
+  const { data: _notificationList1, isLoading: _notificationListIsLoading1,
+    isFetching: _notificationListIsFetching1,
+    handleTableChange, handleFilterChange, pagination } = useTableQuery({
+    useQuery: useGetNotificationRecipientsPaginatedQuery,
+    defaultPayload,
+    option: { skip: !notificationsPaginatedListToggle },
+    pagination: { settingsId }
+  })
+
+  const { notificationList,
+    notificationListIsLoading,
+    notificationListIsFetching } = notificationsPaginatedListToggle
+    ? { notificationList: _notificationList1,
+      notificationListIsLoading: _notificationListIsLoading1,
+      notificationListIsFetching: _notificationListIsFetching1
+    }
+    : { notificationList: _notificationList,
+      notificationListIsLoading: _notificationList.isLoading,
+      notificationListIsFetching: _notificationList.isFetching }
+
 
   const [deleteRecipient, deleteOneState] = useDeleteNotificationRecipientMutation()
   const [deleteRecipients, deleteMultipleState] = useDeleteNotificationRecipientsMutation()
@@ -98,7 +137,7 @@ export const NotificationsTable = () => {
   }
 
   const isDuplicated = (type: string, value: string): boolean => {
-    if (notificationList.data === undefined) return false
+    if (notificationList?.data === undefined) return false
     let hasDuplicated = false
 
     let data
@@ -119,10 +158,12 @@ export const NotificationsTable = () => {
     return hasDuplicated
   }
 
-  const renderDataWithStatus = (data:string, enabled: boolean) => {
+  const renderDataWithStatus = (data:string, enabled: boolean,
+    highlightFn?: (value: string, formatFn?: (keyword: string)
+    => React.ReactNode) => ReactNode) => {
     return data ? <Badge
       color={FunctionEnabledStatusLightConfig[enabled ? 'active' : 'inActive'].color}
-      text={data}
+      text={highlightFn ? highlightFn(data) : data}
     /> : noDataDisplay
   }
 
@@ -143,7 +184,13 @@ export const NotificationsTable = () => {
       key: 'description',
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('description', defaultSort) }
+      searchable: true,
+      sorter: { compare: sortProp('description', defaultSort) },
+      render: function (_, row, __, highlightFn) {
+        return row?.description
+          ? highlightFn(row?.description)
+          : row?.description
+      }
     },
     ...(!notificationAdminContextualEnabled ? [] : [
       {
@@ -171,10 +218,13 @@ export const NotificationsTable = () => {
       title: $t({ defaultMessage: 'Email Address' }),
       key: 'email',
       dataIndex: 'email',
+      searchable: !!notificationsPaginatedListToggle,
       sorter: { compare: sortProp('email', defaultSort) },
-      render: (_, row) => {
+      render: (_, row, __, highlightFn) => {
+        const _highlightFn = notificationsPaginatedListToggle
+          ? highlightFn : undefined
         return row.recipientType === NotificationRecipientType.GLOBAL
-          ? renderDataWithStatus(row.email, row.emailEnabled)
+          ? renderDataWithStatus(row.email, row.emailEnabled, _highlightFn)
           : noDataDisplay
       }
     },
@@ -182,10 +232,13 @@ export const NotificationsTable = () => {
       title: $t({ defaultMessage: 'Mobile Phone' }),
       key: 'mobile',
       dataIndex: 'mobile',
+      searchable: !!notificationsPaginatedListToggle,
       sorter: { compare: sortProp('mobile', defaultSort) },
-      render: (_, row) => {
+      render: (_, row, __, highlightFn) => {
+        const _highlightFn = notificationsPaginatedListToggle
+          ? highlightFn : undefined
         return row.recipientType === NotificationRecipientType.GLOBAL
-          ? renderDataWithStatus(row.mobile, row.mobileEnabled)
+          ? renderDataWithStatus(row.mobile, row.mobileEnabled, _highlightFn)
           : noDataDisplay
       }
     }
@@ -255,11 +308,15 @@ export const NotificationsTable = () => {
   return (
     <>
       <Loader states={[
-        { isLoading: notificationList.isLoading, isFetching: isLoading }
+        { isLoading: notificationListIsLoading,
+          isFetching: notificationListIsFetching || isLoading }
       ]}>
         <Table
           columns={columns}
-          dataSource={notificationList.data}
+          dataSource={notificationList?.data}
+          pagination={pagination}
+          onChange={handleTableChange}
+          onFilterChange={handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasCrossVenuesPermission()
@@ -276,7 +333,7 @@ export const NotificationsTable = () => {
           editMode={editMode}
           editData={editData}
           isDuplicated={isDuplicated}
-          RecipientData={notificationList.data ?? []}
+          RecipientData={notificationList?.data ?? []}
         />
         : <RecipientDialog
           visible={showDialog}

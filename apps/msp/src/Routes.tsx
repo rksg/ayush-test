@@ -114,7 +114,7 @@ export default function MspRoutes () {
   })
 
   const navigateToDashboard = state.isHsp
-    ? '/brand360'
+    ? '/dashboard/mspRecCustomers'
     : '/dashboard/mspCustomers'
 
   const isTechPartner =
