@@ -92,6 +92,13 @@ function useColumns (
       ...props.name
     },
     {
+      key: 'displayName',
+      dataIndex: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      sorter: true,
+      ...props.displayName
+    },
+    {
       key: 'revoked',
       dataIndex: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
@@ -151,6 +158,13 @@ function useColumns (
       ,
       sorter: true,
       ...props.name
+    },
+    {
+      key: 'displayName',
+      dataIndex: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      sorter: true,
+      ...props.displayName
     },
     {
       key: 'revoked',

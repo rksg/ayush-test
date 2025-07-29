@@ -15,7 +15,8 @@ import {
   useDisconnectClientMutation,
   useLazyApListQuery,
   useWifiNetworkListQuery,
-  useGetClientsQuery
+  useGetClientsQuery,
+  useLazySearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
@@ -246,6 +247,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
           personaId={row.identityId}
           personaGroupId={row.identityGroupId}
           name={row.identityName}
+          displayName={row.identityDisplayName}
         />
       }
     }]),
@@ -579,7 +581,8 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const { rbacOpsApiEnabled } = getUserProfile()
   const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-
+  const [identityDisplayNameMap, setIdentityDisplayNameMap] = useState(new Map<string, string>())
+  const [clientData, setClientData] = useState([] as ClientInfo[])
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as string[],
@@ -611,6 +614,31 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     pagination: { settingsId }
   })
 
+  const [identityListTrigger] = useLazySearchPersonaListQuery()
+
+  const fetchClientDisplayName = async (clients?: ClientInfo[]) => {
+    if (!clients || clients.length == 0)
+      return
+
+    const identityIdSet = new Set()
+    clients.forEach(c => {
+      if (c.identityId) {
+        identityIdSet.add(c.identityId)
+      }
+    })
+
+    const retrievedIdentitiesData = await identityListTrigger({
+      payload: {
+        ids: [...identityIdSet]
+      }
+    })
+    setIdentityDisplayNameMap(identityDisplayNameMap => {
+      const m = new Map(identityDisplayNameMap)
+      retrievedIdentitiesData.data?.data.filter(p => p.displayName).forEach(p=> m.set(p.id, p.displayName!))
+      return m
+    })
+  }
+
   // Backend API will send Client Mac by uppercase, that will make Ant Table
   // treats same UE as two different UE and cause sending duplicate mac in
   // disconnect/revoke request. The API should be fixed in near future.
@@ -618,7 +646,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   useEffect(() => {
     // Remove selection when UE is disconnected.
     const connectedClientList = tableQuery.data?.data
-
+    fetchClientDisplayName(tableQuery.data?.data)
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -643,6 +671,13 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         selectRows: newSelectRows
       })
     }
+
+    setClientData((connectedClientList ?? []).map(c=> {
+      return {
+        ...c,
+        identityDisplayName: c.identityId ? identityDisplayNameMap.get(c.identityId) : undefined
+      }
+    }))
   }, [tableQuery.data?.data, tableQuery.data?.totalCount])
 
   useEffect(() => {
@@ -767,7 +802,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
           rowActions={filterByAccess(rowActions)}
           settingsId={settingsId}
           columns={useRbacClientTableColumns(useIntl(), showAllColumns)}
-          dataSource={tableQuery.data?.data}
+          dataSource={clientData}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}

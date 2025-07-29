@@ -6,6 +6,8 @@ import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, PersonaUrls, Switch
 import { Provider }                                                                            from '@acx-ui/store'
 import { mockServer, render, waitFor, screen }                                                 from '@acx-ui/test-utils'
 
+import { mockPersona } from '../__tests__/fixtures'
+
 import IdentityClientTable from './IdentityClientTable'
 
 import { IdentityDetailsContext } from '.'
@@ -119,7 +121,7 @@ describe('IdentityClientTable', () => {
         }}>
         <Provider>
           <IdentityClientTable
-            personaId={testPersonaId}
+            personaData={mockPersona}
             personaGroupId={testPersonaGroupId}
           />
         </Provider>
