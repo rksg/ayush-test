@@ -20,7 +20,7 @@ export enum ConfigTemplateType {
   AP_GROUP = 'AP_GROUP',
   ETHERNET_PORT_PROFILE = 'ETHERNET_PORT',
   IDENTITY_GROUP = 'IDENTITY_GROUP',
-  TUNNEL_PROFILE = 'TUNNEL_SERVICE'
+  TUNNEL_SERVICE = 'TUNNEL_SERVICE'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {

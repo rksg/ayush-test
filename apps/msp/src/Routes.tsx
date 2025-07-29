@@ -494,7 +494,7 @@ export function ConfigTemplatesRoutes () {
           />
         </>}
         {
-          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_PROFILE] && <>
+          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_SERVICE] && <>
             <Route
               path={getPolicyRoutePath({
                 type: PolicyType.TUNNEL_PROFILE,
