@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { SLAConfig }                             from './constants'
+import { SLAConfig }                             from './config'
 import { SliderLabel, SliderName, StyledSlider } from './styledComponents'
 
 interface SLAStepSliderProps {

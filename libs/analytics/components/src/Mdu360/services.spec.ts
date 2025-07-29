@@ -10,21 +10,17 @@ import {
 import {
   api,
   useUpdateSlaThresholdsMutation,
-  getSlaThresholdValue,
   mduThresholdMutation,
   mduThresholdQuery
 } from './services'
-import { SLAKeys }                    from './types'
 import { mockTimeseriesResponseData } from './Widgets/ClientExperience/__tests__/fixtures'
 import { TimeseriesPayload }          from './Widgets/ClientExperience/types'
 import {
   mockMduThresholdQuery,
   mockQueryResponse,
-  mockQueryResponseWithNullValues,
   mockUpdateSlaThresholdsQuery
 } from './Widgets/SLA/__tests__/fixtures'
-import { slaConfig }                              from './Widgets/SLA/constants'
-import { MutationPayload, QueryPayload, SLAData } from './Widgets/SLA/types'
+import { MutationPayload, QueryPayload } from './Widgets/SLA/types'
 
 const mockClientExperiencePayload: TimeseriesPayload = {
   start: '2024-03-23T07:23:00+05:30',
@@ -88,40 +84,6 @@ describe('SLA services', () => {
 
   afterEach(() => {
     store.dispatch(api.util.resetApiState())
-  })
-
-  describe('getSlaThresholdValue', () => {
-    it('should return SLA data correctly', () => {
-      const data = getSlaThresholdValue(mockQueryResponse)
-      expect(data).toEqual(mockQueryResponse)
-    })
-
-    it('should return empty object when data is undefined', () => {
-      const data = getSlaThresholdValue(undefined as unknown as SLAData)
-      expect(data).toEqual({})
-    })
-
-    it('should return default value when data is null', () => {
-      const data = getSlaThresholdValue(mockQueryResponseWithNullValues)
-      expect(data).toEqual({
-        timeToConnectSLA: {
-          value: slaConfig[SLAKeys.timeToConnectSLA].defaultValue!,
-          isSynced: true
-        },
-        clientThroughputSLA: {
-          value: slaConfig[SLAKeys.clientThroughputSLA].defaultValue!,
-          isSynced: true
-        },
-        channelWidthSLA: {
-          value: slaConfig[SLAKeys.channelWidthSLA].defaultValue!,
-          isSynced: true
-        },
-        channelChangePerDaySLA: {
-          value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
-          isSynced: true
-        }
-      })
-    })
   })
 
   describe('slaThresholds', () => {

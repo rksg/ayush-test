@@ -5,7 +5,7 @@ import { UseQueryResult }                     from '@acx-ui/types'
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
 
-import { slaConfig } from './constants'
+import { slaConfig } from './config'
 import { SLAData }   from './types'
 
 import SLA from '.'
@@ -267,22 +267,6 @@ describe('SLA', () => {
     )
 
     expect(screen.queryByText('Connection Success')).not.toBeInTheDocument()
-  })
-
-  it('should show no data when data is null', () => {
-    render(
-      <SLA
-        mspEcIds={[]}
-        queryResults={
-          {
-            data: null
-          } as unknown as UseQueryResult<SLAData>
-        }
-      />
-    )
-
-    expect(screen.getByText('Service Level Agreement')).toBeVisible()
-    expect(screen.queryByText('No data to display')).toBeVisible()
   })
 
   it('should show error toast when update fails', async () => {

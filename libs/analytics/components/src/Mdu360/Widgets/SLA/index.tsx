@@ -3,13 +3,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Card, Loader, NoData, showToast } from '@acx-ui/components'
-import { UseQueryResult }                          from '@acx-ui/types'
+import { Button, Card, Loader, showToast } from '@acx-ui/components'
+import { UseQueryResult }                  from '@acx-ui/types'
 
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
 
-import { slaConfig }         from './constants'
+import { slaConfig }         from './config'
 import SLAStepSlider         from './SLAStepSlider'
 import {
   ButtonsContainer,
@@ -87,70 +87,65 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
       states={[queryResults, { isLoading: false, isFetching: isUpdating }]}
     >
       <Card title={$t({ defaultMessage: 'Service Level Agreement' })}>
-        {Object.keys(currentSLAs).length > 0 ? (
-          <SLAContentContainer>
-            <>
-              <div>
-                {Object.keys(currentSLAs).map((name) => {
-                  const key = name as SLAKeys
-                  const sla = currentSLAs[key]
-                  const splits = slaConfig[key].splits
-                  if (!sla || !splits) {
-                    return null
+        <SLAContentContainer>
+          <div>
+            {Object.entries(slaConfig).map(([name, config]) => {
+              const key = name as SLAKeys
+              const sla = currentSLAs[key]
+              const splits = config.splits
+              const defaultValue = config.defaultValue
+              if (!sla || !splits || defaultValue == null) {
+                return null
+              }
+
+              const index = splits.indexOf(sla.value ?? defaultValue)
+
+              return (
+                <SLAStepSlider
+                  key={key}
+                  slaConfig={slaConfig[key]}
+                  onSliderChange={(value: number) =>
+                    onSliderChange(key, value, splits)
                   }
-
-                  const index = splits.indexOf(sla.value)
-
-                  return (
-                    <SLAStepSlider
-                      key={key}
-                      slaConfig={slaConfig[key]}
-                      onSliderChange={(value: number) =>
-                        onSliderChange(key, value, splits)
-                      }
-                      splits={splits}
-                      sliderValue={index}
-                    />
-                  )
-                })}
-              </div>
-              <SubContentContainer>
-                {haveChanges && (
-                  <TextContainer>
-                    <UnsyncedWarningText>
-                      <WarningTriangleSolidIcon />
-                      <span>
-                        Configurations on selected properties are not synced.
-                        <br />
-                        <br />
-                        Click the Apply button to sync all parameters on the
-                        selected properties.
-                      </span>
-                    </UnsyncedWarningText>
-                    <div></div>
-                  </TextContainer>
-                )}
-                <ButtonsContainer>
-                  <Button
-                    disabled={!haveChanges}
-                    type='primary'
-                    onClick={applyCurrentSLAs}
-                  >
-                    Apply
-                  </Button>
-                  <Button
-                    disabled={!hasValuesChanged}
-                    onClick={resetCurrentSLAs}
-                  >
-                    Reset
-                  </Button>
-                </ButtonsContainer>
-              </SubContentContainer>
-            </>
-          </SLAContentContainer>
-        ) : (
-          <NoData style={{ marginTop: '16px' }} />
-        )}
+                  splits={splits}
+                  sliderValue={index}
+                />
+              )
+            })}
+          </div>
+          <SubContentContainer>
+            {haveChanges && (
+              <TextContainer>
+                <UnsyncedWarningText>
+                  <WarningTriangleSolidIcon />
+                  <span>
+                    Configurations on selected properties are not synced.
+                    <br />
+                    <br />
+                    Click the Apply button to sync all parameters on the
+                    selected properties.
+                  </span>
+                </UnsyncedWarningText>
+                <div></div>
+              </TextContainer>
+            )}
+            <ButtonsContainer>
+              <Button
+                disabled={!haveChanges}
+                type='primary'
+                onClick={applyCurrentSLAs}
+              >
+                Apply
+              </Button>
+              <Button
+                disabled={!hasValuesChanged}
+                onClick={resetCurrentSLAs}
+              >
+                Reset
+              </Button>
+            </ButtonsContainer>
+          </SubContentContainer>
+        </SLAContentContainer>
       </Card>
     </Loader>
   )

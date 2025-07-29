@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { SLAConfig } from './constants'
+import { SLAConfig } from './config'
 import SLAStepSlider from './SLAStepSlider'
 
 const mockSlaConfig: SLAConfig = {
@@ -23,7 +23,6 @@ jest.mock('react-intl', () => ({
 }))
 
 describe('SLAStepSlider', () => {
-
   beforeEach(() => {
     jest.clearAllMocks()
   })

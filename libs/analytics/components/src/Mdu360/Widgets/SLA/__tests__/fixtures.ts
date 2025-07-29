@@ -1,6 +1,6 @@
 import { SLAKeys }   from '../../../types'
-import { slaConfig } from '../constants'
-import { SLAData }   from '../services'
+import { slaConfig } from '../config'
+import { SLAData }   from '../types'
 
 export const mockMduThresholdQuery = {
   query: `query GetMDUThresholds($path: [HierarchyNodeInput], $mspEcIds: [String]) { 
@@ -53,29 +53,6 @@ export const mockQueryResponse: SLAData = {
     isSynced: true
   }
 }
-
-export const mockQueryResponseWithNullValues = {
-  connectionSuccessSLA: {
-    value: null,
-    isSynced: true
-  },
-  timeToConnectSLA: {
-    value: null,
-    isSynced: true
-  },
-  clientThroughputSLA: {
-    value: null,
-    isSynced: true
-  },
-  channelWidthSLA: {
-    value: null,
-    isSynced: true
-  },
-  channelChangePerDaySLA: {
-    value: null,
-    isSynced: true
-  }
-} as unknown as SLAData
 
 export const mockUpdateSlaThresholdsQuery = {
   query: `mutation SaveMultipleThresholds(

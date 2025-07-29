@@ -1,7 +1,7 @@
 import { SLAKeys } from '../../types'
 
 interface SLAResult {
-  value: number
+  value: number | null
   isSynced: boolean
   error?: string
 }

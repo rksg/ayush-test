@@ -8,39 +8,8 @@ import {
   ClientExperienceTimeseriesResponse,
   TimeseriesPayload
 } from './Widgets/ClientExperience/types'
-import { slaConfig }                              from './Widgets/SLA/constants'
+import { slaConfig }                              from './Widgets/SLA/config'
 import { MutationPayload, QueryPayload, SLAData } from './Widgets/SLA/types'
-
-export const getSlaThresholdValue = (data: SLAData) => {
-  if (!data) {
-    return {} as SLAData
-  }
-
-  const updatedData = Object.fromEntries(
-    Object.entries(data)
-      .map(([key, result]) => {
-        if (result.value !== null) {
-          return [key, result]
-        }
-
-        const defaultValue = slaConfig[key as SLAKeys].defaultValue
-        if (defaultValue == null) {
-          return []
-        }
-
-        return [
-          key,
-          {
-            ...result,
-            value: defaultValue
-          }
-        ]
-      })
-      .filter((entry) => entry.length)
-  ) as SLAData
-
-  return updatedData
-}
 
 export const mduThresholdQuery = () => {
   let queryBody = ''
@@ -131,7 +100,6 @@ export const api = dataApi.injectEndpoints({
         document: mduThresholdQuery(),
         variables: payload
       }),
-      transformResponse: (response: SLAData) => getSlaThresholdValue(response),
       providesTags: [{ type: 'MDU', id: 'kpi_threshold' }]
     }),
     updateSlaThresholds: build.mutation<SLAData, MutationPayload>({

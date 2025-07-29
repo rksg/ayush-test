@@ -4,7 +4,7 @@ import { UseQueryResult }            from '@acx-ui/types'
 
 import { useClientExperienceTimeseriesQuery } from '../../services'
 import { Mdu360TabProps, SLAKeys }            from '../../types'
-import { slaConfig }                          from '../SLA/constants'
+import { slaConfig }                          from '../SLA/config'
 import { SLAData }                            from '../SLA/types'
 
 import { mockEmptyTimeseriesResponseData, mockTimeseriesResponseData } from './__tests__/fixtures'
@@ -30,8 +30,7 @@ const mockSlaQueryResults = {
     },
     [SLAKeys.clientThroughputSLA]: {
       value: slaConfig[SLAKeys.clientThroughputSLA].defaultValue,
-      isSynced: true,
-      isDefault: true
+      isSynced: true
     },
     [SLAKeys.channelWidthSLA]: {
       value: 20,
@@ -39,8 +38,7 @@ const mockSlaQueryResults = {
     },
     [SLAKeys.channelChangeExperienceSLA]: {
       value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue,
-      isSynced: true,
-      isDefault: true
+      isSynced: true
     }
   }
 } as UseQueryResult<SLAData>
