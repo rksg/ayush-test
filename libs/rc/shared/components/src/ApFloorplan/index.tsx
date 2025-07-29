@@ -54,11 +54,10 @@ export function ApFloorplan (props: {
   const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
-  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   // eslint-disable-next-line max-len
-  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
+  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(true)
 
   const { data: extendedApList } = useApListQuery({
     params, payload: {
@@ -188,12 +187,10 @@ export function ApFloorplan (props: {
         </Link>
       </Col>
       <Col>
-        {isApMeshTopologyFFOn &&
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled}/>
-            {$t({ defaultMessage: 'Show Mesh Topology' })}
-          </div>
-        }
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled}/>
+          {$t({ defaultMessage: 'Show Mesh Topology' })}
+        </div>
       </Col>
     </Row>
     <UI.ImageContainerWrapper>
