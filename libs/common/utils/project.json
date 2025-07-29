@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/common/utils/src",
   "projectType": "library",
-  "tags": ["acx-lib"],
+  "tags": ["acx-lib", "type:utils"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",

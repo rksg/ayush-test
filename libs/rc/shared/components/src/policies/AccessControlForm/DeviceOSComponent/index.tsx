@@ -180,8 +180,6 @@ export const DeviceOSComponent = (props: DeviceOSComponentProps) => {
     useWatch<string>([...inputName, 'devicePolicyId'])
   ]
 
-  const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
-
   const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
 
   const [ createDevicePolicy ] = useConfigTemplateMutationFnSwitcher({
@@ -460,7 +458,7 @@ export const DeviceOSComponent = (props: DeviceOSComponentProps) => {
     }
   }
 
-  const maxOSRuleNum = (isNewOsVendorFeatureEnabled && isAP70Allowed) ?
+  const maxOSRuleNum = isAP70Allowed ?
     (32 -
       deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length -
       deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length) : 32

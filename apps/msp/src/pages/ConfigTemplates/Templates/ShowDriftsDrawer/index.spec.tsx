@@ -39,7 +39,7 @@ describe('ShowDriftsDrawer', () => {
 
     const targetInstance = mockedMSPCustomers.data[0]
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('checkbox', { name: /Sync all drifts for all customers/i })).toBeInTheDocument()
+    expect(await screen.findByRole('checkbox', { name: /Select all on this page/i })).toBeInTheDocument()
 
     expect(await screen.findByRole('combobox')).toBeInTheDocument()
     expect(await screen.findByText(`${targetInstance.name}`)).toBeInTheDocument()
@@ -84,7 +84,7 @@ describe('ShowDriftsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // Check all instances
-    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Select all on this page/i }))
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {
         expect(instanceElement).toBeChecked()
@@ -94,7 +94,7 @@ describe('ShowDriftsDrawer', () => {
     expect(screen.getByText(`${mockedMSPCustomers.data.length} selected`)).toBeInTheDocument()
 
     // Uncheck all instances
-    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Select all on this page/i }))
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {
         expect(instanceElement).not.toBeChecked()
@@ -151,7 +151,7 @@ describe('ShowDriftsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // Check all instances
-    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Select all on this page/i }))
 
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {

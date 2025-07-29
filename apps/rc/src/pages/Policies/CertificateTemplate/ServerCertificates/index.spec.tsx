@@ -7,7 +7,7 @@ import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 import { RolesEnum }                          from '@acx-ui/types'
 import { setUserProfile, getUserProfile }     from '@acx-ui/user'
 
-import { serverCertificateList } from '../__test__/fixtures'
+import { serverCertificateList } from '../__tests__/fixtures'
 
 import ServerCertificatesTable from '.'
 

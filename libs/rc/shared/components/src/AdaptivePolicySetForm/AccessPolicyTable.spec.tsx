@@ -4,10 +4,11 @@ import { PolicyOperation, PolicyType, RulesManagementUrlsInfo, getPolicyRoutePat
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                                      from '@acx-ui/test-utils'
 
-import { adaptivePolicyList, prioritizedPolicies, templateList } from './__test__/fixtures'
+import { adaptivePolicyList, prioritizedPolicies, templateList } from './__tests__/fixtures'
 import { AccessPolicyTable }                                     from './AccessPolicyTable'
 
-jest.mock('../SimpleListTooltip', () => ({
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />
 }))
 jest.mock('./AdaptivePolicySelectDrawer', () => ({

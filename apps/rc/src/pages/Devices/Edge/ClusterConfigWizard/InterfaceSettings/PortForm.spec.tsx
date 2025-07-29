@@ -3,9 +3,9 @@ import userEvent           from '@testing-library/user-event'
 import { Form }            from 'antd'
 import { cloneDeep, find } from 'lodash'
 
-import { StepsForm }                                   from '@acx-ui/components'
-import { Features }                                    from '@acx-ui/feature-toggle'
-import { EdgePortsGeneralBase, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { StepsForm }                                from '@acx-ui/components'
+import { Features }                                 from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase }                     from '@acx-ui/rc/components'
 import {
   EdgeClusterStatus, EdgeFormFieldsPropsType,
   EdgeGeneralFixtures, EdgePortConfigFixtures,
@@ -16,9 +16,9 @@ import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockClusterConfigWizardData, mockDualWanClusterConfigWizardData } from '../__tests__/fixtures'
 import { ClusterConfigWizardContext }                                      from '../ClusterConfigWizardDataProvider'
+import { transformFromApiToFormData }                                      from '../utils'
 
-import { PortForm }                   from './PortForm'
-import { transformFromApiToFormData } from './utils'
+import { PortForm } from './PortForm'
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
@@ -28,8 +28,13 @@ const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgePortsGeneralBase: jest.fn().mockImplementation(() => <div data-testid='rc-EdgePortsGeneralBase'></div>),
-  useIsEdgeFeatureReady: jest.fn()
+  EdgePortsGeneralBase: jest.fn().mockImplementation(() => <div data-testid='rc-EdgePortsGeneralBase'></div>)
+}))
+
+const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 const defaultCxtData = {
@@ -50,7 +55,7 @@ describe('InterfaceSettings - PortForm', () => {
   })
 
   afterEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockReset()
+    mockUseIsEdgeFeatureReady.mockImplementation(() => false)
   })
 
   it('should correctly render', async () => {
@@ -156,7 +161,7 @@ describe('InterfaceSettings - PortForm', () => {
 
   describe('Core Access', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     })
 
     it('should not be blocked when node does not exist valid gateway setting when access port FF is on', async () => {
@@ -203,7 +208,7 @@ describe('InterfaceSettings - PortForm', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
       jest.mocked(EdgePortsGeneralBase).mockImplementation((props) => <MockComponent {...props}/>)
     })
 
@@ -257,7 +262,7 @@ describe('InterfaceSettings - PortForm', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
       jest.mocked(EdgePortsGeneralBase).mockImplementation((props) => <MockIpModeComponent {...props}/>)
     })
 

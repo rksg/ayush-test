@@ -6,19 +6,21 @@ import { useIntl }                                           from 'react-intl'
 
 import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
 import { Features }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                         from '@acx-ui/rc/components'
 import {
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
+import {
+  isVerGEVer
+} from '@acx-ui/rc/switch/utils'
 import {
   AccessSwitch,
   checkVlanMember,
   DistributionSwitch,
   DistributionSwitchSaveData,
-  isVerGEVer,
   networkWifiIpRegExp,
   PersonalIdentityNetworkFormData,
-  SwitchLite
+  SwitchLite,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'

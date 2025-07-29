@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 
 import { Form } from 'antd'
 
+import { SimpleListTooltip } from '@acx-ui/components'
 import {
   AccessControlPolicyForTemplateCheckType, AclOptionType,
   ConfigTemplateType,
   PolicyType
 } from '@acx-ui/rc/utils'
 
-import { SimpleListTooltip }                                                         from '../../SimpleListTooltip'
 import { Layer2Component, Layer3Component, DeviceOSComponent, ApplicationComponent } from '../AccessControlForm'
 
 type AccessControlSubPolicyType =

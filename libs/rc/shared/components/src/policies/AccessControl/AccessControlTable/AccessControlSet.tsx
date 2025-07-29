@@ -4,7 +4,6 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  ColumnType,
   Loader,
   Table,
   TableProps
@@ -27,6 +26,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import type { ColumnType }                                         from '@acx-ui/types'
 import { getUserProfile, isCoreTier }                              from '@acx-ui/user'
 import { useTableQuery }                                           from '@acx-ui/utils'
 

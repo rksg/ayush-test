@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { Drawer, Loader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   usePolicyTemplateListByQueryQuery
@@ -15,8 +15,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink }                     from '@acx-ui/react-router-dom'
 import {  FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
-
-import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { AdaptivePolicyFormDrawer } from './AdaptivePolicyFormDrawer'
 

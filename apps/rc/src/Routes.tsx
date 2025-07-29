@@ -38,7 +38,6 @@ import {
   SoftGreForm,
   SyslogDetailView,
   SyslogForm,
-  useIsEdgeFeatureReady,
   VLANPoolDetail,
   VLANPoolForm,
   WifiCallingConfigureForm,
@@ -78,7 +77,8 @@ import {
   IotUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useDhcpStateMap,
-  useMdnsProxyStateMap
+  useMdnsProxyStateMap,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'

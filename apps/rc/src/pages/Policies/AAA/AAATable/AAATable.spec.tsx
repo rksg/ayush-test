@@ -120,23 +120,14 @@ describe('AAATable', () => {
       }
     )
 
-    const targetName = mockTableResult.data[0].name
-    expect(await screen.findByRole('button', { name: /Add RADIUS Server/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    render(
-      <Provider>
-        <AAATable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
     })).toBeVisible()
+
+    const targetName = mockTableResult.data[0].name
+    expect(await screen.findByRole('button', { name: /Add RADIUS Server/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
   it('should delete selected row', async () => {
@@ -169,7 +160,7 @@ describe('AAATable', () => {
     const dialog = await screen.findByRole('dialog')
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete RADIUS Server/i }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
@@ -196,7 +187,7 @@ describe('AAATable', () => {
     expect(await screen.findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
   })
 
-  it('should not delete selected row when it is applied to a identity provder', async () => {
+  it('should not delete selected row when it is applied to a identity provider', async () => {
     render(
       <Provider>
         <AAATable />
@@ -209,7 +200,7 @@ describe('AAATable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText('You are unable to delete this record due to its usage in Identity Provider')).toBeVisible()

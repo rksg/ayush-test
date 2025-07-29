@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Checkbox, Form, FormInstance, Input, Select, Slider } from 'antd'
 import { useIntl }                                             from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps }                  from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import {
   AccessStatus,
   DeviceTypeEnum,
@@ -80,8 +80,6 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 200
   )
 
-  const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
-
   const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
 
   useEffect(() => {
@@ -90,7 +88,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
       ...getOsVendorOptions(deviceType)
         .filter(option => deviceType !== DeviceTypeEnum.Gaming ||
-          !((isNewOsVendorFeatureEnabled && isAP70Allowed) ?
+          !(isAP70Allowed ?
             [OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.PlayStation3] :
             [OsVendorEnum.PlayStation]).includes(option))
         .map(option => ({
@@ -268,7 +266,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
               defaultMessage: 'Please select the OS or Manufacturer option'
             }))
           }
-          if (isNewOsVendorFeatureEnabled && isAP70Allowed && deviceOSRuleList.length >= 30) {
+          if (isAP70Allowed && deviceOSRuleList.length >= 30) {
             if (value === OsVendorEnum.PlayStation) {
               // eslint-disable-next-line max-len
               if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
