@@ -10,11 +10,17 @@ import { useParams }         from 'react-router-dom'
 
 import { Button, Loader, Select, showActionModal, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                       from '@acx-ui/formatter'
-import { useCableTestMutation, useGetTroubleshootingQuery,
+import {
+  useCableTestMutation,
+  useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useSwitchPortlistQuery }                             from '@acx-ui/rc/services'
-import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction, SwitchPortViewModel, CableTestTable } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                                    from '@acx-ui/utils'
+  useSwitchPortlistQuery
+}                             from '@acx-ui/rc/services'
+import {
+  sortPortFunction
+} from '@acx-ui/rc/switch/utils'
+import { SwitchPortViewModelQueryFields, TroubleshootingType, SwitchPortViewModel, CableTestTable } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                  from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
 

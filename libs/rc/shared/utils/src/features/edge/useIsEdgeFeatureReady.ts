@@ -12,6 +12,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeL2oGREEnabled = useIsTierAllowed(TierFeatures.EDGE_L2OGRE)
   const isEdgeMultiNatIpEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_IP_POOL)
   const isEdgeMultiWanEnabled = useIsTierAllowed(TierFeatures.EDGE_DUAL_WAN)
+  const isEdgeTunnelTemplateEnabled = useIsTierAllowed(TierFeatures.EDGE_TUNNEL_TEMPLATE)
+  const isEdgeDelegationEnabled = useIsTierAllowed(TierFeatures.EDGE_DELEGATION)
 
   switch(featureFlagKey) {
     case Features.EDGE_PIN_HA_TOGGLE:
@@ -33,6 +35,10 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEdgeFeatureReady && isEdgeMultiNatIpEnabled
     case Features.EDGE_DUAL_WAN_TOGGLE:
       return isEdgeFeatureReady && isEdgeMultiWanEnabled
+    case Features.EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE:
+      return isEdgeFeatureReady && isEdgeTunnelTemplateEnabled
+    case Features.EDGE_DELEGATION_TOGGLE:
+      return isEdgeFeatureReady && isEdgeDelegationEnabled
     default:
       return isEdgeFeatureReady
   }
