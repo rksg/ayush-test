@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
+import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 
-import { useGetIpsecViewDataListQuery }                   from '@acx-ui/rc/services'
-import { IpsecViewData }                                  from '@acx-ui/rc/utils'
-import { render, screen, fireEvent, waitFor, renderHook } from '@acx-ui/test-utils'
+import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import { IpsecViewData }                from '@acx-ui/rc/utils'
+import { render, screen, renderHook }   from '@acx-ui/test-utils'
 
 import IpsecDrawer from '../../../policies/Ipsec/IpsecForm/IpsecDrawer'
 
@@ -102,7 +103,7 @@ describe('IpsecFormItem', () => {
       expect(screen.getByRole('switch')).not.toBeChecked()
     })
 
-    it('should render tunnel encryption switch when tunnel encryption is enabled', () => {
+    it('should render tunnel encryption switch when tunnel encryption is enabled', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: mockIpsecData,
         isLoading: false,
@@ -119,7 +120,7 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
       expect(screen.getByText('Tunnel Encryption')).toBeInTheDocument()
       expect(switchElement).toBeInTheDocument()
@@ -142,15 +143,13 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      await waitFor(() => {
-        expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
-        expect(screen.getByText('Add')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('IPSec Profile')).toBeInTheDocument()
+      expect(screen.getByText('Add')).toBeInTheDocument()
     })
 
-    it('should render loading state for IPSec profiles', () => {
+    it('should render loading state for IPSec profiles', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: undefined,
         isLoading: true,
@@ -167,12 +166,12 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
       expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
     })
 
-    it('should render empty state when no IPSec profiles are available', () => {
+    it('should render empty state when no IPSec profiles are available', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: [],
         isLoading: false,
@@ -189,15 +188,15 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
+      expect(await screen.findByText('IPSec Profile')).toBeInTheDocument()
       expect(screen.getByText('Add')).toBeInTheDocument()
     })
   })
 
   describe('Interactions', () => {
-    it('should call handleTunnelEncryptionChange when switch is toggled', () => {
+    it('should call handleTunnelEncryptionChange when switch is toggled', async () => {
       const mockHandleTunnelEncryptionChange = jest.fn()
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: mockIpsecData,
@@ -215,7 +214,7 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
       expect(mockHandleTunnelEncryptionChange).toHaveBeenCalledWith(true)
     })
@@ -237,12 +236,10 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      await waitFor(() => {
-        const addButton = screen.getByText('Add')
-        fireEvent.click(addButton)
-      })
+      const addButton = screen.getByText('Add')
+      await userEvent.click(addButton)
 
       expect(mockIpsecDrawer).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -269,13 +266,8 @@ describe('IpsecFormItem', () => {
         </TestWrapper>
       )
 
-      const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
-
-      await waitFor(() => {
-        const addButton = screen.getByText('Add')
-        fireEvent.click(addButton)
-      })
+      await userEvent.click(screen.getByRole('switch'))
+      await userEvent.click(screen.getByText('Add'))
 
       // The drawer should be rendered with setVisible function
       expect(mockIpsecDrawer).toHaveBeenCalled()
@@ -307,13 +299,8 @@ describe('IpsecFormItem', () => {
         </TestWrapper>
       )
 
-      const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
-
-      await waitFor(() => {
-        const addButton = screen.getByText('Add')
-        fireEvent.click(addButton)
-      })
+      await userEvent.click(screen.getByRole('switch'))
+      await userEvent.click(screen.getByText('Add'))
 
       // Get the callbackFn from the drawer props
       const drawerProps = mockIpsecDrawer.mock.calls[0][0]
@@ -366,14 +353,9 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      await waitFor(() => {
-        expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
-      })
-
-      // The form validation should be handled by Ant Design Form
-      // We can't directly test validation without form submission
+      expect(await screen.findByText('IPSec Profile')).toBeInTheDocument()
     })
   })
 
@@ -395,14 +377,9 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      await waitFor(() => {
-        expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
-      })
-
-      // The profile details should be displayed when a profile is selected
-      // This is handled by the IpsecProfileView component
+      expect(await screen.findByText('IPSec Profile')).toBeInTheDocument()
     })
 
     it('should show placeholder text when no profile is selected', async () => {
@@ -422,16 +399,14 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      await waitFor(() => {
-        expect(screen.getByText('Details of selected IPSec profile will appear here')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Details of selected IPSec profile will appear here')).toBeInTheDocument()
     })
   })
 
   describe('Edge cases', () => {
-    it('should handle undefined IPSec data gracefully', () => {
+    it('should handle undefined IPSec data gracefully', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: undefined,
         isLoading: false,
@@ -448,12 +423,12 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
-      expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
+      expect(await screen.findByText('IPSec Profile')).toBeInTheDocument()
     })
 
-    it('should handle empty IPSec data array', () => {
+    it('should handle empty IPSec data array', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: [],
         isLoading: false,
@@ -470,12 +445,12 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
       expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
     })
 
-    it('should handle error state from query', () => {
+    it('should handle error state from query', async () => {
       mockUseGetIpsecViewDataListQuery.mockReturnValue({
         data: undefined,
         isLoading: false,
@@ -492,7 +467,7 @@ describe('IpsecFormItem', () => {
       )
 
       const switchElement = screen.getByRole('switch')
-      fireEvent.click(switchElement)
+      await userEvent.click(switchElement)
 
       expect(screen.getByText('IPSec Profile')).toBeInTheDocument()
     })

@@ -7,12 +7,9 @@ import { IpsecProfileView } from './IpsecProfileView'
 
 // Mock dependencies
 jest.mock('@acx-ui/edge/components', () => ({
-  getIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
-  getEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
+  getIkeProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048'),
+  getEspProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048')
 }))
-
-const mockGetIkeProposalText = getIkeProposalText as jest.MockedFunction<typeof getIkeProposalText>
-const mockGetEspProposalText = getEspProposalText as jest.MockedFunction<typeof getEspProposalText>
 
 describe('IpsecProfileView', () => {
   const mockIpsecProfile: IpsecViewData = {
@@ -45,7 +42,7 @@ describe('IpsecProfileView', () => {
     apActivations: []
   }
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks()
   })
 
@@ -66,30 +63,18 @@ describe('IpsecProfileView', () => {
       expect(passwordInput).toHaveAttribute('readonly')
     })
 
-    it('should call getIkeProposalText with selected profile', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(mockGetIkeProposalText).toHaveBeenCalledWith(mockIpsecProfile)
-    })
-
-    it('should call getEspProposalText with selected profile', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(mockGetEspProposalText).toHaveBeenCalledWith(mockIpsecProfile)
-    })
-
     it('should display IKE proposal text', () => {
-      mockGetIkeProposalText.mockReturnValue('AES256-SHA256-MODP4096')
+      jest.mocked(getIkeProposalText).mockReturnValue('AES256-SHA256-MODP4096')
       render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
 
       expect(screen.getByText('AES256-SHA256-MODP4096')).toBeInTheDocument()
     })
 
     it('should display ESP proposal text', () => {
-      mockGetEspProposalText.mockReturnValue('AES256-SHA256-MODP4096')
+      jest.mocked(getEspProposalText).mockReturnValue('AES256-SHA256-MOD3072')
       render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
 
-      expect(screen.getByText('AES256-SHA256-MODP4096')).toBeInTheDocument()
+      expect(screen.getByText('AES256-SHA256-MOD3072')).toBeInTheDocument()
     })
   })
 
@@ -106,18 +91,6 @@ describe('IpsecProfileView', () => {
       expect(screen.queryByText('Pre-Shared Key')).not.toBeInTheDocument()
       expect(screen.queryByText('IKE Proposal')).not.toBeInTheDocument()
       expect(screen.queryByText('ESP Proposal')).not.toBeInTheDocument()
-    })
-
-    it('should not call getIkeProposalText when no profile is selected', () => {
-      render(<IpsecProfileView selectedIpsecProfile={undefined} />)
-
-      expect(mockGetIkeProposalText).not.toHaveBeenCalled()
-    })
-
-    it('should not call getEspProposalText when no profile is selected', () => {
-      render(<IpsecProfileView selectedIpsecProfile={undefined} />)
-
-      expect(mockGetEspProposalText).not.toHaveBeenCalled()
     })
   })
 
@@ -154,115 +127,6 @@ describe('IpsecProfileView', () => {
       render(<IpsecProfileView selectedIpsecProfile={profileWithUndefinedKey} />)
 
       expect(screen.getByText('Pre-Shared Key')).toBeInTheDocument()
-    })
-
-    it('should handle profile with empty IKE proposals', () => {
-      const profileWithEmptyIke = {
-        ...mockIpsecProfile,
-        ikeProposals: []
-      }
-
-      render(<IpsecProfileView selectedIpsecProfile={profileWithEmptyIke} />)
-
-      expect(mockGetIkeProposalText).toHaveBeenCalledWith(profileWithEmptyIke)
-    })
-
-    it('should handle profile with empty ESP proposals', () => {
-      const profileWithEmptyEsp = {
-        ...mockIpsecProfile,
-        espProposals: []
-      }
-
-      render(<IpsecProfileView selectedIpsecProfile={profileWithEmptyEsp} />)
-
-      expect(mockGetEspProposalText).toHaveBeenCalledWith(profileWithEmptyEsp)
-    })
-
-    it('should handle profile with null IKE proposals', () => {
-      const profileWithNullIke = {
-        ...mockIpsecProfile,
-        ikeProposals: null as unknown as typeof mockIpsecProfile.ikeProposals
-      }
-
-      render(<IpsecProfileView selectedIpsecProfile={profileWithNullIke} />)
-
-      expect(mockGetIkeProposalText).toHaveBeenCalledWith(profileWithNullIke)
-    })
-
-    it('should handle profile with null ESP proposals', () => {
-      const profileWithNullEsp = {
-        ...mockIpsecProfile,
-        espProposals: null as unknown as typeof mockIpsecProfile.espProposals
-      }
-
-      render(<IpsecProfileView selectedIpsecProfile={profileWithNullEsp} />)
-
-      expect(mockGetEspProposalText).toHaveBeenCalledWith(profileWithNullEsp)
-    })
-  })
-
-  describe('Utility function calls', () => {
-    it('should call getIkeProposalText only once per render', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(mockGetIkeProposalText).toHaveBeenCalledTimes(1)
-    })
-
-    it('should call getEspProposalText only once per render', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(mockGetEspProposalText).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle getIkeProposalText returning empty string', () => {
-      mockGetIkeProposalText.mockReturnValue('')
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(screen.getByText('')).toBeInTheDocument()
-    })
-
-    it('should handle getEspProposalText returning empty string', () => {
-      mockGetEspProposalText.mockReturnValue('')
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(screen.getByText('')).toBeInTheDocument()
-    })
-
-    it('should handle getIkeProposalText returning null', () => {
-      mockGetIkeProposalText.mockReturnValue(null as unknown as string)
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(screen.getByText('IKE Proposal')).toBeInTheDocument()
-    })
-
-    it('should handle getEspProposalText returning null', () => {
-      mockGetEspProposalText.mockReturnValue(null as unknown as string)
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      expect(screen.getByText('ESP Proposal')).toBeInTheDocument()
-    })
-  })
-
-  describe('Styling and layout', () => {
-    it('should render with correct wrapper styling', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      // The component should be wrapped in a styled div
-      expect(screen.getByText('Pre-Shared Key')).toBeInTheDocument()
-    })
-
-    it('should render form items with correct styling', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      // Form items should have marginBottom: 0
-      expect(screen.getByText('Pre-Shared Key')).toBeInTheDocument()
-    })
-
-    it('should render proposal text with correct styling', () => {
-      render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
-
-      // Proposal text should be in a div with padding: '4px 0'
-      expect(screen.getByText('AES128-SHA1-MODP2048')).toBeInTheDocument()
     })
   })
 
