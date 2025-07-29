@@ -10,11 +10,13 @@ import {
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
 import {
+  isVerGEVer
+} from '@acx-ui/rc/switch/utils'
+import {
   AccessSwitch,
   checkVlanMember,
   DistributionSwitch,
   DistributionSwitchSaveData,
-  isVerGEVer,
   networkWifiIpRegExp,
   PersonalIdentityNetworkFormData,
   SwitchLite,

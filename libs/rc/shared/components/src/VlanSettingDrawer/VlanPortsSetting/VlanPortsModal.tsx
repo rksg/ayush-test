@@ -7,6 +7,7 @@ import { useIntl }          from 'react-intl'
 import { Modal, ModalType, showActionModal, StepsForm } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useSwitchPortlistQuery }                       from '@acx-ui/rc/services'
+import { getFamilyAndModel }                            from '@acx-ui/rc/switch/utils'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -15,8 +16,7 @@ import {
   SwitchSlot2,
   StackMember,
   SwitchPortViewModelQueryFields,
-  SwitchPortViewModel,
-  getFamilyAndModel
+  SwitchPortViewModel
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
