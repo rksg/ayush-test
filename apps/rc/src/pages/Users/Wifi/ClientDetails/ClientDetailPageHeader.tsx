@@ -18,7 +18,7 @@ import {
   useGetClientsQuery,
   useGetHistoryClientDetailQuery
 } from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
+import { ClientInfo, ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -66,8 +66,9 @@ function ClientDetailPageHeader () {
     filters: {
       macAddress: [clientId]
     }
-  } })?.data?.data[0]
-  const status = clientInfo ? ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
+  } })?.data?.data[0] ?? {} as ClientInfo
+  const status = (Object.keys(clientInfo).length !== 0) ?
+    ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
   const isHistoricalClient = (status === ClientStatusEnum.HISTORICAL)
 
   // historical client

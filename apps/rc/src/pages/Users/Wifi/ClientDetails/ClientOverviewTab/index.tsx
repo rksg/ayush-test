@@ -50,7 +50,8 @@ export function ClientOverviewTab () {
       }
     } })
   const connectClientInfo = clientInfo?.data?.data[0] ?? {} as ClientInfo
-  const clientStatus = clientInfo?.data ? ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
+  const clientStatus = (Object.keys(connectClientInfo).length !== 0) ?
+    ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
 
   // historical client
   const clientResult = useGetHistoryClientDetailQuery({
