@@ -119,11 +119,16 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
                 <UnsyncedWarningText>
                   <WarningTriangleSolidIcon />
                   <span>
-                    Configurations on selected properties are not synced.
+                    {$t({
+                      defaultMessage:
+                        'Configurations on selected properties are not synced.',
+                    })}
                     <br />
                     <br />
-                    Click the Apply button to sync all parameters on the
-                    selected properties.
+                    {$t({
+                      defaultMessage:
+                        'Click the Apply button to sync all parameters on the selected properties.',
+                    })}
                   </span>
                 </UnsyncedWarningText>
                 <div></div>
