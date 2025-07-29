@@ -32,6 +32,9 @@ import {
   getSwitchModel
 } from '@acx-ui/rc/switch/utils'
 import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
+import {
   getSwitchStatusString,
   SwitchRow,
   transformSwitchStatus,
@@ -112,17 +115,6 @@ const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in <venueSingular></venueSingular> setting, please go to <VenueSingular></VenueSingular> > <VenueSingular></VenueSingular> Configuration > Switch Configuration > AAA' }),
   CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
-}
-
-export const defaultSwitchPayload = {
-  searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
-  fields: [
-    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword', 'extIp'
-  ]
 }
 
 export type SwitchTableRefType = { openImportDrawer: ()=>void }

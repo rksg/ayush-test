@@ -4,9 +4,10 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { useEnforcedStatus }                                                from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { CheckMark }                                                        from '@acx-ui/icons'
-import { CertificateToolTip, useEnforcedStatus }                            from '@acx-ui/rc/components'
+import { CertificateToolTip }                                               from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,

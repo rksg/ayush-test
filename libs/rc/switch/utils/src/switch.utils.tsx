@@ -984,3 +984,14 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const defaultSwitchPayload = {
+  searchString: '',
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
+  fields: [
+    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
+    'syncedAdminPassword', 'adminPassword', 'extIp'
+  ]
+}

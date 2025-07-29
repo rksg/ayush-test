@@ -9,9 +9,6 @@ import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@
 import { get }                                                           from '@acx-ui/config'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
-  defaultSwitchPayload
-} from '@acx-ui/rc/components'
-import {
   useGetVenueQuery,
   useGetVenueSettingsQuery,
   useGetApValidChannelQuery,
@@ -23,6 +20,9 @@ import {
   useLazyGetApNeighborsQuery,
   useLazyGetApLldpNeighborsQuery
 } from '@acx-ui/rc/services'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   ApDetails,
   ApVenueStatusEnum,

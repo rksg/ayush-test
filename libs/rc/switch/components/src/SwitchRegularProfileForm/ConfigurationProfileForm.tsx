@@ -5,8 +5,8 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal }   from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                     from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }                     from '@acx-ui/rc/components'
 import {
   useAddSwitchConfigProfileMutation, // wait
   useUpdateSwitchConfigProfileMutation, //wait

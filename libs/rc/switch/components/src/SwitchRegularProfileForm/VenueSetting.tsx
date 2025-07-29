@@ -10,9 +10,9 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { useEnforcedStatus }      from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
-import { useEnforcedStatus }      from '@acx-ui/rc/components'
 import {
   useGetCliFamilyModelsQuery,
   useGetSwitchTemplateCliFamilyModelsQuery,

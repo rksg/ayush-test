@@ -7,7 +7,6 @@ import {
   ConnectedClientsTable,
   defaultRbacClientPayload,
   defaultRbacNetworkPayload,
-  defaultSwitchPayload,
   eventDefaultSearch,
   EventTable,
   NetworkTable,
@@ -23,6 +22,9 @@ import {
   useVenuesListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   APExtended,
   ApExtraParams,

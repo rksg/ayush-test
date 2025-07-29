@@ -45,7 +45,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   DHCPForm: () => <div>DHCPForm</div>,
   PortalForm: () => <div>PortalForm</div>,
   VLANPoolForm: () => <div>VLANPoolForm</div>,
-  ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>,
   CliProfileForm: () => <div>CliProfileForm</div>,
   IdentityGroupForm: () => <div>IdentityGroupForm</div>,
   WifiCallingForm: () => <div>WifiCallingForm</div>,
@@ -84,6 +83,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 jest.mock('@acx-ui/reports/components', () => ({
   DataStudio: () => <div>DataStudio</div>
+}))
+
+jest.mock('@acx-ui/switch/components', () => ({
+  ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {

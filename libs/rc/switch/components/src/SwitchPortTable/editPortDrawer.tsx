@@ -18,20 +18,6 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { PoeUsage }               from '@acx-ui/icons'
 import {
-  AuthenticationType,
-  authenticationTypeLabel,
-  AuthFailAction,
-  authFailActionTypeLabel,
-  AuthTimeoutAction,
-  authTimeoutActionTypeLabel,
-  checkVlanDiffFromTargetVlan,
-  handleAuthFieldChange,
-  getAuthFieldDisabled,
-  PortControl,
-  portControlTypeLabel,
-  shouldHideAuthField
-} from '@acx-ui/rc/components'
-import {
   switchApi,
   useLazyGetAclUnionQuery,
   useGetDefaultVlanQuery,
@@ -88,9 +74,22 @@ import { SwitchScopes }                                     from '@acx-ui/types'
 import { hasPermission }                                    from '@acx-ui/user'
 import { getIntl, getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
+import {
+  AuthenticationType,
+  authenticationTypeLabel,
+  AuthFailAction,
+  authFailActionTypeLabel,
+  AuthTimeoutAction,
+  authTimeoutActionTypeLabel,
+  checkVlanDiffFromTargetVlan,
+  handleAuthFieldChange,
+  getAuthFieldDisabled,
+  PortControl,
+  portControlTypeLabel,
+  shouldHideAuthField
+} from '../FlexibleAuthentication'
 import { MacACLDrawer } from '../MacACLs/MacACLDrawer'
 import { PoeSchedule }  from '../PoeSchedule'
-
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'

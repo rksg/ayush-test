@@ -9,7 +9,7 @@ const params = {
   tenantId: 'tenant-id'
 }
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   SwitchPortTable: () => <div data-testid={'SwitchPortTable'} />
 }))
 

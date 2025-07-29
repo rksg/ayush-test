@@ -6,7 +6,6 @@ import { useIntl }     from 'react-intl'
 
 import { SimpleListTooltip, Table, TableProps, Tooltip, Loader, Button } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { defaultSwitchPayload }                                          from '@acx-ui/rc/components'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
@@ -15,7 +14,10 @@ import {
   useSwitchPortlistQuery,
   useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
+import {
+  defaultSwitchPayload,
+  isOperationalSwitch
+}                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
   SwitchPortViewModel,
