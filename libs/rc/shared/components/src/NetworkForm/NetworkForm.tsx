@@ -719,6 +719,17 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
+
+    if(tmpGuestPageState.guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval &&
+      tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType
+    ){
+      if(tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType === 'email'){
+        tmpGuestPageState.guestPortal.hostGuestConfig.hostDomains = []
+      } else if(tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType === 'domain'){
+        tmpGuestPageState.guestPortal.hostGuestConfig.hostEmails = []
+      }
+    }
+
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
