@@ -100,15 +100,15 @@ describe('AP Group Edit Radio', () => {
         id: 'ap-1',
         name: 'AP-1',
         model: 'R760',
-        apGroupId: params.apGroupId,
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN001'
       },
       {
         id: 'ap-2',
         name: 'AP-2',
-        model: 'R560', // Fixed: Changed from 'R670' to 'R560'
-        apGroupId: params.apGroupId,
+        model: 'R560',
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN002'
       }
