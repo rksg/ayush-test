@@ -5,9 +5,6 @@ import { Input } from 'antd'
 
 import { DeviceConnectionStatus }                           from '../../constants'
 import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient } from '../../types'
-import { MacAclRule }                                       from '../../types/switch'
-
-import { macAclRulesParser } from './switch.utils'
 
 import {
   isStrictOperationalSwitch,
@@ -17,18 +14,6 @@ import {
   getClientIpAddr,
   getAdminPassword,
   transformSwitchUnitStatus,
-  getSwitchPortLabel,
-  sortPortFunction,
-  convertInputToUppercase,
-  isFirmwareVersionAbove10,
-  isFirmwareSupportAdminPassword,
-  isFirmwareVersionAbove10010f,
-  isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010gOr10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  isFirmwareVersionAbove10020bCd2,
-  vlanPortsParser,
-  getFamilyAndModel,
   createSwitchSerialPattern,
   createSwitchSerialPatternForSpecific8100Model
 } from '.'
@@ -56,19 +41,6 @@ describe('switch.utils', () => {
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
-    })
-  })
-
-  describe('Test getSwitchPortLabel function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchPortLabel('ICX7150-C12P', 1)).toEqual('')
-    })
-  })
-
-  describe('Test sortPortFunction function', () => {
-    it('should render correctly', async () => {
-      expect([{ id: '1/1/10' }, { id: '1/1/2' }].sort(sortPortFunction))
-        .toStrictEqual([{ id: '1/1/2' }, { id: '1/1/10' }])
     })
   })
 
@@ -340,135 +312,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test isFirmwareVersionAbove10 function', () => {
-    it('should render correctly', async () => {
-      expect(isFirmwareVersionAbove10('SPR09010j_cd1')).toBe(false)
-      expect(isFirmwareVersionAbove10('SPR09010j_cd2')).toBe(false)
-      expect(isFirmwareVersionAbove10('SPR09010f')).toBe(false)
-
-      expect(isFirmwareVersionAbove10('SPR10020_rc35')).toBe(true)
-      expect(isFirmwareVersionAbove10('SPR10010c_cd1')).toBe(true)
-      expect(isFirmwareVersionAbove10('SPR10010c_cd2_b4')).toBe(true)
-      expect(isFirmwareVersionAbove10('SPR10010b_rc88')).toBe(true)
-    })
-  })
-
-  describe('Test isFirmwareSupportAdminPassword function', () => {
-    it('should render correctly', async () => {
-      expect(isFirmwareSupportAdminPassword('SPR09010j_cd1')).toBe(true)
-      expect(isFirmwareSupportAdminPassword('SPR09010j_cd2')).toBe(true)
-      expect(isFirmwareSupportAdminPassword('SPR09010f')).toBe(false)
-
-      expect(isFirmwareSupportAdminPassword('SPR10020_rc35')).toBe(true)
-      expect(isFirmwareSupportAdminPassword('SPR10010c_cd1')).toBe(true)
-      expect(isFirmwareSupportAdminPassword('SPR10010c_cd2_b4')).toBe(true)
-      expect(isFirmwareSupportAdminPassword('SPR10010b_rc88')).toBe(false)
-    })
-  })
-
-  describe('Test convertInputToUppercase function', () => {
-    it('should render correctly', async () => {
-      const inputElement = document.createElement('input')
-      inputElement.value = 'fek3224r0ag'
-      const mockEvent = {
-        target: inputElement
-      } as React.ChangeEvent<HTMLInputElement>
-      convertInputToUppercase(mockEvent)
-      expect(inputElement.value).toBe('FEK3224R0AG')
-    })
-  })
-
-})
-
-describe('Test isFirmwareVersionAbove10010f function', () => {
-  it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10010f('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10010f('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10010f('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010f('SPR10020a_rc35')).toBe(false)
-
-    expect(isFirmwareVersionAbove10010f('10010f_b467')).toBe(true)
-    expect(isFirmwareVersionAbove10010f('SPR10010f_b467')).toBe(true)
-    expect(isFirmwareVersionAbove10010f('SPR10020b_rc35')).toBe(true)
-  })
-})
-
-describe('Test isFirmwareVersionAbove10020b function', () => {
-  it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10020b('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10020b('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10020b('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10020b('SPR10020a_rc35')).toBe(false)
-
-    expect(isFirmwareVersionAbove10020b('10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10020b('SPR10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10020b('SPR10020b_rc35')).toBe(true)
-    expect(isFirmwareVersionAbove10020b('TNR10020b_b205')).toBe(true)
-    expect(isFirmwareVersionAbove10020b('TNR10020b_cd1')).toBe(true)
-  })
-})
-
-describe('Test isFirmwareVersionAbove10010gOr10020b function', () => {
-  it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10010gOr10020b('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020a_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_cd1_rc11')).toBe(false)
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_cd2')).toBe(false)
-
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010g_rc50')).toBe(true)
-    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020b_rc35')).toBe(true)
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_b205')).toBe(true)
-    expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_cd1')).toBe(true)
-  })
-})
-
-describe('Test isFirmwareVersionAbove10010gCd1Or10020bCd1 function', () => {
-  it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020a_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_cd1_rc11')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_cd2')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_rc50')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020b_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_b205')).toBe(false)
-
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_cd1')).toBe(true)
-    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_cd1')).toBe(true)
-  })
-})
-
-describe('Test isFirmwareVersionAbove10020bCd2 function', () => {
-  it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10020bCd2('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('SPR10020a_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_cd1_rc11')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10010f_cd2')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10010g')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10010g_rc50')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('SPR10020b_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10020bCd2('TNR10020b_b205')).toBe(false)
-
-    expect(isFirmwareVersionAbove10020bCd2('TNR10020b_cd2')).toBe(true)
-  })
-})
-
-describe('Test vlanPortsParser function', () => {
-  it('should render correctly', async () => {
-    const vlans = '22 66 24 68 26 70 60 62 64'
-    const maxRangesToShow = 5
-    const title = 'Tagged VLANs'
-    expect(vlanPortsParser(vlans, maxRangesToShow, title)).toBe('22, 24, 26, 60, 62, and 4 Tagged VLANs more...')
-  })
 })
 
 describe('Test createSwitchSerialPattern function', () => {
@@ -574,63 +417,5 @@ describe('Test createSwitchSerialPattern function', () => {
     expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
 
     expect(patten.test('FPH4439V00X')).toBe(false) //ICX7550 Zippy
-  })
-})
-
-describe('Test getFamilyAndModel function', () => {
-  it('should render correctly', async () => {
-    expect(getFamilyAndModel('ICX7150-24P')).toEqual(['ICX7150', '24P'])
-    expect(getFamilyAndModel('ICX7550-48ZP')).toEqual(['ICX7550', '48ZP'])
-    expect(getFamilyAndModel('ICX7550-24XZP')).toEqual(['ICX7550', '24XZP'])
-    expect(getFamilyAndModel('ICX7650-48P')).toEqual(['ICX7650', '48P'])
-    expect(getFamilyAndModel('ICX8100-24P')).toEqual(['ICX8100', '24P'])
-    expect(getFamilyAndModel('ICX8100-24P-X')).toEqual(['ICX8100', '24P-X'])
-    expect(getFamilyAndModel('ICX8100-48-X')).toEqual(['ICX8100', '48-X'])
-    expect(getFamilyAndModel('ICX8200-48PF2')).toEqual(['ICX8200', '48PF2'])
-    expect(getFamilyAndModel('ICX8200-24PV')).toEqual(['ICX8200', '24PV'])
-  })
-})
-
-describe('macAclRulesParser', () => {
-  it('should return zero counts when no rules are provided', () => {
-    const result = macAclRulesParser([])
-    expect(result).toEqual({ permit: 0, deny: 0 })
-  })
-
-  it('should return zero counts when rules is undefined', () => {
-    const result = macAclRulesParser(undefined as unknown as MacAclRule[])
-    expect(result).toEqual({ permit: 0, deny: 0 })
-  })
-
-  it('should count permit rules correctly', () => {
-    const rules: MacAclRule[] = [
-      { id: '1', action: 'permit', sourceAddress: '00:11:22:33:44:55' },
-      { id: '2', action: 'permit', sourceAddress: '66:77:88:99:AA:BB' }
-    ]
-
-    const result = macAclRulesParser(rules)
-    expect(result).toEqual({ permit: 2, deny: 0 })
-  })
-
-  it('should count deny rules correctly', () => {
-    const rules: MacAclRule[] = [
-      { id: '1', action: 'deny', sourceAddress: '00:11:22:33:44:55' },
-      { id: '2', action: 'deny', sourceAddress: '66:77:88:99:AA:BB' }
-    ]
-
-    const result = macAclRulesParser(rules)
-    expect(result).toEqual({ permit: 0, deny: 2 })
-  })
-
-  it('should count mixed permit and deny rules correctly', () => {
-    const rules: MacAclRule[] = [
-      { id: '1', action: 'permit', sourceAddress: '00:11:22:33:44:55' },
-      { id: '2', action: 'deny', sourceAddress: '66:77:88:99:AA:BB' },
-      { id: '3', action: 'permit', sourceAddress: 'CC:DD:EE:FF:00:11' },
-      { id: '4', action: 'deny', sourceAddress: '22:33:44:55:66:77' }
-    ]
-
-    const result = macAclRulesParser(rules)
-    expect(result).toEqual({ permit: 2, deny: 2 })
   })
 })

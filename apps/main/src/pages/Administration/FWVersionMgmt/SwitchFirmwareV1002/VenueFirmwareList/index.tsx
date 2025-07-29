@@ -27,6 +27,9 @@ import {
 
 } from '@acx-ui/rc/services'
 import {
+  compareSwitchVersion
+} from '@acx-ui/rc/switch/utils'
+import {
   UpgradePreferences,
   sortProp,
   defaultSort,
@@ -34,7 +37,6 @@ import {
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  compareSwitchVersion,
   SwitchModelGroupDisplayText,
   FirmwareRbacUrlsInfo, FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
