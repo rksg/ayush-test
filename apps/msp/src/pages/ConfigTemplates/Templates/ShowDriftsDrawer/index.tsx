@@ -171,7 +171,8 @@ function Toolbar (props: ToolbarProps) {
   return <Row justify='space-between' align='middle'>
     <Col span={14}>
       <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Select all on this page (up to 10)' })}
+        {$t({ defaultMessage: 'Select all on this page (up to {max})' },
+          { max: MAX_SYNC_EC_TENANTS })}
       </Checkbox>
     </Col>
     <Col span={10} style={{ textAlign: 'right' }}>
