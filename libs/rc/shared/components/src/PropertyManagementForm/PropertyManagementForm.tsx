@@ -237,14 +237,14 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               valuePropName={'checked'}
               children={<Switch/>}/>
           </StepsForm.FieldLabel>
-          <StepsForm.FieldLabel width={'190px'}>
+          {isSuspendNotificationRequired && <StepsForm.FieldLabel width={'190px'}>
             {$t({ defaultMessage: 'Notify on unit suspension' })}
             <Form.Item
               name={['communicationConfig', 'notifyOnUnitSuspend']}
               rules={[{ required: true }]}
               valuePropName={'checked'}
               children={<Switch/>}/>
-          </StepsForm.FieldLabel>
+          </StepsForm.FieldLabel>}
           {(isSuspendNotificationRequired ? msgCategoryIds : msgCategoryIdsLimited)
             .map(categoryId => venueId &&
             <TemplateSelector
