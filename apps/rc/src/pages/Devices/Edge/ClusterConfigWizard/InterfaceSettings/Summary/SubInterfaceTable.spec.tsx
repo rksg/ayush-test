@@ -843,10 +843,10 @@ describe('InterfaceSettings - Summary > sub-interface table', () => {
             },
             {
               id: '2',
-              ip: '',
+              ip: '2.2.2.2',
               ipMode: 'DHCP',
               portType: 'WAN',
-              subnet: '',
+              subnet: '255.255.255.0',
               vlan: 2
             }
           ]
@@ -868,11 +868,8 @@ describe('InterfaceSettings - Summary > sub-interface table', () => {
         </ClusterConfigWizardContext.Provider>
       )
 
-      expect(screen.getByText('1.1.1.1')).toBeInTheDocument()
-      expect(screen.getByText('STATIC')).toBeInTheDocument()
-      expect(screen.getByText('DHCP')).toBeInTheDocument()
-      expect(screen.getByText('LAN')).toBeInTheDocument()
-      expect(screen.getByText('WAN')).toBeInTheDocument()
+      expect(screen.getByRole('row', { name: 'Port1 LAN STATIC 1.1.1.1 255.255.255.0 1' })).toBeVisible()
+      expect(screen.getByRole('row', { name: 'Port1 WAN DHCP 2' })).toBeVisible()
     })
   })
 })

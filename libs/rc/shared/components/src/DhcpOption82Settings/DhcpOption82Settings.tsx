@@ -55,7 +55,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const dhcpOption82SubOption150EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled']
   const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled']
   const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format']
-  const dhcpOption82SubOption151InputFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Input']
+  const dhcpOption82SubOption151TextFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text']
   const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macFormat']
   /* eslint-enable max-len */
 
@@ -79,8 +79,8 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
       dhcpSettings?.subOption151Format
     )
     form?.setFieldValue(
-      dhcpOption82SubOption151InputFieldName,
-      dhcpSettings?.subOption151Input
+      dhcpOption82SubOption151TextFieldName,
+      dhcpSettings?.subOption151Text
     )
     form?.setFieldValue(dhcpOption82MacFormat, dhcpSettings?.macFormat)
   }
@@ -125,7 +125,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
       subOption150Enabled: form.getFieldValue(dhcpOption82SubOption150EnabledFieldName),
       subOption151Enabled: form.getFieldValue(dhcpOption82SubOption151EnabledFieldName),
       subOption151Format: form.getFieldValue(dhcpOption82SubOption151FormatFieldName),
-      subOption151Input: form.getFieldValue(dhcpOption82SubOption151InputFieldName),
+      subOption151Text: form.getFieldValue(dhcpOption82SubOption151TextFieldName),
       macFormat: form.getFieldValue(dhcpOption82MacFormat)
     }
 

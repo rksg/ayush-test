@@ -16,7 +16,7 @@ interface SpaceWrapperProps extends SpaceProps {
 }
 
 
-export const StyledSpace = React.forwardRef((
+const StyledSpace = React.forwardRef((
   { full, fullWidth, fullHeight, ...props }: SpaceWrapperProps, ref) => {
   return (
     <Space

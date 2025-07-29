@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { ResidentExperienceTab, Mdu360TabProps } from '@acx-ui/analytics/components'
-import { Tabs }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { NetworkOverviewTab, ResidentExperienceTab, Mdu360TabProps } from '@acx-ui/analytics/components'
+import { Tabs }                                                      from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
 
 const Mdu360Tabs: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
   const { $t } = useIntl()
@@ -25,6 +25,7 @@ const Mdu360Tabs: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Network Overview' })}
         key='networkOverview'
+        children={<NetworkOverviewTab startDate={startDate} endDate={endDate} />}
       />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Resident Experience' })}

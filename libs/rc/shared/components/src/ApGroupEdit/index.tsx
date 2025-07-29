@@ -22,9 +22,10 @@ export function ApGroupEdit () {
   const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
   const tabs = {
     general: ApGroupGeneralTab,
+    vlanRadio: ApGroupVlanRadioTab,
     ...(isApGroupMoreParameterPhase1Enabled
       ? { radio: ApGroupRadioTab }
-      : { vlanRadio: ApGroupVlanRadioTab }
+      : {}
     )
   }
 

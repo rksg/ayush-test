@@ -7,7 +7,7 @@ import { AlgorithmType, CertificateUrls, GenerationCaType } from '@acx-ui/rc/uti
 import { Provider }                                         from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }           from '@acx-ui/test-utils'
 
-import { certificateAuthorityList } from '../../__test__/fixtures'
+import { certificateAuthorityList } from '../../__tests__/fixtures'
 
 import CertificateAuthoritySettings from './CertificateAuthoritySettings'
 

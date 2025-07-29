@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { SWITCH_TYPE }    from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -157,7 +156,6 @@ describe('SwitchTroubleshootingTab', () => {
   })
 
   it.skip('should navigate to Cable Test tab correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',

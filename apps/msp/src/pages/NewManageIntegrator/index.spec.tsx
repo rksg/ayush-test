@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { ToastProps }                                                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
 import { AssignedEc, MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, EntitlementDeviceType, LicenseUrlsInfo }                              from '@acx-ui/rc/utils'
@@ -10,6 +9,7 @@ import { Provider }                                                             
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                   from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                   from '@acx-ui/types'
 import { UserUrlsInfo }                                                                                from '@acx-ui/user'
+import type { ToastProps }                                                                             from '@acx-ui/utils'
 import { AccountType }                                                                                 from '@acx-ui/utils'
 
 import { NewManageIntegrator } from '.'

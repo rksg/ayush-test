@@ -21,7 +21,7 @@ import {
   macList,
   networkList,
   prioritizedPolicies
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 import AdaptivePolicySetDetail from './AdaptivePolicySetDetail'
 
 describe('AdaptivePolicySetDetail', () => {

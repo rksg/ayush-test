@@ -25,7 +25,7 @@ import {
   editAdaptivePolicy,
   groupList,
   templateList
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 import AdaptivePolicyForm from './AdaptivePolicyForm'
 
 const mockedUsedNavigate = jest.fn()
