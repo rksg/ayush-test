@@ -20,15 +20,13 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useGetVenueQuery,
-  useGetVenueSettingsQuery,
   useGetApValidChannelQuery,
   useSwitchListQuery,
   useLazySwitchPortlistQuery,
   useLazyGetLagListQuery,
   useGetApOperationalQuery,
   useGetFlexAuthenticationProfilesQuery,
-  useLazyGetApNeighborsQuery,
-  useLazyGetApLldpNeighborsQuery
+  useLazyGetApNeighborsQuery
 } from '@acx-ui/rc/services'
 import {
   ApDetails,
@@ -68,24 +66,19 @@ interface ApDetailsDrawerProps {
 }
 
 const useGetApPassword = (currentAP: ApViewModel) => {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
 
-  const { data: venueSettings } = useGetVenueSettingsQuery({ params },
-    { skip: isUseRbacApi || !currentAP?.venueId })
+  const { data: venueRbacApSettings } = useGetApOperationalQuery({ params, enableRbac: true },
+    { skip: !currentAP?.venueId })
 
-  const { data: venueRbacApSetings } = useGetApOperationalQuery({ params, enableRbac: isUseRbacApi },
-    { skip: !isUseRbacApi || !currentAP?.venueId })
-
-  return isUseRbacApi ? venueRbacApSetings?.loginPassword : venueSettings?.apPassword
+  return venueRbacApSettings?.loginPassword
 }
 
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
@@ -115,14 +108,14 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
-  const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: isUseRbacApi },
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: true },
     { skip: !params.venueId })
 
 
   const { data: apCapabilities } = useGetApCapabilities({
     params,
     modelName: currentAP?.model,
-    enableRbac: isUseRbacApi })
+    enableRbac: true })
 
   const { data: venueData } = useGetVenueQuery({ params }, { skip: !params.venueId })
 
@@ -139,11 +132,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     })
   })
 
-  const apNeighborQuery = isUseRbacApi ?
-    useLazyGetApNeighborsQuery :
-    useLazyGetApLldpNeighborsQuery
   const [ getApNeighbors,
-    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = apNeighborQuery()
+    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = useLazyGetApNeighborsQuery()
   const { isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({

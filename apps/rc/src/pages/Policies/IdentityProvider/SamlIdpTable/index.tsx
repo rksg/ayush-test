@@ -5,7 +5,6 @@ import { Buffer } from 'buffer'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Table, TableProps, SimpleListTooltip } from '@acx-ui/components'
-import { useIsSplitOn, Features }                               from '@acx-ui/feature-toggle'
 import { CodeDocument }                                         from '@acx-ui/icons'
 import { CertificateInfoItem, SamlIdpMetadataModal }            from '@acx-ui/rc/components'
 import {
@@ -14,7 +13,6 @@ import {
   useGetSamlIdpProfileViewDataListQuery,
   useGetServerCertificatesQuery,
   useLazyGetSamlIdpProfileByIdQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -41,7 +39,6 @@ const SamlIdpTable = () => {
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
   const emptyResult: KeyValue<string, string>[] = []
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
   const [samlIdpData, setSamlIdpData] =
@@ -63,9 +60,8 @@ const SamlIdpTable = () => {
     }
   })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
   // eslint-disable-next-line max-len
-  const { networkNameMap }: { networkNameMap: KeyValue<string, string>[] } = getNetworkListQuery({
+  const { networkNameMap }: { networkNameMap: KeyValue<string, string>[] } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],

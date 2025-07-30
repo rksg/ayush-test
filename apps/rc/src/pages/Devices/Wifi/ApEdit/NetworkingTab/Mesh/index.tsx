@@ -4,8 +4,13 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useParams }                                from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import {
+  Loader,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
+  showActionModal,
+  AnchorContext
+} from '@acx-ui/components'
 import {
   useGetApMeshSettingsQuery,
   useGetVenueMeshQuery,
@@ -53,23 +58,17 @@ const uplinkModes = [
 
 const useApMeshSettingsData = (venueId: string | undefined) => {
   const { serialNumber } = useParams()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { data: venueMeshSettings } = useGetVenueMeshQuery({
-    params: { venueId } },
-  { skip: !isWifiRbacEnabled })
+    params: { venueId } })
 
   let venueMeshEnabled = venueMeshSettings?.enabled
 
   const getApMesh = useGetApMeshSettingsQuery({
     params: { venueId, serialNumber },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
     // should skip request when venueMeshEnabled === false and using v1 API
-  }, { skip: !venueMeshEnabled && isWifiRbacEnabled })
-
-  // get venueMeshEnabled from ApMeshSettings when using non-RBAC API
-  if (!isWifiRbacEnabled)
-    venueMeshEnabled = getApMesh?.data?.venueMeshEnabled
+  }, { skip: !venueMeshEnabled })
 
   return {
     enabled: venueMeshEnabled,
@@ -98,8 +97,6 @@ export function ApMesh (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { isAllowEdit=true } = props
-
-  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -151,9 +148,11 @@ export function ApMesh (props: ApEditItemProps) {
       const setData = async () => {
         // get mesh uplink APs
         const params = { tenantId, serialNumber }
-        const fields = enableRbac
-          ? ['name', 'status', 'meshStatus.neighbors', 'healthStatus', 'venueId', 'serialNumber']
-          : ['name', 'deviceStatus', 'neighbors', 'venueId', 'serialNumber']
+        const fields = [
+          'name', 'status', 'meshStatus.neighbors',
+          'healthStatus', 'venueId', 'serialNumber'
+        ]
+
         const payload = {
           fields: fields,
           filters: {
@@ -164,7 +163,8 @@ export function ApMesh (props: ApEditItemProps) {
           page: 1
         }
 
-        const uplinkAp = (await getMeshUplinkAps({ params, payload, enableRbac }, true).unwrap())
+        // eslint-disable-next-line max-len
+        const uplinkAp = (await getMeshUplinkAps({ params, payload, enableRbac: true }, true).unwrap())
         setMeshUplinkAps(uplinkAp.neighbors)
 
         updateStates(meshData)
@@ -208,7 +208,7 @@ export function ApMesh (props: ApEditItemProps) {
         }
       }
 
-      await updateApMesh({ params: { venueId, serialNumber }, payload, enableRbac }).unwrap()
+      await updateApMesh({ params: { venueId, serialNumber }, payload, enableRbac: true }).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
