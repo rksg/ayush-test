@@ -29,7 +29,7 @@ export const mockVenue = {
   id: 'venue-id'
 }
 
-export const venuelist = {
+export const venueList = {
   totalCount: 5,
   page: 1,
   data: [
@@ -4712,6 +4712,17 @@ export const deviceAps = {
   ]
 }
 
+export const rbacDeviceAps = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    serialNumber: '422039000034',
+    name: 'UI team AP',
+    apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
+    status: '2_00_Operational'
+  }]
+}
+
 export const portlistData = {
   data: [{
     adminStatus: 'Up',
@@ -4816,9 +4827,135 @@ export const resultOfGetApSnmpAgentSettings = {
 }
 
 export const resultOfGetVenueApSnmpAgentSettings = {
-  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
-  enableApSnmp: true
+  data: [{
+    apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    enableApSnmp: true
+  }]
 }
+
+export const mockVenueApSnmpViewModel = {
+  totalCount: 1,
+  data: [{
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs',
+    name: 'SNMP-2',
+    communityNames: [],
+    userNames: ['SNMPV3'],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: ['0e2f68ab79154ffea64aa52c5cc48826'],
+    venueNames: [],
+    apActivations: []
+  }]
+}
+
+export const mockApSnmpViewModel = {
+  totalCount: 1,
+  data: [{
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    name: 'SNMP-1',
+    communityNames: [],
+    userNames: [
+      'SNMPV3'
+    ],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: [],
+    venueNames: [],
+    apActivations: [{
+      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+      apSerialNumber: '302002030366'
+    }]
+  }]
+}
+
+export const mockAllSnmpViewModel = {
+  totalCount: 2,
+  data: [{
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    name: 'SNMP-1',
+    communityNames: [],
+    userNames: [
+      'SNMPV3'
+    ],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: [],
+    venueNames: [],
+    apActivations: [{
+      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+      apSerialNumber: '302002030366'
+    }]
+  }, {
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs',
+    name: 'SNMP-2',
+    communityNames: [],
+    userNames: ['SNMPV3'],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: ['0e2f68ab79154ffea64aa52c5cc48826'],
+    venueNames: [],
+    apActivations: []
+  }]
+}
+
+export const resultOfGetRbacApSnmpAgentProfiles = [
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authenticationType: 'SHA',
+        authenticationPassphrase: '00000000',
+        privacyType: 'AES',
+        privacyPassphrase: '00000000'
+      }
+    ],
+    policyName: 'SNMP-1',
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7'
+  },
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authenticationType: 'SHA',
+        authenticationPassphrase: '00000000',
+        privacyType: 'AES',
+        privacyPassphrase: '00000000'
+      }
+    ],
+    policyName: 'SNMP-2',
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]
 
 export const resultOfUpdateApSnmpAgentSettings
 = { requestId: '5aa421fd-25e9-4952-b3e0-a3a39c9a52bb' }
