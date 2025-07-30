@@ -5,6 +5,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetAdminListQuery,
   useGetDelegationsQuery,
+  useGetNotificationRecipientsPaginatedQuery,
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
@@ -41,14 +42,39 @@ export const NotificationTabTitleWithCount = () => {
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
 
+  const notificationsPaginatedListToggle =
+    useIsSplitOn(Features.MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE)
+
+  const paginatedDefaultPayload = {
+    page: 0,
+    pageStartZero: true,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: [
+      'name'
+    ],
+    searchString: '',
+    filters: {}
+  }
+
   const notificationList = useGetNotificationRecipientsQuery({
     params: { tenantId },
     payload: defaultPayload
   }, {
+    skip: notificationsPaginatedListToggle,
     pollingInterval: 30_000
   })
 
-  const notificationCount = notificationList?.data?.length || 0
+  const tableResult = useGetNotificationRecipientsPaginatedQuery({
+    params: { tenantId },
+    defaultPayload: paginatedDefaultPayload
+  }, { skip: !notificationsPaginatedListToggle })
+
+  const notificationCount = (notificationsPaginatedListToggle
+    ? tableResult.data?.totalCount
+    : notificationList?.data?.length) || 0
+
   return <>{$t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })}</>
 }
 

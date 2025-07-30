@@ -151,6 +151,12 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/tenants/notificationRecipients',
     newApi: true
   },
+  getNotificationRecipientsPaginated: {
+    method: 'post',
+    url: '/tenants/notifications/recipients/query',
+    opsApi: 'POST:/tenants/notifications/recipients/query',
+    newApi: true
+  },
   addRecipient: {
     method: 'post',
     url: '/tenants/notificationRecipients',
