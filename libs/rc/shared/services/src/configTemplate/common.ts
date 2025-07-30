@@ -28,10 +28,9 @@ import {
   ApiVersionEnum,
   ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { isRecSite }                                from '@acx-ui/react-router-dom'
-import { baseConfigTemplateApi }                    from '@acx-ui/store'
-import { RequestPayload }                           from '@acx-ui/types'
-import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseConfigTemplateApi }                               from '@acx-ui/store'
+import { RequestPayload }                                      from '@acx-ui/types'
+import { TableResult, batchApi, createHttpRequest, isRecSite } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
