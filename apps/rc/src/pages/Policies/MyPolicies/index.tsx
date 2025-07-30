@@ -158,7 +158,6 @@ function useCardData (): PolicyCardData[] {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
@@ -275,7 +274,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: defaultPayload, enableRbac: isUseRbacApi
+        params, payload: defaultPayload, enableRbac: true
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))
