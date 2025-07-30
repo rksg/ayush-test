@@ -4,12 +4,14 @@ import { isNil }                               from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader }                           from '@acx-ui/components'
+import { Features }                         from '@acx-ui/feature-toggle'
 import { useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   Ipsec,
   IpSecTunnelUsageTypeEnum,
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 
 import { VxLanSettingForm }   from './EdgeIpSecForm'
@@ -22,6 +24,8 @@ interface IpsecSettingFormProps {
 
 export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const { $t } = useIntl()
+  const isEdgeVxLanIpsecReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const { editData, isLoading = false } = props
   const policyId = editData?.id
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
@@ -59,6 +63,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             children={<Input/>}
           />
 
+          { isEdgeVxLanIpsecReady &&
           <Form.Item
             name='tunnelUsageType'
             label={$t({ defaultMessage: 'Tunnel Usage Type' })}
@@ -73,22 +78,26 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
                 </Radio>
               </Space>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item>}
         </Col>
       </Row>
 
       <Row>
         <Col span={24}>
-          <Form.Item dependencies={['tunnelUsageType']}>
-            {({ getFieldValue }) => {
-              const tunnelUsageType = getFieldValue('tunnelUsageType')
-              if (isNil(tunnelUsageType)) return null
+          {
+            isEdgeVxLanIpsecReady
+              ? <Form.Item dependencies={['tunnelUsageType']}>
+                {({ getFieldValue }) => {
+                  const tunnelUsageType = getFieldValue('tunnelUsageType')
+                  if (isNil(tunnelUsageType)) return null
 
-              return tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
-                ? <VxLanSettingForm />
-                : <SoftGreSettingForm initIpSecData={editData} />
-            }}
-          </Form.Item>
+                  return tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+                    ? <VxLanSettingForm />
+                    : <SoftGreSettingForm initIpSecData={editData} />
+                }}
+              </Form.Item>
+              : <SoftGreSettingForm initIpSecData={editData} />
+          }
         </Col>
       </Row>
     </Loader>

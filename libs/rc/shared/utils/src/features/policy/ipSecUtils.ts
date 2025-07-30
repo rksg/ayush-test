@@ -4,7 +4,8 @@ import { getIntl } from '@acx-ui/utils'
 
 import {
   IpSecAdvancedOptionEnum, IpSecFailoverModeEnum,
-  IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum
+  IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum,
+  IpSecRetryDurationEnum
 } from '../../models/IpSecEnum'
 
 export const defaultIpsecFields = [
@@ -21,8 +22,6 @@ export const defaultIpsecFields = [
 ]
 
 export const defaultIpsecFormData = {
-  iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
-  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
   advancedOption: {
     retryLimit: 5,
     replayWindow: 32,
@@ -32,7 +31,9 @@ export const defaultIpsecFormData = {
     keepAliveInterval: 20,
     failoverRetryInterval: 1,
     failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
-    failoverPrimaryCheckInterval: 1
+    failoverPrimaryCheckInterval: 1,
+    dhcpOpt43Subcode: 7,
+    failoverRetryPeriod: 3
   },
   ikeSecurityAssociation: {
     ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
@@ -42,12 +43,17 @@ export const defaultIpsecFormData = {
     espProposalType: IpSecProposalTypeEnum.DEFAULT,
     espProposals: []
   },
-  ikeRekeyTimeEnabledCheckbox: true,
-  espRekeyTimeEnabledCheckbox: true,
-  retryLimitEnabledCheckbox: true,
+  ikeRekeyTimeEnabledCheckbox: true, // UI only
+  ikeRekeyTime: 4,
+  ikeRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  espRekeyTimeEnabledCheckbox: true, // UI only
+  espRekeyTime: 1,
+  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  retryLimitEnabledCheckbox: true, // UI only
+  retryDuration: IpSecRetryDurationEnum.FOREVER,
   espReplayWindowEnabledCheckbox: true,
-  deadPeerDetectionDelayEnabledCheckbox: true,
-  nattKeepAliveIntervalEnabledCheckbox: true,
+  deadPeerDetectionDelayEnabledCheckbox: true, // UI only
+  nattKeepAliveIntervalEnabledCheckbox: true, // UI only
   failoverRetryPeriodIsForever: true
 }
 export  const getRekeyTimeUnitOptions = () => {
