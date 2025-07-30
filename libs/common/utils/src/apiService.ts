@@ -9,7 +9,6 @@ import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 import { isRecSite }                         from './pathUtils'
 
-
 export interface ApiInfo {
   url: string;
   method: string;

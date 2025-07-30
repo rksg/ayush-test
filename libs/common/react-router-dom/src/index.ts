@@ -6,6 +6,5 @@ export * from './TenantLink'
 export * from './TenantNavLink'
 export * from './TenantNavigate'
 export * from './useNavigateToPath'
-export * from './pathUtils'
 
 export const MLISA_BASE_PATH = '/ai'

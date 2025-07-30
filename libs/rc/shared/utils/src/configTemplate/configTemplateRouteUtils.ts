@@ -1,4 +1,5 @@
-import { resolveTenantTypeFromPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTenantLink }             from '@acx-ui/react-router-dom'
+import { resolveTenantTypeFromPath } from '@acx-ui/utils'
 
 import { ServiceOperation }                            from '../constants'
 import { getPolicyDetailsLink, getServiceDetailsLink } from '../features'

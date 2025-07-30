@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Path, resolveTenantTypeFromPath, TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                               from '@acx-ui/types'
-import { hasRoles }                                                                from '@acx-ui/user'
-import { getIntl }                                                                 from '@acx-ui/utils'
+import { Path, TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { hasRoles }                                     from '@acx-ui/user'
+import { getIntl, resolveTenantTypeFromPath }           from '@acx-ui/utils'
 
 import { LocationExtended }                                                               from '../../common'
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'

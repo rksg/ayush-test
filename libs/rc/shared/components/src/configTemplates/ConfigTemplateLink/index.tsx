@@ -20,8 +20,9 @@ import {
   useConfigTemplate,
   useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
-import { LinkProps, Path, resolveTenantTypeFromPath, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RbacOpsIds, ScopeKeys }                                                              from '@acx-ui/types'
+import { LinkProps, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RbacOpsIds, ScopeKeys }                                   from '@acx-ui/types'
+import { resolveTenantTypeFromPath }                               from '@acx-ui/utils'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 

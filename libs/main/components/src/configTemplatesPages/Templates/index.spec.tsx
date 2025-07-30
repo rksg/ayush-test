@@ -41,6 +41,12 @@ jest.mock('./useAddTemplateMenuProps', () => ({
   })
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v',
+  isRecSite: () => false
+}))
+
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
   const params = { tenantId: '__TENANT_ID' }
@@ -84,9 +90,7 @@ describe('ConfigTemplateList component', () => {
     expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Template 1/i })).toBeVisible()
 
-    // Check type filter is visible or not
-    const typeFilter = screen.getByRole('combobox')
-    await userEvent.click(typeFilter)
+    await userEvent.click(screen.getByRole('combobox')) // type filter
     expect(screen.getByText(ConfigTemplateType.DPSK)).toBeInTheDocument()
   })
 

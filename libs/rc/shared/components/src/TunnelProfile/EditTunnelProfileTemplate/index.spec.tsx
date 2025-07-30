@@ -24,7 +24,8 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getTenantId: jest.fn().mockReturnValue(tenantId)
+  getTenantId: jest.fn().mockReturnValue(tenantId),
+  resolveTenantTypeFromPath: () => 'v'
 }))
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),

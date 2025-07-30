@@ -44,9 +44,9 @@ import {
   hasConfigTemplateAllowedOperation,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { resolveTenantTypeFromPath, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                     from '@acx-ui/user'
-import { getOpsApi, useTableQuery }                                           from '@acx-ui/utils'
+import { useLocation, useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
+import { getOpsApi, resolveTenantTypeFromPath, useTableQuery } from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
 

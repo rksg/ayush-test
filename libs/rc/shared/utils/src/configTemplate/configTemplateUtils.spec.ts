@@ -19,8 +19,7 @@ jest.mock('./useConfigTemplate', () => ({
 const mockedParams = { tenantId: 'exampleTenantId', venueId: 'exampleVenueId' }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useParams: () => mockedParams,
-  resolveTenantTypeFromPath: () => 'v'
+  useParams: () => mockedParams
 }))
 
 jest.mock('@acx-ui/utils', () => ({

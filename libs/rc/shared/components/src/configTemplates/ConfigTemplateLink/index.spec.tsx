@@ -41,7 +41,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
     return <div>{props.to}</div>
   },
   useLocation: () => mockedLocationFn(),
-  useTenantLink: (to: To, tenantType: TenantType) => mockedUseTenantLink(to, tenantType),
+  useTenantLink: (to: To, tenantType: TenantType) => mockedUseTenantLink(to, tenantType)
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   resolveTenantTypeFromPath: () => 'v'
 }))
 
