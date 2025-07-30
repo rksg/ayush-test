@@ -37,6 +37,7 @@ import {
   useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
 import {
+  allMultipleEditableFields,
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
@@ -65,7 +66,6 @@ import {
   SwitchUrlsInfo,
   SchedulerTypeEnum,
   PoeSchedulerType,
-  allMultipleEditableFields,
   PolicyType,
   usePolicyListBreadcrumb,
   trailingNorLeadingSpaces
