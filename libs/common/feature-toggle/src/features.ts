@@ -8,7 +8,6 @@ export enum Features {
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
-  AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
@@ -166,7 +165,6 @@ export enum Features {
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
-  WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_RBAC_API = 'removable-ff',
@@ -306,7 +304,8 @@ export enum Features {
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
-  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle'
+  EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
+  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -327,6 +326,8 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
+  EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
+  EDGE_DELEGATION = 'EDGE-DELEGATION',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

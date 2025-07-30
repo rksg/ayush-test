@@ -14,13 +14,15 @@ import {
 } from '@acx-ui/rc/components'
 import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
+  sortPortFunction
+} from '@acx-ui/rc/switch/utils'
+import {
   NetworkDevice,
   NetworkDevicePosition,
   ShowTopologyFloorplanOn,
   StackMember,
   SwitchPortViewModel,
   SwitchViewModel,
-  sortPortFunction,
   SwitchStatusEnum,
   SwitchPortViewModelQueryFields,
   SwitchUrlsInfo } from '@acx-ui/rc/utils'

@@ -7,6 +7,7 @@ import { FormattedMessage, useIntl }                                            
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
+  isFirmwareVersionAbove10010f,
   isL3FunctionSupported
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -14,7 +15,6 @@ import {
   FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
-  isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,

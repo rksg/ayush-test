@@ -54,10 +54,17 @@ import {
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
+  checkSwitchUpdateFields,
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel,
+  getSwitchFwGroupVersionV1002,
+  getStackUnitsMinLimitationV1002,
+  isFirmwareVersionAbove10010f,
   isSameModelFamily,
+  isSpecific8100Model,
   isOperationalSwitch,
-  getStackUnitsMinLimitationV1002
+  isNotSupportStackModel
 } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
@@ -69,16 +76,10 @@ import {
   VenueMessages,
   SwitchRow,
   SwitchMessages,
-  isFirmwareVersionAbove10010f,
-  checkSwitchUpdateFields,
-  checkVersionAtLeast09010h,
-  convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getSwitchFwGroupVersionV1002,
   SwitchFirmwareModelGroup,
   createSwitchSerialPattern,
-  createSwitchSerialPatternForSpecific8100Model,
-  isSpecific8100Model
+  createSwitchSerialPatternForSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -100,21 +101,17 @@ import {
   TypographyText
 } from './styledComponents'
 
-const modelNotSupportStack =
-['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
-  'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
-  'ICX8100-48P-X', 'ICX8100-C08PF-X']
-
 export type SwitchModelParams = {
   serialNumber: string;
   isSupport8100: boolean;
   isSupport8100X: boolean;
+  isSupport8100Phase2: boolean;
   isSupport7550Zippy: boolean;
   activeSerialNumber?: string;
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8100, isSupport8100X,
+  const { serialNumber, isSupport8100, isSupport8100X, isSupport8100Phase2,
     isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
@@ -131,7 +128,7 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
 
   const model = getSwitchModel(serialNumber) || ''
 
-  if (modelNotSupportStack.indexOf(model) > -1) {
+  if (isNotSupportStackModel(model, isSupport8100Phase2)) {
     return Promise.reject(
       // eslint-disable-next-line max-len
       $t({ defaultMessage: 'This switch model does not support stacking. Add it as a standalone switch.' })
@@ -172,6 +169,7 @@ export function StackForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -419,7 +417,8 @@ export function StackForm () {
     setTableData(dataRows)
 
     const modelList = dataRows.filter(row =>
-      row.model && modelNotSupportStack.indexOf(row.model) < 0 && row.model !== 'Unknown'
+      row.model && !isNotSupportStackModel(row.model, isSupport8100Phase2) &&
+      row.model !== 'Unknown'
     ).map(row => row.model)
     setValidateModel(modelList)
     setVisibleNotification(modelList.length > 0)
@@ -678,6 +677,7 @@ export function StackForm () {
                   serialNumber: value,
                   isSupport8100: isSupport8100,
                   isSupport8100X: isSupport8100X,
+                  isSupport8100Phase2: isSupport8100Phase2,
                   isSupport7550Zippy: isSupport7550Zippy,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
@@ -696,7 +696,7 @@ export function StackForm () {
               options={standaloneSwitches?.filter(s =>
                 row.id === s.serialNumber ||
               (!tableData.find(d => d.id === s.serialNumber)
-                && modelNotSupportStack.indexOf(s.model) < 0)
+                && !isNotSupportStackModel(s.model, isSupport8100Phase2))
               ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
               }))

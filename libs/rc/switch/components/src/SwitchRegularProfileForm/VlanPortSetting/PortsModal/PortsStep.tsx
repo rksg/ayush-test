@@ -16,7 +16,9 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import {
-  getSwitchPortLabel,
+  getSwitchPortLabel
+} from '@acx-ui/rc/switch/utils'
+import {
   PortStatusMessages,
   Vlan
 } from '@acx-ui/rc/utils'
