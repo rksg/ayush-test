@@ -5,7 +5,6 @@ import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
-import { useIsSplitOn, Features }                                                       from '@acx-ui/feature-toggle'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -32,8 +31,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SnmpAgentFormContext)
   const [ forceFocusOn, setForceFocusOn ] = useState<boolean>(false)
-  // eslint-disable-next-line
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
@@ -174,13 +171,11 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
           /* eslint-enable */
         ]}
         children={
-          (isUseRbacApi ?
-            <PasswordInputStrength
-              forceFocusOn={forceFocusOn}
-              setForceFocusOn={setForceFocusOn}
-              data-testid={'password-input-strength'}/> :
-            <PasswordInput />
-          )
+          <PasswordInputStrength
+            forceFocusOn={forceFocusOn}
+            setForceFocusOn={setForceFocusOn}
+            data-testid={'password-input-strength'}
+          />
         }
       />
       <Form.Item

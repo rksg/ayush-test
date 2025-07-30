@@ -36,7 +36,7 @@ describe('Application library Version Management', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
+        SigPackUrlsInfo.getSigPackRbac.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json(sigPackData))
       )
     )
@@ -49,8 +49,8 @@ describe('Application library Version Management', () => {
 
     mockServer.use(
       rest.patch(
-        SigPackUrlsInfo.updateSigPack.url,
-        (req, res, ctx) => {
+        SigPackUrlsInfo.updateSigPackRbac.url,
+        (_, res, ctx) => {
           updateFn()
           return res(ctx.json(successResponse))
         }

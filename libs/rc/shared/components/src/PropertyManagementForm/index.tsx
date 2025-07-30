@@ -149,7 +149,15 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
               portalAccessResetHtmlRegId: venueId,
               portalAccessResetTextRegId: venueId,
               portAssignmentHtmlRegId: venueId,
-              portAssignmentTextRegId: venueId
+              portAssignmentTextRegId: venueId,
+              unitSuspendHtmlRegId: venueId,
+              unitSuspendTextRegId: venueId,
+              unitUserSuspendHtmlRegId: venueId,
+              unitUserSuspendTextRegId: venueId,
+              unitReactivateHtmlRegId: venueId,
+              unitReactivateTextRegId: venueId,
+              unitUserReactivateHtmlRegId: venueId,
+              unitUserReactivateTextRegId: venueId
             }
           }
         }).unwrap()

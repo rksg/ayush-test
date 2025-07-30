@@ -44,7 +44,6 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
@@ -55,7 +54,7 @@ export default function SelectPolicyForm () {
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     payload: {
       fields: ['id']
     }
