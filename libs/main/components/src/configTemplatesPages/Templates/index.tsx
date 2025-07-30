@@ -444,6 +444,6 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate,
     [ConfigTemplateType.IDENTITY_GROUP]: deleteIdentityGroupTemplate,
-    [ConfigTemplateType.TUNNEL_PROFILE]: deleteTunnelProfileTemplate
+    [ConfigTemplateType.TUNNEL_SERVICE]: deleteTunnelProfileTemplate
   }
 }
