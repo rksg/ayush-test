@@ -6,7 +6,7 @@ import { Provider }                                              from '@acx-ui/s
 import { mockServer, render, screen, waitFor }                   from '@acx-ui/test-utils'
 
 import { mockPersonaGroupTableResult }                                                           from '../../../users/__tests__/fixtures'
-import { certificateAuthorityList, certificateTemplate, certificateTemplateList, policySetList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateTemplate, certificateTemplateList, policySetList } from '../__tests__/fixtures'
 
 import { CertificateTemplateForm } from './CertificateTemplateForm'
 

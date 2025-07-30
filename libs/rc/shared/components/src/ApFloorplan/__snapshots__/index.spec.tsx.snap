@@ -108,7 +108,26 @@ exports[`AP floorplan should render correctly 1`] = `
       </div>
       <div
         class="ant-col"
-      />
+      >
+        <div
+          style="display: flex; align-items: center; gap: 5px;"
+        >
+          <button
+            aria-checked="true"
+            class="ant-switch ant-switch-checked"
+            role="switch"
+            type="button"
+          >
+            <div
+              class="ant-switch-handle"
+            />
+            <span
+              class="ant-switch-inner"
+            />
+          </button>
+          Show Mesh Topology
+        </div>
+      </div>
     </div>
     <div
       class="c0"

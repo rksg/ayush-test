@@ -13,9 +13,12 @@ import {
   useGetVenueApModelFirmwareListQuery,
   useGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
-import { compareSwitchVersion, SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
-import { getUserProfile, isCoreTier }                                              from '@acx-ui/user'
+import {
+  compareSwitchVersion
+} from '@acx-ui/rc/switch/utils'
+import { SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -30,7 +33,6 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isCore = isCoreTier(accountTier)
 
@@ -49,7 +51,7 @@ const FWVersionMgmt = () => {
 
   const { isAPPLibraryAvailable } = useGetSigPackQuery({
     params: { changesIncluded: 'false' },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   }, {
     skip: isCore,
     selectFromResult: ({ data }) => ({

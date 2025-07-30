@@ -12,13 +12,16 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData, EdgeTableCompatibilityWarningTooltip } from '@acx-ui/rc/components'
+import {
+  EdgeServiceStatusLight,
+  CountAndNamesTooltip,
+  useEdgePinsCompatibilityData,
+  EdgeTableCompatibilityWarningTooltip
+} from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
   useGetEdgePinViewDataListQuery,
-  useNetworkListQuery,
   useSwitchListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -77,8 +80,6 @@ const PersonalIdentityNetworkTable = () => {
   const basePath = useTenantLink('')
   const settingsId = 'services-network-segmentation-table'
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
 
   const tableQuery = useTableQuery({
@@ -111,8 +112,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkOptions = [] } = getNetworkListQuery(
+  const { networkOptions = [] } = useWifiNetworkListQuery(
     { payload: networkDefaultPayload },
     {
       selectFromResult: ({ data }) => ({

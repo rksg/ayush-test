@@ -6,11 +6,9 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useGetApDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
-  useResetApDirectedMulticastMutation,
   useUpdateApDirectedMulticastMutation
 } from '@acx-ui/rc/services'
 import {
@@ -28,8 +26,6 @@ export function DirectedMulticast (props: ApEditItemProps) {
   const { tenantId, serialNumber } = useParams()
   const { isAllowEdit=true } = props
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const {
     editContextData,
     setEditContextData,
@@ -43,13 +39,11 @@ export function DirectedMulticast (props: ApEditItemProps) {
 
   const directedMulticast = useGetApDirectedMulticastQuery({
     params: { venueId, serialNumber },
-    enableRbac: isUseRbacApi
+    enableRbac: true
   }, { skip: !venueId })
 
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
     useUpdateApDirectedMulticastMutation()
-  const [resetApDirectedMulticast, { isLoading: isResetApDirectedMulticast }] =
-    useResetApDirectedMulticastMutation()
 
   const [getVenueDirectedMulticast] = useLazyGetVenueDirectedMulticastQuery()
 
@@ -89,7 +83,7 @@ export function DirectedMulticast (props: ApEditItemProps) {
       const setData = async () => {
         const venueDirectedMulticastData = (await getVenueDirectedMulticast({
           params: { tenantId, venueId },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }, true).unwrap())
 
         setVenueDirectedMulticast(venueDirectedMulticastData)
@@ -152,17 +146,11 @@ export function DirectedMulticast (props: ApEditItemProps) {
         useVenueSettings: isUseVenue
       }
 
-      if (isUseVenue && !isUseRbacApi) {
-        await resetApDirectedMulticast({
-          params: { serialNumber }
-        }).unwrap()
-      } else {
-        await updateApDirectedMulticast({
-          params: { venueId, serialNumber },
-          payload,
-          enableRbac: isUseRbacApi
-        }).unwrap()
-      }
+      await updateApDirectedMulticast({
+        params: { venueId, serialNumber },
+        payload,
+        enableRbac: true
+      }).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -196,7 +184,7 @@ export function DirectedMulticast (props: ApEditItemProps) {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingApDirectedMulticast || isResetApDirectedMulticast
+    isFetching: isUpdatingApDirectedMulticast
   }]}>
     <StepsFormLegacy
       formRef={formRef}

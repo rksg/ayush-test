@@ -5,8 +5,7 @@ import _                                    from 'lodash'
 import { useIntl }                          from 'react-intl'
 import styled                               from 'styled-components/macro'
 
-import { PasswordInput }                              from '@acx-ui/components'
-import { SpaceWrapper }                               from '@acx-ui/rc/components'
+import { PasswordInput, SpaceWrapper }                from '@acx-ui/components'
 import { AdministrationUrlsInfo, RecoveryPassphrase } from '@acx-ui/rc/utils'
 import { RolesEnum }                                  from '@acx-ui/types'
 import {

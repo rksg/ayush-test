@@ -6,7 +6,7 @@ import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { policySetList }                from './__test__/fixtures'
+import { policySetList }                from './__tests__/fixtures'
 import { AdaptivePolicySetSettingForm } from './AdaptivePolicySetSettingForm'
 
 jest.mock('./AccessPolicyTable', () => ({

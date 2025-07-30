@@ -2,12 +2,12 @@ import { Typography }                from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
-  Tabs
+  Tabs,
+  SpaceWrapper
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { LicenseCompliance, PendingActivations }                                     from '@acx-ui/msp/components'
 import { MspRbacUrlsInfo }                                                           from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                                              from '@acx-ui/rc/components'
 import { AdministrationUrlsInfo, LicenseUrlsInfo }                                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                     from '@acx-ui/react-router-dom'
 import { hasAllowedOperations, useGetAccountTierQuery }                              from '@acx-ui/user'

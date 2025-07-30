@@ -2,7 +2,7 @@
 import { Col, Select, Form, Row } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { SpaceWrapper }             from '@acx-ui/rc/components'
+import { SpaceWrapper }             from '@acx-ui/components'
 import { ServerCertificate }        from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
 
