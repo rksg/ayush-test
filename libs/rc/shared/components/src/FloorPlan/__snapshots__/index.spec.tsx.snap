@@ -466,6 +466,38 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 class="ant-space-item"
                 style="margin-right: 4px;"
               >
+                <div
+                  style="display: flex; align-items: center; gap: 5px;"
+                >
+                  <button
+                    aria-checked="true"
+                    class="ant-switch ant-switch-checked"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                  Show Mesh Topology
+                </div>
+              </div>
+              <span
+                class="ant-space-item-split"
+                style="margin-right: 4px;"
+              >
+                <div
+                  class="ant-divider ant-divider-vertical"
+                  role="separator"
+                />
+              </span>
+              <div
+                class="ant-space-item"
+                style="margin-right: 4px;"
+              >
                 <button
                   class="ant-btn ant-btn-link c2"
                   data-testid="AddEditLinks"
