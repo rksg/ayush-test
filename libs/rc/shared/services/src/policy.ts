@@ -2444,6 +2444,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddApSnmpAgentProfile',
+            'AddSnmpAgentProfileV1_1',
             'UpdateApSnmpAgentProfile',
             'DeleteApSnmpAgentProfile',
             'DeactivateSnmpAgentProfileOnAP',

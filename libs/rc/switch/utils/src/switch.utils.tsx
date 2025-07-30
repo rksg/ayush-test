@@ -80,11 +80,13 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FNZ', 'ICX8100-48'],
   ['FPA', 'ICX8100-48P'],
   ['FPB', 'ICX8100-C08PF'],
+  ['FPM', 'ICX8100-48PF'],
   ['FPP', 'ICX8100-24-X'],
   ['FPQ', 'ICX8100-24P-X'],
   ['FPR', 'ICX8100-48-X'],
   ['FPS', 'ICX8100-48P-X'],
   ['FPT', 'ICX8100-C08PF-X'],
+  ['FPU', 'ICX8100-48PF-X'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -982,6 +984,30 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const isNotSupportStackModel = (model: string, isSupport8100Phase2: boolean) => {
+  switch(model) {
+    case 'ICX7150-C08P':
+    case 'ICX7150-C08PT':
+    case 'ICX8100-24':
+    case 'ICX8100-24P':
+    case 'ICX8100-48':
+    case 'ICX8100-48P':
+    case 'ICX8100-C08PF':
+    case 'ICX 8100-48PF':
+      return true
+    case 'ICX8100-24-X':
+    case 'ICX8100-24P-X':
+    case 'ICX8100-48-X':
+    case 'ICX8100-48P-X':
+    case 'ICX8100-48PF-X':
+    case 'ICX8100-C08PF-X':
+    case 'ICX8100-C16PF-X':
+      return !isSupport8100Phase2
+    default:
+      return false
+  }
+}
 
 export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, tooltip: boolean, $t: IntlShape['$t']) => {
   let ackMsg: React.ReactNode = ''

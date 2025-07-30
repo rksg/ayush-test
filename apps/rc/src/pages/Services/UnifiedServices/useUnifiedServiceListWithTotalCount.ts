@@ -127,11 +127,9 @@ function useUnifiedServiceTotalCountMap (
 }
 
 function useSamlTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
-  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
 
   const { data: identityProviderData, isFetching: identityProviderIsFetching } = useGetIdentityProviderListQuery(
-    { params, payload: { tenantId: params.tenantId } },
-    { skip: !supportHotspot20R1 }
+    { params, payload: { tenantId: params.tenantId } }
   )
 
   const { data: samlData, isFetching: samlIsFetching } = useGetSamlIdpProfileViewDataListQuery(

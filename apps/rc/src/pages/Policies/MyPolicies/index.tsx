@@ -151,7 +151,6 @@ function useCardData (): PolicyCardData[] {
   const params = useParams()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
@@ -213,17 +212,16 @@ function useCardData (): PolicyCardData[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetWifiOperatorListQuery({
         params, payload: defaultPayload
-      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST }))
     },
     {
       type: (isCaptivePortalSsoSamlEnabled) ? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
       totalCount: (useGetIdentityProviderListQuery({
         params, payload: { tenantId: params.tenantId }
-      }, { skip: !supportHotspot20R1 }).data?.totalCount ?? 0) +
+      }).data?.totalCount ?? 0) +
       (useGetSamlIdpProfileViewDataListQuery({
         params, payload: { tenantId: params.tenantId }
       }, { skip: !isCaptivePortalSsoSamlEnabled }).data?.totalCount ?? 0),
@@ -233,7 +231,7 @@ function useCardData (): PolicyCardData[] {
           { type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST }
         )
       )),
-      disabled: !supportHotspot20R1 && !isCaptivePortalSsoSamlEnabled
+      disabled: !isCaptivePortalSsoSamlEnabled
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
