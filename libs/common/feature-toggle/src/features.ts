@@ -249,6 +249,7 @@ export enum Features {
   WIFI_POE_OUT_MODE_SETTING_TOGGLE = 'wifi-poe-out-mode-setting-toggle',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
   UNITS_ADVANCED_SEARCH = 'units-advanced-search',
+  UNIT_SUSPEND_NOTIFICATION_TOGGLE = 'unit-suspend-notification',
   DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
