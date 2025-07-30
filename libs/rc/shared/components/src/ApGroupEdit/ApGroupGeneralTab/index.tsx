@@ -373,6 +373,10 @@ export function ApGroupGeneralTab () {
     }
   ]
 
+  useEffect(() => {
+    setTableDataOption(apsOption.filter(option => option))
+  }, [apsOption])
+
   const renderFooter: TransferProps<TransferItem>['footer'] = (_, info) => {
     if (info?.direction === 'left') {
       return (
