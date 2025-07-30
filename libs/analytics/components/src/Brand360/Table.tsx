@@ -150,7 +150,7 @@ export function BrandTable ({
     }
   ]
   const propertyCols: TableProps<Pick<Property,
-    'property' | 'propertyCode' | 'lsp' | 'accountTier'>>['columns'] =
+    'property' | 'propertyCode' | 'accountTier' | 'lsp'>>['columns'] =
     [
       {
         title: propertyLabel,
@@ -161,7 +161,8 @@ export function BrandTable ({
         sorter: { compare: sortProp('property', defaultSort) },
         render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
           <span>{highlightFn(row?.property)}</span>
-      }, {
+      },
+      {
         title: $t({ defaultMessage: 'Property ID' }),
         dataIndex: 'propertyCode',
         key: 'propertyCode',
@@ -170,22 +171,14 @@ export function BrandTable ({
         sorter: { compare: sortProp('propertyCode', defaultSort) },
         render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
           <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
-      }, {
-        title: lspLabel,
-        dataIndex: 'lsp',
-        key: 'lsp',
-        fixed: 'left',
-        searchable: true,
-        sorter: { compare: sortProp('lsp', defaultSort) },
-        render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
-          <span>{highlightFn(row?.lsp)}</span>
-      }, {
+      },
+      {
         title: $t({ defaultMessage: 'Service Tier' }),
         dataIndex: 'accountTier',
         key: 'accountTier',
+        fixed: 'left',
         sorter: { compare: sortProp('accountTier', defaultSort) },
         render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
-          console.log('row.accountTier', row.accountTier)
           return row.accountTier === MspEcTierEnum.Essentials
             ? $t({ defaultMessage: 'Essentials' })
             : row.accountTier === MspEcTierEnum.Professional
@@ -194,6 +187,16 @@ export function BrandTable ({
                 ? $t({ defaultMessage: 'Core' })
                 : noDataDisplay
         }
+      },
+      {
+        title: lspLabel,
+        dataIndex: 'lsp',
+        key: 'lsp',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('lsp', defaultSort) },
+        render: (_, row: Pick<Common, 'lsp'>, __, highlightFn) =>
+          <span>{highlightFn(row?.lsp)}</span>
       }
     ]
   // Remove lsp column in case of LSP account
