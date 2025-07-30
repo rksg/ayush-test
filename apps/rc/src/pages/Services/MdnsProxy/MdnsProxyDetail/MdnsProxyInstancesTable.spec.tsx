@@ -1,16 +1,18 @@
 import { rest } from 'msw'
 
-import { apApi } from '@acx-ui/rc/services'
+import { apApi }       from '@acx-ui/rc/services'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockedApList } from '../MdnsProxyForm/__tests__/fixtures'
+import { mockedApList, mockedVenueList } from '../MdnsProxyForm/__tests__/fixtures'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 
@@ -25,6 +27,20 @@ describe('MdnsProxyInstancesTable', () => {
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json(mockedApList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueList))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      )
+    )
   })
 
   const params = {

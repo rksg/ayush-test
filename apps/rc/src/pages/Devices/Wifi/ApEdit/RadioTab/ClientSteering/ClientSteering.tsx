@@ -7,7 +7,6 @@ import { useParams }                                  from 'react-router-dom'
 import styled                                         from 'styled-components/macro'
 
 import { AnchorContext, Loader, Tooltip }   from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }       from '@acx-ui/icons'
 import {
   useGetApStickyClientSteeringQuery, useGetVenueLoadBalancingQuery,
@@ -51,15 +50,13 @@ export const ClientSteering = (props: ApEditItemProps) => {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const enabledFieldName = 'enabled'
   const neighborApPercentageThresholdFieldName = 'neighborApPercentageThreshold'
   const snrThresholdFieldName = 'snrThreshold'
 
   const { setReadyToScroll } = useContext(AnchorContext)
   const venueId = venueData?.id
-  const getVenueLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId }, isWifiRbacEnabled })
+  const getVenueLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId }, enableRbac: true })
   const getApStickyClientSteeringQuery = useGetApStickyClientSteeringQuery({ params: { venueId, serialNumber } })
   const [ updateApStickyClientSteering, { isLoading: isUpdatingApStickyClientSteering } ] = useUpdateApStickyClientSteeringMutation()
   const [ resetApStickyClientSteering, { isLoading: isResettingStickyClientSteering }] = useResetApStickyClientSteeringMutation()

@@ -7,7 +7,6 @@ import { useParams }      from 'react-router-dom'
 import styled             from 'styled-components/macro'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -16,10 +15,13 @@ import {
 import {
   useLazyGetVenueClientAdmissionControlQuery,
   useGetApClientAdmissionControlQuery,
-  useUpdateApClientAdmissionControlMutation,
-  useDeleteApClientAdmissionControlMutation
+  useUpdateApClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
+import {
+  ApClientAdmissionControl,
+  VenueClientAdmissionControl,
+  ClientAdmissionControl
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
@@ -38,7 +40,6 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
   const { serialNumber } = useParams()
   const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
   const enable50GFieldName = 'enableClientAdmissionControl50G'
@@ -68,12 +69,10 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
   const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
   const getApClientAdmissionControl =
     useGetApClientAdmissionControlQuery(
-      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
+      { params: { venueId, serialNumber }, enableRbac: true }
     )
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApClientAdmissionControlMutation()
-  const [deleteClientAdmissionControl, { isLoading: isDeletingClientAdmissionControl }] =
-    useDeleteApClientAdmissionControlMutation()
 
   const venueRef = useRef<VenueClientAdmissionControl>()
   const initDataRef = useRef<ApClientAdmissionControl>()
@@ -91,7 +90,7 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
           isUseVenueSettingsRef.current = clientAdmissionControlData.useVenueSettings || false
         }
         const venueClientAdmissionCtrl = (await getVenueClientAdmissionCtrl(
-          { params: { venueId }, enableRbac: isUseRbacApi }, true).unwrap())
+          { params: { venueId }, enableRbac: true }, true).unwrap())
         venueRef.current = venueClientAdmissionCtrl
       }
       setData()
@@ -133,14 +132,10 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
   const handleUpdateClientAdmissionControl = async () => {
     try {
       if(isUseVenueSettingsRef.current) {
-        if (isUseRbacApi) {
-          await updateClientAdmissionControl(
-            { params: { venueId, serialNumber },
-              payload: { useVenueSettings: true },
-              enableRbac: isUseRbacApi }).unwrap()
-        } else {
-          await deleteClientAdmissionControl({ params: { serialNumber } }).unwrap()
-        }
+        await updateClientAdmissionControl(
+          { params: { venueId, serialNumber },
+            payload: { useVenueSettings: true },
+            enableRbac: true }).unwrap()
       } else {
         const payload: ApClientAdmissionControl = {
           enable24G: form.getFieldValue(enable24GFieldName),
@@ -154,7 +149,7 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
           useVenueSettings: isUseVenueSettingsRef.current
         }
         await updateClientAdmissionControl(
-          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+          { params: { venueId, serialNumber }, payload, enableRbac: true }
         ).unwrap()
       }
     } catch (error) {
@@ -187,7 +182,7 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
 
   return (<Loader states={[{
     isLoading: getApClientAdmissionControl.isLoading,
-    isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
+    isFetching: isUpdatingClientAdmissionControl
   }]}>
     <VenueSettingsHeader venue={venueData}
       disabled={!isAllowEdit}
