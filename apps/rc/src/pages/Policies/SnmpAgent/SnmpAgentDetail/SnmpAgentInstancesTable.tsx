@@ -4,28 +4,23 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
 import { Table, TableProps, Card, Loader, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetApUsageByApSnmpQuery }            from '@acx-ui/rc/services'
 import { ApSnmpApUsage, defaultSort, sortProp }  from '@acx-ui/rc/utils'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
 import { noDataDisplay, useTableQuery }          from '@acx-ui/utils'
 
 
-const RadioLable = styled.div`
+const RadioLabel = styled.div`
   display: flex;
   justify-content: center;
 `
 
 export default function SnmpAgentInstancesTable () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const [currentTab, setCurrentTab] = useState('venue')
-
-
   const { $t } = useIntl()
   const tableQueryForApActivation = useTableQuery({
     useQuery: useGetApUsageByApSnmpQuery,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     defaultPayload: {
       page: 1,
       pageSize: 25,
@@ -40,7 +35,7 @@ export default function SnmpAgentInstancesTable () {
 
   const tableQueryForVenueActivation = useTableQuery({
     useQuery: useGetApUsageByApSnmpQuery,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     defaultPayload: {
       page: 1,
       pageSize: 25,
@@ -106,15 +101,15 @@ export default function SnmpAgentInstancesTable () {
           type='third'
         >
           <Tabs.TabPane key='venue'
-            tab={<RadioLable
+            tab={<RadioLabel
               style={{ width: '36px' }}
               data-testid='venue-tab'>
-              {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</RadioLable>}/>
+              {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</RadioLabel>}/>
           <Tabs.TabPane key='ap'
-            tab={<RadioLable
+            tab={<RadioLabel
               style={{ width: '36px' }}
               data-testid='ap-tab'>
-              {$t({ defaultMessage: 'AP' })}</RadioLable>}/>
+              {$t({ defaultMessage: 'AP' })}</RadioLabel>}/>
         </Tabs>
         <div style={{
           display: currentTab === 'venue' ? 'block' : 'none'
@@ -123,9 +118,8 @@ export default function SnmpAgentInstancesTable () {
             data-testid='venue-table'
             columns={columnsForVenueTable}
             pagination={tableQueryForVenueActivation.pagination}
-            onChange={isUseRbacApi? undefined : tableQueryForVenueActivation.handleTableChange}
             dataSource={tableQueryForVenueActivation.data?.data}
-            rowKey='apId'
+            rowKey='venueId'
           />
 
         </div>
@@ -136,7 +130,6 @@ export default function SnmpAgentInstancesTable () {
             data-testid='ap-table'
             columns={columnsForApTable}
             pagination={tableQueryForApActivation.pagination}
-            onChange={isUseRbacApi? undefined : tableQueryForApActivation.handleTableChange}
             dataSource={tableQueryForApActivation.data?.data}
             rowKey='apId'
           />

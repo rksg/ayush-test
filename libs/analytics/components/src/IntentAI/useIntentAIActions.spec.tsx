@@ -7,7 +7,6 @@ import { BrowserRouter }  from 'react-router-dom'
 
 import { getUserName }                    from '@acx-ui/analytics/utils'
 import { get }                            from '@acx-ui/config'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { Provider, intentAIUrl }          from '@acx-ui/store'
 import { act, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import {
@@ -111,7 +110,6 @@ describe('useIntentAIActions', () => {
     const mockOK = jest.fn()
     beforeEach(() => {
       mockOK.mockClear()
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
     describe('r1 - AI-Driven', () => {
       it('should handle current time is less than 3 AM - single1', async () => {
@@ -202,9 +200,6 @@ describe('useIntentAIActions', () => {
     })
 
     describe('r1 - EquiFlex', () => {
-      beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockReturnValue(true)
-      })
       it('should handle mutation correctly  - single', async () => {
         const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as unknown as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
@@ -253,19 +248,6 @@ describe('useIntentAIActions', () => {
           fetchWlans(selectedRow)
         })
         await waitFor(() => expect(mockedVenueWifiRadioActiveNetworksQuery).toBeCalledTimes(1))
-      })
-
-      it('should handle fetchWlans correctly when FF is off', async () => {
-        jest.mocked(useIsSplitOn).mockReturnValue(false)
-        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem } as unknown as IntentListItem
-        const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
-        })
-        const { fetchWlans } = result.current
-        act(() => {
-          fetchWlans(selectedRow)
-        })
-        await waitFor(() => expect(mockedVenueRadioActiveNetworksQuery).toBeCalledTimes(1))
       })
     })
 
@@ -369,7 +351,6 @@ describe('useIntentAIActions', () => {
   describe('rai - OneClickOptimize', () => {
     const mockOK = jest.fn()
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
     })
@@ -534,7 +515,6 @@ describe('useIntentAIActions', () => {
     const mockOK = jest.fn()
     beforeEach((done) => {
       global.originalLocation = window.location
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
       const toast = screen.queryAllByRole('img', { name: 'close' })
