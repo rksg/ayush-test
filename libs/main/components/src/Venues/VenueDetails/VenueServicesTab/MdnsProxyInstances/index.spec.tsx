@@ -3,7 +3,6 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
-import { Path, To }                                          from '@acx-ui/react-router-dom'
 import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
@@ -25,21 +24,6 @@ import {
 } from './__tests__/fixtures'
 
 import MdnsProxyInstances from '.'
-
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
-  search: '',
-  hash: ''
-}
-
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (to: To): Path => {
-    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
-  }
-}))
 
 describe('MdnsProxyInstances', () => {
   const params = {

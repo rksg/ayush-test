@@ -32,7 +32,14 @@ import {
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
+  checkSwitchUpdateFields,
+  checkVersionAtLeast09010h,
+  convertInputToUppercase,
   getSwitchModel,
+  isNotSupportStackModel,
+  getSwitchFwGroupVersionV1002,
+  isFirmwareVersionAbove10010f,
+  isSpecific8100Model,
   isOperationalSwitch
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -42,19 +49,13 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  checkSwitchUpdateFields,
-  checkVersionAtLeast09010h,
-  convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
   SwitchFirmwareModelGroup,
-  getSwitchFwGroupVersionV1002,
   createSwitchSerialPattern,
-  createSwitchSerialPatternForSpecific8100Model,
-  isSpecific8100Model
+  createSwitchSerialPatternForSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -87,6 +88,7 @@ export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { $t } = useIntl()
@@ -421,10 +423,6 @@ export function SwitchForm () {
   }
 
   const serialNumberRegExp = function (value: string) {
-    const modelNotSupportStack =
-    ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
-      'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
-      'ICX8100-48P-X', 'ICX8100-C08PF-X']
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
@@ -443,7 +441,7 @@ export function SwitchForm () {
       const model = getSwitchModel(value) || ''
       setSwitchModel(model)
       // notSupportStackModel.find(item => model?.indexOf(item) > -1)
-      setIsSupportStack(!(modelNotSupportStack.indexOf(model) > -1))
+      setIsSupportStack(!isNotSupportStackModel(model, isSupport8100Phase2))
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
       setFirmwareType(value)

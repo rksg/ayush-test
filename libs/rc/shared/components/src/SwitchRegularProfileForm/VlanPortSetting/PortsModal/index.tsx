@@ -5,11 +5,11 @@ import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { getFamilyAndModel }                            from '@acx-ui/rc/switch/utils'
 import {
   SwitchSlot2,
   Vlan,
-  ICX_MODELS_MODULES,
-  getFamilyAndModel
+  ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
 
 import {

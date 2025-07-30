@@ -1,6 +1,6 @@
 import { render, screen } from '@acx-ui/test-utils'
 
-import { mockApModelFamilies } from '../../../Ap/ApCompatibilityDrawer/__test__/fixtures'
+import { mockApModelFamilies } from '../../../Ap/ApCompatibilityDrawer/__tests__/fixtures'
 
 import { ApModelFamiliesItem } from '.'
 

@@ -6,14 +6,17 @@ import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
 import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { ApAntennaTypeSelector }                  from '@acx-ui/rc/components'
 import {
   useLazyGetApAntennaTypeSettingsQuery,
   useLazyGetVenueAntennaTypeQuery,
   useUpdateApAntennaTypeSettingsMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import {
+  ApAntennaTypeEnum,
+  ApAntennaTypeSettings,
+  VenueApAntennaTypeSettings
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -25,8 +28,6 @@ export type paramsType = {
 }
 
 export function AntennaSection () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const {
     editContextData,
@@ -68,14 +69,14 @@ export function AntennaSection () {
       const setData = async () => {
         const apAntType = (await getApAntennaType({
           params: { venueId, serialNumber },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }).unwrap())
 
         customAntennaTypeRef.current = cloneDeep(apAntType)
 
         const venueAntType = (await getVenueAntennaType({
           params: { venueId },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }, true).unwrap())
 
         if (venueAntType) {
@@ -152,7 +153,7 @@ export function AntennaSection () {
             useVenueSettings: isUseVenueSettingsRef.current,
             antennaType: form.getFieldValue('antennaType')
           }
-          await updateApAntTypeSettings({ params, payload, enableRbac: isUseRbacApi }).unwrap()
+          await updateApAntTypeSettings({ params, payload, enableRbac: true }).unwrap()
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }

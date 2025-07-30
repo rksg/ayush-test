@@ -7,11 +7,15 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
+import {
+  ApTable,
+  ApTableRefType,
+  ApsTabContext,
+  groupedFields,
+  useApGroupsFilterOpts
+} from '@acx-ui/rc/components'
 import {
   useNewApListQuery,
-  useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { WifiRbacUrlsInfo }                                       from '@acx-ui/rc/utils'
@@ -26,28 +30,17 @@ const apsCountQueryPayload = {
 }
 
 const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] => {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ apsCount, setApsCount ] = useState(0)
-
-  const nonRbacQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: apsCountQueryPayload,
-    option: { skip: isUseWifiRbacApi }
-  })
 
   const rbacQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: apsCountQueryPayload,
-    ...COUNT_ALL_REQ_CONTENT,
-    option: { skip: !isUseWifiRbacApi }
+    ...COUNT_ALL_REQ_CONTENT
   })
 
   useEffect(() => {
-    setApsCount(isUseWifiRbacApi
-      ? rbacQuery.data?.totalCount!
-      : nonRbacQuery.data?.totalCount!
-    )
-  }, [isUseWifiRbacApi, nonRbacQuery.data, rbacQuery.data])
+    setApsCount(rbacQuery.data?.totalCount!)
+  }, [rbacQuery.data])
 
   return [apsCount, setApsCount]
 }

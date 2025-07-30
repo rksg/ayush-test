@@ -3,17 +3,15 @@ import userEvent  from '@testing-library/user-event'
 import { Upload } from 'antd'
 import { rest }   from 'msw'
 
-import { apApi }                                                              from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }   from '@acx-ui/test-utils'
+import { apApi }                                                            from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, WifiRbacUrlsInfo }                             from '@acx-ui/rc/utils'
+import { Provider, store  }                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   apDetails,
   apRadio,
   apViewModel,
-  apPhoto,
-  apNoPhoto,
   apSampleImage,
   ApCapabilitiesR650,
   apPhotoFromRbacApi,
@@ -52,48 +50,6 @@ describe('ApPhoto', () => {
     // jest.spyOn(global.URL, 'createObjectURL')
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(apViewModel))
-      ),
-      rest.get(
-        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetails))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApRadioCustomization.url,
-        (_, res, ctx) => res(ctx.json(apRadio))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApPhoto.url,
-        (_, res, ctx) => res(ctx.json(apPhoto))
-      ),
-      rest.delete(
-        WifiUrlsInfo.deleteApPhoto.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(ApCapabilitiesR650))
-      ),
-      rest.get(
-        '*/app/sample.png',
-        (_, res, ctx) => res(ctx.body(apSampleImage))
-      ),
-      rest.get(
-        'blob:http://localhost/*',
-        (_, res, ctx) => res(ctx.body(apSampleImage))
-      ),
-      rest.post(
-        'http://localhost/*',
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        'http://localhost/*',
-        (_, res, ctx) => res(ctx.body(apSampleImage))
-      ),
-
-      // Rbac API
-      rest.post(
         CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apViewModel))
       ),
@@ -116,6 +72,22 @@ describe('ApPhoto', () => {
       rest.get(
         WifiRbacUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(ApCapabilitiesR650))
+      ),
+      rest.get(
+        '*/app/sample.png',
+        (_, res, ctx) => res(ctx.body(apSampleImage))
+      ),
+      rest.get(
+        'blob:http://localhost/*',
+        (_, res, ctx) => res(ctx.body(apSampleImage))
+      ),
+      rest.post(
+        'http://localhost/*',
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        'http://localhost/*',
+        (_, res, ctx) => res(ctx.body(apSampleImage))
       )
     )
   })
@@ -152,10 +124,6 @@ describe('ApPhoto', () => {
   it('should render default image correctly', async () => {
     apViewModel.data[0].model = 'R650'
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getApPhoto.url,
-        (_, res, ctx) => res(ctx.json(apNoPhoto))
-      ),
       rest.get(
         WifiRbacUrlsInfo.getApPhoto.url,
         (_, res, ctx) => res(ctx.json(apNoPhotoFromRbacApi))
