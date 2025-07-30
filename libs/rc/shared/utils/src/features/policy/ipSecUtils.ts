@@ -2,8 +2,54 @@ import { defineMessage } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { IpSecRekeyTimeUnitEnum } from '../../models/IpSecEnum'
+import {
+  IpSecAdvancedOptionEnum, IpSecFailoverModeEnum,
+  IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum
+} from '../../models/IpSecEnum'
 
+export const defaultIpsecFields = [
+  'id',
+  'name',
+  'serverAddress',
+  'authenticationType',
+  'activations',
+  'preSharedKey',
+  'ikeProposalType',
+  'ikeProposals',
+  'espProposalType',
+  'espProposals'
+]
+
+export const defaultIpsecFormData = {
+  iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  advancedOption: {
+    retryLimit: 5,
+    replayWindow: 32,
+    ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
+    enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
+    dpdDelay: 30,
+    keepAliveInterval: 20,
+    failoverRetryInterval: 1,
+    failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
+    failoverPrimaryCheckInterval: 1
+  },
+  ikeSecurityAssociation: {
+    ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
+    ikeProposals: []
+  },
+  espSecurityAssociation: {
+    espProposalType: IpSecProposalTypeEnum.DEFAULT,
+    espProposals: []
+  },
+  ikeRekeyTimeEnabledCheckbox: true,
+  espRekeyTimeEnabledCheckbox: true,
+  retryLimitEnabledCheckbox: true,
+  espReplayWindowEnabledCheckbox: true,
+  deadPeerDetectionDelayEnabledCheckbox: true,
+  nattKeepAliveIntervalEnabledCheckbox: true,
+  failoverRetryPeriodIsForever: true
+}
 export  const getRekeyTimeUnitOptions = () => {
   const { $t } = getIntl()
 

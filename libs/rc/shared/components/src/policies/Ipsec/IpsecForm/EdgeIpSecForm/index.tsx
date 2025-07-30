@@ -1,33 +1,17 @@
-import { Checkbox, Col, Form, Input, Row, Tooltip } from 'antd'
-import { useIntl }                                  from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { Select, Subtitle }                                         from '@acx-ui/components'
 import { getIpSecEspAlgorithmOptions, getIpSecIkeAlgorithmOptions } from '@acx-ui/edge/components'
-import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
-import {
-  Ipsec,
-  useConfigTemplate
-} from '@acx-ui/rc/utils'
 
 import { AuthenticationFormItem } from '../AuthenticationFormItem'
-import { messageMapping }         from '../messageMapping'
 
 import { DeadPeerDetectionDelayFormItem } from './DeadPeerDetectionDelayFormItem'
 import { RekeyTimeUnitFormItem }          from './RekeyTimeUnitFormItem'
 
-
-interface VxLanSettingFormProps {
-  policyId?: string
-  editMode?: boolean
-  readMode?: boolean
-  initIpSecData?: Ipsec
-}
-
-export const VxLanSettingForm = (props: VxLanSettingFormProps) => {
+export const VxLanSettingForm = () => {
   const { $t } = useIntl()
-  // const { readMode } = props
-  // const form = Form.useFormInstance()
-  const { isTemplate } = useConfigTemplate()
+
   const ikeAlgorithmOptions = getIpSecIkeAlgorithmOptions()
   const espAlgorithmOptions = getIpSecEspAlgorithmOptions()
 
@@ -37,12 +21,13 @@ export const VxLanSettingForm = (props: VxLanSettingFormProps) => {
     </Col>
   </Row>
   <Row>
-    <Col span={24}>
+    <Col span={12}>
       <Subtitle level={5}>
         { $t({ defaultMessage: 'Security Association' }) }
       </Subtitle>
       <Form.Item
         label={$t({ defaultMessage: 'IKE Algorithm Combination' })}
+        rules={[{ required: true }]}
         children={
           <Select
             children={
@@ -54,14 +39,15 @@ export const VxLanSettingForm = (props: VxLanSettingFormProps) => {
           />
         }
       />
-      <Form.Item label={$t({ defaultMessage: 'IKE Re-key Time' })} />
       <RekeyTimeUnitFormItem
+        title={$t({ defaultMessage: 'IKE Re-key Time' })}
         timeFieldName='ikeRekeyTime'
         timeUnitFieldName='ikeRekeyTimeUnit'
       />
 
       <Form.Item
         label={$t({ defaultMessage: 'ESP Algorithm Combination' })}
+        rules={[{ required: true }]}
         children={
           <Select
             children={
@@ -73,8 +59,8 @@ export const VxLanSettingForm = (props: VxLanSettingFormProps) => {
           />
         }
       />
-      <Form.Item label={$t({ defaultMessage: 'ESP Re-key Time' })} />
       <RekeyTimeUnitFormItem
+        title={$t({ defaultMessage: 'ESP Re-key Time' })}
         timeFieldName='espRekeyTime'
         timeUnitFieldName='espRekeyTimeUnit'
       />

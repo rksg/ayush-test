@@ -8,7 +8,7 @@ import { Provider, store }                                                from '
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockIpSecTable } from './__tests__/fixtures'
-import IpsecDrawer         from './IpsecDrawer'
+import IpsecAddDrawer      from './IpsecAddDrawer'
 
 const readViewPath = '/:tenantId/t/policies/ipsec/:policyId'
 const createViewPath = '/:tenantId/t/policies/ipsec/create'
@@ -74,7 +74,7 @@ describe('IpsecDrawer', () => {
     it('should create IpSec successfully', async () => {
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
             readMode={false}
@@ -113,7 +113,7 @@ describe('IpsecDrawer', () => {
     it('should click cancel button and close drawer', async () => {
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
             readMode={false}
@@ -144,7 +144,7 @@ describe('IpsecDrawer', () => {
       )
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
             readMode={false}
@@ -203,7 +203,7 @@ describe('IpsecDrawer', () => {
     it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
             readMode={true}

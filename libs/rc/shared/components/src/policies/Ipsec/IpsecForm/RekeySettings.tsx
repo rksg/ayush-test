@@ -13,14 +13,14 @@ import { getRekeyTimeUnitOptions } from './utils'
 
 interface ReKeySettingsFormProps {
   initIpSecData?: Ipsec,
-  loadReKeySettings: boolean,
-  setLoadReKeySettings: (state: boolean) => void
 }
 
 export default function RekeySettings (props: ReKeySettingsFormProps) {
   const { $t } = useIntl()
-  const { initIpSecData, loadReKeySettings, setLoadReKeySettings } = props
+  const { initIpSecData } = props
+
   const form = Form.useFormInstance()
+  const [loadReKeySettings, setLoadReKeySettings] = useState(true)
   const [ikeRekeyTimeEnabled, setIkeRekeyTimeEnabled] = useState(false)
   const [espRekeyTimeEnabled, setEspRekeyTimeEnabled] = useState(false)
   const rekeyTimeUnitOptions = getRekeyTimeUnitOptions()
@@ -103,20 +103,20 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
         <GridCol col={{ span: 12 }}>
           {ikeRekeyTimeEnabled &&
             <Form.Item
-              initialValue={false}
+              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
                   <Form.Item
-                    label={' '}
+                    // label={' '}
                     data-testid='ikeRekeyTime'
                     name={['ikeRekeyTime']}
-                    initialValue={4}
+                    // initialValue={4}
                     children={
                       <InputNumber min={1} max={16384} style={{ width: 80 }}/>
                     } />
                   <Form.Item name={'ikeRekeyTimeUnit'}
-                    initialValue={IpSecRekeyTimeUnitEnum.HOUR}
+                    // initialValue={IpSecRekeyTimeUnitEnum.HOUR}
                     children={
                       <Select
                         style={{ width: 120, marginTop: '23px' }}
@@ -158,7 +158,7 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
         <GridCol col={{ span: 12 }}>
           {espRekeyTimeEnabled &&
             <Form.Item
-              initialValue={false}
+              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
@@ -166,12 +166,12 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
                     label={' '}
                     data-testid='espRekeyTime'
                     name={['espRekeyTime']}
-                    initialValue={1}
+                    // initialValue={1}
                     children={
                       <InputNumber min={1} max={16384} style={{ width: 80 }}/>
                     } />
                   <Form.Item name={'espRekeyTimeUnit'}
-                    initialValue={IpSecRekeyTimeUnitEnum.HOUR}
+                    // initialValue={IpSecRekeyTimeUnitEnum.HOUR}
                     children={
                       <Select
                         style={{ width: 120, marginTop: '23px' }}

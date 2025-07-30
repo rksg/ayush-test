@@ -18,12 +18,14 @@ import { messageMapping } from './messageMapping'
 
 interface IkeAssociationSettingsFormProps {
   initIpSecData?: Ipsec
-  loadIkeSettings: boolean
-  setLoadIkeSettings: (state: boolean) => void
+  // loadIkeSettings: boolean
+  // setLoadIkeSettings: (state: boolean) => void
 }
 
 export default function IkeAssociationSettings (props: IkeAssociationSettingsFormProps) {
-  const { initIpSecData, loadIkeSettings, setLoadIkeSettings } = props
+  const { initIpSecData/*, loadIkeSettings, setLoadIkeSettings*/ } = props
+
+  const [loadIkeSettings, setLoadIkeSettings] = useState(true)
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -172,7 +174,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecEncryptionAlgorithmEnum.AES128}
+                      // initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_encryption_${index}`}
@@ -189,7 +191,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
+                      // initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_integrity_${index}`}
@@ -203,7 +205,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG}
+                      // initialValue={IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG}
                       children={
                         <Select style={{ minWidth: 180 }}
                           data-testid={`select_prf_${index}`}
@@ -215,7 +217,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       name={[field.name, 'dhGroup']}
                       label={$t({ defaultMessage: 'DH Group' })}
                       rules={[{ required: true }]}
-                      initialValue={IpSecDhGroupEnum.MODP2048}
+                      // initialValue={IpSecDhGroupEnum.MODP2048}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_dh_${index}`}

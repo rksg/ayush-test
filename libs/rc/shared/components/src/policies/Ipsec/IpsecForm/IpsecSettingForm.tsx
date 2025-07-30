@@ -1,31 +1,40 @@
 
 import { Col, Form, Input, Radio, Row, Space } from 'antd'
+import { isNil }                               from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Loader }           from '@acx-ui/components'
+import { Loader }                           from '@acx-ui/components'
+import { useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   Ipsec,
+  IpSecTunnelUsageTypeEnum,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { VxLanSettingForm }   from './EdgeIpSecForm'
 import { SoftGreSettingForm } from './SoftGreSettingForm'
 
-
 interface IpsecSettingFormProps {
-  initIpSecData?: Ipsec
+  editData?: Ipsec
+  isLoading?: boolean
 }
 
 export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const { $t } = useIntl()
-  const { initIpSecData } = props
-  const policyId = initIpSecData?.id
+  const { editData, isLoading = false } = props
+  const policyId = editData?.id
+  const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
 
   const nameValidator = async (value: string) => {
-    const payload = { ...defaultPayload, searchString: value }
+    const payload = {
+      fields: ['name', 'id'],
+      searchTargetFields: ['name'],
+      filters: {},
+      pageSize: 10_000,
+      searchString: value }
     // eslint-disable-next-line max-len
-    const list = (await getIpsecViewDataList({ params, payload }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
+    const list = (await getIpsecViewDataList({ payload }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'IPsec' }))
   }
@@ -35,10 +44,9 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
       <Row>
         <Col span={12}>
           <Form.Item
-            {...(readMode? undefined : { name: 'name' })}
-            hidden={readMode}
+            name='name'
             label={$t({ defaultMessage: 'Profile Name' })}
-            rules={readMode ? undefined : [
+            rules={[
               { required: true },
               { min: 2 },
               { max: 32 },
@@ -47,9 +55,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             ]}
             validateFirst
             hasFeedback
-            initialValue={''}
             validateTrigger={'onBlur'}
-            children={readMode ? ipsecData?.name : <Input/>}
+            children={<Input/>}
           />
 
           <Form.Item
@@ -58,10 +65,10 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
           >
             <Radio.Group>
               <Space direction='vertical'>
-                <Radio value={'VxLan'}>
+                <Radio value={IpSecTunnelUsageTypeEnum.VXLAN_GPE}>
                   {$t({ defaultMessage: 'For RUCKUS Devices(VxLAN GPE)' })}
                 </Radio>
-                <Radio value={'SoftGre'}>
+                <Radio value={IpSecTunnelUsageTypeEnum.SOFT_GRE}>
                   {$t({ defaultMessage: 'For 3rd Party Devices(SoftGRE)' })}
                 </Radio>
               </Space>
@@ -71,14 +78,15 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
       </Row>
 
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Form.Item dependencies={['tunnelUsageType']}>
             {({ getFieldValue }) => {
               const tunnelUsageType = getFieldValue('tunnelUsageType')
+              if (isNil(tunnelUsageType)) return null
 
-              return tunnelUsageType === 'VxLan'
-                ? <VxLanSettingForm initIpSecData={initIpSecData} />
-                : <SoftGreSettingForm />
+              return tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+                ? <VxLanSettingForm />
+                : <SoftGreSettingForm initIpSecData={editData} />
             }}
           </Form.Item>
         </Col>

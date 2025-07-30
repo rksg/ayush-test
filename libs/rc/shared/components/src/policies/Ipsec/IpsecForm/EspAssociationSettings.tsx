@@ -17,12 +17,14 @@ import { messageMapping } from './messageMapping'
 
 interface EspAssociationSettingsFormProps {
   initIpSecData?: Ipsec
-  loadEspSettings: boolean
-  setLoadEspSettings: (state: boolean) => void
+  // loadEspSettings: boolean
+  // setLoadEspSettings: (state: boolean) => void
 }
 
 export default function EspAssociationSettings (props: EspAssociationSettingsFormProps) {
-  const { initIpSecData, loadEspSettings, setLoadEspSettings } = props
+  const { initIpSecData/*, loadEspSettings, setLoadEspSettings */ } = props
+
+  const [loadEspSettings, setLoadEspSettings] = useState(true)
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -154,7 +156,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
-                    initialValue={IpSecEncryptionAlgorithmEnum.AES128}
+                    // initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                     children={
                       <Select style={{ minWidth: 150 }}
                         data-testid={`select_encryption_${index}`}
@@ -170,7 +172,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
-                    initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
+                    // initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
                     children={
                       <Select style={{ minWidth: 150 }}
                         data-testid={`select_integrity_${index}`}
@@ -182,7 +184,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     name={[field.name, 'dhGroup']}
                     label={$t({ defaultMessage: 'DH Group' })}
                     rules={[{ required: true }]}
-                    initialValue={IpSecDhGroupEnum.MODP2048}
+                    // initialValue={IpSecDhGroupEnum.MODP2048}
                     children={
                       <Select style={{ minWidth: 150 }}
                         data-testid={`select_dh_${index}`}

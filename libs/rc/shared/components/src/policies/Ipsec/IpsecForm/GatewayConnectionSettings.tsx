@@ -18,14 +18,16 @@ import { messageMapping } from './messageMapping'
 
 interface GatewayConnectionSettingsFormProps {
   initIpSecData?: Ipsec,
-  loadGwSettings: boolean,
-  setLoadGwSettings: (state: boolean) => void
+  // loadGwSettings: boolean,
+  // setLoadGwSettings: (state: boolean) => void
 }
 
 export default function GatewayConnectionSettings (props: GatewayConnectionSettingsFormProps) {
   const { $t } = useIntl()
-  const { initIpSecData, loadGwSettings, setLoadGwSettings } = props
+  const { initIpSecData/*, loadGwSettings, setLoadGwSettings */ } = props
+
   const form = Form.useFormInstance()
+  const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [retryLimitEnabled, setRetryLimitEnabled] = useState(false)
   const [espReplayWindowEnabled, setEspReplayWindowEnabled] = useState(false)
@@ -194,7 +196,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item name={['advancedOption','dhcpOpt43Subcode']}
             style={{ marginTop: '-4px' }}
-            initialValue={7}
+            // initialValue={7}
             rules={[
               { type: 'number', min: 3, max: 243 },
               { validator: (_, value) => dhcp43ValueValidator(value) }
@@ -233,7 +235,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {retryLimitEnabled &&
             <Form.Item
-              initialValue={false}
+              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
@@ -241,7 +243,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-retryLimit'
                     name={['advancedOption','retryLimit']}
-                    initialValue={5}
+                    // initialValue={5}
                     children={
                       <InputNumber min={1} max={16} />
                     } />
@@ -258,7 +260,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
-            initialValue={false}
+            // initialValue={false}
             // style={{ lineHeight: '50px' }}
             children={
               <>
@@ -287,7 +289,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-replayWindow'
                     name={['advancedOption','replayWindow']}
-                    initialValue={32}
+                    // initialValue={32}
                     children={
                       <InputNumber min={1} max={32} />
                     } />
@@ -335,7 +337,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
-            initialValue={false}
+            // initialValue={false}
             style={{ marginTop: '5px' }}
             children={
               <>
@@ -364,7 +366,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    initialValue={30}
+                    // initialValue={30}
                     children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
@@ -388,7 +390,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 />
               </>
             }
-            initialValue={false}
+            // initialValue={false}
           />
         </GridCol>
         <GridCol col={{ span: 12 }}>
@@ -438,7 +440,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                   <Form.Item
                     label={' '}
                     data-testid='advOpt-keepAliveInterval'
-                    initialValue={20}
+                    // initialValue={20}
                     name={['advancedOption','keepAliveInterval']}
                     children={<InputNumber min={1} max={65536}/>} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>

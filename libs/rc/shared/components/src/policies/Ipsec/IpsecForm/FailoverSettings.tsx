@@ -11,15 +11,16 @@ import { messageMapping } from './messageMapping'
 
 interface FailoverSettingsFormProps {
   initIpSecData?: Ipsec,
-  loadFailoverSettings: boolean,
-  setLoadFailoverSettings: (state: boolean) => void
+  // loadFailoverSettings: boolean,
+  // setLoadFailoverSettings: (state: boolean) => void
 }
 
 export default function FailoverSettings (props: FailoverSettingsFormProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { initIpSecData, loadFailoverSettings, setLoadFailoverSettings } = props
+  const { initIpSecData/*, loadFailoverSettings, setLoadFailoverSettings */ } = props
 
+  const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
   const [isRetryDurationForever, setIsRetryDurationForever] = useState(true)
   const [retryMode, setRetryMode] =
   useState<IpSecFailoverModeEnum>(IpSecFailoverModeEnum.NON_REVERTIVE)
@@ -77,7 +78,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'Retry Duration' })}
           name={'retryDuration'}
-          initialValue={IpSecRetryDurationEnum.FOREVER}
+          // initialValue={IpSecRetryDurationEnum.FOREVER}
           children={
             <Select style={{ width: '150px' }}
               onChange={onRetryDurationChange}
@@ -92,7 +93,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
               label={' '}
               data-testid='advOpt-retryPeriod'
               name={['advancedOption','failoverRetryPeriod']}
-              initialValue={3}
+              // initialValue={3}
               children={
                 <InputNumber min={3} max={65536}/>
               } />
@@ -114,7 +115,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         children={<Space>
           <Form.Item
             name={['advancedOption','failoverRetryInterval']}
-            initialValue={1}
+            // initialValue={1}
             children={<InputNumber min={1} max={30} />} />
           <div style={{ height: '36px' }}> {$t({ defaultMessage: 'minute(s)' })} </div>
         </Space>} />
@@ -122,7 +123,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         name={['advancedOption','failoverMode']}
         label={$t({ defaultMessage: 'Retry Mode' })}
         tooltip={$t(messageMapping.failover_retry_mode_tooltip)}
-        initialValue={retryMode}
+        // initialValue={retryMode}
         children={
           <Select
             style={{ width: '150px' }}
@@ -140,7 +141,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
             <Space >
               <Form.Item
                 name={['advancedOption','failoverPrimaryCheckInterval']}
-                initialValue={1}
+                // initialValue={1}
                 children={<InputNumber min={1} max={60} />} />
               <div style={{ height: '36px' }}> {$t({ defaultMessage: 'minute(s)' })} </div>
             </Space>} />

@@ -3,17 +3,19 @@ import { Space, Form, InputNumber, Select } from 'antd'
 import { getRekeyTimeUnitOptions } from '../utils'
 
 interface RekeyTimeUnitFormItemProps {
+  title: string
   timeFieldName: string
   timeUnitFieldName: string
 }
 export const RekeyTimeUnitFormItem = (props: RekeyTimeUnitFormItemProps) => {
-  const { timeFieldName, timeUnitFieldName } = props
+  const { title, timeFieldName, timeUnitFieldName } = props
   const rekeyTimeUnitOptions = getRekeyTimeUnitOptions()
 
   return <Space>
     <Form.Item
       data-testid={timeFieldName}
       name={timeFieldName}
+      label={title}
       rules={[
         { required: true },
         { type: 'number', transform: Number, min: 1, max: 16384 }

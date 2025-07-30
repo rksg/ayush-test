@@ -1,101 +1,29 @@
-import { useState, useEffect } from 'react'
+import { Row, Col, Form, Tooltip, Input } from 'antd'
+import { useIntl }                        from 'react-intl'
 
-import { Row, Col, Form, Tooltip, Input, Select, Tabs, Button } from 'antd'
-import form                                                     from 'antd/lib/form'
-import { useParams }                                            from 'react-router-dom'
+import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {
+  domainNameRegExp, domainNameWithIPv6RegExp,
+  Ipsec,
+  useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { PasswordInput, Subtitle }                                                                                                                     from '@acx-ui/components'
-import { useIsSplitOn, Features }                                                                                                                      from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                                                                                  from '@acx-ui/icons'
-import { useLazyGetIpsecViewDataListQuery, useGetIpsecViewDataListQuery }                                                                              from '@acx-ui/rc/services'
-import { checkObjectNotExists, domainNameRegExp, domainNameWithIPv6RegExp, Ipsec, IpSecAuthEnum, ipSecPskValidator, IpsecViewData, useConfigTemplate } from '@acx-ui/rc/utils'
-
-import { $t }       from '../../WorkflowCanvas/WorkflowPanel/__tests__/fixtures'
-import { TabLabel } from '../styledComponents'
-
-import EspAssociationSettings    from './EspAssociationSettings'
-import FailoverSettings          from './FailoverSettings'
-import GatewayConnectionSettings from './GatewayConnectionSettings'
-import IkeAssociationSettings    from './IkeAssociationSettings'
-import { messageMapping }        from './messageMapping'
-import RekeySettings             from './RekeySettings'
-
-const defaultPayload = {
-  fields: ['name', 'id'],
-  searchString: '',
-  searchTargetFields: ['name'],
-  filters: {},
-  pageSize: 10_000
-}
-
-const defaultFields = [
-  'id',
-  'name',
-  'serverAddress',
-  'authenticationType',
-  'activations',
-  'preSharedKey',
-  'ikeProposalType',
-  'ikeProposals',
-  'espProposalType',
-  'espProposals'
-]
+import { AuthenticationFormItem } from './AuthenticationFormItem'
+import { messageMapping }         from './messageMapping'
+import { MoreSettings }           from './MoreSettings'
+import { SecurityAssociation }    from './SecurityAssociation'
 
 interface SoftGreSettingFormProps {
   policyId?: string
-  editMode?: boolean
-  readMode?: boolean
+  // editMode?: boolean
   initIpSecData?: Ipsec
 }
 export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
+  const { $t } = useIntl()
   const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
-  const { readMode, policyId, initIpSecData } = props
-  const params = useParams()
-  const form = Form.useFormInstance()
-
-  const [showMoreSettings, setShowMoreSettings] = useState(false)
-  const [preSharedKey] = useState('')
-  const [loadIkeSettings, setLoadIkeSettings] = useState(true)
-  const [loadEspSettings, setLoadEspSettings] = useState(true)
-  const [loadReKeySettings, setLoadReKeySettings] = useState(true)
-  const [loadGwSettings, setLoadGwSettings] = useState(true)
-  const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
-  const [authType, setAuthType] = useState('')
-  const [activeTabKey, setActiveTabKey] = useState(moreSettingsTabsInfo[0]?.key)
-  const [activeSecurityTabKey, setActiveSecurityTabKey] = useState(secAssociationTabsInfo[0]?.key)
-
-  const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
-
-  const { ipsecData, isLoading } = useGetIpsecViewDataListQuery(
-    { params, payload: {
-      fields: defaultFields,
-      filters: { id: [policyId] }
-    } },
-    {
-      skip: !policyId,
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          ipsecData: (data?.data?.[0] ?? {}) as IpsecViewData,
-          isLoading
-        }
-      }
-    }
-  )
-
-  useEffect(() => {
-    if(readMode && ipsecData?.authenticationType) {
-      setAuthType(ipsecData?.authenticationType)
-      return
-    }
-    if (initIpSecData) {
-      form.setFieldsValue(initIpSecData)
-      if (initIpSecData.authType) {
-        setAuthType(initIpSecData.authType)
-      }
-    }
-  }, [initIpSecData, form, ipsecData, readMode])
+  const { initIpSecData } = props
 
   const securityGatewayValidator = (value: string)=>{
     if (isApIpModeFFEnabled && !isTemplate) {
@@ -104,198 +32,32 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     return domainNameRegExp(value)
   }
 
-  const onAuthTypeChange = (value: IpSecAuthEnum) => {
-    setAuthType(value)
-  }
-
-  const authOptions = [
-    { label: $t({ defaultMessage: 'Pre-shared Key' }), value: IpSecAuthEnum.PSK }
-    // hide until certificates are supported
-    // { label: $t({ defaultMessage: 'Certificate' }), value: IpSecAuthEnum.CERTIFICATE }
-  ]
-
-  const secAssociationTabsInfo = [
-    {
-      key: 'ike',
-      display: $t({ defaultMessage: 'IKE' }),
-      content: <IkeAssociationSettings initIpSecData={initIpSecData}
-        loadIkeSettings={loadIkeSettings}
-        setLoadIkeSettings={setLoadIkeSettings}
-      />
-    },
-    {
-      key: 'esp',
-      display: $t({ defaultMessage: 'ESP' }),
-      content: <EspAssociationSettings initIpSecData={initIpSecData}
-        loadEspSettings={loadEspSettings}
-        setLoadEspSettings={setLoadEspSettings}
-      />
-    }
-  ]
-
-
-  const moreSettingsTabsInfo = [
-    {
-      key: 'rekey',
-      display: $t({ defaultMessage: 'Rekey' }),
-      content: <RekeySettings initIpSecData={initIpSecData}
-        loadReKeySettings={loadReKeySettings}
-        setLoadReKeySettings={setLoadReKeySettings} />
-    },
-    {
-      key: 'gatewayConnection',
-      display: $t({ defaultMessage: 'Gateway & Connection' }),
-      content: <GatewayConnectionSettings initIpSecData={initIpSecData}
-        loadGwSettings={loadGwSettings}
-        setLoadGwSettings={setLoadGwSettings} />
-    },
-    {
-      key: 'failover',
-      display: $t({ defaultMessage: 'Failover' }),
-      content: <FailoverSettings initIpSecData={initIpSecData}
-        loadFailoverSettings={loadFailoverSettings}
-        setLoadFailoverSettings={setLoadFailoverSettings} />
-    }
-  ]
-
   return <><Row>
-    <Col>
+    <Col span={12}>
       <Form.Item
-        {...(readMode? undefined : { name: 'serverAddress' })}
+        name='serverAddress'
         label={<>
           {$t({ defaultMessage: 'Security Gateway IP/FQDN' })}
           <Tooltip title={$t(messageMapping.security_gateway_tooltip)} placement='bottom'>
             <QuestionMarkCircleOutlined />
           </Tooltip>
         </>}
-        rules={readMode ? undefined : [
+        rules={[
           { validator: (_, value) => securityGatewayValidator(value),
             message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
           }
         ]}
         validateFirst
         hasFeedback
-        children={
-          readMode ? <div>{ipsecData?.serverAddress}</div> : <Input />
-        }
+        children={<Input />}
       />
-      <Form.Item
-        name='authType'
-        label={$t({ defaultMessage: 'Authentication' })}
-        rules={[{ required: true }]}
-        initialValue={authType}
-        children={
-          readMode ?
-            (ipsecData?.authenticationType=== IpSecAuthEnum.PSK ?
-              <div>{$t({ defaultMessage: 'Pre-shared Key' })}</div> :
-              <div>{$t({ defaultMessage: 'Certificate' })}</div>) :
-            <Select
-              style={{ width: '380px' }}
-              placeholder={$t({ defaultMessage: 'Select...' })}
-              children={
-                authOptions.map((option) =>
-                  <Select.Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Select.Option>)
-              }
-              onChange={onAuthTypeChange}
-            />
-        }
-      />
-      {authType === IpSecAuthEnum.PSK && readMode &&
-            <Form.Item label={$t({ defaultMessage: 'Pre-shared Key' })}
-              children={
-                <PasswordInput readOnly
-                  value={ipsecData?.preSharedKey}
-                  style={{ width: '100%', border: 'none' }} />
-              } />
-      }
-      {authType === IpSecAuthEnum.PSK && !readMode &&
-            <Form.Item
-              data-testid='pre-shared-key'
-              name='preSharedKey'
-              label={$t({ defaultMessage: 'Pre-shared Key' })}
-              rules={[{ required: true },
-                { validator: (_, value) => ipSecPskValidator(value) }]}
-              children={
-                <PasswordInput value={preSharedKey} />
-              }
-            />
-      }
-      {authType === IpSecAuthEnum.CERTIFICATE &&
-            <Form.Item name='certificate'
-              label={$t({ defaultMessage: 'Certificate' })}
-              rules={[{ required: true }]}
-              children={<Input />} />}
+      <AuthenticationFormItem />
     </Col>
   </Row>
   <Row>
     <Col span={24}>
-      <Subtitle level={5}>
-        { $t({ defaultMessage: 'Security Association' }) }</Subtitle>
-      {readMode &&
-            <>
-              <Form.Item
-                label={$t({ defaultMessage: 'IKE Proposal' })}
-                children={
-                  <label>{ipsecData.ikeProposalType === 'DEFAULT' ?
-                    $t({ defaultMessage: 'Default' }) :
-                    $t({ defaultMessage: 'Custom' })}</label>
-                } />
-              <Form.Item
-                label={$t({ defaultMessage: 'ESP Proposal' })}
-                children={
-                  <label>{ipsecData.espProposalType === 'DEFAULT' ?
-                    $t({ defaultMessage: 'Default' }) :
-                    $t({ defaultMessage: 'Custom' })}</label>
-                } />
-            </>
-      }
-      {!readMode &&
-            <>
-              <Tabs type='third'
-                onChange={async (key) => {
-                  try {
-                    await form.validateFields([
-                      ['ikeSecurityAssociation',
-                        'ikeProposals', 'combinationValidator'],
-                      ['espSecurityAssociation',
-                        'espProposals', 'combinationValidator']])
-                    setActiveSecurityTabKey(key)
-                  } catch(e) {
-                    // eslint-disable-next-line no-console
-                    console.error(e)
-                  }
-                }}
-                activeKey={activeSecurityTabKey}
-              >
-                {secAssociationTabsInfo.map(({ key, display }) =>
-                  (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
-              </Tabs>
-              <div style={{ marginBottom: '30px' }}>
-                {secAssociationTabsInfo.find(info => (info.key === activeSecurityTabKey))?.content}
-              </div>
-              <Button type='link'
-                style={{ maxWidth: '700px' }}
-                onClick={() => setShowMoreSettings(!showMoreSettings)}>
-                {showMoreSettings
-                  ? $t({ defaultMessage: 'Show less settings' })
-                  : $t({ defaultMessage: 'Show more settings' })}
-              </Button>
-            </>}
-      {showMoreSettings && <>
-        <Tabs type='third'
-          onChange={(key) => setActiveTabKey(key)}
-          activeKey={activeTabKey}
-        >
-          {moreSettingsTabsInfo.map(({ key, display }) =>
-            (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
-        </Tabs>
-        <div style={{ maxHeight: '800px' }}>
-          {moreSettingsTabsInfo.find(info => (info.key === activeTabKey))?.content}
-        </div>
-      </>
-      }
+      <SecurityAssociation initIpSecData={initIpSecData} />
+      <MoreSettings initIpSecData={initIpSecData} />
     </Col>
   </Row>
   </>

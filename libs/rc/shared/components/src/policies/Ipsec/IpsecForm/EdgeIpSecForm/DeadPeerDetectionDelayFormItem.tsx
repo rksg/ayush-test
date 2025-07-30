@@ -1,15 +1,15 @@
-import { Form, Checkbox, Space, InputNumber } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Form, Checkbox, Space, InputNumber, Row, Col } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
-import { GridRow, GridCol, Tooltip } from '@acx-ui/components'
+import { Tooltip } from '@acx-ui/components'
 
 import { messageMapping } from '../messageMapping'
 
 export const DeadPeerDetectionDelayFormItem = () => {
   const { $t } = useIntl()
 
-  return <GridRow style={{ height: '60px' }}>
-    <GridCol col={{ span: 12 }}>
+  return <Row style={{ height: '60px' }}>
+    <Col span={24}>
       <Form.Item
         name={['advancedOption', 'dpdDelayEnabled']}
         valuePropName='checked'
@@ -27,8 +27,8 @@ export const DeadPeerDetectionDelayFormItem = () => {
           </>
         }
       />
-    </GridCol>
-    <GridCol col={{ span: 12 }}>
+    </Col>
+    <Col span={12}>
       <Form.Item
         dependencies={['advancedOption', 'dpdDelayEnabled']}
       >
@@ -50,6 +50,6 @@ export const DeadPeerDetectionDelayFormItem = () => {
           />
         }}
       </Form.Item>
-    </GridCol>
-  </GridRow>
+    </Col>
+  </Row>
 }

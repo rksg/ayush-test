@@ -1,45 +1,44 @@
-import { Form, Select } from 'antd'
+import { Form, Input } from 'antd'
 
-import { PasswordInput } from '@acx-ui/components'
-import { IpSecAuthEnum } from '@acx-ui/rc/utils'
+import { PasswordInput, Select }            from '@acx-ui/components'
+import { IpSecAuthEnum, ipSecPskValidator } from '@acx-ui/rc/utils'
 
 import { $t } from '../../WorkflowCanvas/WorkflowPanel/__tests__/fixtures'
 
 export const AuthenticationFormItem = () => {
+  const authOptions = [
+    { label: $t({ defaultMessage: 'Pre-shared Key' }), value: IpSecAuthEnum.PSK }
+    // hide until certificates are supported
+    // { label: $t({ defaultMessage: 'Certificate' }), value: IpSecAuthEnum.CERTIFICATE }
+  ]
+
   return <><Form.Item
     name='authType'
     label={$t({ defaultMessage: 'Authentication' })}
     rules={[{ required: true }]}
-    initialValue={authType}
-    children={
-      readMode ?
-        (ipsecData?.authenticationType=== IpSecAuthEnum.PSK ?
-          <div>{$t({ defaultMessage: 'Pre-shared Key' })}</div> :
-          <div>{$t({ defaultMessage: 'Certificate' })}</div>) :
-        <Select
-          style={{ width: '380px' }}
-          placeholder={$t({ defaultMessage: 'Select...' })}
-          children={
-            authOptions.map((option) =>
-              <Select.Option key={option.value} value={option.value}>
-                {option.label}
-              </Select.Option>)
-          }
-          onChange={onAuthTypeChange}
-        />
-    }
+    children={<Select
+      // style={{ width: '380px' }}
+      children={
+        authOptions.map((option) =>
+          <Select.Option key={option.value} value={option.value}>
+            {option.label}
+          </Select.Option>)
+      }
+    />}
   />
   <Form.Item
+    noStyle
     dependencies={['authType']}
   >
     {({ getFieldValue }) => {
       const authType = getFieldValue('authType')
-      return authType === IpSecAuthEnum.PSK && !readMode &&
+      return authType === IpSecAuthEnum.PSK &&
             <PreSharedKeyFormItem />
     }}
   </Form.Item>
 
   <Form.Item
+    noStyle
     dependencies={['authType']}
   >
     {({ getFieldValue }) => {
@@ -53,18 +52,23 @@ export const AuthenticationFormItem = () => {
 }
 
 export const PreSharedKeyFormItem = () => {
-  return <Form.Item label={$t({ defaultMessage: 'Pre-shared Key' })}
+  return <Form.Item
+    data-testid='pre-shared-key'
+    name='preSharedKey'
+    label={$t({ defaultMessage: 'Pre-shared Key' })}
+    rules={[{ required: true },
+      { validator: (_, value) => ipSecPskValidator(value) }]}
     children={
-      <PasswordInput readOnly
-        value={ipsecData?.preSharedKey}
-        style={{ width: '100%', border: 'none' }} />
+      <PasswordInput />
     } />
-
 }
 
+// TODO: hide until certificates are supported
 const CertificateFormItem = () => {
-  return <Form.Item name='certificate'
+  return <Form.Item
+    name='certificate'
     label={$t({ defaultMessage: 'Certificate' })}
     rules={[{ required: true }]}
-    children={<Input />} />
+    children={<Input />}
+  />
 }
