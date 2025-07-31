@@ -5,7 +5,6 @@ import { defineMessage, useIntl }                          from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
 import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }       from '@acx-ui/rc/utils'
 
@@ -20,7 +19,6 @@ export function IpSettings (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const { isAllowEdit=true } = props
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -40,7 +38,7 @@ export function IpSettings (props: ApEditItemProps) {
       venueId,
       serialNumber
     },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   })
   const [updateApIpSettings, { isLoading: isUpdatingApIpSettings }] =
     useUpdateApNetworkSettingsMutation()
@@ -126,7 +124,7 @@ export function IpSettings (props: ApEditItemProps) {
           serialNumber
         },
         payload,
-        enableRbac: isWifiRbacEnabled
+        enableRbac: true
       }).unwrap()
 
     } catch (error) {

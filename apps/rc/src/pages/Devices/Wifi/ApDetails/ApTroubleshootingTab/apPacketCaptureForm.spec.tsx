@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { venueApi }                                      from '@acx-ui/rc/services'
-import { WifiRbacUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }                              from '@acx-ui/rc/utils'
 import { Provider, store }                               from '@acx-ui/store'
 import { within, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -18,7 +18,7 @@ import {
 
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 
-const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
+const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
@@ -27,24 +27,24 @@ jest.mock('@acx-ui/rc/utils', () => ({
 const packetCaptureReadyResponse = {
   sessionId: '1280ff76-cf09-469b-bb09-c6834102e598',
   fileName: 'pcap-422039000034-20221124015617.tar.gz?GoogleAccessId',
-  status: 'READY',
+  state: 'READY',
   fileUrl: 'https://storage.googleapis.com/dev-alto-file-storage-1/'
 }
 
 const packetCaptureIdleResponse = {
   sessionId: '4c029e56-0032-9a9e-8b45-b46c9a1b0a2b',
-  status: 'IDLE'
+  state: 'IDLE'
 }
 
 const packetCaptureCapturingResponse = {
   sessionId: '4c029e56-0032-9a9e-8b45-b46c9a1b0a2b',
-  status: 'CAPTURING'
+  state: 'CAPTURING'
 }
 
 
 const packetCaptureStopResponse = {
   sessionId: '4c029e56-0032-9a9e-8b45-b46c9a1b0a2b',
-  status: 'STOPPING'
+  state: 'STOPPING'
 }
 
 const startPacketCackture = {
@@ -62,21 +62,19 @@ describe('ApPacketCaptureForm', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(WifiUrlsInfo.getApRadioCustomization.url,
+      rest.get(WifiRbacUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadio))),
-      rest.get(WifiUrlsInfo.getApLanPorts.url,
-        (req, res, ctx) => res(ctx.json(apLanPort))),
       rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(r650ap))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
+      rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
         (req, res, ctx) => res(ctx.json(r650Cap))),
-      rest.post(WifiUrlsInfo.startPacketCapture.url,
+      rest.patch(WifiRbacUrlsInfo.startPacketCapture.url,
         (req, res, ctx) => res(ctx.json(startPacketCackture))),
-      rest.delete(WifiUrlsInfo.stopPacketCapture.url,
+      rest.delete(WifiRbacUrlsInfo.stopPacketCapture.url,
         (req, res, ctx) => res(ctx.json(stopPacketCapture))),
-      rest.get(WifiUrlsInfo.getPacketCaptureState.url,
+      rest.get(WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse)))
     )
   })
@@ -92,7 +90,7 @@ describe('ApPacketCaptureForm', () => {
   it('should download packet capture correctly', async () => {
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => {
           return res(ctx.json(packetCaptureReadyResponse))}
       )
@@ -121,13 +119,13 @@ describe('ApPacketCaptureForm', () => {
     expect(await screen.findByText(/preparing file\.\.\./i)).toBeVisible()
   })
 
-  it('should cpaturing correctly', async () => {
+  it('should capturing correctly', async () => {
     let response = packetCaptureCapturingResponse
     const requestSpy = jest.fn()
 
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => {
           requestSpy()
           return res(ctx.json(response))}
@@ -145,7 +143,7 @@ describe('ApPacketCaptureForm', () => {
   it('should stopping correctly', async () => {
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureStopResponse))
       )
     )
@@ -164,12 +162,12 @@ describe('ApPacketCaptureForm', () => {
 
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
       ),
-      rest.get(WifiUrlsInfo.getApRadioCustomization.url,
+      rest.get(WifiRbacUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadioResponse))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
+      rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
         (req, res, ctx) => res(ctx.json(capResponse)))
     )
     render(
@@ -182,7 +180,7 @@ describe('ApPacketCaptureForm', () => {
 
   it.skip('should handle error occurred for start packet capture', async () => {
     mockServer.use(
-      rest.post(WifiUrlsInfo.startPacketCapture.url,
+      rest.post(WifiRbacUrlsInfo.startPacketCapture.url,
         (_, res, ctx) => {
           return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
         })
@@ -203,9 +201,9 @@ describe('ApPacketCaptureForm', () => {
 
   it.skip('should handle error occurred for stop packet capture', async () => {
     mockServer.use(
-      rest.post(WifiUrlsInfo.startPacketCapture.url,
+      rest.post(WifiRbacUrlsInfo.startPacketCapture.url,
         (req, res, ctx) => res(ctx.json(startPacketCackture))),
-      rest.post(WifiUrlsInfo.stopPacketCapture.url,
+      rest.post(WifiRbacUrlsInfo.stopPacketCapture.url,
         (_, res, ctx) => {
           return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
         })
@@ -229,7 +227,7 @@ describe('ApPacketCaptureForm', () => {
   it.skip('should select wired correctly', async () => {
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => {
           return res(ctx.json(packetCaptureIdleResponse))}
       )
@@ -263,21 +261,21 @@ describe('ApPacketCaptureForm - validation', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(WifiUrlsInfo.getApRadioCustomization.url,
+      rest.get(WifiRbacUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadio))),
-      rest.get(WifiUrlsInfo.getApLanPorts.url,
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
       rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(r650ap))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
+      rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
         (req, res, ctx) => res(ctx.json(r650Cap))),
-      rest.post(WifiUrlsInfo.startPacketCapture.url,
+      rest.post(WifiRbacUrlsInfo.startPacketCapture.url,
         (req, res, ctx) => res(ctx.json(startPacketCackture))),
-      rest.post(WifiUrlsInfo.stopPacketCapture.url,
+      rest.post(WifiRbacUrlsInfo.stopPacketCapture.url,
         (req, res, ctx) => res(ctx.json(stopPacketCapture))),
-      rest.get(WifiUrlsInfo.getPacketCaptureState.url,
+      rest.get(WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse)))
     )
   })
@@ -285,7 +283,7 @@ describe('ApPacketCaptureForm - validation', () => {
   xit('should validate field correctly', async () => {
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
+        WifiRbacUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
       )
     )

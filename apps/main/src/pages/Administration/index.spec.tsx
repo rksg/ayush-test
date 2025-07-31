@@ -12,9 +12,9 @@ import {
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
-import { fakeUserProfile }      from './AccountSettings/__tests__/fixtures'
-import { fakeDelegationList }   from './Administrators/__tests__/fixtures'
-import { fakeNotificationList } from './Notifications/__tests__/fixtures'
+import { fakeUserProfile }                                     from './AccountSettings/__tests__/fixtures'
+import { fakeDelegationList }                                  from './Administrators/__tests__/fixtures'
+import { fakeNotificationList, paginatedFakeNotificationList } from './Notifications/__tests__/fixtures'
 
 import Administration from '.'
 
@@ -100,6 +100,10 @@ describe('Administration page', () => {
         (req, res, ctx) => res(ctx.json(fakeNotificationList))
       ),
       rest.post(
+        AdministrationUrlsInfo.getNotificationRecipientsPaginated.url,
+        (req, res, ctx) => res(ctx.json(paginatedFakeNotificationList))
+      ),
+      rest.post(
         AdministrationUrlsInfo.getWebhooks.url,
         (req, res, ctx) => res(ctx.json({}))
       )
@@ -178,6 +182,24 @@ describe('Administration page', () => {
   it('should render notifications tab correctly', async () => {
     params.activeTab = 'notifications'
 
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = await screen.findByRole('tab', { name: 'Notifications (3)' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render notifications tab with paginated API call correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE)
+    params.activeTab = 'notifications'
     render(
       <Provider>
         <UserProfileContext.Provider
