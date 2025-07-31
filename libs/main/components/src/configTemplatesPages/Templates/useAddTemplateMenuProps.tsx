@@ -87,7 +87,7 @@ export function usePolicyMenuItems (): ItemType {
       createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap),
       createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
       createPolicyMenuItem(ConfigTemplateType.ETHERNET_PORT_PROFILE, visibilityMap),
-      createPolicyMenuItem(ConfigTemplateType.TUNNEL_PROFILE, visibilityMap)
+      createPolicyMenuItem(ConfigTemplateType.TUNNEL_SERVICE, visibilityMap)
     ]
   }
 

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }  from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useApGroupsFilterOpts }      from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery } from '@acx-ui/rc/services'
 import {
@@ -40,9 +39,7 @@ const clusterQueryPayload = {
 }
 
 export const SdLanApTable = (props: SdLanApTableProps) => {
-
   const { $t } = useIntl()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apListTableQuery = props.tableQuery
   const [tableData, setTableData] = useState<APExtended[]>([])
@@ -135,7 +132,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: props.venueList.map(v => ({ key: v.venueId, value: v.venueName })),
-      sorter: !isUseWifiRbacApi,
+      sorter: false,
       render: (_, row: APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
@@ -148,7 +145,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       dataIndex: 'deviceGroupName',
       filterKey: 'deviceGroupId',
       filterable: apGroupOptions,
-      sorter: !isUseWifiRbacApi,
+      sorter: false,
       render: (_, row: APExtended) => (
         <TenantLink to={`/devices/apgroups/${row.deviceGroupId}/details/members`}>
           {row.deviceGroupName}

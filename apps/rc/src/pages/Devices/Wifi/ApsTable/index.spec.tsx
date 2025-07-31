@@ -1,12 +1,15 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { apApi, switchApi, venueApi }                                               from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
+
+import { venueCaps, venueList } from '../../__tests__/fixtures'
 
 import useApsTable from '.'
 
@@ -63,25 +66,35 @@ describe('AP List Table', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
-        WifiUrlsInfo.addAp.url,
+        WifiRbacUrlsInfo.addAp.url,
         (req, res, ctx) => res(ctx.json({
           txId: 'f83cdf6e-df01-466d-88ba-58e2f2c211c6'
         }))
       ),
       rest.post(
-        WifiUrlsInfo.getApGroupsList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
+        (req, res, ctx) => res(ctx.json(venueList))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (req, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps)))
     )
   })
 

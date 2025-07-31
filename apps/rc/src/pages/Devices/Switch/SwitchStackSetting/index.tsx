@@ -6,14 +6,11 @@ import { FormattedMessage, useIntl }                                            
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { useSwitchPortlistQuery }   from '@acx-ui/rc/services'
 import {
-  checkVlanDiffFromTargetVlan
-} from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
-import {
+  isFirmwareVersionAbove10010f,
   isL3FunctionSupported,
-  SwitchPortViewModelQueryFields,
-  isFirmwareVersionAbove10010f
+  SwitchPortViewModelQueryFields
 } from '@acx-ui/rc/switch/utils'
 import {
   FlexAuthMessages,
@@ -27,6 +24,9 @@ import {
   SwitchViewModel,
   SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
+import {
+  checkVlanDiffFromTargetVlan
+} from '@acx-ui/switch/components'
 import { useTenantId } from '@acx-ui/utils'
 
 import StaticRoutes      from './StaticRoutes'

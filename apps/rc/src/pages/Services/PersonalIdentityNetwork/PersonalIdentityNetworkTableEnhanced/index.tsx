@@ -12,7 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features }                      from '@acx-ui/feature-toggle'
 import {
   EdgeServiceStatusLight,
   CountAndNamesTooltip,
@@ -24,7 +24,6 @@ import {
   useGetEdgeClusterListQuery,
   useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
-  useNetworkListQuery,
   useSwitchListQuery,
   useVenuesListQuery,
   useWifiNetworkListQuery
@@ -102,7 +101,6 @@ const PersonalIdentityNetworkTableEnhanced = () => {
   const basePath = useTenantLink('')
   const settingsId = 'services-pin-table'
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
@@ -146,8 +144,7 @@ const PersonalIdentityNetworkTableEnhanced = () => {
       })
     })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkOptions = [] } = getNetworkListQuery(
+  const { networkOptions = [] } = useWifiNetworkListQuery(
     { payload: networkDefaultPayload },
     {
       selectFromResult: ({ data }) => ({

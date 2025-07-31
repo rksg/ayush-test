@@ -416,6 +416,7 @@ export function VenueNetworksTab () {
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       sorter: isSupportActivationColumnSorting,
+      sortDirections: ['descend', 'ascend', 'descend'],
       filterable: isSupportActivationColumnSorting && activatedOption,
       filterKey: 'venueApGroups.venueId',
       filterMultiple: false,
