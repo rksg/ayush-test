@@ -177,6 +177,7 @@ export function BrandTable ({
         dataIndex: 'accountTier',
         key: 'accountTier',
         fixed: 'left',
+        filterable: true,
         sorter: { compare: sortProp('accountTier', defaultSort) },
         render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
           return row.accountTier === MspEcTierEnum.Essentials
