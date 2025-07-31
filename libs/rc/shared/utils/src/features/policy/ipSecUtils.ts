@@ -5,8 +5,8 @@ import { getIntl } from '@acx-ui/utils'
 import {
   IpSecAdvancedOptionEnum, IpSecFailoverModeEnum,
   IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum,
-  IpSecRetryDurationEnum
-} from '../../models/IpSecEnum'
+  IpSecRetryDurationEnum } from '../../models/IpSecEnum'
+
 
 export const defaultIpsecFields = [
   'id',
@@ -56,6 +56,7 @@ export const defaultIpsecFormData = {
   nattKeepAliveIntervalEnabledCheckbox: true, // UI only
   failoverRetryPeriodIsForever: true
 }
+
 export  const getRekeyTimeUnitOptions = () => {
   const { $t } = getIntl()
 

@@ -15,7 +15,6 @@ import { SecurityAssociation }    from './SecurityAssociation'
 
 interface SoftGreSettingFormProps {
   policyId?: string
-  // editMode?: boolean
   initIpSecData?: Ipsec
 }
 export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {

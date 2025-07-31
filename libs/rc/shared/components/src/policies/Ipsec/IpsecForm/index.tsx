@@ -107,7 +107,8 @@ export const IpsecForm = (props: IpsecFormProps) => {
       }
 
       // eslint-disable-next-line no-console
-      console.log('data', data)
+      console.log('data', JSON.stringify(data))
+
       if (editMode) {
         await updateIpsec({ params, payload: data }).unwrap()
       } else {

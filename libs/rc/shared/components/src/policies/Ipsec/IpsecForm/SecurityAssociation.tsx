@@ -24,16 +24,12 @@ export const SecurityAssociation = (props: {
       key: 'ike',
       display: $t({ defaultMessage: 'IKE' }),
       content: <IkeAssociationSettings initIpSecData={initIpSecData}
-        // loadIkeSettings={loadIkeSettings}
-        // setLoadIkeSettings={setLoadIkeSettings}
       />
     },
     {
       key: 'esp',
       display: $t({ defaultMessage: 'ESP' }),
       content: <EspAssociationSettings initIpSecData={initIpSecData}
-        // loadEspSettings={loadEspSettings}
-        // setLoadEspSettings={setLoadEspSettings}
       />
     }
   ], [initIpSecData])

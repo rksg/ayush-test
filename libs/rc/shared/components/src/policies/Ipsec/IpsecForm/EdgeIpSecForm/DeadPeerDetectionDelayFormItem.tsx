@@ -9,9 +9,9 @@ export const DeadPeerDetectionDelayFormItem = () => {
   const { $t } = useIntl()
 
   return <Row style={{ height: '60px' }}>
-    <Col span={24}>
+    <Col span={12}>
       <Form.Item
-        name={['advancedOption', 'dpdDelayEnabled']}
+        name={'deadPeerDetectionDelayEnabledCheckbox'}
         valuePropName='checked'
         children={
           <>
@@ -30,14 +30,16 @@ export const DeadPeerDetectionDelayFormItem = () => {
     </Col>
     <Col span={12}>
       <Form.Item
-        dependencies={['advancedOption', 'dpdDelayEnabled']}
+        noStyle
+        dependencies={['deadPeerDetectionDelayEnabledCheckbox']}
       >
         {({ getFieldValue }) => {
-          const delayEnabled = getFieldValue(['advancedOption', 'dpdDelayEnabled'])
+          const delayEnabled = getFieldValue(['deadPeerDetectionDelayEnabledCheckbox'])
           return delayEnabled && <Form.Item
             children={
-              <Space>
+              <Space align='center'>
                 <Form.Item
+                  noStyle
                   name={['advancedOption','dpdDelay']}
                   rules={[
                     { required: true },

@@ -103,20 +103,17 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
         <GridCol col={{ span: 12 }}>
           {ikeRekeyTimeEnabled &&
             <Form.Item
-              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
                   <Form.Item
-                    // label={' '}
+                    label={' '}
                     data-testid='ikeRekeyTime'
                     name={['ikeRekeyTime']}
-                    // initialValue={4}
                     children={
                       <InputNumber min={1} max={16384} style={{ width: 80 }}/>
                     } />
                   <Form.Item name={'ikeRekeyTimeUnit'}
-                    // initialValue={IpSecRekeyTimeUnitEnum.HOUR}
                     children={
                       <Select
                         style={{ width: 120, marginTop: '23px' }}
@@ -158,7 +155,6 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
         <GridCol col={{ span: 12 }}>
           {espRekeyTimeEnabled &&
             <Form.Item
-              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
@@ -166,12 +162,10 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
                     label={' '}
                     data-testid='espRekeyTime'
                     name={['espRekeyTime']}
-                    // initialValue={1}
                     children={
                       <InputNumber min={1} max={16384} style={{ width: 80 }}/>
                     } />
                   <Form.Item name={'espRekeyTimeUnit'}
-                    // initialValue={IpSecRekeyTimeUnitEnum.HOUR}
                     children={
                       <Select
                         style={{ width: 120, marginTop: '23px' }}
