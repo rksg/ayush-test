@@ -338,13 +338,12 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       sortOrder: 'ASC',
       filters
     }
-
     if (apList) {
       apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
         .then((res)=>{
           const { data } = res || {}
           if (data) {
-            const existingTriBandApModels = data.filter((ap: APExtended) => ap.apGroupId === apGroupId)
+            const existingTriBandApModels = data.filter((ap: APExtended) => ap.deviceGroupId === apGroupId)
               .map((ap: APExtended) => ap.model)
             setExistingTriBandApModels(uniq(existingTriBandApModels))
           }
@@ -493,10 +492,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   }, [isLoadingVenueData, venueSavedChannelsData, apGroupRadioData, formRef?.current, supportRadioChannels])
 
   useEffect(() => {
-    if (!isWifiSwitchableRfEnabled || !apGroupBandModeSavedData || !venueBandModeSavedData || !venueSavedChannelsData) {
+
+    if (!apGroupBandModeSavedData || !venueBandModeSavedData || !venueSavedChannelsData) {
       return
     }
-
 
     setInitApGroupBandModeData({
       useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
@@ -515,9 +514,11 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         venueDual5GData
       )
       setInitVenueBandModeData([ ...updatedVenueBandModeSettings ])
+    } else {
+      setInitVenueBandModeData([ ...venueBandModeSavedData ])
     }
 
-  }, [isWifiSwitchableRfEnabled, apGroupBandModeSavedData, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData])
+  }, [apGroupBandModeSavedData, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled) {
@@ -944,13 +945,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     try {
-      if (isWifiSwitchableRfEnabled && !isEqual(currentApGroupBandModeData, initApGroupBandModeData)) {
-        await updateApGroupBandMode({
-          params: { venueId, apGroupId },
-          payload: currentApGroupBandModeData
-        }).unwrap()
-
-      }
 
       if (!isWifiSwitchableRfEnabled) {
         await updateVenueTripleBandRadioSettings({
@@ -962,7 +956,15 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       await updateApGroupRadioCustomization({
         params: { venueId, apGroupId },
         payload: correctedByManualChannels(createRadioSettingsPayload(data)),
-        enableRbac: resolvedRbacEnabled
+        enableRbac: resolvedRbacEnabled,
+        callback: async () => {
+          if (isWifiSwitchableRfEnabled && !isEqual(currentApGroupBandModeData, initApGroupBandModeData)) {
+            await updateApGroupBandMode({
+              params: { venueId, apGroupId },
+              payload: currentApGroupBandModeData
+            }).unwrap()
+          }
+        }
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -1157,7 +1159,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     // 5. update EditContext
     handleChange()
   }
-
   return (
     <Loader states={[{
       isLoading: isLoadingVenueData || isLoadingApGroupData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData)),

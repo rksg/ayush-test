@@ -13,7 +13,6 @@ import {
   Button, Drawer, Subtitle, Tooltip
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
-import { isLAGMemberPort }              from '@acx-ui/rc/components'
 import {
   useSwitchPortlistQuery,
   useGetSwitchVlanQuery,
@@ -33,6 +32,7 @@ import {
   defaultWebAuthTemplateId
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
+import { isLAGMemberPort }    from '@acx-ui/switch/components'
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkSegAuthModal } from './NetworkSegAuthModal'

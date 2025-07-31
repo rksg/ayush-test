@@ -3,16 +3,14 @@ import _ from 'lodash'
 
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
+import { DeviceConnectionStatus }                from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
-  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
   SWITCH_SERIAL_8100,
@@ -21,9 +19,6 @@ import {
   SWITCH_SERIAL_SUFFIX,
   SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL
 } from '../../types'
-import { FlexibleAuthentication } from '../../types'
-
-import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -82,11 +77,13 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FNZ', 'ICX8100-48'],
   ['FPA', 'ICX8100-48P'],
   ['FPB', 'ICX8100-C08PF'],
+  ['FPM', 'ICX8100-48PF'],
   ['FPP', 'ICX8100-24-X'],
   ['FPQ', 'ICX8100-24P-X'],
   ['FPR', 'ICX8100-48-X'],
   ['FPS', 'ICX8100-48P-X'],
   ['FPT', 'ICX8100-C08PF-X'],
+  ['FPU', 'ICX8100-48PF-X'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -323,50 +320,6 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
-}
-
-export const getSwitchModelInfo = (switchModel: string) => {
-  const [ family, model ] = getFamilyAndModel(switchModel)
-
-  const modelFamilyInfo = ICX_MODELS_INFORMATION[family]
-  if (!modelFamilyInfo) {
-    return null
-  }
-
-  const subModelInfo = modelFamilyInfo[model]
-  if (!subModelInfo) {
-    return null
-  }
-
-  return subModelInfo
-}
-
-export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
-  if (!slotNumber || !switchModel || slotNumber < 1) {
-    return ''
-  }
-
-  const modelInfo = getSwitchModelInfo(switchModel)
-  if (!modelInfo) {
-    return ''
-  }
-  if (modelInfo.portModuleSlots && !modelInfo.portModuleSlots[slotNumber - 1]) {
-    return ''
-  }
-  return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
-}
-
-export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string }) => {
-  const splitA = portIdA.id.split('/')
-  const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
-
-  const splitB = portIdB.id.split('/')
-  const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
-  return valueA - valueB
-}
-
-export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
-  return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
 
 export const getDhcpOptionList = () => {
@@ -675,6 +628,13 @@ export const createSwitchSerialPatternForSpecific8100Model = () => {
   return new RegExp(`^(${SWITCH_SERIAL_8100})${SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL}$`, 'i')
 }
 
+const isSpecific8100Model = (serialNumber: string) => {
+  return serialNumber && (serialNumber?.startsWith('FNX') ||
+    serialNumber?.startsWith('FNY') ||
+    serialNumber?.startsWith('FNZ') ||
+    serialNumber?.startsWith('FPA'))
+}
+
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
   supportModels: SupportModels,
@@ -699,213 +659,3 @@ export const getAdminPassword = (
       : $t({ defaultMessage: 'Custom' })
     )
 }
-
-export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20, title: string = '') => {
-  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
-  let ranges = []
-
-  for (let i = 0; i < numbers.length; i++) {
-    let start = numbers[i]
-    while (numbers[i + 1] - numbers[i] === 1) {
-      i++
-    }
-    let end = numbers[i]
-    ranges.push(start === end ? `${start}` : `${start}-${end}`)
-  }
-
-  if (ranges.length > maxRangesToShow) {
-    const remainingCount = ranges.length - maxRangesToShow
-    ranges = ranges.slice(0, maxRangesToShow)
-    return `${ranges.join(', ')}, and ${remainingCount} ${title} more...`
-  }
-
-  return ranges.join(', ')
-}
-
-export const isFirmwareVersionAbove10 = (
-  firmwareVersion: string
-) => {
-  return firmwareVersion.slice(3,6) === '100'
-}
-
-export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010f < 10020
-  2. > 10020b
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010f', false) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
-  } else {
-    return false
-  }
-}
-
-
-export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10020a
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10020b', false)
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10010gOr10020b = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g < 10020
-  2. > 10020b
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010g', false) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g_cd1 < 10020
-  2. > 10020b_cd1
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010g_cd1', true) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b_cd1', true))
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10020bCd2 = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g_cd1 < 10020
-  2. > 10020b_cd1
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10020b_cd2', true)
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareSupportAdminPassword = (
-  firmwareVersion: string
-) => {
-  if (isFirmwareVersionAbove10(firmwareVersion)) {
-    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
-  }
-  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
-}
-
-export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
-  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
-}
-
-export const checkSwitchUpdateFields = function (
-  values: Switch,
-  switchDetail?: SwitchViewModel,
-  switchData?: Switch,
-  switchAuth?: FlexibleAuthentication
-) {
-  const fields = Object.keys(values ?? {})
-  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-  const originalValues = _.pick({ ...switchDetail, ...switchData, ...switchAuth }, fields) as Switch
-
-  return Object.keys(values ?? {}).reduce((result: string[], key) => {
-    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
-      return [ ...result, key ]
-    }
-    return result
-  }, [])
-}
-
-export const isRodanAv = (model: string) => {
-  switch(model) {
-    case 'ICX8200-24PV':
-    case 'ICX8200-C08PFV':
-      return true
-    default:
-      return false
-  }
-}
-
-export const isBabyRodanX = (model: string) => {
-  switch(model) {
-    case 'ICX8100-24-X':
-    case 'ICX8100-24P-X':
-    case 'ICX8100-48-X':
-    case 'ICX8100-48P-X':
-    case 'ICX8100-C08PF-X':
-      return true
-    default:
-      return false
-  }
-}
-
-export const is7550Zippy = (model: string) => {
-  return model === 'ICX7550-24XZP'
-}
-
-export const isBabyRodanXSubModel = (model: string) => {
-  switch(model) {
-    case '24-X':
-    case '24P-X':
-    case '48-X':
-    case '48P-X':
-    case 'C08PF-X':
-      return true
-    default:
-      return false
-  }
-}
-
-export const is7550ZippySubModel = (model: string) => {
-  return model === '24XZP'
-}
-
-export const getFamilyAndModel = function (switchModel: string) {
-  const family = switchModel.split('-')[0]
-  const model = switchModel.substring(switchModel.indexOf('-')+1)
-  return [family, model]
-}
-
-export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
-  if (!macAclRules || macAclRules.length === 0) {
-    return { permit: 0, deny: 0 }
-  }
-
-  return macAclRules.reduce((acc, rule) => {
-    if (rule.action === 'permit') {
-      acc.permit += 1
-    } else if (rule.action === 'deny') {
-      acc.deny += 1
-    }
-    return acc
-  }, { permit: 0, deny: 0 })
-}
-
-export const isSpecific8100Model = (serialNumber: string) => {
-  return serialNumber && (serialNumber?.startsWith('FNX') ||
-    serialNumber?.startsWith('FNY') ||
-    serialNumber?.startsWith('FNZ') ||
-    serialNumber?.startsWith('FPA'))
-}
-
-export const allMultipleEditableFields = [
-  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
-  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
-  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
-  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
-]

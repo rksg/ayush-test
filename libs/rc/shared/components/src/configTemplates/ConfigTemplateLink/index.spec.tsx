@@ -1,4 +1,5 @@
 import { getIdentityGroupRoutePath, IdentityOperation } from '@acx-ui/cloudpath/components'
+import { usePathBasedOnConfigTemplate }                 from '@acx-ui/config-template/utils'
 import {
   ConfigTemplateType,
   getConfigTemplatePath,
@@ -24,8 +25,7 @@ import {
   PolicyConfigTemplateLinkSwitcher,
   renderConfigTemplateDetailsComponent,
   ServiceConfigTemplateLink,
-  ServiceConfigTemplateLinkSwitcher,
-  usePathBasedOnConfigTemplate
+  ServiceConfigTemplateLinkSwitcher
 } from '.'
 
 const mockedMspTenantLinkStateFn = jest.fn()

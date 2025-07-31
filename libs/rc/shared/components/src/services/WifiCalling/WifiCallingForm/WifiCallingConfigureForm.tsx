@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { useEnforcedStatus }                                                                from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
@@ -20,7 +21,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus }                   from '../../../configTemplates'
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
 import WifiCallingScopeForm                    from '../WifiCallingScope/WifiCallingScopeForm'
