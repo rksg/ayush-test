@@ -5,9 +5,9 @@ import { Button, Divider, Tooltip } from 'antd'
 import { capitalize, includes }     from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { Drawer, Descriptions, Loader, SuspenseBoundary } from '@acx-ui/components'
+import { get }                                            from '@acx-ui/config'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   defaultSwitchPayload,
   EditPortDrawer,
@@ -58,7 +58,6 @@ import { useApNeighbors }       from '../../ApNeighbors/useApNeighbors'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { poeClassDisplayMap }   from './constants'
-import * as UI                  from './styledComponents'
 
 
 interface ApDetailsDrawerProps {
@@ -110,6 +109,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
   const [needGetApPassword, setNeedGetApPassword] = useState(false)
   const [apApPassword, setApApPassword] = useState<ApApPassword>()
+  const [showPassword, setShowPassword] = useState(false)
 
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
@@ -250,6 +250,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const onClose = () => {
     setVisible(false)
+    // Reset password visibility for security
+    setShowPassword(false)
+    setNeedGetApPassword(false)
+    setApApPassword(undefined)
   }
 
   const displayAFCInfo = () => {
@@ -335,6 +339,57 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const handleShowPassword = () => {
     if (!isPerApPasswordAndVisibility || !params.serialNumber || !params.venueId) return
     setNeedGetApPassword(true)
+    setShowPassword(true)
+  }
+
+  const getPasswordRegenerationMessage = () => {
+    const isConnected = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+    const lastSeenTime = currentAP?.lastSeenTime
+    const expireTime = apApPassword?.expireTime
+
+    if (!lastSeenTime || !expireTime) {
+      return null
+    }
+
+    // Format expire time for display
+    const expireDate = new Date(expireTime)
+    const now = new Date()
+    const expireTimeString = expireDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+
+    // Check if expireTime is today or tomorrow
+    const isToday = expireDate.toDateString() === now.toDateString()
+    const dayLabel = isToday ? 'today' : 'tomorrow'
+    const timeWithDay = `${expireTimeString} ${dayLabel}`
+
+    if (isConnected) {
+      return (
+        <>
+          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
+          <span style={{ color: '#000' }}>{timeWithDay}</span>
+          {$t({ defaultMessage: '.' })}
+        </>
+      )
+    }
+
+    // For disconnected devices, check if it's been more than 24 hours
+    const lastSeenDate = new Date(lastSeenTime)
+    const timeDiffHours = (now.getTime() - lastSeenDate.getTime()) / (1000 * 60 * 60)
+
+    if (timeDiffHours > 24) {
+      return $t({ defaultMessage: 'AP Password will regenerate upon cloud reconnection.' })
+    } else {
+      return (
+        <>
+          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
+          <span style={{ color: '#000' }}>{timeWithDay}</span>
+          {$t({ defaultMessage: ', or upon cloud reconnection.' })}
+        </>
+      )
+    }
   }
 
   const PropertiesTab = () => {
@@ -381,14 +436,24 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
             children={
-              <UI.DetailsPassword>
-                <PasswordInput
-                  readOnly
-                  bordered={false}
-                  value={apApPassword?.apPasswords ?? apPassword}
-                  onFocus={() => handleShowPassword()}
-                />
-              </UI.DetailsPassword>
+              !showPassword ? (
+                <Button
+                  type='link'
+                  onClick={handleShowPassword}
+                  style={{ padding: 0, height: 'auto', fontSize: '14px' }}
+                >
+                  {$t({ defaultMessage: 'Show AP Password' })}
+                </Button>
+              ) : (
+                <>
+                  <span>{apApPassword?.apPasswords ?? apPassword}</span>
+                  {getPasswordRegenerationMessage() && (
+                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                      {getPasswordRegenerationMessage()}
+                    </div>
+                  )}
+                </>
+              )
             }
           />
         }
