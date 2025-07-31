@@ -22,7 +22,7 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
   [ConfigTemplateType.SYSLOG]: PolicyType.SYSLOG,
   [ConfigTemplateType.ROGUE_AP_DETECTION]: PolicyType.ROGUE_AP_DETECTION,
   [ConfigTemplateType.ETHERNET_PORT_PROFILE]: PolicyType.ETHERNET_PORT_PROFILE,
-  [ConfigTemplateType.TUNNEL_PROFILE]: PolicyType.TUNNEL_PROFILE
+  [ConfigTemplateType.TUNNEL_SERVICE]: PolicyType.TUNNEL_PROFILE
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {

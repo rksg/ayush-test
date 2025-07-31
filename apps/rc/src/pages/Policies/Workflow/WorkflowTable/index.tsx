@@ -141,7 +141,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       render: (_, row) => {
         if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
           const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
-          if (link) return <EnrollmentPortalLink url={link.href}/>
+          if (link) return <EnrollmentPortalLink url={link.href} name={row?.name || 'qr-code'}/>
         }
         return undefined
       }

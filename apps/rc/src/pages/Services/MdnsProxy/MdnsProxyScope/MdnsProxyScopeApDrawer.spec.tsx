@@ -8,7 +8,9 @@ import {
   ServiceType,
   Venue,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  CommonRbacUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -31,8 +33,16 @@ describe('MdnsProxyScopeApDrawer', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json(mockedApList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueList))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

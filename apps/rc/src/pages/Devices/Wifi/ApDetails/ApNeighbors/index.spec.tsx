@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { apApi, switchApi, venueApi }                               from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -37,18 +38,26 @@ describe('ApNeighborsTab', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ ...mockedAp }))
       ),
       rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
+        WifiRbacUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
       ),
       rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
+        WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

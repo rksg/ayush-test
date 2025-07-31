@@ -72,19 +72,6 @@ describe('AP Network IP settings', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(mockApViewModel))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApNetworkSettings.url,
-        (_, res, ctx) => res(ctx.json(null))
-      ),
-      rest.put(
-        WifiUrlsInfo.updateApNetworkSettings.url,
-        (_, res, ctx) => res(ctx.json(202))
-      ),
-      // rbac
       rest.get(WifiRbacUrlsInfo.getApNetworkSettings.url,
         (_, res, ctx) => res(ctx.json(null))
       ),

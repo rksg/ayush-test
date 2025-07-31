@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                              from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -12,10 +12,14 @@ import { ApTraceRouteForm } from './apTraceRouteForm'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useApContext: () => ({ tenantId: 'tenant-id', serialNumber: 'serial-number' })
+  useApContext: () => ({
+    tenantId: 'tenant-id',
+    serialNumber: 'serial-number',
+    venueId: 'venue-id'
+  })
 }))
 
-const pingResponse = {
+const traceRouteResponse = {
   requestId: '2261f786-45b4-48c1-887d-7b13f3a4fb9f',
   response:
     { response: 'traceroute to 1.1.1.1 (1.1.1.1)' }
@@ -28,8 +32,8 @@ describe('ApTraceRouteForm', () => {
 
     mockServer.use(
       rest.patch(
-        WifiUrlsInfo.traceRouteAp.url,
-        (_, res, ctx) => res(ctx.json(pingResponse)))
+        WifiRbacUrlsInfo.traceRouteAp.url,
+        (_, res, ctx) => res(ctx.json(traceRouteResponse)))
     )
   })
 
