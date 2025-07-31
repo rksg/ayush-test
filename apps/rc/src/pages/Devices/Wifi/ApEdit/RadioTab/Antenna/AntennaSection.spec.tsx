@@ -130,7 +130,6 @@ describe('AP Antenna Type Section', () => {
   })
 
   it('should render correctly when use venue settings', async () => {
-    // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>

@@ -32,7 +32,7 @@ export function VenueOrApGroupSettingsHeader (props: {
                       ' <venueOrApGroupName></venueOrApGroupName>'}
                     values={{
                       venueOrApGroupName: () => {
-                        return apGroupId ? 'AP Group' : 'Venue'
+                        return apGroupId ? 'AP Group' : '<VenueSingular></VenueSingular>'
                       }
                     }}
                   />

@@ -39,36 +39,33 @@ const getCurrentAPGroup = (editData: Network, venueId: string, apGroupId: string
   return undefined
 }
 
-// eslint-disable-next-line max-len
 const getApGroupData = (editData: Network, venueId: string, apGroupId: string) => {
 
   const wlan = editData?.deepNetwork?.wlan
 
   const findApGroup = getCurrentAPGroup(editData, venueId, apGroupId)
-  if (findApGroup) {
-    const {
-      vlanId: apGroupVlanId,
-      vlanPoolId: apGroupVlanPoolId,
-      radioTypes=[] } = findApGroup
+  if (!findApGroup) return defaultEditApGroup
 
-    const wlanVlanId = wlan?.vlanId || 1
-    const {
-      id: wlanVlanPoolId
-    } = wlan?.advancedCustomization?.vlanPool || {}
+  const {
+    vlanId: apGroupVlanId,
+    vlanPoolId: apGroupVlanPoolId,
+    radioTypes=[] } = findApGroup
 
-    const vlanId = apGroupVlanId || wlanVlanId
-    const vlanPoolId = apGroupVlanPoolId || wlanVlanPoolId || ''
+  const wlanVlanId = wlan?.vlanId || 1
+  const {
+    id: wlanVlanPoolId
+  } = wlan?.advancedCustomization?.vlanPool || {}
 
-    const vlanType = (!vlanPoolId)? VlanType.VLAN : VlanType.Pool
+  const vlanId = apGroupVlanId || wlanVlanId
+  const vlanPoolId = apGroupVlanPoolId || wlanVlanPoolId || ''
 
-    return {
-      vlanType,
-      vlanId,
-      vlanPoolId,
-      radioTypes } as EditApGroup
-  }
+  const vlanType = (!vlanPoolId)? VlanType.VLAN : VlanType.Pool
 
-  return defaultEditApGroup
+  return {
+    vlanType,
+    vlanId,
+    vlanPoolId,
+    radioTypes } as EditApGroup
 }
 
 const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
@@ -79,9 +76,6 @@ const IsSupport6g = (editData: Network, options?: Record<string, boolean>) => {
   const network = editData?.deepNetwork
   return IsNetworkSupport6g(network, options)
 }
-
-// eslint-disable-next-line max-len
-const MultipleValues = <div style={{ color: cssStr('--acx-accents-orange-50'), fontStyle: 'oblique' }}>Multiple values</div>
 
 // eslint-disable-next-line max-len
 export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (data: Network[], oldData: Network[]) => void }) {
@@ -106,6 +100,11 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
     // eslint-disable-next-line max-len
     defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.'
   })
+
+  // eslint-disable-next-line max-len
+  const MultipleValues = <div style={{ color: cssStr('--acx-accents-orange-50'), fontStyle: 'oblique' }}>
+    {$t({ defaultMessage: 'Multiple values' })}
+  </div>
 
   useEffect(() => {
     if (visible && editData) {
