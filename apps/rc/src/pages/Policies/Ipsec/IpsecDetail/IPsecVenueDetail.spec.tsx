@@ -2,26 +2,12 @@ import { rest } from 'msw'
 
 import { ipSecApi }                                                                                           from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, PolicyOperation, PolicyType, IpsecViewData, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Path }                                                                                               from '@acx-ui/react-router-dom'
 import { Provider, store }                                                                                    from '@acx-ui/store'
 import { mockServer, render, within, screen }                                                                 from '@acx-ui/test-utils'
 
 import {  mockedApQueryData, mockedNetworkQueryData, mockedVenueId1, mockedVenueName1, mockedVenueQueryData, mockIpSecDetail } from '../__tests__/fixtures'
 
 import IpsecVenueDetail from './IpsecVenueDetail'
-
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
-  search: '',
-  hash: ''
-}
-
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (): Path => mockedTenantPath
-}))
 
 const detailPath = '/:tenantId/t/' + getPolicyRoutePath(
   { type: PolicyType.IPSEC,

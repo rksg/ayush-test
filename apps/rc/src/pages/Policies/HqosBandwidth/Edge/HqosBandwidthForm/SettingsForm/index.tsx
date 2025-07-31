@@ -2,8 +2,7 @@
 import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Tooltip, Typography } from 'antd'
 import { useIntl }                                                                         from 'react-intl'
 
-import { Table, TableProps, cssStr, useStepFormContext }                                                            from '@acx-ui/components'
-import { SpaceWrapper }                                                                                             from '@acx-ui/rc/components'
+import { Table, TableProps, cssStr, useStepFormContext, SpaceWrapper }                                              from '@acx-ui/components'
 import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                       from '@acx-ui/utils'
 

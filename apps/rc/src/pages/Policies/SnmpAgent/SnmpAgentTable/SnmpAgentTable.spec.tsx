@@ -3,9 +3,15 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { Path }    from 'react-router-dom'
 
-import { policyApi }                                                   from '@acx-ui/rc/services'
-import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider, store }                                             from '@acx-ui/store'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  ApSnmpRbacUrls,
+  CommonUrlsInfo,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -63,8 +69,12 @@ describe('SnmpAgentTable', () => {
     store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        ApSnmpUrls.getApSnmpFromViewModel.url,
+        ApSnmpRbacUrls.getApSnmpFromViewModel.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -108,7 +118,7 @@ describe('SnmpAgentTable', () => {
 
     mockServer.use(
       rest.delete(
-        ApSnmpUrls.deleteApSnmpPolicy.url,
+        ApSnmpRbacUrls.deleteApSnmpPolicy.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -183,7 +193,7 @@ describe('SnmpAgentTable', () => {
 
     mockServer.use(
       rest.post(
-        ApSnmpUrls.getApSnmpFromViewModel.url,
+        ApSnmpRbacUrls.getApSnmpFromViewModel.url,
         (req, res, ctx) => res(ctx.json(mockDataWithOnlyVenueIds))
       )
     )
@@ -268,7 +278,7 @@ describe('SnmpAgentTable', () => {
 
       mockServer.use(
         rest.post(
-          ApSnmpUrls.getApSnmpFromViewModel.url,
+          ApSnmpRbacUrls.getApSnmpFromViewModel.url,
           (req, res, ctx) => res(ctx.json(mockDataWithOnlyApActivations))
         )
       )
@@ -300,7 +310,7 @@ describe('SnmpAgentTable', () => {
       const deleteFn = jest.fn()
       mockServer.use(
         rest.delete(
-          ApSnmpUrls.deleteApSnmpPolicy.url,
+          ApSnmpRbacUrls.deleteApSnmpPolicy.url,
           (req, res, ctx) => {
             deleteFn(req.body)
             return res(ctx.json({ requestId: '12345' }))

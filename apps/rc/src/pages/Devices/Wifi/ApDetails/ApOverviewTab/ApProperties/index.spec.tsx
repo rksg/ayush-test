@@ -6,18 +6,16 @@ import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi }        from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
-  CommonUrlsInfo,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo,
   AFCStatus,
   AFCPowerMode
 } from '@acx-ui/rc/utils'
 import { Provider, store  }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
+import { apDetails, apLanPorts, apRadio, currentAP, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
 
 import { ApProperties } from '.'
 
@@ -260,18 +258,15 @@ const mockedSocket = {
   }
 }
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({ venueId: 'mockVenueId', serialNumber: '422039000034' })
-}))
-
 describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenue.url,
+        CommonRbacUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({
+          id: 'venue-id',
+          name: 'venue-1',
           address: {
             latitude: 37.4112751,
             longitude: -122.0191908
@@ -279,23 +274,20 @@ describe('ApProperties', () => {
         }))
       ),
       rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (req, res, ctx) => res(ctx.json({
-          apPassword: 'admin!234'
-        }))
-      ),
-      rest.get(
         WifiRbacUrlsInfo.getApOperational.url.replace('?operational=true', ''),
         (_, res, ctx) => res(ctx.json({
-          loginPassword: 'admin!234'
+          apPassword: 'admin!234'
         }))
       ),
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({
-          serialNumber: '422039000034',
-          apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
-          name: 'fake_AP'
+          date: [{
+            serialNumber: '422039000034',
+            apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+            name: 'fake_AP',
+            venueId: 'venue-id'
+          }]
         }))
       ),
       rest.post(
@@ -310,24 +302,8 @@ describe('ApProperties', () => {
         }))
       ),
       rest.get(
-        WifiUrlsInfo.getApLanPorts.url,
-        (req, res, ctx) => res(ctx.json(apLanPorts))
-      ),
-      rest.get(
         WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApRadioCustomization.url,
-        (req, res, ctx) => res(ctx.json(apRadio))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(wifiCapabilities))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
-        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         WifiRbacUrlsInfo.getApRadioCustomization.url,
@@ -343,10 +319,6 @@ describe('ApProperties', () => {
         WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json(portData))
-      ),
       rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portData))
       ),
@@ -357,15 +329,15 @@ describe('ApProperties', () => {
       rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (req, res, ctx) => res(ctx.json(switchData))
       ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(lagList))
-      ),
       rest.get(SwitchRbacUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(lagList))
       ),
       rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       ),
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
@@ -379,12 +351,6 @@ describe('ApProperties', () => {
       ),
       rest.patch(
         WifiRbacUrlsInfo.detectApNeighbors.url,
-        (req, res, ctx) => {
-          return res(ctx.json({ requestId: '123456789' }))
-        }
-      ),
-      rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => {
           return res(ctx.json({ requestId: '123456789' }))
         }

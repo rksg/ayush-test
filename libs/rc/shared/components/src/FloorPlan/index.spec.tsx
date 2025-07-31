@@ -217,6 +217,10 @@ describe('Floor Plans', () => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))
         }
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ ...meshApList }))
       )
     )
     params = {
@@ -357,13 +361,6 @@ describe('Floor Plans', () => {
 
   it('should render unplaced AP with mesh role', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
-
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json({ ...meshApList }))
-      )
-    )
 
     render(<Provider><Form><DndProvider backend={HTML5Backend}><FloorPlan />
     </DndProvider></Form></Provider>, {

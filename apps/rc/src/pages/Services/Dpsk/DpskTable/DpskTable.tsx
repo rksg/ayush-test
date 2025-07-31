@@ -9,15 +9,13 @@ import {
   SimpleListTooltip,
   Table,
   TableProps,
-  Loader,
-  TableColumn
+  Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useEnforcedStatus }                        from '@acx-ui/rc/components'
 import {
   useDeleteDpskMutation,
   useGetEnhancedDpskListQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -41,7 +39,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                               from '@acx-ui/types'
+import { RolesEnum, TableColumn }                                  from '@acx-ui/types'
 import { hasRoles }                                                from '@acx-ui/user'
 import { useTableQuery }                                           from '@acx-ui/utils'
 
@@ -167,13 +165,11 @@ export default function DpskTable () {
 }
 
 function useColumns () {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const intl = useIntl()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkNameMap } = getNetworkListQuery({
+  const { networkNameMap } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],

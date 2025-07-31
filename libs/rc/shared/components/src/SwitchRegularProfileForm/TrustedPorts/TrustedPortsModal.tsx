@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsForm }    from '@acx-ui/components'
-import { TrustedPort, getFamilyAndModel } from '@acx-ui/rc/utils'
+import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { getFamilyAndModel }           from '@acx-ui/rc/switch/utils'
+import { TrustedPort }                 from '@acx-ui/rc/utils'
 
 import { SelectModelStep }  from './SelectModelStep'
 import { TrustedPortsStep } from './TrustedPortsStep'

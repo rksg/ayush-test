@@ -2,7 +2,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetApSnmpViewModelQuery }                   from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
@@ -32,12 +31,10 @@ const rbacSnmpFields = [
 export default function SnmpAgentDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  // eslint-disable-next-line
 
   const defaultPayload = {
     searchString: '',
-    fields: (isUseRbacApi) ? rbacSnmpFields: [ 'id', 'name', 'v2Agents', 'v3Agents' ],
+    fields: rbacSnmpFields,
     sortField: 'name',
     sortOrder: 'ASC',
     page: 1,
@@ -52,10 +49,8 @@ export default function SnmpAgentDetail () {
         id: [params.policyId]
       }
     },
-    enableRbac: isUseRbacApi,
-    customHeaders:
-    ( isUseRbacApi ?
-      GetApiVersionHeader(ApiVersionEnum.v1_1):undefined)
+    enableRbac: true,
+    customHeaders: GetApiVersionHeader(ApiVersionEnum.v1_1)
   })
 
   const basicData = tableQuery.data?.data?.[0]

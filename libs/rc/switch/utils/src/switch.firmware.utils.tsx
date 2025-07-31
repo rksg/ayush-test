@@ -1,7 +1,10 @@
 import _ from 'lodash'
 
-import { FirmwareSwitchVenueVersionsV1002,
-  SwitchFirmwareModelGroup } from './types'
+import {
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup
+} from './types'
+
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -34,9 +37,23 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
   }
 }
 
-export const checkVersionAtLeast10010gCd1= (version: string): boolean => {
+export const checkVersionAtLeast10010gCd1 = (version: string): boolean => {
   if (_.isString(version)) {
     return isVerGEVer(version, '10010g_cd1', true)
+  }
+  return false
+}
+
+export const checkVersionAtLeast10010h = (version: string): boolean => {
+  if (_.isString(version)) {
+    return version.includes('10010h') || isVerGEVer(version, '10010h', true)
+  }
+  return false
+}
+
+export const checkVersionAtLeast10020c = (version: string): boolean => {
+  if (_.isString(version)) {
+    return version.includes('10020c') || isVerGEVer(version, '10020c', true)
   }
   return false
 }
@@ -85,10 +102,21 @@ export const getStackUnitsMinLimitationV1002 = (
   if (switchModel?.includes('ICX8200')) {
     return checkVersionAtLeast10010b(currentFirmware) ? 12 : 4
   } else if (switchModel?.includes('ICX7150')) {
-    if(checkVersionAtLeast10010gCd1(currentFirmware)){
+    if(checkVersionAtLeast10010gCd1(currentFirmware)) {
       return 8
     }
     return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
+  } else if (switchModel?.match(/ICX8100-.*-[xX]/)) {
+    if(currentFirmware.includes('10020')){
+      if (checkVersionAtLeast10020c(currentFirmware)) {
+        return 8
+      }
+    } else {
+      if (checkVersionAtLeast10010h(currentFirmware)) {
+        return 8
+      }
+    }
+    return 4
   } else { // 7550, 7650, 7850
     if (checkVersionAtLeast10010c(currentFirmware)) {
       // For the switch's own firmware, this field contains the value '10010'.
@@ -128,7 +156,6 @@ export const compareSwitchVersion = (compareVersion?: string, targetVersion?: st
   }
   return 0
 }
-
 
 export const convertSwitchVersionFormat = (version: string) => {
   // eslint-disable-next-line max-len
