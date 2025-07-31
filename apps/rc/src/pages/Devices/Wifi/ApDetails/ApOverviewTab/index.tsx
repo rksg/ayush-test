@@ -8,13 +8,20 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { GridCol, GridRow }                                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
-import { ApInfoWidget, TopologyFloorPlanWidget }                                                                                  from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery }                                                                                 from '@acx-ui/rc/services'
-import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, useApContext } from '@acx-ui/rc/utils'
-import { getUserProfile, isCoreTier }                                                                                             from '@acx-ui/user'
-import type { AnalyticsFilter }                                                                                                   from '@acx-ui/utils'
+import { GridCol, GridRow }                       from '@acx-ui/components'
+import { ApInfoWidget, TopologyFloorPlanWidget }  from '@acx-ui/rc/components'
+import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
+import {
+  ApDetails,
+  ApViewModel,
+  NetworkDevice,
+  NetworkDevicePosition,
+  NetworkDeviceType,
+  ShowTopologyFloorplanOn,
+  useApContext
+} from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
+import type { AnalyticsFilter }       from '@acx-ui/utils'
 
 import { useApFilter } from '../apFilter'
 
@@ -29,31 +36,22 @@ const apViewModelRbacPayloadFields = [
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus',
   'switchId', 'switchPort', 'poePort']
 
-const apViewModelPayloadFields = [
-  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-  'isMeshEnable', 'lastUpdTime', 'deviceModelType',
-  'venueId', 'uplink', 'apStatusData', 'tags', 'apRadioDeploy',
-  'switchId', 'switchPort']
-
 export function ApOverviewTab () {
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const params = useApContext()
   const apFilter = useApFilter(params)
   const apViewModelPayload = {
-    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
+    fields: apViewModelRbacPayloadFields,
     filters: { serialNumber: [params.serialNumber] }
   }
 
   const { data: currentAP, isLoading: isLoadingApViewModel, isFetching: isFetchingApViewModel }
   = useApViewModelQuery({
     params, payload: apViewModelPayload,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
   const { data: apDetails, isLoading: isLoadingApDetails, isFetching: isFetchingApDetails }
-  = useApDetailsQuery({ params, enableRbac: isUseWifiRbacApi })
+  = useApDetailsQuery({ params, enableRbac: true })
   useEffect(() => {
     if(currentAP) {
       const _currentApDevice: NetworkDevice = { ...currentAP,

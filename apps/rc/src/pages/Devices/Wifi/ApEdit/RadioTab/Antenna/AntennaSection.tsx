@@ -33,7 +33,6 @@ export type paramsType = {
 }
 
 export function AntennaSection () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line max-len
   const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
@@ -87,14 +86,14 @@ export function AntennaSection () {
           }).unwrap())
           : (await getApAntennaType({
             params: { venueId, serialNumber },
-            enableRbac: isUseRbacApi
+            enableRbac: true
           }).unwrap())
 
         customAntennaTypeRef.current = cloneDeep(apAntType)
 
         const venueAntType = (await getVenueAntennaType({
           params: { venueId },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }, true).unwrap())
 
         let apGroupAntType = { antennaTypeSettings: [] as VenueApAntennaTypeSettings[] }
@@ -189,7 +188,7 @@ export function AntennaSection () {
               useVenueSettings: isUseVenueSettingsRef.current,
               antennaType: form.getFieldValue('antennaType')
             }
-            await updateApAntTypeSettings({ params, payload, enableRbac: isUseRbacApi }).unwrap()
+            await updateApAntTypeSettings({ params, payload, enableRbac: true }).unwrap()
           }
         } catch (error) {
           console.log(error) // eslint-disable-line no-console

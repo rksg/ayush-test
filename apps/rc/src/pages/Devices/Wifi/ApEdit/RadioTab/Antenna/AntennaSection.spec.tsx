@@ -9,7 +9,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
-import { venuelist }                    from '../../../../__tests__/fixtures'
+import { venueList }                    from '../../../../__tests__/fixtures'
 
 import { AntennaSection } from './AntennaSection'
 
@@ -105,14 +105,14 @@ describe('AP Antenna Type Section', () => {
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venuelist.data[0] }
+  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venueList.data[0] }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueAntennaType.url,
+        WifiRbacUrlsInfo.getVenueAntennaType.url,
         (_, res, ctx) => res(ctx.json(mockVenueAntennaType))),
       rest.get(
         WifiRbacUrlsInfo.getApGroupAntennaType.url,
@@ -121,10 +121,10 @@ describe('AP Antenna Type Section', () => {
         WifiRbacUrlsInfo.updateApAntennaTypeSettingsV1001.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
-        WifiUrlsInfo.getApAntennaTypeSettings.url,
+        WifiRbacUrlsInfo.getApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json(mockApAntennaType))),
       rest.put(
-        WifiUrlsInfo.updateApAntennaTypeSettings.url,
+        WifiRbacUrlsInfo.updateApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -198,7 +198,7 @@ describe('AP Antenna Type Section with WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGL
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venuelist.data[0] }
+  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venueList.data[0] }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())

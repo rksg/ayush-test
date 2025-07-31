@@ -9,7 +9,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext }           from '../..'
-import { ApCap_T750SE, ApData_T750SE, venuelist } from '../../../../__tests__/fixtures'
+import { ApCap_T750SE, ApData_T750SE, venueList } from '../../../../__tests__/fixtures'
 
 import { ExternalAntennaSettings } from './ExternalAntennaSettings'
 
@@ -117,7 +117,7 @@ describe('AP Ext Antenna Settings', () => {
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venuelist.data[0] }
+  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venueList.data[0] }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -212,9 +212,9 @@ describe('AP Ext Antenna Settings with WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGL
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venuelist.data[0] }
+  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venueList.data[0] }
   // eslint-disable-next-line max-len
-  const defaultR760ApCtxData = { apData: ApData_T750SE, venueData: venuelist.data[0], apCapabilities: ApCap_T750SE }
+  const defaultR760ApCtxData = { apData: ApData_T750SE, venueData: venueList.data[0], apCapabilities: ApCap_T750SE }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())

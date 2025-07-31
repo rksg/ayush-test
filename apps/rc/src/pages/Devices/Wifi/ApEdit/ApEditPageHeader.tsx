@@ -52,6 +52,7 @@ function ApEditPageHeader () {
       serialNumber: serialNumber ? serialNumber : '',
       venueId: venueData ? venueData.id : ''
     },
+    enableRbac: true,
     skip: !isApGroupMoreParameterPhase1Enabled
   })
 

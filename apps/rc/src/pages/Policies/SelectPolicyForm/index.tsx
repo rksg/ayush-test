@@ -43,9 +43,7 @@ export default function SelectPolicyForm () {
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
@@ -56,7 +54,7 @@ export default function SelectPolicyForm () {
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     payload: {
       fields: ['id']
     }
@@ -66,13 +64,13 @@ export default function SelectPolicyForm () {
     payload: {
       fields: ['id']
     }
-  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
+  }).data?.totalCount || 0
   const IdentityProviderTotalCount = useGetIdentityProviderListQuery({
     params,
     payload: {
       fields: ['id']
     }
-  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
+  }).data?.totalCount || 0
   const LbsProfileTotalCount = useGetLbsServerProfileListQuery({
     params,
     payload: {
@@ -124,12 +122,12 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.WIFI_OPERATOR,
       categories: [RadioCardCategory.WIFI],
-      disabled: !supportHotspot20R1 || (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
+      disabled: (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
     },
     {
       type: ((isCaptivePortalSsoSamlEnabled)? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER),
       categories: [RadioCardCategory.WIFI],
-      disabled: !supportHotspot20R1 || (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
+      disabled: (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
     },
     {
       type: PolicyType.TUNNEL_PROFILE,

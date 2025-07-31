@@ -332,6 +332,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       filters: { venueId: [venueData?.id] },
       pageSize: 10000
     },
+    enableRbac: true,
     skip: !venueData?.id
   })
 
