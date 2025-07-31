@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
-import { ConfigTemplateEnforcementContext, useEnforcedStatus } from '@acx-ui/rc/components'
+import { useEnforcedStatus, ConfigTemplateEnforcementContext } from '@acx-ui/config-template/utils'
 import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
