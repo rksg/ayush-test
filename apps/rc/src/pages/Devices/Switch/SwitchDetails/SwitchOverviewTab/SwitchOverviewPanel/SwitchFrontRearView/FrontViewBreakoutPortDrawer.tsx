@@ -7,8 +7,8 @@ import { useIntl }        from 'react-intl'
 
 import { Table, TableProps, Drawer }                                     from '@acx-ui/components'
 import { useIsSplitOn, Features }                                        from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }                                            from '@acx-ui/rc/components'
 import {  SwitchPortStatus, defaultSort, sortProp, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getInactiveTooltip }                                            from '@acx-ui/switch/components'
 import { filterByAccess }                                                from '@acx-ui/user'
 
 import * as UI from './styledComponents'

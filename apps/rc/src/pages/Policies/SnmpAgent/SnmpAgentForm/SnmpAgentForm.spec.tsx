@@ -4,7 +4,7 @@ import { Path, To } from 'react-router-dom'
 
 import { policyApi } from '@acx-ui/rc/services'
 import {
-  ApSnmpUrls,
+  ApSnmpRbacUrls,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -17,80 +17,75 @@ import SnmpAgentForm from './SnmpAgentForm'
 const mockedTenantId = '__Tenant_ID__'
 const mockedPolicyId = '__Policy_ID__'
 
-const mockSnmpData = {
-  policyName: 'www',
+const mockRbacSnmpData = {
+  name: 'www',
   id: mockedPolicyId,
-  tenantId: mockedTenantId,
-  snmpV2Agents: [
-    {
-      communityName: 'joe_cn1',
-      readPrivilege: true,
-      trapPrivilege: false
-    },
-    {
-      communityName: 'joe_cn2',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: 'Trap',
-      targetAddr: '192.168.0.120',
-      targetPort: 162
-    }
-  ],
-  snmpV3Agents: [
-    {
-      userName: 'joe_un1',
-      readPrivilege: true,
-      trapPrivilege: false,
-      authProtocol: 'SHA',
-      authPassword: '1234567890',
-      privacyProtocol: 'None'
-    },
-    {
-      userName: 'joe_un2',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: 'Trap',
-      targetAddr: '192.168.0.201',
+  snmpV2Agents: [{
+    communityName: 'joe_cn1',
+    readOnlyPrivilege: true,
+    notificationPrivilege: false
+  }, {
+    communityName: 'joe_cn2',
+    readOnlyPrivilege: false,
+    notificationPrivilege: true,
+    notificationSettings: {
+      targetIpAddress: '192.168.0.120',
       targetPort: 162,
-      authProtocol: 'MD5',
-      authPassword: '123456789',
-      privacyProtocol: 'AES',
-      privacyPassword: '12345678'
+      type: 'TRAP'
     }
-  ]
+  }],
+  snmpV3Agents: [{
+    userName: 'joe_un1',
+    readPrivilege: true,
+    trapPrivilege: false,
+    authenticationType: 'SHA',
+    authenticationPassphrase: '1234567890',
+    privacyType: 'NONE'
+  }, {
+    userName: 'joe_un2',
+    readPrivilege: false,
+    trapPrivilege: true,
+    authenticationType: 'MD5',
+    authenticationPassphrase: '123456789',
+    privacyType: 'AES',
+    privacyPassphrase: '12345678',
+    notificationSettings: {
+      targetIpAddress: '192.168.0.201',
+      targetPort: 162,
+      type: 'TRAP'
+    }
+  }]
 }
 
-const mockSnmpListData = [
-  mockSnmpData,
+const mockRbacSnmpListData = [
+  mockRbacSnmpData,
   {
-    policyName: 'ttt',
+    name: 'ttt',
     id: '__Policy_ID_2__',
-    tenantId: mockedTenantId,
-    snmpV2Agents: [
-      {
-        communityName: 'ttt2',
-        readPrivilege: true,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.120',
-        targetPort: 162
-      }
-    ],
-    snmpV3Agents: [
-      {
-        userName: 'ttt3',
-        readPrivilege: false,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.100',
+    snmpV2Agents: [{
+      communityName: 'ttt2',
+      readOnlyPrivilege: true,
+      notificationPrivilege: true,
+      notificationSettings: {
+        targetIpAddress: '192.168.0.120',
         targetPort: 162,
-        authProtocol: 'SHA',
-        authPassword: '1234567890',
-        privacyProtocol: 'None'
+        type: 'TRAP'
       }
-    ]
+    }],
+    snmpV3Agents: [{
+      userName: 'ttt3',
+      readOnlyPrivilege: false,
+      notificationPrivilege: true,
+      authenticationType: 'SHA',
+      authenticationPassphrase: '1234567890',
+      privacyType: 'NONE',
+      notificationSettings: {
+        targetIpAddress: '192.168.0.100',
+        targetPort: 162,
+        type: 'TRAP'
+      }
+    }]
   }]
-
 
 
 // eslint-disable-next-line max-len
@@ -127,21 +122,21 @@ describe('SnmpAgentForm', () => {
     mockedUseNavigate.mockClear()
 
     mockServer.use(
-      rest.post(ApSnmpUrls.addApSnmpPolicy.url,
+      rest.post(ApSnmpRbacUrls.addApSnmpPolicy.url,
         (_, res, ctx) => {
           mockAddFn()
           return res(ctx.json({ requestId: '123456789' }))
         }
       ),
-      rest.get(ApSnmpUrls.getApSnmpPolicy.url,
+      rest.get(ApSnmpRbacUrls.getApSnmpPolicy.url,
         (_, res, ctx) => {
           mockGetProfileApi()
-          return res(ctx.json(mockSnmpData))
+          return res(ctx.json(mockRbacSnmpData))
         }
       ),
-      rest.get(ApSnmpUrls.getApSnmpPolicyList.url,
-        (_, res, ctx) => res(ctx.json(mockSnmpListData))),
-      rest.put(ApSnmpUrls.updateApSnmpPolicy.url,
+      rest.post(ApSnmpRbacUrls.getApSnmpFromViewModel.url,
+        (_, res, ctx) => res(ctx.json({ data: mockRbacSnmpListData }))),
+      rest.put(ApSnmpRbacUrls.updateApSnmpPolicy.url,
         (_, res, ctx) => {
           mockEditFn()
           return res(ctx.json({ requestId: '123456789' }))
@@ -178,7 +173,6 @@ describe('SnmpAgentForm', () => {
       </Provider>, {
         route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId }, path: editPath }
       })
-
 
     const header = screen.getByRole('heading', { name: /Edit SNMP Agent/i })
     expect(header).toBeInTheDocument()

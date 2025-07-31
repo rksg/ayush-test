@@ -10,6 +10,7 @@ import { useIntl }                                                   from 'react
 
 import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
+import { usePathBasedOnConfigTemplate }                    from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useNavigate, useLocation, useParams }             from '@acx-ui/react-router-dom'
@@ -21,7 +22,6 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import {
   ApRadioTypeEnum,

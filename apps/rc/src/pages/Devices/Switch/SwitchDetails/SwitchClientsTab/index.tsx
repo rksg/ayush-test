@@ -1,4 +1,4 @@
-import { SwitchClientsTable } from '@acx-ui/rc/components'
+import { SwitchClientsTable } from '@acx-ui/switch/components'
 
 export function SwitchClientsTab () {
   return (

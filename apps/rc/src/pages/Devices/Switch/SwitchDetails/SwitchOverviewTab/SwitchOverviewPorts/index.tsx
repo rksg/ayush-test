@@ -1,5 +1,5 @@
-import { SwitchPortTable } from '@acx-ui/rc/components'
 import { SwitchViewModel } from '@acx-ui/rc/utils'
+import { SwitchPortTable } from '@acx-ui/switch/components'
 
 export function SwitchOverviewPorts (props: {
   switchDetail?: SwitchViewModel

@@ -2,15 +2,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
-import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }            from '@acx-ui/user'
+import { apApi }                                                                    from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
+import { mockRestApiQuery, mockServer, render, screen }                             from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }                                        from '@acx-ui/user'
 
 
-import { apDetailData } from './__tests__/fixtures'
-import { activities }   from './ApTimelineTab/__tests__/fixtures'
+import { activities } from './ApTimelineTab/__tests__/fixtures'
 
 import ApDetails from '.'
 
@@ -62,7 +61,7 @@ const list = {
       name: 'mock-ap-1',
       model: 'R510',
       fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
+      venueId: 'venue-id',
       venueName: 'Mock-Venue',
       deviceStatus: '2_00_Operational',
       IP: '10.00.000.101',
@@ -98,27 +97,40 @@ describe('ApDetails', () => {
     store.dispatch(apApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(list))
       ),
-      rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'venue1', id: 'venue-id' }] }))
       ),
       rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
+        WifiRbacUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
       ),
       rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
+        WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        WifiUrlsInfo.getApCapabilities.url,
+        WifiRbacUrlsInfo.getWifiCapabilities.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

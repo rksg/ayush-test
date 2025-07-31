@@ -17,12 +17,11 @@ import {
   ServiceDetailsLinkProps,
   ServiceOperation,
   ServiceRoutePathProps,
-  useConfigTemplate,
-  useConfigTemplateTenantLink
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { LinkProps, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RbacOpsIds, ScopeKeys }                                   from '@acx-ui/types'
-import { resolveTenantTypeFromPath }                               from '@acx-ui/utils'
+import { LinkProps, TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { RbacOpsIds, ScopeKeys }              from '@acx-ui/types'
+import { resolveTenantTypeFromPath }          from '@acx-ui/utils'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
@@ -170,13 +169,4 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
   }
 
   return <span>{name}</span>
-}
-
-// eslint-disable-next-line max-len
-export function usePathBasedOnConfigTemplate (regularPath: string, configTemplatePath?: string): Path {
-  const { isTemplate } = useConfigTemplate()
-  const baseEditPath = useTenantLink(regularPath)
-  const baseConfigTemplateEditPath = useConfigTemplateTenantLink(configTemplatePath ?? regularPath)
-
-  return isTemplate ? baseConfigTemplateEditPath : baseEditPath
 }

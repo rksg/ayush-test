@@ -36,6 +36,9 @@ import {
   isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/switch/utils'
 import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
+import {
   getSwitchStatusString,
   SwitchRow,
   transformSwitchStatus,
@@ -117,17 +120,6 @@ const PasswordTooltip = {
   CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
-export const defaultSwitchPayload = {
-  searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
-  fields: [
-    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword', 'extIp', 'venueId'
-  ]
-}
-
 export type SwitchTableRefType = { openImportDrawer: ()=>void }
 
 interface SwitchTableProps
@@ -149,6 +141,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -655,12 +648,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       case 'ICX8100-48':
       case 'ICX8100-48P':
       case 'ICX8100-C08PF':
+        return true
       case 'ICX8100-24-X':
       case 'ICX8100-24P-X':
       case 'ICX8100-48-X':
       case 'ICX8100-48P-X':
+      case 'ICX8100-48PF-X':
       case 'ICX8100-C08PF-X':
-        return true
+      case 'ICX8100-C16PF-X':
+        return !isSupport8100Phase2
       default:
         return false
     }

@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { useEnforcedStatus }      from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
@@ -46,7 +47,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
 
-import { useEnforcedStatus, useIsConfigTemplateEnabledByType } from '../../configTemplates'
+import { useIsConfigTemplateEnabledByType } from '../../configTemplates'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'

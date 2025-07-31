@@ -11,6 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { useEnforcedStatus }      from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useEnhanceNetworkVenueTableQuery,
@@ -39,7 +40,6 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { useTableQuery }  from '@acx-ui/utils'
 
-import { useEnforcedStatus }                                                    from '../../configTemplates'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import {

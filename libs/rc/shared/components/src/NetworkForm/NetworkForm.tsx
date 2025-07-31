@@ -12,7 +12,8 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import {
   useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
@@ -76,8 +77,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                                                                     from '../NetworkDetails/services'
+import { useIsConfigTemplateEnabledByType } from '../configTemplates'
+import { useGetNetwork }                    from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }            from '../useEdgeActions'
 
 import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
@@ -719,6 +721,17 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
+
+    if(tmpGuestPageState.guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval &&
+      tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType
+    ){
+      if(tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType === 'email'){
+        tmpGuestPageState.guestPortal.hostGuestConfig.hostDomains = []
+      } else if(tmpGuestPageState.guestPortal.hostGuestConfig?.hostApprovalType === 'domain'){
+        tmpGuestPageState.guestPortal.hostGuestConfig.hostEmails = []
+      }
+    }
+
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       delete data.authRadius
       delete data.accountingRadius
