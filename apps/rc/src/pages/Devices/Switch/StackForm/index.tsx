@@ -105,13 +105,13 @@ export type SwitchModelParams = {
   serialNumber: string;
   isSupport8100: boolean;
   isSupport8100X: boolean;
-  isSupport8100Phase2: boolean;
+  isSupport8100XStacking: boolean;
   isSupport7550Zippy: boolean;
   activeSerialNumber?: string;
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8100, isSupport8100X, isSupport8100Phase2,
+  const { serialNumber, isSupport8100, isSupport8100X, isSupport8100XStacking,
     isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
@@ -128,7 +128,7 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
 
   const model = getSwitchModel(serialNumber) || ''
 
-  if (isNotSupportStackModel(model, isSupport8100Phase2)) {
+  if (isNotSupportStackModel(model, isSupport8100XStacking)) {
     return Promise.reject(
       // eslint-disable-next-line max-len
       $t({ defaultMessage: 'This switch model does not support stacking. Add it as a standalone switch.' })
@@ -169,7 +169,7 @@ export function StackForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -417,7 +417,7 @@ export function StackForm () {
     setTableData(dataRows)
 
     const modelList = dataRows.filter(row =>
-      row.model && !isNotSupportStackModel(row.model, isSupport8100Phase2) &&
+      row.model && !isNotSupportStackModel(row.model, isSupport8100XStacking) &&
       row.model !== 'Unknown'
     ).map(row => row.model)
     setValidateModel(modelList)
@@ -677,7 +677,7 @@ export function StackForm () {
                   serialNumber: value,
                   isSupport8100: isSupport8100,
                   isSupport8100X: isSupport8100X,
-                  isSupport8100Phase2: isSupport8100Phase2,
+                  isSupport8100XStacking: isSupport8100XStacking,
                   isSupport7550Zippy: isSupport7550Zippy,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
@@ -696,7 +696,7 @@ export function StackForm () {
               options={standaloneSwitches?.filter(s =>
                 row.id === s.serialNumber ||
               (!tableData.find(d => d.id === s.serialNumber)
-                && !isNotSupportStackModel(s.model, isSupport8100Phase2))
+                && !isNotSupportStackModel(s.model, isSupport8100XStacking))
               ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
               }))
