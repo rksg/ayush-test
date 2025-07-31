@@ -12,9 +12,9 @@ import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
 import { GridRow, Button }              from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }           from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,

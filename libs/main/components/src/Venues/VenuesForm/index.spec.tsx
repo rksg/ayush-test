@@ -54,7 +54,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ProtectedEnforceTemplateToggleVenue: () => <div>ProtectedEnforceTemplateToggleVenue</div>,
+  ProtectedEnforceTemplateToggleVenue: () => <div>ProtectedEnforceTemplateToggleVenue</div>
+}))
+
+jest.mock('@acx-ui/config-template/utils', () => ({
   useEnforcedStatus: () => ({
     getEnforcedStepsFormProps: jest.fn()
   })
