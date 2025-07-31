@@ -142,9 +142,36 @@ export const Timeline = (props: TimelineProps) => {
     </Descriptions>
     <AntTimeline>
       {modifiedProps.length > 1
-        ? modifiedProps
-          .filter(item => !(item.status === 'SUCCESS' &&
-              /Update Switch .* Port Status/.test(item.description)))
+        ? (() => {
+          // Check if any item has Port Configuration
+          const hasPortConfiguration = modifiedProps.some(item =>
+            item.status === 'SUCCESS' &&
+            /Update Switch .* Port Configuration/.test(item.description)
+          )
+
+          if (hasPortConfiguration) {
+            // If Port Configuration exists, hide all Port Status items
+            return modifiedProps.filter(item => !(
+              item.status === 'SUCCESS' &&
+              /Update Switch .* Port Status/.test(item.description)
+            ))
+          } else {
+            // If no Port Configuration, keep at least 1 Port Status item
+            let firstMatchKept = false
+            return modifiedProps.filter(item => {
+              const isMatch = item.status === 'SUCCESS' &&
+                /Update Switch .* Port Status/.test(item.description)
+              if (isMatch) {
+                if (!firstMatchKept) {
+                  firstMatchKept = true
+                  return true // Keep the first match
+                }
+                return false // Filter out subsequent matches
+              }
+              return true // Keep non-matches
+            })
+          }
+        })()
           .map((item, index) => [
             StartDot(item, index),
             EndDot(item, index)
