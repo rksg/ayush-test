@@ -5,9 +5,9 @@ import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import { useLazyApListQuery }                              from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,

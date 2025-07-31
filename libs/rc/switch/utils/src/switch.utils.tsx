@@ -983,6 +983,17 @@ export const allMultipleEditableFields = [
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
 
+export const defaultSwitchPayload = {
+  searchString: '',
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
+  fields: [
+    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
+    'syncedAdminPassword', 'adminPassword', 'extIp'
+  ]
+}
+
 export const isNotSupportStackModel = (model: string, isSupport8100Phase2: boolean) => {
   switch(model) {
     case 'ICX7150-C08P':

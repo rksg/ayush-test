@@ -3,10 +3,11 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch, Tooltip } from 'antd'
 import { isEqual }                                           from 'lodash'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { DeleteOutlined, ConfigurationOutlined }                                           from '@acx-ui/icons-new'
-import { useEnforcedStatus, useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate }          from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { DeleteOutlined, ConfigurationOutlined }                    from '@acx-ui/icons-new'
+import { useConfigTemplateVisibilityMap }                           from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,

@@ -1,6 +1,6 @@
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { isLAGMemberPort }                                from '@acx-ui/rc/components'
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { isLAGMemberPort }                                from '@acx-ui/switch/components'
 
 import { FrontViewBreakoutPort } from './FrontViewBreakoutPort'
 import { FrontViewPort }         from './FrontViewPort'
