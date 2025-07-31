@@ -37,6 +37,7 @@ import {
   useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
 import {
+  allMultipleEditableFields,
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
@@ -65,14 +66,12 @@ import {
   SwitchUrlsInfo,
   SchedulerTypeEnum,
   PoeSchedulerType,
-  allMultipleEditableFields,
   PolicyType,
   usePolicyListBreadcrumb,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                                        from '@acx-ui/react-router-dom'
 import { store }                                            from '@acx-ui/store'
-import { MacACLDrawer, PoeSchedule }                        from '@acx-ui/switch/components'
 import { SwitchScopes }                                     from '@acx-ui/types'
 import { hasPermission }                                    from '@acx-ui/user'
 import { getIntl, getOpsApi, noDataDisplay, useTableQuery } from '@acx-ui/utils'
@@ -85,12 +84,14 @@ import {
   AuthTimeoutAction,
   authTimeoutActionTypeLabel,
   checkVlanDiffFromTargetVlan,
+  handleAuthFieldChange,
   getAuthFieldDisabled,
   PortControl,
   portControlTypeLabel,
   shouldHideAuthField
 } from '../FlexibleAuthentication'
-import { handleAuthFieldChange } from '../FlexibleAuthentication'
+import { MacACLDrawer } from '../MacACLs/MacACLDrawer'
+import { PoeSchedule }  from '../PoeSchedule'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'

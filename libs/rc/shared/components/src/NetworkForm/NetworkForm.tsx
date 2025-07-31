@@ -12,7 +12,8 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import {
   useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
@@ -76,9 +77,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                                   from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
+import { useGetNetwork }         from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'

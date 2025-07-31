@@ -11,13 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { SearchOutlined }                          from '@acx-ui/icons'
-import { addressParserWithLatLng, defaultAddress } from '@acx-ui/msp/utils'
-import {
-  ProtectedEnforceTemplateToggleVenue,
-  useEnforcedStatus
-} from '@acx-ui/rc/components'
+import { useEnforcedStatus }                                                from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                                   from '@acx-ui/icons'
+import { addressParserWithLatLng, defaultAddress }                          from '@acx-ui/msp/utils'
+import { ProtectedEnforceTemplateToggleVenue }                              from '@acx-ui/rc/components'
 import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes } from '@acx-ui/rc/generic-features/components'
 import {
   useAddVenueMutation,
