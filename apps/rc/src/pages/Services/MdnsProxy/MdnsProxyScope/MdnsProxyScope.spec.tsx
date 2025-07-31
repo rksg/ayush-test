@@ -4,10 +4,12 @@ import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
-  MdnsProxyScopeData,
+  ApMdnsProxyScopeData,
   ServiceType,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  CommonRbacUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -46,12 +48,16 @@ describe('MdnsProxyScope', () => {
         (req, res, ctx) => res(ctx.json({ ...mockedVenueList }))
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedApList }))
       ),
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (req, res, ctx) => res(ctx.json({ }))
       )
     )
   })
@@ -132,8 +138,8 @@ describe('MdnsProxyScope', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
 
-    const scopeVenueData: MdnsProxyScopeData[] = formRef.current.getFieldValue('scope')
-    const targetScopeData: MdnsProxyScopeData = {
+    const scopeVenueData: ApMdnsProxyScopeData[] = formRef.current.getFieldValue('scope')
+    const targetScopeData: ApMdnsProxyScopeData = {
       venueId: targetVenue.id,
       venueName: targetVenue.name,
       aps: [
@@ -163,7 +169,7 @@ describe('MdnsProxyScope', () => {
 
     const targetVenue = { ...multipleMockedVenueListP1.data[0] }
     const targetVenueName = targetVenue.name
-    const targetScopeData: MdnsProxyScopeData[] = [
+    const targetScopeData: ApMdnsProxyScopeData[] = [
       {
         venueId: targetVenue.id,
         venueName: targetVenueName,

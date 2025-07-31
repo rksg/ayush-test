@@ -62,43 +62,43 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
   color: var(--acx-neutrals-40);
 }
 
-h1.c5.ant-typography {
+h1.c9.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-1-font-weight);
 }
 
-h2.c5.ant-typography {
+h2.c9.ant-typography {
   line-height: var(--acx-subtitle-2-line-height);
   font-size: var(--acx-subtitle-2-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-2-font-weight);
 }
 
-h3.c5.ant-typography {
+h3.c9.ant-typography {
   line-height: var(--acx-subtitle-3-line-height);
   font-size: var(--acx-subtitle-3-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-3-font-weight);
 }
 
-h4.c5.ant-typography {
+h4.c9.ant-typography {
   line-height: var(--acx-subtitle-4-line-height);
   font-size: var(--acx-subtitle-4-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-4-font-weight);
 }
 
-h5.c5.ant-typography {
+h5.c9.ant-typography {
   line-height: var(--acx-subtitle-5-line-height);
   font-size: var(--acx-subtitle-5-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-5-font-weight);
 }
 
-.c8,
-.ant-form .c8 {
+.c12,
+.ant-form .c12 {
   color: var(--acx-primary-black);
   width: -webkit-max-content;
   width: -moz-max-content;
@@ -107,10 +107,10 @@ h5.c5.ant-typography {
   margin: 0;
 }
 
-.c8,
-.ant-form .c8,
-.c8 > label,
-.ant-form .c8 > label {
+.c12,
+.ant-form .c12,
+.c12 > label,
+.ant-form .c12 > label {
   padding: 0 4px;
   font-size: var(--acx-subtitle-5-font-size);
   font-weight: var(--acx-subtitle-5-font-weight);
@@ -118,20 +118,313 @@ h5.c5.ant-typography {
   cursor: pointer;
 }
 
-fieldset:disabled .c7,
-fieldset:disabled .ant-form .c8,
-fieldset:disabled .c8 > label,
-fieldset:disabled .ant-form .c8 > label {
+fieldset:disabled .c11,
+fieldset:disabled .ant-form .c12,
+fieldset:disabled .c12 > label,
+fieldset:disabled .ant-form .c12 > label {
   cursor: not-allowed;
 }
 
-.c8 .ant-switch {
+.c12 .ant-switch {
   margin-left: 50px;
   position: absolute;
   background: var(--acx-primary-white);
 }
 
-.c6.ant-typography {
+.c7 {
+  height: 36px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+}
+
+.c5 .ant-pro-table {
+  --acx-table-cell-horizontal-space: 8px;
+}
+
+.c5 .ant-pro-table .ant-pro-card .ant-pro-card-body {
+  padding: 0px;
+}
+
+.c5 .ant-pro-table .ant-table .parent-row-data,
+.c5 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
+.c5 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
+.c5 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
+.c5 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
+  background-color: var(--acx-neutrals-20) !important;
+  overflow: visible !important;
+}
+
+.c5 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
+  display: none;
+}
+
+.c5 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
+  padding-left: 10px !important;
+}
+
+.c5 .ant-pro-table .ant-table-cell-fix-left {
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr:first-child > th {
+  padding-top: 12px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
+  padding-top: 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr:last-child > th,
+.c5 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th {
+  border-bottom: 0;
+  padding: 0px var(--acx-table-cell-horizontal-space);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
+  -webkit-flex: unset;
+  -ms-flex: unset;
+  flex: unset;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
+  --icon-size: 11px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 0;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  visibility: hidden;
+  width: 0;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
+  visibility: visible;
+  width: unset;
+  margin-left: calc(var(--icon-size) / 2);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
+  margin-bottom: calc(var(--icon-size) / -2);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  margin-top: calc(var(--icon-size) / -2);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
+  fill: var(--acx-primary-black);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+  padding: 14px var(--acx-table-cell-horizontal-space);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td a {
+  font-size: unset;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr:last-child > th:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover,.c5 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan]:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover {
+  background: var(--acx-accents-orange-10);
+}
+
+.c5 .ant-pro-table .ant-table-thead > tr > th {
+  -webkit-user-select: none;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis a span.ant-typography {
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+  width: 100%;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c5 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c5 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
+.c5 .ant-pro-table .ant-pro-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c5 .ant-pro-table-list-toolbar {
+  -webkit-order: 2;
+  -ms-flex-order: 2;
+  order: 2;
+  height: 45px;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c5 .ant-pro-table-list-toolbar-container {
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+
+.c5 .ant-pro-table-list-toolbar-setting-item {
+  pointer-events: all;
+}
+
+.c5 .ant-pro-table-list-toolbar-setting-item svg {
+  margin-top: 3px;
+}
+
+.c5 .ant-pro-table-alert {
+  -webkit-order: 1;
+  -ms-flex-order: 1;
+  order: 1;
+  margin: 0px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c5 .ant-pro-table-alert .ant-alert {
+  height: 36px;
+  background-color: var(--acx-accents-blue-10);
+  border: var(--acx-accents-blue-10);
+  padding: 10px 16px;
+}
+
+.c5 .ant-pro-table-alert .ant-alert .ant-pro-table-alert-info {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c5 .ant-pro-table .ant-table-wrapper {
+  -webkit-order: 3;
+  -ms-flex-order: 3;
+  order: 3;
+  margin-top: -45px;
+}
+
+.c5 .ant-pro-table .ant-pagination {
+  position: relative;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+  padding: 16px 0;
+  margin: unset;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  padding: 3px 0;
+  background-color: var(--acx-primary-white);
+  z-index: 3;
+}
+
+.c10.ant-typography {
   margin-top: 20px;
   margin-bottom: 12px;
 }
@@ -224,21 +517,21 @@ fieldset:disabled .ant-form .c8 > label {
   grid-template-columns: 250px 1fr;
 }
 
-.c4 {
+.c8 {
   font-size: var(--acx-body-4-font-size);
   display: grid;
   line-height: 32px;
   grid-template-columns: 30px 1fr;
 }
 
-.c9 {
+.c13 {
   font-size: var(--acx-body-4-font-size);
   display: grid;
   line-height: 32px;
   grid-template-columns: 175px 1fr;
 }
 
-.c10 {
+.c4 {
   font-size: var(--acx-body-4-font-size);
   line-height: 32px;
   color: var(--acx-neutrals-60);
@@ -676,12 +969,1332 @@ fieldset:disabled .ant-form .c8 > label {
         style="display: none;"
       >
         <div
+          style="display: grid; grid-template-columns: 0px 1fr;"
+        >
+          <span
+            class="c4"
+            style="left: 165px;"
+          >
+            Minutes
+          </span>
+          <div
+            class="ant-form-item"
+            style="margin-bottom: 15px;"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class="ant-form-item-required"
+                  for="accountingInterimUpdates"
+                  title="Accounting Interim Updates"
+                >
+                  Accounting Interim Updates
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-input-number ant-input-number-in-form-item"
+                      style="width: 150px;"
+                    >
+                      <div
+                        class="ant-input-number-handler-wrap"
+                      >
+                        <span
+                          aria-disabled="false"
+                          aria-label="Increase Value"
+                          class="ant-input-number-handler ant-input-number-handler-up"
+                          role="button"
+                          unselectable="on"
+                        >
+                          <span
+                            aria-label="up"
+                            class="anticon anticon-up ant-input-number-handler-up-inner"
+                            role="img"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              data-icon="up"
+                              fill="currentColor"
+                              focusable="false"
+                              height="1em"
+                              viewBox="64 64 896 896"
+                              width="1em"
+                            >
+                              <path
+                                d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                              />
+                            </svg>
+                          </span>
+                        </span>
+                        <span
+                          aria-disabled="false"
+                          aria-label="Decrease Value"
+                          class="ant-input-number-handler ant-input-number-handler-down"
+                          role="button"
+                          unselectable="on"
+                        >
+                          <span
+                            aria-label="down"
+                            class="anticon anticon-down ant-input-number-handler-down-inner"
+                            role="img"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              data-icon="down"
+                              fill="currentColor"
+                              focusable="false"
+                              height="1em"
+                              viewBox="64 64 896 896"
+                              width="1em"
+                            >
+                              <path
+                                d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                              />
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <div
+                        class="ant-input-number-input-wrap"
+                      >
+                        <input
+                          aria-valuenow="5"
+                          autocomplete="off"
+                          class="ant-input-number-input"
+                          id="accountingInterimUpdates"
+                          role="spinbutton"
+                          step="1"
+                          value="5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="c3"
+          width="250px"
+        >
+          Internet Access
+          <div
+            class="ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <button
+                      aria-checked="true"
+                      class="ant-switch ant-switch-checked"
+                      id="hotspot20Settings_allowInternetAccess"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class="ant-form-item-required"
+                for="hotspot20Settings_accessNetworkType"
+                title="Access Network Type"
+              >
+                Access Network Type
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <div
+                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                    style="width: 280px; height: 30px; font-size: 11px;"
+                  >
+                    <div
+                      class="ant-select-selector"
+                    >
+                      <span
+                        class="ant-select-selection-search"
+                      >
+                        <input
+                          aria-activedescendant="hotspot20Settings_accessNetworkType_list_0"
+                          aria-autocomplete="list"
+                          aria-controls="hotspot20Settings_accessNetworkType_list"
+                          aria-haspopup="listbox"
+                          aria-owns="hotspot20Settings_accessNetworkType_list"
+                          autocomplete="off"
+                          class="ant-select-selection-search-input"
+                          id="hotspot20Settings_accessNetworkType"
+                          readonly=""
+                          role="combobox"
+                          style="opacity: 0;"
+                          type="search"
+                          unselectable="on"
+                          value=""
+                        />
+                      </span>
+                      <span
+                        class="ant-select-selection-item"
+                        title="Private"
+                      >
+                        Private
+                      </span>
+                    </div>
+                    <span
+                      aria-hidden="true"
+                      class="ant-select-arrow"
+                      style="user-select: none;"
+                      unselectable="on"
+                    >
+                      <span
+                        aria-label="down"
+                        class="anticon anticon-down ant-select-suffix"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="down"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                          />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class="ant-form-item-required"
+                for="hotspot20Settings_ipv4AddressType"
+                title="IPv4 Address"
+              >
+                IPv4 Address
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <div
+                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                    style="width: 280px; height: 30px; font-size: 11px;"
+                  >
+                    <div
+                      class="ant-select-selector"
+                    >
+                      <span
+                        class="ant-select-selection-search"
+                      >
+                        <input
+                          aria-activedescendant="hotspot20Settings_ipv4AddressType_list_0"
+                          aria-autocomplete="list"
+                          aria-controls="hotspot20Settings_ipv4AddressType_list"
+                          aria-haspopup="listbox"
+                          aria-owns="hotspot20Settings_ipv4AddressType_list"
+                          autocomplete="off"
+                          class="ant-select-selection-search-input"
+                          id="hotspot20Settings_ipv4AddressType"
+                          readonly=""
+                          role="combobox"
+                          style="opacity: 0;"
+                          type="search"
+                          unselectable="on"
+                          value=""
+                        />
+                      </span>
+                      <span
+                        class="ant-select-selection-item"
+                        title="Single NATed private address"
+                      >
+                        Single NATed private address
+                      </span>
+                    </div>
+                    <span
+                      aria-hidden="true"
+                      class="ant-select-arrow"
+                      style="user-select: none;"
+                      unselectable="on"
+                    >
+                      <span
+                        aria-label="down"
+                        class="anticon anticon-down ant-select-suffix"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="down"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                          />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="margin-bottom: -53px;"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="hotspot20Settings_connectionCapabilities"
+                  title="Connection Capabilities (11)"
+                >
+                  Connection Capabilities (11)
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="width: 550px;"
+        >
+          <div
+            class="c5"
+            style="--sticky-offset: 0px; --sticky-has-actions: 1; --sticky-has-row-actions-offset: 1;"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center c6"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-link ant-btn-sm c0"
+                  type="button"
+                >
+                  <span>
+                    Add Protocol
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div
+              class="c7"
+            />
+            <div
+              class="ant-pro-table"
+            >
+              <div
+                class="ant-pro-card"
+              >
+                <div
+                  class="ant-pro-card-body"
+                  style="padding-top: 0px;"
+                >
+                  <div
+                    class="ant-pro-table-list-toolbar"
+                  />
+                  <div
+                    class="ant-table-wrapper"
+                  >
+                    <div
+                      class="ant-spin-nested-loading"
+                    >
+                      <div
+                        class="ant-spin-container"
+                      >
+                        <div
+                          class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                        >
+                          <div
+                            class="ant-table-container"
+                          >
+                            <div
+                              class="ant-table-content"
+                              style="overflow-x: auto; overflow-y: hidden;"
+                            >
+                              <table
+                                style="width: 502px; min-width: 100%; table-layout: fixed;"
+                              >
+                                <colgroup>
+                                  <col
+                                    class="ant-table-selection-col"
+                                  />
+                                  <col
+                                    style="width: 180px;"
+                                  />
+                                  <col
+                                    style="width: 130px;"
+                                  />
+                                  <col
+                                    style="width: 80px;"
+                                  />
+                                  <col
+                                    style="width: 80px;"
+                                  />
+                                  <col
+                                    style="width: 32px;"
+                                  />
+                                </colgroup>
+                                <thead
+                                  class="ant-table-thead"
+                                >
+                                  <tr>
+                                    <th
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <div
+                                        class="ant-table-selection"
+                                      >
+                                        <label
+                                          class="ant-checkbox-wrapper"
+                                        >
+                                          <span
+                                            class="ant-checkbox"
+                                          >
+                                            <input
+                                              class="ant-checkbox-input"
+                                              type="checkbox"
+                                              value=""
+                                            />
+                                            <span
+                                              class="ant-checkbox-inner"
+                                            />
+                                          </span>
+                                        </label>
+                                      </div>
+                                    </th>
+                                    <th
+                                      class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                    >
+                                      <div
+                                        class=""
+                                      />
+                                      Protocol
+                                      <div
+                                        class=""
+                                      />
+                                    </th>
+                                    <th
+                                      class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                    >
+                                      <div
+                                        class=""
+                                      />
+                                      Protocol No.
+                                      <div
+                                        class=""
+                                      />
+                                    </th>
+                                    <th
+                                      class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                    >
+                                      <div
+                                        class=""
+                                      />
+                                      Port
+                                      <div
+                                        class=""
+                                      />
+                                    </th>
+                                    <th
+                                      class="ant-table-cell ant-table-cell-ellipsis react-resizable"
+                                    >
+                                      <div
+                                        class=""
+                                      />
+                                      Status
+                                      <div
+                                        class=""
+                                      />
+                                    </th>
+                                    <th
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                </thead>
+                                <tbody
+                                  class="ant-table-tbody"
+                                >
+                                  <tr
+                                    aria-hidden="true"
+                                    class="ant-table-measure-row"
+                                    style="height: 0px; font-size: 0px;"
+                                  >
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                    <td
+                                      style="padding: 0px; border: 0px; height: 0px;"
+                                    >
+                                      <div
+                                        style="height: 0px; overflow: hidden;"
+                                      >
+                                         
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="1_0"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="ICMP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        ICMP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="1 (ICMP)"
+                                    >
+                                      1 (ICMP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        0
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_20"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="FTP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        FTP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        20
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_22"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="SSH"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        SSH
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        22
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Open"
+                                    >
+                                      Open
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_80"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="HTTP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        HTTP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        80
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Open"
+                                    >
+                                      Open
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_443"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Used by TLS VPN"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        Used by TLS VPN
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        443
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_1723"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Used by PPTP VPNs"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        Used by PPTP VPNs
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        1723
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="6_5060"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="VoIP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        VoIP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="6 (TCP)"
+                                    >
+                                      6 (TCP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        5060
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="17_5060"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="VoIP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        VoIP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="17 (UDP)"
+                                    >
+                                      17 (UDP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        5060
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="17_500"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Used by IKEv2 (IPsec VPN)"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        Used by IKEv2 (IPsec VPN)
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="17 (UDP)"
+                                    >
+                                      17 (UDP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        500
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="17_4500"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="IPsec VPN"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        IPsec VPN
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="17 (UDP)"
+                                    >
+                                      17 (UDP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        4500
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                  <tr
+                                    class="ant-table-row ant-table-row-level-0"
+                                    data-row-key="50_0"
+                                  >
+                                    <td
+                                      class="ant-table-cell ant-table-selection-column"
+                                    >
+                                      <label
+                                        class="ant-checkbox-wrapper"
+                                      >
+                                        <span
+                                          class="ant-checkbox"
+                                        >
+                                          <input
+                                            class="ant-checkbox-input"
+                                            type="checkbox"
+                                            value=""
+                                          />
+                                          <span
+                                            class="ant-checkbox-inner"
+                                          />
+                                        </span>
+                                      </label>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="ESP"
+                                    >
+                                      <span
+                                        class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        ESP
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="50 (ESP)"
+                                    >
+                                      50 (ESP)
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                    >
+                                      <span
+                                        class="ant-typography"
+                                        style="width: 100%; margin: 0px; padding: 0px;"
+                                        title=""
+                                      >
+                                        0
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-ellipsis"
+                                      title="Closed"
+                                    >
+                                      Closed
+                                    </td>
+                                    <td
+                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                      style="position: sticky; right: 0px;"
+                                    />
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        style="display: none;"
+      >
+        <div
           class="c3"
           width="250px"
         >
           DNS Proxy
           <div
-            class="c4"
+            class="c8"
             width="30px"
           >
             <div
@@ -747,7 +2360,7 @@ fieldset:disabled .ant-form .c8 > label {
         >
           Wi-Fi Calling
           <div
-            class="c4"
+            class="c8"
             width="30px"
           >
             <div
@@ -993,7 +2606,7 @@ fieldset:disabled .ant-form .c8 > label {
           </div>
         </div>
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography c9 c10"
         >
           DHCP
         </h4>
@@ -1058,7 +2671,7 @@ fieldset:disabled .ant-form .c8 > label {
                     class=""
                   >
                     <legend
-                      class="c7 c8"
+                      class="c11 c12"
                     >
                       <label>
                         DHCP Option 82
@@ -1091,7 +2704,7 @@ fieldset:disabled .ant-form .c8 > label {
             style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
           >
             <h4
-              class="ant-typography c5 c6"
+              class="ant-typography c9 c10"
             >
               Access Control
             </h4>
@@ -1105,7 +2718,7 @@ fieldset:disabled .ant-form .c8 > label {
             </button>
           </span>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Access Control
@@ -1146,7 +2759,7 @@ fieldset:disabled .ant-form .c8 > label {
             </div>
           </div>
           <div
-            class="c9"
+            class="c13"
             style="font-weight: 700;"
             width="175px"
           >
@@ -1158,7 +2771,7 @@ fieldset:disabled .ant-form .c8 > label {
             </span>
           </div>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Layer 2
@@ -1167,7 +2780,7 @@ fieldset:disabled .ant-form .c8 > label {
             </span>
           </div>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Layer 3
@@ -1176,7 +2789,7 @@ fieldset:disabled .ant-form .c8 > label {
             </span>
           </div>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Device & OS
@@ -1185,7 +2798,7 @@ fieldset:disabled .ant-form .c8 > label {
             </span>
           </div>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Applications
@@ -1194,7 +2807,7 @@ fieldset:disabled .ant-form .c8 > label {
             </span>
           </div>
           <div
-            class="c9"
+            class="c13"
             width="175px"
           >
             Client Rate Limit
@@ -1249,7 +2862,7 @@ fieldset:disabled .ant-form .c8 > label {
           </div>
         </div>
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography c9 c10"
         >
           Load Control
         </h4>
@@ -1509,7 +3122,7 @@ fieldset:disabled .ant-form .c8 > label {
           </div>
         </div>
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography c9 c10"
         >
           Data Rate Control (2.4 GHz & 5 GHz)
         </h4>
@@ -1914,7 +3527,7 @@ fieldset:disabled .ant-form .c8 > label {
           style="display: grid; grid-template-columns: 0px 1fr;"
         >
           <span
-            class="c10"
+            class="c4"
             style="left: 165px;"
           >
             Seconds
@@ -2624,7 +4237,7 @@ fieldset:disabled .ant-form .c8 > label {
           </div>
         </div>
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography c9 c10"
         >
           QoS
         </h4>

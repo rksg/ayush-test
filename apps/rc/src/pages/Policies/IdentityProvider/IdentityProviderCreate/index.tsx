@@ -27,7 +27,6 @@ const IdentityProviderCreate = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
-  const isSupportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const fromPage = (useLocation() as LocationExtended)?.state?.from
   // eslint-disable-next-line max-len
@@ -77,7 +76,7 @@ const IdentityProviderCreate = () => {
       }
     },
     {
-      skip: !isSupportHotspot20R1 || !hasCreateHotspot20IdpPermission
+      skip: !hasCreateHotspot20IdpPermission
     }
   )).data?.totalCount ?? 0
 
@@ -121,7 +120,6 @@ const IdentityProviderCreate = () => {
                 <Radio
                   value={PolicyType.IDENTITY_PROVIDER}
                   disabled={
-                    !isSupportHotspot20R1 ||
                     !hasCreateHotspot20IdpPermission ||
                     (currentHotspot20IdpNumber >= IDENTITY_PROVIDER_MAX_COUNT)
                   }

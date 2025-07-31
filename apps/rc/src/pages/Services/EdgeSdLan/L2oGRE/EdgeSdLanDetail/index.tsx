@@ -2,7 +2,6 @@ import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Button, Loader, PageHeader }                         from '@acx-ui/components'
-import { useIsSplitOn, Features }                             from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
@@ -138,7 +137,6 @@ export const getVenueTableData = (sdLanData?: EdgeMvSdLanViewData): VenueTableDa
   return result
 }
 export const useSdlanApListTableQuery = (sdLanData?: EdgeMvSdLanViewData) => {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const settingsId = 'sdlan-ap-table'
   const venueIds = getVenueTableData(sdLanData).map(v => v.venueId)
 
@@ -154,6 +152,6 @@ export const useSdlanApListTableQuery = (sdLanData?: EdgeMvSdLanViewData) => {
     },
     pagination: { settingsId },
     option: { skip: false },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 }

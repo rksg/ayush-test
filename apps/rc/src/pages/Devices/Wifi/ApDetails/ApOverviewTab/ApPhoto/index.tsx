@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { Upload, Image } from 'antd'
 
 import { Card, Loader, showToast } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation
@@ -27,7 +26,6 @@ import {
 } from './styledComponents'
 
 export function ApPhoto () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const hasUpdatePermission = hasPermission({
     scopes: [WifiScopes.UPDATE],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApPhoto)]
@@ -46,11 +44,11 @@ export function ApPhoto () {
     params,
     modelName: model,
     skip: !model,
-    enableRbac: isUseRbacApi
+    enableRbac: true
   })
 
   const [addApPhoto] = useAddApPhotoMutation()
-  const apPhoto = useGetApPhotoQuery({ params, enableRbac: isUseRbacApi })
+  const apPhoto = useGetApPhotoQuery({ params, enableRbac: true })
 
   useEffect(() => {
     if (!apCapabilitiesQuery.isLoading) {
@@ -58,13 +56,12 @@ export function ApPhoto () {
       setActiveImage([false,true])
 
       if (!apPhoto.isLoading) {
-        const { url: apPhotoUrl, imageUrl: apPhotoImageUrl } = apPhoto?.data || {}
-        const apImageUrl = isUseRbacApi? apPhotoUrl : apPhotoImageUrl
+        const { url: apPhotoUrl } = apPhoto?.data || {}
 
-        if (apImageUrl) {
+        if (apPhotoUrl) {
           setActiveImage([true, false])
-          setImageUrl(apImageUrl)
-          setImageList([apImageUrl, defaultImageUrl])
+          setImageUrl(apPhotoUrl)
+          setImageList([apPhotoUrl, defaultImageUrl])
         } else {
           setActiveImage([false, true])
           setImageUrl('')
@@ -72,7 +69,7 @@ export function ApPhoto () {
         }
       }
     }
-  }, [apPhoto, apCapabilitiesQuery, model, isUseRbacApi])
+  }, [apPhoto, apCapabilitiesQuery, model])
 
   const { $t } = getIntl()
   const beforeUpload = async function (file: File) {
@@ -101,7 +98,7 @@ export function ApPhoto () {
     await addApPhoto({
       params: { ...params },
       payload: formData,
-      enableRbac: isUseRbacApi
+      enableRbac: true
     })
 
     return false
