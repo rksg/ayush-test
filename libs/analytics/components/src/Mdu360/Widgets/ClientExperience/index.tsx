@@ -11,6 +11,7 @@ import {
   NoData
 } from '@acx-ui/components'
 import { UseQueryResult } from '@acx-ui/types'
+import { getIntl }        from '@acx-ui/utils'
 
 import { useClientExperienceTimeseriesQuery } from '../../services'
 import { ContentSwitcherWrapper }             from '../../styledComponents'
@@ -18,11 +19,11 @@ import { Mdu360TabProps, SLAKeys }            from '../../types'
 import { slaConfigWithData }                  from '../SLA/config'
 import { SLAConfigWithData, SLAData }         from '../SLA/types'
 
-import Sparkline                                      from './Sparkline'
-import StarRating                                     from './StarRating'
-import { StarRatingContainer, SparklineContainer }    from './styledComponents'
-import { FranchisorTimeseries }                       from './types'
-import { getConfig, getPercentage, getSparklineData } from './utils'
+import Sparkline                                   from './Sparkline'
+import StarRating                                  from './StarRating'
+import { StarRatingContainer, SparklineContainer } from './styledComponents'
+import { FranchisorTimeseries }                    from './types'
+import { getPercentage, getSparklineData }         from './utils'
 
 interface SLA {
   title: string
@@ -44,18 +45,22 @@ type SlaMap = Record<SLAKeys, SLA>
 
 const getSlaMap = (
   data: FranchisorTimeseries | undefined,
-  thresholds: SLAConfigWithData[]
+  slaConfig: SLAConfigWithData[]
 ): SlaMap => {
   if (!data) return {} as SlaMap
 
+  const { $t } = getIntl()
   const sla: Record<SLAKeys, SLA> = {} as SlaMap
-  const config = getConfig(thresholds)
+  const config = slaConfig.reduce((acc, threshold) => {
+    acc[threshold.slaKey] = threshold
+    return acc
+  }, {} as Record<SLAKeys, SLAConfigWithData>)
 
   const { errors, time, ...slaData } = data
   Object.entries(slaData).forEach(([key, value]) => {
     const slaKey = key as SLAKeys
     const percentage = getPercentage(value)
-    if (percentage.percentage) {
+    if (percentage.percentage && config[slaKey]) {
       const {
         title,
         shortText
@@ -63,7 +68,7 @@ const getSlaMap = (
       sla[slaKey] = ({
         ...percentage,
         shortText,
-        title,
+        title: $t(title),
         data: value
       })
     }
@@ -89,9 +94,11 @@ const ClientExperience = ({
     end
   })
 
-  const thresholds = slaConfigWithData(slaQueryResults.data ?? {} as SLAData)
-  const slaData = getSlaMap(queryResults.data, thresholds)
-  const sla = slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
+  const sla = useMemo(() => {
+    const slaConfig = slaConfigWithData(slaQueryResults.data ?? {} as SLAData)
+    const slaData = getSlaMap(queryResults.data, slaConfig)
+    return slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
+  }, [queryResults.data, slaQueryResults.data])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
     () => [

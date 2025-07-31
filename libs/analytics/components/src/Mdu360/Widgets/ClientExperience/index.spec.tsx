@@ -88,7 +88,7 @@ describe('ClientExperience', () => {
     expect(screen.getByText(/Time to Connect/)).toBeVisible()
     expect(screen.getAllByText('16%')).toHaveLength(1) // connection success
     expect(screen.getAllByText('15%')).toHaveLength(1) // ttc
-    expect(screen.getAllByText('87%')).toHaveLength(1) // throughput wifi
+    expect(screen.getAllByText('87%')).toHaveLength(1) // wireless client throughput
   })
 
   it('should return no data when query response is null', async () => {
@@ -142,7 +142,7 @@ describe('ClientExperience', () => {
       name: 'Sparkline'
     })
     fireEvent.click(dataUsageSwitch)
-    expect(screen.getByText(/About 10 Mbps/)).toBeVisible() // throughput wifi
+    expect(screen.getByText(/Above 10 Mbps/)).toBeVisible() // wireless client throughput
     expect(screen.getByText('Multiple values')).toBeVisible() // time to connect
   })
 })

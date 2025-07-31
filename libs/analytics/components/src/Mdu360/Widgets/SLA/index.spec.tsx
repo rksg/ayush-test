@@ -91,7 +91,7 @@ describe('SLA', () => {
 
       expect(screen.getByText('Service Level Agreement')).toBeVisible()
       expect(screen.getByText('Time to Connect (seconds)')).toBeVisible()
-      expect(screen.getByText('Throughput Wi-Fi (Mbps)')).toBeVisible()
+      expect(screen.getByText('Wireless Client Throughput (Mbps)')).toBeVisible()
       expect(screen.getByText('Channel Width (Mbps)')).toBeVisible()
       expect(screen.getByText('Channel Change Per Day')).toBeVisible()
       expect(screen.getByText('Apply')).toBeVisible()

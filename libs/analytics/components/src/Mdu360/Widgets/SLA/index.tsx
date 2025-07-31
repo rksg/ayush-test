@@ -91,6 +91,7 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
           <div>
             {slaConfigWithData(currentSLAs).map((config) => {
               const { slaKey, splits, value } = config
+              if (!splits || value == null) return null
               const index = splits.indexOf(value)
               return (
                 <SLAStepSlider
@@ -132,13 +133,10 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
                 type='primary'
                 onClick={applyCurrentSLAs}
               >
-                Apply
+                {$t({ defaultMessage: 'Apply' })}
               </Button>
-              <Button
-                disabled={!hasValuesChanged}
-                onClick={resetCurrentSLAs}
-              >
-                Reset
+              <Button disabled={!hasValuesChanged} onClick={resetCurrentSLAs}>
+                {$t({ defaultMessage: 'Reset' })}
               </Button>
             </ButtonsContainer>
           </SubContentContainer>

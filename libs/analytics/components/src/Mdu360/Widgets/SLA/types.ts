@@ -30,6 +30,5 @@ export interface SLAConfig {
 export type SLAConfigWithData = SLAConfig &
   SLAResult & {
     slaKey: SLAKeys
-    value: number
-    splits: number[]
+    shortText?: string
   }
