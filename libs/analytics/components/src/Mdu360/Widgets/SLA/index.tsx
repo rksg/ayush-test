@@ -9,7 +9,7 @@ import { UseQueryResult }                  from '@acx-ui/types'
 import { useUpdateSlaThresholdsMutation } from '../../services'
 import { SLAKeys }                        from '../../types'
 
-import { slaConfig }         from './config'
+import { slaConfigWithData } from './config'
 import SLAStepSlider         from './SLAStepSlider'
 import {
   ButtonsContainer,
@@ -89,23 +89,15 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
       <Card title={$t({ defaultMessage: 'Service Level Agreement' })}>
         <SLAContentContainer>
           <div>
-            {Object.entries(slaConfig).map(([name, config]) => {
-              const key = name as SLAKeys
-              const sla = currentSLAs[key]
-              const splits = config.splits
-              const defaultValue = config.defaultValue
-              if (!sla || !splits || defaultValue == null) {
-                return null
-              }
-
-              const index = splits.indexOf(sla.value ?? defaultValue)
-
+            {slaConfigWithData(currentSLAs).map((config) => {
+              const { slaKey, splits, value } = config
+              const index = splits.indexOf(value)
               return (
                 <SLAStepSlider
-                  key={key}
-                  slaConfig={slaConfig[key]}
+                  key={slaKey}
+                  slaConfig={config}
                   onSliderChange={(value: number) =>
-                    onSliderChange(key, value, splits)
+                    onSliderChange(slaKey, value, splits)
                   }
                   splits={splits}
                   sliderValue={index}
@@ -121,13 +113,13 @@ const SLA = ({ mspEcIds, queryResults }: SLAProps) => {
                   <span>
                     {$t({
                       defaultMessage:
-                        'Configurations on selected properties are not synced.',
+                        'Configurations on selected properties are not synced.'
                     })}
                     <br />
                     <br />
                     {$t({
                       defaultMessage:
-                        'Click the Apply button to sync all parameters on the selected properties.',
+                        'Click the Apply button to sync all parameters on the selected properties.'
                     })}
                   </span>
                 </UnsyncedWarningText>

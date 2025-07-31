@@ -15,7 +15,8 @@ import { UseQueryResult } from '@acx-ui/types'
 import { useClientExperienceTimeseriesQuery } from '../../services'
 import { ContentSwitcherWrapper }             from '../../styledComponents'
 import { Mdu360TabProps, SLAKeys }            from '../../types'
-import { SLAData }                            from '../SLA/types'
+import { slaConfigWithData }                  from '../SLA/config'
+import { SLAConfigWithData, SLAData }         from '../SLA/types'
 
 import Sparkline                                      from './Sparkline'
 import StarRating                                     from './StarRating'
@@ -43,7 +44,7 @@ type SlaMap = Record<SLAKeys, SLA>
 
 const getSlaMap = (
   data: FranchisorTimeseries | undefined,
-  thresholds: SLAData
+  thresholds: SLAConfigWithData[]
 ): SlaMap => {
   if (!data) return {} as SlaMap
 
@@ -88,7 +89,7 @@ const ClientExperience = ({
     end
   })
 
-  const thresholds = slaQueryResults.data ?? {} as SLAData
+  const thresholds = slaConfigWithData(slaQueryResults.data ?? {} as SLAData)
   const slaData = getSlaMap(queryResults.data, thresholds)
   const sla = slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
 

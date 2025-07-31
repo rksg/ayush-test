@@ -1,6 +1,6 @@
 import { SLAKeys } from '../../types'
 
-interface SLAResult {
+export interface SLAResult {
   value: number | null
   isSynced: boolean
   error?: string
@@ -11,10 +11,25 @@ export type SLAData = Partial<{
 }>
 
 export interface QueryPayload {
-  mspEcIds: string[];
+  mspEcIds: string[]
 }
 
 export interface MutationPayload {
-  mspEcIds: string[];
-  slasToUpdate: Partial<Record<SLAKeys, number>>;
+  mspEcIds: string[]
+  slasToUpdate: Partial<Record<SLAKeys, number>>
 }
+export interface SLAConfig {
+  splits?: number[]
+  defaultValue?: number
+  formatter?: (value: number) => number
+  units?: { defaultMessage: string }
+  title: { defaultMessage: string }
+  apiMetric: string
+}
+
+export type SLAConfigWithData = SLAConfig &
+  SLAResult & {
+    slaKey: SLAKeys
+    value: number
+    splits: number[]
+  }

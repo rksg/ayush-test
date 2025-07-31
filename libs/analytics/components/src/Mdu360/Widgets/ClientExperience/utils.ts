@@ -1,8 +1,8 @@
 import { formatter } from '@acx-ui/formatter'
 import { getIntl }   from '@acx-ui/utils'
 
-import { SLAKeys } from '../../types'
-import { SLAData } from '../SLA/types'
+import { SLAKeys }           from '../../types'
+import { SLAConfigWithData } from '../SLA/types'
 
 import { SLAConfig, TimeseriesData } from './types'
 
@@ -19,13 +19,15 @@ export const getPercentage = (data: TimeseriesData) => {
 }
 
 export const getConfig = (
-  thresholds: SLAData
+  thresholds: SLAConfigWithData[]
 ): Record<SLAKeys, SLAConfig> => {
   const { $t } = getIntl()
   const multipleValuesShortText = $t({ defaultMessage: 'Multiple values' })
 
   const getClientThroughputShortText = () => {
-    const sla = thresholds[SLAKeys.clientThroughputSLA]
+    const sla = thresholds.find(
+      ({ slaKey }) => slaKey === SLAKeys.clientThroughputSLA
+    )
     if (!sla) {
       return undefined
     }
@@ -38,7 +40,9 @@ export const getConfig = (
   }
 
   const getTimeToConnectShortText = () => {
-    const sla = thresholds[SLAKeys.timeToConnectSLA]
+    const sla = thresholds.find(
+      ({ slaKey }) => slaKey === SLAKeys.timeToConnectSLA
+    )
     if (!sla) {
       return undefined
     }

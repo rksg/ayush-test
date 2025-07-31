@@ -1,5 +1,5 @@
-import { SLAKeys } from '../../types'
-import { SLAData } from '../SLA/types'
+import { SLAKeys }           from '../../types'
+import { SLAConfigWithData } from '../SLA/types'
 
 import { getConfig, getPercentage, getSparklineData } from './utils'
 
@@ -54,18 +54,18 @@ describe('utils', () => {
 
   describe('getConfig', () => {
     it('should return config with threshold values in short text correctly', () => {
-      const thresholds = {
-        [SLAKeys.clientThroughputSLA]: {
+      const thresholds = [
+        {
+          slaKey: SLAKeys.clientThroughputSLA,
           value: 10000,
-          isSynced: true,
-          isDefault: false
+          isSynced: true
         },
-        [SLAKeys.timeToConnectSLA]: {
+        {
+          slaKey: SLAKeys.timeToConnectSLA,
           value: 2000,
-          isSynced: true,
-          isDefault: false
+          isSynced: true
         }
-      } as SLAData
+      ] as SLAConfigWithData[]
       const config = getConfig(thresholds)
       expect(config).toEqual({
         [SLAKeys.connectionSuccessSLA]: {
@@ -90,18 +90,18 @@ describe('utils', () => {
 
     it('should return config with "multiple values" short text when threshold is not synced',
       () => {
-        const thresholds = {
-          [SLAKeys.clientThroughputSLA]: {
+        const thresholds = [
+          {
+            slaKey: SLAKeys.clientThroughputSLA,
             value: 10000,
-            isSynced: false,
-            isDefault: false
+            isSynced: false
           },
-          [SLAKeys.timeToConnectSLA]: {
+          {
+            slaKey: SLAKeys.timeToConnectSLA,
             value: 2000,
-            isSynced: false,
-            isDefault: false
+            isSynced: false
           }
-        } as SLAData
+        ] as SLAConfigWithData[]
         const config = getConfig(thresholds)
         expect(config).toEqual({
           [SLAKeys.connectionSuccessSLA]: {
@@ -125,7 +125,7 @@ describe('utils', () => {
       })
 
     it('should return no short text when thresholds is empty', () => {
-      const thresholds = {} as SLAData
+      const thresholds = [] as SLAConfigWithData[]
       const config = getConfig(thresholds)
       expect(config).toEqual({
         [SLAKeys.connectionSuccessSLA]: {

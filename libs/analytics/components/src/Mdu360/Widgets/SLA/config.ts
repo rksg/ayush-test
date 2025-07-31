@@ -5,16 +5,20 @@ import { kpiConfig } from '@acx-ui/analytics/utils'
 import { defaultThreshold } from '../../../Health/Kpi'
 import { SLAKeys }          from '../../types'
 
+import { SLAConfig, SLAConfigWithData, SLAData } from './types'
+
 const defaultFormatter = (value: number) => value
 
-export interface SLAConfig {
-  splits?: number[];
-  defaultValue?: number;
-  formatter?: (value: number) => number;
-  units?: { defaultMessage: string };
-  title: { defaultMessage: string };
-  apiMetric: string;
-}
+export const slaConfigWithData = (data: SLAData): SLAConfigWithData[] =>
+  Object.entries(slaConfig).flatMap(([key, config]) => {
+    const slaKey = key as SLAKeys
+    const sla = data[slaKey]
+    const slaValue: number | undefined = sla?.value || config.defaultValue
+    if (!sla || slaValue == null || !config.splits) {
+      return []
+    }
+    return [{ ...config, ...sla, value: slaValue, splits: config.splits, slaKey }]
+  })
 
 // Default and splits value must be populated to have a slider
 export const slaConfig: Record<SLAKeys, SLAConfig> = {
