@@ -88,7 +88,7 @@ export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { $t } = useIntl()
@@ -441,7 +441,7 @@ export function SwitchForm () {
       const model = getSwitchModel(value) || ''
       setSwitchModel(model)
       // notSupportStackModel.find(item => model?.indexOf(item) > -1)
-      setIsSupportStack(!isNotSupportStackModel(model, isSupport8100Phase2))
+      setIsSupportStack(!isNotSupportStackModel(model, isSupport8100XStacking))
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
       setFirmwareType(value)
