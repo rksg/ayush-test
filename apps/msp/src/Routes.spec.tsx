@@ -111,7 +111,7 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.AP_GROUP]: false,
   [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
   [ConfigTemplateType.IDENTITY_GROUP]: false,
-  [ConfigTemplateType.TUNNEL_PROFILE]: false
+  [ConfigTemplateType.TUNNEL_SERVICE]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -459,7 +459,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
   it('should navigate to the create Tunnel Profile config template page', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
-      [ConfigTemplateType.TUNNEL_PROFILE]: true
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
     })
 
     render(<Provider><ConfigTemplatesRoutes /></Provider>, {
@@ -477,7 +477,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
   it('should navigate to the edit Tunnel Profile config template page', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
-      [ConfigTemplateType.TUNNEL_PROFILE]: true
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
     })
 
     render(<Provider><ConfigTemplatesRoutes /></Provider>, {

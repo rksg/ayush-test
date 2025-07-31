@@ -59,7 +59,7 @@ function useMspConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
     [ConfigTemplateType.AP_GROUP]: isExtraScope,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled,
     [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled,
-    [ConfigTemplateType.TUNNEL_PROFILE]: isTunnelProfileTemplateEnabled
+    [ConfigTemplateType.TUNNEL_SERVICE]: isTunnelProfileTemplateEnabled
   }
 
   return visibilityMap
@@ -95,7 +95,7 @@ function useRecConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
     [ConfigTemplateType.SWITCH_CLI]: false,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
     [ConfigTemplateType.IDENTITY_GROUP]: false,
-    [ConfigTemplateType.TUNNEL_PROFILE]: false
+    [ConfigTemplateType.TUNNEL_SERVICE]: false
   }
 
   return visibilityMap
