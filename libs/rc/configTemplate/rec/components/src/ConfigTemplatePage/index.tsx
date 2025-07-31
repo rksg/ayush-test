@@ -2,8 +2,8 @@ import { ConfigTemplateView, ConfigTemplateViewProps, isTemplateTypeAllowed } fr
 import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }         from '@acx-ui/rc/utils'
 import { getIntl, getOpsApi }                                                 from '@acx-ui/utils'
 
-import { ApplyTemplateModal } from './Templates/ApplyTemplateDrawer'
-import { ShowDriftsDrawer }   from './Templates/ShowDriftsDrawer'
+import { ApplyTemplateModal } from '../ApplyTemplateModal'
+import { ShowDriftsDrawer }   from '../ShowDriftsDrawer'
 
 
 export function ConfigTemplatePage () {
@@ -13,7 +13,7 @@ export function ConfigTemplatePage () {
     appliedToColumn={getAppliedToColumn()}
     canApplyTemplate={canApplyTemplate}
     actionRbacOpsIds={{
-      apply: [getOpsApi(ConfigTemplateUrlsInfo.applyRecConfigTemplate)]
+      apply: [getOpsApi(ConfigTemplateUrlsInfo['applyRecConfigTemplate'])]
     }}
   />
 }
@@ -34,7 +34,7 @@ function getAppliedToColumn (): ConfigTemplateViewProps['appliedToColumn'] {
   }
 }
 
-function canApplyTemplate (template: ConfigTemplate): boolean {
+export function canApplyTemplate (template: ConfigTemplate): boolean {
   if (!isTemplateTypeAllowed(template.type)) {
     return false
   }

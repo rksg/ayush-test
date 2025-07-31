@@ -1,3 +1,4 @@
+import { ConfigTemplatePage }                                     from '@acx-ui/config-template/rec/components'
 import { ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
 import { AAAForm, AAAPolicyDetail,
   DpskForm,
@@ -8,7 +9,6 @@ import { AAAForm, AAAPolicyDetail,
 import { CONFIG_TEMPLATE_LIST_PATH, ConfigTemplateType, getConfigTemplatePath, getPolicyRoutePath, getServiceRoutePath, LayoutWithConfigTemplateContext, PolicyOperation, PolicyType, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate }                                                                                                                                                                          from '@acx-ui/react-router-dom'
 
-import { ConfigTemplatePage }                  from '../pages/ConfigTemplates'
 import { VenueDetails, VenuesForm, VenueEdit } from '../pages/Venues'
 
 export default function RecConfigTemplateRoutes () {
