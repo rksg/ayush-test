@@ -16,9 +16,17 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { switchDetailData } from '../SwitchLagDrawer/__tests__/fixtures'
-
-import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList, switchesList, venueRoutedList } from './__tests__/fixtures'
+import {
+  aclList,
+  freeVePortVlans,
+  routedList,
+  successResponse,
+  switchDetailData,
+  switchDetailHeader,
+  switchList,
+  switchesList,
+  venueRoutedList
+} from './__tests__/fixtures'
 
 import { SwitchVeTable } from '.'
 

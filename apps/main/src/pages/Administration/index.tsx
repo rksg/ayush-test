@@ -88,11 +88,13 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           component: <Privacy />
         }
       ] : []),
-    ...(hasAllowedOperations([ getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ? [{
-      key: 'notifications',
-      title: <NotificationTabTitleWithCount />,
-      component: <Notifications />
-    }] : []),
+    ...(hasAllowedOperations([ getOpsApi(AdministrationUrlsInfo.getNotificationRecipients),
+      getOpsApi(AdministrationUrlsInfo.getNotificationRecipientsPaginated)
+    ]) ? [{
+        key: 'notifications',
+        title: <NotificationTabTitleWithCount />,
+        component: <Notifications />
+      }] : []),
     ...(hasAllowedOperations([
       getOpsApi(LicenseUrlsInfo.getMspEntitlement),
       getOpsApi(AdministrationUrlsInfo.getEntitlementsActivations),

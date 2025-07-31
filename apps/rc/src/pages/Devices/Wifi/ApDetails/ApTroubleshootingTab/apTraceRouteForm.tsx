@@ -2,18 +2,16 @@ import { useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
-import _                         from 'lodash'
+import { get }                   from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, Tooltip }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import { useTraceRouteApMutation }                                                        from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages, useApContext, DiagnosisCommands } from '@acx-ui/rc/utils'
 
 export function ApTraceRouteForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber, venueId } = useApContext()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()
@@ -21,16 +19,16 @@ export function ApTraceRouteForm () {
     try {
       const payload = {
         targetHost: form.getFieldValue('name'),
-        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.TRACE_ROUTE } : { action: 'traceRoute' })
+        type: DiagnosisCommands.TRACE_ROUTE
       }
       const traceRouteApResult =
         await traceRouteAp({
           params: { tenantId, serialNumber, venueId },
           payload,
-          enableRbac: isUseWifiRbacApi
+          enableRbac: true
         }).unwrap()
       if (traceRouteApResult) {
-        form.setFieldValue('traceRoute', _.get(traceRouteApResult, 'response.response'))
+        form.setFieldValue('traceRoute', get(traceRouteApResult, 'response.response'))
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

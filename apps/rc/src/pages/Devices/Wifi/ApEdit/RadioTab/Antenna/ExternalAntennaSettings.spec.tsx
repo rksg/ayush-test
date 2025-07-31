@@ -8,7 +8,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
-import { venuelist }                    from '../../../../__tests__/fixtures'
+import { venueList }                    from '../../../../__tests__/fixtures'
 
 import { ExternalAntennaSettings } from './ExternalAntennaSettings'
 
@@ -104,7 +104,7 @@ describe('AP Ext Antenna Settings', () => {
     setEditRadioContextData: jest.fn()
   }
 
-  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venuelist.data[0] }
+  const defaultE510ApCtxData = { apData: mockE510ApData, venueData: venueList.data[0] }
 
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())

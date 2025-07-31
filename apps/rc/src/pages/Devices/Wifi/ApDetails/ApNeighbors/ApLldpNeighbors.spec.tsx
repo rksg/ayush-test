@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
-import type { ToastProps }                             from '@acx-ui/utils'
+import { apApi }                                                    from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }              from '@acx-ui/test-utils'
+import type { ToastProps }                                          from '@acx-ui/utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
@@ -17,7 +18,11 @@ jest.mock('@acx-ui/rc/utils', () => ({
   initPokeSocket: (subscriptionId: string, handler: () => void) => {
     return mockedInitPokeSocketFn(subscriptionId, handler)
   },
-  closePokeSocket: () => jest.fn()
+  closePokeSocket: () => jest.fn(),
+  useApContext: () => ({
+    serialNumber: mockedAp.data[0].serialNumber,
+    venueId: 'venue-id'
+  })
 }))
 
 const mockedShowToast = jest.fn()
@@ -37,22 +42,28 @@ describe('ApLldpNeighbors', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ ...mockedAp }))
       ),
-      rest.get(
-        WifiUrlsInfo.getApLldpNeighbors.url,
+      rest.post(
+        WifiRbacUrlsInfo.getApNeighbors.url,
         (_, res, ctx) => res(ctx.json({ ...mockedApLldpNeighbors }))
       ),
       rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
+        WifiRbacUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
       ),
       rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
+        WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })
@@ -67,7 +78,7 @@ describe('ApLldpNeighbors', () => {
 
   it('should render LLDP Neighbors view', async () => {
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
-      setTimeout(handler, 0) // Simulate receving the message from websocket
+      setTimeout(handler, 0) // Simulate receiving the message from websocket
       return mockedSocket
     })
 
@@ -100,7 +111,7 @@ describe('ApLldpNeighbors', () => {
 
     mockServer.use(
       rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
+        WifiRbacUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => {
           detectFn()
 

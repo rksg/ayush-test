@@ -9,8 +9,8 @@ import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   MdnsProxyUrls,
-  WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -22,9 +22,10 @@ import {
 
 import {
   apDetailsList,
-  deviceAps,
   r650Cap,
-  venueData
+  venueCaps,
+  venueData,
+  venueList
 } from '../../__tests__/fixtures'
 
 import { ApDataContext, ApEdit } from '.'
@@ -51,16 +52,12 @@ describe('ApEditTabs', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
-      rest.post(CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(r650Cap))),
-
-      // rbac
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueList))),
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(CommonRbacUrlsInfo.getApsList.url,
@@ -87,6 +84,10 @@ describe('ApEditTabs', () => {
             }
           ]
         }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

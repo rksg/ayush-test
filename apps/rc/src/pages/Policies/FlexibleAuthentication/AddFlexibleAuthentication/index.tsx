@@ -1,9 +1,9 @@
 import { Form } from 'antd'
 
-import { FlexibleAuthenticationForm }              from '@acx-ui/rc/components'
 import { useAddFlexAuthenticationProfileMutation } from '@acx-ui/rc/services'
 import { FlexibleAuthentication }                  from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
+import { FlexibleAuthenticationForm }              from '@acx-ui/switch/components'
 
 export const AddFlexibleAuthentication = () => {
   const navigate = useNavigate()

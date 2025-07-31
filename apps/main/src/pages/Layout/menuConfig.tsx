@@ -471,7 +471,8 @@ export function useMenuConfig () {
               !isCustomRoleCheck ? [
                 ...(
                   hasAllowedOperations([
-                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ?
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients),
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipientsPaginated)]) ?
                     [{
                       uri: '/administration/notifications',
                       label: $t({ defaultMessage: 'Notifications' })
