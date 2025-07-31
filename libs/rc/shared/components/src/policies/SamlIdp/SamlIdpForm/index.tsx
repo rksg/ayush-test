@@ -351,7 +351,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 description={$t(SamlIdpMessages.IDENTITY_DESCRIPTION)}
                 identityNameToolTip={
                   // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.' })
+                  $t({ defaultMessage: 'If "Identity Display Name" is empty or does not match, it will default to “NameID”.' })
                 }
               />
             </Col>
