@@ -39,8 +39,8 @@ export const slaConfig: Record<SLAKeys, SLAConfig> = {
     apiMetric: 'channelWidthExperience'
   },
   [SLAKeys.channelChangeExperienceSLA]: {
-    splits: [0, 10, 30, 50],
-    defaultValue: 50,
+    splits: [0, 10, 25, 50],
+    defaultValue: 25,
     formatter: defaultFormatter,
     title: defineMessage({ defaultMessage: 'Channel Change Per Day' }),
     apiMetric: 'channelChangeExperience'
