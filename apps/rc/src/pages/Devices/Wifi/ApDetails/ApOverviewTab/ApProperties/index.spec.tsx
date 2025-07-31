@@ -10,8 +10,7 @@ import {
   SwitchUrlsInfo,
   WifiRbacUrlsInfo,
   AFCStatus,
-  AFCPowerMode,
-  ApVenueStatusEnum
+  AFCPowerMode
 } from '@acx-ui/rc/utils'
 import { Provider, store  }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -568,98 +567,202 @@ describe('ApProperties', () => {
     })
   })
 
-  describe('useGetApPassword hook', () => {
-    const mockCurrentAP = {
-      venueId: 'test-venue-id',
-      serialNumber: 'test-serial-number',
-      name: 'Test AP',
-      deviceGroupId: 'test-group-id',
-      deviceStatus: 'ONLINE',
-      deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
-      meshRole: 'DISABLED',
-      model: 'R650',
-      venueName: 'Test Venue',
-      tags: '',
-      IP: '192.168.1.100',
-      apMac: '00:11:22:33:44:55',
-      apStatusData: {
-        APSystem: {
-          ipType: 'DHCP'
-        }
-      }
-    }
-
+  describe('Admin Password field', () => {
     beforeEach(() => {
-      jest.clearAllMocks()
+      // Reset mocks before each test
+      jest.mocked(useIsSplitOn).mockClear()
     })
 
-    it('should return venue settings password when RBAC API is disabled', () => {
-      // Mock feature flags
+    it('should show Admin Password with per-AP password enabled', async () => {
+      // Mock feature flags to enable per-AP password and visibility
       jest.mocked(useIsSplitOn).mockImplementation((feature) => {
-        if (feature === 'WIFI_RBAC_API') return false
-        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
-        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
-        return false
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
       })
 
-      mockServer.use(
-        rest.get(
-          CommonUrlsInfo.getVenueSettings.url,
-          (_, res, ctx) => res(ctx.json({ apPassword: 'venue-settings-password' }))
-        )
-      )
-
-      render(<Provider>
-        <ApProperties
-          currentAP={mockCurrentAP}
-          apDetails={apDetails}
-          isLoading={false}
-        /></Provider>, { route: { params } })
-
-      fireEvent.click(screen.getByText('More'))
-      expect(screen.getByDisplayValue('venue-settings-password')).toBeInTheDocument()
-    })
-
-
-
-    it('should handle missing venueId in RBAC API mode', () => {
-      const apWithoutVenueId = {
-        venueId: undefined,
-        serialNumber: 'test-serial-number',
-        name: 'Test AP',
-        deviceGroupId: 'test-group-id',
-        deviceStatus: 'ONLINE',
-        meshRole: 'DISABLED',
-        model: 'R650',
-        venueName: 'Test Venue',
-        tags: '',
-        IP: '192.168.1.100',
-        apMac: '00:11:22:33:44:55',
-        apStatusData: {
-          APSystem: {
-            ipType: 'DHCP'
-          }
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
         }
-      }
-
-      // Mock feature flags
-      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
-        if (feature === 'WIFI_RBAC_API') return true
-        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
-        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
-        return false
       })
 
       render(<Provider>
         <ApProperties
-          currentAP={apWithoutVenueId as never}
+          currentAP={currentAP}
           apDetails={apDetails}
           isLoading={false}
         /></Provider>, { route: { params } })
 
       fireEvent.click(screen.getByText('More'))
-      // Should not show password input when venueId is missing
-      expect(screen.queryByDisplayValue('rbac-api-password')).not.toBeInTheDocument()
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should show Admin Password field for var user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: true,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should show Admin Password field for dogfood user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: true
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should not show Admin Password field for regular user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
+    })
+
+
+
+    it('should show Show AP Password button when per-AP password is enabled', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+      // Verify the button element exists and contains the text
+      const showPasswordButton = within(apPropertiesDialog)
+        .getByRole('button', { name: /Show AP Password/ })
+      expect(showPasswordButton).toBeInTheDocument()
+      expect(showPasswordButton).toBeVisible()
+    })
+
+    it('should not show Admin Password field when no feature flags are enabled', async () => {
+      // Mock feature flags to disable both per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
     })
   })
 })

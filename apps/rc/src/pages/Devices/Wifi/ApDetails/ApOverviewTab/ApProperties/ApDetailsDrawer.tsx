@@ -68,14 +68,14 @@ interface ApDetailsDrawerProps {
   apDetails: ApDetails
 }
 
-const useGetApPassword = (currentAP: ApViewModel) => {
+const useGetApPassword = (currentAP: ApViewModel, skip: boolean) => {
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
 
   const { data: venueRbacApSettings } = useGetApOperationalQuery({ params, enableRbac: true },
-    { skip: !currentAP?.venueId })
+    { skip: skip || !currentAP?.venueId })
 
   return venueRbacApSettings?.loginPassword
 }
