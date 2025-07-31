@@ -11,8 +11,8 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { useEnforcedStatus }                        from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useEnforcedStatus }                        from '@acx-ui/rc/components'
 import {
   useDeleteDpskMutation,
   useGetEnhancedDpskListQuery,

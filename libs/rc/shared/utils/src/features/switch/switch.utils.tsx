@@ -659,14 +659,3 @@ export const getAdminPassword = (
       : $t({ defaultMessage: 'Custom' })
     )
 }
-
-export const allMultipleEditableFields = [
-  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
-  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
-  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
-  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
-]

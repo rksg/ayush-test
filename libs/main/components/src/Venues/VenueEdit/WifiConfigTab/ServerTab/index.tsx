@@ -2,9 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }                                                     from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { useEnforcedStatus, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy }                          from '@acx-ui/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate }        from '@acx-ui/config-template/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsConfigTemplateEnabledByType }                       from '@acx-ui/rc/components'
 import {
   ApSnmpRbacUrls,
   ConfigTemplateType,

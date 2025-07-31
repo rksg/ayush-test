@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps, StepsFormLegacy }           from '@acx-ui/components'
-import { ConfigTemplateEnforcementContext, useEnforcedStatus }           from '@acx-ui/rc/components'
-import { useGetVenueQuery }                                              from '@acx-ui/rc/services'
+import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
+import { ConfigTemplateEnforcementContext, useEnforcedStatus } from '@acx-ui/rc/components'
+import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
   ExternalAntenna,
@@ -11,7 +11,9 @@ import {
   CommonUrlsInfo,
   useConfigTemplate,
   WifiRbacUrlsInfo,
-  ConfigTemplateType, getExternalAntennaPayload, getAntennaTypePayload
+  ConfigTemplateType,
+  getExternalAntennaPayload,
+  getAntennaTypePayload
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
