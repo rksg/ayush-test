@@ -130,7 +130,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
 
 
   const { data: switchData } =
@@ -162,7 +162,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
                 isSupport8100: isSupport8100,
                 isSupport8100X: isSupport8100X,
                 isSupport7550Zippy: isSupport7550Zippy,
-                isSupport8100Phase2: isSupport8100Phase2,
+                isSupport8100XStacking: isSupport8100XStacking,
                 activeSerialNumber: switchDetail?.activeSerial
               }
               return validatorSwitchModel(switchModelParams)}

@@ -4,13 +4,13 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { useEnforcedStatus }                                                from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { CheckMark }                                                        from '@acx-ui/icons'
-import { CertificateToolTip, useEnforcedStatus }                            from '@acx-ui/rc/components'
+import { CertificateToolTip }                                               from '@acx-ui/rc/components'
 import {
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery,
   useGetIdentityProviderListQuery,
   useGetCertificateListQuery,
@@ -149,7 +149,6 @@ export default function AAATable () {
 
 function useColumns () {
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const supportRadsec = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
 
   const { $t } = useIntl()
@@ -158,9 +157,7 @@ function useColumns () {
   const emptyCertificateResult:
     { key: string, value: string, status: CertificateStatusType[] }[] = []
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-
-  const { networkNameMap } = getNetworkListQuery({
+  const { networkNameMap } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -364,7 +361,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: !isWifiRbacEnabled,
+      sorter: false,
       render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds

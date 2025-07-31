@@ -44,10 +44,13 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   ConfigTemplateEnforcementContext: require('react').createContext({
     isEnforced: false
-  }),
+  })
+}))
+
+jest.mock('@acx-ui/config-template/utils', () => ({
   useEnforcedStatus: () => ({
     isEnforced: false,
     isEnforcedByTemplate: false

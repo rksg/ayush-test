@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import {
@@ -14,7 +15,6 @@ import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 import { getOpsApi }              from '@acx-ui/utils'
 
-import { usePathBasedOnConfigTemplate }           from '../../configTemplates'
 import { useApGroupConfigTemplateOpsApiSwitcher } from '../apGroupConfigTemplateApiSwitcher'
 import { ApGroupEditContext }                     from '../context'
 
