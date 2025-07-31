@@ -42,7 +42,6 @@ export interface ApMeshTopologyContextProviderProps {
 export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProviderProps ) {
   const params = useParams<{ tenantId: string, venueId: string }>()
   const { children, isApMeshTopologyEnabled, floorplanId, venueId = params.venueId } = props
-  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apMeshListPayload = {
@@ -69,14 +68,12 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
         apMeshTopologyDeviceList: data && flatApMeshList(data.data)
       }
     },
-    skip: !isApMeshTopologyFFOn,
     pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({
     params: { tenantId: params.tenantId, venueId }
   }, {
-    skip: !isApMeshTopologyFFOn,
     pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
@@ -85,16 +82,14 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
     meshLinkList
   } = filterByFloorplan(apMeshTopologyDeviceList, apMeshTopologyData?.edges, floorplanId)
 
-  return isApMeshTopologyFFOn
-    ? <ApMeshTopologyContext.Provider
-      value={{
-        isApMeshTopologyEnabled,
-        meshDeviceList,
-        meshLinkList
-      }}
-      children={children}
-    />
-    : children
+  return <ApMeshTopologyContext.Provider
+    value={{
+      isApMeshTopologyEnabled,
+      meshDeviceList,
+      meshLinkList
+    }}
+    children={children}
+  />
 }
 
 function flatApMeshList (apMeshList: FloorPlanMeshAP[]): ApMeshTopologyDevice[] {

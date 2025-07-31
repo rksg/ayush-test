@@ -8,7 +8,7 @@ import { Button,
   cssStr, Modal,
   Table, TableProps,
   Tabs, Tooltip } from '@acx-ui/components'
-import { usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
+import { usePathBasedOnConfigTemplate }     from '@acx-ui/config-template/utils'
 import { ConfigurationProfile, ProfileTypeEnum,
   SwitchUrlsInfo,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'

@@ -39,6 +39,7 @@ export interface PropertyConfigs {
     type: string,
     sendEmail: boolean,
     sendSms: boolean,
+    notifyOnUnitSuspend?: boolean,
     unitAssignmentTemplateId?: string,
     passphraseChangeTemplateId?: string,
     unitAssignmentHtmlRegId?: string,
@@ -49,8 +50,16 @@ export interface PropertyConfigs {
     guestPassphraseChangeTextRegId?: string,
     portalAccessResetHtmlRegId?: string,
     portalAccessResetTextRegId?: string,
-    portAssignmentHtmlRegId?: string
-    portAssignmentTextRegId?: string
+    portAssignmentHtmlRegId?: string,
+    portAssignmentTextRegId?: string,
+    unitSuspendHtmlRegId?: string,
+    unitSuspendTextRegId?: string,
+    unitUserSuspendHtmlRegId?: string,
+    unitUserSuspendTextRegId?: string,
+    unitReactivateHtmlRegId?: string,
+    unitReactivateTextRegId?: string,
+    unitUserReactivateHtmlRegId?: string,
+    unitUserReactivateTextRegId?: string
   },
 }
 

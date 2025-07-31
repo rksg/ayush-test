@@ -4,18 +4,14 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
-import { getUserName as getRAIUserName }     from '@acx-ui/analytics/utils'
-import { DateTimePicker, showToast }         from '@acx-ui/components'
-import { get }                               from '@acx-ui/config'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import {
-  useLazyVenueRadioActiveNetworksQuery,
-  useLazyVenueWifiRadioActiveNetworksQuery
-} from '@acx-ui/rc/services'
-import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
-import { getUserName as getR1UserName }          from '@acx-ui/user'
-import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
+import { getUserName as getRAIUserName }            from '@acx-ui/analytics/utils'
+import { DateTimePicker, showToast }                from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { useLazyVenueWifiRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { RadioTypeEnum }                            from '@acx-ui/rc/utils'
+import { getUserName as getR1UserName }             from '@acx-ui/user'
+import { Filters, getIntl, useEncodedParameter }    from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
 import {
@@ -117,9 +113,7 @@ export const getUserName = () => get('IS_MLISA_SA') ? getRAIUserName() : getR1Us
 export function useIntentAIActions () {
   const { $t } = useIntl()
   const [recommendationWlans] = useLazyIntentWlansQuery()
-  const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [venueWifiRadioActiveNetworks] = useLazyVenueWifiRadioActiveNetworksQuery()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
@@ -185,15 +179,10 @@ export function useIntentAIActions () {
     params: { venueId },
     radio: codeToRadio[code],
     payload: {
-      ...(isWifiRbacEnabled
-        ? {
-          filters: {
-            'venueApGroups.venueId': [venueId]
-          }
-        }
-        : { venueId }
-      ),
-      fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
+      filters: {
+        'venueApGroups.venueId': [venueId]
+      },
+      fields: ['id', 'name', 'venueApGroups', 'ssid'],
       page: 1,
       sortField: 'name',
       sortOrder: 'ASC',
@@ -207,8 +196,7 @@ export function useIntentAIActions () {
       return wlans
     }
     const venueId = row.idPath.filter(({ type }) => type === 'zone')?.[0].name
-    const networkQuery = isWifiRbacEnabled ? venueWifiRadioActiveNetworks : venueRadioActiveNetworks
-    const wlans = await networkQuery(getR1WlanPayload(venueId, row.code)).unwrap()
+    const wlans = await venueWifiRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
     return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
   }
 
