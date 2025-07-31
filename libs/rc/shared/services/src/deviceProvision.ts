@@ -16,7 +16,7 @@ import {
 
 interface TableQueryPayload {
   page?: number
-  pageSize?: number
+  size?: number
   searchString?: string
   sortField?: string
   sortOrder?: string
@@ -28,48 +28,6 @@ interface TableQueryPayload {
   }
 }
 const sortableFields = ['model', 'serialNumber', 'shipDate', 'createdDate', 'visibleStatus']
-
-// Helper function to build query parameters from table payload
-const buildQueryParams = (tablePayload: TableQueryPayload): URLSearchParams => {
-  const queryParams = new URLSearchParams()
-
-  if (tablePayload?.page) {
-    queryParams.append('page', (tablePayload.page - 1).toString())
-  }
-  if (tablePayload?.pageSize) {
-    queryParams.append('size', tablePayload.pageSize.toString())
-  }
-  if (tablePayload?.searchString) {
-    queryParams.append('searchText', tablePayload.searchString)
-  }
-  if (tablePayload?.sortField && sortableFields.includes(tablePayload.sortField)) {
-    if (tablePayload.sortField === 'visibleStatus') {
-      queryParams.append('sortColumn', 'hiddenStatusName')
-    } else {
-      queryParams.append('sortColumn', tablePayload.sortField)
-    }
-  }
-  if (tablePayload?.sortOrder) {
-    queryParams.append('order', tablePayload.sortOrder)
-  }
-  if (tablePayload?.filters?.includeHidden !== undefined
-    && tablePayload.filters.includeHidden[0] === true) {
-    queryParams.append('includeHidden', 'true')
-  }
-  if (tablePayload?.filters?.model !== undefined) {
-    tablePayload.filters.model.forEach((m) => {
-      queryParams.append('filterModels', m)
-    })
-  }
-  if (tablePayload?.filters?.fromTime !== undefined) {
-    queryParams.append('createdDateFrom', tablePayload.filters.fromTime.slice(0, 10))
-  }
-  if (tablePayload?.filters?.toTime !== undefined) {
-    queryParams.append('createdDateTo', tablePayload.filters.toTime.slice(0, 10))
-  }
-
-  return queryParams
-}
 
 // Helper function to transform API response to table result
 const transformTableResponse = (response: unknown): TableResult<DeviceProvision> => {
@@ -86,11 +44,22 @@ const transformTableResponse = (response: unknown): TableResult<DeviceProvision>
   }
 }
 
-// Helper function to create provision query
-const createProvisionQuery = (urlInfo: ApiInfo) => {
+// Helper function to build query parameters for model queries
+const buildModelQueryParams = (tablePayload: TableQueryPayload): URLSearchParams => {
+  const queryParams = new URLSearchParams()
+
+  if (tablePayload?.filters?.includeHidden !== undefined) {
+    queryParams.append('includeHidden', tablePayload.filters.includeHidden[0].toString())
+  }
+
+  return queryParams
+}
+
+// Helper function to create model query
+const createModelQuery = (urlInfo: ApiInfo) => {
   return ({ params, payload }: RequestPayload) => {
     const tablePayload = payload as TableQueryPayload
-    const queryParams = buildQueryParams(tablePayload)
+    const queryParams = buildModelQueryParams(tablePayload)
     const queryString = queryParams.toString()
     const url = queryString ? `${urlInfo.url}?${queryString}` : urlInfo.url
 
@@ -103,13 +72,83 @@ const createProvisionQuery = (urlInfo: ApiInfo) => {
   }
 }
 
+// Helper function to create POST query with payload
+const createPostQuery = (urlInfo: ApiInfo) => {
+  return ({ params, payload }: RequestPayload) => {
+    const tablePayload = payload as TableQueryPayload
+
+    // Build payload directly from tablePayload
+    const newPayload: Record<string, unknown> = {}
+
+    // Add page parameter
+    if (tablePayload?.page) {
+      newPayload.page = tablePayload.page - 1
+    }
+
+    // Add size parameter
+    if (tablePayload?.size) {
+      newPayload.size = tablePayload.size
+    }
+
+    // Add searchText parameter
+    if (tablePayload?.searchString) {
+      newPayload.searchText = tablePayload.searchString
+    }
+
+    // Add sortColumn parameter
+    if (tablePayload?.sortField && sortableFields.includes(tablePayload.sortField)) {
+      if (tablePayload.sortField === 'visibleStatus') {
+        newPayload.sortColumn = 'hiddenStatusName'
+      } else {
+        newPayload.sortColumn = tablePayload.sortField
+      }
+    }
+
+    // Add order parameter
+    if (tablePayload?.sortOrder) {
+      newPayload.order = tablePayload.sortOrder
+    }
+
+    // Add includeHidden parameter
+    if (tablePayload?.filters?.includeHidden !== undefined) {
+      newPayload.includeHidden = tablePayload.filters.includeHidden[0]
+    }
+
+    // Add filterModels parameter
+    if (tablePayload?.filters?.model) {
+      newPayload.filterModels = tablePayload.filters.model
+    }
+
+    // Add createdDateFrom parameter
+    if (tablePayload?.filters?.fromTime) {
+      newPayload.createdDateFrom = tablePayload.filters.fromTime.slice(0, 10)
+    }
+
+    // Add createdDateTo parameter
+    if (tablePayload?.filters?.toTime) {
+      newPayload.createdDateTo = tablePayload.filters.toTime.slice(0, 10)
+    }
+
+    const req = createHttpRequest({
+      ...urlInfo,
+      url: urlInfo.url
+    }, params)
+
+    return {
+      ...req,
+      body: JSON.stringify(newPayload)
+    }
+  }
+}
+
 export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
   endpoints: (build) => ({
     getApStatus: build.query<DeviceProvisionStatus, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DeviceProvisionUrlsInfo.getApStatus, params)
         return {
-          ...req
+          ...req,
+          url: `${req.url}?fields=refreshedTime`
         }
       },
       providesTags: [{ type: 'deviceProvision', id: 'AP_STATUS' }]
@@ -118,7 +157,8 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
       query: ({ params }) => {
         const req = createHttpRequest(DeviceProvisionUrlsInfo.getSwitchStatus, params)
         return {
-          ...req
+          ...req,
+          url: `${req.url}?fields=refreshedTime`
         }
       },
       providesTags: [{ type: 'deviceProvision', id: 'SWITCH_STATUS' }]
@@ -148,38 +188,24 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
       ]
     }),
     getApModels: build.query<string[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DeviceProvisionUrlsInfo.getApModels, params)
-        return {
-          ...req
-        }
-      },
+      query: createModelQuery(DeviceProvisionUrlsInfo.getApModels),
       providesTags: [{ type: 'deviceProvision', id: 'AP_MODELS' }]
     }),
     getSwitchModels: build.query<string[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DeviceProvisionUrlsInfo.getSwitchModels, params)
-        return {
-          ...req
-        }
-      },
+      query: createModelQuery(DeviceProvisionUrlsInfo.getSwitchModels),
       providesTags: [{ type: 'deviceProvision', id: 'SWITCH_MODELS' }]
     }),
     getApProvisions: build.query<TableResult<DeviceProvision>, RequestPayload>({
-      query: createProvisionQuery(DeviceProvisionUrlsInfo.getApProvisions),
+      query: createPostQuery(DeviceProvisionUrlsInfo.getApProvisions),
       transformResponse: transformTableResponse,
       providesTags: [{ type: 'deviceProvision', id: 'AP_PROVISIONS' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          // eslint-disable-next-line no-console
-          console.log('onSocketActivityChanged:', requestArgs, msg)
           const activities = [
             'ImportVenueApsCsv',
             'HideApProvisions'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            // eslint-disable-next-line no-console
-            console.log('onActivityMessageReceived:', msg, activities)
             api.dispatch(deviceProvisionApi.util.invalidateTags([
               { type: 'deviceProvision', id: 'AP_PROVISIONS' },
               { type: 'deviceProvision', id: 'AP_STATUS' }
@@ -189,7 +215,7 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
       }
     }),
     getSwitchProvisions: build.query<TableResult<DeviceProvision>, RequestPayload>({
-      query: createProvisionQuery(DeviceProvisionUrlsInfo.getSwitchProvisions),
+      query: createPostQuery(DeviceProvisionUrlsInfo.getSwitchProvisions),
       transformResponse: transformTableResponse,
       providesTags: [{ type: 'deviceProvision', id: 'SWITCH_PROVISIONS' }],
       async onCacheEntryAdded (requestArgs, api) {

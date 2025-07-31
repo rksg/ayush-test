@@ -1,17 +1,15 @@
 import React from 'react'
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { ConfigProvider }                     from 'antd'
-import { rest }                               from 'msw'
-import { setupServer }                        from 'msw/node'
 import { IntlProvider }                       from 'react-intl'
 
 import { VenueExtended } from '@acx-ui/rc/utils'
+import { Provider }      from '@acx-ui/store'
 
 import { VenueDrawer } from './VenueDrawer'
 
 // Mock the VenuesForm component
-jest.mock('@acx-ui/main/components', () => {
+jest.mock('../../../Venues', () => {
   const mockVenuesForm = ({ modalCallBack }: {
     modalCallBack?: (venue?: VenueExtended) => void
   }) => (
@@ -29,32 +27,25 @@ jest.mock('@acx-ui/main/components', () => {
   }
 })
 
-const server = setupServer(
-  rest.get('/venues', (req, res, ctx) => {
-    return res(ctx.json({ data: [] }))
-  }),
-  rest.get('http://localhost/globalValues.json', (req, res, ctx) => {
-    return res(ctx.json({}))
-  })
-)
-
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
-
-// Test wrapper with all necessary providers
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ConfigProvider>
-    <IntlProvider
-      locale='en'
-      messages={{
-        'Ai+g6T': 'Add Venue'
-      }}
-    >
-      {children}
-    </IntlProvider>
-  </ConfigProvider>
-)
+// Mock the Drawer component and cssStr function
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  cssStr: jest.fn((value: string) => value),
+  Drawer: ({ children, title, visible, onClose }: {
+    children: React.ReactNode
+    title: string
+    visible: boolean
+    onClose: () => void
+  }) => (
+    visible ? (
+      <div data-testid='drawer'>
+        <div data-testid='drawer-title'>{title}</div>
+        <button onClick={onClose} aria-label='Close'>Close</button>
+        {children}
+      </div>
+    ) : null
+  )
+}))
 
 describe('VenueDrawer', () => {
   const defaultProps = {
@@ -63,121 +54,111 @@ describe('VenueDrawer', () => {
     onSuccess: jest.fn()
   }
 
+  const messages = {
+    dYalm5: 'Add Venue',
+    VenueSingular: 'Venue'
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('renders correctly when open', async () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} />
-      </TestWrapper>
+  const renderComponent = (props = {}) => {
+    return render(
+      <IntlProvider locale='en' messages={messages}>
+        <Provider>
+          <VenueDrawer {...defaultProps} {...props} />
+        </Provider>
+      </IntlProvider>
     )
+  }
 
-    // Check for drawer title - use the actual text that will be rendered
+  const waitForDrawer = async () => {
     await waitFor(() => {
-      expect(screen.getByText('Add Venue')).toBeInTheDocument()
+      expect(screen.getByTestId('drawer')).toBeInTheDocument()
     }, { timeout: 3000 })
-  })
+  }
 
-  it('does not render when closed', () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} open={false} />
-      </TestWrapper>
-    )
-
-    expect(screen.queryByText('Add Venue')).not.toBeInTheDocument()
-  })
-
-  it('calls onClose when drawer is closed', async () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} />
-      </TestWrapper>
-    )
-
-    // Wait for drawer to render
-    await waitFor(() => {
-      expect(screen.getByText('Add Venue')).toBeInTheDocument()
-    }, { timeout: 3000 })
-
-    // Find close button by aria-label
-    const closeButton = screen.getByLabelText('Close')
-    fireEvent.click(closeButton)
-
-    expect(defaultProps.onClose).toHaveBeenCalled()
-  })
-
-  it('renders venues form when open', async () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} />
-      </TestWrapper>
-    )
-
-    // Wait for drawer to render
-    await waitFor(() => {
-      expect(screen.getByText('Add Venue')).toBeInTheDocument()
-    }, { timeout: 3000 })
-
-    // Check for venues form
+  const waitForVenuesForm = async () => {
     await waitFor(() => {
       expect(screen.getByTestId('venues-form')).toBeInTheDocument()
     }, { timeout: 3000 })
-  })
+  }
 
-  it('handles venue form submission', async () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} />
-      </TestWrapper>
-    )
-
-    // Wait for drawer to render
-    await waitFor(() => {
-      expect(screen.getByText('Add Venue')).toBeInTheDocument()
-    }, { timeout: 3000 })
-
-    // Wait for venues form to render
-    await waitFor(() => {
-      expect(screen.getByTestId('venues-form')).toBeInTheDocument()
-    }, { timeout: 3000 })
-
-    const submitButton = screen.getByText('Submit')
-    fireEvent.click(submitButton)
-
-    await waitFor(() => {
-      expect(defaultProps.onSuccess).toHaveBeenCalledWith({ id: '1', name: 'Test Venue' })
+  describe('Rendering', () => {
+    it('renders correctly when open', async () => {
+      render(
+        <IntlProvider locale='en' messages={messages}>
+          <Provider>
+            <VenueDrawer {...defaultProps} />
+          </Provider>
+        </IntlProvider>
+      )
+      expect(screen.getByTestId('drawer')).toBeInTheDocument()
     })
 
-    await waitFor(() => {
-      expect(defaultProps.onClose).toHaveBeenCalled()
+    it('does not render when closed', () => {
+      render(
+        <IntlProvider locale='en' messages={messages}>
+          <Provider>
+            <VenueDrawer {...defaultProps} open={false} />
+          </Provider>
+        </IntlProvider>
+      )
+
+      expect(screen.queryByTestId('drawer')).not.toBeInTheDocument()
+    })
+
+    it('renders venues form when open', async () => {
+      renderComponent()
+
+      await waitForDrawer()
+      await waitForVenuesForm()
     })
   })
 
-  it('handles venue form cancellation', async () => {
-    render(
-      <TestWrapper>
-        <VenueDrawer {...defaultProps} />
-      </TestWrapper>
-    )
+  describe('Form Interactions', () => {
+    it('calls onClose when drawer is closed', async () => {
+      renderComponent()
 
-    // Wait for drawer to render
-    await waitFor(() => {
-      expect(screen.getByText('Add Venue')).toBeInTheDocument()
-    }, { timeout: 3000 })
+      await waitForDrawer()
 
-    // Wait for venues form to render
-    await waitFor(() => {
-      expect(screen.getByTestId('venues-form')).toBeInTheDocument()
-    }, { timeout: 3000 })
+      const closeButton = screen.getByLabelText('Close')
+      fireEvent.click(closeButton)
 
-    const cancelButton = screen.getByText('Cancel')
-    fireEvent.click(cancelButton)
-
-    await waitFor(() => {
       expect(defaultProps.onClose).toHaveBeenCalled()
+    })
+
+    it('handles venue form submission', async () => {
+      renderComponent()
+
+      await waitForDrawer()
+      await waitForVenuesForm()
+
+      const submitButton = screen.getByText('Submit')
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(defaultProps.onSuccess).toHaveBeenCalledWith({ id: '1', name: 'Test Venue' })
+      })
+
+      await waitFor(() => {
+        expect(defaultProps.onClose).toHaveBeenCalled()
+      })
+    })
+
+    it('handles venue form cancellation', async () => {
+      renderComponent()
+
+      await waitForDrawer()
+      await waitForVenuesForm()
+
+      const cancelButton = screen.getByText('Cancel')
+      fireEvent.click(cancelButton)
+
+      await waitFor(() => {
+        expect(defaultProps.onClose).toHaveBeenCalled()
+      })
     })
   })
 })

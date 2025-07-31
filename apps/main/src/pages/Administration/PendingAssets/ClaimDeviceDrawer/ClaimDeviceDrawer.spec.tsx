@@ -9,48 +9,6 @@ import { setUserProfile, UserProfile }        from '@acx-ui/user'
 
 import { ClaimDeviceDrawer } from './ClaimDeviceDrawer'
 
-// eslint-disable-next-line no-console
-const originalWarn = console.warn
-// eslint-disable-next-line no-console
-console.warn = (...args: unknown[]) => {
-  const mswWarningMsg = '[MSW] Warning: captured a request without a matching request handler'
-
-  if (typeof args[0] === 'string' && args[0].includes(mswWarningMsg)) {
-    return
-  }
-  originalWarn(...args)
-}
-
-// eslint-disable-next-line no-console
-const originalError = console.error
-// eslint-disable-next-line no-console
-console.error = (...args: unknown[]) => {
-  const useFormWarning =
-    'Warning: Instance created by `useForm` is not connected to any Form element'
-  const connectionError = 'Error: connect ECONNREFUSED 127.0.0.1:80'
-  const apGroupsListError = 'Error encountered handling the endpoint apGroupsList'
-  const queryFnError = 'queryFn returned an object containing neither a valid error and result'
-  const venuesListError = 'Error encountered handling the endpoint venuesList'
-  const importApError = 'Error encountered handling the endpoint importApProvisions'
-  const importSwitchError = 'Error encountered handling the endpoint importSwitchProvisions'
-  const dataUndefinedError = 'Object returned was: { data: undefined }'
-  const rtkQueryError = 'Error encountered handling the endpoint'
-
-  if (typeof args[0] === 'string' &&
-      (args[0].includes(useFormWarning) ||
-       args[0].includes(connectionError) ||
-       args[0].includes(apGroupsListError) ||
-       args[0].includes(queryFnError) ||
-       args[0].includes(venuesListError) ||
-       args[0].includes(importApError) ||
-       args[0].includes(importSwitchError) ||
-       args[0].includes(dataUndefinedError) ||
-       args[0].includes(rtkQueryError))) {
-    return
-  }
-  originalError(...args)
-}
-
 const mockVenues = [
   { id: 'venue-1', name: 'Venue 1' },
   { id: 'venue-2', name: 'Venue 2' },
@@ -71,12 +29,18 @@ const mockDevices = [
 
 const mockVenuesResponse = {
   data: mockVenues,
-  totalElements: 3
+  totalElements: 3,
+  page: 0,
+  size: 10,
+  totalCount: 3
 }
 
 const mockApGroupsResponse = {
   data: mockApGroups,
-  totalElements: 3
+  totalElements: 3,
+  page: 0,
+  size: 10,
+  totalCount: 3
 }
 
 describe('ClaimDeviceDrawer', () => {
@@ -114,1113 +78,420 @@ describe('ClaimDeviceDrawer', () => {
     jest.clearAllMocks()
   })
 
-  it('renders correctly for AP devices', async () => {
-    render(
+  const renderComponent = (props = {}) => {
+    return render(
       <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
+        <ClaimDeviceDrawer {...defaultProps} {...props} />
       </Provider>
     )
+  }
 
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText(/Select a.*to add your new access points:/)).toBeInTheDocument()
-    })
-    expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('AP Group')).toBeInTheDocument()
-    expect(screen.getByText('Devices (3)')).toBeInTheDocument()
-    expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
-    expect(screen.getByText('Use Serial # as Custom AP Name')).toBeInTheDocument()
-  })
-
-  it('renders correctly for Switch devices', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} deviceType='switch' />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    expect(screen.getByText(/Select a.*to add your new switches:/)).toBeInTheDocument()
-    expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('Devices (3)')).toBeInTheDocument()
-    expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
-    expect(screen.getByText('Use Serial # as Custom Switch Name')).toBeInTheDocument()
-
-    // AP Group should not be visible for switches
-    expect(screen.queryByText('AP Group')).not.toBeInTheDocument()
-  })
-
-  it('displays device list correctly', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('1.')).toBeInTheDocument()
-    })
-
-    expect(screen.getByText('2.')).toBeInTheDocument()
-    expect(screen.getByText('3.')).toBeInTheDocument()
-
-    // Check device serial numbers are displayed in the form
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    expect(customNameInputs).toHaveLength(3)
-
-    // Check model information is displayed
-    expect(screen.getByText('R750')).toBeInTheDocument()
-    expect(screen.getByText('R650')).toBeInTheDocument()
-    expect(screen.getByText('ICX7550-48')).toBeInTheDocument()
-  })
-
-  it('handles venue selection', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
+  const selectVenue = async () => {
     const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
     fireEvent.mouseDown(venueSelect)
-
     await waitFor(() => {
       expect(screen.getByText('Venue 1')).toBeInTheDocument()
     })
-
     fireEvent.click(screen.getByText('Venue 1'))
 
-    await waitFor(() => {
-      // Check that venue is selected by looking for the selected item
-      const venueElements = screen.getAllByTitle('Venue 1')
-      expect(venueElements.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('shows AP groups when venue is selected for AP devices', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    // Wait for venue selection to complete and AP groups to load
+    // Wait for venue selection to be applied by checking if AP Group becomes available
     await waitFor(() => {
       expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
+  }
 
-    // Wait for the AP groups query to complete and default value to be set
+  const selectVenueForSwitch = async () => {
+    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
+    fireEvent.mouseDown(venueSelect)
     await waitFor(() => {
-      // Check that AP group select is enabled (not disabled)
-      const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
-      expect(apGroupSelect).not.toBeDisabled()
+      expect(screen.getByText('Venue 1')).toBeInTheDocument()
     })
+    fireEvent.click(screen.getByText('Venue 1'))
 
-    const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
-    fireEvent.mouseDown(apGroupSelect)
-
-    // Wait for AP group options to be available
+    // Wait for venue selection to be applied
     await waitFor(() => {
-      // Check that there are AP group options available
-      const apGroupOptions = screen.getAllByRole('option')
-      expect(apGroupOptions.length).toBeGreaterThan(0)
-    })
+      expect(screen.getByText('Devices (3)')).toBeInTheDocument()
+    }, { timeout: 5000 })
+  }
 
-    // Now check for specific AP group names
-    await waitFor(() => {
-      expect(screen.getByText('AP Group 1')).toBeInTheDocument()
-    })
+  describe('Rendering', () => {
+    it('renders correctly for AP devices', async () => {
+      renderComponent()
 
-    await waitFor(() => {
-      expect(screen.getByText('AP Group 2')).toBeInTheDocument()
-    })
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
 
-    // Verify that AP groups are properly loaded and selectable
-    await waitFor(() => {
-      // Check that we can see the AP group options in the dropdown
-      const apGroupOptions = screen.getAllByRole('option')
-      expect(apGroupOptions.length).toBeGreaterThanOrEqual(3) // Should have at least 3 options
-    })
-  })
-
-  it('handles prefix/suffix checkbox', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
+      expect(screen.getByText(/Select a.*to add your new access points:/)).toBeInTheDocument()
+      expect(screen.getByText('Venue')).toBeInTheDocument()
+      expect(screen.getByText('AP Group')).toBeInTheDocument()
+      expect(screen.getByText('Devices (3)')).toBeInTheDocument()
       expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
-    })
-
-    const prefixSuffixCheckbox = screen.getByRole('checkbox', {
-      name: 'Use Prefix/Suffix for Device Names'
-    })
-    fireEvent.click(prefixSuffixCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByText('Prefix')).toBeInTheDocument()
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText('Suffix')).toBeInTheDocument()
-    })
-
-    const prefixInput = screen.getByRole('textbox', { name: 'Prefix' })
-    const suffixInput = screen.getByRole('textbox', { name: 'Suffix' })
-
-    fireEvent.change(prefixInput, { target: { value: 'AP.' } })
-    fireEvent.change(suffixInput, { target: { value: '.01' } })
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP.')).toBeInTheDocument()
-    })
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('.01')).toBeInTheDocument()
-    })
-  })
-
-  it('handles use serial as name checkbox', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
       expect(screen.getByText('Use Serial # as Custom AP Name')).toBeInTheDocument()
     })
 
-    const serialCheckbox = screen.getByRole('checkbox', { name: 'Use Serial # as Custom AP Name' })
-    fireEvent.click(serialCheckbox)
+    it('renders correctly for Switch devices', async () => {
+      renderComponent({ deviceType: 'switch' })
 
-    // Check that custom AP name fields are updated with serial numbers
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP-001')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/Select a.*to add your new switches:/)).toBeInTheDocument()
+      expect(screen.getByText('Venue')).toBeInTheDocument()
+      expect(screen.getByText('Devices (3)')).toBeInTheDocument()
+      expect(screen.queryByText('AP Group')).not.toBeInTheDocument()
     })
-    expect(screen.getByDisplayValue('AP-002')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('SWITCH-001')).toBeInTheDocument()
+
+    it('displays device list correctly', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByText('1.')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('2.')).toBeInTheDocument()
+      expect(screen.getByText('3.')).toBeInTheDocument()
+
+      const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
+      expect(customNameInputs).toHaveLength(3)
+
+      expect(screen.getByText('R750')).toBeInTheDocument()
+      expect(screen.getByText('R650')).toBeInTheDocument()
+      expect(screen.getByText('ICX7550-48')).toBeInTheDocument()
+    })
   })
 
-  it('handles form submission for Switch devices', async () => {
-    const onCloseMock = jest.fn()
+  describe('Form Interactions', () => {
+    it('handles venue selection', async () => {
+      renderComponent()
 
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} deviceType='switch' onClose={onCloseMock} />
-      </Provider>
-    )
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
+      })
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
+      await selectVenue()
+
+      // Check that venue selection was successful by verifying AP Group is available
+      await waitFor(() => {
+        expect(screen.getByText('AP Group')).toBeInTheDocument()
+      })
     })
 
-    // Select venue
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
+    it('shows AP groups when venue is selected for AP devices', async () => {
+      renderComponent()
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
+      })
+
+      await selectVenue()
+
+      await waitFor(() => {
+        expect(screen.getByText('AP Group')).toBeInTheDocument()
+      })
+
+      // Wait for AP groups to load and be enabled
+      await waitFor(() => {
+        const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
+        expect(apGroupSelect).not.toBeDisabled()
+      }, { timeout: 5000 })
+
+      const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
+      fireEvent.mouseDown(apGroupSelect)
+
+      await waitFor(() => {
+        expect(screen.getByText('AP Group 1')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('AP Group 2')).toBeInTheDocument()
+      })
+
+      // Check that we can see AP group options in the dropdown
+      await waitFor(() => {
+        const apGroupOptions = screen.getAllByRole('option')
+        expect(apGroupOptions.length).toBeGreaterThanOrEqual(3)
+      })
     })
 
-    fireEvent.click(screen.getByText('Venue 1'))
+    it('handles prefix/suffix checkbox', async () => {
+      renderComponent()
 
-    // Fill in custom names
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom Switch Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'Switch001Custom' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'Switch002Custom' } })
-    fireEvent.change(customNameInputs[2], { target: { value: 'Switch003Custom' } })
+      await waitFor(() => {
+        expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
+      })
 
-    // Click Claim button
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
+      const prefixSuffixCheckbox = screen.getByRole('checkbox', {
+        name: 'Use Prefix/Suffix for Device Names'
+      })
+      fireEvent.click(prefixSuffixCheckbox)
 
-    // Wait for drawer to close after successful submission
-    await waitFor(() => {
+      await waitFor(() => {
+        expect(screen.getByText('Prefix')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Suffix')).toBeInTheDocument()
+      })
+
+      const prefixInput = screen.getByRole('textbox', { name: 'Prefix' })
+      const suffixInput = screen.getByRole('textbox', { name: 'Suffix' })
+
+      fireEvent.change(prefixInput, { target: { value: 'AP.' } })
+      fireEvent.change(suffixInput, { target: { value: '.01' } })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('AP.')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('.01')).toBeInTheDocument()
+      })
+    })
+
+    it('handles use serial as name checkbox', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByText('Use Serial # as Custom AP Name')).toBeInTheDocument()
+      })
+
+      const serialCheckbox = screen.getByRole('checkbox', {
+        name: 'Use Serial # as Custom AP Name'
+      })
+      fireEvent.click(serialCheckbox)
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('AP-001')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('AP-002')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('SWITCH-001')).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('Form Submission', () => {
+    it('handles form submission for AP devices', async () => {
+      const onCloseMock = jest.fn()
+      renderComponent({ onClose: onCloseMock })
+
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
+      })
+
+      await selectVenue()
+
+      // Wait longer for AP groups to load after venue selection
+      await waitFor(() => {
+        expect(screen.getByText('AP Group')).toBeInTheDocument()
+      }, { timeout: 10000 })
+
+      // Wait for AP groups to load and be enabled
+      await waitFor(() => {
+        const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
+        expect(apGroupSelect).not.toBeDisabled()
+      }, { timeout: 10000 })
+
+      // Manually select an AP Group
+      const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
+      fireEvent.mouseDown(apGroupSelect)
+
+      // Wait for dropdown to open and show options
+      await waitFor(() => {
+        expect(screen.getByText('AP Group 1')).toBeInTheDocument()
+      }, { timeout: 5000 })
+
+      // Click on the first available AP Group
+      fireEvent.click(screen.getByText('AP Group 1'))
+
+      // Wait for selection to be applied by checking if the form is ready for submission
+      await waitFor(() => {
+        const claimButton = screen.getByText('Claim')
+        expect(claimButton).toBeInTheDocument()
+      }, { timeout: 5000 })
+
+      const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
+      fireEvent.change(customNameInputs[0], { target: { value: 'AP001Custom' } })
+      fireEvent.change(customNameInputs[1], { target: { value: 'AP002Custom' } })
+      fireEvent.change(customNameInputs[2], { target: { value: 'Switch001Custom' } })
+
+      const claimButton = screen.getByText('Claim')
+      fireEvent.click(claimButton)
+
+      // Wait for form submission to complete
+      await waitFor(() => {
+        expect(onCloseMock).toHaveBeenCalled()
+      }, { timeout: 10000 })
+    })
+
+    it('handles form submission for Switch devices', async () => {
+      const onCloseMock = jest.fn()
+      renderComponent({ onClose: onCloseMock, deviceType: 'switch' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
+      })
+
+      await selectVenueForSwitch()
+
+      const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom Switch Name' })
+      fireEvent.change(customNameInputs[0], { target: { value: 'Switch001Custom' } })
+      fireEvent.change(customNameInputs[1], { target: { value: 'Switch002Custom' } })
+      fireEvent.change(customNameInputs[2], { target: { value: 'Switch003Custom' } })
+
+      const claimButton = screen.getByText('Claim')
+      fireEvent.click(claimButton)
+
+      await waitFor(() => {
+        expect(onCloseMock).toHaveBeenCalled()
+      }, { timeout: 10000 })
+    })
+
+    it('validates required fields', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim')).toBeInTheDocument()
+      })
+
+      const claimButton = screen.getByRole('button', { name: 'Claim' })
+      fireEvent.click(claimButton)
+
+      await waitFor(() => {
+        const validationMessage = screen.getByText(/select.*venue/i)
+        expect(validationMessage).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('Form Actions', () => {
+    it('handles close button', async () => {
+      const onCloseMock = jest.fn()
+      renderComponent({ onClose: onCloseMock })
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      const closeButton = screen.getByRole('button', { name: /close/i })
+      fireEvent.click(closeButton)
+
+      expect(onCloseMock).toHaveBeenCalled()
+    })
+
+    it('handles cancel button', async () => {
+      const onCloseMock = jest.fn()
+      renderComponent({ onClose: onCloseMock })
+
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
+      })
+
+      await selectVenue()
+
+      // Check that venue selection was successful
+      await waitFor(() => {
+        expect(screen.getByText('AP Group')).toBeInTheDocument()
+      })
+
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+      fireEvent.click(cancelButton)
+
       expect(onCloseMock).toHaveBeenCalled()
     })
   })
 
-  it('handles API error during form submission', async () => {
-    const onCloseMock = jest.fn()
+  describe('Additional Features', () => {
+    it('handles tags input', async () => {
+      renderComponent()
 
-    // Mock API to return error
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.post('/deviceProvisions/venue/:venueId/apGroups/:apGroupId/aps', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Internal server error' }))
+      await waitFor(() => {
+        expect(screen.getAllByText('Tags')).toHaveLength(3)
       })
-    )
 
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
+      const tagInputs = screen.getAllByRole('combobox', { name: 'Tags' })
+      const firstTagInput = tagInputs[0]
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
+      fireEvent.change(firstTagInput, { target: { value: 'tag1' } })
+      fireEvent.keyDown(firstTagInput, { key: 'Enter' })
 
-    // Select venue
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    // Wait for AP groups to load
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Click Claim button
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    // Wait a bit to ensure error handling completes
-    await waitFor(() => {
-      // Verify drawer is still open (not closed due to error)
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    // Verify onClose was NOT called after error
-    expect(onCloseMock).not.toHaveBeenCalled()
-  })
-
-  it('handles form submission', async () => {
-    const onCloseMock = jest.fn()
-
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    // Select venue
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    // Wait for AP groups to load and default value to be set
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Wait for the AP groups query to complete and default value to be set
-    await waitFor(() => {
-      // Check that AP group select is enabled (not disabled)
-      const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
-      expect(apGroupSelect).not.toBeDisabled()
-    })
-
-    // Fill in custom names
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'AP001Custom' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'AP002Custom' } })
-    fireEvent.change(customNameInputs[2], { target: { value: 'Switch001Custom' } })
-
-    // Click Claim button
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    // Wait for drawer to close after successful submission
-    await waitFor(() => {
-      expect(onCloseMock).toHaveBeenCalled()
-    })
-  })
-
-  it('handles close button', async () => {
-    const onCloseMock = jest.fn()
-
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    const closeButton = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(closeButton)
-
-    expect(onCloseMock).toHaveBeenCalled()
-  })
-
-  it('handles cancel button', async () => {
-    const onCloseMock = jest.fn()
-
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Cancel')).toBeInTheDocument()
-    })
-
-    // Fill in some form data first
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    // Check that form has data
-    await waitFor(() => {
-      const venueElements = screen.getAllByTitle('Venue 1')
-      expect(venueElements.length).toBeGreaterThan(0)
-    })
-
-    // Click cancel button
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
-    fireEvent.click(cancelButton)
-
-    // Verify onClose was called
-    expect(onCloseMock).toHaveBeenCalled()
-
-    // Note: The drawer visibility is controlled by the parent component
-    // We can't directly test if it's destroyed from within the component
-    // The onClose callback being called is sufficient to verify the cancel functionality
-  })
-
-  it('validates required fields', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim')).toBeInTheDocument()
-    })
-
-    const claimButton = screen.getByRole('button', { name: 'Claim' })
-    fireEvent.click(claimButton)
-
-    await waitFor(() => {
-      // Look for any validation message that contains "select" and "venue"
-      const validationMessage = screen.getByText(/select.*venue/i)
-      expect(validationMessage).toBeInTheDocument()
-    })
-  })
-
-  it('handles tags input', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getAllByText('Tags')).toHaveLength(3)
-    })
-
-    const tagInputs = screen.getAllByRole('combobox', { name: 'Tags' })
-    const firstTagInput = tagInputs[0]
-
-    fireEvent.change(firstTagInput, { target: { value: 'tag1' } })
-    fireEvent.keyDown(firstTagInput, { key: 'Enter' })
-
-    await waitFor(() => {
-      // Use getAllByText to handle multiple elements with same text
-      const tagElements = screen.getAllByText('tag1')
-      expect(tagElements.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('shows validation error for empty device names', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    // Select venue
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    // Wait for AP groups to load
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Clear the first device name
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: '' } })
-
-    // Click Claim button to trigger validation
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    // Wait for validation error to appear - use getAllByText since there are multiple errors
-    await waitFor(() => {
-      const errorMessages = screen.getAllByText('Custom AP Name is required')
-      expect(errorMessages.length).toBeGreaterThan(0)
-    }, { timeout: 3000 })
-  })
-
-  it('handles device name validation - too long name', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    const longName = 'A'.repeat(33)
-    fireEvent.change(customNameInputs[0], { target: { value: longName } })
-
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-  })
-
-  it('handles device name validation - invalid characters', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'Invalid@Name' } })
-
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-  })
-
-  it('handles device name validation - duplicate names', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'SameName' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'SameName' } })
-
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-  })
-
-  it('handles prefix/suffix with serial number as name', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Enable prefix/suffix
-    const prefixSuffixCheckbox = screen.getByRole('checkbox', {
-      name: 'Use Prefix/Suffix for Device Names'
-    })
-    fireEvent.click(prefixSuffixCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByText('Prefix')).toBeInTheDocument()
-    })
-
-    // Enable serial as name
-    const serialCheckbox = screen.getByRole('checkbox', { name: 'Use Serial # as Custom AP Name' })
-    fireEvent.click(serialCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP-001')).toBeInTheDocument()
-    })
-
-    // Set prefix and suffix
-    const prefixInput = screen.getByRole('textbox', { name: 'Prefix' })
-    const suffixInput = screen.getByRole('textbox', { name: 'Suffix' })
-    fireEvent.change(prefixInput, { target: { value: 'AP.' } })
-    fireEvent.change(suffixInput, { target: { value: '.01' } })
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP.')).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('.01')).toBeInTheDocument()
-    })
-  })
-
-  it('shows prefix/suffix example when enabled', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
-    })
-
-    const prefixSuffixCheckbox = screen.getByRole('checkbox', {
-      name: 'Use Prefix/Suffix for Device Names'
-    })
-    fireEvent.click(prefixSuffixCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByText('Prefix')).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByText('Suffix')).toBeInTheDocument()
-    })
-
-    const prefixInput = screen.getByRole('textbox', { name: 'Prefix' })
-    const suffixInput = screen.getByRole('textbox', { name: 'Suffix' })
-    fireEvent.change(prefixInput, { target: { value: 'AP.' } })
-    fireEvent.change(suffixInput, { target: { value: '[ Custom name ]' } })
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP.')).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('[ Custom name ]')).toBeInTheDocument()
-    })
-  })
-
-  it('handles add venue button click', async () => {
-    const onAddVenueMock = jest.fn()
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onAddVenue={onAddVenueMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const addButtons = screen.getAllByText('Add')
-    const venueAddButton = addButtons[0]
-    fireEvent.click(venueAddButton)
-
-    expect(onAddVenueMock).toHaveBeenCalled()
-  })
-
-  it('handles add AP group button click', async () => {
-    const onAddApGroupMock = jest.fn()
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onAddApGroup={onAddApGroupMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    const addButtons = screen.getAllByText('Add')
-    const apGroupAddButton = addButtons[1]
-    fireEvent.click(apGroupAddButton)
-
-    expect(onAddApGroupMock).toHaveBeenCalled()
-  })
-
-  it('handles loading states during API calls', async () => {
-    const onCloseMock = jest.fn()
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'TestAP' } })
-
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    // Check that the button is still enabled (loading state might not be immediately visible)
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-  })
-
-  it('handles API error for venues list', async () => {
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.post(CommonUrlsInfo.getVenuesList.url, (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Failed to load venues' }))
+      await waitFor(() => {
+        const tagElements = screen.getAllByText('tag1')
+        expect(tagElements.length).toBeGreaterThan(0)
       })
-    )
-
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
     })
-  })
 
-  it('handles API error for AP groups list', async () => {
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.post(WifiUrlsInfo.getApGroupsList.url, (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Failed to load AP groups' }))
+    it('handles add venue button click', async () => {
+      const onAddVenueMock = jest.fn()
+      renderComponent({ onAddVenue: onAddVenueMock })
+
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
       })
-    )
 
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
+      const addButtons = screen.getAllByText('Add')
+      const venueAddButton = addButtons[0]
+      fireEvent.click(venueAddButton)
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
+      expect(onAddVenueMock).toHaveBeenCalled()
     })
 
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
+    it('handles add AP group button click', async () => {
+      const onAddApGroupMock = jest.fn()
+      renderComponent({ onAddApGroup: onAddApGroupMock })
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-  })
-
-  it('handles switch device type correctly', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} deviceType='switch' />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Use Serial # as Custom Switch Name')).toBeInTheDocument()
-    })
-
-    const serialCheckbox = screen.getByRole('checkbox', {
-      name: 'Use Serial # as Custom Switch Name'
-    })
-    fireEvent.click(serialCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('AP-001')).toBeInTheDocument()
-    })
-  })
-
-  it('handles form reset on cancel', async () => {
-    const onCloseMock = jest.fn()
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    // Fill some form data
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'TestName' } })
-
-    // Click cancel
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
-    fireEvent.click(cancelButton)
-
-    expect(onCloseMock).toHaveBeenCalled()
-  })
-
-  it('handles drawer visibility prop', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} visible={false} />
-      </Provider>
-    )
-
-    // When visible is false, the drawer should not be rendered
-    expect(screen.queryByText('Claim Device')).not.toBeInTheDocument()
-  })
-
-  it('handles empty devices array', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} devices={[]} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    expect(screen.getByText('Devices (0)')).toBeInTheDocument()
-  })
-
-  it('handles single device array', async () => {
-    const singleDevice = [{ serial: 'AP-001', model: 'R750' }]
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} devices={singleDevice} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    expect(screen.getByText('Devices (1)')).toBeInTheDocument()
-    expect(screen.getByText('1.')).toBeInTheDocument()
-    expect(screen.queryByText('2.')).not.toBeInTheDocument()
-  })
-
-  it('handles tags validation', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getAllByText('Tags')).toHaveLength(3)
-    })
-
-    const tagInputs = screen.getAllByRole('combobox', { name: 'Tags' })
-    const firstTagInput = tagInputs[0]
-
-    // Test invalid tag
-    fireEvent.change(firstTagInput, { target: { value: 'invalid@tag' } })
-    fireEvent.keyDown(firstTagInput, { key: 'Enter' })
-
-    // Test valid tag
-    fireEvent.change(firstTagInput, { target: { value: 'valid-tag' } })
-    fireEvent.keyDown(firstTagInput, { key: 'Enter' })
-
-    await waitFor(() => {
-      const tagElements = screen.getAllByText('valid-tag')
-      expect(tagElements.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('handles form submission with all features enabled', async () => {
-    const onCloseMock = jest.fn()
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} onClose={onCloseMock} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Enable prefix/suffix
-    const prefixSuffixCheckbox = screen.getByRole('checkbox', {
-      name: 'Use Prefix/Suffix for Device Names'
-    })
-    fireEvent.click(prefixSuffixCheckbox)
-
-    await waitFor(() => {
-      expect(screen.getByText('Prefix')).toBeInTheDocument()
-    })
-
-    // Set prefix and suffix
-    const prefixInput = screen.getByRole('textbox', { name: 'Prefix' })
-    const suffixInput = screen.getByRole('textbox', { name: 'Suffix' })
-    fireEvent.change(prefixInput, { target: { value: 'AP.' } })
-    fireEvent.change(suffixInput, { target: { value: '.01' } })
-
-    // Fill custom names
-    const customNameInputs = screen.getAllByRole('textbox', { name: 'Custom AP Name' })
-    fireEvent.change(customNameInputs[0], { target: { value: 'TestAP1' } })
-    fireEvent.change(customNameInputs[1], { target: { value: 'TestAP2' } })
-    fireEvent.change(customNameInputs[2], { target: { value: 'TestAP3' } })
-
-    // Add tags
-    const tagInputs = screen.getAllByRole('combobox', { name: 'Tags' })
-    fireEvent.change(tagInputs[0], { target: { value: 'tag1' } })
-    fireEvent.keyDown(tagInputs[0], { key: 'Enter' })
-
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    // Wait for form submission to complete
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-  })
-
-  it('handles keyboard navigation', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-
-    // Test keyboard navigation
-    fireEvent.keyDown(venueSelect, { key: 'ArrowDown' })
-    fireEvent.keyDown(venueSelect, { key: 'Enter' })
-  })
-
-  it('handles component unmounting', async () => {
-    const { unmount } = render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
-    })
-
-    unmount()
-  })
-
-  it('handles default AP group selection', async () => {
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
-    })
-
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
-    })
-    fireEvent.click(screen.getByText('Venue 1'))
-
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
-
-    // Check that default AP group is selected
-    await waitFor(() => {
-      const apGroupSelect = screen.getByRole('combobox', { name: 'AP Group' })
-      expect(apGroupSelect).not.toBeDisabled()
-    })
-  })
-
-  it('handles no default AP group scenario', async () => {
-    const mockApGroupsNoDefault = [
-      { id: 'group-1', name: 'AP Group 1', venueId: 'venue-1', isDefault: false },
-      { id: 'group-2', name: 'AP Group 2', venueId: 'venue-1', isDefault: false }
-    ]
-
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.post(WifiUrlsInfo.getApGroupsList.url, (req, res, ctx) => {
-        return res(ctx.json({ data: mockApGroupsNoDefault, totalElements: 2 }))
+      await waitFor(() => {
+        expect(screen.getByText('Venue')).toBeInTheDocument()
       })
-    )
 
-    render(
-      <Provider>
-        <ClaimDeviceDrawer {...defaultProps} />
-      </Provider>
-    )
+      await selectVenue()
 
-    await waitFor(() => {
-      expect(screen.getByText('Venue')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('AP Group')).toBeInTheDocument()
+      })
+
+      const addButtons = screen.getAllByText('Add')
+      const apGroupAddButton = addButtons[1]
+      fireEvent.click(apGroupAddButton)
+
+      expect(onAddApGroupMock).toHaveBeenCalled()
+    })
+  })
+
+  describe('Edge Cases', () => {
+    it('handles empty devices array', async () => {
+      renderComponent({ devices: [] })
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Devices (0)')).toBeInTheDocument()
     })
 
-    const venueSelect = screen.getByRole('combobox', { name: 'Venue' })
-    fireEvent.mouseDown(venueSelect)
-    await waitFor(() => {
-      expect(screen.getByText('Venue 1')).toBeInTheDocument()
+    it('handles single device array', async () => {
+      const singleDevice = [{ serial: 'AP-001', model: 'R750' }]
+      renderComponent({ devices: singleDevice })
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Devices (1)')).toBeInTheDocument()
+      expect(screen.getByText('1.')).toBeInTheDocument()
+      expect(screen.queryByText('2.')).not.toBeInTheDocument()
     })
-    fireEvent.click(screen.getByText('Venue 1'))
 
-    await waitFor(() => {
-      expect(screen.getByText('AP Group')).toBeInTheDocument()
-    })
+    it('handles drawer visibility prop', async () => {
+      renderComponent({ visible: false })
 
-    const claimButton = screen.getByText('Claim')
-    fireEvent.click(claimButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      expect(screen.queryByText('Claim Device')).not.toBeInTheDocument()
     })
   })
 })

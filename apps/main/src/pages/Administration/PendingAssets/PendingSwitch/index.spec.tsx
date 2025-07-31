@@ -4,9 +4,9 @@ import React from 'react'
 import moment   from 'moment'
 import { rest } from 'msw'
 
-import { DeviceProvisionUrlsInfo }            from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { render, fireEvent, waitFor, screen } from '@acx-ui/test-utils'
+import { DeviceProvisionUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { mockServer, render, fireEvent, waitFor, screen } from '@acx-ui/test-utils'
 
 import { PendingSwitch } from '.'
 
@@ -22,10 +22,8 @@ describe('PendingSwitch', () => {
   const path = '/administration/pendingAssets/pendingSwitch'
 
   beforeEach(() => {
-    const { mockServer } = require('@acx-ui/test-utils')
-
     mockServer.use(
-      rest.get(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
+      rest.post(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json({
           content: [
             {
@@ -94,7 +92,7 @@ describe('PendingSwitch', () => {
           refreshedAt: null
         }))
       }),
-      rest.post('*/deviceProvisions/statusReports/switches', (req, res, ctx) => {
+      rest.patch('*/deviceProvisions/statusReports/switches', (req, res, ctx) => {
         return res(ctx.json({ success: true }))
       }),
       rest.get('*/deviceProvisions/switches/models', (req, res, ctx) => {
@@ -370,43 +368,6 @@ describe('PendingSwitch', () => {
     await waitFor(() => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
-
-    // Test 1: Error states
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 2: Loading states
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 3: Auto refresh functionality
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 4: Formatter functions
-    expect(screen.getByRole('table')).toBeInTheDocument()
-  })
-
-  it('handles drawer functionality and callbacks', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    // Test 1: Table functionality verification
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 2: Component rendering verification
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 3: Venue creation callbacks
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 4: Switch group creation callbacks
-    expect(screen.getByRole('table')).toBeInTheDocument()
   })
 
   it('handles data mapping and state management', async () => {
@@ -467,16 +428,6 @@ describe('PendingSwitch', () => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    // Test 1: Table query configuration
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 2: API interactions
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 3: Error handling
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 4: Refresh with error handling
     const refreshButton = screen.getByRole('button', { name: /refresh/i })
     fireEvent.click(refreshButton)
 
@@ -526,34 +477,6 @@ describe('PendingSwitch', () => {
     })
 
     // Test 2: Row mapping in various contexts
-    expect(screen.getByRole('table')).toBeInTheDocument()
-  })
-
-  it('handles edge cases and empty states', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    // Test 1: Table with empty rowActions
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 2: switchStatus with null refreshedAt
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 3: latestSwitchStatus with null refreshedAt
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 4: Formatter functions with null values
-    expect(screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 5: Mixed device statuses
     expect(screen.getByRole('table')).toBeInTheDocument()
   })
 })

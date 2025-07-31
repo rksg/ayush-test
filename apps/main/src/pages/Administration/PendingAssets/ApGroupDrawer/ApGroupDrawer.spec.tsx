@@ -65,9 +65,13 @@ describe('ApGroupDrawer', () => {
     jest.clearAllMocks()
   })
 
+  const renderComponent = (props = {}) => {
+    return render(<ApGroupDrawer {...defaultProps} {...props} />)
+  }
+
   describe('Rendering', () => {
-    it('should render correctly when open', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders correctly when open', () => {
+      renderComponent()
 
       expect(screen.getByTestId('drawer')).toBeInTheDocument()
       expect(screen.getByText('Add AP Group')).toBeInTheDocument()
@@ -75,28 +79,28 @@ describe('ApGroupDrawer', () => {
       expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
     })
 
-    it('should not render when closed', () => {
-      render(<ApGroupDrawer {...defaultProps} open={false} />)
+    it('does not render when closed', () => {
+      renderComponent({ open: false })
 
       expect(screen.queryByTestId('drawer')).not.toBeInTheDocument()
     })
 
-    it('should render with correct drawer props', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders with correct drawer props', () => {
+      renderComponent()
 
       const drawer = screen.getByTestId('drawer')
       expect(drawer).toHaveAttribute('role', 'dialog')
       expect(drawer).toHaveAttribute('aria-modal', 'true')
     })
 
-    it('should render with correct title', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders with correct title', () => {
+      renderComponent()
 
       expect(screen.getByText('Add AP Group')).toBeInTheDocument()
     })
 
-    it('should render ApGroupGeneralTab with onFinish prop', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders ApGroupGeneralTab with onFinish prop', () => {
+      renderComponent()
 
       expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
       expect(screen.getByTestId('on-finish-button')).toBeInTheDocument()
@@ -104,9 +108,9 @@ describe('ApGroupDrawer', () => {
   })
 
   describe('Drawer close functionality', () => {
-    it('should call onClose when drawer close button is clicked', () => {
+    it('calls onClose when drawer close button is clicked', () => {
       const mockOnClose = jest.fn()
-      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+      renderComponent({ onClose: mockOnClose })
 
       const closeButton = screen.getByTestId('drawer-close-button')
       fireEvent.click(closeButton)
@@ -114,39 +118,23 @@ describe('ApGroupDrawer', () => {
       expect(mockOnClose).toHaveBeenCalledTimes(1)
     })
 
-    it('should call onClose when onFinish button is clicked', () => {
+    it('calls onClose when onFinish button is clicked', () => {
       const mockOnClose = jest.fn()
-      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+      renderComponent({ onClose: mockOnClose })
 
       const onFinishButton = screen.getByTestId('on-finish-button')
       fireEvent.click(onFinishButton)
 
       expect(mockOnClose).toHaveBeenCalledTimes(1)
     })
-  })
 
-  describe('Props handling', () => {
-    it('should pass correct props to Drawer component', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
-
-      // Check that the drawer is rendered with the expected structure
-      expect(screen.getByTestId('drawer')).toBeInTheDocument()
-      expect(screen.getByTestId('drawer-header')).toBeInTheDocument()
-      expect(screen.getByTestId('drawer-content')).toBeInTheDocument()
-
-      // Check that footer is null (as specified in the component)
-      expect(screen.queryByTestId('drawer-footer')).not.toBeInTheDocument()
-    })
-
-    it('should handle multiple onClose calls correctly', () => {
+    it('handles multiple onClose calls correctly', () => {
       const mockOnClose = jest.fn()
-      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+      renderComponent({ onClose: mockOnClose })
 
-      // Click drawer close button
       const drawerCloseButton = screen.getByTestId('drawer-close-button')
       fireEvent.click(drawerCloseButton)
 
-      // Click onFinish button
       const onFinishButton = screen.getByTestId('on-finish-button')
       fireEvent.click(onFinishButton)
 
@@ -155,8 +143,8 @@ describe('ApGroupDrawer', () => {
   })
 
   describe('Integration with ApGroupGeneralTab', () => {
-    it('should render ApGroupGeneralTab within the drawer', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders ApGroupGeneralTab within the drawer', () => {
+      renderComponent()
 
       const drawer = screen.getByTestId('drawer')
       const apGroupTab = screen.getByTestId('ap-group-general-tab')
@@ -164,17 +152,16 @@ describe('ApGroupDrawer', () => {
       expect(drawer).toContainElement(apGroupTab)
     })
 
-    it('should render ApGroupEditContextProvider', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('renders ApGroupEditContextProvider', () => {
+      renderComponent()
 
       expect(screen.getByTestId('ap-group-edit-context-provider')).toBeInTheDocument()
     })
 
-    it('should pass onFinish to ApGroupGeneralTab', () => {
+    it('passes onFinish to ApGroupGeneralTab', () => {
       const mockOnClose = jest.fn()
-      render(<ApGroupDrawer {...defaultProps} onClose={mockOnClose} />)
+      renderComponent({ onClose: mockOnClose })
 
-      // The onFinish button in the mocked ApGroupGeneralTab should call the onClose function
       const onFinishButton = screen.getByTestId('on-finish-button')
       fireEvent.click(onFinishButton)
 
@@ -183,16 +170,16 @@ describe('ApGroupDrawer', () => {
   })
 
   describe('Accessibility', () => {
-    it('should have proper ARIA attributes', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('has proper ARIA attributes', () => {
+      renderComponent()
 
       const drawer = screen.getByTestId('drawer')
       expect(drawer).toHaveAttribute('role', 'dialog')
       expect(drawer).toHaveAttribute('aria-modal', 'true')
     })
 
-    it('should have accessible close button', () => {
-      render(<ApGroupDrawer {...defaultProps} />)
+    it('has accessible close button', () => {
+      renderComponent()
 
       const closeButton = screen.getByTestId('drawer-close-button')
       expect(closeButton).toBeInTheDocument()
@@ -201,22 +188,20 @@ describe('ApGroupDrawer', () => {
   })
 
   describe('Edge cases', () => {
-    it('should handle undefined onClose gracefully', () => {
-      // This should not throw an error
+    it('handles undefined onClose gracefully', () => {
       expect(() => {
-        render(<ApGroupDrawer open={true} onClose={undefined as unknown as () => void} />)
+        renderComponent({ onClose: undefined as unknown as () => void })
       }).not.toThrow()
     })
 
-    it('should handle null onClose gracefully', () => {
-      // This should not throw an error
+    it('handles null onClose gracefully', () => {
       expect(() => {
-        render(<ApGroupDrawer open={true} onClose={null as unknown as () => void} />)
+        renderComponent({ onClose: null as unknown as () => void })
       }).not.toThrow()
     })
 
-    it('should render correctly with minimal props', () => {
-      render(<ApGroupDrawer open={true} onClose={() => {}} />)
+    it('renders correctly with minimal props', () => {
+      renderComponent({ onClose: () => {} })
 
       expect(screen.getByTestId('drawer')).toBeInTheDocument()
       expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()

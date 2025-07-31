@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Drawer }        from '@acx-ui/components'
 import { VenueExtended } from '@acx-ui/rc/utils'
 
@@ -16,6 +18,7 @@ export const VenueDrawer: React.FC<VenueDrawerProps> = ({
   onClose,
   onSuccess
 }) => {
+  const { $t } = useIntl()
   const handleVenueCreated = (venue?: VenueExtended) => {
     onSuccess?.(venue)
     onClose()
@@ -23,7 +26,7 @@ export const VenueDrawer: React.FC<VenueDrawerProps> = ({
 
   return (
     <Drawer
-      title='Add Venue'
+      title={$t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' })}
       width={600}
       visible={open}
       onClose={onClose}

@@ -41,30 +41,11 @@ export const PendingAp = () => {
 
   const [ hideApProvisions ] = useHideApProvisionsMutation()
 
-  const emptyModelFilterMap: { key: string, value: string }[] = []
-  const { modelFilterMap } = useGetApModelsQuery({
-    params: { tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10_000
-    }
-  }, {
-    selectFromResult: ({ data }) => {
-      return {
-        modelFilterMap: data?.map(model =>
-          ({ key: model, value: model })) ?? emptyModelFilterMap
-      }
-    }
-  })
-
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetApProvisionsQuery,
     defaultPayload: {
       page: 0,
-      pageSize: 10,
+      size: 10,
       filters: {}
     },
     search: {
@@ -74,6 +55,24 @@ export const PendingAp = () => {
     sorter: {
       sortField: 'serialNumber',
       sortOrder: 'asc'
+    }
+  })
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const tableFilters = tableQuery.payload.filters as { includeHidden?: boolean[] }
+  const { modelFilterMap } = useGetApModelsQuery({
+    params: { tenantId },
+    payload: {
+      filters: {
+        includeHidden: tableFilters?.includeHidden || [false]
+      }
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map(model =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
     }
   })
 

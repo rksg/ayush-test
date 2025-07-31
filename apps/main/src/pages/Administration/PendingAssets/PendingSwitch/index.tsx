@@ -15,6 +15,7 @@ import { ClaimDeviceDrawer } from '../ClaimDeviceDrawer'
 import { MessageMapping }    from '../messageMapping'
 import { VenueDrawer }       from '../VenueDrawer'
 
+
 export const PendingSwitch = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -34,30 +35,11 @@ export const PendingSwitch = () => {
 
   const [ hideSwitchProvisions ] = useHideSwitchProvisionsMutation()
 
-  const emptyModelFilterMap: { key: string, value: string }[] = []
-  const { modelFilterMap } = useGetSwitchModelsQuery({
-    params: { tenantId: params.tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10_000
-    }
-  }, {
-    selectFromResult: ({ data }) => {
-      return {
-        modelFilterMap: data?.map(model =>
-          ({ key: model, value: model })) ?? emptyModelFilterMap
-      }
-    }
-  })
-
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetSwitchProvisionsQuery,
     defaultPayload: {
       page: 0,
-      pageSize: 10,
+      size: 10,
       filters: {}
     },
     search: {
@@ -67,6 +49,24 @@ export const PendingSwitch = () => {
     sorter: {
       sortField: 'serialNumber',
       sortOrder: 'asc'
+    }
+  })
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const tableFilters = tableQuery.payload.filters as { includeHidden?: boolean[] }
+  const { modelFilterMap } = useGetSwitchModelsQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      filters: {
+        includeHidden: tableFilters?.includeHidden || [false]
+      }
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map(model =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
     }
   })
 
