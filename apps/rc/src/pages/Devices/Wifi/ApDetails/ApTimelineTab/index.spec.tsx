@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, mockRestApiQuery }                             from '@acx-ui/test-utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
@@ -26,8 +26,16 @@ describe('ApTimelineTab', ()=>{
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
+        WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -41,7 +49,7 @@ describe('ApTimelineTab', ()=>{
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 1, page: 1, data: [ap] }))
       ),
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),

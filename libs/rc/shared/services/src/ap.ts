@@ -31,13 +31,11 @@ import {
   ApGroupViewModel,
   ApLedSettings,
   ApUsbSettings,
-  ApLldpNeighborsResponse,
   ApManagementVlan,
   ApNeighborsResponse,
   ApPosition,
   ApRadioCustomization,
   ApRadioCustomizationV1Dot1,
-  ApRfNeighborsResponse,
   ApViewModel,
   ApiVersionEnum,
   Capabilities,
@@ -1386,13 +1384,13 @@ export const apApi = baseApApi.injectEndpoints({
             }
           }
 
-          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
-            activateRequests!, fetchWithBQ, customHeaders)
-
-          await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
-            overwriteRequests!, fetchWithBQ, customHeaders)
-
           if(!useVenueSettings) {
+            await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+              activateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
+              overwriteRequests!, fetchWithBQ, customHeaders)
+
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
 
@@ -1927,6 +1925,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    /*
     getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
@@ -1941,6 +1940,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    */
     getApNeighbors: build.query<ApNeighborsResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2262,8 +2262,8 @@ export const {
   useGetMeshUplinkApsQuery,
   useLazyGetMeshUplinkApsQuery,
   useDownloadApsCSVMutation,
-  useLazyGetApRfNeighborsQuery,
-  useLazyGetApLldpNeighborsQuery,
+  //useLazyGetApRfNeighborsQuery,
+  //useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
   useGetCcdSupportVenuesQuery,
   useGetCcdSupportApGroupsQuery,
