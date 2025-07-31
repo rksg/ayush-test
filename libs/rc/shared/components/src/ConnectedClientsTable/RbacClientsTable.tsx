@@ -646,6 +646,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   useEffect(() => {
     // Remove selection when UE is disconnected.
     const connectedClientList = tableQuery.data?.data
+    setClientData(connectedClientList ?? [])
     fetchClientDisplayName(tableQuery.data?.data)
     if (!connectedClientList) {
       setTableSelected({
@@ -671,13 +672,6 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         selectRows: newSelectRows
       })
     }
-
-    setClientData((connectedClientList ?? []).map(c=> {
-      return {
-        ...c,
-        identityDisplayName: c.identityId ? identityDisplayNameMap.get(c.identityId) : undefined
-      }
-    }))
   }, [tableQuery.data?.data, tableQuery.data?.totalCount])
 
   useEffect(() => {
@@ -686,6 +680,17 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         ...(tableQuery.payload as typeof defaultRbacClientPayload), searchString })
     }
   }, [searchString])
+
+  useEffect(()=> {
+    const data = clientData.map(c => {
+      return {
+        ...c,
+        identityDisplayName: identityDisplayNameMap.get(c.identityId ?? '')
+      }
+    })
+    setClientData(data)
+  }, [identityDisplayNameMap])
+
 
   const rowSelection = {
     selectedRowKeys: tableSelected.selectedRowKeys,
