@@ -80,13 +80,11 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FNZ', 'ICX8100-48'],
   ['FPA', 'ICX8100-48P'],
   ['FPB', 'ICX8100-C08PF'],
-  ['FPM', 'ICX8100-48PF'],
   ['FPP', 'ICX8100-24-X'],
   ['FPQ', 'ICX8100-24P-X'],
   ['FPR', 'ICX8100-48-X'],
   ['FPS', 'ICX8100-48P-X'],
   ['FPT', 'ICX8100-C08PF-X'],
-  ['FPU', 'ICX8100-48PF-X'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -996,7 +994,7 @@ export const defaultSwitchPayload = {
   ]
 }
 
-export const isNotSupportStackModel = (model: string, isSupport8100Phase2: boolean) => {
+export const isNotSupportStackModel = (model: string, isSupport8100XStacking: boolean) => {
   switch(model) {
     case 'ICX7150-C08P':
     case 'ICX7150-C08PT':
@@ -1014,7 +1012,7 @@ export const isNotSupportStackModel = (model: string, isSupport8100Phase2: boole
     case 'ICX8100-48PF-X':
     case 'ICX8100-C08PF-X':
     case 'ICX8100-C16PF-X':
-      return !isSupport8100Phase2
+      return !isSupport8100XStacking
     default:
       return false
   }
