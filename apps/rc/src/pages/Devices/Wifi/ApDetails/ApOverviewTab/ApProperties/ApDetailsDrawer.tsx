@@ -9,16 +9,6 @@ import { Drawer, Descriptions, Loader, SuspenseBoundary } from '@acx-ui/componen
 import { get }                                            from '@acx-ui/config'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
-  defaultSwitchPayload,
-  EditPortDrawer,
-  getInactiveTooltip,
-  isLAGMemberPort,
-  SwitchLagModal,
-  SwitchLagParams,
-  isOperationalSwitchPort,
-  isStackPort
-} from '@acx-ui/rc/components'
-import {
   useGetVenueQuery,
   useGetApValidChannelQuery,
   useSwitchListQuery,
@@ -29,6 +19,9 @@ import {
   useLazyGetApNeighborsQuery,
   useLazyGetApPasswordQuery
 } from '@acx-ui/rc/services'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -45,9 +38,17 @@ import {
   useApContext,
   ApLldpNeighbor,
   ApRfNeighbor,
-  ApApPassword
-} from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+  ApApPassword } from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import {
+  EditPortDrawer,
+  getInactiveTooltip,
+  isLAGMemberPort,
+  SwitchLagModal,
+  SwitchLagParams,
+  isOperationalSwitchPort,
+  isStackPort
+} from '@acx-ui/switch/components'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { useUserProfileContext, hasPermission }         from '@acx-ui/user'
 import { getOpsApi, CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'
@@ -67,14 +68,14 @@ interface ApDetailsDrawerProps {
   apDetails: ApDetails
 }
 
-const useGetApPassword = (currentAP: ApViewModel, skip: boolean) => {
+const useGetApPassword = (currentAP: ApViewModel) => {
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
 
   const { data: venueRbacApSettings } = useGetApOperationalQuery({ params, enableRbac: true },
-    { skip: skip || !currentAP?.venueId })
+    { skip: !currentAP?.venueId })
 
   return venueRbacApSettings?.loginPassword
 }

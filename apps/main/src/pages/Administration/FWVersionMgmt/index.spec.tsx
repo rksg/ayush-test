@@ -19,11 +19,6 @@ import {
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
-
-import {
-  availableVersions, version,
-  preference, mockedApModelFamilies
-} from './__tests__/fixtures'
 import { switchLatestV1002,
   switchVenueV1002
 } from './SwitchFirmwareV1002/__tests__/fixtures'
@@ -71,11 +66,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   })
 }))
 
-jest.mock('@acx-ui/feature-toggle', () => ({
-  ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsSplitOn: jest.fn()
-}))
-
 describe('Firmware Version Management', () => {
   const params: { tenantId: string, activeTab: string, activeSubTab: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -98,19 +88,6 @@ describe('Firmware Version Management', () => {
         FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatestV1002))
       ),
-
-      rest.get(
-        FirmwareUrlsInfo.getUpgradePreferences.url,
-        (req, res, ctx) => res(ctx.json(preference))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
-        (req, res, ctx) => res(ctx.json(version))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json(availableVersions))
-      ),
       rest.get(
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
@@ -118,10 +95,6 @@ describe('Firmware Version Management', () => {
       rest.get(
         SigPackUrlsInfo.getSigPackRbac.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        FirmwareUrlsInfo.getApModelFamilies.url,
-        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
   })

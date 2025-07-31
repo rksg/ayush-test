@@ -27,7 +27,9 @@ import {
   DevicesOutlined,
   DevicesSolid,
   DataStudioOutlined,
-  DataStudioSolid
+  DataStudioSolid,
+  CopyOutlined,
+  CopySolid
 } from '@acx-ui/icons'
 import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 import {
@@ -40,7 +42,9 @@ import {
   MigrationUrlsInfo,
   LicenseUrlsInfo,
   useIsNewServicesCatalogEnabled,
-  TenantType
+  useRecConfigTemplateAccess,
+  TenantType,
+  getConfigTemplatePath
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -82,6 +86,7 @@ export function useMenuConfig () {
   const isCore = isCoreTier(accountTier)
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
+  const isRecConfigTemplateEnabled = useRecConfigTemplateAccess()
 
   const [showPrivacyMenu, setShowPrivacyMenu] = useState<boolean>(false)
 
@@ -391,6 +396,14 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     }]),
+    ...(isRecConfigTemplateEnabled
+      ? [{
+        uri: getConfigTemplatePath(),
+        label: $t({ defaultMessage: 'Templates' }),
+        inactiveIcon: CopyOutlined,
+        activeIcon: CopySolid,
+        isActiveCheck: new RegExp('^/configTemplates')
+      }] : []),
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
@@ -457,7 +470,8 @@ export function useMenuConfig () {
               !isCustomRoleCheck ? [
                 ...(
                   hasAllowedOperations([
-                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ?
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients),
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipientsPaginated)]) ?
                     [{
                       uri: '/administration/notifications',
                       label: $t({ defaultMessage: 'Notifications' })

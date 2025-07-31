@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Typography }                    from 'antd'
-import { useIntl }                             from 'react-intl'
-import { resolvePath, useNavigate, useParams } from 'react-router-dom'
+import { Form, Typography }                                 from 'antd'
+import { useIntl }                                          from 'react-intl'
+import { resolvePath, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import {
   Loader,
@@ -16,8 +16,10 @@ import { CommonAsyncResponse, useAddWorkflowMutation, useSearchInProgressWorkflo
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  LocationExtended,
   PolicyOperation,
   PolicyType,
+  redirectPreviousPage,
   usePolicyListBreadcrumb,
   Workflow,
   WorkflowDetailsTabKey
@@ -30,6 +32,8 @@ export default function WorkflowPageForm () {
   const [form] = Form.useForm()
   const { tenantId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const tablePath = getPolicyRoutePath( { type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const [isCreating, setIsCreating] = useState(false)
@@ -79,7 +83,7 @@ export default function WorkflowPageForm () {
   }
 
   const onCancel = ()=> {
-    navigate(linkToPolicies, { replace: true })
+    redirectPreviousPage(navigate, previousPath, linkToPolicies)
   }
 
   const buttonLabel = {

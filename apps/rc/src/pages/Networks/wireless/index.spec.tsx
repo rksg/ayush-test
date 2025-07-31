@@ -1,8 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ReportType }   from '@acx-ui/reports/components'
-import { Provider }     from '@acx-ui/store'
+import { ReportType } from '@acx-ui/reports/components'
+import { Provider }   from '@acx-ui/store'
 import {
   render,
   screen,
@@ -41,7 +40,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
 }))
 
 describe('NetworksList with feature toggle', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render networks table tab', async () => {
     render(<NetworksList tab={NetworkTabsEnum.LIST}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -73,7 +71,6 @@ describe('NetworksList with feature toggle', () => {
     expect(await screen.findByTestId(ReportType.WIRELESS)).toBeVisible()
   })
   it('should handle tab click', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('WLANs Report'))

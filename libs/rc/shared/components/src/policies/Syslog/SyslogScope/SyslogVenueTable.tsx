@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps, Tooltip }                               from '@acx-ui/components'
+import { useEnforcedStatus }                                                   from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
@@ -20,8 +21,7 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { useTableQuery }                 from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../../../configTemplates'
-import SyslogContext         from '../SyslogContext'
+import SyslogContext from '../SyslogContext'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',

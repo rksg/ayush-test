@@ -7,7 +7,7 @@ import { Features, useIsSplitOn }                                           from
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                          from '@acx-ui/utils'
 
-import { dayOfWeek, loadDistributions } from '../utils'
+import { dayOfWeek, loadDistributions } from '../../utils'
 
 interface HaDisplayFormProps {
   fallbackEnable?: boolean

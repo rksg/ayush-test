@@ -21,7 +21,6 @@ import {
   RogueAPDetectionDetailView,
   SyslogForm,
   SyslogDetailView,
-  ConfigurationProfileForm,
   CliProfileForm, ApGroupDetails, ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
@@ -34,6 +33,7 @@ import {
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   ConfigTemplateType,
+  LayoutWithConfigTemplateContext,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -45,28 +45,29 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
+import { ConfigurationProfileForm }                                              from '@acx-ui/switch/components'
 import { SwitchScopes }                                                          from '@acx-ui/types'
 import { aiOpsApis, AuthRoute, hasPermission }                                   from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
-import HspContext, { HspActionTypes }              from './HspContext'
-import { hspReducer }                              from './HspReducer'
-import { ConfigTemplatePage }                      from './pages/ConfigTemplates'
-import { DeviceInventory }                         from './pages/DeviceInventory'
-import { Integrators }                             from './pages/Integrators'
-import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
-import { ManageCustomer }                          from './pages/ManageCustomer'
-import { ManageIntegrator }                        from './pages/ManageIntegrator'
-import Mdu360                                      from './pages/Mdu360'
-import { MspCustomers }                            from './pages/MspCustomers'
-import { MspRecCustomers }                         from './pages/MspRecCustomers'
-import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
-import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
-import { NewManageCustomer }                       from './pages/NewManageCustomer'
-import { NewManageIntegrator }                     from './pages/NewManageIntegrator'
-import { Subscriptions }                           from './pages/Subscriptions'
-import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
-import { VarCustomers }                            from './pages/VarCustomers'
+import HspContext, { HspActionTypes } from './HspContext'
+import { hspReducer }                 from './HspReducer'
+import { ConfigTemplatePage }         from './pages/ConfigTemplates'
+import { DeviceInventory }            from './pages/DeviceInventory'
+import { Integrators }                from './pages/Integrators'
+import Layout                         from './pages/Layout'
+import { ManageCustomer }             from './pages/ManageCustomer'
+import { ManageIntegrator }           from './pages/ManageIntegrator'
+import Mdu360                         from './pages/Mdu360'
+import { MspCustomers }               from './pages/MspCustomers'
+import { MspRecCustomers }            from './pages/MspRecCustomers'
+import { AddRecCustomer }             from './pages/MspRecCustomers/AddRecCustomer'
+import { NewDeviceInventory }         from './pages/NewDeviceInventory'
+import { NewManageCustomer }          from './pages/NewManageCustomer'
+import { NewManageIntegrator }        from './pages/NewManageIntegrator'
+import { Subscriptions }              from './pages/Subscriptions'
+import { AssignMspLicense }           from './pages/Subscriptions/AssignMspLicense'
+import { VarCustomers }               from './pages/VarCustomers'
 
 export function Init () {
   const {
@@ -493,7 +494,7 @@ export function ConfigTemplatesRoutes () {
           />
         </>}
         {
-          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_PROFILE] && <>
+          configTemplateVisibilityMap[ConfigTemplateType.TUNNEL_SERVICE] && <>
             <Route
               path={getPolicyRoutePath({
                 type: PolicyType.TUNNEL_PROFILE,

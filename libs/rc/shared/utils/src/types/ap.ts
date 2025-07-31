@@ -1010,6 +1010,19 @@ export interface ApStickyClientSteering extends StickyClientSteering {
 }
 
 export enum DhcpOption82SubOption1Enum {
+  SUBOPT1_AP_INFO_LOCATION = 'SUBOPT1_AP_INFO_LOCATION',
+  SUBOPT1_AP_INFO = 'SUBOPT1_AP_INFO',
+  SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE',
+  SUBOPT1_AP_MAC_HEX = 'SUBOPT1_AP_MAC_hex',
+  SUBOPT1_AP_MAC_HEX_ESSID = 'SUBOPT1_AP_MAC_hex_ESSID',
+  SUBOPT1_ESSID = 'SUBOPT1_ESSID',
+  SUBOPT1_AP_MAC = 'SUBOPT1_AP_MAC',
+  SUBOPT1_AP_MAC_ESSID = 'SUBOPT1_AP_MAC_ESSID',
+  SUBOPT1_AP_NAME_ESSID = 'SUBOPT1_AP_Name_ESSID',
+  SUBOPT1_CUSTOMIZED = 'CUSTOMIZED'
+}
+
+export enum NewDhcpOption82SubOption1Enum {
   SUBOPT1_AP_INFO_LOCATION = 'AP_INFO_LOCATION',
   SUBOPT1_AP_INFO = 'AP_INFO',
   SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'AP_MAC_ESSID_PRIVACYTYPE',
@@ -1023,6 +1036,17 @@ export enum DhcpOption82SubOption1Enum {
 }
 
 export enum DhcpOption82SubOption2Enum {
+  SUBOPT2_CLIENT_MAC = 'SUBOPT2_CLIENT_MAC',
+  SUBOPT2_CLIENT_MAC_HEX = 'SUBOPT2_CLIENT_MAC_hex',
+  SUBOPT2_CLIENT_MAC_HEX_ESSID = 'SUBOPT2_CLIENT_MAC_hex_ESSID',
+  SUBOPT2_AP_MAC = 'SUBOPT2_AP_MAC',
+  SUBOPT2_AP_MAC_HEX = 'SUBOPT2_AP_MAC_hex',
+  SUBOPT2_AP_MAC_HEX_ESSID = 'SUBOPT2_AP_MAC_hex_ESSID',
+  SUBOPT2_AP_MAC_ESSID = 'SUBOPT2_AP_MAC_ESSID',
+  SUBOPT2_AP_NAME = 'SUBOPT2_AP_Name',
+}
+
+export enum NewDhcpOption82SubOption2Enum {
   SUBOPT2_CLIENT_MAC = 'CLIENT_MAC',
   SUBOPT2_CLIENT_MAC_HEX = 'CLIENT_MAC_HEX',
   SUBOPT2_CLIENT_MAC_HEX_ESSID = 'CLIENT_MAC_HEX_ESSID',
@@ -1034,6 +1058,11 @@ export enum DhcpOption82SubOption2Enum {
 }
 
 export enum DhcpOption82SubOption151Enum {
+  SUBOPT151_AREA_NAME = 'SUBOPT151_AREA_NAME',
+  SUBOPT151_ESSID = 'SUBOPT151_ESSID',
+}
+
+export enum NewDhcpOption82SubOption151Enum {
   SUBOPT151_AREA_NAME = 'AREA_NAME',
   SUBOPT151_ESSID = 'ESSID',
 }
@@ -1072,7 +1101,7 @@ export interface DhcpOption82SubOption1Customization {
 }
 
 export interface DhcpOption82Settings {
-  subOption151Input:	string
+  subOption151Text:	string
   subOption151Format:	DhcpOption82SubOption151Enum
   subOption2Format:	DhcpOption82SubOption2Enum
   subOption1Format:	DhcpOption82SubOption1Enum

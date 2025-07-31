@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
 import _              from 'lodash'
@@ -26,7 +26,6 @@ import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementList
 import { AssignedEntitlementListPayload }                                               from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useRbacEntitlementListQuery }                                                  from '@acx-ui/rc/services'
-import { ConfigTemplateContext, SaveEnforcementConfigFnType }                           from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
 import { aiOpsApis, hasPermission, hasRoles, useUserProfileContext }                    from '@acx-ui/user'
@@ -196,22 +195,3 @@ function Layout () {
 }
 
 export default Layout
-
-export function LayoutWithConfigTemplateContext () {
-  const saveEnforcementConfigFnRef = useRef<SaveEnforcementConfigFnType>()
-
-  const setSaveEnforcementConfigFn = (fn: SaveEnforcementConfigFnType) => {
-    saveEnforcementConfigFnRef.current = fn
-  }
-
-  const saveEnforcementConfig = async (templateId: string) => {
-    if (templateId && saveEnforcementConfigFnRef.current) {
-      await saveEnforcementConfigFnRef.current(templateId)
-    }
-  }
-
-  return <ConfigTemplateContext.Provider
-    value={{ isTemplate: true, setSaveEnforcementConfigFn, saveEnforcementConfig }}>
-    <Outlet />
-  </ConfigTemplateContext.Provider>
-}

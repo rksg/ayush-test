@@ -55,6 +55,18 @@ export const SelectUsers = (props: SelectUsersProps) => {
 
   useEffect(() => {
     if (usersData && delegatedAdminsData) {
+      // admins default roles and delegation roles are different and
+      // its coming from 2 different APIs. so we need to updated the
+      // admin role with selected role.
+      const usersDataMappedWithSelectedRole = usersData.map(user => {
+        const _id = user.id
+        const _role = delegatedAdminsData.filter(del => _id === del.msp_admin_id)[0]?.msp_admin_role
+        return {
+          ...user,
+          ...(_role ? { role: _role as RolesEnum } : {})
+        }
+      })
+
       const selRoles = delegatedAdminsData.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
@@ -71,8 +83,8 @@ export const SelectUsers = (props: SelectUsersProps) => {
       // Otherwise set selected rows according to delegated admins data
       else {
         const admins = delegatedAdminsData.map((admin: MspEcDelegatedAdmins) => admin.msp_admin_id)
-        setSelectedKeys(getSelectedKeys(usersData, admins))
-        const selRows = getSelectedRows(usersData, admins)
+        setSelectedKeys(getSelectedKeys(usersDataMappedWithSelectedRole, admins))
+        const selRows = getSelectedRows(usersDataMappedWithSelectedRole, admins)
         setSelectedRows(selRows)
         setSelected(selRows)
         setSelectedRoles(selRoles)

@@ -10,6 +10,15 @@ import { MdnsFencingServiceContext } from '../../MdnsFencingServiceTable'
 
 import { WiredConnectionFieldset } from './WiredConnectionFieldset'
 
+jest.mock('@acx-ui/switch/components', () => ({
+  ConfigTemplateEnforcementContext: require('react').createContext({
+    isEnforced: false
+  })
+}))
+
+jest.mock('@acx-ui/config-template/utils', () => ({
+  useEnforcedStatus: () => ({})
+}))
 
 describe('WiredConnectionFieldset Component', () => {
   const serviceRef = { current: {} } as React.MutableRefObject<MdnsFencingService | undefined>
