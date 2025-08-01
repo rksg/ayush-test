@@ -15,7 +15,7 @@ export const mockDHCP82OptionSetting = {
       subOption2Enabled: false,
       subOption150Enabled: true,
       subOption151Enabled: false,
-      macFormat: 'NODELIMITER'
+      macDelimiter: 'NODELIMITER'
     }
   },
   enabled: true
@@ -28,7 +28,7 @@ export const mockSourceDataEnabled = {
     subOption151Format: DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME,
     subOption2Format: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC,
     subOption1Format: DhcpOption82SubOption1Enum.SUBOPT1_ESSID,
-    macFormat: DhcpOption82MacEnum.NODELIMITER,
+    macDelimiter: DhcpOption82MacEnum.NODELIMITER,
     subOption1Enabled: true,
     subOption2Enabled: false,
     subOption150Enabled: true,

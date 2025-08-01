@@ -72,7 +72,7 @@ const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOpt
       dhcpOption82SubOption151FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format'],
       // In LAN port the subOption151Text is used for input field
       dhcpOption82SubOption151InputFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text'],
-      dhcpOption82MacFormat: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings','macFormat']
+      dhcpOption82MacFormat: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings','macDelimiter']
     } as DhcpOption82FormField
   }
   else {
