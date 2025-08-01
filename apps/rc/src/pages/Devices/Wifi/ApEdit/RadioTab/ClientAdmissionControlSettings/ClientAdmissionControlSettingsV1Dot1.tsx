@@ -198,16 +198,17 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
                 disabled={!isAllowEdit}>
                 <Space direction='vertical'>
                   <Radio value={true} data-testid='client-admission-control-inheritSettings'>
-                    <FormattedMessage
-                      defaultMessage={'Use inherited settings from' +
-                        ' <venueOrApGroup></venueOrApGroup>'}
-                      values={{
-                        venueOrApGroup: () => {
-                          // eslint-disable-next-line max-len
-                          return isUseVenueSettingsRef.current ? '<VenueSingular></VenueSingular>' : 'AP Group'
+                    {isUseVenueSettingsRef.current ? (
+                      <FormattedMessage
+                        defaultMessage={
+                          'Use inherited settings from <VenueSingular></VenueSingular>'
                         }
-                      }}
-                    />
+                      />
+                    ) : (
+                      <FormattedMessage
+                        defaultMessage={'Use inherited settings from AP Group'}
+                      />
+                    )}
                   </Radio>
                   <Radio value={false} data-testid='client-admission-control-customizeSettings'>
                     <FormattedMessage defaultMessage={'Customize settings'} />
