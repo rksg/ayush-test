@@ -53,6 +53,51 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"><div id="loader" /></div>
+    <script>
+      const supportEnvs = [
+        "dev.ruckus.cloud",
+        "int.ruckus.cloud"
+      ];
+      const host = window.location.hostname;
+
+      if (supportEnvs.some(env => host.includes(env))) {
+        const getCurrentTenantId = () => {
+          const matchedIds = window.location.pathname?.match(/[a-f0-9]{32}/);
+          return matchedIds ? matchedIds[0] : null;
+        };
+
+        const currentTenantId = getCurrentTenantId();
+        
+        const tenants=[
+          "6b43a3a62c964826b44bc97beb550fba","c7746b3cf9794a55a6b6c2fa4b00a6d2",
+          "396787eb8aad421f8511092c0a16c838","056e3c92bb5a49338c3df0778e47d3a6",
+          "c724e66b2a5243a5adec324c7eab9f14","138ddb275fbb432db2d55548e86199a9",
+          "2f5e7fdc44b74b7480117129a168e320","17f0b6ef890e419191d1586f228096dd",
+          "eae80308c3d344a9a4468c3cd0a18e98","b36cb485bae9416196c440baa310ceb7",
+          "bbfc2eb48502449c8bafe8ee574d470b","bfdd15cd062c4990914ef9c20b770851",
+          "6f25bcaed1d84d028fef87d29059087f","572ca6083d884b358927dec50a88b70f"
+        ];
+
+        if (currentTenantId && tenants.includes(currentTenantId)) {
+          !function(t,e){var
+
+          o,n,p,r;e.__SV||(window.contextqa=e,e._i=[],e.init=function(i){
+
+          window.cqakey = i;
+
+          const script = document.createElement('script');
+
+          script.src = "https://cqa-media.s3.us-east-2.amazonaws.com/contextqa_init.js";
+
+          document.head.appendChild(script);
+
+          },e.__SV=1)}(document,window.contextqa||[]);
+
+          // window.contextqa.init('phc_WIcDskiqCroNW6JNdTbjMRbb51aO5dLVMbXKot7ZRxZ');
+          window.contextqa.init(currentTenantId);
+        }
+      }
+    </script>
     <!-- %NX_GIT_SHA%: %NX_GIT_DATE% -->
   </body>
 </html>
