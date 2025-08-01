@@ -10,5 +10,5 @@ echo "Parsed project list: $PROJECT_LIST"
 
 for project in $PROJECT_LIST; do
   echo "Running test for project: $project"
-  nx run "$project:test" $NX_RUN_OPTIONS || exit 1
+  npx nx run "$project:test" $NX_RUN_OPTIONS || exit 1
 done
