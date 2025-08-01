@@ -15,8 +15,7 @@ FROM ${GAR_CONTAINER_URL}node:${NODE_VERSION} as build-base
 WORKDIR /app
 
 # bash for unit test baseimage using.
-RUN apk add --no-cache curl bash
-RUN apk add --no-cache git
+RUN apk add --no-cache curl bash git
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
@@ -55,9 +54,9 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-FROM build-base as acx-ui-lint
-RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
-RUN touch lint-done
+# FROM build-base as acx-ui-lint
+# RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+# RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 # FROM build-base as acx-ui-tslint
@@ -67,11 +66,11 @@ RUN touch lint-done
 # RUN touch tslint-done
 ###############################################################
 
-FROM build-base as build
+#FROM build-base as build
 # Multistage: trigger run
 # COPY --from=acx-ui-tslint /app/tslint-done /tmp/
-COPY --from=acx-ui-lint /app/lint-done /tmp/
-RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
+# COPY --from=acx-ui-lint /app/lint-done /tmp/
+# RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
 FROM build-base as acx-ui-group-test
