@@ -131,7 +131,7 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
       isPill: difference < 1000 ? true : false
     }
   },
-  valueFormatter: formatter('countFormat'),
+  valueFormatter: formatter('noFormat'),
   valueSuffixMessage: defineMessage({ defaultMessage: '/month' }),
   valueSuffixClass: 'ant-statistic-content-suffix-unit'
 }]
@@ -190,7 +190,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
       isPill: difference < 1000 ? true : false
     }
   },
-  valueFormatter: formatter('countFormat'),
+  valueFormatter: formatter('noFormat'),
   tooltip: defineMessage({ defaultMessage: 'Total power consumed by all APs in this zone per day, measured in kilowatt-hours (kWh).' })
 },{
   key: 'maxApPower',
