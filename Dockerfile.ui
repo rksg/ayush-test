@@ -50,7 +50,7 @@ COPY libs ./libs
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
-COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+# COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # # Remove files and folders older than 24 hours from the nx cache
 RUN find /app/node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
@@ -149,6 +149,9 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
     fi
 
 RUN find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} +
+RUN if [ -f ./coverage ]; then \
+      cp -r ./coverage ./node_modules/.cache/nx; \
+    fi
 
 RUN mkdir -p /app/coverage
 
