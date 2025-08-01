@@ -50,9 +50,14 @@ COPY libs ./libs
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
-# COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
-RUN mkdir -p /app/node_modules/.cache/nx
-# # Remove files and folders older than 24 hours from the nx cache
+COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+
+RUN if [ -d /app/node_modules/.cache/nx/coverage ]; then \
+      cp -r /app/node_modules/.cache/nx/coverage /app && \
+      rm -rf /app/node_modules/.cache/nx/coverage; \
+    fi
+
+# Remove files and folders older than 24 hours from the nx cache
 RUN find /app/node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
     find /app/node_modules/.cache/nx -mindepth 1 -type d -mmin +1440 -exec rm -rf {} +
 
