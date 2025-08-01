@@ -76,15 +76,15 @@ RUN source ${ENV_FILE} \
 FROM build-base as acx-ui-group-test
 
 # Copy the nx cache from the lint stage
-COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+#COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # Multistage: trigger run
-COPY --from=build /app/dist/apps ./dist/apps
+#COPY --from=build /app/dist/apps ./dist/apps
 
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
-RUN npx nx print-affected --base=origin/master --select=projects > /app/test.txt
+RUN npx nx print-affected --base=origin/master --select=projects > /tmp/diff.txt
 COPY run-tests.sh /app/run-tests.sh
 RUN chmod +x /app/run-tests.sh
 RUN /app/run-tests.sh

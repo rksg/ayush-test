@@ -2,7 +2,7 @@
 
 NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
-AFFECTED_PROJECTS=$(cat /app/test.txt)
+AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
 
 PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ' | tr ',' ' ')
 
