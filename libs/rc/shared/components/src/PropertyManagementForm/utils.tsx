@@ -4,6 +4,7 @@ import { usePutRegistrationByIdMutation }                                       
 import { AssociatedResource, PropertyConfigs, PropertyConfigStatus, ResidentPortalType, VenueExtended } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                      from '@acx-ui/utils'
 
+
 export const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
   residentPortalType: ResidentPortalType.NO_PORTAL,
@@ -18,9 +19,21 @@ export const defaultPropertyConfigs: PropertyConfigs = {
   communicationConfig: {
     type: 'communicationConfig',
     sendEmail: false,
-    sendSms: false
+    sendSms: false,
+    notifyOnUnitSuspend: false
   }
 }
+
+export const msgCategoryIdsLimited = [
+  // Unit assigned
+  '96672ee0-86df-4819-bca4-3b39ef611e37',
+  // Guest Passphrase Reset
+  '8817c288-7e8e-4125-8a73-531c205a9e16',
+  // Port Assigned
+  '4bdc8eb0-864a-4c7d-b99c-157a59520796',
+  // Access Reset
+  '08c28d2d-5ceb-4b5d-adc4-2c0fb744517e'
+]
 
 export const msgCategoryIds = [
   // Unit assigned
@@ -30,7 +43,15 @@ export const msgCategoryIds = [
   // Port Assigned
   '4bdc8eb0-864a-4c7d-b99c-157a59520796',
   // Access Reset
-  '08c28d2d-5ceb-4b5d-adc4-2c0fb744517e'
+  '08c28d2d-5ceb-4b5d-adc4-2c0fb744517e',
+  //Unit Suspended
+  '011866ca-4550-483c-b0fb-06615d5cfab1',
+  //Unit Reactivated
+  'afd7a8b4-00a3-425a-aad2-c9e953ac4a21',
+  //Unit User Suspended
+  'e768d3b4-7ccb-45dd-be73-ef41fcb7c70f',
+  //Unit User Reactivated
+  '0dfc8605-eb41-4429-9632-dfc5d71a312d'
 ]
 
 export const toResidentPortalPayload = (type: ResidentPortalType) => {

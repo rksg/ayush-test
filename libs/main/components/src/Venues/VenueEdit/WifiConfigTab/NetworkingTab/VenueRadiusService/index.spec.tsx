@@ -16,10 +16,13 @@ jest.mock('./VenueRadiusServiceForm', () => ({
   VenueRadiusServiceForm: () => <div>VenueRadiusServiceForm</div>
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   ConfigTemplateEnforcementContext: require('react').createContext({
     isEnforced: false
-  }),
+  })
+}))
+
+jest.mock('@acx-ui/config-template/utils', () => ({
   useEnforcedStatus: () => ({})
 }))
 

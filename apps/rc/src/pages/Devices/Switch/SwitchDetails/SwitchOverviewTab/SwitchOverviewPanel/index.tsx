@@ -4,15 +4,14 @@ import { useEffect, useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { SwitchesTrafficByVolume }                  from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                       from '@acx-ui/analytics/components'
-import { Button, GridCol, GridRow }                 from '@acx-ui/components'
-import { TopologyFloorPlanWidget, isLAGMemberPort } from '@acx-ui/rc/components'
+import { SwitchesTrafficByVolume }  from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }       from '@acx-ui/analytics/components'
+import { Button, GridCol, GridRow } from '@acx-ui/components'
 import {
   SwitchBlinkLEDsDrawer,
-  SwitchInfo
-}
-  from '@acx-ui/rc/components'
+  SwitchInfo,
+  TopologyFloorPlanWidget
+} from '@acx-ui/rc/components'
 import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   sortPortFunction
@@ -28,6 +27,7 @@ import {
   SwitchPortViewModelQueryFields,
   SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
+import { isLAGMemberPort }                              from '@acx-ui/switch/components'
 import { RolesEnum }                                    from '@acx-ui/types'
 import { hasPermission, hasRoles }                      from '@acx-ui/user'
 import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'

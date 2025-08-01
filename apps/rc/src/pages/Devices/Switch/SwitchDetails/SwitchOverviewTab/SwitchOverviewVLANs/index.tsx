@@ -11,8 +11,7 @@ import {
   Table,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { DefaultVlanDrawer, VlanSettingDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetVlanListBySwitchLevelQuery,
   useGetLagListQuery,
@@ -40,10 +39,11 @@ import {
   VeViewModel,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getOpsApi, useTableQuery }      from '@acx-ui/utils'
+import { useParams }                            from '@acx-ui/react-router-dom'
+import { DefaultVlanDrawer, VlanSettingDrawer } from '@acx-ui/switch/components'
+import { SwitchScopes }                         from '@acx-ui/types'
+import { filterByAccess, hasPermission }        from '@acx-ui/user'
+import { getOpsApi, useTableQuery }             from '@acx-ui/utils'
 
 import { VlanDetail } from './vlanDetail'
 

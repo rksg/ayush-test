@@ -10,6 +10,7 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }            from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
   useLazyGetProfilesQuery,
@@ -43,10 +44,9 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../../configTemplates'
-import { CliStepConfiguration }         from '../../SwitchCli/CliStepConfiguration'
-import { CliStepNotice }                from '../../SwitchCli/CliStepNotice'
-import { getCustomizedSwitchVenues }    from '../../SwitchCli/CliVariableUtils'
+import { CliStepConfiguration }      from '../../SwitchCli/CliStepConfiguration'
+import { CliStepNotice }             from '../../SwitchCli/CliStepNotice'
+import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
