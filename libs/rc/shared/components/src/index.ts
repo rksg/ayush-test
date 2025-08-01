@@ -303,8 +303,6 @@ export * from './EdgeCluster'
 export * from './WorkflowForm'
 export * from './EnrollmentPortalDesignModal'
 export * from './SwitchBlinkLEDsDrawer'
-export * from './SwitchCliProfileForm'
-export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
