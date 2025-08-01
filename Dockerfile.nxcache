@@ -1,5 +1,5 @@
 # FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
-FROM us-docker.pkg.dev/alto-cicd/acx-service/baseimage/acx-ui-unit-test-base:latest AS build-base
+FROM docker.io/library/node:16.14.2-alpine3.14 AS build-base
 
 WORKDIR /app
 
@@ -31,7 +31,7 @@ COPY libs ./libs
 COPY tools/tests ./tools/tests
 
 FROM build-base AS acx-ui-base-test
-ENV NODE_OPTIONS=--max-old-space-size=2048
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
 FROM acx-ui-base-test AS acx-ui-group1-test
 ARG PRECOMMIT
@@ -41,8 +41,10 @@ ARG GIT_COMMIT_BRANCH
 COPY nxcache/nxcache.tar.xz* ./
 
 # Extract it only if the file exists
-RUN mkdir -p ./node_modules/.cache/nx
-RUN tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx
+RUN if [ -f ./nxcache.tar.xz ]; then \
+      mkdir -p ./node_modules/.cache/nx && \
+      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+    fi
 
 # Remove files and folders older than 24 hours from the nx cache
 RUN find /app/node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
@@ -53,9 +55,15 @@ ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run switch-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run wifi-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-common-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-generic-features-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run main:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS
-RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS
-RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,cloudpath-components,edge-components,switch-components,wifi-components,rc-common-components,rc-generic-features-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS
