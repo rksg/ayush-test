@@ -54,9 +54,9 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-# FROM build-base as acx-ui-lint
-# RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
-# RUN touch lint-done
+ FROM build-base as acx-ui-lint
+ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+ RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 # FROM build-base as acx-ui-tslint
@@ -66,20 +66,20 @@ RUN source ${ENV_FILE} \
 # RUN touch tslint-done
 ###############################################################
 
-#FROM build-base as build
+ FROM build-base as build
 # Multistage: trigger run
 # COPY --from=acx-ui-tslint /app/tslint-done /tmp/
-# COPY --from=acx-ui-lint /app/lint-done /tmp/
-# RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
+ COPY --from=acx-ui-lint /app/lint-done /tmp/
+ RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
 FROM build-base as acx-ui-group-test
 
 # Copy the nx cache from the lint stage
-#COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # Multistage: trigger run
-#COPY --from=build /app/dist/apps ./dist/apps
+COPY --from=build /app/dist/apps ./dist/apps
 
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
