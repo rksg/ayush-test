@@ -7,10 +7,10 @@ import { useIntl }  from 'react-intl'
 import styled       from 'styled-components/macro'
 
 import { Button, Alert }                       from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }        from '@acx-ui/config-template/utils'
 import { AFCStatus, AFCInfo }                  from '@acx-ui/rc/utils'
 import { useNavigate, useLocation, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 const StyledAlert = styled(Alert)`
   line-height: 20px;

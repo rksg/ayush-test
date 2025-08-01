@@ -24,7 +24,7 @@ import {
   mockResidentPortalProfileList
 } from './__tests__/fixtures'
 import { PropertyManagementForm } from './PropertyManagementForm'
-import { msgCategoryIds }         from './utils'
+import { msgCategoryIdsLimited }  from './utils'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -166,7 +166,7 @@ describe('Property Config Form', () => {
 
       await screen.findByText('Resident Portal')
       await screen.findByText('Communication Templates')
-      msgCategoryIds.forEach(msgCategoryId => {
+      msgCategoryIdsLimited.forEach(msgCategoryId => {
         expect(screen.getByTestId(`TemplateSelector-${msgCategoryId}`)).toBeVisible()
       })
     })

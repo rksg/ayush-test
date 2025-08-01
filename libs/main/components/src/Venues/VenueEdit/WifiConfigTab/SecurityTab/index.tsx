@@ -14,8 +14,9 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { useEnforcedStatus, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { RogueApModal, useIsConfigTemplateEnabledByType }  from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,

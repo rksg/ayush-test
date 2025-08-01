@@ -1,19 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                               from '@acx-ui/store'
-import { mockServer, render, screen }                     from '@acx-ui/test-utils'
+import { apApi }                                                                    from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                         from '@acx-ui/store'
+import { mockServer, render, screen }                                               from '@acx-ui/test-utils'
 
+import { rbacDeviceAps } from '../../../__tests__/fixtures'
 import {
-  apDetailData,
   apDetails,
   apLanPorts,
-  apPhoto,
   apPhotoFromRbacApi,
-  apRadio,
-  apViewModel
+  apRadio
 } from '../__tests__/fixtures'
 
 import { ApOverviewTab } from '.'
@@ -36,31 +34,32 @@ jest.mock('@acx-ui/rc/components', () => ({
 const params = {
   tenantId: 'tenant-id',
   serialNumber: 'ap-serialNumber',
-  activeTab: 'overview'
+  activeTab: 'overview',
+  venueId: 'venue-id'
 }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
-
 describe('ApOverviewTab', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(apViewModel))
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(rbacDeviceAps))
       ),
       rest.get(
-        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetails))
       ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(apDetails))
+
+      ),
       rest.get(
-        CommonUrlsInfo.getVenue.url,
+        CommonRbacUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json({
           address: {
             latitude: 37.4112751,
@@ -69,24 +68,24 @@ describe('ApOverviewTab', () => {
         }))
       ),
       rest.get(
-        WifiUrlsInfo.getApLanPorts.url,
-        (_, res, ctx) => res(ctx.json(apLanPorts))
-      ),
-      rest.get(
         WifiRbacUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(apLanPorts))
       ),
       rest.get(
-        WifiUrlsInfo.getApRadioCustomization.url,
+        WifiRbacUrlsInfo.getApRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(apRadio))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApPhoto.url,
-        (_, res, ctx) => res(ctx.json(apPhoto))
       ),
       rest.get(
         WifiRbacUrlsInfo.getApPhoto.url,
         (_, res, ctx) => res(ctx.json(apPhotoFromRbacApi))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

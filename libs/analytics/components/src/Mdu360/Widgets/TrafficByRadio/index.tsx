@@ -4,7 +4,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   HistoricalCard,
   Loader,
-  ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
 import { ContentSwitcherWrapper } from '../../styledComponents'
@@ -13,7 +12,6 @@ import { Mdu360TabProps }         from '../../types'
 import { useTrafficByRadioQuery } from './services'
 import { TrafficSnapshot }        from './TrafficSnapshot'
 import { TrafficTrend }           from './TrafficTrend'
-
 
 export interface TrafficByRadioFilters {
   startDate: string,
@@ -29,16 +27,28 @@ export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
     endDate: filters.endDate
   })
 
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
+  const getTabDetails = (height: number, width: number) => [
     {
       label: $t({ defaultMessage: 'Snapshot' }),
-      children: <TrafficSnapshot queryResults={queryResults}/>,
-      value: 'Snapshot'
+      value: 'Snapshot',
+      children: (
+        <TrafficSnapshot
+          queryResults={queryResults}
+          height={height}
+          width={width}
+        />
+      )
     },
     {
       label: $t({ defaultMessage: 'Trend' }),
-      children: <TrafficTrend queryResults={queryResults}/>,
-      value: 'Trend'
+      value: 'Trend',
+      children: (
+        <TrafficTrend
+          queryResults={queryResults}
+          height={height}
+          width={width}
+        />
+      )
     }
   ]
 
@@ -48,7 +58,11 @@ export function TrafficByRadio ({ filters }: { filters: Mdu360TabProps }) {
         <AutoSizer>
           {({ height, width }) => (
             <ContentSwitcherWrapper height={height} width={width}>
-              <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
+              <ContentSwitcher
+                tabDetails={getTabDetails(height - 10, width)}
+                align='right'
+                size='small'
+              />
             </ContentSwitcherWrapper>
           )}
         </AutoSizer>

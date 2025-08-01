@@ -15,7 +15,7 @@ import {
 import { mock_response, mock_payload, mock_vlan } from './__tests__/VlanStepFixtures'
 import { VlanStep }                               from './VlanStep'
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   VlanSettingDrawer: (props: { setVlan: (data: Vlan) => void }) => {
     const { setVlan } = props
     return (
