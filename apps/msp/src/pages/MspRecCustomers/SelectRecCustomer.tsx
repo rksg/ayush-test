@@ -59,7 +59,8 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       }
 
       const _childAccounts = (data as AvailableMspRecCustomers)?.child_accounts?.map((account) => {
-        if (isR1SalesOrderToggleEnabled && account?.acx_closed_sales_order) {
+        if (isR1SalesOrderToggleEnabled && account?.acx_closed_sales_order
+              && !account?.is_tenant_onboarded) {
           return { ...account, account_name: '** ' + account.account_name }
         }
         if (!account?.is_tenant_onboarded) {
