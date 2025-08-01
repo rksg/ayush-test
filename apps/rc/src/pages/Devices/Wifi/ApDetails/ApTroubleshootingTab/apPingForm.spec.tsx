@@ -3,14 +3,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
+import { apApi, venueApi }                       from '@acx-ui/rc/services'
+import { WifiRbacUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ApPingForm } from './apPingForm'
 
-const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
+const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
@@ -26,10 +26,11 @@ describe('ApPingForm', () => {
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
       rest.patch(
-        WifiUrlsInfo.pingAp.url,
+        WifiRbacUrlsInfo.pingAp.url,
         (_, res, ctx) => res(ctx.json(pingResponse)))
     )
   })

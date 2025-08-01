@@ -200,7 +200,6 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   height: 800px;
   width: 1280px;
   margin-top: -38px;
-  padding-bottom: 10px;
 }
 
 <div>
@@ -318,371 +317,353 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                 </div>
               </div>
               <div
-                style="overflow: visible; height: 0px; width: 0px;"
+                class="ant-space ant-space-vertical"
               >
                 <div
-                  class="ant-space ant-space-vertical"
+                  class="ant-space-item"
                 >
                   <div
-                    class="ant-space-item"
+                    class="echarts-for-react "
+                    style="height: 790px; width: 1280px; position: relative;"
                   >
                     <div
-                      class="echarts-for-react "
-                      style="height: 790px; width: 1280px; position: relative;"
+                      style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                     >
-                      <div
-                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                      <svg
+                        baseProfile="full"
+                        height="800"
+                        style="position:absolute;left:0;top:0;user-select:none"
+                        version="1.1"
+                        width="1280"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
                       >
-                        <svg
-                          baseProfile="full"
+                        <rect
+                          fill="none"
+                          fill-opacity="1"
                           height="800"
-                          style="position:absolute;left:0;top:0;user-select:none"
-                          version="1.1"
+                          id="0"
                           width="1280"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink"
-                        >
-                          <rect
+                          x="0"
+                          y="0"
+                        />
+                        <g>
+                          <path
+                            d="M392.2088 88.108L392.6034 73.1132L402.6034 73.1132"
                             fill="none"
-                            fill-opacity="1"
-                            height="800"
-                            id="0"
-                            width="1280"
-                            x="0"
-                            y="0"
+                            stroke="#66B1E8"
                           />
-                          <g>
-                            <path
-                              d="M392.2088 88.108L392.6034 73.1132L402.6034 73.1132"
-                              fill="none"
-                              stroke="#66B1E8"
-                            />
-                            <path
-                              d="M375.7912 711.892L375.3966 726.8868L365.3966 726.8868"
-                              fill="none"
-                              stroke="#EC7100"
-                            />
-                            <path
-                              d="M384 88L384 73L374 73"
-                              fill="none"
-                              stroke="#F9C34B"
-                            />
-                            <path
-                              d="M384 88A312 312 0 0 1 400.4118 88.4319L397.0453 152.3433A248 248 0 0 0 384 152Z"
-                              fill="#66B1E8"
-                              stroke="#FFFFFF"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                            />
-                            <path
-                              d="M400.4118 88.4319A312 312 0 1 1 384 88L384 152A248 248 0 1 0 397.0453 152.3433Z"
-                              fill="#EC7100"
-                              stroke="#FFFFFF"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                            />
-                            <path
-                              d="M384 88L384 152Z"
-                              fill="#F9C34B"
-                              stroke="#FFFFFF"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                            />
-                            <path
-                              d="M0 -8l6 0l0 16l-6 0Z"
-                              fill="none"
-                              transform="translate(407.6034 73.1132)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal 400 12px 'Open Sans', sans-serif"
-                              text-anchor="start"
-                              transform="translate(407.6034 73.1132)"
-                              xml:space="preserve"
-                            >
-                              263 MB
-                            </text>
-                            <path
-                              d="M-7 -8l7 0l0 16l-7 0Z"
-                              fill="none"
-                              transform="translate(360.3966 726.8868)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal 400 12px 'Open Sans', sans-serif"
-                              text-anchor="end"
-                              transform="translate(360.3966 726.8868)"
-                              xml:space="preserve"
-                            >
-                              30.4 GB
-                            </text>
-                            <path
-                              d="M-4 -8l4 0l0 16l-4 0Z"
-                              fill="none"
-                              transform="translate(369 73)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal 400 12px 'Open Sans', sans-serif"
-                              text-anchor="end"
-                              transform="translate(369 73)"
-                              xml:space="preserve"
-                            >
-                              21 B
-                            </text>
-                            <path
-                              d="M-5 -5l38 0l0 66l-38 0Z"
-                              fill="rgb(0,0,0)"
-                              fill-opacity="0"
-                              stroke="#ccc"
-                              stroke-width="0"
-                              transform="translate(773 372)"
-                            />
-                            <path
-                              d="M8 4A4 4 0 1 1 8 3.9996"
-                              fill="#66B1E8"
-                              stroke="#FFFFFF"
-                              stroke-linecap="butt"
-                              stroke-linejoin="round"
-                              stroke-miterlimit="10"
-                              stroke-width="0"
-                              transform="translate(773 376)"
-                            />
-                            <path
-                              d="M13 -4l15 0l0 16l-15 0Z"
-                              fill="none"
-                              transform="translate(773 376)"
-                            />
-                            <path
-                              d="M13 3.5l8 0l0 1l-8 0Z"
-                              fill="none"
-                              transform="translate(773 376)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                              text-anchor="start"
-                              transform="translate(773 376)"
-                              x="13"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              2.4 GHz:
-                            </text>
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal NaN 10px 'Open Sans', sans-serif"
-                              text-anchor="start"
-                              transform="translate(773 376)"
-                              x="21"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                               
-                            </text>
-                            <path
-                              d="M22 3.5l6 0l0 1l-6 0Z"
-                              fill="none"
-                              transform="translate(773 376)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                              text-anchor="start"
-                              transform="translate(773 376)"
-                              x="22"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              263 MB
-                            </text>
-                            <path
-                              d="M8 4A4 4 0 1 1 8 3.9996"
-                              fill="#EC7100"
-                              stroke="#FFFFFF"
-                              stroke-linecap="butt"
-                              stroke-linejoin="round"
-                              stroke-miterlimit="10"
-                              stroke-width="0"
-                              transform="translate(773 396)"
-                            />
-                            <path
-                              d="M13 -4l14 0l0 16l-14 0Z"
-                              fill="none"
-                              transform="translate(773 396)"
-                            />
-                            <path
-                              d="M13 3.5l6 0l0 1l-6 0Z"
-                              fill="none"
-                              transform="translate(773 396)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                              text-anchor="start"
-                              transform="translate(773 396)"
-                              x="13"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              5 GHz:
-                            </text>
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal NaN 10px 'Open Sans', sans-serif"
-                              text-anchor="start"
-                              transform="translate(773 396)"
-                              x="19"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                               
-                            </text>
-                            <path
-                              d="M20 3.5l7 0l0 1l-7 0Z"
-                              fill="none"
-                              transform="translate(773 396)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                              text-anchor="start"
-                              transform="translate(773 396)"
-                              x="20"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              30.4 GB
-                            </text>
-                            <path
-                              d="M8 4A4 4 0 1 1 8 3.9996"
-                              fill="#F9C34B"
-                              stroke="#FFFFFF"
-                              stroke-linecap="butt"
-                              stroke-linejoin="round"
-                              stroke-miterlimit="10"
-                              stroke-width="0"
-                              transform="translate(773 416)"
-                            />
-                            <path
-                              d="M13 -4l11 0l0 16l-11 0Z"
-                              fill="none"
-                              transform="translate(773 416)"
-                            />
-                            <path
-                              d="M13 3.5l6 0l0 1l-6 0Z"
-                              fill="none"
-                              transform="translate(773 416)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                              text-anchor="start"
-                              transform="translate(773 416)"
-                              x="13"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              6 GHz:
-                            </text>
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font: normal NaN 10px 'Open Sans', sans-serif"
-                              text-anchor="start"
-                              transform="translate(773 416)"
-                              x="19"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                               
-                            </text>
-                            <path
-                              d="M20 3.5l4 0l0 1l-4 0Z"
-                              fill="none"
-                              transform="translate(773 416)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                              text-anchor="start"
-                              transform="translate(773 416)"
-                              x="20"
-                              xml:space="preserve"
-                              y="4"
-                            >
-                              21 B
-                            </text>
-                            <path
-                              d="M-8.5 -5l17 0l0 42l-17 0Z"
-                              fill="rgb(0,0,0)"
-                              fill-opacity="0"
-                              stroke="#ccc"
-                              stroke-width="0"
-                              transform="translate(376.2 384)"
-                            />
-                            <path
-                              d="M0 0l0 0l0 0l0 0Z"
-                              fill="none"
-                              transform="translate(376.2 384)"
-                            />
-                            <path
-                              d="M-3.5 4l7 0l0 28l-7 0Z"
-                              fill="none"
-                              transform="translate(376.2 384)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(376.2 384)"
-                              xml:space="preserve"
-                              y="18"
-                            >
-                              30.6 GB
-                            </text>
-                          </g>
-                        </svg>
-                      </div>
-                      <div
-                        class=""
-                      />
-                      <object
-                        class="size-sensor-object"
-                        data="about:blank"
-                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                        tabindex="-1"
-                        type="text/html"
-                      />
+                          <path
+                            d="M375.7912 711.892L375.3966 726.8868L365.3966 726.8868"
+                            fill="none"
+                            stroke="#EC7100"
+                          />
+                          <path
+                            d="M384 88L384 73L374 73"
+                            fill="none"
+                            stroke="#F9C34B"
+                          />
+                          <path
+                            d="M384 88A312 312 0 0 1 400.4118 88.4319L397.0453 152.3433A248 248 0 0 0 384 152Z"
+                            fill="#66B1E8"
+                            stroke="#FFFFFF"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                          />
+                          <path
+                            d="M400.4118 88.4319A312 312 0 1 1 384 88L384 152A248 248 0 1 0 397.0453 152.3433Z"
+                            fill="#EC7100"
+                            stroke="#FFFFFF"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                          />
+                          <path
+                            d="M384 88L384 152Z"
+                            fill="#F9C34B"
+                            stroke="#FFFFFF"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                          />
+                          <path
+                            d="M0 -8l6 0l0 16l-6 0Z"
+                            fill="none"
+                            transform="translate(407.6034 73.1132)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal 400 12px 'Open Sans', sans-serif"
+                            text-anchor="start"
+                            transform="translate(407.6034 73.1132)"
+                            xml:space="preserve"
+                          >
+                            263 MB
+                          </text>
+                          <path
+                            d="M-7 -8l7 0l0 16l-7 0Z"
+                            fill="none"
+                            transform="translate(360.3966 726.8868)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal 400 12px 'Open Sans', sans-serif"
+                            text-anchor="end"
+                            transform="translate(360.3966 726.8868)"
+                            xml:space="preserve"
+                          >
+                            30.4 GB
+                          </text>
+                          <path
+                            d="M-4 -8l4 0l0 16l-4 0Z"
+                            fill="none"
+                            transform="translate(369 73)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal 400 12px 'Open Sans', sans-serif"
+                            text-anchor="end"
+                            transform="translate(369 73)"
+                            xml:space="preserve"
+                          >
+                            21 B
+                          </text>
+                          <path
+                            d="M-5 -5l38 0l0 66l-38 0Z"
+                            fill="rgb(0,0,0)"
+                            fill-opacity="0"
+                            stroke="#ccc"
+                            stroke-width="0"
+                            transform="translate(773 372)"
+                          />
+                          <path
+                            d="M8 4A4 4 0 1 1 8 3.9996"
+                            fill="#66B1E8"
+                            stroke="#FFFFFF"
+                            stroke-linecap="butt"
+                            stroke-linejoin="round"
+                            stroke-miterlimit="10"
+                            stroke-width="0"
+                            transform="translate(773 376)"
+                          />
+                          <path
+                            d="M13 -4l15 0l0 16l-15 0Z"
+                            fill="none"
+                            transform="translate(773 376)"
+                          />
+                          <path
+                            d="M13 3.5l8 0l0 1l-8 0Z"
+                            fill="none"
+                            transform="translate(773 376)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                            text-anchor="start"
+                            transform="translate(773 376)"
+                            x="13"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            2.4 GHz:
+                          </text>
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal NaN 10px 'Open Sans', sans-serif"
+                            text-anchor="start"
+                            transform="translate(773 376)"
+                            x="21"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                             
+                          </text>
+                          <path
+                            d="M22 3.5l6 0l0 1l-6 0Z"
+                            fill="none"
+                            transform="translate(773 376)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                            text-anchor="start"
+                            transform="translate(773 376)"
+                            x="22"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            263 MB
+                          </text>
+                          <path
+                            d="M8 4A4 4 0 1 1 8 3.9996"
+                            fill="#EC7100"
+                            stroke="#FFFFFF"
+                            stroke-linecap="butt"
+                            stroke-linejoin="round"
+                            stroke-miterlimit="10"
+                            stroke-width="0"
+                            transform="translate(773 396)"
+                          />
+                          <path
+                            d="M13 -4l14 0l0 16l-14 0Z"
+                            fill="none"
+                            transform="translate(773 396)"
+                          />
+                          <path
+                            d="M13 3.5l6 0l0 1l-6 0Z"
+                            fill="none"
+                            transform="translate(773 396)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                            text-anchor="start"
+                            transform="translate(773 396)"
+                            x="13"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            5 GHz:
+                          </text>
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal NaN 10px 'Open Sans', sans-serif"
+                            text-anchor="start"
+                            transform="translate(773 396)"
+                            x="19"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                             
+                          </text>
+                          <path
+                            d="M20 3.5l7 0l0 1l-7 0Z"
+                            fill="none"
+                            transform="translate(773 396)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                            text-anchor="start"
+                            transform="translate(773 396)"
+                            x="20"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            30.4 GB
+                          </text>
+                          <path
+                            d="M8 4A4 4 0 1 1 8 3.9996"
+                            fill="#F9C34B"
+                            stroke="#FFFFFF"
+                            stroke-linecap="butt"
+                            stroke-linejoin="round"
+                            stroke-miterlimit="10"
+                            stroke-width="0"
+                            transform="translate(773 416)"
+                          />
+                          <path
+                            d="M13 -4l11 0l0 16l-11 0Z"
+                            fill="none"
+                            transform="translate(773 416)"
+                          />
+                          <path
+                            d="M13 3.5l6 0l0 1l-6 0Z"
+                            fill="none"
+                            transform="translate(773 416)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                            text-anchor="start"
+                            transform="translate(773 416)"
+                            x="13"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            6 GHz:
+                          </text>
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font: normal NaN 10px 'Open Sans', sans-serif"
+                            text-anchor="start"
+                            transform="translate(773 416)"
+                            x="19"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                             
+                          </text>
+                          <path
+                            d="M20 3.5l4 0l0 1l-4 0Z"
+                            fill="none"
+                            transform="translate(773 416)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                            text-anchor="start"
+                            transform="translate(773 416)"
+                            x="20"
+                            xml:space="preserve"
+                            y="4"
+                          >
+                            21 B
+                          </text>
+                          <path
+                            d="M-8.5 -5l17 0l0 42l-17 0Z"
+                            fill="rgb(0,0,0)"
+                            fill-opacity="0"
+                            stroke="#ccc"
+                            stroke-width="0"
+                            transform="translate(376.2 384)"
+                          />
+                          <path
+                            d="M0 0l0 0l0 0l0 0Z"
+                            fill="none"
+                            transform="translate(376.2 384)"
+                          />
+                          <path
+                            d="M-3.5 4l7 0l0 28l-7 0Z"
+                            fill="none"
+                            transform="translate(376.2 384)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
+                            text-anchor="middle"
+                            transform="translate(376.2 384)"
+                            xml:space="preserve"
+                            y="18"
+                          >
+                            30.6 GB
+                          </text>
+                        </g>
+                      </svg>
                     </div>
+                    <div
+                      class=""
+                    />
+                    <object
+                      class="size-sensor-object"
+                      data="about:blank"
+                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                      tabindex="-1"
+                      type="text/html"
+                    />
                   </div>
                 </div>
-              </div>
-              <div
-                class="resize-triggers"
-              >
-                <div
-                  class="expand-trigger"
-                >
-                  <div
-                    style="width: 1281px; height: 801px;"
-                  />
-                </div>
-                <div
-                  class="contract-trigger"
-                />
               </div>
             </div>
           </div>
@@ -921,7 +902,6 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
   height: 800px;
   width: 1280px;
   margin-top: -38px;
-  padding-bottom: 10px;
 }
 
 <div>
@@ -1039,446 +1019,428 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                 </div>
               </div>
               <div
-                style="overflow: visible; height: 0px; width: 0px;"
+                class="c6 c7"
               >
                 <div
-                  class="c6 c7"
+                  class="echarts-for-react "
+                  style="height: 790px; width: 1280px; position: relative;"
                 >
                   <div
-                    class="echarts-for-react "
-                    style="height: 790px; width: 1280px; position: relative;"
+                    style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                   >
-                    <div
-                      style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                    <svg
+                      baseProfile="full"
+                      height="800"
+                      style="position:absolute;left:0;top:0;user-select:none"
+                      version="1.1"
+                      width="1280"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
                     >
-                      <svg
-                        baseProfile="full"
+                      <rect
+                        fill="none"
+                        fill-opacity="1"
                         height="800"
-                        style="position:absolute;left:0;top:0;user-select:none"
-                        version="1.1"
+                        id="0"
                         width="1280"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                      >
-                        <rect
+                        x="0"
+                        y="0"
+                      />
+                      <g>
+                        <path
+                          d="M15 776.5L1275 776.5"
                           fill="none"
-                          fill-opacity="1"
-                          height="800"
-                          id="0"
-                          width="1280"
-                          x="0"
-                          y="0"
+                          stroke="#EBEDEE"
                         />
-                        <g>
+                        <path
+                          d="M15 612.5L1275 612.5"
+                          fill="none"
+                          stroke="#EBEDEE"
+                        />
+                        <path
+                          d="M15 448.5L1275 448.5"
+                          fill="none"
+                          stroke="#EBEDEE"
+                        />
+                        <path
+                          d="M15 284.5L1275 284.5"
+                          fill="none"
+                          stroke="#EBEDEE"
+                        />
+                        <path
+                          d="M15 120.5L1275 120.5"
+                          fill="none"
+                          stroke="#EBEDEE"
+                        />
+                        <path
+                          d="M15 776.5L1275 776.5"
+                          fill="none"
+                          stroke="#C4C4C4"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M-3 -8l3 0l0 16l-3 0Z"
+                          fill="none"
+                          transform="translate(7 776)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="end"
+                          transform="translate(7 776)"
+                          xml:space="preserve"
+                        >
+                          0 B
+                        </text>
+                        <path
+                          d="M-7 -8l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(7 612)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="end"
+                          transform="translate(7 612)"
+                          xml:space="preserve"
+                        >
+                          1.86 GB
+                        </text>
+                        <path
+                          d="M-7 -8l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(7 448)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="end"
+                          transform="translate(7 448)"
+                          xml:space="preserve"
+                        >
+                          3.73 GB
+                        </text>
+                        <path
+                          d="M-7 -8l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(7 284)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="end"
+                          transform="translate(7 284)"
+                          xml:space="preserve"
+                        >
+                          5.59 GB
+                        </text>
+                        <path
+                          d="M-7 -8l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(7 120)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="end"
+                          transform="translate(7 120)"
+                          xml:space="preserve"
+                        >
+                          7.45 GB
+                        </text>
+                        <path
+                          d="M-2.5 0l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(15 784)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font: normal 400 10px 'Open Sans', sans-serif"
+                          text-anchor="middle"
+                          transform="translate(15 784)"
+                          y="8"
+                        >
+                          01:00
+                        </text>
+                        <path
+                          d="M-2.5 0l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(267 784)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font: normal 400 10px 'Open Sans', sans-serif"
+                          text-anchor="middle"
+                          transform="translate(267 784)"
+                          y="8"
+                        >
+                          02:00
+                        </text>
+                        <path
+                          d="M-2.5 0l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(519 784)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font: normal 400 10px 'Open Sans', sans-serif"
+                          text-anchor="middle"
+                          transform="translate(519 784)"
+                          y="8"
+                        >
+                          03:00
+                        </text>
+                        <path
+                          d="M-2.5 0l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(771 784)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font: normal 400 10px 'Open Sans', sans-serif"
+                          text-anchor="middle"
+                          transform="translate(771 784)"
+                          y="8"
+                        >
+                          04:00
+                        </text>
+                        <path
+                          d="M-2.5 0l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(1023 784)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#ACAEB0"
+                          style="font: normal 400 10px 'Open Sans', sans-serif"
+                          text-anchor="middle"
+                          transform="translate(1023 784)"
+                          y="8"
+                        >
+                          05:00
+                        </text>
+                        <path
+                          d="M-5 -5l161 0l0 26l-161 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(1109 5)"
+                        />
+                        <path
+                          d="M0 0l14 0l0 14l-14 0Z"
+                          fill="#66B1E8"
+                          transform="translate(1109 6)"
+                        />
+                        <path
+                          d="M20 -1l9 0l0 16l-9 0Z"
+                          fill="none"
+                          transform="translate(1109 6)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="start"
+                          transform="translate(1109 6)"
+                          x="20"
+                          xml:space="preserve"
+                          y="7"
+                        >
+                          All Bands
+                        </text>
+                        <path
+                          d="M0 0l14 0l0 14l-14 0Z"
+                          fill="#EC7100"
+                          transform="translate(1153 6)"
+                        />
+                        <path
+                          d="M20 -1l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(1153 6)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="start"
+                          transform="translate(1153 6)"
+                          x="20"
+                          xml:space="preserve"
+                          y="7"
+                        >
+                          2.4 GHz
+                        </text>
+                        <path
+                          d="M0 0l14 0l0 14l-14 0Z"
+                          fill="#F9C34B"
+                          transform="translate(1195 6)"
+                        />
+                        <path
+                          d="M20 -1l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(1195 6)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="start"
+                          transform="translate(1195 6)"
+                          x="20"
+                          xml:space="preserve"
+                          y="7"
+                        >
+                          5 GHz
+                        </text>
+                        <path
+                          d="M0 0l14 0l0 14l-14 0Z"
+                          fill="#61C46E"
+                          transform="translate(1235 6)"
+                        />
+                        <path
+                          d="M20 -1l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(1235 6)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="start"
+                          transform="translate(1235 6)"
+                          x="20"
+                          xml:space="preserve"
+                          y="7"
+                        >
+                          6 GHz
+                        </text>
+                        <path
+                          d="M-5 -5l26 0l0 10l-26 0Z"
+                          fill="none"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(1259 5)"
+                        />
+                        <path
+                          d=""
+                          fill="none"
+                          stroke="#666"
+                          transform="translate(1259 5)"
+                        />
+                        <path
+                          d=""
+                          fill="none"
+                          stroke="#666"
+                          transform="translate(1267 5)"
+                        />
+                        <path
+                          d=""
+                          fill="none"
+                          stroke="#666"
+                          transform="translate(1275 5)"
+                        />
+                        <g
+                          clip-path="url(#zr1-c0)"
+                        >
                           <path
-                            d="M15 776.5L1275 776.5"
+                            d="M15 561.5271C15 561.5271 129.3406 426.8878 267 324.3307C381.3406 239.1463 387.718 186.044 519 186.044C639.718 186.044 647.7866 218.6154 771 265.7969C899.7866 315.1126 899.4809 379.0385 1023 379.0385C1151.4809 379.0385 1275 240.9115 1275 240.9115"
                             fill="none"
-                            stroke="#EBEDEE"
+                            stroke="#66B1E8"
+                            stroke-linejoin="bevel"
+                            stroke-width="1.2"
                           />
-                          <path
-                            d="M15 612.5L1275 612.5"
-                            fill="none"
-                            stroke="#EBEDEE"
-                          />
-                          <path
-                            d="M15 448.5L1275 448.5"
-                            fill="none"
-                            stroke="#EBEDEE"
-                          />
-                          <path
-                            d="M15 284.5L1275 284.5"
-                            fill="none"
-                            stroke="#EBEDEE"
-                          />
-                          <path
-                            d="M15 120.5L1275 120.5"
-                            fill="none"
-                            stroke="#EBEDEE"
-                          />
-                          <path
-                            d="M15 776.5L1275 776.5"
-                            fill="none"
-                            stroke="#C4C4C4"
-                            stroke-linecap="round"
-                          />
-                          <path
-                            d="M-3 -8l3 0l0 16l-3 0Z"
-                            fill="none"
-                            transform="translate(7 776)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="end"
-                            transform="translate(7 776)"
-                            xml:space="preserve"
-                          >
-                            0 B
-                          </text>
-                          <path
-                            d="M-7 -8l7 0l0 16l-7 0Z"
-                            fill="none"
-                            transform="translate(7 612)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="end"
-                            transform="translate(7 612)"
-                            xml:space="preserve"
-                          >
-                            1.86 GB
-                          </text>
-                          <path
-                            d="M-7 -8l7 0l0 16l-7 0Z"
-                            fill="none"
-                            transform="translate(7 448)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="end"
-                            transform="translate(7 448)"
-                            xml:space="preserve"
-                          >
-                            3.73 GB
-                          </text>
-                          <path
-                            d="M-7 -8l7 0l0 16l-7 0Z"
-                            fill="none"
-                            transform="translate(7 284)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="end"
-                            transform="translate(7 284)"
-                            xml:space="preserve"
-                          >
-                            5.59 GB
-                          </text>
-                          <path
-                            d="M-7 -8l7 0l0 16l-7 0Z"
-                            fill="none"
-                            transform="translate(7 120)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="end"
-                            transform="translate(7 120)"
-                            xml:space="preserve"
-                          >
-                            7.45 GB
-                          </text>
-                          <path
-                            d="M-2.5 0l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(15 784)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font: normal 400 10px 'Open Sans', sans-serif"
-                            text-anchor="middle"
-                            transform="translate(15 784)"
-                            y="8"
-                          >
-                            01:00
-                          </text>
-                          <path
-                            d="M-2.5 0l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(267 784)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font: normal 400 10px 'Open Sans', sans-serif"
-                            text-anchor="middle"
-                            transform="translate(267 784)"
-                            y="8"
-                          >
-                            02:00
-                          </text>
-                          <path
-                            d="M-2.5 0l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(519 784)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font: normal 400 10px 'Open Sans', sans-serif"
-                            text-anchor="middle"
-                            transform="translate(519 784)"
-                            y="8"
-                          >
-                            03:00
-                          </text>
-                          <path
-                            d="M-2.5 0l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(771 784)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font: normal 400 10px 'Open Sans', sans-serif"
-                            text-anchor="middle"
-                            transform="translate(771 784)"
-                            y="8"
-                          >
-                            04:00
-                          </text>
-                          <path
-                            d="M-2.5 0l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(1023 784)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#ACAEB0"
-                            style="font: normal 400 10px 'Open Sans', sans-serif"
-                            text-anchor="middle"
-                            transform="translate(1023 784)"
-                            y="8"
-                          >
-                            05:00
-                          </text>
-                          <path
-                            d="M-5 -5l161 0l0 26l-161 0Z"
-                            fill="rgb(0,0,0)"
-                            fill-opacity="0"
-                            stroke="#ccc"
-                            stroke-width="0"
-                            transform="translate(1109 5)"
-                          />
-                          <path
-                            d="M0 0l14 0l0 14l-14 0Z"
-                            fill="#66B1E8"
-                            transform="translate(1109 6)"
-                          />
-                          <path
-                            d="M20 -1l9 0l0 16l-9 0Z"
-                            fill="none"
-                            transform="translate(1109 6)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#333333"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="start"
-                            transform="translate(1109 6)"
-                            x="20"
-                            xml:space="preserve"
-                            y="7"
-                          >
-                            All Bands
-                          </text>
-                          <path
-                            d="M0 0l14 0l0 14l-14 0Z"
-                            fill="#EC7100"
-                            transform="translate(1153 6)"
-                          />
-                          <path
-                            d="M20 -1l7 0l0 16l-7 0Z"
-                            fill="none"
-                            transform="translate(1153 6)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#333333"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="start"
-                            transform="translate(1153 6)"
-                            x="20"
-                            xml:space="preserve"
-                            y="7"
-                          >
-                            2.4 GHz
-                          </text>
-                          <path
-                            d="M0 0l14 0l0 14l-14 0Z"
-                            fill="#F9C34B"
-                            transform="translate(1195 6)"
-                          />
-                          <path
-                            d="M20 -1l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(1195 6)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#333333"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="start"
-                            transform="translate(1195 6)"
-                            x="20"
-                            xml:space="preserve"
-                            y="7"
-                          >
-                            5 GHz
-                          </text>
-                          <path
-                            d="M0 0l14 0l0 14l-14 0Z"
-                            fill="#61C46E"
-                            transform="translate(1235 6)"
-                          />
-                          <path
-                            d="M20 -1l5 0l0 16l-5 0Z"
-                            fill="none"
-                            transform="translate(1235 6)"
-                          />
-                          <text
-                            dominant-baseline="central"
-                            fill="#333333"
-                            style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                            text-anchor="start"
-                            transform="translate(1235 6)"
-                            x="20"
-                            xml:space="preserve"
-                            y="7"
-                          >
-                            6 GHz
-                          </text>
-                          <path
-                            d="M-5 -5l26 0l0 10l-26 0Z"
-                            fill="none"
-                            stroke="#ccc"
-                            stroke-width="0"
-                            transform="translate(1259 5)"
-                          />
-                          <path
-                            d=""
-                            fill="none"
-                            stroke="#666"
-                            transform="translate(1259 5)"
-                          />
-                          <path
-                            d=""
-                            fill="none"
-                            stroke="#666"
-                            transform="translate(1267 5)"
-                          />
-                          <path
-                            d=""
-                            fill="none"
-                            stroke="#666"
-                            transform="translate(1275 5)"
-                          />
-                          <g
-                            clip-path="url(#zr1-c0)"
-                          >
-                            <path
-                              d="M15 561.5271C15 561.5271 129.3406 426.8878 267 324.3307C381.3406 239.1463 387.718 186.044 519 186.044C639.718 186.044 647.7866 218.6154 771 265.7969C899.7866 315.1126 899.4809 379.0385 1023 379.0385C1151.4809 379.0385 1275 240.9115 1275 240.9115"
-                              fill="none"
-                              stroke="#66B1E8"
-                              stroke-linejoin="bevel"
-                              stroke-width="1.2"
-                            />
-                          </g>
-                          <g
-                            clip-path="url(#zr1-c1)"
-                          >
-                            <path
-                              d="M15 773.541C15 773.541 140.9999 773.8586 267 774.0441C392.9999 774.2297 393.0001 774.2833 519 774.2833C645.0001 774.2833 645 773.735 771 773.735C897 773.735 897.0588 774.352 1023 774.352C1149.0588 774.352 1275 763.444 1275 763.444"
-                              fill="none"
-                              stroke="#EC7100"
-                              stroke-linejoin="bevel"
-                              stroke-width="1.2"
-                            />
-                          </g>
-                          <g
-                            clip-path="url(#zr1-c2)"
-                          >
-                            <path
-                              d="M15 563.9862C15 563.9862 129.3034 429.0743 267 326.2866C381.3034 240.9615 387.7323 187.7607 519 187.7607C639.7323 187.7607 647.6895 220.86 771 268.0619C899.6895 317.3229 898.4149 380.6865 1023 380.6865C1150.4149 380.6865 1275 253.4675 1275 253.4675"
-                              fill="none"
-                              stroke="#F9C34B"
-                              stroke-linejoin="bevel"
-                              stroke-width="1.2"
-                            />
-                          </g>
-                          <g
-                            clip-path="url(#zr1-c3)"
-                          >
-                            <path
-                              d="M15 776C15 776 141 776 267 776C393 776 393 776 519 776C645 776 645 776 771 776C897 776 897 776 1023 776C1149 776 1275 776 1275 776"
-                              fill="none"
-                              stroke="#61C46E"
-                              stroke-linejoin="bevel"
-                              stroke-width="1.2"
-                            />
-                          </g>
                         </g>
-                        <defs>
-                          <clippath
-                            id="zr1-c0"
-                          >
-                            <path
-                              d="M14 119.4l1261 0l0 657.2l-1261 0Z"
-                              fill="#000"
-                            />
-                          </clippath>
-                          <clippath
-                            id="zr1-c1"
-                          >
-                            <path
-                              d="M14 119.4l1261 0l0 657.2l-1261 0Z"
-                              fill="#000"
-                            />
-                          </clippath>
-                          <clippath
-                            id="zr1-c2"
-                          >
-                            <path
-                              d="M14 119.4l1261 0l0 657.2l-1261 0Z"
-                              fill="#000"
-                            />
-                          </clippath>
-                          <clippath
-                            id="zr1-c3"
-                          >
-                            <path
-                              d="M14 119.4l1261 0l0 657.2l-1261 0Z"
-                              fill="#000"
-                            />
-                          </clippath>
-                        </defs>
-                      </svg>
-                    </div>
-                    <div
-                      class=""
-                    />
-                    <object
-                      class="size-sensor-object"
-                      data="about:blank"
-                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                      tabindex="-1"
-                      type="text/html"
-                    />
+                        <g
+                          clip-path="url(#zr1-c1)"
+                        >
+                          <path
+                            d="M15 773.541C15 773.541 140.9999 773.8586 267 774.0441C392.9999 774.2297 393.0001 774.2833 519 774.2833C645.0001 774.2833 645 773.735 771 773.735C897 773.735 897.0588 774.352 1023 774.352C1149.0588 774.352 1275 763.444 1275 763.444"
+                            fill="none"
+                            stroke="#EC7100"
+                            stroke-linejoin="bevel"
+                            stroke-width="1.2"
+                          />
+                        </g>
+                        <g
+                          clip-path="url(#zr1-c2)"
+                        >
+                          <path
+                            d="M15 563.9862C15 563.9862 129.3034 429.0743 267 326.2866C381.3034 240.9615 387.7323 187.7607 519 187.7607C639.7323 187.7607 647.6895 220.86 771 268.0619C899.6895 317.3229 898.4149 380.6865 1023 380.6865C1150.4149 380.6865 1275 253.4675 1275 253.4675"
+                            fill="none"
+                            stroke="#F9C34B"
+                            stroke-linejoin="bevel"
+                            stroke-width="1.2"
+                          />
+                        </g>
+                        <g
+                          clip-path="url(#zr1-c3)"
+                        >
+                          <path
+                            d="M15 776C15 776 141 776 267 776C393 776 393 776 519 776C645 776 645 776 771 776C897 776 897 776 1023 776C1149 776 1275 776 1275 776"
+                            fill="none"
+                            stroke="#61C46E"
+                            stroke-linejoin="bevel"
+                            stroke-width="1.2"
+                          />
+                        </g>
+                      </g>
+                      <defs>
+                        <clippath
+                          id="zr1-c0"
+                        >
+                          <path
+                            d="M14 119.4l1261 0l0 657.2l-1261 0Z"
+                            fill="#000"
+                          />
+                        </clippath>
+                        <clippath
+                          id="zr1-c1"
+                        >
+                          <path
+                            d="M14 119.4l1261 0l0 657.2l-1261 0Z"
+                            fill="#000"
+                          />
+                        </clippath>
+                        <clippath
+                          id="zr1-c2"
+                        >
+                          <path
+                            d="M14 119.4l1261 0l0 657.2l-1261 0Z"
+                            fill="#000"
+                          />
+                        </clippath>
+                        <clippath
+                          id="zr1-c3"
+                        >
+                          <path
+                            d="M14 119.4l1261 0l0 657.2l-1261 0Z"
+                            fill="#000"
+                          />
+                        </clippath>
+                      </defs>
+                    </svg>
                   </div>
-                </div>
-              </div>
-              <div
-                class="resize-triggers"
-              >
-                <div
-                  class="expand-trigger"
-                >
                   <div
-                    style="width: 1281px; height: 801px;"
+                    class=""
+                  />
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
                   />
                 </div>
-                <div
-                  class="contract-trigger"
-                />
               </div>
             </div>
           </div>

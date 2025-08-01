@@ -15,6 +15,8 @@ import {
   useStackMemberListQuery
 } from '@acx-ui/rc/services'
 import {
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
   isRouter
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -22,9 +24,7 @@ import {
   NetworkDeviceType,
   SwitchViewModel,
   SWITCH_TYPE,
-  StackMember,
-  isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1
+  StackMember
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,

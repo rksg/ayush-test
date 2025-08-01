@@ -434,6 +434,60 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
+    getNotificationRecipientsPaginated: build.query<TableResult<NotificationRecipientUIModel>,
+    RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getNotificationRecipientsPaginated, params)
+        return {
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse: (response: NewTableResult<NotificationRecipientUIModel>) => {
+        // flat endpoint into individual fields
+        const tableResult = response?.content?.map((data: NotificationRecipientUIModel) => {
+          const result = {
+            ...data
+          } as NotificationRecipientUIModel
+
+          data?.endpoints?.forEach((endpoint: NotificationEndpoint) => {
+            switch (endpoint.type) {
+              case (NotificationEndpointType.email):
+                result.email = endpoint.destination
+                result.emailEnabled = endpoint.active
+                break
+              case (NotificationEndpointType.sms):
+              case (NotificationEndpointType.mobile_push):
+                result.mobile = endpoint.destination
+                result.mobileEnabled = endpoint.active
+                break
+            }
+          })
+          return result
+        })
+
+        return transferToTableResult<NotificationRecipientUIModel>({ ...response,
+          content: tableResult })
+      },
+      providesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddNotificationRecipient',
+            'UpdateNotificationRecipient',
+            'DeleteNotificationRecipient'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'NOTIFICATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
     addRecipient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params, {
@@ -918,7 +972,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if(msg.steps?.find((step) =>
-            (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
+            (step.id === 'UpdateSMSProvider')) && (msg.status === 'SUCCESS')) {
             if (typeof requestArgs.callback === 'function') {
               requestArgs.callback()
             }
@@ -1128,6 +1182,7 @@ export const {
   useFindVARDelegationQuery,
   useLazyFindVARDelegationQuery,
   useGetNotificationRecipientsQuery,
+  useGetNotificationRecipientsPaginatedQuery,
   useAddRecipientMutation,
   useUpdateRecipientMutation,
   useDeleteNotificationRecipientsMutation,

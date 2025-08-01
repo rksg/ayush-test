@@ -16,10 +16,10 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useEnforcedStatus
-} from '@acx-ui/rc/components'
+} from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,

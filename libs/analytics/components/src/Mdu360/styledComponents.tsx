@@ -30,5 +30,4 @@ export const ContentSwitcherWrapper = styled.div<{
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
   margin-top: -38px;
-  padding-bottom: 10px
 `

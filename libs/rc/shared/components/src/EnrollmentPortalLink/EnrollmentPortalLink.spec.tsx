@@ -24,7 +24,7 @@ describe('Enrollment Portal Link', () => {
 
     render(
       <Provider>
-        <EnrollmentPortalLink url='test-url' />
+        <EnrollmentPortalLink url='test-url' name='test-name' />
       </Provider>
     )
 
@@ -46,7 +46,7 @@ describe('Enrollment Portal Link', () => {
 
     render(
       <Provider>
-        <EnrollmentPortalLink url='test-url' />
+        <EnrollmentPortalLink url='test-url' name='test-name' />
       </Provider>
     )
 
