@@ -4,9 +4,9 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                         from '@acx-ui/components'
 import { usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
-import { SwitchVeTable }                from '@acx-ui/rc/components'
 import { useConfigTemplate }            from '@acx-ui/rc/utils'
 import { useNavigate, useParams }       from '@acx-ui/react-router-dom'
+import { SwitchVeTable }                from '@acx-ui/switch/components'
 import { SwitchConfigHistoryTable }     from '@acx-ui/switch/components'
 
 import { VenueEditContext, EditContext } from '../index'

@@ -16,4 +16,5 @@ export {
 } from './SwitchPortTable'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
+export { SwitchVeTable } from './SwitchVeTable'
 export * from './VlanSettingDrawer'
