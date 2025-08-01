@@ -240,12 +240,11 @@ export const ApplicationComponent = (props: ApplicationComponentProps) => {
 
   // eslint-disable-next-line max-len
   const noAppId = applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)
-  const componentMode = !isComponentMode || policyId !== null
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
-    skip: componentMode && (!visible || skipFetch || noAppId),
+    skip: (!isComponentMode || policyId !== null) && (!visible || skipFetch || noAppId),
     extraParams: {
       applicationPolicyId: policyId || applicationPolicyId
     },
