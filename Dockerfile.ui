@@ -149,7 +149,7 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
     fi
 
 RUN find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} +
-RUN if [ -f ./coverage ]; then \
+RUN if [ -d ./coverage ]; then \
       cp -r ./coverage ./node_modules/.cache/nx; \
     fi
 
