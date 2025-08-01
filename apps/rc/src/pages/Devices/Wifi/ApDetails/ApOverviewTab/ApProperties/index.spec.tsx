@@ -10,7 +10,8 @@ import {
   SwitchUrlsInfo,
   WifiRbacUrlsInfo,
   AFCStatus,
-  AFCPowerMode
+  AFCPowerMode,
+  ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store  }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -763,6 +764,322 @@ describe('ApProperties', () => {
       const apPropertiesDialog = await screen.findByRole('dialog')
 
       expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
+    })
+
+    describe('Password Regeneration Message', () => {
+      beforeEach(() => {
+        // Mock feature flags to enable per-AP password and visibility
+        jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+          if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+          if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+          return true
+        })
+
+        const { useUserProfileContext } = require('@acx-ui/user')
+        useUserProfileContext.mockReturnValue({
+          data: {
+            support: true,
+            var: false,
+            dogfood: false
+          }
+        })
+
+        // Mock the getApPassword API response
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: '2024-01-15T10:30:00Z',
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+      })
+
+      it('should return null when lastSeenTime is missing', async () => {
+        const apWithoutLastSeen = {
+          ...currentAP,
+          lastSeenTime: undefined
+        }
+
+        render(<Provider>
+          <ApProperties
+            currentAP={apWithoutLastSeen}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        // Click show password button to trigger password fetch
+        const showPasswordButton = within(apPropertiesDialog)
+          .getByRole('button', { name: /Show AP Password/ })
+        await userEvent.click(showPasswordButton)
+
+        // Should not show regeneration message
+        expect(within(apPropertiesDialog)
+          .queryByText(/AP Password will regenerate/)).not.toBeInTheDocument()
+      })
+
+      it('should return null when expireTime is missing', async () => {
+        // Mock API to return password without expireTime
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: undefined,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        // Click show password button to trigger password fetch
+        const showPasswordButton = within(apPropertiesDialog)
+          .getByRole('button', { name: /Show AP Password/ })
+        await userEvent.click(showPasswordButton)
+
+        // Should not show regeneration message
+        expect(within(apPropertiesDialog)
+          .queryByText(/AP Password will regenerate/)).not.toBeInTheDocument()
+      })
+
+      it('should show regeneration message for connected AP with expire today', async () => {
+        const now = new Date()
+        const todayExpireTime = new Date(
+          now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59
+        ).toISOString()
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: todayExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Check for the time and day label
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/23:59/)).toBeVisible()
+        })
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/today/)).toBeVisible()
+        })
+
+      })
+
+      it('should show regeneration message for connected AP with expire tomorrow', async () => {
+        const now = new Date()
+        const tomorrow = new Date(now)
+        tomorrow.setDate(now.getDate() + 1)
+        const tomorrowExpireTime = new Date(
+          tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59
+        ).toISOString()
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: tomorrowExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Check for the time and day label
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/23:59/)).toBeVisible()
+        })
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/tomorrow/)).toBeVisible()
+        })
+
+      })
+
+      it('should show regeneration message for disconnected AP with expire today', async () => {
+        const now = new Date()
+        const todayExpireTime = new Date(
+          now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59
+        ).toISOString()
+
+        const apDisconnected = {
+          ...currentAP,
+          deviceStatusSeverity: ApVenueStatusEnum.OFFLINE
+        }
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: todayExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={apDisconnected}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/upon cloud reconnection/)).toBeVisible()
+        })
+      })
+
+      it('should show regeneration message for disconnected AP with expire over 24', async () => {
+        const now = new Date()
+        const over24 = new Date(now)
+        over24.setDate(now.getDate() + 2)
+        const over24ExpireTime = new Date(
+          over24.getFullYear(), over24.getMonth(), over24.getDate(), 23, 59, 59
+        ).toISOString()
+
+        const apDisconnected = {
+          ...currentAP,
+          deviceStatusSeverity: ApVenueStatusEnum.OFFLINE
+        }
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPasswords: 'testPassword123',
+              expireTime: over24ExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={apDisconnected}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate upon cloud reconnection./)).toBeVisible()
+        })
+      })
+
     })
   })
 })
