@@ -41,6 +41,7 @@ export interface UserProfileContextProps {
   betaFeaturesList?: FeatureAPIResults[]
   tenantType?: TenantType
   accountVertical?: AccountVertical
+  isMspUser?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -126,6 +127,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const betaStatus = earlyAcessStatus?.betaStatus
   const alphaStatus = earlyAcessStatus?.alphaStatus
   const isAlphaUser = ((betaStatus && profile?.dogfood) || !!alphaStatus)
+  const isMspUser = tenantType === TenantType.MSP || tenantType === TenantType.MSP_NON_VAR
 
   const { data: features } = useGetBetaFeatureListQuery({ params },
     { skip: !(betaStatus) || !selectedBetaListEnabled })
@@ -163,7 +165,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       selectedBetaListEnabled,
       betaFeaturesList,
       tenantType,
-      accountVertical
+      accountVertical,
+      isMspUser
     })
   }
 
@@ -189,7 +192,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       selectedBetaListEnabled,
       betaFeaturesList,
       tenantType,
-      accountVertical
+      accountVertical,
+      isMspUser
     }}
     children={props.children}
   />
