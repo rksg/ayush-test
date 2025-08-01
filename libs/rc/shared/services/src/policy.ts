@@ -2415,7 +2415,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1_1)
           // eslint-disable-next-line max-len
           const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewModelHeader),
-            body: enableRbac? JSON.stringify({}) : {}
+            body: JSON.stringify({})
           }
           const res = await fetchWithBQ(snmpListReq)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
@@ -2444,6 +2444,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddApSnmpAgentProfile',
+            'AddSnmpAgentProfileV1_1',
             'UpdateApSnmpAgentProfile',
             'DeleteApSnmpAgentProfile',
             'DeactivateSnmpAgentProfileOnAP',
@@ -2805,7 +2806,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const payload = { filters: { apSerialNumbers: [ params?.serialNumber ] } }
           const viewModelRequest = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
-            body: enableRbac? JSON.stringify(payload) : payload
+            body: JSON.stringify(payload)
           }
 
           const viewModelResponse = await fetchWithBQ(viewModelRequest)

@@ -3,16 +3,16 @@ import { useEffect, useState } from 'react'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { PageHeader, Tabs }                        from '@acx-ui/components'
-import { SwitchClientContext, SwitchClientsTable } from '@acx-ui/rc/components'
+import { PageHeader, Tabs }     from '@acx-ui/components'
 import {
   useGetApWiredClientsQuery,
   useGetSwitchClientListQuery
 } from '@acx-ui/rc/services'
-import { useTenantLink }        from '@acx-ui/react-router-dom'
-import { filterByAccess }       from '@acx-ui/user'
-import { usePollingTableQuery } from '@acx-ui/utils'
-import { ApWiredClientTable }   from '@acx-ui/wifi/components'
+import { useTenantLink }                           from '@acx-ui/react-router-dom'
+import { SwitchClientContext, SwitchClientsTable } from '@acx-ui/switch/components'
+import { filterByAccess }                          from '@acx-ui/user'
+import { usePollingTableQuery }                    from '@acx-ui/utils'
+import { ApWiredClientTable }                      from '@acx-ui/wifi/components'
 
 
 

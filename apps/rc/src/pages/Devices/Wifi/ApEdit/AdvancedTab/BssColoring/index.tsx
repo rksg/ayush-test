@@ -5,10 +5,13 @@ import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
-import { ApBssColoringSettings, VenueBssColoring }                                                   from '@acx-ui/rc/utils'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import {
+  useGetApBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
+  useUpdateApBssColoringMutation
+} from '@acx-ui/rc/services'
+import { ApBssColoringSettings, VenueBssColoring } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 import { FieldLabel }                                    from '../../styledComponents'
@@ -20,8 +23,6 @@ export function BssColoring (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const { isAllowEdit=true } = props
-
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -37,7 +38,7 @@ export function BssColoring (props: ApEditItemProps) {
   const formRef = useRef<StepsFormLegacyInstance<ApBssColoringSettings>>()
 
   const getApBssColoring = useGetApBssColoringQuery({
-    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+    params: { venueId, serialNumber }, enableRbac: true
   }, { skip: !venueId })
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
@@ -58,7 +59,7 @@ export function BssColoring (props: ApEditItemProps) {
       const setData = async () => {
         const venueBssColoringData = (await getVenueBssColoring({
           params: { venueId },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }).unwrap())
 
         // setVenue(apVenue)
@@ -116,7 +117,7 @@ export function BssColoring (props: ApEditItemProps) {
         useVenueSettings: isUseVenue
       }
       await updateApBssColoring(
-        { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+        { params: { venueId, serialNumber }, payload, enableRbac: true }
       ).unwrap()
 
     } catch (error) {

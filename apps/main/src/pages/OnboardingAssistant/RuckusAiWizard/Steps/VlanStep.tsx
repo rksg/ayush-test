@@ -6,7 +6,6 @@ import { useIntl }                                       from 'react-intl'
 
 import { cssStr }                             from '@acx-ui/components'
 import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
-import { VlanSettingDrawer }                  from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
   useDeleteOnboardConfigsMutation,
@@ -14,6 +13,7 @@ import {
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
 import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
+import { VlanSettingDrawer }                   from '@acx-ui/switch/components'
 
 import { checkHasRegenerated } from './steps.utils'
 import * as UI                 from './styledComponents'

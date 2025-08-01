@@ -172,8 +172,12 @@ export default function WorkflowDetails () {
       visible: published?.publishedDetails?.status === 'PUBLISHED',
       content: () => {
         const link = published?.links?.find(v => v.rel === 'enrollmentPortal')
-        if (link) return <EnrollmentPortalLink url={link.href} />
-        return undefined
+        return link ? (
+          <EnrollmentPortalLink
+            url={link.href}
+            name={data?.name || 'qr-code'}
+          />
+        ) : undefined
       },
       colSpan: 5
     }

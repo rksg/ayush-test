@@ -45,7 +45,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   DHCPForm: () => <div>DHCPForm</div>,
   PortalForm: () => <div>PortalForm</div>,
   VLANPoolForm: () => <div>VLANPoolForm</div>,
-  ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>,
   CliProfileForm: () => <div>CliProfileForm</div>,
   IdentityGroupForm: () => <div>IdentityGroupForm</div>,
   WifiCallingForm: () => <div>WifiCallingForm</div>,
@@ -86,6 +85,10 @@ jest.mock('@acx-ui/reports/components', () => ({
   DataStudio: () => <div>DataStudio</div>
 }))
 
+jest.mock('@acx-ui/switch/components', () => ({
+  ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>
+}))
+
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.NETWORK]: false,
   [ConfigTemplateType.VENUE]: false,
@@ -108,7 +111,7 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.AP_GROUP]: false,
   [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
   [ConfigTemplateType.IDENTITY_GROUP]: false,
-  [ConfigTemplateType.TUNNEL_PROFILE]: false
+  [ConfigTemplateType.TUNNEL_SERVICE]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -456,7 +459,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
   it('should navigate to the create Tunnel Profile config template page', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
-      [ConfigTemplateType.TUNNEL_PROFILE]: true
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
     })
 
     render(<Provider><ConfigTemplatesRoutes /></Provider>, {
@@ -474,7 +477,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
   it('should navigate to the edit Tunnel Profile config template page', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
-      [ConfigTemplateType.TUNNEL_PROFILE]: true
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
     })
 
     render(<Provider><ConfigTemplatesRoutes /></Provider>, {

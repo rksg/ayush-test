@@ -7,6 +7,7 @@ import { useIntl }                                    from 'react-intl'
 import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                               from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
@@ -33,8 +34,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTableQuery, TableResult } from '@acx-ui/utils'
 
-import { usePathBasedOnConfigTemplate } from '../../configTemplates'
-import { ApGroupEditContext }           from '../context'
+import { ApGroupEditContext } from '../context'
 
 import type { TransferProps } from 'antd'
 
@@ -372,6 +372,10 @@ export function ApGroupGeneralTab () {
       title: 'Name'
     }
   ]
+
+  useEffect(() => {
+    setTableDataOption(apsOption.filter(option => option))
+  }, [apsOption])
 
   const renderFooter: TransferProps<TransferItem>['footer'] = (_, info) => {
     if (info?.direction === 'left') {
