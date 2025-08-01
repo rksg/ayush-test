@@ -27,7 +27,8 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 jest.mock('@acx-ui/rc/common/components', () => ({
-  CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
+  CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />,
+  ImportFileDrawer: () => <div data-testid='ImportFileDrawer' />
 }))
 
 const mockedSwitchDetail = {

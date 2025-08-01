@@ -52,8 +52,6 @@ jest.mock('@acx-ui/rc/services', () => ({
 const mockFormData = new FormData()
 
 jest.mock('@acx-ui/rc/common/components', () => ({
-  NetworkForm: () => <div data-testid='network-form' />,
-  PassphraseViewer: () => <div data-testid='PassphraseViewer' />,
   ImportFileDrawer: ({ importRequest, onClose, visible }: {
     visible: boolean
     importRequest: (formData: FormData, values: object) => void
