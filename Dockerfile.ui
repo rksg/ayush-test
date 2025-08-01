@@ -52,7 +52,7 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
-RUN if [ -f /app/node_modules/.cache/nx/coverage ]; then \
+RUN if [ -d /app/node_modules/.cache/nx/coverage ]; then \
       cp -r /app/node_modules/.cache/nx/coverage /app && \
       rm -rf /app/node_modules/.cache/nx/coverage; \
     fi
