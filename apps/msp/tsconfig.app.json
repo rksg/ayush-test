@@ -20,5 +20,5 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../../libs/rc/msp/utils/src/HspContext.tsx", "../../libs/rc/msp/utils/src/HspContext.spec.tsx", "../../libs/rc/msp/utils/src/HspReducer.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
