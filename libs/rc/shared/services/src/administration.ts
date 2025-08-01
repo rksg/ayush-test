@@ -972,7 +972,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if(msg.steps?.find((step) =>
-            (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
+            (step.id === 'UpdateSMSProvider')) && (msg.status === 'SUCCESS')) {
             if (typeof requestArgs.callback === 'function') {
               requestArgs.callback()
             }
