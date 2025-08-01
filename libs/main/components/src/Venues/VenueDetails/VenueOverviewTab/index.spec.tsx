@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { generatePath }                                   from '@acx-ui/react-router-dom'
-import { Provider, store  }                               from '@acx-ui/store'
-import { mockServer, fireEvent, render, screen }          from '@acx-ui/test-utils'
+import { venueApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }                   from '@acx-ui/rc/utils'
+import { generatePath }                                                     from '@acx-ui/react-router-dom'
+import { Provider, store  }                                                 from '@acx-ui/store'
+import { mockServer, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { triBandApCap } from '../../__tests__/fixtures'
 
 import { VenueOverviewTab } from '.'
 
@@ -49,12 +51,17 @@ describe('VenueOverviewTab', () => {
     mockServer.use(
       rest.get(url, (_, res, ctx) => res(ctx.json(venueDetailHeaderData))),
       rest.get(
-        WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
-        (_, res, ctx) => res(ctx.json({ enabled: true }))),
-      rest.get(
         WifiRbacUrlsInfo.getVenueRadioCustomization.url,
-        (_, res, ctx) => res(ctx.json({}))
-      )
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json({ afcEnabled: true }))),
+      rest.get(
+        WifiUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(triBandApCap))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
 
@@ -67,6 +74,7 @@ describe('VenueOverviewTab', () => {
 
   it('switches between tabs', async () => {
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     const wifiWidgets = [
       'TrafficByVolume',
@@ -88,6 +96,156 @@ describe('VenueOverviewTab', () => {
       'TopSwitchModels'
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
+  })
+
+  describe('LowPowerBannerAndModal', () => {
+    it('Should not show when country not support AFC', async () => {
+      mockServer.use(
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json({ afcEnabled: false }))
+        ),
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001050',
+                name: 'AP-T670',
+                model: 'T670'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.queryByTitle('LowPowerBannerAndModal')).not.toBeInTheDocument()
+    })
+
+    it('Should not show when 3R outdoor AP with venue height', async () => {
+      mockServer.use(
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(
+            { radioParams6G: {
+              enableAfc: false,
+              venueHeight: {
+                minFloor: 1,
+                maxFloor: 2
+              }
+            } }
+          ))
+        ),
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001050',
+                name: 'AP-T670',
+                model: 'T670'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.queryByTitle('LowPowerBannerAndModal')).not.toBeInTheDocument()
+    })
+
+    it('Should not show when no 3R AP', async () => {
+      mockServer.use(
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({ radioParams6G: { enableAfc: false } }))
+        ),
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001048',
+                name: 'AP-R550',
+                model: 'R550'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.queryByTitle('LowPowerBannerAndModal')).not.toBeInTheDocument()
+    })
+
+    it('Should not show when 3R indoor AP with AFC disabled', async () => {
+      mockServer.use(
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({ radioParams6G: { enableAfc: false } }))
+        ),
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001049',
+                name: 'AP-R670',
+                model: 'R670'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.queryByTitle('LowPowerBannerAndModal')).not.toBeInTheDocument()
+    })
+
+    it('Should show when 3R outdoor AP exists', async () => {
+      mockServer.use(
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001050',
+                name: 'AP-T670',
+                model: 'T670'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.getByTitle('LowPowerBannerAndModal')).toBeVisible()
+    })
+
+    it('Should show when 3R indoor AP with AFC enabled', async () => {
+      mockServer.use(
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({ radioParams6G: { enableAfc: true } }))
+        ),
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [
+              {
+                serialNumber: '121749001049',
+                name: 'AP-R670',
+                model: 'R670'
+              }
+            ] }))
+        )
+      )
+      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+      expect(screen.getByTitle('LowPowerBannerAndModal')).toBeVisible()
+    })
   })
 
 })
