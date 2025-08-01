@@ -184,7 +184,10 @@ export function ClientAdmissionControlSettings (props: {
                 disabled={!isAllowEdit}>
                 <Space direction='vertical'>
                   <Radio value={true} data-testid='client-admission-control-useVenueSettings'>
-                    <FormattedMessage defaultMessage={'Use inherited settings from venue'} />
+                    <FormattedMessage
+                      // eslint-disable-next-line max-len
+                      defaultMessage={'Use inherited settings from <VenueSingular></VenueSingular>'}
+                    />
                   </Radio>
                   <Radio value={false} data-testid='client-admission-control-customizeSettings'>
                     <FormattedMessage defaultMessage={'Customize settings'} />

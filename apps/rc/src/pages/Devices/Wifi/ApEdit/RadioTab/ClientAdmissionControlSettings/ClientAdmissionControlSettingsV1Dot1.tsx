@@ -203,7 +203,8 @@ export function ClientAdmissionControlSettingsV1Dot1 (props: ApEditItemProps) {
                         ' <venueOrApGroup></venueOrApGroup>'}
                       values={{
                         venueOrApGroup: () => {
-                          return isUseVenueSettingsRef.current ? 'Venue' : 'AP Group'
+                          // eslint-disable-next-line max-len
+                          return isUseVenueSettingsRef.current ? '<venueSingular></venueSingular>' : 'AP Group'
                         }
                       }}
                     />
