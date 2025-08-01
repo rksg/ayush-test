@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from 'react'
 
 import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { FormattedMessage, useIntl }                      from 'react-intl'
+import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
 import { AnchorContext, Loader }               from '@acx-ui/components'
