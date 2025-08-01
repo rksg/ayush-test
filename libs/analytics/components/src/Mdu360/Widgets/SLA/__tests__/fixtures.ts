@@ -49,7 +49,7 @@ export const mockQueryResponse: SLAData = {
     isSynced: true
   },
   channelChangePerDaySLA: {
-    value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
+    value: slaConfig[SLAKeys.channelChangePerDaySLA].defaultValue!,
     isSynced: true
   }
 }

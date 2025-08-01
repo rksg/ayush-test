@@ -23,8 +23,8 @@ const mockDataWithDefaultAndUnsynced: SLAData = {
     value: 20,
     isSynced: true
   },
-  [SLAKeys.channelChangeExperienceSLA]: {
-    value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
+  [SLAKeys.channelChangePerDaySLA]: {
+    value: slaConfig[SLAKeys.channelChangePerDaySLA].defaultValue!,
     isSynced: true
   }
 }
@@ -42,8 +42,8 @@ const syncedMockData: SLAData = {
     value: 20,
     isSynced: true
   },
-  [SLAKeys.channelChangeExperienceSLA]: {
-    value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue!,
+  [SLAKeys.channelChangePerDaySLA]: {
+    value: slaConfig[SLAKeys.channelChangePerDaySLA].defaultValue!,
     isSynced: true
   }
 }
@@ -106,7 +106,7 @@ describe('SLA', () => {
           queryResults={
             {
               data: {
-                [SLAKeys.channelChangeExperienceSLA]:
+                [SLAKeys.channelChangePerDaySLA]:
                   mockDataWithDefaultAndUnsynced.channelChangePerDaySLA
               }
             } as UseQueryResult<SLAData>

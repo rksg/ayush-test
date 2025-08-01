@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { SLAConfig } from './config'
 import SLAStepSlider from './SLAStepSlider'
+import { SLAConfig } from './types'
 
 const mockSlaConfig: SLAConfig = {
   splits: [20, 40, 80, 160, 320],
@@ -9,7 +9,7 @@ const mockSlaConfig: SLAConfig = {
   formatter: (value: number) => value,
   units: { defaultMessage: 'Mbps' },
   title: { defaultMessage: 'Channel Width' },
-  apiMetric: 'channelWidthExperience'
+  apiMetric: 'channelWidth'
 }
 
 const mockOnChange = jest.fn()

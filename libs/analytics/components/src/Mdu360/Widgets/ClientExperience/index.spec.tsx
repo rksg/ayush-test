@@ -36,8 +36,8 @@ const mockSlaQueryResults = {
       value: 20,
       isSynced: true
     },
-    [SLAKeys.channelChangeExperienceSLA]: {
-      value: slaConfig[SLAKeys.channelChangeExperienceSLA].defaultValue,
+    [SLAKeys.channelChangePerDaySLA]: {
+      value: slaConfig[SLAKeys.channelChangePerDaySLA].defaultValue,
       isSynced: true
     }
   }

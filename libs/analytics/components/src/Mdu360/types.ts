@@ -15,5 +15,5 @@ export enum SLAKeys {
   clientThroughputSLA = 'clientThroughputSLA',
   timeToConnectSLA = 'timeToConnectSLA',
   channelWidthSLA = 'channelWidthSLA',
-  channelChangeExperienceSLA = 'channelChangePerDaySLA',
+  channelChangePerDaySLA = 'channelChangePerDaySLA',
 }

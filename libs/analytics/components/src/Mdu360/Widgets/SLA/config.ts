@@ -70,14 +70,14 @@ export const slaConfig: Record<SLAKeys, SLAConfig> = {
     formatter: defaultFormatter,
     units: defineMessage({ defaultMessage: 'Mbps' }),
     title: defineMessage({ defaultMessage: 'Channel Width' }),
-    apiMetric: 'channelWidthExperience'
+    apiMetric: 'channelWidth'
   },
-  [SLAKeys.channelChangeExperienceSLA]: {
+  [SLAKeys.channelChangePerDaySLA]: {
     splits: [0, 10, 25, 50],
     defaultValue: 25,
     formatter: defaultFormatter,
     title: defineMessage({ defaultMessage: 'Channel Change Per Day' }),
-    apiMetric: 'channelChangeExperience'
+    apiMetric: 'channelChangePerDay'
   },
   [SLAKeys.timeToConnectSLA]: {
     splits: kpiConfig.timeToConnect.histogram.splits,
