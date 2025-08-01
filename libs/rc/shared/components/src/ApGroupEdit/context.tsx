@@ -9,9 +9,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApGroupRadioCustomization,
-  ApGroupViewModel, Capabilities,
+  ApGroupViewModel, Capabilities, ExternalAntenna,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher, VenueExtended
+  useConfigTemplateQueryFnSwitcher, VenueApAntennaTypeSettings, VenueExtended
 } from '@acx-ui/rc/utils'
 import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
@@ -26,6 +26,12 @@ export type ApGroupEditContextType = {
 }
 
 export interface ApGroupRadioContext {
+  apiApModels?: { [index: string]: ExternalAntenna }
+  apModels?: { [index: string]: ExternalAntenna }
+  updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
+  apModelAntennaTypes?: { [index: string]: VenueApAntennaTypeSettings }
+  updateAntennaType?: ((data: VenueApAntennaTypeSettings[]) => void)
+
   radioData?: ApGroupRadioCustomization,
   updateWifiRadio?: (() => void)
   discardWifiRadioChanges?: (data?: unknown) => void | Promise<void>

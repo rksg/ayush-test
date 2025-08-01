@@ -47,3 +47,4 @@ describe('ApGroupNetworksTable', () => {
     expect(await screen.findByRole('columnheader', { name: /vlan/i })).toBeVisible()
   })
 })
+
