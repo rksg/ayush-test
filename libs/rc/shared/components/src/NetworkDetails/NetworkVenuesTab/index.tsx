@@ -12,6 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { useEnforcedStatus }           from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
@@ -68,7 +69,6 @@ import {
 } from '@acx-ui/user'
 import { useTableQuery, getOpsApi, transformToCityListOptions, TableResult } from '@acx-ui/utils'
 
-import { useEnforcedStatus }                from '../../configTemplates'
 import {
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction

@@ -3,10 +3,6 @@ import { FormattedMessage } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import {
-  authenticationTypeLabel,
-  AuthenticationType
-}                                                 from '@acx-ui/rc/components'
-import {
   useDeleteFlexAuthenticationProfileMutation,
   useGetFlexAuthenticationProfilesQuery
 }                     from '@acx-ui/rc/services'
@@ -22,7 +18,11 @@ import {
   policyTypeLabelWithCountMapping
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                 from '@acx-ui/types'
+import {
+  authenticationTypeLabel,
+  AuthenticationType
+}                                                 from '@acx-ui/switch/components'
+import { SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
   getUserProfile,

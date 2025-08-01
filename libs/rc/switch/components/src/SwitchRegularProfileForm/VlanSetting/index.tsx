@@ -16,7 +16,7 @@ import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getIntl }                       from '@acx-ui/utils'
 
 import { DefaultVlanDrawer }                 from '../../DefaultVlanDrawer'
-import { VlanSettingDrawer, checkVlanRange } from '../../VlanSettingDrawer'
+import { checkVlanRange, VlanSettingDrawer } from '../../VlanSettingDrawer'
 import { ConfigurationProfileFormContext }   from '../ConfigurationProfileFormContext'
 
 import * as UI from './styledComponents'
