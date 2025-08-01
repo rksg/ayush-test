@@ -6,7 +6,7 @@ import { useMspCustomerListQuery }                   from '@acx-ui/msp/services'
 import { MspEc }                                     from '@acx-ui/msp/utils'
 import { useTableQuery }                             from '@acx-ui/utils'
 
-import { useEcFilters } from '../../utils'
+import { useEcFilters } from '../utils'
 
 
 export const AppliedToTenantDrawer = (props: CommonConfigTemplateDrawerProps) => {

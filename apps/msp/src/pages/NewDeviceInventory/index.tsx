@@ -20,7 +20,8 @@ import {
   useVenueNamesFilterListQuery
 } from '@acx-ui/msp/services'
 import {
-  EcDeviceInventory
+  EcDeviceInventory,
+  HspContext
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -35,8 +36,6 @@ import {
 import { TenantLink, useParams }                            from '@acx-ui/react-router-dom'
 import { Filter }                                           from '@acx-ui/types'
 import { AccountType, exportMessageMapping, useTableQuery } from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),

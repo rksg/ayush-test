@@ -12,17 +12,17 @@ import {
   ConfigTemplatePageUI
 } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                 from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                         from '@acx-ui/msp/utils'
+import { HspContext, MSPUtils, MspEc }             from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }          from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType }      from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 import { AccountTier, AccountType, useTableQuery } from '@acx-ui/utils'
 
-import HspContext                    from '../../../../HspContext'
-import { MAX_APPLICABLE_EC_TENANTS } from '../../constants'
-import { useEcFilters }              from '../../utils'
+import { MAX_APPLICABLE_EC_TENANTS } from '../constants'
 import { CustomerFirmwareReminder }  from '../CustomerFirmwareReminder'
-import { TemplateListContainer }     from '../styledComponents'
+import { useEcFilters }              from '../utils'
+
+import { TemplateListContainer } from './styledComponents'
 
 
 const mspUtils = MSPUtils()

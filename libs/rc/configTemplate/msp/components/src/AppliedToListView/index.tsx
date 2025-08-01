@@ -4,7 +4,7 @@ import { DetailsItemList, useConfigTemplateListContext } from '@acx-ui/main/comp
 import { useMspCustomerListQuery }                       from '@acx-ui/msp/services'
 import { ConfigTemplate }                                from '@acx-ui/rc/utils'
 
-import { useEcFilters } from '../../utils'
+import { useEcFilters } from '../utils'
 
 export function AppliedToTenantList ({ selectedTemplate }: { selectedTemplate: ConfigTemplate }) {
   const { $t } = useIntl()

@@ -5,10 +5,10 @@ import { ConfigTemplate }                              from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                        from '@acx-ui/user'
 import { getIntl, getOpsApi }                          from '@acx-ui/utils'
 
-import { AppliedToTenantList }   from './Templates/AppliedToListView'
-import { AppliedToTenantDrawer } from './Templates/AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }   from './Templates/ApplyTemplateDrawer'
-import { ShowDriftsDrawer }      from './Templates/ShowDriftsDrawer'
+import { AppliedToTenantList }   from '../AppliedToListView'
+import { AppliedToTenantDrawer } from '../AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }   from '../ApplyTemplateDrawer'
+import { ShowDriftsDrawer }      from '../ShowDriftsDrawer'
 
 
 export function ConfigTemplatePage () {
@@ -36,7 +36,7 @@ export function getAppliedToColumn (): ConfigTemplateViewProps['appliedToColumn'
 
       if (count === 0) return 0
 
-      if (!hasAllowedOperations([getOpsApi(MspUrlsInfo.getMspCustomersList)])) return count
+      if (!hasAllowedOperations([getOpsApi(MspUrlsInfo['getMspCustomersList'])])) return count
 
       return <Button type='link' onClick={() => { callback() }}>{count}</Button>
     }

@@ -15,9 +15,9 @@ import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }           
 import { hasAllowedOperations }                                                               from '@acx-ui/user'
 import { getOpsApi }                                                                          from '@acx-ui/utils'
 
-import { MAX_SYNC_EC_TENANTS }      from '../../constants'
-import { useEcFilters }             from '../../utils'
+import { MAX_SYNC_EC_TENANTS }      from '../constants'
 import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
+import { useEcFilters }             from '../utils'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -91,7 +91,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const footer = <div>
-    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.patchDriftReport)]) && <Button
+    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo['patchDriftReport'])]) && <Button
       disabled={selectedInstances.length === 0}
       onClick={onSync}
       type='primary'
