@@ -12,7 +12,11 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  SwitchTable: () => <div data-testid={'SwitchTable'} />,
+  SwitchTable: () => <div data-testid={'SwitchTable'} />
+}))
+
+jest.mock('@acx-ui/switch/components', () => ({
+  ...jest.requireActual('@acx-ui/switch/components'),
   SwitchPortTable: () => <div data-testid={'SwitchPortTable'} />
 }))
 

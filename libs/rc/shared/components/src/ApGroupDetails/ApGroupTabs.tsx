@@ -2,10 +2,10 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
 import { Tabs }                                   from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/config-template/utils'
 import { ApGroupDetailHeader, useConfigTemplate } from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier }             from '@acx-ui/user'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { useApGroupContext } from './ApGroupContextProvider'
 
