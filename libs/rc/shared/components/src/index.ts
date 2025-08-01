@@ -96,7 +96,6 @@ export {
   ClientAdmissionControlTypeEnum
 } from './ClientAdmissionControlForm'
 export { StatusLight } from './StatusLight'
-export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
 export { SwitchInfoWidget } from './SwitchInfoWidget'
 export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus } from './SwitchTable'
