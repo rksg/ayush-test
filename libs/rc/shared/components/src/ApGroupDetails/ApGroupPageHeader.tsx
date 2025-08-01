@@ -4,6 +4,7 @@ import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Button, getDefaultEarliestStart, PageHeader, RangePicker }           from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                                       from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { LocationOutlined }                                                   from '@acx-ui/icons'
 import { ApGroupDetailHeader, useConfigTemplateBreadcrumb, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
@@ -11,7 +12,6 @@ import { WifiScopes }                                                         fr
 import { filterByAccess }                                                     from '@acx-ui/user'
 import { getOpsApi, useDateFilter }                                           from '@acx-ui/utils'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { useApGroupContext }     from './ApGroupContextProvider'
 import ApGroupTabs               from './ApGroupTabs'
