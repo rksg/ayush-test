@@ -11,13 +11,6 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import {
-  authenticationTypeLabel,
-  authFailActionTypeLabel,
-  authTimeoutActionTypeLabel,
-  portControlTypeLabel,
-  PortControl
-} from '@acx-ui/rc/components'
-import {
   useGetFlexAuthenticationProfilesQuery,
   useGetFlexAuthenticationProfileAppliedTargetsQuery
 }                      from '@acx-ui/rc/services'
@@ -30,7 +23,14 @@ import {
   usePolicyListBreadcrumb,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import {
+  authenticationTypeLabel,
+  authFailActionTypeLabel,
+  authTimeoutActionTypeLabel,
+  portControlTypeLabel,
+  PortControl
+} from '@acx-ui/switch/components'
 import { SwitchScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 import { noDataDisplay, useTableQuery }             from '@acx-ui/utils'

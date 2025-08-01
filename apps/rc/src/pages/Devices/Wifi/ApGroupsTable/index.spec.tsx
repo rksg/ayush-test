@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -50,7 +50,7 @@ describe('AP Groups Table', () => {
         (_, res, ctx) => res(ctx.json({ data: venues }))
       ),
       rest.post(
-        WifiUrlsInfo.getApGroupsList.url,
+        WifiRbacUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )

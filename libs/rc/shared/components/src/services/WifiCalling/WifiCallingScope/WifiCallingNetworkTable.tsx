@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useEnforcedStatus }          from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   useGetNetworkTemplateListQuery,
@@ -23,7 +24,6 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { useTableQuery }             from '@acx-ui/utils'
 
-import { useEnforcedStatus }  from '../../../configTemplates'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const defaultPayload = {
