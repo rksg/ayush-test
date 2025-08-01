@@ -14,7 +14,10 @@ import {
   useSwitchPortlistQuery,
   useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
+import {
+  defaultSwitchPayload,
+  isOperationalSwitch
+}                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
   SwitchPortViewModel,
@@ -31,15 +34,15 @@ import {
   SwitchUrlsInfo,
   PoeSchedulerType
 } from '@acx-ui/rc/utils'
-import { useParams }                               from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer, PoeSchedule } from '@acx-ui/switch/components'
-import { SwitchScopes }                            from '@acx-ui/types'
-import { filterByAccess, hasPermission }           from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL,
   usePollingTableQuery, getIntl } from '@acx-ui/utils'
 
-import { SwitchLagDrawer }      from '../SwitchLagDrawer'
-import { defaultSwitchPayload } from '../SwitchTable'
+import { ErrorDisableRecoveryDrawer } from '../ErrorDisableRecoveryDrawer'
+import { PoeSchedule }                from '../PoeSchedule'
+import { SwitchLagDrawer }            from '../SwitchLagDrawer'
 
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'

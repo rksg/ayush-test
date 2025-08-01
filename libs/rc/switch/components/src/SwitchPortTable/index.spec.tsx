@@ -344,7 +344,7 @@ const portlistData_stack = {
   totalCount: 2
 }
 
-jest.mock('./SwitchLagDrawer', () => ({
+jest.mock('../SwitchLagDrawer', () => ({
   SwitchLagDrawer: () => <div data-testid='SwitchLagDrawer' />
 }))
 

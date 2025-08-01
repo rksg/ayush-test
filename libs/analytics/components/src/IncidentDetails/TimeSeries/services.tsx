@@ -64,9 +64,29 @@ export const Api = dataApi.injectEndpoints({
             ...getIncidentTimeSeriesPeriods(payload.incident, payload.buffer),
             path: payload.incident.path,
             granularity: (() => {
-              // For port flap incidents with minGranularity, use it directly (for PT5M case)
-              if (payload.minGranularity && payload.incident.code === 'i-switch-port-flap') {
-                return payload.minGranularity
+              // Array of wired incident codes that should use PT5M granularity for incidents < 24 hours
+              const wiredIncidentCodes = [
+                'i-switch-port-flap',
+                'p-switch-port-congestion',
+                'p-switch-uplink-port-congestion',
+                's-switch-tcp-syn-ddos'
+              ]
+
+              // For wired incidents, apply PT5M granularity for incidents < 24 hours
+              if (wiredIncidentCodes.includes(payload.incident.code)) {
+                if (payload.minGranularity) {
+                  return payload.minGranularity
+                }
+
+                // Calculate incident duration in hours
+                const start = payload.incident.impactedStart || payload.incident.startTime
+                const end = payload.incident.impactedEnd || payload.incident.endTime
+                const durationHours = moment.duration(moment(end).diff(moment(start))).asHours()
+
+                // For incidents less than 24 hours, use PT5M
+                if (durationHours < 24) {
+                  return 'PT5M'
+                }
               }
 
               // For all other cases, use the default calculateGranularity function

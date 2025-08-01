@@ -78,6 +78,11 @@ describe('PortProfileModal', () => {
         <Provider>
           <PortProfileContext.Provider value={{
             portProfileList: [],
+            editMode: false,
+            portProfileSettingValues: {
+              portProfileId: [],
+              models: []
+            },
             setPortProfileSettingValues: jest.fn()
           }}>
             <PortProfileModal

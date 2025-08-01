@@ -96,7 +96,7 @@ export const newDefaultApPayload = {
     'switchName', 'meshRole', 'clientCount', 'apWiredClientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
-    'powerSavingStatus', 'supportSecureBoot'
+    'powerSavingStatus', 'supportSecureBoot', 'poeUnderPowered'
   ]
 }
 
@@ -142,6 +142,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
+  const isFlagUnderPoweredEnabled =
+    useIsSplitOn(Features.FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY)
 
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -368,10 +370,33 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       sorter: true,
       fixed: 'left',
       searchable: searchable,
-      render: (_, row, __, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
-      )
+      render: (_, row, __, highlightFn) => {
+        return (
+          <>
+            <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+              {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
+            {isFlagUnderPoweredEnabled && row?.poeUnderPowered?
+              <Tooltip.Info
+                isFilled
+                placement='right'
+                title={$t({
+                  defaultMessage:
+                  // eslint-disable-next-line max-len
+                  'Insufficient PoE detected. Some capabilities will remain non-operational and Wi-Fi networks may not be broadcast.'
+                })}
+                iconStyle={{
+                  position: 'absolute',
+                  height: '16px',
+                  width: '16px',
+                  marginLeft: '4px',
+                  marginBottom: '-3px',
+                  color: cssStr('--acx-accents-orange-30')
+                }} />
+              :[]
+            }
+          </>
+        )
+      }
     }, {
       key: 'status',
       width: 200,

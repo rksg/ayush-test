@@ -17,7 +17,6 @@ import {
   ClientIsolationForm,
   CliProfileForm,
   CliTemplateForm,
-  ConfigurationProfileForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
@@ -82,6 +81,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
+import {
+  ConfigurationProfileForm
+} from '@acx-ui/switch/components'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
 import { AccountTier, getOpsApi }                      from '@acx-ui/utils'
