@@ -190,7 +190,6 @@ export function ClientAdmissionControlSettings (props: {
                     }
                   </Radio>
                   <Radio value={false} data-testid='client-admission-control-customizeSettings'>
-                    <FormattedMessage defaultMessage={'Customize settings'} />
                     {$t({ defaultMessage: 'Customize settings' })}
                   </Radio>
                 </Space>
