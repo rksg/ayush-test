@@ -186,7 +186,7 @@ export function ClientAdmissionControlSettings (props: {
                   <Radio value={true} data-testid='client-admission-control-useVenueSettings'>
                     {
                       // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'Use inherited settings from <venueSingular></venueSingular>' })
+                      $t({ defaultMessage: 'Use inherited settings from <VenueSingular></VenueSingular>' })
                     }
                   </Radio>
                   <Radio value={false} data-testid='client-admission-control-customizeSettings'>
