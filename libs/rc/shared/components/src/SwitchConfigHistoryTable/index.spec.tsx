@@ -18,7 +18,7 @@ import {
 
 import { SwitchConfigHistoryTable } from '.'
 
-jest.mock('../CodeMirrorWidget', () => {
+jest.mock('@acx-ui/rc/common/components', () => {
   const { forwardRef } = jest.requireActual('react')
   return {
     CodeMirrorWidget: forwardRef(() => <div data-testid='CodeMirrorWidget'></div>)

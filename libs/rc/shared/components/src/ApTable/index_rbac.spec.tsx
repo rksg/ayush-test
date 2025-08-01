@@ -57,7 +57,7 @@ type MockDrawerProps = React.PropsWithChildren<{
   importRequest: (formData: FormData, values: Object) => void
   onClose: () => void
 }>
-jest.mock('../ImportFileDrawer', () => ({
+jest.mock('@acx-ui/rc/common/components', () => ({
   ...jest.requireActual('../ImportFileDrawer'),
   ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
     visible && <div data-testid={'ImportFileDrawer'}>

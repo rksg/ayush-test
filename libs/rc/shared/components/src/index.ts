@@ -25,7 +25,6 @@ export { ClientDualTable } from './ClientDualTable'
 export { useRbacClientTableColumns } from './ConnectedClientsTable/RbacClientsTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidgetV2 } from './ClientsWidget'
-export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultRbacClientPayload,
@@ -65,7 +64,6 @@ export {
   GlobalSearchHistoricalClientsTable,
   defaultHistoricalClientPayload
 } from './HistoricalClientsTable'
-export { ImportFileDrawer, CsvSize, ImportFileDrawerType } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortPoeSettings } from './LanPortPoeSettings'
 export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'

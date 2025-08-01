@@ -27,8 +27,10 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MoreVertical, Plus }     from '@acx-ui/icons-new'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { MoreVertical, Plus }                              from '@acx-ui/icons-new'
+import { CodeMirrorWidget }                                from '@acx-ui/rc/common/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliFamilyModelsQuery,
@@ -47,8 +49,6 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { CodeMirrorWidget }                                from '../CodeMirrorWidget'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 
 import { CliVariableModal } from './CliVariableModal'
 import {
