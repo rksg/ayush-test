@@ -97,7 +97,8 @@ import {
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
   WifiNetwork,
-  ApJwtToken
+  ApJwtToken,
+  ApLanPortTypeEnum
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                 from '@acx-ui/store'
 import type { Filter, MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -1169,7 +1170,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
-              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId'],
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId', 'untagId'],
               pageSize: 1000
             })
           }
@@ -1206,6 +1207,33 @@ export const apApi = baseApApi.injectEndpoints({
                   targetPort.authRadiusId = eth.authRadiusId
                   targetPort.accountingRadiusId = eth.accountingRadiusId
                 }
+              }
+            }
+
+            const accessPorts = apLanPorts.lanPorts?.filter(port => port.type === ApLanPortTypeEnum.ACCESS) ?? []
+
+            apLanPorts.globalAccessVlanIdEnabled = false
+
+            if (accessPorts.length > 1) {
+              const allPortsOverwritten = accessPorts.every(port => {
+                const ethProfile = apActivateEths?.find(eth => {
+                  const portActivation = eth.apActivations?.find(ap =>
+                    ap.apSerialNumber === params.serialNumber &&
+                    ap.portId?.toString() === port.portId
+                  )
+                  return !!portActivation
+                })
+
+                if (ethProfile) {
+                  return port.untagId !== ethProfile.untagId
+                }
+
+                return false
+              })
+
+              if (allPortsOverwritten) {
+                apLanPorts.globalAccessVlanIdEnabled = true
+                apLanPorts.globalAccessVlanId = accessPorts[0].untagId
               }
             }
           }
