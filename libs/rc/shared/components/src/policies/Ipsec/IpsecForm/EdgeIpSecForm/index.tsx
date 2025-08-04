@@ -6,8 +6,9 @@ import {
   getIpSecEspAlgorithmOptions, getIpSecIkeAlgorithmOptions
 } from '@acx-ui/edge/components'
 import {
-  toIpSecEspAlgorithmOptionValue, toIpSecEspProposalData,
-  toIpSecIkeAlgorithmOptionValue, toIpSecIkeProposalData
+  toIpSecEspProposalData,
+  toIpSecIkeProposalData,
+  Ipsec
 } from '@acx-ui/rc/utils'
 
 import { AuthenticationFormItem } from '../AuthenticationFormItem'
@@ -15,8 +16,9 @@ import { AuthenticationFormItem } from '../AuthenticationFormItem'
 import { DeadPeerDetectionDelayFormItem } from './DeadPeerDetectionDelayFormItem'
 import { RekeyTimeUnitFormItem }          from './RekeyTimeUnitFormItem'
 
-export const VxLanSettingForm = () => {
+export const VxLanSettingForm = (props: { editData?: Ipsec }) => {
   const { $t } = useIntl()
+  const { editData } = props
   const form = Form.useFormInstance()
 
   const ikeAlgorithmOptions = getIpSecIkeAlgorithmOptions()
@@ -24,6 +26,7 @@ export const VxLanSettingForm = () => {
 
   const handleEspAlgorithmChange = (value: string) => {
     const espProposalData = toIpSecEspProposalData(value)
+    // when the value is valid, update into corresponding fields
     if (espProposalData) {
       form.setFieldValue(['espSecurityAssociation'], espProposalData)
     }
@@ -31,6 +34,7 @@ export const VxLanSettingForm = () => {
 
   const handleIkeAlgorithmChange = (value: string) => {
     const ikeProposalData = toIpSecIkeProposalData(value)
+    // when the value is valid, update into corresponding fields
     if (ikeProposalData) {
       form.setFieldValue(['ikeSecurityAssociation'], ikeProposalData)
     }
@@ -46,37 +50,24 @@ export const VxLanSettingForm = () => {
       <Subtitle level={5}>
         { $t({ defaultMessage: 'Security Association' }) }
       </Subtitle>
+
+      <Form.Item
+        name={['ikeAlgorithmCombination']}
+        label={$t({ defaultMessage: 'IKE Algorithm Combination' })}
+        // eslint-disable-next-line max-len
+        rules={[{ required: true, message: $t({ defaultMessage: 'Please select IKE Algorithm Combination' }) }]}
+        children={
+          <Select
+            onChange={handleIkeAlgorithmChange}
+            options={ikeAlgorithmOptions}
+          />
+        }
+      />
       <Form.Item
         name={['ikeSecurityAssociation']}
         noStyle
         children={<></>}
       />
-      <Form.Item
-        dependencies={['ikeSecurityAssociation', 'ikeProposals']}
-        noStyle
-      >
-        {({ getFieldsValue }) => {
-          const ipsecData = getFieldsValue(true)
-          const value = toIpSecIkeAlgorithmOptionValue(ipsecData)
-
-          return <Form.Item
-            label={$t({ defaultMessage: 'IKE Algorithm Combination' })}
-            rules={[{ required: true }]}
-            children={
-              <Select
-                value={value}
-                onChange={handleIkeAlgorithmChange}
-                children={
-                  ikeAlgorithmOptions.map((option) =>
-                    <Select.Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Select.Option>)
-                }
-              />
-            }
-          />
-        }}
-      </Form.Item>
       <RekeyTimeUnitFormItem
         title={$t({ defaultMessage: 'IKE Re-key Time' })}
         timeFieldName='ikeRekeyTime'
@@ -84,36 +75,22 @@ export const VxLanSettingForm = () => {
       />
 
       <Form.Item
+        name='espAlgorithmCombination'
+        label={$t({ defaultMessage: 'ESP Algorithm Combination' })}
+        // eslint-disable-next-line max-len
+        rules={[{ required: true, message: $t({ defaultMessage: 'Please select ESP Algorithm Combination' }) }]}
+        children={
+          <Select
+            onChange={handleEspAlgorithmChange}
+            options={espAlgorithmOptions}
+          />
+        }
+      />
+      <Form.Item
         name={['espSecurityAssociation']}
         noStyle
         children={<></>}
       />
-      <Form.Item
-        dependencies={['espSecurityAssociation', 'espProposals']}
-        noStyle
-      >
-        {({ getFieldsValue }) => {
-          const ipsecData = getFieldsValue(true)
-          const value = toIpSecEspAlgorithmOptionValue(ipsecData)
-
-          return <Form.Item
-            label={$t({ defaultMessage: 'ESP Algorithm Combination' })}
-            rules={[{ required: true }]}
-            children={
-              <Select
-                value={value}
-                onChange={handleEspAlgorithmChange}
-                children={
-                  espAlgorithmOptions.map((option) =>
-                    <Select.Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Select.Option>)
-                }
-              />
-            }
-          />
-        }}
-      </Form.Item>
       <RekeyTimeUnitFormItem
         title={$t({ defaultMessage: 'ESP Re-key Time' })}
         timeFieldName='espRekeyTime'
@@ -123,7 +100,7 @@ export const VxLanSettingForm = () => {
   </Row>
   <Row>
     <Col span={24}>
-      <DeadPeerDetectionDelayFormItem />
+      <DeadPeerDetectionDelayFormItem editData={editData} />
     </Col>
   </Row>
   </>

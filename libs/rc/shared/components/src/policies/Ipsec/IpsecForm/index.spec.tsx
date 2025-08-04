@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { ipSecApi }                                                       from '@acx-ui/rc/services'
-import { IpsecUrls }                                                      from '@acx-ui/rc/utils'
-import { Path }                                                           from '@acx-ui/react-router-dom'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { ipSecApi }                                                                                    from '@acx-ui/rc/services'
+import { IpsecUrls }                                                                                   from '@acx-ui/rc/utils'
+import { Path }                                                                                        from '@acx-ui/react-router-dom'
+import { Provider, store }                                                                             from '@acx-ui/store'
+import { MockSelect, MockSelectProps, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockIpSecDetail, mockIpSecTable } from './__tests__/fixtures'
 
@@ -28,16 +28,7 @@ jest.mock('react-router-dom', () => ({
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
-  // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) => {
-    delete otherProps.dropdownClassName
-    return (<select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
-    </select>)
-  }
+  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>

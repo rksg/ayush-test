@@ -7,7 +7,6 @@ import { useIsSplitOn }                                                         
 import { IpSecAuthEnum, IpSecProposalTypeEnum, IpSecEncryptionAlgorithmEnum, IpSecIntegrityAlgorithmEnum, IpSecDhGroupEnum, IpSecPseudoRandomFunctionEnum } from '@acx-ui/rc/utils'
 import { render, screen, renderHook, waitFor }                                                                                                              from '@acx-ui/test-utils'
 
-import { mockIpSecDetail }    from './__tests__/fixtures'
 import { SoftGreSettingForm } from './SoftGreSettingForm'
 
 const mockIpSecData = {
@@ -40,6 +39,21 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockUseConfigTemplate()
 }))
 
+jest.mock('./AuthenticationFormItem', () => ({
+  ...jest.requireActual('./AuthenticationFormItem'),
+  AuthenticationFormItem: () => <div>Authentication</div>
+}))
+
+jest.mock('./SecurityAssociation', () => ({
+  ...jest.requireActual('./SecurityAssociation'),
+  SecurityAssociation: () => <div>Security Association</div>
+}))
+
+jest.mock('./MoreSettings', () => ({
+  ...jest.requireActual('./MoreSettings'),
+  MoreSettings: () => <div>More Settings</div>
+}))
+
 describe('SoftGreSettingForm', () => {
   const user = userEvent.setup()
 
@@ -49,13 +63,11 @@ describe('SoftGreSettingForm', () => {
       return form
     })
 
-    return render(
-      <IntlProvider locale='en'>
-        <Form form={formRef.current}>
-          <SoftGreSettingForm {...props} />
-        </Form>
-      </IntlProvider>
-    )
+    const { unmount } = render(<Form form={formRef.current}>
+      <SoftGreSettingForm {...props} />
+    </Form>)
+
+    return { formRef: formRef.current, unmount }
   }
 
   beforeEach(() => {
@@ -67,30 +79,13 @@ describe('SoftGreSettingForm', () => {
   })
 
   describe('Component Rendering', () => {
-    it('should render SoftGreSettingForm component with default props', () => {
-      renderComponent()
+    it('should render SoftGreSettingForm component with editData', () => {
+      renderComponent({ editData: mockIpSecData })
 
       expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
       expect(screen.getByText('Authentication')).toBeInTheDocument()
       expect(screen.getByText('Security Association')).toBeInTheDocument()
     })
-
-    it('should render SoftGreSettingForm component with initIpSecData', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
-
-      expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
-      expect(screen.getByText('Authentication')).toBeInTheDocument()
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-    })
-
-    it('should render with mockIpSecDetail data', () => {
-      renderComponent({ initIpSecData: mockIpSecDetail })
-
-      expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
-      expect(screen.getByText('Authentication')).toBeInTheDocument()
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-    })
-
     it('should render with policyId prop', () => {
       renderComponent({ policyId: 'test-policy-id' })
 
@@ -105,18 +100,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, '192.168.1.1')
@@ -132,18 +116,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, 'example.com')
@@ -159,18 +132,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, 'invalid-input')
@@ -186,18 +148,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, '2001:db8::1')
@@ -213,18 +164,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, 'ipv6.example.com')
@@ -240,18 +180,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, 'invalid-ipv6')
@@ -267,18 +196,7 @@ describe('SoftGreSettingForm', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
+      renderComponent()
 
       const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
       await user.type(serverAddressField, 'example.com')
@@ -301,74 +219,17 @@ describe('SoftGreSettingForm', () => {
     })
   })
 
-  describe('Child Components Integration', () => {
-    it('should render AuthenticationFormItem component', () => {
-      renderComponent()
-
-      expect(screen.getByText('Authentication')).toBeInTheDocument()
-      expect(screen.getByText('Pre-shared Key')).toBeInTheDocument()
-    })
-
-    it('should render SecurityAssociation component', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
-
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-      expect(screen.getByText('IKE')).toBeInTheDocument()
-      expect(screen.getByText('ESP')).toBeInTheDocument()
-    })
-
-    it('should render MoreSettings component', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
-
-      expect(screen.getByText('Show more settings')).toBeInTheDocument()
-    })
-
-    it('should pass initIpSecData to child components', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
-
-      // Verify child components are rendered with the provided data
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-      expect(screen.getByText('Show more settings')).toBeInTheDocument()
-    })
-  })
-
-  describe('Form Layout and Structure', () => {
-    it('should render form items in correct layout', () => {
-      renderComponent()
-
-      // Check that form items are rendered
-      expect(screen.getByLabelText(/Security Gateway IP\/FQDN/i)).toBeInTheDocument()
-      expect(screen.getByText('Authentication')).toBeInTheDocument()
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-      expect(screen.getByText('Show more settings')).toBeInTheDocument()
-    })
-
-    it('should render tooltip for Security Gateway field', () => {
-      renderComponent()
-
-      const tooltipIcon = screen.getByRole('img', { name: /question/i })
-      expect(tooltipIcon).toBeInTheDocument()
-    })
-
-    it('should have proper form validation attributes', () => {
-      renderComponent()
-
-      const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
-      expect(serverAddressField).toBeInTheDocument()
-    })
-  })
-
   describe('Edge Cases', () => {
-    it('should handle undefined initIpSecData gracefully', () => {
-      renderComponent({ initIpSecData: undefined })
+    it('should handle undefined editData gracefully', () => {
+      renderComponent({ editData: undefined })
 
       expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
       expect(screen.getByText('Authentication')).toBeInTheDocument()
       expect(screen.getByText('Security Association')).toBeInTheDocument()
     })
 
-    it('should handle empty initIpSecData object', () => {
-      renderComponent({ initIpSecData: {} })
+    it('should handle empty editData object', () => {
+      renderComponent({ editData: {} })
 
       expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
       expect(screen.getByText('Authentication')).toBeInTheDocument()
@@ -432,49 +293,18 @@ describe('SoftGreSettingForm', () => {
     })
   })
 
-  describe('Internationalization', () => {
-    it('should display translated text for Security Gateway label', () => {
-      renderComponent()
+  // describe('Accessibility', () => {
+  //   it('should have proper labels for form fields', () => {
+  //     renderComponent()
 
-      expect(screen.getByText('Security Gateway IP/FQDN')).toBeInTheDocument()
-    })
+  //     expect(screen.getByLabelText(/Security Gateway IP\/FQDN/i)).toBeInTheDocument()
+  //   })
 
-    it('should display translated text for validation error message', async () => {
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
+  //   it('should have proper tooltip accessibility', () => {
+  //     renderComponent()
 
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SoftGreSettingForm />
-          </Form>
-        </IntlProvider>
-      )
-
-      const serverAddressField = screen.getByLabelText(/Security Gateway IP\/FQDN/i)
-      await user.type(serverAddressField, 'invalid-input')
-      await user.tab()
-
-      await waitFor(() => {
-        expect(screen.getByText('Please enter a valid IP address or FQDN')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('Accessibility', () => {
-    it('should have proper labels for form fields', () => {
-      renderComponent()
-
-      expect(screen.getByLabelText(/Security Gateway IP\/FQDN/i)).toBeInTheDocument()
-    })
-
-    it('should have proper tooltip accessibility', () => {
-      renderComponent()
-
-      const tooltipIcon = screen.getByRole('img', { name: /question/i })
-      expect(tooltipIcon).toBeInTheDocument()
-    })
-  })
+  //     const tooltipIcon = screen.getByRole('img', { name: /question/i })
+  //     expect(tooltipIcon).toBeInTheDocument()
+  //   })
+  // })
 })

@@ -3,7 +3,7 @@ import { defineMessage } from 'react-intl'
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  IpSecAdvancedOptionEnum, IpSecFailoverModeEnum,
+  IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecFailoverModeEnum,
   IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum,
   IpSecRetryDurationEnum } from '../../models/IpSecEnum'
 
@@ -55,6 +55,16 @@ export const defaultIpsecFormData = {
   deadPeerDetectionDelayEnabledCheckbox: true, // UI only
   nattKeepAliveIntervalEnabledCheckbox: true, // UI only
   failoverRetryPeriodIsForever: true
+}
+
+export const getIpsecAuthTypeOptions = () => {
+  const { $t } = getIntl()
+
+  return [
+    { label: $t({ defaultMessage: 'Pre-shared Key' }), value: IpSecAuthEnum.PSK }
+    // hide until certificates are supported
+    // { label: $t({ defaultMessage: 'Certificate' }), value: IpSecAuthEnum.CERTIFICATE }
+  ]
 }
 
 export  const getRekeyTimeUnitOptions = () => {

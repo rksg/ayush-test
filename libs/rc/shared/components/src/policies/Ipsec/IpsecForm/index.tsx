@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Col, Form, Row }                      from 'antd'
 import { useIntl }                             from 'react-intl'
@@ -9,6 +9,7 @@ import { Features }                                                             
 import { useCreateIpsecMutation, useGetIpsecByIdQuery, useUpdateIpsecMutation } from '@acx-ui/rc/services'
 import {
   defaultIpsecFormData,
+  getIpsecAuthTypeOptions,
   getPolicyRoutePath,
   Ipsec,
   IpSecFormData,
@@ -19,6 +20,8 @@ import {
   PolicyOperation,
   PolicyType,
   redirectPreviousPage,
+  toIpSecEspAlgorithmOptionValue,
+  toIpSecIkeAlgorithmOptionValue,
   useIsEdgeFeatureReady,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -53,18 +56,34 @@ export const IpsecForm = (props: IpsecFormProps) => {
     data: dataFromServer,
     isLoading, isFetching
   } = useGetIpsecByIdQuery({ params }, { skip: !editMode })
-  const [initialIpSpecData, setInitialIpSpecData] = useState<Ipsec | undefined>(undefined)
 
   useEffect(() => {
     if (dataFromServer && editMode) {
+      // edit
       form.setFieldsValue({
         ...dataFromServer
       })
-      setInitialIpSpecData(dataFromServer)
+
+      if (isEdgeVxLanIpsecReady) {
+        const ikeAlgorithmCombination = toIpSecIkeAlgorithmOptionValue(dataFromServer)
+        const espAlgorithmCombination = toIpSecEspAlgorithmOptionValue(dataFromServer)
+
+        form.setFieldsValue({
+          ikeAlgorithmCombination: ikeAlgorithmCombination,
+          espAlgorithmCombination: espAlgorithmCombination
+        })
+      }
     } else {
+      // create
+      const authOptions = getIpsecAuthTypeOptions()
+
       form.setFieldsValue({
         ...defaultIpsecFormData,
-        ...(isEdgeVxLanIpsecReady ? { tunnelUsageType: IpSecTunnelUsageTypeEnum.VXLAN_GPE }: {})
+        ...(isEdgeVxLanIpsecReady ? {
+          // default to PSK if there is only one auth type
+          authType: authOptions.length === 1 ? authOptions[0].value : undefined,
+          tunnelUsageType: IpSecTunnelUsageTypeEnum.VXLAN_GPE
+        }: {})
       })
     }
   }, [dataFromServer, editMode, form])
@@ -106,9 +125,6 @@ export const IpsecForm = (props: IpsecFormProps) => {
           data.advancedOption.failoverRetryPeriod = 0
       }
 
-      // eslint-disable-next-line no-console
-      console.log('data', JSON.stringify(data))
-
       if (editMode) {
         await updateIpsec({ params, payload: data }).unwrap()
       } else {
@@ -143,7 +159,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
           <Row gutter={20}>
             <Col span={10}>
               <IpsecSettingForm
-                editData={initialIpSpecData}
+                editData={dataFromServer}
                 isLoading={isLoading || isFetching}
               />
             </Col>

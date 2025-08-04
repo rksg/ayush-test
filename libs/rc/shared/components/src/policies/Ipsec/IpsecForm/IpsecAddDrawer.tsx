@@ -19,7 +19,6 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpsecSettingForm } from './IpsecSettingForm'
 
-
 interface IpsecAddDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void

@@ -15,14 +15,14 @@ import { SecurityAssociation }    from './SecurityAssociation'
 
 interface SoftGreSettingFormProps {
   policyId?: string
-  initIpSecData?: Ipsec
+  editData?: Ipsec
 }
 export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const { $t } = useIntl()
   const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
-  const { initIpSecData } = props
+  const { editData } = props
 
   const securityGatewayValidator = (value: string)=>{
     if (isApIpModeFFEnabled && !isTemplate) {
@@ -55,8 +55,8 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   </Row>
   <Row>
     <Col span={24}>
-      <SecurityAssociation initIpSecData={initIpSecData} />
-      <MoreSettings initIpSecData={initIpSecData} />
+      <SecurityAssociation editData={editData} />
+      <MoreSettings editData={editData} />
     </Col>
   </Row>
   </>

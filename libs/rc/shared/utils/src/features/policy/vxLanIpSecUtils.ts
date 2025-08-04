@@ -44,11 +44,11 @@ export const toIpSecEspProposalData = (value: string) => {
 
 export const toIpSecEspAlgorithmOptionValue = (data: Ipsec) => {
   const espData = data.espSecurityAssociation
-  const espProposal = espData?.espProposals[0]
+  const espProposal = espData?.espProposals?.[0]
   const proposalTxt = `${espProposal?.encAlg}-${espProposal?.authAlg}-${espProposal?.dhGroup}`
 
   if (espData?.espProposalType === IpSecProposalTypeEnum.SPECIFIC
-    && espData.espProposals.length === 1
+    && espData?.espProposals?.length === 1
     && ['AES128-SHA1-MODP2048', 'AES256-SHA384-ECP384'].includes(proposalTxt)
   ) {
     return proposalTxt

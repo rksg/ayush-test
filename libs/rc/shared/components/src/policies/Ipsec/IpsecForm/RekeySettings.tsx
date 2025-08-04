@@ -2,22 +2,23 @@ import { useEffect, useState } from 'react'
 
 import { Form, InputNumber, Space }      from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { get }                           from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import { GridCol, GridRow, Tooltip, Select } from '@acx-ui/components'
-import { Ipsec, IpSecRekeyTimeUnitEnum }     from '@acx-ui/rc/utils'
+import { defaultIpsecFormData, Ipsec }       from '@acx-ui/rc/utils'
 
 import { messageMapping }          from './messageMapping'
 import { getRekeyTimeUnitOptions } from './utils'
 
 
 interface ReKeySettingsFormProps {
-  initIpSecData?: Ipsec,
+  editData?: Ipsec,
 }
 
 export default function RekeySettings (props: ReKeySettingsFormProps) {
   const { $t } = useIntl()
-  const { initIpSecData } = props
+  const { editData } = props
 
   const form = Form.useFormInstance()
   const [loadReKeySettings, setLoadReKeySettings] = useState(true)
@@ -31,15 +32,15 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
     const espRekeyTimeEnabledChk = form.getFieldValue('espRekeyTimeEnabledCheckbox')
     setEspRekeyTimeEnabled(espRekeyTimeEnabledChk)
 
-    if (loadReKeySettings && initIpSecData) {
-      if (initIpSecData?.ikeRekeyTime || initIpSecData?.ikeRekeyTime !== 0) {
+    if (loadReKeySettings && editData) {
+      if (editData?.ikeRekeyTime || editData?.ikeRekeyTime !== 0) {
         setIkeRekeyTimeEnabled(true)
         form.setFieldValue('ikeRekeyTimeEnabledCheckbox', true)
       } else {
         setIkeRekeyTimeEnabled(false)
         form.setFieldValue('ikeRekeyTimeEnabledCheckbox', false)
       }
-      if (initIpSecData?.espRekeyTime || initIpSecData?.espRekeyTime !== 0) {
+      if (editData?.espRekeyTime || editData?.espRekeyTime !== 0) {
         setEspRekeyTimeEnabled(true)
         form.setFieldValue('espRekeyTimeEnabledCheckbox', true)
       } else {
@@ -48,7 +49,7 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
       }
     }
     setLoadReKeySettings(false)
-  }, [initIpSecData])
+  }, [editData])
 
   const handleIkeRekeyTimeChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -57,8 +58,9 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
     if (isChecked) {
       let originalValue = form.getFieldValue(['ikeRekeyTime'])
       if (originalValue === 0) {
-        form.setFieldValue(['ikeRekeyTime'], 4) // Set default value when checkbox is checked
-        form.setFieldValue(['ikeRekeyTimeUnit'], IpSecRekeyTimeUnitEnum.HOUR)
+        // Set default value when checkbox is checked
+        form.setFieldValue(['ikeRekeyTime'], get(defaultIpsecFormData, 'ikeRekeyTime'))
+        form.setFieldValue(['ikeRekeyTimeUnit'], get(defaultIpsecFormData, 'ikeRekeyTimeUnit'))
       }
     }
   }
@@ -70,8 +72,9 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
     if (isChecked) {
       let originalValue = form.getFieldValue(['espRekeyTime'])
       if (originalValue === 0) {
-        form.setFieldValue(['espRekeyTime'], 1) // Set default value when checkbox is checked
-        form.setFieldValue(['espRekeyTimeUnit'], IpSecRekeyTimeUnitEnum.HOUR)
+        // Set default value when checkbox is checked
+        form.setFieldValue(['espRekeyTime'], get(defaultIpsecFormData, 'espRekeyTime'))
+        form.setFieldValue(['espRekeyTimeUnit'], get(defaultIpsecFormData, 'espRekeyTimeUnit'))
       }
     }
   }

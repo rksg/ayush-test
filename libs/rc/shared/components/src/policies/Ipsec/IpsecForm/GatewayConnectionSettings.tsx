@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { Form, InputNumber, Space, Switch } from 'antd'
 import Checkbox, { CheckboxChangeEvent }    from 'antd/lib/checkbox'
+import { get }                              from 'lodash'
 import { useIntl }                          from 'react-intl'
 
-import { GridCol, GridRow, Subtitle, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }          from '@acx-ui/icons'
-import { Ipsec, IpSecAdvancedOptionEnum }      from '@acx-ui/rc/utils'
-import { validationMessages }                  from '@acx-ui/utils'
+import { GridCol, GridRow, Subtitle, Tooltip }                  from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                           from '@acx-ui/icons'
+import { Ipsec, IpSecAdvancedOptionEnum, defaultIpsecFormData } from '@acx-ui/rc/utils'
+import { validationMessages }                                   from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer }                        from '../../../ApCompatibility/ApCompatibilityDrawer'
 import { ApCompatibilityToolTip }                       from '../../../ApCompatibility/ApCompatibilityToolTip'
@@ -17,14 +18,12 @@ import { messageMapping } from './messageMapping'
 
 
 interface GatewayConnectionSettingsFormProps {
-  initIpSecData?: Ipsec,
-  // loadGwSettings: boolean,
-  // setLoadGwSettings: (state: boolean) => void
+  editData?: Ipsec,
 }
 
 export default function GatewayConnectionSettings (props: GatewayConnectionSettingsFormProps) {
   const { $t } = useIntl()
-  const { initIpSecData/*, loadGwSettings, setLoadGwSettings */ } = props
+  const { editData } = props
 
   const form = Form.useFormInstance()
   const [loadGwSettings, setLoadGwSettings] = useState(true)
@@ -55,39 +54,39 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
 
     const keepAliveIntvalEnabledChk = form.getFieldValue('nattKeepAliveIntervalEnabledCheckbox')
     setNattKeepAliveIntervalEnabled(keepAliveIntvalEnabledChk)
-    if (loadGwSettings && initIpSecData) {
-      if (initIpSecData.advancedOption?.ipcompEnable) {
-        setIpCompressionEnabled(initIpSecData.advancedOption?.ipcompEnable)
+    if (loadGwSettings && editData) {
+      if (editData.advancedOption?.ipcompEnable) {
+        setIpCompressionEnabled(editData.advancedOption?.ipcompEnable)
       }
-      if (initIpSecData.advancedOption?.enforceNatt) {
-        setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
+      if (editData.advancedOption?.enforceNatt) {
+        setForceNATTEnabled(editData.advancedOption?.enforceNatt)
       }
-      if (initIpSecData.advancedOption?.retryLimit
-          || initIpSecData.advancedOption?.retryLimit !== 0) {
+      if (editData.advancedOption?.retryLimit
+          || editData.advancedOption?.retryLimit !== 0) {
         setRetryLimitEnabled(true)
         form.setFieldValue('retryLimitEnabledCheckbox', true)
       } else {
         setRetryLimitEnabled(false)
         form.setFieldValue('retryLimitEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.replayWindow
-        || initIpSecData.advancedOption?.replayWindow !== 0) {
+      if (editData.advancedOption?.replayWindow
+        || editData.advancedOption?.replayWindow !== 0) {
         setEspReplayWindowEnabled(true)
         form.setFieldValue('espReplayWindowEnabledCheckbox', true)
       } else {
         setEspReplayWindowEnabled(false)
         form.setFieldValue('espReplayWindowEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.dpdDelay
-        || initIpSecData.advancedOption?.dpdDelay !== 0) {
+      if (editData.advancedOption?.dpdDelay
+        || editData.advancedOption?.dpdDelay !== 0) {
         setDeadPeerDetectionDelayEnabled(true)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       } else {
         setDeadPeerDetectionDelayEnabled(false)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.keepAliveInterval
-        || initIpSecData.advancedOption?.keepAliveInterval !== 0) {
+      if (editData.advancedOption?.keepAliveInterval
+        || editData.advancedOption?.keepAliveInterval !== 0) {
         setNattKeepAliveIntervalEnabled(true)
         form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', true)
       } else {
@@ -97,7 +96,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
 
     }
     setLoadGwSettings(false)
-  }, [initIpSecData])
+  }, [editData])
 
   const onForceNattChange = (value: boolean) => {
     if (value) {
@@ -133,7 +132,9 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     if (isChecked) {
       let originalValue = form.getFieldValue(['advancedOption','retryLimit'])
       if (originalValue === 0) {
-        form.setFieldValue(['advancedOption','retryLimit'], 5) // Set default value when checkbox is checked
+        // Set default value when checkbox is checked
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['advancedOption','retryLimit'], get(defaultIpsecFormData, 'advancedOption.retryLimit'))
       }
     }
   }
@@ -145,7 +146,9 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     if (isChecked) {
       let originalValue = form.getFieldValue(['advancedOption','replayWindow'])
       if (originalValue === 0) {
-        form.setFieldValue(['advancedOption','replayWindow'], 32) // Set default value when checkbox is checked
+        // Set default value when checkbox is checked
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['advancedOption','replayWindow'], get(defaultIpsecFormData, 'advancedOption.replayWindow'))
       }
     }
   }
@@ -157,7 +160,9 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     if (isChecked) {
       let originalValue = form.getFieldValue(['advancedOption', 'dpdDelay'])
       if (originalValue === 0) {
-        form.setFieldValue(['advancedOption', 'dpdDelay'], 30) // Set default value when checkbox is checked
+        // Set default value when checkbox is checked
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['advancedOption', 'dpdDelay'], get(defaultIpsecFormData, 'advancedOption.dpdDelay'))
       }
     }
   }
@@ -169,7 +174,9 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     if (isChecked) {
       let originalValue = form.getFieldValue(['advancedOption','keepAliveInterval'])
       if (originalValue === 0) {
-        form.setFieldValue(['advancedOption','keepAliveInterval'], 20) // Set default value when checkbox is checked
+        // Set default value when checkbox is checked
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['advancedOption','keepAliveInterval'], get(defaultIpsecFormData, 'advancedOption.keepAliveInterval'))
       }
     }
   }
@@ -196,7 +203,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item name={['advancedOption','dhcpOpt43Subcode']}
             style={{ marginTop: '-4px' }}
-            // initialValue={7}
             rules={[
               { type: 'number', min: 3, max: 243 },
               { validator: (_, value) => dhcp43ValueValidator(value) }
@@ -235,7 +241,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {retryLimitEnabled &&
             <Form.Item
-              // initialValue={false}
               style={{ marginTop: '-27px' }}
               children={
                 <Space>
@@ -243,7 +248,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-retryLimit'
                     name={['advancedOption','retryLimit']}
-                    // initialValue={5}
                     children={
                       <InputNumber min={1} max={16} />
                     } />
@@ -260,8 +264,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
-            // initialValue={false}
-            // style={{ lineHeight: '50px' }}
             children={
               <>
                 <Checkbox data-testid='espReplayWindowEnabled'
@@ -289,7 +291,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-replayWindow'
                     name={['advancedOption','replayWindow']}
-                    // initialValue={32}
                     children={
                       <InputNumber min={1} max={32} />
                     } />
@@ -337,7 +338,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
-            // initialValue={false}
             style={{ marginTop: '5px' }}
             children={
               <>
@@ -366,7 +366,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    // initialValue={30}
                     children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
@@ -390,7 +389,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 />
               </>
             }
-            // initialValue={false}
           />
         </GridCol>
         <GridCol col={{ span: 12 }}>
@@ -440,7 +438,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                   <Form.Item
                     label={' '}
                     data-testid='advOpt-keepAliveInterval'
-                    // initialValue={20}
                     name={['advancedOption','keepAliveInterval']}
                     children={<InputNumber min={1} max={65536}/>} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>

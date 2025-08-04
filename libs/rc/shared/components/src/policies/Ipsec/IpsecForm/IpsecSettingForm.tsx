@@ -28,6 +28,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
 
   const { editData, isLoading = false } = props
   const policyId = editData?.id
+  const editMode = !!policyId
+
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
 
   const nameValidator = async (value: string) => {
@@ -68,7 +70,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             name='tunnelUsageType'
             label={$t({ defaultMessage: 'Tunnel Usage Type' })}
           >
-            <Radio.Group>
+            <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
                 <Radio value={IpSecTunnelUsageTypeEnum.VXLAN_GPE}>
                   {$t({ defaultMessage: 'For RUCKUS Devices(VxLAN GPE)' })}
@@ -92,11 +94,11 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
                   if (isNil(tunnelUsageType)) return null
 
                   return tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
-                    ? <VxLanSettingForm />
-                    : <SoftGreSettingForm initIpSecData={editData} />
+                    ? <VxLanSettingForm editData={editData} />
+                    : <SoftGreSettingForm editData={editData} />
                 }}
               </Form.Item>
-              : <SoftGreSettingForm initIpSecData={editData} />
+              : <SoftGreSettingForm editData={editData} />
           }
         </Col>
       </Row>

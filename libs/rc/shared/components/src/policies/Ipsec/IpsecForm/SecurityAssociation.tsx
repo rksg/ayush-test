@@ -12,10 +12,10 @@ import EspAssociationSettings from './EspAssociationSettings'
 import IkeAssociationSettings from './IkeAssociationSettings'
 
 export const SecurityAssociation = (props: {
-  initIpSecData?: Ipsec
+  editData?: Ipsec
 }) => {
   const { $t } = useIntl()
-  const { initIpSecData } = props
+  const { editData } = props
   const form = Form.useFormInstance()
   const [activeTabKey, setActiveTabKey] = useState<string | undefined>(undefined)
 
@@ -23,18 +23,19 @@ export const SecurityAssociation = (props: {
     {
       key: 'ike',
       display: $t({ defaultMessage: 'IKE' }),
-      content: <IkeAssociationSettings initIpSecData={initIpSecData}
+      content: <IkeAssociationSettings editData={editData}
       />
     },
     {
       key: 'esp',
       display: $t({ defaultMessage: 'ESP' }),
-      content: <EspAssociationSettings initIpSecData={initIpSecData}
+      content: <EspAssociationSettings editData={editData}
       />
     }
-  ], [initIpSecData])
+  ], [editData])
 
-  const defaultTabKey = secAssociationTabsInfo[0]?.key
+  const defaultTabKey = useMemo(() => secAssociationTabsInfo[0]?.key, [secAssociationTabsInfo])
+
   useEffect(() => {
     if (!activeTabKey) {
       setActiveTabKey(defaultTabKey)
@@ -53,7 +54,6 @@ export const SecurityAssociation = (props: {
               'ikeProposals', 'combinationValidator'],
             ['espSecurityAssociation',
               'espProposals', 'combinationValidator']])
-
           setActiveTabKey(key)
         } catch(e) {
           // eslint-disable-next-line no-console

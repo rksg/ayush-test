@@ -12,10 +12,10 @@ import GatewayConnectionSettings from './GatewayConnectionSettings'
 import RekeySettings             from './RekeySettings'
 
 export const MoreSettings = (props: {
-  initIpSecData?: Ipsec
+  editData?: Ipsec
 }) => {
   const { $t } = useIntl()
-  const { initIpSecData } = props
+  const { editData } = props
 
   const [showMoreSettings, setShowMoreSettings] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState<string | undefined>(undefined)
@@ -24,28 +24,22 @@ export const MoreSettings = (props: {
     {
       key: 'rekey',
       display: $t({ defaultMessage: 'Rekey' }),
-      content: <RekeySettings initIpSecData={initIpSecData}
-        // loadReKeySettings={loadReKeySettings}
-        // setLoadReKeySettings={setLoadReKeySettings}
+      content: <RekeySettings editData={editData}
       />
     },
     {
       key: 'gatewayConnection',
       display: $t({ defaultMessage: 'Gateway & Connection' }),
-      content: <GatewayConnectionSettings initIpSecData={initIpSecData}
-        // loadGwSettings={loadGwSettings}
-        // setLoadGwSettings={setLoadGwSettings}
+      content: <GatewayConnectionSettings editData={editData}
       />
     },
     {
       key: 'failover',
       display: $t({ defaultMessage: 'Failover' }),
-      content: <FailoverSettings initIpSecData={initIpSecData}
-        // loadFailoverSettings={loadFailoverSettings}
-        // setLoadFailoverSettings={setLoadFailoverSettings}
+      content: <FailoverSettings editData={editData}
       />
     }
-  ], [initIpSecData])
+  ], [editData])
 
   const defaultTabKey = moreSettingsTabsInfo[0]?.key
   useEffect(() => {

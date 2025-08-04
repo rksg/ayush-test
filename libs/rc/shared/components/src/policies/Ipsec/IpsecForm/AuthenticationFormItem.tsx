@@ -1,31 +1,20 @@
 import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { PasswordInput, Select }            from '@acx-ui/components'
-import { IpSecAuthEnum, ipSecPskValidator } from '@acx-ui/rc/utils'
-
-import { $t } from '../../WorkflowCanvas/WorkflowPanel/__tests__/fixtures'
+import { PasswordInput, Select }                                     from '@acx-ui/components'
+import { getIpsecAuthTypeOptions, IpSecAuthEnum, ipSecPskValidator } from '@acx-ui/rc/utils'
 
 export const AuthenticationFormItem = () => {
-  const authOptions = [
-    { label: $t({ defaultMessage: 'Pre-shared Key' }), value: IpSecAuthEnum.PSK }
-    // hide until certificates are supported
-    // { label: $t({ defaultMessage: 'Certificate' }), value: IpSecAuthEnum.CERTIFICATE }
-  ]
+  const { $t } = useIntl()
+  const authOptions = getIpsecAuthTypeOptions()
 
   return <><Form.Item
     name='authType'
     label={$t({ defaultMessage: 'Authentication' })}
     rules={[{ required: true }]}
-    children={<Select
-      // style={{ width: '380px' }}
-      children={
-        authOptions.map((option) =>
-          <Select.Option key={option.value} value={option.value}>
-            {option.label}
-          </Select.Option>)
-      }
-    />}
-  />
+  >
+    <Select options={authOptions} />
+  </Form.Item>
   <Form.Item
     noStyle
     dependencies={['authType']}
@@ -52,10 +41,12 @@ export const AuthenticationFormItem = () => {
 }
 
 export const PreSharedKeyFormItem = () => {
+  const { $t } = useIntl()
   return <Form.Item
     data-testid='pre-shared-key'
     name='preSharedKey'
     label={$t({ defaultMessage: 'Pre-shared Key' })}
+    validateFirst
     rules={[{ required: true },
       { validator: (_, value) => ipSecPskValidator(value) }]}
     children={
@@ -65,6 +56,7 @@ export const PreSharedKeyFormItem = () => {
 
 // TODO: hide until certificates are supported
 const CertificateFormItem = () => {
+  const { $t } = useIntl()
   return <Form.Item
     name='certificate'
     label={$t({ defaultMessage: 'Certificate' })}

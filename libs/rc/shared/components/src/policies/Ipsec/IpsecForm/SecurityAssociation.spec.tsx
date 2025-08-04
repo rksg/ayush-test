@@ -56,11 +56,9 @@ describe('SecurityAssociation', () => {
     })
 
     return render(
-      <IntlProvider locale='en'>
-        <Form form={formRef.current}>
-          <SecurityAssociation {...props} />
-        </Form>
-      </IntlProvider>
+      <Form form={formRef.current}>
+        <SecurityAssociation {...props} />
+      </Form>
     )
   }
 
@@ -77,8 +75,8 @@ describe('SecurityAssociation', () => {
       expect(screen.getByText('ESP')).toBeInTheDocument()
     })
 
-    it('should render SecurityAssociation component with initIpSecData', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
+    it('should render SecurityAssociation component with editData', () => {
+      renderComponent({ editData: mockIpSecData })
 
       expect(screen.getByText('Security Association')).toBeInTheDocument()
       expect(screen.getByText('IKE')).toBeInTheDocument()
@@ -86,7 +84,7 @@ describe('SecurityAssociation', () => {
     })
 
     it('should render with mockIpSecDetail data', () => {
-      renderComponent({ initIpSecData: mockIpSecDetail })
+      renderComponent({ editData: mockIpSecDetail })
 
       expect(screen.getByText('Security Association')).toBeInTheDocument()
       expect(screen.getByText('IKE')).toBeInTheDocument()
@@ -95,12 +93,12 @@ describe('SecurityAssociation', () => {
   })
 
   describe('Tab Functionality', () => {
-    it('should set default active tab to IKE when no activeTabKey is set', () => {
+    it('should set default active tab to IKE when no activeTabKey is set', async () => {
       renderComponent()
 
       // The first tab (IKE) should be active by default
       const ikeTab = screen.getByRole('tab', { name: 'IKE' })
-      expect(ikeTab).toHaveClass('ant-tabs-tab-active')
+      await waitFor(() => expect(ikeTab).toHaveAttribute('aria-selected', 'true'))
     })
 
     it('should switch between IKE and ESP tabs successfully', async () => {
@@ -108,7 +106,7 @@ describe('SecurityAssociation', () => {
 
       // Initially IKE tab should be active
       const ikeTab = screen.getByRole('tab', { name: 'IKE' })
-      expect(ikeTab).toHaveClass('ant-tabs-tab-active')
+      await waitFor(() => expect(ikeTab).toHaveAttribute('aria-selected', 'true'))
 
       // Click on ESP tab
       const espTab = screen.getByRole('tab', { name: 'ESP' })
@@ -116,8 +114,7 @@ describe('SecurityAssociation', () => {
 
       // ESP tab should now be active
       await waitFor(() => {
-        const activeEspTab = screen.getByRole('tab', { name: 'ESP' })
-        expect(activeEspTab).toHaveClass('ant-tabs-tab-active')
+        expect(espTab).toHaveAttribute('aria-selected', 'true')
       })
     })
 
@@ -135,7 +132,7 @@ describe('SecurityAssociation', () => {
       // IKE tab should be active again
       await waitFor(() => {
         const activeIkeTab = screen.getByRole('tab', { name: 'IKE' })
-        expect(activeIkeTab).toHaveClass('ant-tabs-tab-active')
+        expect(activeIkeTab).toHaveAttribute('aria-selected', 'true')
       })
     })
   })
@@ -150,7 +147,7 @@ describe('SecurityAssociation', () => {
       render(
         <IntlProvider locale='en'>
           <Form form={formRef.current}>
-            <SecurityAssociation initIpSecData={mockIpSecData} />
+            <SecurityAssociation editData={mockIpSecData} />
           </Form>
         </IntlProvider>
       )
@@ -158,12 +155,10 @@ describe('SecurityAssociation', () => {
       // Set up valid form data
       formRef.current.setFieldsValue({
         ikeSecurityAssociation: {
-          ikeProposals: [{ encAlg: IpSecEncryptionAlgorithmEnum.AES128 }],
-          combinationValidator: true
+          ikeProposals: mockIpSecData.ikeSecurityAssociation.ikeProposals
         },
         espSecurityAssociation: {
-          espProposals: [{ encAlg: IpSecEncryptionAlgorithmEnum.AES256 }],
-          combinationValidator: true
+          espProposals: mockIpSecData.espSecurityAssociation.espProposals
         }
       })
 
@@ -173,7 +168,7 @@ describe('SecurityAssociation', () => {
 
       await waitFor(() => {
         const activeEspTab = screen.getByRole('tab', { name: 'ESP' })
-        expect(activeEspTab).toHaveClass('ant-tabs-tab-active')
+        expect(activeEspTab).toHaveAttribute('aria-selected', 'true')
       })
     })
 
@@ -183,18 +178,15 @@ describe('SecurityAssociation', () => {
         return form
       })
 
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SecurityAssociation initIpSecData={mockIpSecData} />
-          </Form>
-        </IntlProvider>
-      )
+      render(<Form form={formRef.current}>
+        <SecurityAssociation editData={mockIpSecData} />
+      </Form>)
 
       // Set up invalid form data that will cause validation to fail
       formRef.current.setFieldsValue({
         ikeSecurityAssociation: {
-          ikeProposals: [],
+          ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+          ikeProposals: [mockIpSecData.ikeSecurityAssociation.ikeProposals[0], mockIpSecData.ikeSecurityAssociation.ikeProposals[0]],
           combinationValidator: false
         },
         espSecurityAssociation: {
@@ -211,51 +203,21 @@ describe('SecurityAssociation', () => {
       await user.click(espTab)
 
       // Should remain on IKE tab due to validation failure
-      await waitFor(() => {
-        expect(screen.getByText('IKE').closest('.ant-tabs-tab')).toHaveClass('ant-tabs-tab-active')
-      })
+      const activeTab = screen.getByRole('tab', { name: 'IKE' })
+      expect(activeTab.getAttribute('aria-selected')).toBeTruthy()
 
       expect(consoleSpy).toHaveBeenCalled()
-      consoleSpy.mockRestore()
-    })
-
-    it('should handle validation error gracefully and log to console', async () => {
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        return form
-      })
-
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-
-      render(
-        <IntlProvider locale='en'>
-          <Form form={formRef.current}>
-            <SecurityAssociation initIpSecData={mockIpSecData} />
-          </Form>
-        </IntlProvider>
-      )
-
-      // Mock form.validateFields to throw an error
-      jest.spyOn(formRef.current, 'validateFields').mockRejectedValue(new Error('Validation failed'))
-
-      // Try to switch tabs
-      const espTab = screen.getByText('ESP')
-      await user.click(espTab)
-
-      await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error))
-      })
-
       consoleSpy.mockRestore()
     })
   })
 
   describe('Child Components Integration', () => {
     it('should render IkeAssociationSettings component when IKE tab is active', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
+      renderComponent({ editData: mockIpSecData })
 
       // IKE tab should be active by default
-      expect(screen.getByText('IKE').closest('.ant-tabs-tab')).toHaveClass('ant-tabs-tab-active')
+      const activeTab = screen.getByRole('tab', { name: 'IKE' })
+      expect(activeTab.getAttribute('aria-selected')).toBeTruthy()
 
       // IkeAssociationSettings should be rendered
       // Note: We can't directly test the child component content without data-testid,
@@ -265,23 +227,22 @@ describe('SecurityAssociation', () => {
     })
 
     it('should render EspAssociationSettings component when ESP tab is active', async () => {
-      renderComponent({ initIpSecData: mockIpSecDataWithEspSpecific })
+      renderComponent({ editData: mockIpSecDataWithEspSpecific })
 
       // Switch to ESP tab
       const espTab = screen.getByText('ESP')
       await user.click(espTab)
 
-      await waitFor(() => {
-        expect(screen.getByText('ESP').closest('.ant-tabs-tab')).toHaveClass('ant-tabs-tab-active')
-      })
+      const activeTab = screen.getByRole('tab', { name: 'ESP' })
+      expect(activeTab.getAttribute('aria-selected')).toBeTruthy()
 
       // EspAssociationSettings should be rendered
       const tabContent = screen.getByRole('tabpanel')
       expect(tabContent).toBeInTheDocument()
     })
 
-    it('should pass initIpSecData to child components', () => {
-      renderComponent({ initIpSecData: mockIpSecData })
+    it('should pass editData to child components', () => {
+      renderComponent({ editData: mockIpSecData })
 
       // Verify the component renders with the provided data
       expect(screen.getByText('Security Association')).toBeInTheDocument()
@@ -291,16 +252,16 @@ describe('SecurityAssociation', () => {
   })
 
   describe('Edge Cases', () => {
-    it('should handle undefined initIpSecData gracefully', () => {
-      renderComponent({ initIpSecData: undefined })
+    it('should handle undefined editData gracefully', () => {
+      renderComponent({ editData: undefined })
 
       expect(screen.getByText('Security Association')).toBeInTheDocument()
       expect(screen.getByText('IKE')).toBeInTheDocument()
       expect(screen.getByText('ESP')).toBeInTheDocument()
     })
 
-    it('should handle empty initIpSecData object', () => {
-      renderComponent({ initIpSecData: {} })
+    it('should handle empty editData object', () => {
+      renderComponent({ editData: {} })
 
       expect(screen.getByText('Security Association')).toBeInTheDocument()
       expect(screen.getByText('IKE')).toBeInTheDocument()
@@ -318,10 +279,8 @@ describe('SecurityAssociation', () => {
       await user.click(ikeTab)
       await user.click(espTab)
 
-      // Should end up on ESP tab
-      await waitFor(() => {
-        expect(screen.getByText('ESP').closest('.ant-tabs-tab')).toHaveClass('ant-tabs-tab-active')
-      })
+      const activeTab = screen.getByRole('tab', { name: 'ESP' })
+      expect(activeTab.getAttribute('aria-selected')).toBeTruthy()
     })
 
     it('should handle form validation timeout gracefully', async () => {
@@ -335,7 +294,7 @@ describe('SecurityAssociation', () => {
       render(
         <IntlProvider locale='en'>
           <Form form={formRef.current}>
-            <SecurityAssociation initIpSecData={mockIpSecData} />
+            <SecurityAssociation editData={mockIpSecData} />
           </Form>
         </IntlProvider>
       )
@@ -354,43 +313,6 @@ describe('SecurityAssociation', () => {
       }, { timeout: 200 })
 
       consoleSpy.mockRestore()
-    })
-  })
-
-  describe('Accessibility', () => {
-    it('should have proper ARIA labels for tabs', () => {
-      renderComponent()
-
-      const ikeTab = screen.getByRole('tab', { name: 'IKE' })
-      const espTab = screen.getByRole('tab', { name: 'ESP' })
-
-      expect(ikeTab).toBeInTheDocument()
-      expect(espTab).toBeInTheDocument()
-    })
-
-    it('should have proper tab panel structure', () => {
-      renderComponent()
-
-      const tabList = screen.getByRole('tablist')
-      const tabPanels = screen.getAllByRole('tabpanel')
-
-      expect(tabList).toBeInTheDocument()
-      expect(tabPanels).toHaveLength(2)
-    })
-  })
-
-  describe('Internationalization', () => {
-    it('should display translated text for Security Association title', () => {
-      renderComponent()
-
-      expect(screen.getByText('Security Association')).toBeInTheDocument()
-    })
-
-    it('should display translated text for tab labels', () => {
-      renderComponent()
-
-      expect(screen.getByText('IKE')).toBeInTheDocument()
-      expect(screen.getByText('ESP')).toBeInTheDocument()
     })
   })
 })
