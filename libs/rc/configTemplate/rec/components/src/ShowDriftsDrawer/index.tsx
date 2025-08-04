@@ -96,7 +96,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const footer = <div>
-    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo['patchDriftReportByInstance'])]) &&
+    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.patchDriftReportByInstance)]) &&
       <Button
         disabled={selectedInstances.length === 0}
         onClick={onSync}

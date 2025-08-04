@@ -25,11 +25,11 @@ describe('AppliedToTenantDrawer component', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        ConfigTemplateUrlsInfo['getConfigTemplates'].url,
+        ConfigTemplateUrlsInfo.getConfigTemplates.url,
         (req, res, ctx) => res(ctx.json({ ...mockedConfigTemplateList }))
       ),
       rest.post(
-        MspUrlsInfo['getMspCustomersList'].url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedMSPCustomerList }))
       )
     )

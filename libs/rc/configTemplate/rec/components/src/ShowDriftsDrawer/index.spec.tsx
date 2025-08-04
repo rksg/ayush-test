@@ -52,7 +52,7 @@ describe('ShowDriftsDrawer', () => {
 
     mockServer.use(
       rest.post(
-        ConfigTemplateUrlsInfo['queryDriftInstances'].url,
+        ConfigTemplateUrlsInfo.queryDriftInstances.url,
         (req, res, ctx) => res(ctx.json({
           data: [
             { tenantId: 't1', instanceId: 'i1' },
@@ -64,15 +64,15 @@ describe('ShowDriftsDrawer', () => {
         }))
       ),
       rest.post(
-        CommonUrlsInfo['getVenuesList'].url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockedDriftInstances))
       ),
       rest.get(
-        ConfigTemplateUrlsInfo['getDriftReportByInstance'].url,
+        ConfigTemplateUrlsInfo.getDriftReportByInstance.url,
         (req, res, ctx) => res(ctx.json(mockedDriftReport))
       ),
       rest.patch(
-        ConfigTemplateUrlsInfo['patchDriftReportByInstance'].url,
+        ConfigTemplateUrlsInfo.patchDriftReportByInstance.url,
         (req, res, ctx) => {
           mockedPatchDriftReportFn()
           return res(ctx.json({ requestId: '123456789' }))

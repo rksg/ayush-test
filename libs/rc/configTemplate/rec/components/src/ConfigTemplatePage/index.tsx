@@ -13,7 +13,7 @@ export function ConfigTemplatePage () {
     appliedToColumn={getAppliedToColumn()}
     canApplyTemplate={canApplyTemplate}
     actionRbacOpsIds={{
-      apply: [getOpsApi(ConfigTemplateUrlsInfo['applyRecConfigTemplate'])]
+      apply: [getOpsApi(ConfigTemplateUrlsInfo.applyRecConfigTemplate)]
     }}
   />
 }

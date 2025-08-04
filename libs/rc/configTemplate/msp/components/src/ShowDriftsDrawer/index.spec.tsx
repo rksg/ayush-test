@@ -22,11 +22,11 @@ describe('ShowDriftsDrawer', () => {
 
     mockServer.use(
       rest.get(
-        ConfigTemplateUrlsInfo['getDriftTenants'].url.split('?')[0],
+        ConfigTemplateUrlsInfo.getDriftTenants.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockedDriftTenants))
       ),
       rest.post(
-        MspUrlsInfo['getMspCustomersList'].url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
       )
     )
@@ -136,7 +136,7 @@ describe('ShowDriftsDrawer', () => {
 
     mockServer.use(
       rest.patch(
-        ConfigTemplateUrlsInfo['patchDriftReport'].url,
+        ConfigTemplateUrlsInfo.patchDriftReport.url,
         (req, res, ctx) => {
           mockPatchDriftReportFn()
           return res(ctx.json({ requestId: '123456789' }))

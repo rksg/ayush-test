@@ -36,7 +36,7 @@ export function getAppliedToColumn (): ConfigTemplateViewProps['appliedToColumn'
 
       if (count === 0) return 0
 
-      if (!hasAllowedOperations([getOpsApi(MspUrlsInfo['getMspCustomersList'])])) return count
+      if (!hasAllowedOperations([getOpsApi(MspUrlsInfo.getMspCustomersList)])) return count
 
       return <Button type='link' onClick={() => { callback() }}>{count}</Button>
     }

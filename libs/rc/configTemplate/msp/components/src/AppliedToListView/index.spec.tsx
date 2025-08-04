@@ -61,7 +61,7 @@ describe('AppliedToTenantList', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        MspUrlsInfo['getMspCustomersList'].url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(mockedMspCustomerList))
       )
     )
@@ -115,7 +115,7 @@ describe('AppliedToTenantList', () => {
 
     mockServer.use(
       rest.post(
-        MspUrlsInfo['getMspCustomersList'].url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(largeMspCustomerList))
       )
     )

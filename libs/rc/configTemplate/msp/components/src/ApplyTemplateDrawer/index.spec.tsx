@@ -33,7 +33,7 @@ describe('ApplyTemplateDrawer', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        MspUrlsInfo['getMspCustomersList'].url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedMSPCustomerList }))
       )
     )
