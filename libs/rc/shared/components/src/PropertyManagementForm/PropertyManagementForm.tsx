@@ -50,6 +50,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
+  const notifyOnUnitSuspend = Form.useWatch(['communicationConfig', 'notifyOnUnitSuspend'], form)
 
   const { hasUnits } = useGetPropertyUnitListQuery({
     params: { venueId },
@@ -77,6 +78,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   })
 
   const personaGroupHasBound = personaGroupId && hasUnits
+  const notifyOnSuspend = isSuspendNotificationRequired && notifyOnUnitSuspend
 
   const onResidentPortalModalClose = () => {
     setResidentPortalModalVisible(false)
@@ -245,7 +247,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               valuePropName={'checked'}
               children={<Switch/>}/>
           </StepsForm.FieldLabel>}
-          {(isSuspendNotificationRequired ? msgCategoryIds : msgCategoryIdsLimited)
+          {(notifyOnSuspend ? msgCategoryIds : msgCategoryIdsLimited)
             .map(categoryId => venueId &&
             <TemplateSelector
               key={categoryId}
