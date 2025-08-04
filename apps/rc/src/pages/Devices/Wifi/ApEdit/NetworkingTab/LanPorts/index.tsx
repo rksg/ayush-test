@@ -655,7 +655,7 @@ export function LanPorts (props: ApEditItemProps) {
               <Col span={24}>
                 <Form.Item
                   name={'globalAccessVlanIdEnabled'}
-                  label={$t({ defaultMessage: 'Overwrite Access Port VLAN Untagged ID' })}
+                  label={$t({ defaultMessage: 'Set VLAN ID for All Access Ports' })}
                   valuePropName='checked'
                   children={<Switch
                     data-testid={'global-access-vlan-id-switch'}
@@ -670,11 +670,11 @@ export function LanPorts (props: ApEditItemProps) {
               <Col span={8}>
                 <Form.Item
                   name='globalAccessVlanId'
-                  label={$t({ defaultMessage: 'Global VLAN Untag ID' })}
+                  label={$t({ defaultMessage: 'Global Untagged VLAN ID' })}
                   rules={[
                     {
                       required: true,
-                      message: $t({ defaultMessage: 'Please enter VLAN Untag ID' })
+                      message: $t({ defaultMessage: 'Please enter Untagged VLAN ID' })
                     },
                     {
                       type: 'number',
