@@ -15,9 +15,7 @@ import { mockServer, render, waitForElementToBeRemoved, screen } from '@acx-ui/t
 
 import { dummyApList, dummySwitchClientList, dummyVenue, mockedPolicyId1, mockedTenantId } from '../__tests__/fixtures'
 
-
 import { LbsServerVenueApsDrawer } from './LbsServerVenueApsDrawer'
-
 
 describe('LbsServerVenueApsDrawer', () => {
   const params = {

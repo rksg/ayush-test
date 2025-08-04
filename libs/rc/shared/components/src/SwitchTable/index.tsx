@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/query'
 import { Badge, Divider, Form }   from 'antd'
-import _                          from 'lodash'
+import _, { isEmpty }             from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -11,10 +11,10 @@ import {
   TableProps,
   Loader,
   deviceStatusColors,
-  ColumnType,
   PasswordInput,
   showToast,
-  cssStr
+  cssStr,
+  Button
 } from '@acx-ui/components'
 import { showActionModal, Tooltip }  from '@acx-ui/components'
 import type { TableHighlightFnArgs } from '@acx-ui/components'
@@ -23,15 +23,22 @@ import {
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
-  DownloadOutlined
+  DownloadOutlined,
+  InformationOutlined
 } from '@acx-ui/icons'
-import { useImportSwitchesMutation,
+import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
 import {
+  getAckMsg,
   getSwitchName,
-  getSwitchModel
+  getSwitchModel,
+  isFirmwareSupportAdminPassword,
+  isNotSupportStackModel
 } from '@acx-ui/rc/switch/utils'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -41,14 +48,14 @@ import {
   getFilters,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
-  isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
   getAdminPassword,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
+import type { ColumnType, RequestPayload }                   from '@acx-ui/types'
+import { RolesEnum, SwitchScopes }                           from '@acx-ui/types'
 import { filterByAccess, hasPermission, hasRoles }           from '@acx-ui/user'
 import {
   exportMessageMapping,
@@ -114,17 +121,6 @@ const PasswordTooltip = {
   CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
-export const defaultSwitchPayload = {
-  searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
-  fields: [
-    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword', 'extIp'
-  ]
-}
-
 export type SwitchTableRefType = { openImportDrawer: ()=>void }
 
 interface SwitchTableProps
@@ -146,6 +142,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -153,6 +150,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
+  const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
   const importRBACTemplateLink = 'assets/templates/new_switches_import_template.csv'
@@ -271,6 +269,65 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     })
   }
 
+  const onClickAck = (row: SwitchRow) => {
+    const ackPayload = {
+      add: [] as string[],
+      remove: [] as string[]
+    }
+
+    if (!isEmpty(row.newSerialNumber)) {
+      ackPayload.add.push(row.newSerialNumber as string)
+      ackPayload.remove.push(row.serialNumber)
+    } else {
+      ackPayload.add.push(row.serialNumber)
+    }
+
+    acknowledgeSwitch({
+      params: { tenantId: params.tenantId, switchId: row.switchMac, venueId: row.venueId },
+      payload: ackPayload,
+      enableRbac: isSwitchRbacEnabled
+    })
+  }
+
+  const renderAckTooltip = (rows: SwitchRow[], row: SwitchRow) => {
+    if(row.isStack){
+      const showTooltip = rows.find(r => r.activeSerial === row.activeSerial)?.children?.some(r => r.needAck === true)
+
+      if (showTooltip) {
+        return (
+          <Tooltip placement='top'
+            children={<InformationOutlined style={{
+              marginBottom: '-4px',
+              overflow: 'visible',
+              marginLeft: '4px'
+            }} />}
+            title={$t({ // eslint-disable-next-line max-len
+              defaultMessage: 'Additional switch(es) detected in the stack. Click ACK link below to confirm or if it is not expected, remove the member from the stack by physically disconnecting the stack link(s) to it.' })}
+          />
+        )
+      }
+    }
+
+    return null
+  }
+
+  const renderAckButton = (row: SwitchRow) => {
+    if (row.needAck) {
+      const ackMsg = getAckMsg(!!row.needAck, row.serialNumber, row.newSerialNumber || '', true, $t)
+      return (
+        <Tooltip title={ackMsg}>
+          <Button
+            style={{ marginLeft: '10px', top: '4px' }}
+            size='small'
+            onClick={() => onClickAck(row)}>
+            {$t({ defaultMessage: 'ACK' })}
+          </Button>
+        </Tooltip>
+      )
+    }
+    return null
+  }
+
   const columns = React.useMemo(() => {
     return [{
       key: 'name',
@@ -292,8 +349,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             style={{ lineHeight: '20px' }}
           >
             {searchable ? highlightFn(name) : name}
+            {renderAckTooltip(tableData, row)}
           </TenantLink> :
-          `${name} (${getStackMemberStatus(row.unitStatus || '', true)})`
+          <>
+            {`${name} (${getStackMemberStatus(row.unitStatus || '', true)})`}
+            {renderAckButton(row)}
+          </>
       }
     }, {
       key: 'deviceStatus',
@@ -579,26 +640,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
-  const isNotSupportStackModel = (model: string) => {
-    switch(model) {
-      case 'ICX7150-C08P':
-      case 'ICX7150-C08PT':
-      case 'ICX8100-24':
-      case 'ICX8100-24P':
-      case 'ICX8100-48':
-      case 'ICX8100-48P':
-      case 'ICX8100-C08PF':
-      case 'ICX8100-24-X':
-      case 'ICX8100-24P-X':
-      case 'ICX8100-48-X':
-      case 'ICX8100-48P-X':
-      case 'ICX8100-C08PF-X':
-        return true
-      default:
-        return false
-    }
-  }
-
   const checkSelectedRowsStatus = (rows: SwitchRow[]) => {
     const modelFamily = rows[0]?.model?.split('-')[0]
     const venueId = rows[0]?.venueId
@@ -606,7 +647,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     const notOperational = rows.find(i =>
       !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
     const invalid = rows.find(i =>
-      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model)))
+      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model, isSupport8100XStacking)))
     const hasStack = rows.find(i => i.isStack || i.formStacking)
 
     return {

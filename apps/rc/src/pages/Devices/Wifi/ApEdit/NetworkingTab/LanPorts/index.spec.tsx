@@ -7,6 +7,7 @@ import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonUrlsInfo,
+  DHCPUrls,
   EthernetPortProfileUrls,
   IpsecUrls,
   LanPortsUrls,
@@ -29,6 +30,7 @@ import {
   ApCap_T750SE,
   ApData_H670,
   ApData_T750SE,
+  apDetailsList,
   ApLanPorts_H670,
   ApLanPorts_has_vni,
   ApLanPorts_T750SE,
@@ -68,21 +70,14 @@ describe('Lan Port', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.get(WifiUrlsInfo.getApLanPorts.url,
-        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
       rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
-      rest.put(WifiUrlsInfo.updateApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        LanPortsUrls.getApLanPortSettings.url,
+      rest.get(LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedAPLanPortSettings1))
@@ -99,8 +94,7 @@ describe('Lan Port', () => {
           return res(ctx.json({}))
         }
       ),
-      rest.get(
-        LanPortsUrls.getVenueLanPortSettings.url,
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedVenueLanPortSettings1))
@@ -120,7 +114,13 @@ describe('Lan Port', () => {
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(IpsecUrls.getIpsecViewDataList.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(DHCPUrls.queryDhcpProfiles.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(
+        WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetailsList[1]))
+      )
     )
   })
 
@@ -443,8 +443,7 @@ describe('H670', () => {
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        LanPortsUrls.getApLanPortSettings.url,
+      rest.get(LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedAPLanPortSettings1))
@@ -469,8 +468,7 @@ describe('H670', () => {
           return res(ctx.json({}))
         }
       ),
-      rest.get(
-        LanPortsUrls.getVenueLanPortSettings.url,
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedVenueLanPortSettings1))
@@ -498,7 +496,9 @@ describe('H670', () => {
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(IpsecUrls.getIpsecViewDataList.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(DHCPUrls.queryDhcpProfiles.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   describe('AP Lan port settings', () => {

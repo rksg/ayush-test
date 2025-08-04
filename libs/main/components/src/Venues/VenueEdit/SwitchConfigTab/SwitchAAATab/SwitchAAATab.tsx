@@ -4,8 +4,9 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                                  from '@acx-ui/config-template/utils'
+import { useEnforcedStatus }                                             from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useEnforcedStatus, usePathBasedOnConfigTemplate }               from '@acx-ui/rc/components'
 import {
   useGetVenueTemplateSwitchSettingQuery, useUpdateAAASettingMutation,
   useUpdateVenueTemplateSwitchAAASettingMutation,

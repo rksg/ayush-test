@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { EditPortDrawer, SwitchLagModal }                                  from '@acx-ui/rc/components'
 import { useGetFlexAuthenticationProfilesQuery }                           from '@acx-ui/rc/services'
 import { Lag, StackMember, SwitchPortStatus, SwitchRow, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { EditPortDrawer, SwitchLagModal }                                  from '@acx-ui/switch/components'
 
 import { SwitchDetailsContext } from '../../..'
 

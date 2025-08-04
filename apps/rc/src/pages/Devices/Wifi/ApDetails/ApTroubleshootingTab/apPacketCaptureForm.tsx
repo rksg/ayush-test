@@ -6,7 +6,6 @@ import { cloneDeep }                               from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
 import { Button, Loader, showToast, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetApLanPortsQuery,
   useGetApQuery,
@@ -43,31 +42,30 @@ export function ApPacketCaptureForm () {
   const { tenantId, venueId, serialNumber } = useApContext()
   const params = { tenantId, venueId, serialNumber }
   const [packetCaptureForm] = Form.useForm()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
   const packetCaptureState = useGetPacketCaptureStateQuery({
     params: { tenantId, serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
   const getAp = useGetApQuery({
     params,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 
   const { data: apCapabilities } = useGetApCapabilities({
     params,
     modelName: getAp?.data?.model,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 
   const getApLanPorts = useGetApLanPortsQuery({
     params: { serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
   const getApRadioCustomization =
-    useGetApRadioCustomizationQuery({ params, enableRbac: isUseWifiRbacApi })
+    useGetApRadioCustomizationQuery({ params, enableRbac: true })
 
   const [getApBandModeSettings] = useLazyGetApBandModeSettingsQuery()
 
@@ -176,7 +174,7 @@ export function ApPacketCaptureForm () {
         if (supportBandCombination) {
           const apBandMode = await getApBandModeSettings({
             params,
-            enableRbac: isUseWifiRbacApi
+            enableRbac: true
           }).unwrap()
           isTriBandMode = apBandMode.bandMode === BandModeEnum.TRIPLE
         }
@@ -262,7 +260,7 @@ export function ApPacketCaptureForm () {
                   const result = await startPacketCapture({ 
                     params: { tenantId, serialNumber, venueId },
                     payload,
-                    enableRbac: isUseWifiRbacApi
+                    enableRbac: true
                   }).unwrap()
                   setIsCapturing(true)
                   setSessionId(result.requestId || '')
@@ -280,7 +278,7 @@ export function ApPacketCaptureForm () {
         await stopPacketCapture({
           params: { tenantId, serialNumber, venueId },
           payload,
-          enableRbac: isUseWifiRbacApi
+          enableRbac: true
         }).unwrap()
         packetCaptureStateRefetch()
         setIsPrepare(true)

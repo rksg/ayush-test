@@ -19,13 +19,16 @@ import {
   useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchAvailableFirmwareListV1001Query,
   useBatchSkipSwitchUpgradeSchedulesMutation,
-  useBatchCreateSwitchVenueSchedulesV1001Mutation } from '@acx-ui/rc/services'
+  useBatchCreateSwitchVenueSchedulesV1001Mutation
+} from '@acx-ui/rc/services'
+import {
+  getSwitchModelGroup
+} from '@acx-ui/rc/switch/utils'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   UpdateScheduleRequest,
   FirmwareSwitchV1002,
-  getSwitchModelGroup,
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'

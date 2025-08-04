@@ -9,6 +9,11 @@ import {
   useIdentityGroupPageHeaderTitle
 } from './identityGroupUtils'
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  generateConfigTemplateBreadcrumb: () => [{ text: 'Configuration Templates' }]
+}))
+
 describe('identityGroupUtils', () => {
   describe('useIdentityGroupPageHeaderTitle', () => {
     it('should render create identity group page header', () => {
@@ -112,13 +117,7 @@ describe('identityGroupUtils', () => {
             </ConfigTemplateContext.Provider>
           }
         })
-      expect(result.current).toEqual([
-        {
-          text: 'Configuration Templates',
-          link: 'configTemplates/templates',
-          tenantType: 'v'
-        }
-      ])
+      expect(result.current).toEqual([{ text: 'Configuration Templates' }])
     })
   })
 })

@@ -107,9 +107,10 @@ describe('DetailsContent', () => {
   describe('DetailsItemList', () => {
     const mockTitle = 'Test Title'
 
-    it('should render title correctly', () => {
+    it('should render correctly', () => {
       render(<DetailsItemList title={mockTitle} items={[]} />)
       expect(screen.getByText(mockTitle)).toBeInTheDocument()
+      expect(screen.queryByText('Show More')).not.toBeInTheDocument()
     })
 
     it('should sort items alphabetically', () => {
@@ -136,6 +137,35 @@ describe('DetailsContent', () => {
         const element = screen.getByText(item)
         expect(element).toHaveClass('ant-typography-ellipsis')
       })
+    })
+
+    it('should show "Show More" button when showMore is true', () => {
+      render(<DetailsItemList
+        title={mockTitle}
+        items={['Item 1']}
+        showMore={true}
+        showMoreCallback={jest.fn()}
+      />)
+      expect(screen.getByText('Show More')).toBeInTheDocument()
+    })
+
+    it('should call showMoreCallback when "Show More" button is clicked', async () => {
+      const mockCallback = jest.fn()
+      render(<DetailsItemList
+        title={mockTitle}
+        items={['Item 1']}
+        showMore={true}
+        showMoreCallback={mockCallback}
+      />)
+
+      await userEvent.click(screen.getByRole('button', { name: 'Show More' }))
+      expect(mockCallback).toHaveBeenCalledTimes(1)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should not show "Show More" button when showMore is true but showMoreCallback is not provided', () => {
+      render(<DetailsItemList title={mockTitle} items={['Item 1']} showMore={true} />)
+      expect(screen.queryByText('Show More')).not.toBeInTheDocument()
     })
   })
 })

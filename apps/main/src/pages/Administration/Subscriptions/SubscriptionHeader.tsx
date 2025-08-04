@@ -3,12 +3,13 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Loader,
-  Subtitle
+  Subtitle,
+  SpaceWrapper
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }                     from '@acx-ui/msp/services'
-import { MSPUtils }                                    from '@acx-ui/msp/utils'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }       from '@acx-ui/msp/services'
+import { MSPUtils }                      from '@acx-ui/msp/utils'
+import { SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'

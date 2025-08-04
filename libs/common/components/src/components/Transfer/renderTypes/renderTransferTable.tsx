@@ -34,10 +34,8 @@ export const renderTransferTable = (props: Extract<TransferProps, { type: Transf
     selectedRowKeys: listSelectedKeys
   }
 
-  const dataSource = tableData.length > 0 && direction === 'left'
-    ? filteredItems.filter(item => tableData.some((dataItem: TransferItem) =>
-      dataItem.key && item.key && dataItem.key === item.key
-    ))
+  const dataSource = direction === 'left'
+    ? filteredItems.filter(item => tableData.some(dataItem => dataItem.key === item.key))
     : filteredItems
 
   return (

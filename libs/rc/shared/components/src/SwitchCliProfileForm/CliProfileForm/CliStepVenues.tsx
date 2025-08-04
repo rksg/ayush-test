@@ -5,6 +5,7 @@ import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useEnforcedStatus }                                                         from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
@@ -24,7 +25,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTableQuery } from '@acx-ui/utils'
 
-import { useEnforcedStatus }         from '../../configTemplates'
 import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
 
 interface VenueExtend extends Venue {
