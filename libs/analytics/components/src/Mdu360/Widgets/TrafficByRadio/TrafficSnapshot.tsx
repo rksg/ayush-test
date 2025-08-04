@@ -48,7 +48,7 @@ export function TrafficSnapshot ({
 
   return chartData.length ? (
     <DonutChart
-      style={{ width, height }}
+      style={{ width, height: Math.min(height, 203) }}
       data={chartData}
       showLegend
       showTotal
