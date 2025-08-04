@@ -7,7 +7,7 @@ import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
 import {
-  ConfigTemplateType,
+  ConfigTemplateType, getAntennaTypePayload, getExternalAntennaPayload,
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
@@ -15,8 +15,8 @@ import {
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 
-import { useVenueConfigTemplateOpsApiSwitcher }                               from '../../../venueConfigTemplateApiSwitcher'
-import { getAntennaTypePayload, getExternalAntennaPayload, VenueEditContext } from '../../index'
+import { useVenueConfigTemplateOpsApiSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                     from '../../index'
 
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
 import { ExternalAntennaSection }         from './ExternalAntennaSection'
