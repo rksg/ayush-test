@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
+import { EdgeLag }                                                                                    from '../../../../types/edge'
 
 export const mockedEdgeLagList = {
   content: [
@@ -178,3 +179,13 @@ export const mockedEdgeLagListWithClusterType = {
     totalCount: 2
   }
 }
+
+export const createMockLag = (overrides: Partial<EdgeLag> = {}): EdgeLag => ({
+  ...mockedEdgeLagList.content[0],
+  ...overrides
+})
+
+export const createMockLagMember = (portId: string, portEnabled: boolean = true) => ({
+  portId,
+  portEnabled
+})

@@ -41,10 +41,12 @@ jest.mock('./SwitchFrontRearView', () => ({
     <div data-testid={'rc-SwitchFrontRearView'} title='SwitchFrontRearView' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  isLAGMemberPort: jest.fn(),
   TopologyFloorPlanWidget: () => <div ata-testid={'rc-TopologyFloorPlanWidget'} />,
   SwitchBlinkLEDsDrawer: () =>
     <div data-testid={'rc-SwitchBlinkLEDsDrawer'} />
+}))
+jest.mock('@acx-ui/switch/components', () => ({
+  isLAGMemberPort: jest.fn()
 }))
 
 

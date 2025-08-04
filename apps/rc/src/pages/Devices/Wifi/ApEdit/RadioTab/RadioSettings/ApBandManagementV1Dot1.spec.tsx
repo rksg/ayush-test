@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 
 import {
   ApBandModeSettingsV1Dot1,
-  ApModel,
   BandModeEnum
 } from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
@@ -17,8 +16,8 @@ import {
 
 import { ApBandManagementV1Dot1 } from './ApBandManagementV1Dot1'
 
-const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760') as ApModel
-const t760Cap = triBandApCap.apModels.find(cap => cap.model === 'T670') as ApModel
+const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
+const t760Cap = triBandApCap.apModels.find(cap => cap.model === 'T670')
 
 describe('ApBandManagement', ()=> {
 

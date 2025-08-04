@@ -53,6 +53,7 @@ describe('IpsecForm', () => {
   describe('addIpsecForm', () => {
     const addFn = jest.fn()
     beforeEach(() => {
+      addFn.mockClear()
       store.dispatch(ipSecApi.util.resetApiState())
       mockServer.use(
         rest.post(
@@ -181,7 +182,12 @@ describe('IpsecForm', () => {
     const updateFn = jest.fn()
     const getListFn = jest.fn()
     const getByIdFn = jest.fn()
+
     beforeEach(() => {
+      updateFn.mockClear()
+      getListFn.mockClear()
+      getByIdFn.mockClear()
+
       store.dispatch(ipSecApi.util.resetApiState())
 
       mockServer.use(
@@ -252,7 +258,7 @@ describe('IpsecForm', () => {
         pathname: `/${params.tenantId}/t/policies/ipsec/list`,
         hash: '',
         search: ''
-      }))
+      }, { replace: true }))
     })
   })
 })

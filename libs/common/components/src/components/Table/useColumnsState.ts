@@ -2,8 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import _ from 'lodash'
 
+import type { TableColumn } from '@acx-ui/types'
+
 import type {
-  TableColumn,
   ColumnState,
   ColumnStateOption,
   TableColumnState
@@ -23,17 +24,19 @@ export interface UseColumnsStateOptions <RecordType> {
 export function useColumnsState <RecordType> (options: UseColumnsStateOptions<RecordType>) {
   const { columnState } = options
   const { defaultState, initialState } = useDefaultAndInitialState(options)
-  const [state, setState] = useState(defaultState)
-  const initialStateToUserState = stateToUserState(initialState)
+  const [state, setState] = useState(initialState)
 
-  useEffect(() => setState(initialState), [initialState])
-  useEffect(() => columnState?.onChange?.(initialStateToUserState))
+  // Set column state to initial state on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { onChange(initialState, true) }, [])
 
-  const onChange = useCallback((state: TableColumnState) => {
+  const onChange = useCallback((state: TableColumnState, isSettingInitialState = false) => {
     const newState = Object.entries(state).every(([,col]) => !col.show)
       ? initialState : state
 
-    options.settingsId && localStorage.setItem(options.settingsId, JSON.stringify(newState))
+    if (!isSettingInitialState) {
+      options.settingsId && localStorage.setItem(options.settingsId, JSON.stringify(newState))
+    }
 
     columnState?.onChange?.(stateToUserState(newState))
     setState(newState)

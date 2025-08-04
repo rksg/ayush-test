@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 
 import {
   ColumnState,
-  ColumnType,
   Loader,
   Table,
   TableProps
@@ -26,7 +25,8 @@ import {
   allowResetForStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload }                                   from '@acx-ui/types'
+import type { ColumnType, RequestPayload }                              from '@acx-ui/types'
+import { EdgeScopes }                                                   from '@acx-ui/types'
 import { filterByAccess }                                               from '@acx-ui/user'
 import { getOpsApi, usePollingTableQuery, FILTER, SEARCH, TABLE_QUERY } from '@acx-ui/utils'
 

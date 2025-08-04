@@ -1,8 +1,7 @@
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }        from '@acx-ui/rc/components'
+import { StepsForm, Subtitle, SpaceWrapper } from '@acx-ui/components'
 
 import { DDoSRateFormItem }    from './DDoSRateFormItem'
 import { StatefulACLFormItem } from './StatefulACLFormItem'

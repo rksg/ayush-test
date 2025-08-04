@@ -10,7 +10,6 @@ import { MockSelect, MockSelectProps, mockServer, render, renderHook, screen }  
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
-
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
 jest.mock('antd', () => ({
