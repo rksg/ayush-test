@@ -98,6 +98,7 @@ import {
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
   WifiNetwork,
+  ApPassword,
   ApJwtToken,
   ApGroupApAntennaTypeSettings,
   ApGroupApExternalAntennaSettings,
@@ -1529,6 +1530,19 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'USB' }]
     }),
+    getApPassword: build.query<ApPassword, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = {
+          ... GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2333,6 +2347,8 @@ export const {
   useUpdateApLedMutation,
   useResetApLedMutation,
   useGetApUsbQuery,
+  useGetApPasswordQuery,
+  useLazyGetApPasswordQuery,
   useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
