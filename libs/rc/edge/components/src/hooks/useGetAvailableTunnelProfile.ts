@@ -19,6 +19,7 @@ interface GetAvailableTunnelProfileProps {
 export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfileProps) => {
   const { serviceIds } = props || {}
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
   // Fetch SD-LAN data
   const { allSdLans, isSdLansLoading } = useGetEdgeMvSdLanViewDataListQuery({
@@ -55,7 +56,7 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
         'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
         'type', 'mtuType', 'forceFragmentation', 'ageTimeMinutes', 'keepAliveInterval',
         'keepAliveRetry', 'natTraversalEnabled'
-      ],
+      ].concat(isEdgeIpsecVxLanReady ? ['ipsecProfileId'] : []),
       sortField: 'name',
       sortOrder: 'ASC',
       pageSize: 10000
