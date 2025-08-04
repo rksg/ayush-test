@@ -25,3 +25,4 @@ export const MockSelect = ({
     {children}
   </select>
 )
+MockSelect.Option = 'option'
