@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
 import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { Features }                                    from '@acx-ui/feature-toggle'
 import { useGetEdgeOltListQuery }                      from '@acx-ui/rc/services'
 import { EdgeOltFixtures }                             from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
@@ -15,10 +14,6 @@ jest.mock('@acx-ui/edge/components', () => {
   const { forwardRef } = jest.requireActual('react')
   return {
     EdgeNokiaOltTable: forwardRef((_props, ref) => {
-      ref.current = { openAddDrawer: mockOpenAddDrawer }
-      return <div data-testid='EdgeNokiaOltTable'/>
-    }),
-    EdgeNewNokiaOltTable: forwardRef((_props, ref) => {
       ref.current = { openAddDrawer: mockOpenAddDrawer }
       return <div data-testid='EdgeNokiaOltTable'/>
     })
@@ -47,7 +42,7 @@ describe('useEdgeNokiaOltTable', () => {
 
   // eslint-disable-next-line max-len
   it('returns an object with the correct title, headerExtra, and component when isEdgeOltEnabled is true', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_OLT_MGMT_TOGGLE);
+    jest.mocked(useIsSplitOn).mockReturnValue(true);
     (useGetEdgeOltListQuery as jest.Mock).mockReturnValue({
       data: mockOltList, isLoading: false, isFetching: false
     })
@@ -65,7 +60,7 @@ describe('useEdgeNokiaOltTable', () => {
   })
 
   it('calls the handleAddOlt function when the button is clicked', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_OLT_MGMT_TOGGLE);
+    jest.mocked(useIsSplitOn).mockReturnValue(true);
     (useGetEdgeOltListQuery as jest.Mock).mockReturnValue({
       data: mockOltList, isLoading: false, isFetching: false
     })

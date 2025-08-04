@@ -8,6 +8,7 @@ import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/
 import { filterByAccess }                                 from '@acx-ui/user'
 
 import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
+import useOltTable          from '../Olt/OltTable'
 
 import useSwitchesTable from './SwitchesTable'
 
@@ -39,17 +40,22 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
     ? $t({ defaultMessage: 'Optical Switches' }) : $t({ defaultMessage: 'Wired Devices' })
 
   const edgeOltTabInfo = useEdgeNokiaOltTable()
+  const oltTabInfo = useOltTable()
 
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
   },
-  ...(isNil(edgeOltTabInfo)
+  ...(isNil(edgeOltTabInfo) || isNokiaOltEnabled
     ? []
     : [{
       key: SwitchTabsEnum.OPTICAL,
       ...edgeOltTabInfo
     }]),
+  ...(isNokiaOltEnabled ? [{
+    key: SwitchTabsEnum.OPTICAL,
+    ...oltTabInfo
+  }]: []),
   {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
