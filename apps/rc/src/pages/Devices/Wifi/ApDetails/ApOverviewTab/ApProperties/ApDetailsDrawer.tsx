@@ -38,7 +38,7 @@ import {
   useApContext,
   ApLldpNeighbor,
   ApRfNeighbor,
-  ApApPassword } from '@acx-ui/rc/utils'
+  ApPassword } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import {
   EditPortDrawer,
@@ -109,7 +109,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
   const [needGetApPassword, setNeedGetApPassword] = useState(false)
-  const [apApPassword, setApApPassword] = useState<ApApPassword>()
+  const [apPasswordParam, setApPassword] = useState<ApPassword>()
   const [showPassword, setShowPassword] = useState(false)
 
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
@@ -240,7 +240,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   useEffect(() => {
     const updateApPassword = async () => {
       const apPasswordData = await getApPassword({ params }).unwrap()
-      setApApPassword(apPasswordData)
+      setApPassword(apPasswordData)
     }
 
     if (needGetApPassword) {
@@ -254,7 +254,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     // Reset password visibility for security
     setShowPassword(false)
     setNeedGetApPassword(false)
-    setApApPassword(undefined)
+    setApPassword(undefined)
   }
 
   const displayAFCInfo = () => {
@@ -346,7 +346,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const getPasswordRegenerationMessage = () => {
     const isConnected = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
     const lastSeenTime = currentAP?.lastSeenTime
-    const expireTime = apApPassword?.expireTime
+    const expireTime = apPasswordParam?.expireTime
 
     if (!lastSeenTime || !expireTime) {
       return null
@@ -447,7 +447,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 </Button>
               ) : (
                 <>
-                  <span>{apApPassword?.apPasswords ?? apPassword}</span>
+                  <span>{apPasswordParam?.apPasswords ?? apPassword}</span>
                   {getPasswordRegenerationMessage() && (
                     <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
                       {getPasswordRegenerationMessage()}

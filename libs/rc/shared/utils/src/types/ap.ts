@@ -640,7 +640,7 @@ export interface ApUsbSettings {
   useVenueSettings: boolean
 }
 
-export interface ApApPassword {
+export interface ApPassword {
   apPasswords: string,
   expireTime: string,
   updatedTime: string

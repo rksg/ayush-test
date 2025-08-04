@@ -97,7 +97,7 @@ import {
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
   WifiNetwork,
-  ApApPassword,
+  ApPassword,
   ApJwtToken,
   ApGroupApAntennaTypeSettings,
   ApGroupApExternalAntennaSettings,
@@ -1529,7 +1529,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'USB' }]
     }),
-    getApPassword: build.query<ApApPassword, RequestPayload>({
+    getApPassword: build.query<ApPassword, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = {
           ... GetApiVersionHeader(ApiVersionEnum.v1),
