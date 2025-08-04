@@ -5,7 +5,13 @@ import {
   AFCStatus,
   ApViewModel,
   NetworkTypeEnum,
-  RadioEnum, RadioTypeEnum, WlanSecurityEnum, ApModelFamily, ApModelFamilyType
+  RadioEnum,
+  RadioTypeEnum,
+  WlanSecurityEnum,
+  ApModelFamily,
+  ApModelFamilyType,
+  ExternalAntenna,
+  ApAntennaTypeEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -314,7 +320,15 @@ export const venueCaps = {
     },
     {
       ledOn: true,
-      model: 'E510'
+      model: 'E510',
+      externalAntenna: {
+        enable24G: false,
+        enable50G: false,
+        gain24G: 3,
+        gain50G: 3,
+        supportDisable: true,
+        coupled: false
+      }
     },
     {
       ledOn: true,
@@ -5884,3 +5898,131 @@ export const mockedApModelFamilies = [
   }
 ]
 
+export const mockVenueExternalAntennas = [
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 8,
+    gain50G: 8,
+    model: 'T350SE'
+  },
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 8,
+    gain50G: 8,
+    model: 'T750SE'
+  },
+  {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 3,
+    gain50G: 3,
+    model: 'E510'
+  },
+  {
+    enable24G: true,
+    enable50G: true,
+    gain24G: 11,
+    gain50G: 14,
+    model: 'T305E'
+  },
+  {
+    enable50G: false,
+    gain50G: 5,
+    model: 'T300E'
+  }
+]
+
+export const mockApGroupExternalAntennas = {
+  externalAntennaSettings: [{
+    enable24G: true,
+    enable50G: true,
+    gain24G: 8,
+    gain50G: 8,
+    supportDisable: true,
+    coupled: false,
+    model: 'E510'
+  }] as ExternalAntenna[],
+  useVenueSettings: true
+}
+
+export const mockAntennaTypeSettings = [{ model: 'T670SN', antennaType: 'SECTOR' }]
+
+export const mockApGroupAntennaTypeSettings = {
+  useVenueSettings: true,
+  antennaTypeSettings: [
+    {
+      model: 'R760',
+      antennaType: ApAntennaTypeEnum.NARROW
+    },
+    {
+      model: 'R560',
+      antennaType: ApAntennaTypeEnum.NARROW
+    }
+  ]
+}
+
+export const mockNetworkViewModelData = {
+  fields: [
+    'description',
+    'isOweMaster',
+    'venueApGroups.apGroupIds',
+    'venueApGroups.venueId',
+    'check-all',
+    'ssid',
+    'captiveType',
+    'vlan',
+    'owePairNetworkId',
+    'name',
+    'cog',
+    'vlanPool',
+    'id',
+    'venueApGroups.isAllApGroups',
+    'dsaeOnboardNetwork',
+    'nwSubType',
+    'clientCount'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'nw-temp',
+      id: '0be9ea6fb0cd47b3add309ec2f84b153',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'nw-temp',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: '29d3d0a0d45f49a4a3ecb2592bcd6096',
+          apGroupIds: [
+            'b20e1a26eec44146b2687417ef5d7f0b',
+            'fb99f472c7d345e7828cbcf8c67e8d8e',
+            'bb16a3c5c79e4cb8a75fc25dc11f7a2e'
+          ],
+          isAllApGroups: true
+        }
+      ]
+    },
+    {
+      name: 'nw-temp-1',
+      id: '316b945113ff45b189c23e0a7f29a8f7',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'nw-temp-1',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: '29d3d0a0d45f49a4a3ecb2592bcd6096',
+          apGroupIds: [
+            'b20e1a26eec44146b2687417ef5d7f0b',
+            'fb99f472c7d345e7828cbcf8c67e8d8e',
+            'bb16a3c5c79e4cb8a75fc25dc11f7a2e'
+          ],
+          isAllApGroups: true
+        }
+      ]
+    }
+  ]
+}
