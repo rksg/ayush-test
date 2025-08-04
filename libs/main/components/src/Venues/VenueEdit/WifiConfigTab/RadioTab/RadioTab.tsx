@@ -231,7 +231,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm name='radioTab'>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
