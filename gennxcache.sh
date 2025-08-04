@@ -32,7 +32,7 @@ tar -cJf "$CACHE_PATH/nxcache.tar.xz" -C nxcachetmp .
 sudo rm -rf nxcachetmp
 
 #Update .gitmodules to point to the current feature branch
-sed -i "s/branch = .*/branch = $FEATURE_BRANCH/" .gitmodules
+sed -i "s|branch = .*|branch = $FEATURE_BRANCH|" .gitmodules
 
 #create nx cache feature branch through slack "/alto-ci createfb ACX-73320 acx-ui-cache" before execute commands below
 #commit cache
