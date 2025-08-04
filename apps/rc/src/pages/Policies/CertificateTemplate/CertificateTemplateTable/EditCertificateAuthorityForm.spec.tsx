@@ -6,7 +6,7 @@ import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
 
-import { certificateAuthorityList } from '../__test__/fixtures'
+import { certificateAuthorityList } from '../__tests__/fixtures'
 
 import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 

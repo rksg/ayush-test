@@ -7,9 +7,7 @@ import { FormattedMessage, useIntl }                                            
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
-  checkVlanDiffFromTargetVlan
-} from '@acx-ui/rc/components'
-import {
+  isFirmwareVersionAbove10010f,
   isL3FunctionSupported
 } from '@acx-ui/rc/switch/utils'
 import {
@@ -17,7 +15,6 @@ import {
   FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
-  isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
@@ -25,6 +22,9 @@ import {
   SwitchViewModel,
   SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
+import {
+  checkVlanDiffFromTargetVlan
+} from '@acx-ui/switch/components'
 
 import StaticRoutes      from './StaticRoutes'
 import { JumboModeSpan } from './styledComponents'

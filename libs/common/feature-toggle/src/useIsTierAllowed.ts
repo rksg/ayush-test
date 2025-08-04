@@ -1,4 +1,4 @@
-import { useDebugValue, useMemo } from 'react'
+import { useCallback, useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
 import _                 from 'lodash'
@@ -25,7 +25,7 @@ export function useFFList (): {
   betaList?: string[],
   featureDrawerBetaList?: string[],
   alphaList?: string[] } {
-  const { accountTier, betaEnabled, isAlphaUser } = useUserProfileContext()
+  const { accountTier, betaEnabled, isAlphaUser, isMspUser } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
   const acxAccountTier = accountTier ?? jwtPayload?.acx_account_tier
 
@@ -79,12 +79,33 @@ export function useFFList (): {
     'Default'
   ].join('-') as keyof typeof defaultConfig
 
+  const getMergedFeatureList = useCallback((...keys: string[]): string[] => {
+    const lists = keys.map(key => userFFConfig[key] ?? [])
+    return Array.from(new Set(lists.flat()))
+  }, [userFFConfig])
+
+  const betaList = betaEnabled ?
+    (
+      isMspUser
+        ? getMergedFeatureList('betaList', 'betaList-MSP')
+        : userFFConfig['betaList'] ?? []
+    ) :
+    []
+
+  const alphaList = isAlphaUser ?
+    (
+      isMspUser
+        ? getMergedFeatureList('alphaList', 'alphaList-MSP')
+        : userFFConfig['alphaList'] ?? []
+    ) :
+    []
+
   return {
     featureList: (accountVertical === AccountVertical.DEFAULT)?
       userFFConfig[featureKey] : _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
-    betaList: betaEnabled? userFFConfig['betaList'] : [],
+    betaList,
     featureDrawerBetaList: userFFConfig['betaList'],
-    alphaList: isAlphaUser ? userFFConfig['alphaList'] : []
+    alphaList
   }
 }
 
@@ -107,5 +128,5 @@ export function useIsTierAllowed (featureId: string): boolean {
 }
 
 export const useGetBetaList = (): string[] => {
-  return useFFList().featureDrawerBetaList?? []
+  return useFFList().featureDrawerBetaList ?? []
 }

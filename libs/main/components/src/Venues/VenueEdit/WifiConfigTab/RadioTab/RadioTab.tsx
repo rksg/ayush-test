@@ -3,11 +3,11 @@ import { useContext, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
-  ConfigTemplateType,
+  ConfigTemplateType, getAntennaTypePayload, getExternalAntennaPayload,
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
@@ -15,8 +15,8 @@ import {
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 
-import { useVenueConfigTemplateOpsApiSwitcher }                               from '../../../venueConfigTemplateApiSwitcher'
-import { getAntennaTypePayload, getExternalAntennaPayload, VenueEditContext } from '../../index'
+import { useVenueConfigTemplateOpsApiSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                     from '../../index'
 
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
 import { ExternalAntennaSection }         from './ExternalAntennaSection'
@@ -231,7 +231,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm name='radioTab'>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

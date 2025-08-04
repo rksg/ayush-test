@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { SpaceWrapper } from '@acx-ui/components'
 
 import PinApEdgeDiagram       from '../../../../../assets/images/personal-identity-diagrams/pin-ap-edge-vertical.svg'
 import PinApSwitchEdgeDiagram from '../../../../../assets/images/personal-identity-diagrams/pin-ap-switch-edge-vertical.svg'

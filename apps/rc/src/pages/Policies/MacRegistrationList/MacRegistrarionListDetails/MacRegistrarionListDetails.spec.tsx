@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { TierFeatures, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockServer, render, screen }                                  from '@acx-ui/test-utils'
+import { TierFeatures, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { CommonRbacUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { mockServer, render, screen }                                      from '@acx-ui/test-utils'
 
 import MacRegistrationListDetails from './MacRegistrarionListDetails'
 
@@ -111,7 +111,7 @@ describe('MacRegistrationListDetails', () => {
         (req, res, ctx) => res(ctx.json(macRegList))
       ),
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(networkList))
       ),
       rest.get(

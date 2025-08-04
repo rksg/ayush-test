@@ -16,12 +16,13 @@ import {
   useGetAllowedOperationsQuery,
   useGetTenantDetailsQuery
 } from './services'
-import { FeatureAPIResults, TenantType, UserProfile } from './types'
-import { setUserProfile, hasRoles, hasAccess }        from './userProfile'
+import { FeatureAPIResults, TenantType, UserProfile }   from './types'
+import { setUserProfile, hasRoles, hasAccess, Profile } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
   isUserProfileLoading: boolean
+  isFeatureFlagsLoading: boolean
   allowedOperations: string[]
   hasRole: typeof hasRoles
   hasAccess: typeof hasAccess
@@ -40,6 +41,7 @@ export interface UserProfileContextProps {
   betaFeaturesList?: FeatureAPIResults[]
   tenantType?: TenantType
   accountVertical?: AccountVertical
+  isMspUser?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -95,7 +97,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     undefined,
     { skip: !rbacOpsApiEnabled })
   const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op => op?.uri) || []
-  const aiOpsUri = rbacOpsApiEnabled ? getAIAllowedOperations(profile).flatMap(op => op.uri) : []
+  const aiOpsUri = rbacOpsApiEnabled
+    ? getAIAllowedOperations({ profile, abacEnabled } as Profile).flatMap((op) => op.uri)
+    : []
   const allowedOperations = [...new Set([...rcgOpsUri, ...aiOpsUri])]
 
   const getHasAllVenues = () => {
@@ -123,6 +127,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const betaStatus = earlyAcessStatus?.betaStatus
   const alphaStatus = earlyAcessStatus?.alphaStatus
   const isAlphaUser = ((betaStatus && profile?.dogfood) || !!alphaStatus)
+  /*
+    Since MSP related tenant type includes MSP, MSP_REC, MSP_NON_VAR, MSP_INTEGRATOR, MSP_INSTALLER,
+    we defined isMspUser will resolve only MSP and MSP_NON_VAR as MSP.
+    So that we can prevent MSP only features from being mistakenly open for MSP integrator.
+  */
+  const isMspUser = tenantType === TenantType.MSP || tenantType === TenantType.MSP_NON_VAR
 
   const { data: features } = useGetBetaFeatureListQuery({ params },
     { skip: !(betaStatus) || !selectedBetaListEnabled })
@@ -160,7 +170,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       selectedBetaListEnabled,
       betaFeaturesList,
       tenantType,
-      accountVertical
+      accountVertical,
+      isMspUser
     })
   }
 
@@ -168,6 +179,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data: profile,
       isUserProfileLoading: isUserProfileFetching,
+      isFeatureFlagsLoading: isFeatureFlagStatesLoading,
       allowedOperations,
       hasRole,
       isPrimeAdmin,
@@ -185,7 +197,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       selectedBetaListEnabled,
       betaFeaturesList,
       tenantType,
-      accountVertical
+      accountVertical,
+      isMspUser
     }}
     children={props.children}
   />

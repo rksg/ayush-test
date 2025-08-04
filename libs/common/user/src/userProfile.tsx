@@ -25,7 +25,7 @@ type Permission = {
   needGlobalPermission: boolean
 }
 
-type Profile = {
+export type Profile = {
   profile: UserProfile
   allowedOperations: string []
   accountTier?: string
@@ -42,7 +42,8 @@ type Profile = {
   selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[],
   tenantType?: TenantType,
-  accountVertical?: AccountVertical
+  accountVertical?: AccountVertical,
+  isMspUser?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -83,6 +84,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.venuesList = profile?.venuesList
   userProfile.betaFeaturesList = profile?.betaFeaturesList
   userProfile.accountVertical = profile?.accountVertical
+  userProfile.isMspUser = profile?.isMspUser
 }
 export const getUserName = () =>
   `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
@@ -230,10 +232,8 @@ export function hasScope (userScopes: ScopeKeys) {
   return true
 }
 
-
-export function hasRoles (roles: string | string[]) {
-  const { profile, abacEnabled } = getUserProfile()
-
+export function hasRoles (roles: string | string[], userProfile?: Profile) {
+  const { profile, abacEnabled } = userProfile || getUserProfile()
 
   if (!Array.isArray(roles)) roles = [roles]
 
