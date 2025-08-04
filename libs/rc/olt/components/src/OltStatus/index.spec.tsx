@@ -1,5 +1,5 @@
-import { OltStatusEnum }  from '@acx-ui/olt/utils'
-import { screen, render } from '@acx-ui/test-utils'
+import { OltStatusEnum, OltCageStateEnum } from '@acx-ui/olt/utils'
+import { screen, render }                  from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
 
 import { OltStatus } from './'
@@ -13,6 +13,11 @@ describe('OltStatus', () => {
   it('renders with online status and showText true', () => {
     render(<OltStatus {...validProps} />)
     expect(screen.getByText('Online')).toBeInTheDocument()
+  })
+
+  it('renders with up status and showText true', () => {
+    render(<OltStatus type='cage' status={OltCageStateEnum.UP} showText />)
+    expect(screen.getByText('UP')).toBeInTheDocument()
   })
 
   it('renders with showText true and false', () => {

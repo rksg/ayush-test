@@ -1,4 +1,4 @@
-import { OltStatusEnum } from '../'
+import { OltStatusEnum, OltCageStateEnum } from '../'
 
 export const mockOlt = {
   name: 'TestOlt',
@@ -10,9 +10,7 @@ export const mockOlt = {
   ip: '134.242.136.112',
 
   venueId: 'mock_venue_1',
-  venueName: 'Mock Venue 1',
-  edgeClusterId: 'clusterId_1',
-  edgeClusterName: 'Edge Cluster 1'
+  venueName: 'Mock Venue 1'
 }
 
 export const mockOfflineOlt = {
@@ -36,25 +34,25 @@ export const mockOltList = [
 
 export const mockOltCageList = [{
   cage: 'S1/1',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }, {
   cage: 'S1/2',
-  state: 'up'
+  state: OltCageStateEnum.UP
 }, {
   cage: 'S1/3',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }, {
   cage: 'S1/4',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }, {
   cage: 'S1/5',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }, {
   cage: 'S1/6',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }, {
   cage: 'S1/7',
-  state: 'down'
+  state: OltCageStateEnum.DOWN
 }]
 
 export const mockOnuList = [
@@ -72,7 +70,7 @@ export const mockOnuList = [
       },
       {
         portIdx: '2',
-        status: 'down',
+        status: OltCageStateEnum.DOWN,
         vlan: ['11'],
         poePower: 10
       },
@@ -91,7 +89,7 @@ export const mockOnuList = [
     portDetails: [
       {
         portIdx: '1',
-        status: 'down',
+        status: OltCageStateEnum.DOWN,
         vlan: [],
         poePower: 0
       }

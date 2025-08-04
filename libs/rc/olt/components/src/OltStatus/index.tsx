@@ -1,44 +1,58 @@
-import { Badge } from 'antd'
+import { Badge }                            from 'antd'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { OltCageStateEnum, OltStatusEnum } from '@acx-ui/olt/utils'
 import { getIntl }                         from '@acx-ui/utils'
 
-const statusMapping = (status: OltStatusEnum | OltCageStateEnum) => {
-  const { $t } = getIntl()
-  const transformedStatus = status?.toLowerCase()
+type StatusType = 'olt' | 'cage'
+type StatusValue = OltStatusEnum | OltCageStateEnum
 
-  switch (transformedStatus) {
-    case OltStatusEnum.ONLINE:
-    case OltCageStateEnum.UP:
-      return {
-        color: 'var(--acx-semantics-green-50)',
-        text: $t({ defaultMessage: 'Online' })
-      }
-    case OltStatusEnum.OFFLINE:
-    case OltCageStateEnum.DOWN:
-      return {
-        color: 'var(--acx-neutrals-50)',
-        text: $t({ defaultMessage: 'Offline' })
-      }
-    default:
-      return {
-        color: 'var(--acx-neutrals-50)',
-        text: $t({ defaultMessage: 'Unknown' })
-      }
-  }
-}
 interface OltStatusProps {
+  type?: 'olt' | 'cage'
   status: OltStatusEnum | OltCageStateEnum
   showText?: boolean
   className?: string
 }
 
+// eslint-disable-next-line max-len
+const STATUS_CONFIG: Record<StatusType, Record<string, { color: string; text: MessageDescriptor }>> = {
+  olt: {
+    [OltStatusEnum.ONLINE]: {
+      color: 'var(--acx-semantics-green-50)',
+      text: defineMessage({ defaultMessage: 'Online' })
+    },
+    [OltStatusEnum.OFFLINE]: {
+      color: 'var(--acx-neutrals-50)',
+      text: defineMessage({ defaultMessage: 'Offline' })
+    }
+  },
+  cage: {
+    [OltCageStateEnum.UP]: {
+      color: 'var(--acx-semantics-green-50)',
+      text: defineMessage({ defaultMessage: 'UP' })
+    },
+    [OltCageStateEnum.DOWN]: {
+      color: 'var(--acx-neutrals-50)',
+      text: defineMessage({ defaultMessage: 'DOWN' })
+    }
+  }
+}
+
+const getStatusInfo = (type: StatusType, status: StatusValue) => {
+  const key = status?.toLowerCase?.() ?? ''
+  return STATUS_CONFIG[type][key] ?? {
+    color: 'var(--acx-neutrals-50)',
+    text: defineMessage({ defaultMessage: 'Unknown' })
+  }
+}
+
 export const OltStatus = (props: OltStatusProps) => {
-  const { status, showText, className } = props
-  const { text, color } = statusMapping(status)
+  const { $t } = getIntl()
+  const { type = 'olt', status, showText, className } = props
+  const { color, text } = getStatusInfo(type, status)
   return <Badge
     className={className}
     color={color}
-    text={showText ? text : ''}
+    text={showText ? $t(text) : ''}
   />
 }

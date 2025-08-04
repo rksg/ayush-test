@@ -1,21 +1,17 @@
-// import { EdgeNokiaCageTable } from '@acx-ui/edge/components'
-// import { Olt, OltCage } from '@acx-ui/olt/utils'
+import { OltCageTable } from '@acx-ui/olt/components'
+import { Olt, OltCage } from '@acx-ui/olt/utils'
 
-// export const OltOLineCardTab = ({ oltData, cagesList,isLoading, isFetching }:
-//   {
-//     oltData: Olt,
-//     cagesList?: OltCage[],
-//     isLoading: boolean,
-//     isFetching: boolean
-//   }) => {
-//   return <EdgeNokiaCageTable
-//     oltData={oltData}
-//     cagesList={cagesList}
-//     isLoading={isLoading}
-//     isFetching={isFetching}
-//   />
-// }
-
-export const OltOLineCardTab = () => {
-  return <>OltOLineCardTab</>
+export const OltOLineCardTab = ({ oltDetails, oltCages, isLoading, isFetching }:
+  {
+    oltDetails: Olt,
+    oltCages?: OltCage[],
+    isLoading: boolean,
+    isFetching: boolean
+  }) => {
+  return <OltCageTable
+    oltDetails={oltDetails}
+    oltCages={oltCages}
+    isLoading={isLoading}
+    isFetching={isFetching}
+  />
 }

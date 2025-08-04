@@ -32,7 +32,7 @@ export const OltTable = (props: OltTableProps) => {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows) => {
-        const oltId = rows[0].serialNumber || rows[0].ip //TODO: confirm with BE
+        const oltId = rows[0].serialNumber
         navigate(`${linkToOLT.pathname}/${oltId}/edit`, { replace: false })
       }
       // scopeKey:

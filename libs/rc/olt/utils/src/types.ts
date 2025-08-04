@@ -20,8 +20,6 @@ export interface Olt {
 
   venueId: string
   venueName: string
-  edgeClusterId: string //TODO: remove
-  edgeClusterName: string //TODO: remove
 }
 
 export interface OltCage {

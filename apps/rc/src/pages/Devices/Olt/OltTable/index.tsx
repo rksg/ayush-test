@@ -9,6 +9,8 @@ import { TenantLink }                   from '@acx-ui/react-router-dom'
 import { filterByAccess }               from '@acx-ui/user'
 import { TABLE_QUERY_POLLING_INTERVAL } from '@acx-ui/utils'
 
+import { oltList } from '../mockdata'
+
 export default function useOltTable () {
   const { $t } = useIntl()
   const { data, isLoading, isFetching } = useGetEdgeOltListQuery({}, {
@@ -26,7 +28,7 @@ export default function useOltTable () {
       </TenantLink>
     ]),
     component: <NewOltTable
-      data={data as unknown as Olt[]} //TODO: temp
+      data={oltList as Olt[]}
       isLoading={isLoading}
       isFetching={isFetching}
     />

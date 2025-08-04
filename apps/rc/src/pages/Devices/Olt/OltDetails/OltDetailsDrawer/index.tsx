@@ -25,7 +25,7 @@ export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
     setVisible(false)
   }
 
-  const lineCardInfo = [{
+  const lineCardInfo = [{ //TODO: temp, remove when api is ready
     status: 'Online',
     model: 'LWLT-C',
     cages: 16,

@@ -10,7 +10,7 @@ import { OltDetailsDrawer } from './OltDetailsDrawer'
 
 interface OltInfoWidgetProps {
   oltDetails: Olt
-  cagesList: OltCage[] | undefined,
+  oltCages: OltCage[] | undefined,
   isLoading: boolean,
   isFetching: boolean
 }
@@ -18,16 +18,16 @@ interface OltInfoWidgetProps {
 export const OltInfoWidget = (props: OltInfoWidgetProps) => {
   const { $t } = useIntl()
   const {
-    cagesList, oltDetails, isLoading: isCageListLoading, isFetching: isCageListFetching
+    oltCages, oltDetails, isLoading: isCageListLoading, isFetching: isCageListFetching
   } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
 
   const { upCages, totalCages } = useMemo(() => {
     return {
-      upCages: cagesList?.filter(item => item.state === OltCageStateEnum.UP).length ?? 0,
-      totalCages: cagesList?.length ?? 0
+      upCages: oltCages?.filter(item => item.state === OltCageStateEnum.UP).length ?? 0,
+      totalCages: oltCages?.length ?? 0
     }
-  }, [cagesList])
+  }, [oltCages])
 
   const infoWidgetConfig = [ //mock data
     {
