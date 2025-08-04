@@ -6,6 +6,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, useDateRange, GridRow, GridCol, ProgressBarV2 } from '@acx-ui/components'
 import { formatter }                                                           from '@acx-ui/formatter'
+import { useParams }                                                           from '@acx-ui/react-router-dom'
 
 import { IdentityHealthData, useIdentityHealthQuery } from './services'
 import { ProgressBarWrapper }                         from './styledComponents'
@@ -32,6 +33,7 @@ const hasData = (progressBarData: ProgressBarData[]) => {
 export const IdentityHealth = () => {
   const { $t } = useIntl()
   const { timeRange, selectedRange } = useDateRange()
+  const { personaId: identityId, personaGroupId: identityGroupId } = useParams()
 
   const getProgressBarData = useCallback((
     identityHealthData: IdentityHealthData[] | undefined
@@ -76,7 +78,8 @@ export const IdentityHealth = () => {
     startDate: timeRange[0].format(),
     endDate: timeRange[1].format(),
     range: selectedRange,
-    filter: {}
+    filter: {},
+    identityFilter: { identityId, identityGroupId }
   })
 
   const progressBarData = useMemo(() => {
