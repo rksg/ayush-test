@@ -31,6 +31,7 @@ import { useTenantId } from '@acx-ui/utils'
 
 import StaticRoutes      from './StaticRoutes'
 import { JumboModeSpan } from './styledComponents'
+import _ from 'lodash'
 
 const spanningTreePriorityItem = [
   { label: '0 - likely root', value: 0 },
@@ -131,7 +132,7 @@ export function SwitchStackSetting (props: {
 
     if(portsData){
       const authDefaultVlanExist = portsData?.data?.some(
-        item => item?.authDefaultVlan !== undefined)
+        item => item?.authDefaultVlan !== undefined && item?.authDefaultVlan.toString() !== '')
       setAuthVlanDisabled(authDefaultVlanExist)
     }
   }, [
