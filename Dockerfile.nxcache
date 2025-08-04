@@ -1,5 +1,6 @@
 # FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
-FROM docker.io/library/node:16.14.2-alpine3.14 AS build-base
+ARG NODE_VERSION=16.14.2-alpine3.14
+FROM docker.io/library/node:${NODE_VERSION} AS build-base
 
 WORKDIR /app
 
