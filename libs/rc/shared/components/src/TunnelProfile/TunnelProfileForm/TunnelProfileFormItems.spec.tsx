@@ -13,26 +13,6 @@ import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
-// type MockSelectProps = React.PropsWithChildren<{
-//   onChange?: (value: string) => void
-//   options?: Array<{ label: string, value: unknown }>
-//   loading?: boolean
-// }>
-// jest.mock('antd', () => {
-//   const components = jest.requireActual('antd')
-//   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-//     <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
-//       {/* Additional <option> to ensure it is possible to reset value to empty */}
-//       {children ? <><option value={undefined}></option>{children}</> : null}
-//       {options?.map((option, index) => (
-//         <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-//       ))}
-//     </select>
-//   )
-//   Select.Option = 'option'
-//   return { ...components, Select }
-// })
-
 jest.mock('antd', () => ({
   ...jest.requireActual('antd'),
   Select: (props: MockSelectProps) => <MockSelect {...props}/>
