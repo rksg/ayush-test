@@ -100,15 +100,15 @@ describe('AP Group Edit Radio', () => {
         id: 'ap-1',
         name: 'AP-1',
         model: 'R760',
-        apGroupId: params.apGroupId,
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN001'
       },
       {
         id: 'ap-2',
         name: 'AP-2',
-        model: 'R560', // Fixed: Changed from 'R670' to 'R560'
-        apGroupId: params.apGroupId,
+        model: 'R560',
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN002'
       }
@@ -199,7 +199,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -240,7 +240,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -324,7 +324,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -359,7 +359,7 @@ describe('AP Group Edit Radio', () => {
         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     // eslint-disable-next-line max-len
     const customizeClientAdmissionControl = screen.getByTestId('client-admission-control-customizeSettings')

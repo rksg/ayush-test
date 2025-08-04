@@ -2,19 +2,22 @@ import { useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
-import _                         from 'lodash'
+import { get }                   from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, Tooltip }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
-import { usePingApMutation }                                                              from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages, useApContext, DiagnosisCommands } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip } from '@acx-ui/components'
+import { usePingApMutation }       from '@acx-ui/rc/services'
+import {
+  targetHostRegExp,
+  WifiTroubleshootingMessages,
+  useApContext,
+  DiagnosisCommands
+} from '@acx-ui/rc/utils'
 
 
 export function ApPingForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber, venueId } = useApContext()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()
@@ -22,16 +25,16 @@ export function ApPingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
-        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.PING } : { action: 'ping' })
+        type: DiagnosisCommands.PING
       }
       const pingApResult = await pingAp({
         params: { tenantId, serialNumber, venueId },
         payload,
-        enableRbac: isUseWifiRbacApi
+        enableRbac: true
       }).unwrap()
       if (pingApResult) {
 
-        pingForm.setFieldValue('result', _.get(pingApResult, 'response.response'))
+        pingForm.setFieldValue('result', get(pingApResult, 'response.response'))
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

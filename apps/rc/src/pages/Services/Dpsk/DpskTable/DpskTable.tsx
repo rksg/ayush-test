@@ -11,12 +11,11 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { useEnforcedStatus }                        from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useEnforcedStatus }                        from '@acx-ui/rc/components'
 import {
   useDeleteDpskMutation,
   useGetEnhancedDpskListQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -166,13 +165,11 @@ export default function DpskTable () {
 }
 
 function useColumns () {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const intl = useIntl()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkNameMap } = getNetworkListQuery({
+  const { networkNameMap } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],

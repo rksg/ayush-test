@@ -6,7 +6,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useAddApSnmpPolicyMutation,
   useGetApSnmpPolicyQuery,
@@ -34,10 +33,6 @@ type SnmpAgentFormProps = {
 const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  // eslint-disable-next-line
-
-
   const params = useParams()
   const { editMode } = props
 
@@ -46,7 +41,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const previousPath = usePolicyPreviousPath(PolicyType.SNMP_AGENT, PolicyOperation.LIST)
   const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SNMP_AGENT)
   //eslint-disable-next-line
-  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi }, { skip: !editMode })
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: true }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
@@ -104,14 +99,14 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
       const clonedData = cloneDeep(state)
       if (isDataValid(clonedData)) {
         const { policyName, ...others } = clonedData
-        const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
+        const payload = { ...others, name: policyName }
         if (!editMode) {
           await createApSnmpPolicy({
-            params, payload, enableRbac: isUseRbacApi
+            params, payload, enableRbac: true
           }).unwrap()
         } else {
           await updateApSnmpPolicy({
-            params, payload, enableRbac: isUseRbacApi
+            params, payload, enableRbac: true
           }).unwrap()
         }
 

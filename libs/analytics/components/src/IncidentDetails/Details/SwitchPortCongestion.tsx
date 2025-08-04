@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 
 import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
@@ -30,6 +31,14 @@ export const SwitchPortCongestion = (incident: Incident) => {
   const end = incident.impactedEnd || incident.endTime
   const buffer = getTimeseriesBuffer(start, end)
 
+  // Calculate granularity based on incident duration
+  const duration = moment.duration(moment(end).diff(moment(start)))
+  const durationHours = duration.asHours()
+
+  // For incidents less than 24 hours, use PT5M directly
+  // For longer incidents, let the default granularity calculation handle it
+  const granularityOverride = durationHours < 24 ? 'PT5M' : undefined
+
   return isEnabled ? <>
     <IncidentHeader incident={incident} />
     <GridRow>
@@ -51,6 +60,7 @@ export const SwitchPortCongestion = (incident: Incident) => {
           incident={incident}
           charts={timeSeriesCharts}
           buffer={buffer}
+          minGranularity={granularityOverride}
         />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
