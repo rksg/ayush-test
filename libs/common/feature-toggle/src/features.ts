@@ -61,6 +61,7 @@ export enum Features {
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
   EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
+  EDGE_IPSEC_VXLAN_TOGGLE = 'edge-ipsec-vxlan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -334,6 +335,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
   EDGE_DELEGATION = 'EDGE-DELEGATION',
+  EDGE_IPSEC_VXLAN = 'EDGE-IPSEC-VXLAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
