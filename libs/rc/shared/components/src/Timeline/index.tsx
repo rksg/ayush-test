@@ -157,19 +157,7 @@ export const Timeline = (props: TimelineProps) => {
       ))
     } else {
       // If no Port Configuration, keep at least 1 Port Status item
-      let firstMatchKept = false
-      filteredItems = items.filter(item => {
-        const isMatch = item.status === 'SUCCESS' &&
-            /Update Switch .* Port Status/.test(item.description)
-        if (isMatch) {
-          if (!firstMatchKept) {
-            firstMatchKept = true
-            return true // Keep the first match
-          }
-          return false // Filter out subsequent matches
-        }
-        return true // Keep non-matches
-      })
+      filteredItems = items
     }
 
     return filteredItems.map((item, index) => [
