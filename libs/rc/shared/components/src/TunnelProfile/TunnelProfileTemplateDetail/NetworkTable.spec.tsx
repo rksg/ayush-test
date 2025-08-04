@@ -13,7 +13,7 @@ describe('TunnelProfileTemplateDetail - NetworkTable', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        ConfigTemplateUrlsInfo.getNetworkTemplateListRbac.url,
         (req, res, ctx) => res(ctx.json(mockedNetworkViewData))
       )
     )
@@ -36,7 +36,7 @@ describe('TunnelProfileTemplateDetail - NetworkTable', () => {
     expect(await screen.findByText('Network Template')).toBeVisible()
     expect(screen.getByText('Type')).toBeVisible()
     expect(screen.getByText('Venues Template')).toBeVisible()
-    expect(screen.getByRole('row', { name: 'TestNetwork1 Dynamic Pre-Shared Key (DPSK) 1' })).toBeVisible()
-    expect(screen.getByRole('row', { name: 'TestNetwork2 Dynamic Pre-Shared Key (DPSK) 1' })).toBeVisible()
+    expect(screen.getByRole('row', { name: 'TestNetwork1 Dynamic Pre-Shared Key (DPSK) 0' })).toBeVisible()
+    expect(screen.getByRole('row', { name: 'TestNetwork2 Dynamic Pre-Shared Key (DPSK) 0' })).toBeVisible()
   })
 })
