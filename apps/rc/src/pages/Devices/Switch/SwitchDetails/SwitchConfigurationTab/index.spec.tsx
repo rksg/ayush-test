@@ -21,7 +21,7 @@ jest.mock('./SwitchConfigBackupTable', () => ({
     <div data-testid={'rc-SwitchConfigBackupTable'} title='SwitchConfigBackupTable' />
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   SwitchConfigHistoryTable: () =>
     <div data-testid={'rc-SwitchConfigHistoryTable'} title='SwitchConfigHistoryTable' />
 }))

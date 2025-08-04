@@ -114,6 +114,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getApClientAdmissionControlSettings_v1_1: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApClientAdmissionControlSettings_v1_1: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getApGroupClientAdmissionControlSettings: {
     method: 'get',
     url: '/venues/:venueId/apGroups/:apGroupId/apClientAdmissionControlSettings',
