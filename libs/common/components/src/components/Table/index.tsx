@@ -215,7 +215,8 @@ function Table <RecordType extends Record<string, any>> ({
   }, [onFilterChange])
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.trim().length >= MIN_SEARCH_LENGTH) {
+    const trimmedSearch = searchValue.trim()
+    if(trimmedSearch.length === 0 || trimmedSearch.length >= MIN_SEARCH_LENGTH) {
       updateSearch()
     }
     return () => updateSearch.cancel()
