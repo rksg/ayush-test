@@ -2,7 +2,7 @@
 
 AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
 
-PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ' | tr ',' ' ')
+PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ')
 
 if [ -z "$PROJECT_LIST" ]; then
   echo "No affected projects to lint."
