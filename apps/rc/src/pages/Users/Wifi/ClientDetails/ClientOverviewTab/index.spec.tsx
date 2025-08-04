@@ -465,7 +465,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       }
 
       it('should render historical client correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         render(<Provider>
           <ClientProperties
             clientDetails={clientDetails as unknown as Client}
@@ -481,7 +480,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client without some data correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
             (_, res, ctx) => res(ctx.json({
@@ -520,8 +518,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (guest) correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-
         mockServer.use(
           rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
@@ -585,7 +581,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
