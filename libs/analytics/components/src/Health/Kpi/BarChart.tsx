@@ -29,6 +29,17 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   ])) as [number, number][]
 }
 
+/**
+ * For the Druid query, the endDate is exclusive, so if the endDate with timezone is the start of the day, we need to query one more day
+ * @param endDate - the endDate in UTC
+ * @returns
+ */
+export const needToQueryOneMoreDay = (endDate: string) => {
+  const dateInTimeZone = moment(endDate).tz(moment.tz.guess())
+  const startOfDay = dateInTimeZone.clone().startOf('day')
+  return dateInTimeZone.isSame(startOfDay)
+}
+
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data as number / 100) : noDataDisplay
 
@@ -44,7 +55,8 @@ function BarChart ({
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
-  const startDate = moment(endDate).subtract(6, 'd').tz('UTC').format()
+  const startDate = moment(endDate).subtract(
+    needToQueryOneMoreDay(endDate) ? 7 : 6, 'd').tz('UTC').format()
 
   // Evaluate the enableSwitchFirmwareFilter function to avoid non-serializable value in Redux
   const evaluatedEnableSwitchFirmwareFilter =

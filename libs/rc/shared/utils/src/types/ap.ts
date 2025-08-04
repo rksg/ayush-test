@@ -640,6 +640,12 @@ export interface ApUsbSettings {
   useVenueSettings: boolean
 }
 
+export interface ApPassword {
+  apPasswords: string,
+  expireTime: string,
+  updatedTime: string
+}
+
 export interface ApBandModeSettings {
   bandMode: BandModeEnum,
   useVenueSettings: boolean
