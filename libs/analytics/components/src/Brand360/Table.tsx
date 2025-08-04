@@ -178,6 +178,25 @@ export function BrandTable ({
         key: 'accountTier',
         fixed: 'left',
         filterable: true,
+        filterCustomOptions: (() => {
+          const uniqueAccountTiers = [...new Set(
+            tableData.map(item => item.accountTier)
+          )].filter(Boolean)
+          return uniqueAccountTiers.map(tier => {
+            const label = tier === MspEcTierEnum.Essentials
+              ? $t({ defaultMessage: 'Essentials' })
+              : tier === MspEcTierEnum.Professional
+                ? $t({ defaultMessage: 'Professional' })
+                : tier === MspEcTierEnum.Core
+                  ? $t({ defaultMessage: 'Core' })
+                  : tier
+            return {
+              key: tier,
+              value: tier,
+              label
+            }
+          })
+        })(),
         sorter: { compare: sortProp('accountTier', defaultSort) },
         render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
           return row.accountTier === MspEcTierEnum.Essentials

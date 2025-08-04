@@ -43,7 +43,6 @@ export interface BrandVenuesSLA {
   timeToConnectSLA: [number| null, number| null]
   clientThroughputSLA: [number| null, number| null]
   connectionSuccessSLA: [number| null, number| null]
-  accountTier: string
 }
 const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilter) => {
   const {
@@ -125,7 +124,6 @@ export const api = dataApi.injectEndpoints({
             connectionSuccessSLA
             onlineApsSLA
             onlineSwitchesSLA
-            accountTier
           }
         }
         `,
