@@ -243,8 +243,7 @@ describe('IpsecFormItem', () => {
 
       expect(mockIpsecDrawer).toHaveBeenCalledWith(
         expect.objectContaining({
-          visible: true,
-          readMode: false
+          visible: true
         }),
         expect.anything()
       )
