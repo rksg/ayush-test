@@ -23,30 +23,9 @@ RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
 
-# Install dependencies
-COPY package.json package-lock.json ./
-
-COPY patches ./patches
-COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
+COPY . .
 RUN npm install
-
-COPY .eslintignore \
-  .eslintrc.json \
-  babel.config.json \
-  jest.config.ts \
-  jest.preset.ts \
-  jest.setup.js \
-  jest.build.setup.js \
-  nx.json \
-  webpack.config.base.js \
-  tsconfig.base.json \
-  workspace.json \
-  ./
-
-COPY .storybook ./.storybook
-COPY .git ./.git
-COPY apps ./apps
-COPY libs ./libs
+RUN npx nx print-affected --base=origin/master --select=projects > /tmp/diff.txt
 
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
@@ -75,7 +54,9 @@ RUN source ${ENV_FILE} \
 
 ###############################################################
 FROM build-base as acx-ui-lint
-RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+COPY run-lint-affected.sh /app/run-lint-affected.sh
+RUN chmod +x /app/run-lint-affected.sh
+RUN /app/run-lint-affected.sh
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
@@ -104,10 +85,9 @@ COPY --from=build /app/dist/apps ./dist/apps
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
-RUN npx nx print-affected --base=origin/master --select=projects > /tmp/diff.txt
-COPY run-tests.sh /app/run-tests.sh
-RUN chmod +x /app/run-tests.sh
-RUN /app/run-tests.sh
+COPY run-tests-affected.sh /app/run-tests-affected.sh
+RUN chmod +x /app/run-tests-affected.sh
+RUN /app/run-tests-affected.sh
 
 RUN find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} +
 RUN if [ -d ./coverage ]; then \

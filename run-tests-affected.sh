@@ -6,7 +6,7 @@ AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
 
 PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ' | tr ',' ' ')
 
-echo "Parsed project list: $PROJECT_LIST"
+echo "Testing affected projects: $PROJECT_LIST"
 
 for project in $PROJECT_LIST; do
   echo "Running test for project: $project"
