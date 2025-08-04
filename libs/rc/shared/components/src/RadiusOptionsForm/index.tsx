@@ -163,9 +163,9 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 disabled={disabled}
                 onChange={handleChanged} />}
             />
-            <div>
+            <label>
               {$t({ defaultMessage: 'Seconds' })}
-            </div>
+            </label>
           </Space>
         </Form.Item>
         <Form.Item required label={$t({ defaultMessage: 'NAS Max Retries' })}>
@@ -186,9 +186,9 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 disabled={disabled}
                 onChange={handleChanged}/>}
             />
-            <div>
+            <label>
               {$t({ defaultMessage: 'Retries' })}
-            </div>
+            </label>
           </Space>
         </Form.Item>
         <Form.Item required label={$t({ defaultMessage: 'NAS Reconnect Primary' })}>
@@ -209,9 +209,9 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 disabled={disabled}
                 onChange={handleChanged}/>}
             />
-            <div>
+            <label>
               {$t({ defaultMessage: 'Minutes' })}
-            </div>
+            </label>
           </Space>
         </Form.Item>
       </Space>
@@ -230,7 +230,9 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
       {showSingleSessionIdAccounting &&
         <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr' }} >
           <Space>
-            {$t({ defaultMessage: 'Single Session ID Accounting' })}
+            <label>
+              {$t({ defaultMessage: 'Single Session ID Accounting' })}
+            </label>
             <Tooltip
             // eslint-disable-next-line max-len
               title={$t({ defaultMessage: 'Enabling this feature allows the APs to maintain one accounting session for a client roaming between APs. If the client roams from one AP to another, the accounting session ID and statistics will be carried while roaming from one AP to the other.' })}
