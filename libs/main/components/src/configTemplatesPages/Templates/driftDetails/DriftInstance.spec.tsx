@@ -20,20 +20,13 @@ describe('DriftInstance Component', () => {
     templateId: '12345',
     instanceName: 'Test Instance',
     instanceId: '12345',
-    updateSelection: mockUpdateSelection
+    updateSelection: mockUpdateSelection,
+    getDriftReport: jest.fn(),
+    isLoading: false
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    store.dispatch(configTemplateApi.util.resetApiState())
-
-    mockServer.use(
-      rest.get(
-        ConfigTemplateUrlsInfo.getDriftReport.url,
-        (req, res, ctx) => res(ctx.json(mockedDriftResponse))
-      )
-    )
   })
 
   it('renders the checkbox with the correct initial checked state', async () => {
@@ -59,11 +52,13 @@ describe('DriftInstance Component', () => {
   })
 
   it('triggers data loading when collapse is expanded', async () => {
-    render(<Provider><DriftInstance {...defaultProps} /></Provider>)
+    render(<Provider><DriftInstance
+      {...defaultProps}
+      getDriftReport={jest.fn().mockResolvedValue({ data: mockedDriftResponse })}
+      isLoading={false}
+    /></Provider>)
 
     await userEvent.click(await screen.findByText(new RegExp(defaultProps.instanceName)))
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText(mockedDriftResponse[0].diffName)).toBeInTheDocument()
   })
