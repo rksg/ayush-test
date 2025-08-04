@@ -10,18 +10,20 @@ import {
   Loader,
   NoData
 } from '@acx-ui/components'
+import { UseQueryResult } from '@acx-ui/types'
+import { getIntl }        from '@acx-ui/utils'
 
-import { ContentSwitcherWrapper } from '../../styledComponents'
-import { Mdu360TabProps }         from '../../types'
+import { useClientExperienceTimeseriesQuery } from '../../services'
+import { ContentSwitcherWrapper }             from '../../styledComponents'
+import { Mdu360TabProps, SLAKeys }            from '../../types'
+import { slaConfigWithData }                  from '../SLA/config'
+import { SLAConfigWithData, SLAData }         from '../SLA/types'
 
-import {
-  FranchisorTimeseries,
-  useClientExperienceTimeseriesQuery
-} from './services'
-import Sparkline                                               from './Sparkline'
-import StarRating                                              from './StarRating'
-import { StarRatingContainer, SparklineContainer }             from './styledComponents'
-import { getConfig, getPercentage, getSparklineData, SLAKeys } from './utils'
+import Sparkline                                   from './Sparkline'
+import StarRating                                  from './StarRating'
+import { StarRatingContainer, SparklineContainer } from './styledComponents'
+import { FranchisorTimeseries }                    from './types'
+import { getPercentage, getSparklineData }         from './utils'
 
 interface SLA {
   title: string
@@ -33,8 +35,6 @@ interface SLA {
   shortText?: string
 }
 
-const config = getConfig()
-
 const slaKeysToShow: SLAKeys[] = [
   SLAKeys.connectionSuccessSLA,
   SLAKeys.timeToConnectSLA,
@@ -43,16 +43,24 @@ const slaKeysToShow: SLAKeys[] = [
 
 type SlaMap = Record<SLAKeys, SLA>
 
-const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
+const getSlaMap = (
+  data: FranchisorTimeseries | undefined,
+  slaConfig: SLAConfigWithData[]
+): SlaMap => {
   if (!data) return {} as SlaMap
 
+  const { $t } = getIntl()
   const sla: Record<SLAKeys, SLA> = {} as SlaMap
+  const config = slaConfig.reduce((acc, threshold) => {
+    acc[threshold.slaKey] = threshold
+    return acc
+  }, {} as Record<SLAKeys, SLAConfigWithData>)
 
   const { errors, time, ...slaData } = data
   Object.entries(slaData).forEach(([key, value]) => {
     const slaKey = key as SLAKeys
     const percentage = getPercentage(value)
-    if (percentage.percentage) {
+    if (percentage.percentage && config[slaKey]) {
       const {
         title,
         shortText
@@ -60,7 +68,7 @@ const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
       sla[slaKey] = ({
         ...percentage,
         shortText,
-        title,
+        title: $t(title),
         data: value
       })
     }
@@ -69,7 +77,15 @@ const getSlaMap = (data: FranchisorTimeseries | undefined): SlaMap => {
   return sla
 }
 
-const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
+interface ClientExperienceProps {
+  filters: Mdu360TabProps
+  slaQueryResults: UseQueryResult<SLAData>
+}
+
+const ClientExperience = ({
+  filters,
+  slaQueryResults
+}: ClientExperienceProps) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end } = filters
 
@@ -78,8 +94,11 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
     end
   })
 
-  const slaData = getSlaMap(queryResults.data)
-  const sla = slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
+  const sla = useMemo(() => {
+    const slaConfig = slaConfigWithData(slaQueryResults.data ?? {} as SLAData)
+    const slaData = getSlaMap(queryResults.data, slaConfig)
+    return slaKeysToShow.map((key) => slaData[key]).filter(Boolean)
+  }, [queryResults.data, slaQueryResults.data])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = useMemo(
     () => [
@@ -128,7 +147,7 @@ const ClientExperience = ({ filters }: { filters: Mdu360TabProps }) => {
   )
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults, slaQueryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}>
         <AutoSizer>
           {({ height, width }) => (
