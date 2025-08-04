@@ -1,5 +1,5 @@
-import { SwitchVeTable }   from '@acx-ui/rc/components'
 import { SwitchViewModel } from '@acx-ui/rc/utils'
+import { SwitchVeTable }   from '@acx-ui/switch/components'
 
 export function SwitchOverviewRouteInterfaces (props: {
   switchDetail?: SwitchViewModel

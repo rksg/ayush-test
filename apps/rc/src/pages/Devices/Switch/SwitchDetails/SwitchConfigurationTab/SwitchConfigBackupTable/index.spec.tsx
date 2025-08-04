@@ -26,8 +26,9 @@ jest.mock('@acx-ui/utils', () => ({
   handleBlobDownloadFile: jest.fn()
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
+jest.mock('@acx-ui/rc/common/components', () => ({
+  CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />,
+  ImportFileDrawer: () => <div data-testid='ImportFileDrawer' />
 }))
 
 const mockedSwitchDetail = {
