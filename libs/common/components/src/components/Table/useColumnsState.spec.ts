@@ -216,4 +216,49 @@ describe('useColumnsState', () => {
     expect(getItem).toHaveBeenCalledWith(settingsId)
     expect(setItem).not.toHaveBeenCalled()
   })
+
+  it('resets to initialState when all columns are deselected', () => {
+    const settingsId = 'settings-id'
+    const onChange = jest.fn()
+    const options: Options = {
+      settingsId,
+      columns,
+      columnState: { onChange }
+    }
+
+    const setItem = jest.spyOn(localStorage, 'setItem').mockImplementation(() => {})
+
+    const { result } = renderHook(useColumnsState, { initialProps: options })
+
+    // Create a state where all columns are deselected
+    const allDeselectedState = {
+      col1: { order: 0, fixed: 'left', show: false, disable: true },
+      col2: { order: 1, fixed: undefined, show: false, disable: false },
+      col3: { order: 2, fixed: undefined, show: false, disable: true },
+      col4: { order: 3, fixed: undefined, show: false, disable: false },
+      col5: { order: 4, fixed: undefined, show: false, disable: false }
+    }
+
+    act(() => {
+      result.current.onChange(allDeselectedState)
+    })
+
+    // Should store initialState instead of the all-deselected state
+    const expectedInitialState = {
+      col1: { order: 0, fixed: 'left', show: true, disable: true },
+      col2: { order: 1, fixed: undefined, show: true, disable: false },
+      col3: { order: 2, fixed: undefined, show: true, disable: true },
+      col4: { order: 3, fixed: undefined, show: false, disable: false },
+      col5: { order: 4, fixed: undefined, show: true, disable: false }
+    }
+
+    expect(setItem).toHaveBeenCalledWith(settingsId, JSON.stringify(expectedInitialState))
+    expect(onChange).toHaveBeenCalledWith({
+      col1: true,
+      col2: true,
+      col3: true,
+      col4: false,
+      col5: true
+    })
+  })
 })

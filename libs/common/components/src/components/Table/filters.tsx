@@ -11,14 +11,14 @@ import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import type { Filter }                                                    from '@acx-ui/types'
+import type { Filter, TableColumn }                                       from '@acx-ui/types'
 import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
-import type { TableColumn, RecordWithChildren } from './types'
+import type { RecordWithChildren } from './types'
 
 
 export const MIN_SEARCH_LENGTH = 2
@@ -102,7 +102,7 @@ export function getFilteredData <RecordType> (
         return false
       }
     }
-    if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
+    if (searchValue && searchValue.trim().length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         const target = row[column.dataIndex as keyof RecordType]
         return typeof target === 'string' && target

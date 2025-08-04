@@ -2,8 +2,8 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import { rest }         from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi, policyApi, softGreApi }                      from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, softGreApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   ClientIsolationUrls,
@@ -47,6 +47,11 @@ const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+const mockedUseIsConfigTemplateEnabledByType = jest.fn()
+jest.mock('../configTemplates', () => ({
+  useIsConfigTemplateEnabledByType: () => mockedUseIsConfigTemplateEnabledByType()
 }))
 
 describe('Network utils test', () => {
@@ -366,12 +371,10 @@ describe('Network utils test', () => {
   describe('useServicePolicyEnabledWithConfigTemplate', () => {
     beforeEach(() => {
       jest.restoreAllMocks()
+      mockedUseIsConfigTemplateEnabledByType.mockReturnValue(true)
     })
 
     it('should return false if neither policy nor service config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -381,9 +384,6 @@ describe('Network utils test', () => {
     })
 
     it('should return true if policy config template and policy enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -393,9 +393,6 @@ describe('Network utils test', () => {
     })
 
     it('should return true if service config template and service enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -405,9 +402,6 @@ describe('Network utils test', () => {
     })
 
     it('should return true if it is not a config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
       // eslint-disable-next-line max-len

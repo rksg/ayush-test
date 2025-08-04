@@ -1,5 +1,4 @@
-import { rest }     from 'msw'
-import { Path, To } from 'react-router-dom'
+import { rest } from 'msw'
 
 import { venueApi, policyApi } from '@acx-ui/rc/services'
 import {
@@ -21,35 +20,18 @@ import {
 
 import LbsServerProfileDetail from './LbsServerProfileDetail'
 
-
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/' + mockedTenantId,
-  search: '',
-  hash: ''
-}
-
 const detailPath = '/:tenantId/t/' + getPolicyRoutePath({
   type: PolicyType.LBS_SERVER_PROFILE,
   oper: PolicyOperation.DETAIL
 })
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (to: To): Path => {
-    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
-  }
-}))
 
 describe('LbsServerProfileDetail', () => {
   const mockParams = { tenantId: mockedTenantId, policyId: mockedPolicyId1 }
-  const mockDeleteFn = jest.fn()
 
   beforeEach(async () => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(policyApi.util.resetApiState())
-    mockDeleteFn.mockClear()
 
     mockServer.use(
       rest.post(

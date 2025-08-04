@@ -5,7 +5,7 @@ import { CertificateUrls }                                       from '@acx-ui/r
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { scepKeys } from '../__test__/fixtures'
+import { scepKeys } from '../__tests__/fixtures'
 
 import ScepTable from './ScepTable'
 

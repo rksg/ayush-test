@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,8 +12,18 @@ import { ApNetworksTab } from '.'
 
 jest.mock('socket.io-client')
 
-const list = {
-  totalCount: 10,
+
+const rbacApList = {
+  data: [{
+    name: 'ap1',
+    serialNumber: 'ap-id',
+    venueId: 'venue-1',
+    apGroupId: 'apGroup-1'
+  }]
+}
+
+const rbacNetworkList = {
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -48,8 +58,16 @@ describe('Networks Table', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApNetworkList.url,
-        (_req, res, ctx) => res(ctx.json(list))
+        CommonRbacUrlsInfo.getApsList.url,
+        (_req, res, ctx) => res(ctx.json(rbacApList))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_req, res, ctx) => res(ctx.json(rbacNetworkList))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [{ id: 'vlanPool_id', name: 'test' }] }))
       )
     )
   })

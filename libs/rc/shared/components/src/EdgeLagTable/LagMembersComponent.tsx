@@ -4,11 +4,13 @@ import _                                             from 'lodash'
 import { useIntl }                                   from 'react-intl'
 
 import { StepsForm, Subtitle } from '@acx-ui/components'
+import { Features }            from '@acx-ui/feature-toggle'
 import { formatter }           from '@acx-ui/formatter'
 import {
   EdgeLag,
   EdgePort,
-  getEdgePortDisplayName
+  getEdgePortDisplayName,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 
 interface LagMembersComponentProps {
@@ -24,6 +26,8 @@ export const LagMembersComponent = (props: LagMembersComponentProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { value, data, portList, existedLagList, lagEnabled } = props
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const getUseableLagMembers = (portList?: EdgePort[]) => {
     return portList?.filter(port =>
@@ -92,20 +96,28 @@ export const LagMembersComponent = (props: LagMembersComponentProps) => {
       lagMembers: updatedMembers
     }
 
-    // check if need to reset core port enabled
-    let isLagMemberPortHasCorePort = false
-    for(let idx = 0; idx < updatedMembers.length; idx++) {
-      if (_.find(portList, { id: updatedMembers[idx].portId })?.corePortEnabled) {
-        isLagMemberPortHasCorePort = true
-        break
-      }
+    const currentLagId = form.getFieldValue('id') as EdgeLag['id']
+    const currentLag = existedLagList?.find(lag => lag.id === currentLagId)
+
+    // Helper function to check if any lag member has a specific port property enabled
+    const hasLagMemberWithProperty = (property: 'corePortEnabled' | 'accessPortEnabled') => {
+      return updatedMembers.some(member =>
+        _.find(portList, { id: member.portId })?.[property]
+      )
     }
 
-    const currentLadId = form.getFieldValue('id') as EdgeLag['id']
-    const initialCorePortEnabled = existedLagList
-      ?.find(lag => lag.id === currentLadId)?.corePortEnabled
-    if (!isLagMemberPortHasCorePort && !initialCorePortEnabled) {
+    // Check if need to reset core port enabled
+    const initialCorePortEnabled = hasLagMemberWithProperty('corePortEnabled')
+    if (!initialCorePortEnabled && !currentLag?.corePortEnabled) {
       updateValues.corePortEnabled = false
+    }
+
+    // Check if need to reset access port enabled
+    if (isEdgeCoreAccessSeparationReady) {
+      const initialAccessPortEnabled = hasLagMemberWithProperty('accessPortEnabled')
+      if (!initialAccessPortEnabled && !currentLag?.accessPortEnabled) {
+        updateValues.accessPortEnabled = false
+      }
     }
 
     form.setFieldsValue(updateValues)

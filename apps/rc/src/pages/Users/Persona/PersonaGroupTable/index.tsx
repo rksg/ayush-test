@@ -3,9 +3,9 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                       from '@acx-ui/icons'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DownloadOutlined }          from '@acx-ui/icons'
 import {
   DpskPoolLink,
   IdentityGroupLink,
@@ -32,6 +32,7 @@ import {
 } from '@acx-ui/rc/services'
 import { PersonaGroup, PersonaUrls, doProfileDelete, useIsEdgeFeatureReady }    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
+import type { TableColumn }                                                     from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier } from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping,
   FILTER, SEARCH, useTableQuery }         from '@acx-ui/utils'

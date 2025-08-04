@@ -4,9 +4,10 @@ import { Button, Form, Select, Space, Switch, Typography } from 'antd'
 import { isEqual }                                         from 'lodash'
 import { useIntl }                                         from 'react-intl'
 
-import { AnchorContext, Loader, StepsFormLegacy }          from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { PROFILE_MAX_COUNT, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { PROFILE_MAX_COUNT }                      from '@acx-ui/rc/components'
 import {
   useGetSyslogPolicyTemplateListQuery,
   useGetVenueSyslogApQuery,

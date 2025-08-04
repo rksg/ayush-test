@@ -13,7 +13,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   policySetList,
   prioritizedPolicies
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 
 import { AdaptivePolicySetForm } from '.'
 

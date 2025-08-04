@@ -78,19 +78,11 @@ export const compareVersions = (a?: string, b?: string): number => {
   return 0
 }
 
-export const isBetaFirmware = (category: FirmwareCategory): boolean => {
-  return category.toUpperCase() === FirmwareCategory.BETA.toUpperCase()
-}
-
 // eslint-disable-next-line max-len
 const typeIsApFunc = (value: FirmwareVenueVersion) => value && value.type && value.type === FirmwareType.AP_FIRMWARE_UPGRADE
 
 export const getApVersion = (venue: FirmwareVenue): string | undefined => {
   return getApFieldInVersions(venue, 'version')
-}
-
-export const getApSequence = (venue: FirmwareVenue): number | undefined => {
-  return getApFieldInVersions(venue, 'sequence')
 }
 
 // eslint-disable-next-line max-len

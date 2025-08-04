@@ -13,7 +13,8 @@ import {
   Table,
   TableProps,
   Tabs,
-  Tooltip
+  Tooltip,
+  SpaceWrapper
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
@@ -32,7 +33,7 @@ import {
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
 import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                                       from '@acx-ui/rc/components'
+import { MspSubscriptionUtilizationWidget }                                                                                     from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,

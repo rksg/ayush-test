@@ -442,7 +442,7 @@ describe('ImpactedSwitchPortFlap', () => {
         'Port Type',
         'VLAN',
         'PoE Detail',
-        'Remote Device Port Type',
+        'Remote Device Type',
         'Remote Device Port',
         'Remote Device Name',
         'Last Flap Time Stamp'

@@ -14,8 +14,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { fakeNotificationList, privilegeGroupList } from './__tests__/fixtures'
-import { RecipientDialogProps }                     from './RecipientDialog'
+import { fakeNotificationList, paginatedFakeNotificationList, privilegeGroupList } from './__tests__/fixtures'
+import { RecipientDialogProps }                                                    from './RecipientDialog'
 
 import NotificationList from './index'
 
@@ -66,6 +66,10 @@ describe('Notification List', () => {
         AdministrationUrlsInfo.getNotificationRecipients.url,
         (req, res, ctx) => res(ctx.json(fakeNotificationList))
       ),
+      rest.post(
+        AdministrationUrlsInfo.getNotificationRecipientsPaginated.url,
+        (req, res, ctx) => res(ctx.json(paginatedFakeNotificationList))
+      ),
       rest.delete(
         AdministrationUrlsInfo.deleteNotificationRecipient.url,
         (req, res, ctx) => res(ctx.status(202))
@@ -78,6 +82,18 @@ describe('Notification List', () => {
   })
 
   it('should create notification recipient successfully', async () => {
+    render(
+      <Provider>
+        <NotificationList />
+      </Provider>, {
+        route: { params }
+      })
+    const row = await screen.findAllByRole('row', { name: /testUser/i })
+    expect(row.length).toBe(3)
+  })
+
+  it('should create notification recipient with paginated API successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE)
     render(
       <Provider>
         <NotificationList />

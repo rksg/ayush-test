@@ -7,9 +7,9 @@ import { EdgeClusterStatus, EdgeGeneralFixtures, useIsEdgeFeatureReady } from '@
 import { render, screen }                                                from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { transformFromApiToFormData } from '../utils'
 
-import { SubInterfaceForm }           from './SubInterfaceForm'
-import { transformFromApiToFormData } from './utils'
+import { SubInterfaceForm } from './SubInterfaceForm'
 
 jest.mock('../SubInterfaceSettings/SubInterfaceSettingsForm', () => ({
   SubInterfaceSettingsForm: () => <div data-testid='SubInterfaceSettingsForm' />

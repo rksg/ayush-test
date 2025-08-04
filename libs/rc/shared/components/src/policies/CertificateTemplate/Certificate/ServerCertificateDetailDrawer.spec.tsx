@@ -1,7 +1,7 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { serverCertificate } from '../__test__/fixtures'
+import { serverCertificate } from '../__tests__/fixtures'
 
 import { ServerCertificateDetailDrawer } from './ServerCertificateDetailDrawer'
 

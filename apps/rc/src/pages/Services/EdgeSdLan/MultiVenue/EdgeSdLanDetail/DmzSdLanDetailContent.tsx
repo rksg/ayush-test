@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Card, SummaryCard, Tabs }                                    from '@acx-ui/components'
-import { EdgeServiceStatusLight, SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
+import { Card, SummaryCard, Tabs, SpaceWrapper }        from '@acx-ui/components'
+import { EdgeServiceStatusLight, SdLanTopologyDiagram } from '@acx-ui/rc/components'
 import {
   EdgeMvSdLanViewData,
   getPolicyDetailsLink,
