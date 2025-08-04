@@ -304,6 +304,8 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
+  WIFI_AP_PASSWORD_PER_AP_TOGGLE = 'wifi-ap-password-per-ap-toggle',
+  WIFI_AP_PASSWORD_VISIBILITY_TOGGLE = 'wifi-ap-password-visibility-toggle',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
   EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
