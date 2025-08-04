@@ -1,3 +1,4 @@
 [submodule "nxcache"]
 	path = nxcache
 	url = ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui-cache.git
+	branch = ACX-93299
