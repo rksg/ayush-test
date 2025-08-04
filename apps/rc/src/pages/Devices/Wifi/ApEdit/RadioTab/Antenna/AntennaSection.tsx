@@ -5,17 +5,25 @@ import { cloneDeep, find } from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { ApAntennaTypeSelector }                  from '@acx-ui/rc/components'
+import { AnchorContext, Loader, showActionModal }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { ApAntennaTypeSelector }                                                        from '@acx-ui/rc/components'
 import {
   useLazyGetApAntennaTypeSettingsQuery,
+  useLazyGetApAntennaTypeSettingsV1001Query,
+  useLazyGetApGroupAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
-  useUpdateApAntennaTypeSettingsMutation
+  useUpdateApAntennaTypeSettingsMutation, useUpdateApAntennaTypeSettingsV1001Mutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import {
+  ApAntennaTypeEnum,
+  ApAntennaTypeSettings,
+  ApAntennaTypeSettingsV1001,
+  VenueApAntennaTypeSettings
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
+import { VenueOrApGroupSettingsHeader } from '../../VenueOrApGroupSettingsHeader'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 export type paramsType = {
@@ -25,7 +33,8 @@ export type paramsType = {
 }
 
 export function AntennaSection () {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const { $t } = useIntl()
   const {
@@ -43,18 +52,23 @@ export function AntennaSection () {
 
   const isUseVenueSettingsRef = useRef<boolean>(true)
   const venueAntennaTypeRef = useRef<VenueApAntennaTypeSettings>()
-  const customAntennaTypeRef = useRef<ApAntennaTypeSettings>()
+  const customAntennaTypeRef = useRef<ApAntennaTypeSettings | ApAntennaTypeSettingsV1001>()
   const paramsRef = useRef<paramsType>()
 
-  const [antennaType, setAntennaType] = useState({} as ApAntennaTypeSettings)
+  // eslint-disable-next-line max-len
+  const [antennaType, setAntennaType] = useState({} as ApAntennaTypeSettings | ApAntennaTypeSettingsV1001)
   const [formInitializing, setFormInitializing] = useState(true)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
   const [getVenueAntennaType] = useLazyGetVenueAntennaTypeQuery()
+  const [getApGroupAntennaType] = useLazyGetApGroupAntennaTypeQuery()
   const [getApAntennaType] = useLazyGetApAntennaTypeSettingsQuery()
+  const [getApAntennaTypeV1001] = useLazyGetApAntennaTypeSettingsV1001Query()
 
   const [updateApAntTypeSettings, { isLoading: isUpdatingAntTypeSettings }]
    = useUpdateApAntennaTypeSettingsMutation()
+  const [updateApAntTypeSettingsV1001, { isLoading: isUpdatingAntTypeSettingsV1001 }]
+    = useUpdateApAntennaTypeSettingsV1001Mutation()
 
   const venueId = venueData?.id
 
@@ -66,28 +80,43 @@ export function AntennaSection () {
         serialNumber: serialNumber!
       }
       const setData = async () => {
-        const apAntType = (await getApAntennaType({
-          params: { venueId, serialNumber },
-          enableRbac: isUseRbacApi
-        }).unwrap())
+        const apAntType = isApGroupMoreParameterPhase3Enabled
+          ? (await getApAntennaTypeV1001({
+            params: { venueId, serialNumber }
+          }).unwrap())
+          : (await getApAntennaType({
+            params: { venueId, serialNumber },
+            enableRbac: true
+          }).unwrap())
 
         customAntennaTypeRef.current = cloneDeep(apAntType)
 
         const venueAntType = (await getVenueAntennaType({
           params: { venueId },
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }, true).unwrap())
 
-        if (venueAntType) {
-          // eslint-disable-next-line max-len
-          const findSettings = find(venueAntType, (antTypeSettings: VenueApAntennaTypeSettings) => antTypeSettings.model === model)
-          if (findSettings) {
-            venueAntennaTypeRef.current = findSettings
-          }
+        let apGroupAntType = { antennaTypeSettings: [] as VenueApAntennaTypeSettings[] }
+        if (apDetails.apGroupId && isApGroupMoreParameterPhase3Enabled) {
+          apGroupAntType = (await getApGroupAntennaType({
+            params: { venueId, apGroupId: apDetails.apGroupId }
+          }, true).unwrap())
         }
 
-        setIsUseVenueSettings(apAntType.useVenueSettings)
-        isUseVenueSettingsRef.current = apAntType.useVenueSettings
+        // eslint-disable-next-line max-len
+        const findSettings = find(
+          apDetails.apGroupId ? apGroupAntType.antennaTypeSettings : venueAntType,
+          (antTypeSettings: VenueApAntennaTypeSettings) => antTypeSettings.model === model)
+
+        if (findSettings) {
+          venueAntennaTypeRef.current = findSettings
+        }
+
+        const venueOrApGroupSettings = isApGroupMoreParameterPhase3Enabled
+          ? (apAntType as ApAntennaTypeSettingsV1001).useVenueOrApGroupSettings
+          : (apAntType as ApAntennaTypeSettings).useVenueSettings
+        setIsUseVenueSettings(venueOrApGroupSettings)
+        isUseVenueSettingsRef.current = venueOrApGroupSettings
 
         setAntennaType(apAntType)
         setFormInitializing(false)
@@ -148,11 +177,19 @@ export function AntennaSection () {
       onOk: async () => {
         try {
           const params = paramsRef.current
-          const payload = {
-            useVenueSettings: isUseVenueSettingsRef.current,
-            antennaType: form.getFieldValue('antennaType')
+          if (isApGroupMoreParameterPhase3Enabled) {
+            const payload = {
+              useVenueOrApGroupSettings: isUseVenueSettingsRef.current,
+              antennaType: form.getFieldValue('antennaType')
+            }
+            await updateApAntTypeSettingsV1001({ params, payload }).unwrap()
+          } else {
+            const payload = {
+              useVenueSettings: isUseVenueSettingsRef.current,
+              antennaType: form.getFieldValue('antennaType')
+            }
+            await updateApAntTypeSettings({ params, payload, enableRbac: true }).unwrap()
           }
-          await updateApAntTypeSettings({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -162,11 +199,15 @@ export function AntennaSection () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingAntTypeSettings
+    isFetching: isUpdatingAntTypeSettings || isUpdatingAntTypeSettingsV1001
   }]}>
-    <VenueSettingsHeader venue={venueData}
-      isUseVenueSettings={isUseVenueSettings}
-      handleVenueSetting={handleVenueSetting} />
+    { isApGroupMoreParameterPhase3Enabled
+      ? <VenueOrApGroupSettingsHeader apGroupId={apDetails?.apGroupId}
+        isUseVenueSettings={isUseVenueSettings}
+        handleVenueSetting={handleVenueSetting} />
+      : <VenueSettingsHeader venue={venueData}
+        isUseVenueSettings={isUseVenueSettings}
+        handleVenueSetting={handleVenueSetting} />}
     <Row gutter={20}>
       <Col span={4}>
         <ApAntennaTypeSelector selectedApAntennaType={antennaType}

@@ -5,7 +5,6 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 
 import {  Loader, Tabs }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType, SigPackUrlsInfo }                from '@acx-ui/rc/utils'
@@ -41,7 +40,6 @@ export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, Messag
 
 const ApplicationPolicyMgmt = () => {
   const { $t } = useIntl()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack ] = useExportSigPackMutation()
   const [ type, setType ] = useState(ApplicationUpdateType.APPLICATION_ADDED)
@@ -137,7 +135,7 @@ const ApplicationPolicyMgmt = () => {
       tableActions.push({
         label: $t({ defaultMessage: 'Export All' }),
         onClick: () => {
-          exportAllSigPack({ enableRbac: isWifiRbacEnabled })
+          exportAllSigPack({ enableRbac: true })
             .unwrap()
             .catch((error) => {
               console.log(error) // eslint-disable-line no-console
@@ -147,7 +145,7 @@ const ApplicationPolicyMgmt = () => {
       tableActions.push({
         label: $t({ defaultMessage: 'Export Current List' }),
         onClick: () => {
-          exportSigPack({ params: { type }, enableRbac: isWifiRbacEnabled })
+          exportSigPack({ params: { type }, enableRbac: true })
             .unwrap()
             .catch((error) => {
               console.log(error) // eslint-disable-line no-console

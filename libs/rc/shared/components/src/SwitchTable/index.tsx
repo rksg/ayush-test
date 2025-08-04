@@ -33,8 +33,12 @@ import {
   getAckMsg,
   getSwitchName,
   getSwitchModel,
-  isFirmwareSupportAdminPassword
+  isFirmwareSupportAdminPassword,
+  isNotSupportStackModel
 } from '@acx-ui/rc/switch/utils'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -117,17 +121,6 @@ const PasswordTooltip = {
   CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
-export const defaultSwitchPayload = {
-  searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
-  fields: [
-    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword', 'extIp', 'venueId'
-  ]
-}
-
 export type SwitchTableRefType = { openImportDrawer: ()=>void }
 
 interface SwitchTableProps
@@ -149,6 +142,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -646,26 +640,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
-  const isNotSupportStackModel = (model: string) => {
-    switch(model) {
-      case 'ICX7150-C08P':
-      case 'ICX7150-C08PT':
-      case 'ICX8100-24':
-      case 'ICX8100-24P':
-      case 'ICX8100-48':
-      case 'ICX8100-48P':
-      case 'ICX8100-C08PF':
-      case 'ICX8100-24-X':
-      case 'ICX8100-24P-X':
-      case 'ICX8100-48-X':
-      case 'ICX8100-48P-X':
-      case 'ICX8100-C08PF-X':
-        return true
-      default:
-        return false
-    }
-  }
-
   const checkSelectedRowsStatus = (rows: SwitchRow[]) => {
     const modelFamily = rows[0]?.model?.split('-')[0]
     const venueId = rows[0]?.venueId
@@ -673,7 +647,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     const notOperational = rows.find(i =>
       !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
     const invalid = rows.find(i =>
-      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model)))
+      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model, isSupport8100XStacking)))
     const hasStack = rows.find(i => i.isStack || i.formStacking)
 
     return {

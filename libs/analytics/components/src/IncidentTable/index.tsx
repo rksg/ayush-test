@@ -40,7 +40,8 @@ import {
   handleBlobDownloadFile,
   useTrackLoadTime,
   widgetsMapping,
-  getIntl
+  getIntl,
+  useEncodedParameter
 } from '@acx-ui/utils'
 
 import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
@@ -205,6 +206,13 @@ export function IncidentTable ({ filters }: {
   const { $t } = intl
   const queryResults = useIncidentsListQuery({ ...filters, toggles })
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const incidentTableFilters = useEncodedParameter<Filter>('incidentTableFilters')
+  const selectedFilters: Filter = useMemo(() => {
+    const savedFilters = incidentTableFilters.read() ?? {}
+    return Object.keys(savedFilters).length === 0
+      ? defaultSelectedFilters
+      : savedFilters
+  }, [incidentTableFilters])
 
   const [filteredData, setFilteredData] = useState<IncidentNodeData>(queryResults.data ?? [])
   const [drawerSelection, setDrawerSelection] = useState<Incident | null>(null)
@@ -249,6 +257,8 @@ export function IncidentTable ({ filters }: {
         }))
     ).unwrap()
   }, [muteIncident, selectedRowsData])
+
+  const onFilterChange = (filters: Filter) => incidentTableFilters.write(filters)
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = useMemo(() => {
     const incidentsMutedStatus = getIncidentsMutedStatus(selectedRowsData)
@@ -299,7 +309,8 @@ export function IncidentTable ({ filters }: {
       sorter: { compare: sortProp('severity', severitySort) },
       defaultSortOrder: 'descend',
       fixed: 'left',
-      filterable: true
+      filterable: true,
+      filteredValue: selectedFilters.severity
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
@@ -311,7 +322,8 @@ export function IncidentTable ({ filters }: {
         return <DateLink value={value} />
       },
       sorter: { compare: sortProp('endTime', dateSort) },
-      fixed: 'left'
+      fixed: 'left',
+      filteredValue: selectedFilters.endTime
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
@@ -319,7 +331,8 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration),
-      sorter: { compare: sortProp('duration', defaultSort) }
+      sorter: { compare: sortProp('duration', defaultSort) },
+      filteredValue: selectedFilters.duration
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
@@ -334,7 +347,8 @@ export function IncidentTable ({ filters }: {
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
-      searchable: true
+      searchable: true,
+      filteredValue: selectedFilters.description
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
@@ -342,7 +356,8 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'category',
       key: 'category',
       sorter: { compare: sortProp('category', defaultSort) },
-      filterable: true
+      filterable: true,
+      filteredValue: selectedFilters.category
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
@@ -351,7 +366,8 @@ export function IncidentTable ({ filters }: {
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
       filterable: true,
-      filterableWidth: 130
+      filterableWidth: 130,
+      filteredValue: selectedFilters.subCategory
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
@@ -359,7 +375,8 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: { compare: sortProp('clientImpact', clientImpactSort) },
-      sortDirections: ['descend', 'ascend', 'descend']
+      sortDirections: ['descend', 'ascend', 'descend'],
+      filteredValue: selectedFilters.clientImpact
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -368,7 +385,8 @@ export function IncidentTable ({ filters }: {
       key: 'impactedClients',
       sorter: { compare: sortProp('impactedClientCount', defaultSort) },
       sortDirections: ['descend', 'ascend', 'descend'],
-      align: 'center'
+      align: 'center',
+      filteredValue: selectedFilters.impactedClients
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
@@ -385,7 +403,8 @@ export function IncidentTable ({ filters }: {
         </Tooltip>
       },
       sorter: { compare: sortProp('scope', defaultSort) },
-      searchable: true
+      searchable: true,
+      filteredValue: selectedFilters.scope
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
@@ -394,7 +413,8 @@ export function IncidentTable ({ filters }: {
       key: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
       show: false,
-      filterable: true
+      filterable: true,
+      filteredValue: selectedFilters.type
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Visibility' })),
@@ -415,7 +435,8 @@ export function IncidentTable ({ filters }: {
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,
-      filterable: visibilityFilterOptions()
+      filterable: visibilityFilterOptions(),
+      filteredValue: selectedFilters.isMuted
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
@@ -436,7 +457,7 @@ export function IncidentTable ({ filters }: {
       style={{ height: 'auto' }}
     >
       <Table<IncidentTableRow>
-        selectedFilters={defaultSelectedFilters}
+        selectedFilters={selectedFilters}
         settingsId='incident-table'
         type='tall'
         dataSource={queryResults.data}
@@ -477,6 +498,7 @@ export function IncidentTable ({ filters }: {
         optionLabelProp='label'
         columnsToFilterChildrenRowBasedOnParentRow={['isMuted']}
         columnState={{ onChange: onColumnStateChange }}
+        onFilterChange={onFilterChange}
       />
       <Drawer
         visible={!!drawerSelection}

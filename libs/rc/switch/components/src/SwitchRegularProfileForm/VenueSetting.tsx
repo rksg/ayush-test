@@ -10,6 +10,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { useEnforcedStatus }      from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import {
@@ -27,7 +28,6 @@ import {
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { useTableQuery }                 from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 import * as UI                             from './styledComponents'

@@ -332,6 +332,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       filters: { venueId: [venueData?.id] },
       pageSize: 10000
     },
+    enableRbac: true,
     skip: !venueData?.id
   })
 
@@ -1231,7 +1232,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                       defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from <venueOrApGroupName></venueOrApGroupName>'}
                       values={{
                         venueOrApGroupName: () => {
-                          return apGroupData ? 'AP Group' : 'Venue'
+                          return apGroupData ? 'AP Group' : '<VenueSingular></VenueSingular>'
                         },
                         radioTypeName: () => getRadioTypeDisplayName(currentTab)
                       }}
