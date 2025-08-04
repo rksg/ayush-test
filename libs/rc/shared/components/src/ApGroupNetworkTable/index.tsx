@@ -1,14 +1,18 @@
 /* eslint-disable max-len */
-import { ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { cloneDeep } from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps }      from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListV2Query,
   useNewApGroupNetworkListQuery,
-  useNewApGroupNetworkListV2Query
+  useNewApGroupNetworkListV2Query,
+  useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -18,15 +22,20 @@ import {
   NetworkTypeEnum,
   useConfigTemplate,
   ConfigTemplateType,
+  NetworkVenue,
+  useConfigTemplateMutationFnSwitcher,
   networkTypes,
   SupportNetworkTypes
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { useTableQuery } from '@acx-ui/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { useGetVLANPoolPolicyInstance }                 from '../ApGroupEdit/ApGroupVlanRadioTab'
 import { renderConfigTemplateDetailsComponent }         from '../configTemplates'
 import { transformApGroupRadios, transformApGroupVlan } from '../pipes/apGroupPipes'
+
+import { ApGroupNetworkVlanRadioDrawer } from './ApGroupNetworkVlanRadioDrawer'
 
 export const defaultApGroupNetworkPayload = {
   searchString: '',
@@ -84,16 +93,47 @@ export interface ApGroupNetworksTableProps {
   apGroupId?: string
 }
 
+export type ApGroupNetworkVlanRadioDrawerState = {
+  visible: boolean,
+  editData: Network[]
+}
+
+const defaultDrawerStatus: ApGroupNetworkVlanRadioDrawerState = {
+  visible: false,
+  editData: [] as Network[]
+}
+
+export const ApGroupNetworkVlanRadioContext = createContext({} as {
+  apGroupId: string
+  venueId: string
+  tableData: Network[] | undefined
+  setTableData: (data: Network[]) => void
+  drawerStatus: ApGroupNetworkVlanRadioDrawerState
+  setDrawerStatus: (data: ApGroupNetworkVlanRadioDrawerState) => void
+  vlanPoolingNameMap: KeyValue<string, string>[]
+})
+
 export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
+  const { $t } = useIntl()
+  const { tenantId } = useParams()
   const { venueId, apGroupId } = props
 
   const [tableData, setTableData] = useState(defaultArray)
+  const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   const settingsId = 'apgroup-network-table'
 
   const tableQuery = useApGroupNetworkList({ settingsId, ...props })
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyInstance(!tableData.length)
+  const updateDataRef = useRef<NetworkVenue[]>([])
+  const oldDataRef = useRef<NetworkVenue[]>([])
+  const networkDataRef = useRef<string[]>([])
+
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -117,21 +157,89 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
     }
   }, [tableQuery.data])
 
+  const rowActions: TableProps<Network>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit VLAN & Radio' }),
+    visible: (rows) => rows.length > 0,
+    disabled: drawerStatus?.visible,
+    onClick: (rows) => {
+      setDrawerStatus({
+        visible: true,
+        editData: rows
+      })
+    }
+  }]
+
+  const handleUpdateAllApGroupVlanRadio = async (editData: Network[], oldData: Network[]) => {
+    for (let i = 0; i < editData.length; i++) {
+      const editNetworkVenue = cloneDeep(getCurrentVenue(editData[i], venueId!)!)
+      const oldNetworkVenue = cloneDeep(getCurrentVenue(oldData[i], venueId!)!)
+      const findIdx = updateDataRef.current.findIndex(d => (d.id === editNetworkVenue.id))
+      if (findIdx === -1) {
+        updateDataRef.current.push(editNetworkVenue)
+        oldDataRef.current.push(oldNetworkVenue)
+        networkDataRef.current.push(editData[i].id)
+      } else {
+        updateDataRef.current.splice(findIdx, 1, editNetworkVenue)
+        oldDataRef.current.splice(findIdx, 1, oldNetworkVenue)
+        networkDataRef.current.splice(findIdx, 1, editData[i].id)
+      }
+    }
+    const updateData = updateDataRef.current
+    const updateOldData = oldDataRef.current
+    const networkIds = networkDataRef.current
+
+    if (updateData.length > 0) {
+      const allReqs = updateData.map((data, idx) => {
+        return updateNetworkVenue({
+          params: {
+            tenantId: tenantId,
+            venueId: venueId,
+            networkId: networkIds[idx]
+          },
+          payload: {
+            oldPayload: updateOldData[idx],
+            newPayload: data
+          },
+          enableRbac: true
+        }).unwrap()
+      })
+      await Promise.allSettled(allReqs)
+    }
+  }
 
   const columns = useApGroupNetworkColumns(apGroupId!, venueId!, vlanPoolingNameMap)
 
+  const isAllApGroupsScope = (record: Network) => {
+    const currentVenue = getCurrentVenue(record, venueId!)
+    return currentVenue?.isAllApGroups
+  }
+
   return (
     <Loader states={[ tableQuery ]}>
-      <Table
-        rowKey='id'
-        settingsId={settingsId}
-        columns={columns}
-        dataSource={tableData}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
-        enableApiFilter={true}
-      />
+      <ApGroupNetworkVlanRadioContext.Provider value={{
+        venueId: venueId!, apGroupId: apGroupId!,
+        tableData, setTableData,
+        drawerStatus, setDrawerStatus,
+        vlanPoolingNameMap }} >
+        <Table
+          rowKey='id'
+          settingsId={settingsId}
+          columns={columns}
+          dataSource={tableData}
+          pagination={tableQuery.pagination}
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={{
+            type: 'checkbox',
+            getCheckboxProps: (record) => ({
+              disabled: drawerStatus?.visible || isAllApGroupsScope(record)
+            })
+          }}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
+        />
+        <ApGroupNetworkVlanRadioDrawer updateData={handleUpdateAllApGroupVlanRadio} />
+      </ApGroupNetworkVlanRadioContext.Provider>
     </Loader>
   )
 }
@@ -174,7 +282,6 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
     pagination: { settingsId },
     option: { skip: !resolvedRbacEnabled || !venueId || !apGroupId }
   })
-
   return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
