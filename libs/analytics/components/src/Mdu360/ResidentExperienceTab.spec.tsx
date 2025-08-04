@@ -25,8 +25,13 @@ jest.mock('./Widgets/TrafficByRadio/services', () => ({
   useTrafficByRadioQuery: jest.fn().mockReturnValue({ isLoading: false })
 }))
 
-jest.mock('./Widgets/ClientExperience/services', () => ({
-  useClientExperienceTimeseriesQuery: jest.fn().mockReturnValue({ isLoading: false })
+jest.mock('./services', () => ({
+  useClientExperienceTimeseriesQuery: jest.fn().mockReturnValue({ isLoading: false }),
+  useSlaThresholdsQuery: jest.fn().mockReturnValue({ isLoading: false }),
+  useUpdateSlaThresholdsMutation: jest.fn().mockReturnValue([
+    jest.fn(),
+    { isLoading: false, isFetching: false }
+  ])
 }))
 
 jest.mock('@acx-ui/utils', () => {
@@ -58,5 +63,6 @@ describe('ResidentExperienceTab', () => {
     expect(await screen.findByText('Top 10 Application Categories')).toBeVisible()
     expect(await screen.findByText('Traffic By Radio')).toBeVisible()
     expect(await screen.findByText('Client Experience')).toBeVisible()
+    expect(await screen.findByText('Service Level Agreement')).toBeVisible()
   })
 })
