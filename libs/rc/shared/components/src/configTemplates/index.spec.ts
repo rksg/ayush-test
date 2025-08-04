@@ -43,7 +43,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
       [ConfigTemplateType.IDENTITY_GROUP]: false,
-      [ConfigTemplateType.TUNNEL_PROFILE]: false
+      [ConfigTemplateType.TUNNEL_SERVICE]: false
     })
   })
 
@@ -76,7 +76,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
       [ConfigTemplateType.IDENTITY_GROUP]: false,
-      [ConfigTemplateType.TUNNEL_PROFILE]: false
+      [ConfigTemplateType.TUNNEL_SERVICE]: false
     })
   })
 
@@ -109,7 +109,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.AP_GROUP]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
       [ConfigTemplateType.IDENTITY_GROUP]: false,
-      [ConfigTemplateType.TUNNEL_PROFILE]: false
+      [ConfigTemplateType.TUNNEL_SERVICE]: false
     })
   })
 
@@ -144,7 +144,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.AP_GROUP]: true,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true,
       [ConfigTemplateType.IDENTITY_GROUP]: true,
-      [ConfigTemplateType.TUNNEL_PROFILE]: false
+      [ConfigTemplateType.TUNNEL_SERVICE]: false
     })
   })
 
@@ -170,7 +170,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.VLAN_POOL]: false,
       [ConfigTemplateType.WIFI_CALLING]: false,
       [ConfigTemplateType.SYSLOG]: false,
-      [ConfigTemplateType.TUNNEL_PROFILE]: false,
+      [ConfigTemplateType.TUNNEL_SERVICE]: false,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SWITCH_REGULAR]: false,

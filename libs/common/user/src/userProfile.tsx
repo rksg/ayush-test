@@ -42,7 +42,8 @@ export type Profile = {
   selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[],
   tenantType?: TenantType,
-  accountVertical?: AccountVertical
+  accountVertical?: AccountVertical,
+  isMspUser?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -83,6 +84,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.venuesList = profile?.venuesList
   userProfile.betaFeaturesList = profile?.betaFeaturesList
   userProfile.accountVertical = profile?.accountVertical
+  userProfile.isMspUser = profile?.isMspUser
 }
 export const getUserName = () =>
   `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
