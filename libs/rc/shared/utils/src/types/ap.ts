@@ -1082,7 +1082,7 @@ export enum NewDhcpOption82SubOption151Enum {
 export enum DhcpOption82MacEnum {
   COLON = 'COLON',
   HYPHEN = 'HYPHEN',
-  NONE = 'NONE',
+  NODELIMITER = 'NODELIMITER',
 }
 
 export interface DhcpOption82SubOption1CustomizationAttribute {

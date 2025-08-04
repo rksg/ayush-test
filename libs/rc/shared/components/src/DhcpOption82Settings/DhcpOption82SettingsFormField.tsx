@@ -425,7 +425,7 @@ export const DhcpOption82SettingsFormField = (props: {
                 <Option value={DhcpOption82MacEnum.HYPHEN}>
                   {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
                 </Option>
-                <Option value={DhcpOption82MacEnum.NONE}>
+                <Option value={DhcpOption82MacEnum.NODELIMITER}>
                   {$t({ defaultMessage: 'AABBCCDDEEFF' })}
                 </Option>
               </Select>
