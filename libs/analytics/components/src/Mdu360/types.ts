@@ -9,3 +9,11 @@ export interface Mdu360Filter {
   start: string
   end: string
 }
+
+export enum SLAKeys {
+  connectionSuccessSLA = 'connectionSuccessSLA',
+  clientThroughputSLA = 'clientThroughputSLA',
+  timeToConnectSLA = 'timeToConnectSLA',
+  channelWidthSLA = 'channelWidthSLA',
+  channelChangePerDaySLA = 'channelChangePerDaySLA',
+}

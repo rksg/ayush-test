@@ -39,6 +39,7 @@ export interface TunnelProfileViewData {
   destinationIpAddress?: string
   destinationEdgeClusterId?: string
   destinationEdgeClusterName?: string
+  ipsecProfileId?: string
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {
@@ -47,4 +48,6 @@ export interface TunnelProfileFormType extends TunnelProfile {
   disabledFields?: string[]
   edgeClusterId ? : string
   venueId ? : string
+  tunnelEncryptionEnabled?: boolean // UI only
+  ipsecProfileId?: string
 }

@@ -199,6 +199,18 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}/apModelExternalAntennaSettings',
     newApi: true
   },
+  getApGroupExternalAntenna: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelExternalAntennaSettings',
+    opsApi: 'GET:/venues/{id}/apGroups/{id}/apModelExternalAntennaSettings',
+    newApi: true
+  },
+  updateApGroupExternalAntenna: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelExternalAntennaSettings',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/apModelExternalAntennaSettings',
+    newApi: true
+  },
   getApExternalAntennaSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/externalAntennaSettings',
@@ -211,7 +223,26 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}/aps/{id}/externalAntennaSettings',
     newApi: true
   },
-
+  getApExternalAntennaSettingsV1001: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/externalAntennaSettings',
+    opsApi: 'GET:/venues/{id}/aps/{id}/externalAntennaSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApExternalAntennaSettingsV1001: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/externalAntennaSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/externalAntennaSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getVenueAntennaType: {
     method: 'get',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
@@ -222,6 +253,18 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
     opsApi: 'PUT:/venues/{id}/apModelAntennaTypeSettings',
+    newApi: true
+  },
+  getApGroupAntennaType: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelAntennaTypeSettings',
+    opsApi: 'GET:/venues/{id}/apGroups/{id}/apModelAntennaTypeSettings',
+    newApi: true
+  },
+  updateApGroupAntennaType: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelAntennaTypeSettings',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/apModelAntennaTypeSettings',
     newApi: true
   },
   getApAntennaTypeSettings: {
@@ -235,6 +278,26 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     opsApi: 'PUT:/venues/{id}/aps/{id}/antennaTypeSettings',
     newApi: true
+  },
+  getApAntennaTypeSettingsV1001: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    opsApi: 'GET:/venues/{id}/aps/{id}/antennaTypeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApAntennaTypeSettingsV1001: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/antennaTypeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
 
   // ===== Client Steering  (AP only) =====

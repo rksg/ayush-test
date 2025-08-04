@@ -1,7 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { isEmpty } from 'lodash'
-
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
 import { useEnforcedStatus, ConfigTemplateEnforcementContext } from '@acx-ui/config-template/utils'
 import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
@@ -13,7 +11,9 @@ import {
   CommonUrlsInfo,
   useConfigTemplate,
   WifiRbacUrlsInfo,
-  ConfigTemplateType
+  ConfigTemplateType,
+  getExternalAntennaPayload,
+  getAntennaTypePayload
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
@@ -210,31 +210,6 @@ export function VenueEdit () {
       </ConfigTemplateEnforcementContext.Provider>
     </VenueEditContext.Provider>
   )
-}
-
-export function getExternalAntennaPayload (apModels: { [index: string]: ExternalAntenna }) {
-  function cleanExtModel (model: ExternalAntenna) {
-    let data = JSON.parse(JSON.stringify(model))
-
-    if (data.enable24G !== undefined && data.enable24G === false) {
-      delete data.gain24G
-    }
-    if (data.enable50G !== undefined && data.enable50G === false) {
-      delete data.gain50G
-    }
-    return data
-  }
-  const extPayload = [] as ExternalAntenna[]
-  Object.keys(apModels).forEach(key => {
-    const model = cleanExtModel(apModels[key] as ExternalAntenna)
-    extPayload.push(model)
-  })
-  return extPayload
-}
-
-// eslint-disable-next-line max-len
-export function getAntennaTypePayload (antTypeModels: { [index: string]: VenueApAntennaTypeSettings }) {
-  return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 
 function processWifiTab (props: VenueEditContextProps) {

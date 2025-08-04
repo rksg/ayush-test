@@ -640,6 +640,12 @@ export interface ApUsbSettings {
   useVenueSettings: boolean
 }
 
+export interface ApPassword {
+  apPasswords: string,
+  expireTime: string,
+  updatedTime: string
+}
+
 export interface ApBandModeSettings {
   bandMode: BandModeEnum,
   useVenueSettings: boolean
@@ -655,9 +661,19 @@ export type ApExternalAntennaSettings = {
   useVenueSettings: boolean
 }
 
+export type ApExternalAntennaSettingsV1001 = {
+  externalAntenna: ExternalAntenna,
+  useVenueOrApGroupSettings: boolean
+}
+
 export type ApAntennaTypeSettings = {
   antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
+}
+
+export type ApAntennaTypeSettingsV1001 = {
+  antennaType: ApAntennaTypeEnum,
+  useVenueOrApGroupSettings: boolean
 }
 
 export interface ApBssColoringSettings {
