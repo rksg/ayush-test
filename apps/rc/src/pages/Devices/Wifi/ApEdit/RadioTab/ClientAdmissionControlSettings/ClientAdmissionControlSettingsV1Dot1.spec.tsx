@@ -15,7 +15,7 @@ import {
 
 import { ApEditContext, ApDataContext } from '../..'
 import {
-  venuelist,
+  venueList,
   r760Ap
 } from '../../../../__tests__/fixtures'
 
@@ -43,7 +43,7 @@ const mockApGroupClientAdmissionControl = {
 }
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
-const venueData = venuelist.data[0]
+const venueData = venueList.data[0]
 
 const defaultContext = {
   editContextData: {
