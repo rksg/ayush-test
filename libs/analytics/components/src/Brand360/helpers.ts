@@ -6,7 +6,7 @@ import { formatter }                           from '@acx-ui/formatter'
 import { MspEc }                               from '@acx-ui/msp/utils'
 import { getIntl, noDataDisplay, TableResult } from '@acx-ui/utils'
 
-import type { Response, BrandVenuesSLA } from './services'
+import { type Response, type BrandVenuesSLA } from './services'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
@@ -211,7 +211,10 @@ export const slaKpiConfig = {
 
 export type ECList = TableResult<MspEc & { integrators?: string[] }>
 
-export const transformLookupAndMappingData = (mappingData : ECList) => {
+export const transformLookupAndMappingData = (
+  mappingData : ECList,
+  accountTierList: Record<string, string> | undefined
+) => {
   const groupedById= groupBy(mappingData?.data, 'id')
   return Object.keys(groupedById).reduce((newObj, key) => {
     newObj[key] = {
@@ -222,7 +225,7 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
         : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
       content: groupedById[key],
       propertyCode: groupedById[key][0].propertyCode,
-      accountTier: groupedById[key][0].accountTier
+      accountTier: accountTierList?.[key]
     }
     return newObj
   }, {} as TransformedMap)

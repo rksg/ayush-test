@@ -43,6 +43,7 @@ export interface BrandVenuesSLA {
   timeToConnectSLA: [number| null, number| null]
   clientThroughputSLA: [number| null, number| null]
   connectionSuccessSLA: [number| null, number| null]
+  accountTier: string
 }
 const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilter) => {
   const {
@@ -124,6 +125,7 @@ export const api = dataApi.injectEndpoints({
             connectionSuccessSLA
             onlineApsSLA
             onlineSwitchesSLA
+            accountTier
           }
         }
         `,
@@ -134,12 +136,30 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (res: { franchisorZones: BrandVenuesSLA[] }) => res.franchisorZones
+    }),
+    fetchAccountTier: build.query({
+      query: ({ tenantIds }: { tenantIds: string[] }) => ({
+        document: gql`
+        query GetAccountTiers($tenantIds: [String!]!) {
+          accountTiers(tenantIds: $tenantIds) {
+            result
+          }
+        }
+        `,
+        variables: { tenantIds }
+      }),
+      transformResponse: (
+        res: { accountTiers: { result: Record<string, string> } }
+      ) => {
+        return res?.accountTiers?.result || {}
+      }
     })
   })
 })
 
 export const {
   useFetchBrandTimeseriesQuery,
-  useFetchBrandPropertiesQuery
+  useFetchBrandPropertiesQuery,
+  useFetchAccountTierQuery
 } = api
 

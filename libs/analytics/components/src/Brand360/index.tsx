@@ -36,7 +36,8 @@ import {
   Response,
   useFetchBrandTimeseriesQuery,
   useFetchBrandPropertiesQuery,
-  BrandVenuesSLA
+  BrandVenuesSLA,
+  useFetchAccountTierQuery
 } from './services'
 import { ConfigSettings } from './Settings'
 import { SlaSliders }     from './SlaSliders'
@@ -118,6 +119,12 @@ export function Brand360 () {
       payload: propertyIdToggle ? mspPayloadTenantsQuery : mspPayload,
       isNewUrl: propertyIdToggle
     }, { skip: isLSP })
+  const tenantIdList = mspPropertiesData?.data?.data || []
+  const tenantIdListArray = tenantIdList.map(item => item.id) || []
+  const accountTierList = useFetchAccountTierQuery(
+    { tenantIds: tenantIdListArray },
+    { skip: tenantIdListArray.length === 0 }
+  )
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid),
       enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isLSP
@@ -125,7 +132,7 @@ export function Brand360 () {
   const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
   const propertiesLoading = Boolean(propertiesData?.isLoading)
   const lookupAndMappingData = propertiesData?.data
-    ? transformLookupAndMappingData(propertiesData.data)
+    ? transformLookupAndMappingData(propertiesData.data, accountTierList.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData
