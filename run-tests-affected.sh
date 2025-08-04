@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then
+  echo "Conditions met: running tests"
+else
+  echo "Skipping tests (PRECOMMIT=$PRECOMMIT, BRANCH=$GIT_COMMIT_BRANCH)"
+  exit 0
+fi
+
 NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
