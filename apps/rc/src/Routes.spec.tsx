@@ -242,6 +242,15 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   })
 }))
 
+jest.mock('./pages/Devices/Olt/OltTable', () => ({
+  __esModule: true,
+  default: () => ({
+    title: 'OltTab',
+    headerExtra: [],
+    component: <div data-testid='OltTable' />
+  })
+}))
+
 jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
 }))

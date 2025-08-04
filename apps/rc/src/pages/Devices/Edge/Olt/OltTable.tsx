@@ -24,8 +24,8 @@ export default function useEdgeNokiaOltTable () {
     oltTableRef.current?.openAddDrawer()
   }
 
-  return (
-    isEdgeOltEnabled ? {
+  return isEdgeOltEnabled
+    ? {
       title: $t({ defaultMessage: 'Optical ({count})' },
         { count: transformDisplayNumber(data?.length) }),
       headerExtra: filterByAccess([
@@ -39,5 +39,6 @@ export default function useEdgeNokiaOltTable () {
         isLoading={isLoading}
         isFetching={isFetching}
       />
-    } : undefined)
+    }
+    : undefined
 }
