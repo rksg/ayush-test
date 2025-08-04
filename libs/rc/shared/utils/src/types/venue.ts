@@ -12,6 +12,7 @@ import {
   BandBalancing,
   BandModeEnum,
   DenialOfServiceProtection,
+  ExternalAntenna,
   Mesh,
   PoeOutModeEnum,
   VenueDhcpServiceSetting,
@@ -273,6 +274,16 @@ export interface ApGroupApModelBandModeSettings {
 export type VenueApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum
+}
+
+export type ApGroupApAntennaTypeSettings = {
+  useVenueSettings: boolean,
+  antennaTypeSettings: VenueApAntennaTypeSettings[]
+}
+
+export type ApGroupApExternalAntennaSettings = {
+  useVenueSettings: boolean,
+  externalAntennaSettings: ExternalAntenna[]
 }
 
 export interface VenueBssColoring {
