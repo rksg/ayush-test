@@ -20,11 +20,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeScopes } from '@acx-ui/types'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { ClusterConfigWizardContext }      from '../ClusterConfigWizardDataProvider'
+import { getAllPhysicalInterfaceFormData } from '../utils'
 
 import * as UI                                                            from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
-import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()

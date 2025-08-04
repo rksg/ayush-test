@@ -3,15 +3,15 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
-import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
+import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }    from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
   ApWiredClientInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { RequestPayload } from '@acx-ui/types'
+import { TenantLink }                      from '@acx-ui/react-router-dom'
+import type { ColumnType, RequestPayload } from '@acx-ui/types'
 import { TableQuery,
   usePollingTableQuery,
   noDataDisplay }  from '@acx-ui/utils'

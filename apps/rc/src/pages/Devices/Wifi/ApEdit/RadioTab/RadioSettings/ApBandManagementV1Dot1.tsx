@@ -89,7 +89,7 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
                     defaultMessage={'Use inherited settings from <venueOrApGroupName></venueOrApGroupName>'}
                     values={{
                       venueOrApGroupName: () => {
-                        return apGroupData ? 'AP Group' : 'Venue'
+                        return apGroupData ? 'AP Group' : '<VenueSingular></VenueSingular>'
                       }
                     }}
                   />

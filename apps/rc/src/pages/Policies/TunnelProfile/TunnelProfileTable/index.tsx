@@ -1,13 +1,19 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Loader,
+  PageHeader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgePinViewDataListQuery,
   useGetEdgeMvSdLanViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -31,13 +37,12 @@ import {
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TableColumn }                             from '@acx-ui/types'
 import { noDataDisplay, useTableQuery }                 from '@acx-ui/utils'
 
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -71,8 +76,7 @@ const TunnelProfileTable = () => {
     })
   })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkOptions } = getNetworkListQuery({
+  const { networkOptions } = useWifiNetworkListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',

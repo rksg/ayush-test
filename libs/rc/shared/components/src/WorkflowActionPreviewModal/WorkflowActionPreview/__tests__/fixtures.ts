@@ -14,7 +14,9 @@ export const mockDataPrompt:DataPromptAction = {
   displayContinueButton: true,
   description: '',
   version: 1,
-  variables: [{ label: 'Thing 1', type: 'EMAIL' }, { label: 'Thing 2', type: 'INPUT_FIELD_1' }] }
+  variables: [{ label: 'Thing 1', type: 'EMAIL' }, { label: 'Thing 2', type: 'INPUT_FIELD_1' }],
+  valid: true
+}
 
 export const mockMacReg:MacRegAction = {
   identityGroupId: 'mac_reg_ig1',
@@ -24,7 +26,19 @@ export const mockMacReg:MacRegAction = {
   name: 'mac-regtest-name',
   id: 'my-test-mac-reg',
   description: 'sothing',
-  version: 1
+  version: 1,
+  valid: true
+}
+export const mockInvalidMacReg:MacRegAction = {
+  identityGroupId: 'mac_reg_ig1',
+  macRegListId: 'mac-reg-list1',
+  identityId: '',
+  actionType: ActionType.MAC_REG,
+  name: 'mac-regtest-name',
+  id: 'my-test-mac-reg',
+  description: 'sothing',
+  version: 1,
+  valid: false
 }
 export const mockMacRegList: MacRegistrationPool = {
   id: 'mac-list-1',

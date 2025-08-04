@@ -1,7 +1,6 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { FirmwareCategory,
   FirmwareRbacUrlsInfo,
   FirmwareSwitchV1002,
@@ -26,9 +25,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Test useSwitchFirmwareUtils', () => {
-
   beforeEach(async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
@@ -264,7 +261,6 @@ describe('checkCurrentVersionsV1002', () => {
   const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
   it('should checkCurrentVersionsV1002 function', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,

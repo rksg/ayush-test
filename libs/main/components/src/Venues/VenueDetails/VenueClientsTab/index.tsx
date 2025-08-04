@@ -1,15 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { LineChartOutline, ListSolid }                           from '@acx-ui/icons'
-import { ClientDualTable, SwitchClientsTable, BasePersonaTable } from '@acx-ui/rc/components'
+import { Tabs, Tooltip }                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LineChartOutline, ListSolid }              from '@acx-ui/icons'
+import { ClientDualTable, BasePersonaTable }        from '@acx-ui/rc/components'
 import {
   useGetPersonaGroupByIdQuery,
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
+import { SwitchClientsTable }                    from '@acx-ui/switch/components'
 import { getUserProfile, isCoreTier }            from '@acx-ui/user'
 import { ApWiredClientTable }                    from '@acx-ui/wifi/components'
 

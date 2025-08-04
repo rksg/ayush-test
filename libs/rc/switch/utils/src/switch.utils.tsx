@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import _ from 'lodash'
-// import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import _             from 'lodash'
+import { IntlShape } from 'react-intl'
 
 import {
   ICX_MODELS_INFORMATION
@@ -816,7 +816,6 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
   }
 }
 
-
 export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
@@ -856,7 +855,6 @@ export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVers
     return false
   }
 }
-
 
 export const isFirmwareVersionAbove10020bCd2 = function (firmwareVersion?: string) {
   /*
@@ -984,3 +982,55 @@ export const allMultipleEditableFields = [
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
   'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
+
+export const defaultSwitchPayload = {
+  searchString: '',
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
+  fields: [
+    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
+    'syncedAdminPassword', 'adminPassword', 'extIp'
+  ]
+}
+
+export const isNotSupportStackModel = (model: string, isSupport8100XStacking: boolean) => {
+  switch(model) {
+    case 'ICX7150-C08P':
+    case 'ICX7150-C08PT':
+    case 'ICX8100-24':
+    case 'ICX8100-24P':
+    case 'ICX8100-48':
+    case 'ICX8100-48P':
+    case 'ICX8100-C08PF':
+    case 'ICX 8100-48PF':
+      return true
+    case 'ICX8100-24-X':
+    case 'ICX8100-24P-X':
+    case 'ICX8100-48-X':
+    case 'ICX8100-48P-X':
+    case 'ICX8100-48PF-X':
+    case 'ICX8100-C08PF-X':
+    case 'ICX8100-C16PF-X':
+      return !isSupport8100XStacking
+    default:
+      return false
+  }
+}
+
+export const getAckMsg = (needAck: boolean, serialNumber:string, newSerialNumber:string, tooltip: boolean, $t: IntlShape['$t']) => {
+  let ackMsg: React.ReactNode = ''
+  if (needAck) {
+    if(tooltip) {
+      ackMsg = isEmpty(newSerialNumber) ?
+        <>{$t({ defaultMessage: 'Additional switch detected: <li>S/N: {newSerialNumber}</li>' }, { newSerialNumber, li: (text: React.ReactNode[]) => <li>{text}</li> })}</> :
+        <>{$t({ defaultMessage: 'Member switch replacement detected. <li>Old S/N: {serialNumber}</li><li>New S/N: {newSerialNumber}</li>' }, { serialNumber, newSerialNumber, li: (text: React.ReactNode[]) => <li>{text}</li> })}</>
+    }else{
+      ackMsg = isEmpty(newSerialNumber) ?
+        $t({ defaultMessage: 'Additional switch detected: {newSerialNumber}' }, { newSerialNumber }) :
+        $t({ defaultMessage: 'Switch replacement detected: {serialNumber} to {newSerialNumber}' },
+          { serialNumber, newSerialNumber })
+    }
+  }
+  return ackMsg
+}

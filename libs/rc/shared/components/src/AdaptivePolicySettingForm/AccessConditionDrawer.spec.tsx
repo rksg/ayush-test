@@ -6,7 +6,7 @@ import { AccessCondition, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
-import { assignConditions, attributeList } from './__test__/fixtures'
+import { assignConditions, attributeList } from './__tests__/fixtures'
 import { AccessConditionDrawer }           from './AccessConditionDrawer'
 
 describe('AccessConditionDrawer', () => {

@@ -26,7 +26,7 @@ import {
   apCompatibilities,
   getApGroupsList,
   mockVenueOptions
-} from './__test__/fixtures'
+} from './__tests__/fixtures'
 
 import { ApTable } from '.'
 
