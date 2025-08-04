@@ -3,13 +3,19 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Select }                                                               from '@acx-ui/components'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { Select }              from '@acx-ui/components'
+import {
+  ApAntennaTypeEnum,
+  ApAntennaTypeSettings,
+  ApAntennaTypeSettingsV1001,
+  VenueApAntennaTypeSettings
+} from '@acx-ui/rc/utils'
 
 
 export type ApAntennaTypeSelectorProps = {
   model?: string
-  selectedApAntennaType: VenueApAntennaTypeSettings | ApAntennaTypeSettings
+  // eslint-disable-next-line max-len
+  selectedApAntennaType: VenueApAntennaTypeSettings | ApAntennaTypeSettings | ApAntennaTypeSettingsV1001
   readOnly?: boolean
   onAntennaTypeChanged?: (antennaTypeModels: VenueApAntennaTypeSettings | ApAntennaTypeEnum) => void
 }

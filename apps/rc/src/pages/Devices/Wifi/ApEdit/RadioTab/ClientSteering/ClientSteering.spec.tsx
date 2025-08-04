@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { venueApi, apApi }                from '@acx-ui/rc/services'
-import { WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
@@ -55,10 +55,6 @@ describe('Ap Client Steering', () => {
   it('Custom Settings - All on', async () => {
 
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVenueLoadBalancing.url,
-        (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),
-      // rbac
       rest.get(
         WifiRbacUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),
@@ -112,10 +108,6 @@ describe('Ap Client Steering', () => {
 
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueLoadBalancing.url,
-        (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOff))),
-      // rbac
-      rest.get(
         WifiRbacUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOff))),
       rest.get(
@@ -164,10 +156,6 @@ describe('Ap Client Steering', () => {
 
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueLoadBalancing.url,
-        (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),
-      // rbac
-      rest.get(
         WifiRbacUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),
       rest.get(
@@ -214,10 +202,6 @@ describe('Ap Client Steering', () => {
 
   it('Venue Setting', async () => {
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVenueLoadBalancing.url,
-        (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),
-      // rbac
       rest.get(
         WifiRbacUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))),

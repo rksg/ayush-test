@@ -10,12 +10,14 @@ import {
   useVenuesListQuery
 }from '@acx-ui/rc/services'
 import {
+  vlanPortsParser
+} from '@acx-ui/rc/switch/utils'
+import {
   getScopeKeyByPolicy,
   getPolicyAllowedOperation,
   PolicyOperation,
   PolicyType,
-  SwitchPortProfiles,
-  vlanPortsParser
+  SwitchPortProfiles
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import {
