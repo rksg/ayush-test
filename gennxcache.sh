@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 # First parameter as directory
 FEATURE_BRANCH=$(git branch --show-current)
 CACHE_PATH="nxcache"
