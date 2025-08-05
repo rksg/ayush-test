@@ -1,21 +1,18 @@
 #!/bin/sh
 
-if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then
-  echo "Conditions met: running tests"
-else
-  echo "Skipping tests (PRECOMMIT=$PRECOMMIT, BRANCH=$GIT_COMMIT_BRANCH)"
-  exit 0
-fi
+# if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then
+#   echo "Conditions met: running tests"
+# else
+#   echo "Skipping tests (PRECOMMIT=$PRECOMMIT, BRANCH=$GIT_COMMIT_BRANCH)"
+#   exit 0
+# fi
 
-NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
+NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail --parallel=1"
 
 AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
 
-PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ' | tr ',' ' ')
+PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ')
 
 echo "Testing affected projects: $PROJECT_LIST"
 
-for project in $PROJECT_LIST; do
-  echo "Running test for project: $project"
-  npx nx run "$project:test" $NX_RUN_OPTIONS || exit 1
-done
+npx nx run-many --target=test --projects="$PROJECT_LIST" $NX_RUN_OPTIONS 
