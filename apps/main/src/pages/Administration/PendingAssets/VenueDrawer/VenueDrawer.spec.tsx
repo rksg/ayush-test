@@ -10,9 +10,20 @@ import { Provider }      from '@acx-ui/store'
 import { VenueDrawer } from './VenueDrawer'
 
 // Mock the VenuesForm component
-jest.mock('../../../Venues', () => {
-  const mockVenuesForm = ({ modalCallBack }: {
+jest.mock('../../../Venues', () => ({
+  VenuesForm: ({
+    modalCallBack,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    modalMode,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    specifiedAction,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    dataFromParent
+  }: {
     modalCallBack?: (venue?: VenueExtended) => void
+    modalMode?: boolean
+    specifiedAction?: 'override'
+    dataFromParent?: VenueExtended | undefined
   }) => (
     <div data-testid='venues-form'>
       <button onClick={() => modalCallBack?.()}>Cancel</button>
@@ -22,11 +33,7 @@ jest.mock('../../../Venues', () => {
       } as VenueExtended)}>Submit</button>
     </div>
   )
-
-  return {
-    VenuesForm: mockVenuesForm
-  }
-})
+}))
 
 // Mock the Drawer component
 jest.mock('@acx-ui/components', () => ({
