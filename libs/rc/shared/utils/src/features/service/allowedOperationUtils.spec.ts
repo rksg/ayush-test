@@ -19,10 +19,21 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
+}))
+
 describe('allowedOperationUtils', () => {
+
+  beforeEach(() => {
+    mockedIsRecSite.mockReturnValue(false)
+  })
 
   afterEach(() => {
     mockedUseConfigTemplate.mockReset()
+    mockedIsRecSite.mockReset()
   })
 
   describe('convertToTemplateAllowedOperationIfNeeded', () => {
@@ -35,6 +46,13 @@ describe('allowedOperationUtils', () => {
     it('should not modify the operation when isTemplate is false', () => {
       const operation = ['http:/path']
       expect(convertToTemplateAllowedOperationIfNeeded(operation, false)).toEqual(['http:/path'])
+    })
+
+    it('should modify the operation when isTemplate is true and isRecSite is true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+      const operation = ['http:/path']
+      // eslint-disable-next-line max-len
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/rec/templates/path'])
     })
   })
 
