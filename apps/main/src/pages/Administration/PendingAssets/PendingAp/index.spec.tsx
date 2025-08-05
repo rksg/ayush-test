@@ -40,13 +40,7 @@ describe('PendingAp', () => {
               visibleStatus: 'Visible'
             }
           ],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 2
-          },
-          totalElements: 2,
-          totalPages: 1
+          totalElements: 2
         }))
       }),
       rest.post(DeviceProvisionUrlsInfo.importApProvisions.url, (req, res, ctx) => {
@@ -76,25 +70,13 @@ describe('PendingAp', () => {
       rest.post('*/venues/query', (req, res, ctx) => {
         return res(ctx.json({
           content: [],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 0
-          },
-          totalElements: 0,
-          totalPages: 0
+          totalElements: 0
         }))
       }),
       rest.post('*/venues/apGroups/query', (req, res, ctx) => {
         return res(ctx.json({
           content: [],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 0
-          },
-          totalElements: 0,
-          totalPages: 0
+          totalElements: 0
         }))
       })
     )
