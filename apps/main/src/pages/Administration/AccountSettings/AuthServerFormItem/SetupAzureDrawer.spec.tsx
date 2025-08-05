@@ -1,9 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CsvSize }                                                                                                            from '@acx-ui/rc/components'
-import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CertificateUrls, CommonUrlsInfo, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                           from '@acx-ui/store'
+import { CsvSize }           from '@acx-ui/rc/common/components'
+import {
+  AdministrationUrlsInfo,
+  ApplicationAuthenticationStatus,
+  CertificateUrls,
+  CommonUrlsInfo,
+  TenantAuthenticationType
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,

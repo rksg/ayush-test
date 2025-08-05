@@ -14,6 +14,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeMultiWanEnabled = useIsTierAllowed(TierFeatures.EDGE_DUAL_WAN)
   const isEdgeTunnelTemplateEnabled = useIsTierAllowed(TierFeatures.EDGE_TUNNEL_TEMPLATE)
   const isEdgeDelegationEnabled = useIsTierAllowed(TierFeatures.EDGE_DELEGATION)
+  const isEdgeIpsecVxlanEnabled = useIsTierAllowed(TierFeatures.EDGE_IPSEC_VXLAN)
 
   switch(featureFlagKey) {
     case Features.EDGE_PIN_HA_TOGGLE:
@@ -39,6 +40,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEdgeFeatureReady && isEdgeTunnelTemplateEnabled
     case Features.EDGE_DELEGATION_TOGGLE:
       return isEdgeFeatureReady && isEdgeDelegationEnabled
+    case Features.EDGE_IPSEC_VXLAN_TOGGLE:
+      return isEdgeFeatureReady && isEdgeIpsecVxlanEnabled
     default:
       return isEdgeFeatureReady
   }
