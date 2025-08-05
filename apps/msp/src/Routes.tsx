@@ -29,7 +29,8 @@ import {
   IdentityGroupForm,
   PersonaGroupDetails,
   AddTunnelProfileTemplate,
-  EditTunnelProfileTemplate
+  EditTunnelProfileTemplate,
+  TunnelProfileTemplateDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -509,6 +510,13 @@ export function ConfigTemplatesRoutes () {
                 oper: PolicyOperation.EDIT
               })}
               element={<EditTunnelProfileTemplate />}
+            />
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.DETAIL
+              })}
+              element={<TunnelProfileTemplateDetail />}
             />
           </>
         }
