@@ -150,7 +150,7 @@ export function BrandTable ({
     }
   ]
   const propertyCols: TableProps<Pick<Property,
-    'property' | 'propertyCode' | 'accountTier' | 'lsp'>>['columns'] =
+    'property' | 'accountTier' | 'propertyCode' | 'lsp'>>['columns'] =
     [
       {
         title: propertyLabel,
@@ -161,16 +161,6 @@ export function BrandTable ({
         sorter: { compare: sortProp('property', defaultSort) },
         render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
           <span>{highlightFn(row?.property)}</span>
-      },
-      {
-        title: $t({ defaultMessage: 'Property ID' }),
-        dataIndex: 'propertyCode',
-        key: 'propertyCode',
-        fixed: 'left',
-        searchable: true,
-        sorter: { compare: sortProp('propertyCode', defaultSort) },
-        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
-          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
       },
       {
         title: $t({ defaultMessage: 'Service Tier' }),
@@ -187,9 +177,7 @@ export function BrandTable ({
               ? $t({ defaultMessage: 'Essentials' })
               : tier === MspEcTierEnum.Professional
                 ? $t({ defaultMessage: 'Professional' })
-                : tier === MspEcTierEnum.Core
-                  ? $t({ defaultMessage: 'Core' })
-                  : tier
+                : $t({ defaultMessage: 'Core' })
             return {
               key: tier,
               value: tier,
@@ -207,6 +195,16 @@ export function BrandTable ({
                 ? $t({ defaultMessage: 'Core' })
                 : noDataDisplay
         }
+      },
+      {
+        title: $t({ defaultMessage: 'Property ID' }),
+        dataIndex: 'propertyCode',
+        key: 'propertyCode',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('propertyCode', defaultSort) },
+        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
+          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
       },
       {
         title: lspLabel,

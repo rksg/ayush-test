@@ -120,7 +120,7 @@ export function Brand360 () {
       isNewUrl: propertyIdToggle
     }, { skip: isLSP })
   const tenantIdList = mspPropertiesData?.data?.data || []
-  const tenantIdListArray = tenantIdList.map(item => item.id) || []
+  const tenantIdListArray = tenantIdList.map(item => item.id)
   const accountTierList = useFetchAccountTierQuery(
     { tenantIds: tenantIdListArray },
     { skip: tenantIdListArray.length === 0 }
