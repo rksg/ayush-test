@@ -26,6 +26,7 @@ import {
   CheckMark,
   DownloadOutlined
 } from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import {
   useApGroupsListQuery,
   useGetApGroupsTemplateListQuery,
@@ -74,7 +75,6 @@ import { ApCliSession }                                                  from '.
 import { ApCompatibilityFeature, ApCompatibilityType }                   from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer } from '../Compatibility'
 import { seriesMappingAP }                                               from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }               from '../ImportFileDrawer'
 import { useApActions }                                                  from '../useApActions'
 import { VenueSelector }                                                 from '../VenueSelector'
 

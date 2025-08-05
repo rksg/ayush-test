@@ -25,7 +25,6 @@ export { ClientDualTable } from './ClientDualTable'
 export { useRbacClientTableColumns } from './ConnectedClientsTable/RbacClientsTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidgetV2 } from './ClientsWidget'
-export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultRbacClientPayload,
@@ -65,7 +64,6 @@ export {
   GlobalSearchHistoricalClientsTable,
   defaultHistoricalClientPayload
 } from './HistoricalClientsTable'
-export { ImportFileDrawer, CsvSize, ImportFileDrawerType } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortPoeSettings } from './LanPortPoeSettings'
 export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'
@@ -98,14 +96,12 @@ export {
   ClientAdmissionControlTypeEnum
 } from './ClientAdmissionControlForm'
 export { StatusLight } from './StatusLight'
-export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
 export { SwitchInfoWidget } from './SwitchInfoWidget'
 export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus } from './SwitchTable'
 export type { SwitchTableRefType } from './SwitchTable'
 export { Timeline } from './Timeline'
 export { TimelineDrawer } from './TimelineDrawer'
-export { SwitchVeTable } from './SwitchVeTable'
 export { ToggleButton } from './ToggleButton'
 export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { useApActions } from './useApActions'
@@ -307,8 +303,6 @@ export * from './EdgeCluster'
 export * from './WorkflowForm'
 export * from './EnrollmentPortalDesignModal'
 export * from './SwitchBlinkLEDsDrawer'
-export * from './SwitchCliProfileForm'
-export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
