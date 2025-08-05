@@ -5,7 +5,7 @@ import { Space, Switch, Form, Select } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import { Button, Descriptions } from '@acx-ui/components'
-import { CodeMirrorWidget }     from '@acx-ui/rc/components'
+import { CodeMirrorWidget }     from '@acx-ui/rc/common/components'
 import { ConfigurationBackup }  from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
