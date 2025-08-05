@@ -2,17 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { ipSecApi }                                                       from '@acx-ui/rc/services'
-import { IpsecUrls }                                                      from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { ipSecApi }                                                         from '@acx-ui/rc/services'
+import { IpsecUrls }                                                        from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, MockSelect, MockSelectProps } from '@acx-ui/test-utils'
 
 import {  mockIpSecTable } from './__tests__/fixtures'
-import IpsecDrawer         from './IpsecDrawer'
+import IpsecAddDrawer      from './IpsecAddDrawer'
 
-const readViewPath = '/:tenantId/t/policies/ipsec/:policyId'
 const createViewPath = '/:tenantId/t/policies/ipsec/create'
-const policyName = 'ipsecName'
 
 const params = {
   tenantId: 'tenantId',
@@ -23,17 +21,7 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) => {
-    delete otherProps.dropdownClassName
-    return (
-      <select
-        role='combobox'
-        onChange={e => onChange(e.target.value)}
-        {...otherProps}>
-        {children}
-      </select>
-    )
-  }
+  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
     <option role='option' {...otherProps}>{children}</option>
@@ -74,10 +62,9 @@ describe('IpsecDrawer', () => {
     it('should create IpSec successfully', async () => {
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            readMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
@@ -113,10 +100,9 @@ describe('IpsecDrawer', () => {
     it('should click cancel button and close drawer', async () => {
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            readMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
@@ -144,10 +130,9 @@ describe('IpsecDrawer', () => {
       )
       render(
         <Provider>
-          <IpsecDrawer
+          <IpsecAddDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            readMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
@@ -173,54 +158,6 @@ describe('IpsecDrawer', () => {
           status: 404
         }))
       })
-    })
-  })
-
-  describe('ReadIpsecDrawer', () => {
-    const updateFn = jest.fn()
-    beforeEach(() => {
-      updateFn.mockClear()
-      mockedSetVisible.mockClear()
-      store.dispatch(ipSecApi.util.resetApiState())
-
-      mockServer.use(
-        rest.post(
-          IpsecUrls.createIpsec.url,
-          (_, res, ctx) => res(ctx.status(202))
-        ),
-        rest.post(
-          IpsecUrls.getIpsecViewDataList.url,
-          (_, res, ctx) => res(ctx.json(mockIpSecTable.data))
-        )
-      )
-    })
-
-    afterEach(() => {
-      Modal.destroyAll()
-    })
-
-    // eslint-disable-next-line max-len
-    it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
-      render(
-        <Provider>
-          <IpsecDrawer
-            visible={true}
-            setVisible={mockedSetVisible}
-            readMode={true}
-            policyId={params.policyId}
-            policyName={policyName}
-          />
-        </Provider>,
-        { route: { path: readViewPath, params } }
-      )
-
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      expect(await screen.findByText('Profile Details: ipsecName')).toBeVisible()
-      expect(await screen.findByText('128.0.0.1')).toBeVisible()
-
-      await user.click(screen.getByLabelText('Close'))
-      await waitFor(() => expect(mockedSetVisible).toBeCalledTimes(1))
     })
   })
 })
