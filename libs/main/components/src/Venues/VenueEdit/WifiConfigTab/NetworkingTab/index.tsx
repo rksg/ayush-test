@@ -274,7 +274,7 @@ export function NetworkingTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm name='networkingTab'>
         <AnchorLayout items={items} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

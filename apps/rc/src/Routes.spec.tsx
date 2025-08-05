@@ -339,8 +339,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   CertificateForm: () => <div data-testid='CertificateForm' />,
   CertificateTemplateForm: () => <div data-testid='CertificateTemplateForm' />,
   ClientIsolationForm: () => <div data-testid='ClientIsolationForm' />,
-  CliProfileForm: () => <div data-testid='CliProfileForm' />,
-  CliTemplateForm: () => <div data-testid='CliTemplateForm' />,
   DHCPDetail: () => <div data-testid='DHCPDetail' />,
   DHCPForm: () => <div data-testid='DHCPForm' />,
   DpskForm: () => <div data-testid='DpskForm' />,
@@ -377,6 +375,8 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 jest.mock('@acx-ui/switch/components', () => ({
+  CliProfileForm: () => <div data-testid='CliProfileForm' />,
+  CliTemplateForm: () => <div data-testid='CliTemplateForm' />,
   ConfigurationProfileForm: () => <div data-testid='ConfigurationProfileForm' />
 }))
 

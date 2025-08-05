@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, Modal, Table, TableProps, Descriptions, StackedBarChart } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { CodeMirrorWidget }                                                                from '@acx-ui/rc/common/components'
 import {
   useGetSwitchConfigHistoryQuery,
   useGetVenueConfigHistoryQuery,
@@ -14,7 +15,6 @@ import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, SwitchViewM
 import { useParams }                                                                                        from '@acx-ui/react-router-dom'
 import { getIntl, useTableQuery, FILTER }                                                                   from '@acx-ui/utils'
 
-import { CodeMirrorWidget } from '../CodeMirrorWidget'
 
 import { ErrorsTable }              from './ErrorsTable'
 import * as UI                      from './styledComponents'

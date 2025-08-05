@@ -15,8 +15,6 @@ import {
   CertificateForm,
   CertificateTemplateForm,
   ClientIsolationForm,
-  CliProfileForm,
-  CliTemplateForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
@@ -81,6 +79,8 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import {
+  CliProfileForm,
+  CliTemplateForm,
   ConfigurationProfileForm
 } from '@acx-ui/switch/components'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'

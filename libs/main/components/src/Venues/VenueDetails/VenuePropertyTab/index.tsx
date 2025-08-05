@@ -10,7 +10,7 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, userDateTimeFormat }                    from '@acx-ui/formatter'
 import { DownloadOutlined, WarningTriangleSolid }                from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }       from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }       from '@acx-ui/rc/common/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
