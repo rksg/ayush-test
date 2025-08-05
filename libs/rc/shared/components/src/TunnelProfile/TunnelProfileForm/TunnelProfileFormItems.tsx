@@ -27,7 +27,8 @@ import {
   NetworkSegmentTypeEnum,
   TunnelTypeEnum,
   serverIpAddressRegExp,
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  ClusterHighAvailabilityModeEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -35,6 +36,7 @@ import { ApCompatibilityToolTip }                         from '../../ApCompatib
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility'
 import { useIsEdgeFeatureReady }                          from '../../useEdgeActions'
 
+import { IpsecFormItem }  from './IpsecFormItem'
 import { MessageMapping } from './MessageMapping'
 import * as UI            from './styledComponents'
 
@@ -88,12 +90,16 @@ const MtuSizeFormItem = (props: { value?: number,
 }
 
 export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
-  const { isDefaultTunnelProfile = false } = props
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const formId = form.getFieldValue('id')
+
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
+  const { isDefaultTunnelProfile = false } = props
+  const form = Form.useFormInstance()
+  const formId = form.getFieldValue('id')
+
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
@@ -153,7 +159,8 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
         'name',
         'venueId',
         'clusterId',
-        'firmwareVersion'
+        'firmwareVersion',
+        'highAvailabilityMode'
       ],
       pageSize: 10000
     } },
@@ -182,6 +189,10 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
       if (isEdgeNatTraversalP1Ready) {
         form.setFieldsValue({ natTraversalEnabled: false })
       }
+
+      if (isEdgeIpsecVxLanReady) {
+        form.setFieldValue('tunnelEncryptionEnabled', false)
+      }
     }
   }
 
@@ -189,25 +200,42 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     if (e.target.value === TunnelTypeEnum.L2GRE) {
       form.setFieldsValue({
         mtuType: MtuTypeEnum.MANUAL,
-        type: NetworkSegmentTypeEnum.VLAN_VXLAN
+        type: NetworkSegmentTypeEnum.VLAN_VXLAN,
+        natTraversalEnabled: false,
+        tunnelEncryptionEnabled: false
       })
     }
   }
 
-  const onEdgeClusterChange = useCallback((val: string) => {
+  const handleEdgeClusterChange = useCallback((val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
+    // eslint-disable-next-line max-len
+    const isHaAbCluster = edgeData?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
     form.setFieldsValue({
       venueId: edgeData?.venueId
     })
+
+    if (isEdgeIpsecVxLanReady && isHaAbCluster) {
+      form.setFieldValue('tunnelEncryptionEnabled', false)
+    }
+
   }, [clusterData, form])
+
+  const handleTunnelEncryptionChange = (checked: boolean) => {
+    // if tunnel encryption is enabled, force enabled nat traversal and grey out
+    if (checked) {
+      form.setFieldValue('natTraversalEnabled', true)
+    }
+  }
 
   const isNatTraversalBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_NAT_T)
 
   useEffect(() => {
     if (form.getFieldValue('edgeClusterId') && clusterData?.length) {
-      onEdgeClusterChange(form.getFieldValue('edgeClusterId'))
+      handleEdgeClusterChange(form.getFieldValue('edgeClusterId'))
     }
-  }, [form, clusterData, onEdgeClusterChange])
+  }, [form, clusterData, handleEdgeClusterChange])
 
   return (
     <>
@@ -321,7 +349,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                     loading={isClusterServiceOptsLoading && isClusterOptsLoading}
                     options={clusterOptions}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
-                    onChange={onEdgeClusterChange}
+                    onChange={handleEdgeClusterChange}
                     disabled={!!disabledFields?.includes('edgeClusterId')}
                   />
                 </Form.Item>
@@ -336,37 +364,62 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             </Row>
           </Col>
         }
+        { isEdgeIpsecVxLanReady &&
+        (!isEdgeL2greReady || !!!isL2greType) &&
+        <Col span={14}>
+          <Form.Item noStyle dependencies={['type', 'edgeClusterId']}>
+            {({ getFieldValue }) => {
+              const nsgType = getFieldValue('type')
+              const edgeClusterId = getFieldValue('edgeClusterId')
+              // eslint-disable-next-line max-len
+              const isHaAbCluster = clusterData?.find(item => item.clusterId === edgeClusterId)?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
+              return <IpsecFormItem
+                disabled={isDefaultTunnelProfile ||
+                !!disabledFields?.includes('tunnelEncryptionEnabled') ||
+                 nsgType === NetworkSegmentTypeEnum.VXLAN ||
+                 isHaAbCluster
+                }
+                handleTunnelEncryptionChange={handleTunnelEncryptionChange}
+              />
+            }}
+          </Form.Item>
+        </Col>
+        }
         { isEdgeNatTraversalP1Ready &&
         (!isEdgeL2greReady || !!!isL2greType) &&
         <Col span={14}>
           <UI.StyledSpace align='center'>
-            <UI.FormItemWrapper>
-              <Form.Item
-                label={<>
-                  {$t({ defaultMessage: 'Enable NAT-T Support' })}
-                  { isNatTraversalBetaEnabled ? getTitleWithBetaIndicator('') : null }
-                  {<ApCompatibilityToolTip
-                    title={$t(MessageMapping.nat_traversal_support_tooltip)}
-                    placement='bottom'
-                    showDetailButton
-                    // eslint-disable-next-line max-len
-                    onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.NAT_TRAVERSAL)}
-                  />}
-                </>}
-              />
+            <UI.FormItemWrapper
+              label={<>
+                {$t({ defaultMessage: 'Enable NAT-T Support' })}
+                { isNatTraversalBetaEnabled ? getTitleWithBetaIndicator('') : null }
+                {<ApCompatibilityToolTip
+                  title={$t(MessageMapping.nat_traversal_support_tooltip)}
+                  placement='bottom'
+                  showDetailButton
+                  // eslint-disable-next-line max-len
+                  onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.NAT_TRAVERSAL)}
+                />}
+              </>}
+            >
             </UI.FormItemWrapper>
             <Form.Item
               noStyle
-              dependencies={['type']}
+              dependencies={['type', 'tunnelEncryptionEnabled']}
             >
               {({ getFieldValue }) => {
                 const netSegType = getFieldValue('type')
+                // eslint-disable-next-line max-len
+                const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady &&getFieldValue('tunnelEncryptionEnabled')
+
                 return <Form.Item
                   name='natTraversalEnabled'
                   valuePropName='checked'
                   children={
                     <Switch disabled={isDefaultTunnelProfile ||
                       !!disabledFields?.includes('natTraversalEnabled') ||
+                      tunnelEncryptionEnabled ||
                       netSegType === NetworkSegmentTypeEnum.VXLAN}/>
                   }
                 />
@@ -540,11 +593,10 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
         }
         <Col span={14}>
           <UI.StyledSpace align='center'>
-            <UI.FormItemWrapper>
-              <Form.Item
-                label={$t({ defaultMessage: 'Force Fragmentation' })}
-                tooltip={$t(MessageMapping.force_fragment_tooltip)}
-              />
+            <UI.FormItemWrapper
+              label={$t({ defaultMessage: 'Force Fragmentation' })}
+              tooltip={$t(MessageMapping.force_fragment_tooltip)}
+            >
             </UI.FormItemWrapper>
             <Form.Item
               name='forceFragmentation'

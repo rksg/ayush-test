@@ -66,6 +66,7 @@ export const getFilteredTunnelProfileOptions = (
     .map(item => {
       if(item.value) {
         const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
+        const isTunnelEncryptionEnabled = Boolean(profile?.ipsecProfileId)
 
         // Skip none VLAN_VXLAN tunnel profile options
         if(profile?.type !== NetworkSegmentTypeEnum.VLAN_VXLAN) {
@@ -77,9 +78,10 @@ export const getFilteredTunnelProfileOptions = (
           return null
         }
 
-        // Skip VXLAN-GPE options for captive portal networks with non-manual MTU or NAT traversal enabled
+        // Skip invalid DMZ options: VXLAN-GPE options for
+        // captive portal networks with non-manual MTU or NAT traversal enabled or IPSec enabled
         // eslint-disable-next-line max-len
-        if(isCaptivePortal && (profile?.mtuType !== MtuTypeEnum.MANUAL || profile?.natTraversalEnabled)) {
+        if(isCaptivePortal && (profile?.mtuType !== MtuTypeEnum.MANUAL || profile?.natTraversalEnabled || isTunnelEncryptionEnabled)) {
           return null
         }
 

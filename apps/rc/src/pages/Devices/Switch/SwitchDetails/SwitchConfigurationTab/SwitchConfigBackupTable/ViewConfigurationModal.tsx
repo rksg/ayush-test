@@ -3,7 +3,7 @@ import { Menu, MenuProps, Space } from 'antd'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, Descriptions } from '@acx-ui/components'
-import { CodeMirrorWidget }                                   from '@acx-ui/rc/components'
+import { CodeMirrorWidget }                                   from '@acx-ui/rc/common/components'
 import { ConfigurationBackup, SwitchRbacUrlsInfo }            from '@acx-ui/rc/utils'
 import { SwitchScopes }                                       from '@acx-ui/types'
 import { hasPermission }                                      from '@acx-ui/user'

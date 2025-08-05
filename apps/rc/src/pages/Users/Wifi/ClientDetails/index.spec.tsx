@@ -33,6 +33,7 @@ import { events, eventsMeta } from './ClientTimelineTab/__tests__/fixtures'
 import ClientDetails from '.'
 
 const mockedUsedNavigate = jest.fn()
+const mockReqEventMeta = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -84,13 +85,17 @@ jest.mock('./ClientOverviewTab/TopApplications', () => ({
 describe('ClientDetails', () => {
   const requestDisconnectClientSpy = jest.fn()
   beforeEach(() => {
+    mockReqEventMeta.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventList.url,
         (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventsMeta))),
+        (_, res, ctx) => {
+          mockReqEventMeta()
+          return res(ctx.json(eventsMeta))
+        }),
       rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiRbacUrlsInfo.getNetwork.url,
@@ -118,9 +123,6 @@ describe('ClientDetails', () => {
 
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-      key === 'clientStatus' ? 'connected' : null
-    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
@@ -132,6 +134,7 @@ describe('ClientDetails', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(screen.getAllByRole('tab')).toHaveLength(4)
     expect(await screen.findByTestId('ClientOverviewWidget')).toBeVisible()
     expect(await screen.findByTestId('ClientProperties')).toBeVisible()
@@ -159,6 +162,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(await screen.findByText('Clients')).toBeVisible()
     expect(await screen.findByText('Wireless')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -168,9 +172,6 @@ describe('ClientDetails', () => {
 
   it('should render correctly with featureToggle off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-      key === 'clientStatus' ? 'connected' : null
-    )
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
@@ -179,6 +180,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(await screen.findAllByRole('tab')).toHaveLength(4)
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
@@ -198,6 +200,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Troubleshooting')
   })
@@ -211,6 +214,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    // await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -222,6 +226,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Timeline')
   })
@@ -235,6 +240,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
@@ -249,6 +255,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetailPageHeader /></Provider>, {
       route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
     })
+    await waitFor(() => expect(mockReqEventMeta).toBeCalledTimes(1))
     await userEvent.click(await screen.findByText('Actions'))
     await userEvent.click(await screen.findByText('Disconnect Client'))
     await waitFor(() => {
