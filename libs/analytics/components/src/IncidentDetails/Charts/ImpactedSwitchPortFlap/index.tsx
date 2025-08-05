@@ -161,7 +161,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       },
       {
         key: 'connectedDevicePortType',
-        title: $t({ defaultMessage: 'Remote Device Port Type' }),
+        title: $t({ defaultMessage: 'Remote Device Type' }),
         extractValue: (row: Omit<Port, 'vlan'>) => row.connectedDevicePortType
       },
       {
@@ -323,7 +323,7 @@ function ImpactedSwitchTable (props: {
   }, {
     key: 'connectedDevicePortType',
     dataIndex: 'connectedDevicePortType',
-    title: $t({ defaultMessage: 'Remote Device Port Type' }),
+    title: $t({ defaultMessage: 'Remote Device Type' }),
     fixed: 'left',
     width: 90,
     sorter: { compare: sortProp('connectedDevicePortType', defaultSort) },

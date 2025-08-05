@@ -5,12 +5,12 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Features }                                                              from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                       from '@acx-ui/rc/common/components'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
 
-import { useTableControl }                                 from '..'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
-import { useIsEdgeFeatureReady }                           from '../../useEdgeActions'
+import { useTableControl }       from '..'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { PoolDrawer } from './PoolDrawer'
 import { PoolTable }  from './PoolTable'
