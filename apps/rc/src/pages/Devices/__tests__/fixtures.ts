@@ -1453,6 +1453,28 @@ export const apLanPorts = [
   }
 ]
 
+//default access type id
+export const defaultAccessTypeId = 'default_access_id'
+export const defaultTrunkTypeId = 'default_trunk_id'
+
+export const mockDefaultTrunkEthertnetPortProfile = {
+  id: defaultTrunkTypeId,
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  isDefault: true
+}
+
+export const mockDefaultAccessEthertnetPortProfile = {
+  id: defaultAccessTypeId,
+  name: 'Default Access',
+  type: 'ACCESS',
+  untagId: 1,
+  vlanMembers: '1',
+  isDefault: true
+}
+
 export const mockEthProfiles = {
   fields: [
     'id',
@@ -1467,12 +1489,7 @@ export const mockEthProfiles = {
   page: 1,
   data: [
     {
-      id: 'ed4b396d848e465d8044064ff3da9d33',
-      name: 'Default Trunk',
-      type: 'TRUNK',
-      untagId: 1,
-      vlanMembers: '1-4094',
-      isDefault: true,
+      ...mockDefaultTrunkEthertnetPortProfile,
       apSerialNumbers: ['serial-number'],
       venueIds: [],
       apActivations: [
@@ -1484,12 +1501,7 @@ export const mockEthProfiles = {
       ]
     },
     {
-      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
-      name: 'Default Access',
-      type: 'ACCESS',
-      untagId: 1,
-      vlanMembers: '1',
-      isDefault: true,
+      ...mockDefaultAccessEthertnetPortProfile,
       apSerialNumbers: ['serial-number'],
       venueIds: [],
       apActivations: [
@@ -2137,7 +2149,8 @@ export const ApData_H670 = {
   model: 'H670',
   poeMode: 'Auto',
   poeOut: false,
-  poeOutMode: PoeOutModeEnum._802_3af
+  poeOutMode: PoeOutModeEnum._802_3af,
+  globalAccessPortUntaggedIdEnabled: false
 }
 
 export const ApCap_H670 = {
@@ -5262,4 +5275,45 @@ export const mockedVenueLanPortSettings2 = {
 
 export const mockedVenueLanPortSettings3 = {
   enabled: true
+}
+
+// Enhanced Radius Server Profiles data
+export const mockAuthRadiusId = '__Auth_Radius_ID__'
+export const mockAuthRadiusId2 = '__Auth_Radius_ID_2__'
+export const mockAuthRadiusName = '__Auth_Radius_Name__'
+export const mockAuthRadiusName2 = '__Auth_Radius_Name_2__'
+export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
+export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
+
+export const dummyRadiusServiceList = {
+  totalCount: 3,
+  page: 1,
+  data: [{
+    id: mockAuthRadiusId,
+    name: mockAuthRadiusName,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.100:1812',
+    secondary: '192.168.0.101:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAuthRadiusId2,
+    name: mockAuthRadiusName2,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.200:1812',
+    secondary: '192.168.0.210:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAccountingRadiusId,
+    name: mockAccuntingRadiusName,
+    type: 'ACCOUNTING',
+    primary: '192.168.0.201:1813',
+    secondary: '',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }]
 }
