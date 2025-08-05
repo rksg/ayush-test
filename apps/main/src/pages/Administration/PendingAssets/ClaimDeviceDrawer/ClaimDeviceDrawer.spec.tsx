@@ -115,8 +115,9 @@ describe('ClaimDeviceDrawer', () => {
   }
 
   describe('Rendering', () => {
-    it('renders correctly for AP devices', async () => {
-      renderComponent()
+    it('renders correctly for different device types', async () => {
+      // Test AP devices
+      const { rerender } = renderComponent()
 
       await waitFor(() => {
         expect(screen.getByText('Claim Device')).toBeInTheDocument()
@@ -128,10 +129,13 @@ describe('ClaimDeviceDrawer', () => {
       expect(screen.getByText('Devices (3)')).toBeInTheDocument()
       expect(screen.getByText('Use Prefix/Suffix for Device Names')).toBeInTheDocument()
       expect(screen.getByText('Use Serial # as Custom AP Name')).toBeInTheDocument()
-    })
 
-    it('renders correctly for Switch devices', async () => {
-      renderComponent({ deviceType: 'switch' })
+      // Test Switch devices
+      rerender(
+        <Provider>
+          <ClaimDeviceDrawer {...defaultProps} deviceType='switch' />
+        </Provider>
+      )
 
       await waitFor(() => {
         expect(screen.getByText('Claim Device')).toBeInTheDocument()
@@ -159,6 +163,39 @@ describe('ClaimDeviceDrawer', () => {
       expect(screen.getByText('R750')).toBeInTheDocument()
       expect(screen.getByText('R650')).toBeInTheDocument()
       expect(screen.getByText('ICX7550-48')).toBeInTheDocument()
+    })
+
+    it('handles different device array sizes', async () => {
+      // Test empty devices array
+      const { rerender } = renderComponent({ devices: [] })
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Devices (0)')).toBeInTheDocument()
+
+      // Test single device array
+      const singleDevice = [{ serial: 'AP-001', model: 'R750' }]
+      rerender(
+        <Provider>
+          <ClaimDeviceDrawer {...defaultProps} devices={singleDevice} />
+        </Provider>
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Claim Device')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Devices (1)')).toBeInTheDocument()
+      expect(screen.getByText('1.')).toBeInTheDocument()
+      expect(screen.queryByText('2.')).not.toBeInTheDocument()
+    })
+
+    it('handles drawer visibility prop', async () => {
+      renderComponent({ visible: false })
+
+      expect(screen.queryByText('Claim Device')).not.toBeInTheDocument()
     })
   })
 
@@ -371,7 +408,7 @@ describe('ClaimDeviceDrawer', () => {
   })
 
   describe('Form Actions', () => {
-    it('handles close button', async () => {
+    it('handles close and cancel actions', async () => {
       const onCloseMock = jest.fn()
       renderComponent({ onClose: onCloseMock })
 
@@ -379,16 +416,13 @@ describe('ClaimDeviceDrawer', () => {
         expect(screen.getByText('Claim Device')).toBeInTheDocument()
       })
 
+      // Test close button
       const closeButton = screen.getByRole('button', { name: /close/i })
       fireEvent.click(closeButton)
+      expect(onCloseMock).toHaveBeenCalledTimes(1)
 
-      expect(onCloseMock).toHaveBeenCalled()
-    })
-
-    it('handles cancel button', async () => {
-      const onCloseMock = jest.fn()
-      renderComponent({ onClose: onCloseMock })
-
+      // Reset mock and test cancel button
+      onCloseMock.mockClear()
       await waitFor(() => {
         expect(screen.getByText('Venue')).toBeInTheDocument()
       })
@@ -402,8 +436,7 @@ describe('ClaimDeviceDrawer', () => {
 
       const cancelButton = screen.getByRole('button', { name: 'Cancel' })
       fireEvent.click(cancelButton)
-
-      expect(onCloseMock).toHaveBeenCalled()
+      expect(onCloseMock).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -461,37 +494,6 @@ describe('ClaimDeviceDrawer', () => {
       fireEvent.click(apGroupAddButton)
 
       expect(onAddApGroupMock).toHaveBeenCalled()
-    })
-  })
-
-  describe('Edge Cases', () => {
-    it('handles empty devices array', async () => {
-      renderComponent({ devices: [] })
-
-      await waitFor(() => {
-        expect(screen.getByText('Claim Device')).toBeInTheDocument()
-      })
-
-      expect(screen.getByText('Devices (0)')).toBeInTheDocument()
-    })
-
-    it('handles single device array', async () => {
-      const singleDevice = [{ serial: 'AP-001', model: 'R750' }]
-      renderComponent({ devices: singleDevice })
-
-      await waitFor(() => {
-        expect(screen.getByText('Claim Device')).toBeInTheDocument()
-      })
-
-      expect(screen.getByText('Devices (1)')).toBeInTheDocument()
-      expect(screen.getByText('1.')).toBeInTheDocument()
-      expect(screen.queryByText('2.')).not.toBeInTheDocument()
-    })
-
-    it('handles drawer visibility prop', async () => {
-      renderComponent({ visible: false })
-
-      expect(screen.queryByText('Claim Device')).not.toBeInTheDocument()
     })
   })
 })

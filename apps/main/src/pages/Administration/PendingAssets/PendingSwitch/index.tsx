@@ -105,7 +105,7 @@ export const PendingSwitch = () => {
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
       key: 'serialNumber',
-      title: 'Serial #',
+      title: $t({ defaultMessage: 'Serial #' }),
       dataIndex: 'serialNumber',
       sorter: true,
       searchable: true,
@@ -113,7 +113,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'model',
-      title: 'Model',
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true,
       searchable: true,
@@ -121,7 +121,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'shipDate',
-      title: 'Ship Date',
+      title: $t({ defaultMessage: 'Ship Date' }),
       dataIndex: 'shipDate',
       sorter: true,
       render: (_, row) => {
@@ -130,7 +130,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'createdDate',
-      title: 'Created Date',
+      title: $t({ defaultMessage: 'Created Date' }),
       dataIndex: 'createdDate',
       sorter: true,
       filterable: true,
@@ -142,7 +142,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'visibleStatus',
-      title: 'Visibility',
+      title: $t({ defaultMessage: 'Visibility' }),
       dataIndex: 'visibleStatus',
       sorter: true,
       filterKey: 'includeHidden',

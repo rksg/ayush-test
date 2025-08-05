@@ -27,10 +27,9 @@ jest.mock('../../../Venues', () => {
   }
 })
 
-// Mock the Drawer component and cssStr function
+// Mock the Drawer component
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  cssStr: jest.fn((value: string) => value),
   Drawer: ({ children, title, visible, onClose }: {
     children: React.ReactNode
     title: string

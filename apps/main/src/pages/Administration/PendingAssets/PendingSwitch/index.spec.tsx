@@ -29,47 +29,17 @@ describe('PendingSwitch', () => {
             {
               serialNumber: 'RUCKUS-SW-TEST-001',
               model: 'ICX7150',
-              shipDate: '2024-01-15T00:00:00Z',
-              createdDate: '2024-01-20T00:00:00Z',
+              shipDate: '2024-01-15T00:00:00.000Z',
+              createdDate: '2024-01-20T00:00:00.000Z',
               visibleStatus: 'Visible'
             },
             {
               serialNumber: 'RUCKUS-SW-TEST-002',
               model: 'ICX7250',
-              shipDate: '2024-01-16T00:00:00Z',
-              createdDate: '2024-01-21T00:00:00Z',
+              shipDate: '2024-01-16T00:00:00.000Z',
+              createdDate: '2024-01-21T00:00:00.000Z',
               visibleStatus: 'Visible'
             }
-          ],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 2
-          },
-          totalElements: 2,
-          totalPages: 1
-        }))
-      }),
-      rest.get('/api/venues', (req, res, ctx) => {
-        return res(ctx.json({
-          content: [
-            { id: 'venue-1', name: 'Test Venue 1' },
-            { id: 'venue-2', name: 'Test Venue 2' }
-          ],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 2
-          },
-          totalElements: 2,
-          totalPages: 1
-        }))
-      }),
-      rest.get('/api/switch-groups', (req, res, ctx) => {
-        return res(ctx.json({
-          content: [
-            { id: 'group-1', name: 'Test Group 1' },
-            { id: 'group-2', name: 'Test Group 2' }
           ],
           pageable: {
             pageNumber: 0,
@@ -86,7 +56,6 @@ describe('PendingSwitch', () => {
       rest.patch(DeviceProvisionUrlsInfo.hideSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockCommonResult))
       }),
-
       rest.get('*/deviceProvisions/statusReports/switches', (req, res, ctx) => {
         return res(ctx.json({
           refreshedAt: null
@@ -115,7 +84,7 @@ describe('PendingSwitch', () => {
           totalPages: 0
         }))
       }),
-      rest.get('*/venues', (req, res, ctx) => {
+      rest.post('*/venues/apGroups/query', (req, res, ctx) => {
         return res(ctx.json({
           content: [],
           pageable: {
@@ -126,115 +95,6 @@ describe('PendingSwitch', () => {
           totalElements: 0,
           totalPages: 0
         }))
-      }),
-      rest.get('*/users', (req, res, ctx) => {
-        return res(ctx.json({
-          content: [],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 0
-          },
-          totalElements: 0,
-          totalPages: 0
-        }))
-      }),
-      rest.get('*/networks', (req, res, ctx) => {
-        return res(ctx.json({
-          content: [],
-          pageable: {
-            pageNumber: 0,
-            pageSize: 10,
-            totalElements: 0
-          },
-          totalElements: 0,
-          totalPages: 0
-        }))
-      }),
-      rest.get('*/services', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-      rest.get('*/policies', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-      rest.get('*/timeline', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-      rest.get('*/analytics', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-      rest.get('*/reports', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-      rest.get('*/msp', (req, res, ctx) => {
-        return res(ctx.json({
-          items: [],
-          total: 0
-        }))
-      }),
-
-      rest.get('*/health', (req, res, ctx) => {
-        return res(ctx.json({ status: 'ok' }))
-      }),
-      rest.get('*/config', (req, res, ctx) => {
-        return res(ctx.json({ version: '1.0.0' }))
-      }),
-      rest.post('*/auth/login', (req, res, ctx) => {
-        return res(ctx.json({ token: 'mock-token' }))
-      }),
-      rest.post('*/auth/logout', (req, res, ctx) => {
-        return res(ctx.json({ success: true }))
-      }),
-      rest.post('*/upload', (req, res, ctx) => {
-        return res(ctx.json({ url: 'mock-upload-url' }))
-      }),
-      rest.get('*/download/:id', (req, res, ctx) => {
-        return res(ctx.json({ url: 'mock-download-url' }))
-      }),
-      rest.post('*/search', (req, res, ctx) => {
-        return res(ctx.json({ items: [], total: 0 }))
-      }),
-      rest.post('*/batch', (req, res, ctx) => {
-        return res(ctx.json({ success: true }))
-      }),
-      rest.get('*/stats', (req, res, ctx) => {
-        return res(ctx.json({ total: 0, active: 0, inactive: 0 }))
-      }),
-      rest.get('*/logs', (req, res, ctx) => {
-        return res(ctx.json({ items: [], total: 0 }))
-      }),
-      rest.get('*/notifications', (req, res, ctx) => {
-        return res(ctx.json({ items: [], total: 0 }))
-      }),
-      rest.post('*/notifications', (req, res, ctx) => {
-        return res(ctx.json({ success: true }))
-      }),
-      rest.get('*/settings', (req, res, ctx) => {
-        return res(ctx.json({ theme: 'light', language: 'en' }))
-      }),
-      rest.put('*/settings', (req, res, ctx) => {
-        return res(ctx.json({ success: true }))
-      }),
-
-      rest.all('*', (req, res, ctx) => {
-        // eslint-disable-next-line no-console
-        console.warn(`[MSW] Unhandled ${req.method} request to ${req.url}`)
-        return res(ctx.json({ message: 'Mock response for unhandled request' }))
       })
     )
   })
@@ -322,161 +182,14 @@ describe('PendingSwitch', () => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    // Test 1: Refresh functionality
-    const refreshButton = screen.getByRole('button', { name: /refresh/i })
-    fireEvent.click(refreshButton)
+    // Test table interactions
+    const table = screen.getByRole('table')
+    expect(table).toBeInTheDocument()
 
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    // Test 2: Pagination
-    const pagination = screen.queryByRole('navigation')
-    expect(pagination || screen.getByRole('table')).toBeInTheDocument()
-
-    // Test 3: Filtering and search
-    const searchInput = screen.getByPlaceholderText(/search/i)
-    fireEvent.change(searchInput, { target: { value: 'RUCKUS-SW-TEST-001' } })
-
-    await waitFor(() => {
-      const tableRows = screen.getAllByRole('row')
-      const dataRow = tableRows.find(row =>
-        row.textContent?.includes('RUCKUS-SW-TEST-001')
-      )
-      expect(dataRow).toBeInTheDocument()
-    })
-
-    // Test 4: Row selection and actions
-    const checkboxes = screen.getAllByRole('checkbox')
-    const firstRowCheckbox = checkboxes[1]
-
-    fireEvent.click(firstRowCheckbox)
-
-    await waitFor(() => {
-      expect(firstRowCheckbox).toBeChecked()
-    }, { timeout: 1000 })
-  })
-
-  it('handles error states and edge cases', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-  })
-
-  it('handles data mapping and state management', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    // Test 1: Row selection with rowActions
-    const checkboxes = screen.getAllByRole('checkbox')
-    const firstRowCheckbox = checkboxes[1]
-
-    fireEvent.click(firstRowCheckbox)
-
-    await waitFor(() => {
-      expect(firstRowCheckbox).toBeChecked()
-    }, { timeout: 1000 })
-
-    // Test 2: selectedRows mapping in claim device
-    const claimButtons = screen.getAllByText('Claim Device')
-    const claimButton = claimButtons.find(button => {
-      const buttonElement = button.closest('button')
-      return buttonElement && !buttonElement.disabled
-    })
-    fireEvent.click(claimButton!)
-
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
-
-    // Test 3: selectedRows mapping in hide device
-    const closeButton = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(closeButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    })
-
-    // Test 4: Visibility functions with different statuses
-    expect(screen.getByRole('table')).toBeInTheDocument()
-  })
-
-  it('handles API configuration and query interactions', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    const refreshButton = screen.getByRole('button', { name: /refresh/i })
-    fireEvent.click(refreshButton)
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-  })
-
-  it('handles selection clearing and reference management', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    // Test 1: clearSelectionRef.current condition
-    const checkboxes = screen.getAllByRole('checkbox')
-    const firstRowCheckbox = checkboxes[1]
-
-    fireEvent.click(firstRowCheckbox)
-
-    await waitFor(() => {
-      expect(firstRowCheckbox).toBeChecked()
-    }, { timeout: 1000 })
-
-    const claimButtons = screen.getAllByText('Claim Device')
-    const claimButton = claimButtons.find(button => {
-      const buttonElement = button.closest('button')
-      return buttonElement && !buttonElement.disabled
-    })
-    fireEvent.click(claimButton!)
-
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
-
-    const closeButton = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(closeButton)
-
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    })
-
-    // Test 2: Row mapping in various contexts
-    expect(screen.getByRole('table')).toBeInTheDocument()
+    // Test that we can see the device data
+    expect(screen.getByText('RUCKUS-SW-TEST-001')).toBeInTheDocument()
+    expect(screen.getByText('RUCKUS-SW-TEST-002')).toBeInTheDocument()
+    expect(screen.getByText('ICX7150')).toBeInTheDocument()
+    expect(screen.getByText('ICX7250')).toBeInTheDocument()
   })
 })

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Button, Col, Form, Input, Row, Select, Checkbox, Typography } from 'antd'
 import { useIntl }                                                     from 'react-intl'
 
-import { Drawer }                     from '@acx-ui/components'
+import { Drawer, cssStr }             from '@acx-ui/components'
 import {
   useVenuesListQuery,
   useApGroupsListQuery,
@@ -379,9 +379,9 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
         <Row gutter={16}>
           <Col span={24}>
             <div style={{
-              fontSize: '14px',
+              fontSize: cssStr('--acx-body-3-font-size'),
               fontWeight: '500',
-              color: 'rgba(0, 0, 0, 0.85)',
+              color: cssStr('--acx-neutrals-80'),
               marginBottom: '16px'
             }}>
               {deviceType === 'ap'
@@ -507,19 +507,18 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
               <Row gutter={16}>
                 <Col span={24}>
                   <div style={{
-                    backgroundColor: '#e6f7ff',
+                    backgroundColor: 'var(--acx-accents-blue-10)',
                     padding: '8px 12px',
-                    borderRadius: '6px',
-                    border: '1px solid #91d5ff'
+                    borderRadius: '8px'
                   }}>
                     <Text style={{ fontSize: '14px' }}>
-                      <span style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                      <span style={{ color: cssStr('--acx-accents-blue-55'), fontWeight: 'bold' }}>
                         {prefix}
                       </span>
-                      <span style={{ color: '#666' }}>
+                      <span style={{ color: '#333333' }}>
                         [ Custom name ]
                       </span>
-                      <span style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                      <span style={{ color: cssStr('--acx-accents-blue-55'), fontWeight: 'bold' }}>
                         {suffix}
                       </span>
                     </Text>

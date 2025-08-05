@@ -77,57 +77,42 @@ const createPostQuery = (urlInfo: ApiInfo) => {
   return ({ params, payload }: RequestPayload) => {
     const tablePayload = payload as TableQueryPayload
 
-    // Build payload directly from tablePayload
-    const newPayload: Record<string, unknown> = {}
-
-    // Add page parameter
-    if (tablePayload?.page) {
-      newPayload.page = tablePayload.page - 1
+    // Start with tablePayload and selectively transform fields that need special handling
+    const newPayload = {
+      ...tablePayload,
+      // Transform page to 0-based indexing
+      ...(tablePayload?.page && { page: tablePayload.page - 1 }),
+      // Rename searchString to searchText
+      ...(tablePayload?.searchString && { searchText: tablePayload.searchString }),
+      // Transform sortField to sortColumn with special handling for visibleStatus
+      ...(tablePayload?.sortField && sortableFields.includes(tablePayload.sortField) && {
+        sortColumn: tablePayload.sortField === 'visibleStatus'
+          ? 'hiddenStatusName'
+          : tablePayload.sortField
+      }),
+      // Rename sortOrder to order
+      ...(tablePayload?.sortOrder && { order: tablePayload.sortOrder }),
+      // Transform includeHidden from array to single boolean
+      ...(tablePayload?.filters?.includeHidden !== undefined && {
+        includeHidden: tablePayload.filters.includeHidden[0]
+      }),
+      // Rename model to filterModels
+      ...(tablePayload?.filters?.model && { filterModels: tablePayload.filters.model }),
+      // Transform fromTime to createdDateFrom
+      ...(tablePayload?.filters?.fromTime && {
+        createdDateFrom: tablePayload.filters.fromTime.slice(0, 10)
+      }),
+      // Transform toTime to createdDateTo
+      ...(tablePayload?.filters?.toTime && {
+        createdDateTo: tablePayload.filters.toTime.slice(0, 10)
+      })
     }
 
-    // Add size parameter
-    if (tablePayload?.size) {
-      newPayload.size = tablePayload.size
-    }
-
-    // Add searchText parameter
-    if (tablePayload?.searchString) {
-      newPayload.searchText = tablePayload.searchString
-    }
-
-    // Add sortColumn parameter
-    if (tablePayload?.sortField && sortableFields.includes(tablePayload.sortField)) {
-      if (tablePayload.sortField === 'visibleStatus') {
-        newPayload.sortColumn = 'hiddenStatusName'
-      } else {
-        newPayload.sortColumn = tablePayload.sortField
-      }
-    }
-
-    // Add order parameter
-    if (tablePayload?.sortOrder) {
-      newPayload.order = tablePayload.sortOrder
-    }
-
-    // Add includeHidden parameter
-    if (tablePayload?.filters?.includeHidden !== undefined) {
-      newPayload.includeHidden = tablePayload.filters.includeHidden[0]
-    }
-
-    // Add filterModels parameter
-    if (tablePayload?.filters?.model) {
-      newPayload.filterModels = tablePayload.filters.model
-    }
-
-    // Add createdDateFrom parameter
-    if (tablePayload?.filters?.fromTime) {
-      newPayload.createdDateFrom = tablePayload.filters.fromTime.slice(0, 10)
-    }
-
-    // Add createdDateTo parameter
-    if (tablePayload?.filters?.toTime) {
-      newPayload.createdDateTo = tablePayload.filters.toTime.slice(0, 10)
-    }
+    // Remove original fields that were transformed
+    delete newPayload.searchString
+    delete newPayload.sortField
+    delete newPayload.sortOrder
+    delete newPayload.filters
 
     const req = createHttpRequest({
       ...urlInfo,

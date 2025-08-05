@@ -119,7 +119,7 @@ export const PendingAp = () => {
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
       key: 'serialNumber',
-      title: 'Serial #',
+      title: $t({ defaultMessage: 'Serial #' }),
       dataIndex: 'serialNumber',
       sorter: true,
       searchable: true,
@@ -127,7 +127,7 @@ export const PendingAp = () => {
     },
     {
       key: 'model',
-      title: 'Model',
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true,
       searchable: true,
@@ -135,7 +135,7 @@ export const PendingAp = () => {
     },
     {
       key: 'shipDate',
-      title: 'Ship Date',
+      title: $t({ defaultMessage: 'Ship Date' }),
       dataIndex: 'shipDate',
       sorter: true,
       render: (_, row) => {
@@ -144,7 +144,7 @@ export const PendingAp = () => {
     },
     {
       key: 'createdDate',
-      title: 'Created Date',
+      title: $t({ defaultMessage: 'Created Date' }),
       dataIndex: 'createdDate',
       sorter: true,
       filterable: true,
@@ -156,7 +156,7 @@ export const PendingAp = () => {
     },
     {
       key: 'visibleStatus',
-      title: 'Visibility',
+      title: $t({ defaultMessage: 'Visibility' }),
       dataIndex: 'visibleStatus',
       sorter: true,
       filterKey: 'includeHidden',
