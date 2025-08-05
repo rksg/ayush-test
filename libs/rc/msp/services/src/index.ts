@@ -295,6 +295,7 @@ export const mspApi = baseMspApi.injectEndpoints({
           : response as MspEntitlementSummary[]
       }
     }),
+ 
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
       query: ({ params }) => {
         const mspAssignmentSummaryReq =
@@ -1088,7 +1089,17 @@ export const mspApi = baseMspApi.injectEndpoints({
     getCalculatedLicencesV2: build.mutation<LicenseCalculatorDataResponseV2, RequestPayload>({
       query: ({ payload }) => {
         const header = customHeaders.v2
-        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences)//, {}, header)
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, {}, header)
+        return {
+          ...request,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getCalculatedLicencesList: build.query<LicenseCalculatorDataResponseV2, RequestPayload>({
+      query: ({ payload }) => {
+        const header = customHeaders.v2
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, {}, header)
         return {
           ...request,
           body: JSON.stringify(payload)
@@ -1293,7 +1304,8 @@ export const {
   useGetLicenseMileageReportsQuery,
   useCustomerNamesFilterListQuery,
   useDeviceModelFilterListQuery,
-  useVenueNamesFilterListQuery
+  useVenueNamesFilterListQuery,
+  useGetCalculatedLicencesListQuery,
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

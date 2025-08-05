@@ -50,13 +50,17 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
     if (startDate && endDate) {
       const diff = startDate.diff(endDate)
       if (diff < 0) {
+        const getLicenseType = () => {
+          const type = isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW
+          return multiLicenseFFToggled ? [type] : type
+        }
         const payload = {
           operator: 'MAX_QUANTITY',
           effectiveDate: moment(startDate).format('YYYY-MM-DD'),
           expirationDate: moment(endDate).format('YYYY-MM-DD'),
           filters: {
             usageType: 'ASSIGNED',
-            licenseType: isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW,
+            licenseType: getLicenseType(),
             isTrial
           }
         }

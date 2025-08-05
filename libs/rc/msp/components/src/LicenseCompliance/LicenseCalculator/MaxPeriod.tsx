@@ -42,13 +42,17 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
     const isSltn = hasSolutionTokenLicenses &&
       form.getFieldsValue().licenses === 'solutionTokenLicenses'
     if (startDate && isNumber(noOfLicenses)) {
+      const getLicenseType = () => {
+        const type = isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW
+        return multiLicenseFFToggled ? [type] : type
+      }
       const payload = {
         operator: 'MAX_PERIOD',
         effectiveDate: moment(startDate).format('YYYY-MM-DD'),
         quantity: noOfLicenses,
         filters: {
           usageType: 'ASSIGNED',
-          licenseType: isSltn ? EntitlementDeviceType.SLTN_TOKEN : EntitlementDeviceType.APSW,
+          licenseType: getLicenseType(),
           isTrial
         }
       }

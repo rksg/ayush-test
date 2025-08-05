@@ -39,7 +39,8 @@ import {
   useMspAdminListQuery,
   useMspCustomerListQuery,
   usePatchCustomerMutation,
-  useMspRbacEcAssignmentHistoryQuery
+  useMspRbacEcAssignmentHistoryQuery,
+  useGetCalculatedLicencesListQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -54,7 +55,8 @@ import {
   MspEcTierEnum,
   MspEcTierPayload,
   defaultAddress,
-  addressParser
+  addressParser,
+  LicenseCalculatorDataV2
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                                                   from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
@@ -123,6 +125,7 @@ export function NewManageCustomer () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
   const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
+  const multiLicenseFFToggle = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -189,7 +192,22 @@ export function NewManageCustomer () {
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload })
+    { params: useParams(), payload: entitlementSummaryPayload, skip: multiLicenseFFToggle })
+
+    const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+      { payload: {
+        operator: 'MAX_QUANTITY',
+        effectiveDate: moment().format('YYYY-MM-DD'),
+        expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+        filters: {
+          usageType: 'ASSIGNED',
+          licenseType: ['APSW', 'SLTN_TOKEN'],
+          // isTrial: true
+        }
+      }, skip: !multiLicenseFFToggle })
+  
+
+
   const { data: rbacAssignment } = useTableQuery({
     useQuery: useMspRbacEcAssignmentHistoryQuery,
     apiParams: { tenantId: mspEcTenantId as string },
@@ -266,8 +284,12 @@ export function NewManageCustomer () {
   }, [ecSupport])
 
   useEffect(() => {
-    if (licenseSummaryResults) {
-      checkAvailableLicense(licenseSummaryResults)
+    if (licenseSummaryResults || calculatedLicencesList) {
+      if(multiLicenseFFToggle && calculatedLicencesList) {
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else if (licenseSummaryResults) {
+        checkAvailableLicense(licenseSummaryResults)
+      }
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
@@ -299,10 +321,18 @@ export function NewManageCustomer () {
         )
         const solutionTokenTrialLic = solutionTokenTrial.length > 0 ?
           solutionTokenTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
+
+          if(multiLicenseFFToggle && calculatedLicencesList) {
+            isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data)
+            : checkAvailableLicenseV2(calculatedLicencesList.data, apswLic,
+              apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
+              
+          } else if (licenseSummaryResults) {
+            isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
           : checkAvailableLicense(licenseSummaryResults, apswLic,
             apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
-
+          }
+        
         setSolutionTokenTrialLicense(solutionTokenTrialLic)
         formRef.current?.setFieldValue('solutionTokenTrialLicense', solutionTokenTrialLic)
 
@@ -782,6 +812,52 @@ export function NewManageCustomer () {
       })
     }
   }
+
+  const checkAvailableLicenseV2 = (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
+    apswTrialLic?: number, solutionTokenLic?: number,
+    solutionTokenTrialLic?: number ) => {
+      // ServiceTier
+      // const needTierCheck = entitlements.filter(p => p.skuTier)
+
+
+      const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
+        p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+      let remainingApsw = 0
+      apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+        remainingApsw += lic.quantity
+      })
+      const apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
+        p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
+      let remainingApswTrial = 0
+      apswTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+        remainingApswTrial += lic.quantity
+      })
+  
+      apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
+        : setAvailableApswLicense(remainingApsw)
+      apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
+        : setAvailableApswTrialLicense(remainingApswTrial)
+  
+  
+      const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
+            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+      let remainingSolutionTokens = 0
+      solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+        remainingSolutionTokens += lic.quantity
+      })
+      const solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
+            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === true)
+      let remainingSolutionTokenTrial = 0
+      solutionTokenTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+        remainingSolutionTokenTrial += lic.quantity
+      })
+  
+      solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSolutionTokens+solutionTokenLic)
+        : setAvailableSolutionTokenLicense(remainingSolutionTokens)
+      solutionTokenTrialLic
+        ? setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial+solutionTokenTrialLic)
+        : setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial)
+    }
 
   const checkAvailableLicense =
   (entitlements: EntitlementSummaries[], apswLic?: number,

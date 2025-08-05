@@ -304,7 +304,6 @@ export enum Features {
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
-  MULTI_LICENSE_POOL_TOGGLE='entitlement-mulitpool-mspec-toggle',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
   WIFI_AP_PASSWORD_PER_AP_TOGGLE = 'wifi-ap-password-per-ap-toggle',
   WIFI_AP_PASSWORD_VISIBILITY_TOGGLE = 'wifi-ap-password-visibility-toggle',
