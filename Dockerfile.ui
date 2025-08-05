@@ -25,7 +25,7 @@ RUN source ${ENV_FILE} \
 
 COPY . .
 RUN npm install
-RUN if [ "$GIT_COMMIT_BRANCH" = "master" ]; then \
+RUN if [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
       BASE="HEAD~1" ; \
     else \
       BASE="origin/master" ; \
