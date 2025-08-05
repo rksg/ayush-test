@@ -1,9 +1,8 @@
 import { RolesEnum as Role } from '@acx-ui/types'
 
 import { getAIAllowedOperations, opsApis } from './aiAllowedOperations'
-import { hasRoles }                        from './userProfile'
-
-import type { UserProfile } from './types'
+import { UserProfile }                     from './types'
+import { hasRoles, Profile }               from './userProfile'
 
 jest.mock('./userProfile', () => ({
   ...jest.requireActual('./userProfile'),
@@ -11,8 +10,8 @@ jest.mock('./userProfile', () => ({
 }))
 
 const mockProfile = (scopes: string[] = []) => ({
-  scopes
-} as UserProfile)
+  profile: { scopes } as UserProfile
+} as Profile)
 
 describe('getAIAllowedOperations', () => {
   it('should allow all operations for PRIME_ADMIN and ADMINISTRATOR role', () => {
@@ -87,7 +86,7 @@ describe('getAIAllowedOperations', () => {
 
   it('should not allow operations if the profile is undefined', () => {
     jest.mocked(hasRoles).mockReturnValue(false)
-    const result = getAIAllowedOperations(undefined)
+    const result = getAIAllowedOperations({} as Profile)
     expect(result.flatMap(op => op.uri)).toEqual([])
   })
 })

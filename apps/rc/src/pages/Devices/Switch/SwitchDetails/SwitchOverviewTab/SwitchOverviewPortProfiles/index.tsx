@@ -7,9 +7,11 @@ import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CountAndNamesTooltip }               from '@acx-ui/rc/components'
 import { usePortProfilesListBySwitchIdQuery } from '@acx-ui/rc/services'
 import {
-  SwitchPortProfiles,
-  SwitchViewModel,
   vlanPortsParser
+} from '@acx-ui/rc/switch/utils'
+import {
+  SwitchPortProfiles,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useTableQuery } from '@acx-ui/utils'
 export default function SwitchOverviewPortProfiles (props: {

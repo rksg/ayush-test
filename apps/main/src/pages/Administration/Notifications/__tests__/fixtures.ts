@@ -56,6 +56,18 @@ export const fakeNotificationList = [
     mobileEnabled: false
   }
 ]
+
+export const paginatedFakeNotificationList = {
+  content: fakeNotificationList,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10,
+    totalElements: fakeNotificationList.length
+  },
+  totalElements: fakeNotificationList.length,
+  totalPages: 1
+}
+
 export const privilegeGroupList =
   [
     {

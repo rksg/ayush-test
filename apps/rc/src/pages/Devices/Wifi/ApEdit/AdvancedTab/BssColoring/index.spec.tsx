@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }                 from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }                                               from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -36,11 +36,6 @@ describe('AP BSS Coloring', () => {
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenueBssColoring.url,
-        (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
-      rest.get(WifiUrlsInfo.getApBssColoring.url,
-        (_, res, ctx) => res(ctx.json(mockApBssColoringSettings))),
-      // RBAC API
       rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
       rest.get(WifiRbacUrlsInfo.getApBssColoring.url,

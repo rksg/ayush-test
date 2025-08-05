@@ -25,7 +25,6 @@ import {
   useApListQuery,
   useAddApMutation,
   useGetApOperationalQuery,
-  useLazyApGroupListByVenueQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
@@ -93,7 +92,6 @@ const defaultApPayload = {
 
 export function ApForm () {
   const { $t } = useIntl()
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, serialNumber='' } = useParams()
   const isEditMode = action === 'edit'
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
@@ -107,7 +105,7 @@ export function ApForm () {
   const { data: apList } = useApListQuery({
     params: { tenantId },
     payload: defaultApPayload,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -120,19 +118,17 @@ export function ApForm () {
       serialNumber: serialNumber ? serialNumber : '',
       venueId: venueData ? venueData.id : ''
     },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   }, { skip: !isEditMode })
 
   const wifiCapabilities = useWifiCapabilitiesQuery({
     params: { tenantId },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
-  // deprecated in RBAC.
-  const [apGroupList] = useLazyApGroupListByVenueQuery()
   const [rbacApGroupList] = useLazyApGroupsListQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
@@ -158,9 +154,8 @@ export function ApForm () {
   const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
-  const currentApFirmware = isUseWifiRbacApi
-    ? apList?.data?.find(item => item.serialNumber === serialNumber)?.fwVersion
-    : apDetails?.firmware
+  // eslint-disable-next-line max-len
+  const currentApFirmware = apList?.data?.find(item => item.serialNumber === serialNumber)?.fwVersion
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -187,13 +182,11 @@ export function ApForm () {
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
         const options = await getApGroupOptions(venueId)
         let dhcpAp
-        if((venueId && serialNumber) || !isUseWifiRbacApi) {
+        if((venueId && serialNumber)) {
           const dhcpApResponse = await getDhcpAp({
             params: { tenantId },
-            payload: isUseWifiRbacApi ?
-              [{ venueId, serialNumber }] :
-              [serialNumber],
-            enableRbac: isUseWifiRbacApi
+            payload: [{ venueId, serialNumber }],
+            enableRbac: true
           }, true).unwrap()
           dhcpAp = retrieveDhcpAp(dhcpApResponse)
         }
@@ -210,7 +203,7 @@ export function ApForm () {
         // eslint-disable-next-line
         const afcEnabled = (await getApValidChannel({
           params: { venueId, serialNumber },
-          enableRbac: isUseWifiRbacApi
+          enableRbac: true
         })).data?.afcEnabled
 
         if (afcEnabled) {
@@ -253,8 +246,8 @@ export function ApForm () {
         ...omit(
           values,
           'deviceGps',
-          (isUseWifiRbacApi ? 'venueId' : ''),
-          (isUseWifiRbacApi ? 'apGroupId' : '')
+          'venueId',
+          'apGroupId'
         ),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }
@@ -264,8 +257,8 @@ export function ApForm () {
           venueId: values.venueId,
           apGroupId: values.apGroupId
         },
-        payload: isUseWifiRbacApi ? payload : [payload],
-        enableRbac: isUseWifiRbacApi
+        payload: payload,
+        enableRbac: true
       }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
@@ -332,7 +325,7 @@ export function ApForm () {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
+        ...omit(values, 'deviceGps', 'venueId'),
         ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
           || deviceGps })
       }
@@ -341,11 +334,9 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
-      if(
-        isUseWifiRbacApi &&
-        (values.venueId !==apDetails?.venueId ||
-        values.apGroupId !== apDetails?.apGroupId)
-      ) {
+
+      if (values.venueId !==apDetails?.venueId ||
+        values.apGroupId !== apDetails?.apGroupId) {
         await moveApToTargetApGroup({
           params: {
             venueId: values.venueId,
@@ -354,6 +345,7 @@ export function ApForm () {
           }
         }).unwrap()
       }
+
       await updateAp({
         params: {
           tenantId,
@@ -361,8 +353,9 @@ export function ApForm () {
           serialNumber
         },
         payload,
-        enableRbac: isUseWifiRbacApi
+        enableRbac: true
       }).unwrap()
+
       if (isOnlyOneTab) {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
@@ -416,43 +409,24 @@ export function ApForm () {
       value: null
     })
 
-    if (isUseWifiRbacApi) {
-      const { data: apGroupOptions } = await rbacApGroupList({
-        payload: {
-          ...defaultApGroupsFilterOptsPayload,
-          fields: ['name', 'id', 'isDefault'],
-          filters: { venueId: [venueId] }
-        },
-        enableRbac: isUseWifiRbacApi
-      }).unwrap()
 
-      result = result.concat(apGroupOptions.filter(item => {
-        if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
-          result[0].value = item.id
-        }
+    const { data: apGroupOptions } = await rbacApGroupList({
+      payload: {
+        ...defaultApGroupsFilterOptsPayload,
+        fields: ['name', 'id', 'isDefault'],
+        filters: { venueId: [venueId] }
+      },
+      enableRbac: true
+    }).unwrap()
 
-        return !item.isDefault
-      }).map((v) => ({ label: v.name, value: v.id })) || [])
-      result[0].value = apGroupOptions?.find(item => item.isDefault)?.id ?? null
-    } else {
-      const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
-      if (venueId && list?.length) {
-        list?.filter((item) => {
-          if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
-            result[0].value = item.id
-          }
-          return !item.isDefault
-        })
-          .sort((a, b) => (a.name > b.name) ? 1 : -1)
-          .forEach((item) => (
-            result.push({
-              label: item.name,
-              value: item.id
-            })
-          ))
+    result = result.concat(apGroupOptions.filter(item => {
+      if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
+        result[0].value = item.id
       }
-    }
 
+      return !item.isDefault
+    }).map((v) => ({ label: v.name, value: v.id })) || [])
+    result[0].value = apGroupOptions?.find(item => item.isDefault)?.id ?? null
 
     return result
   }

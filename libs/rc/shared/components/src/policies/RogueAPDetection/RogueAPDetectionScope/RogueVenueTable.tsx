@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showActionModal, showToast, Table, TableProps, Tooltip }        from '@acx-ui/components'
+import { useEnforcedStatus }                                             from '@acx-ui/config-template/utils'
 import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
   ConfigTemplateType,
@@ -15,7 +16,6 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { useTableQuery }  from '@acx-ui/utils'
 
-import { useEnforcedStatus }          from '../../../configTemplates'
 import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'
 import RogueAPDetectionContext        from '../RogueAPDetectionContext'
 

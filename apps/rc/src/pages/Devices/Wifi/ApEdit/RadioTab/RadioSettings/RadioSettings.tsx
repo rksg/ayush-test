@@ -238,8 +238,6 @@ export function RadioSettings (props: ApEditItemProps) {
 
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
@@ -264,7 +262,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: isUseRbacApi
+    enableRbac: true
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -305,7 +303,7 @@ export function RadioSettings (props: ApEditItemProps) {
   const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean>()
 
   const { data: apRadioSavedData } =
-    useGetApRadioCustomizationQuery({ params, enableRbac: isUseRbacApi }, { skip: !venueId })
+    useGetApRadioCustomizationQuery({ params, enableRbac: true }, { skip: !venueId })
 
   const [ updateApRadio, { isLoading: isUpdatingApRadio } ] =
     useUpdateApRadioCustomizationMutation()
@@ -429,7 +427,7 @@ export function RadioSettings (props: ApEditItemProps) {
   }, [bandCombinationCapabilities, isWifiSwitchableRfEnabled, supportBandCombination, supportDual5gMode, supportTriRadio, isDual5gMode, getCurrentBandMode])
 
   const { data: apBandModeSavedData } =
-  useGetApBandModeSettingsQuery({ params, enableRbac: isUseRbacApi },
+  useGetApBandModeSettingsQuery({ params, enableRbac: true },
     { skip: !venueId || isSupportDual5GAp || !isSupportBandManagementAp })
 
   const isSupportDual5G = (isSupportDual5GAp &&
@@ -531,7 +529,7 @@ export function RadioSettings (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi
+        enableRbac: true
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)
@@ -968,14 +966,14 @@ export function RadioSettings (props: ApEditItemProps) {
         await updateApBandMode({
           params,
           payload: currentApBandModeData,
-          enableRbac: isUseRbacApi
+          enableRbac: true
         }).unwrap()
       }
 
       await updateApRadio({
         params,
         payload: payload,
-        enableRbac: isUseRbacApi
+        enableRbac: true
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

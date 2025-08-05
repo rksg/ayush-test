@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Divider, Form }             from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer,  Loader }                        from '@acx-ui/components'
+import { Drawer,  Loader, SpaceWrapper }          from '@acx-ui/components'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueQuery,
@@ -28,7 +28,6 @@ import {
   StyledFormItem
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
 import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
-import { SpaceWrapper }                                 from '../../SpaceWrapper'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 export type ApModelCompatibilityDrawerProps = {

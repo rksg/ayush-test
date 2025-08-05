@@ -1,3 +1,8 @@
+export enum IpSecTunnelUsageTypeEnum {
+  VXLAN_GPE = 'VXLAN_GPE',
+  SOFT_GRE = 'SOFT_GRE',
+}
+
 export enum IpSecAuthEnum {
   PSK = 'PSK',
   CERTIFICATE = 'CERTIFICATE'

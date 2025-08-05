@@ -2,13 +2,14 @@ import React, { useMemo, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                                    from '@acx-ui/analytics/utils'
-import type { Incident }                                      from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table }                              from '@acx-ui/components'
-import type { TableHighlightFnArgs, TableColumn, ColumnType } from '@acx-ui/components'
-import { get }                                                from '@acx-ui/config'
-import { TenantLink }                                         from '@acx-ui/react-router-dom'
-import { getIntl, encodeParameter, DateFilter, DateRange }    from '@acx-ui/utils'
+import { aggregateDataBy }                                 from '@acx-ui/analytics/utils'
+import type { Incident }                                   from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table }                           from '@acx-ui/components'
+import type { TableHighlightFnArgs }                       from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import type { ColumnType, TableColumn }                    from '@acx-ui/types'
+import { getIntl, encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 import {
   ImpactedAP,

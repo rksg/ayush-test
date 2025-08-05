@@ -1,13 +1,14 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableColumn, TableProps }                                from '@acx-ui/components'
+import { Loader, Table, TableProps }                                             from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
 import { useGetTenantDetailsQuery }                                              from '@acx-ui/rc/services'
 import { EntitlementUtil }                                                       from '@acx-ui/rc/utils'
+import type { TableColumn }                                                      from '@acx-ui/types'
 import { noDataDisplay, useTableQuery }                                          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

@@ -8,7 +8,6 @@ import { useIntl }                       from 'react-intl'
 
 import {
   Button,
-  ColumnType,
   cssStr,
   Loader,
   PageHeader,
@@ -17,10 +16,10 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useEnforcedStatus
-} from '@acx-ui/rc/components'
+} from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
@@ -40,6 +39,7 @@ import {
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import type { ColumnType }                    from '@acx-ui/types'
 import {
   EdgeScopes,
   RequestPayload,

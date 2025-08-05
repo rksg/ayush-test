@@ -39,6 +39,13 @@ jest.mock('./CloneModal', () => ({
   ConfigTemplateCloneModal: () => <div>ConfigTemplateCloneModal</div>
 }))
 
+jest.mock('./useAddTemplateMenuProps', () => ({
+  useAddTemplateMenuProps: () => ({
+    key: 'add-venue',
+    label: <div>Venue</div>
+  })
+}))
+
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
   const params = { tenantId: '__TENANT_ID' }

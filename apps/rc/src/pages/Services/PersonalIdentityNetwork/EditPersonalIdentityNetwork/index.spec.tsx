@@ -127,11 +127,7 @@ describe('Edit PersonalIdentityNetwork', () => {
       route: { params, path: updatePinPath }
     })
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
-      hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
-      search: ''
-    }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith(`/${params.tenantId}/t/services/personalIdentityNetwork/list`))
   })
 
   it('should update PersonalIdentityNetwork successfully', async () => {
@@ -172,9 +168,9 @@ describe('Edit PersonalIdentityNetwork', () => {
     })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
+      pathname: `/${params.tenantId}/t/services/personalIdentityNetwork/list`,
       search: ''
-    }))
+    }, { replace: true }))
   })
 
   it('should be blocked by switch config validation', async () => {
@@ -359,8 +355,8 @@ describe('Edit PersonalIdentityNetwork - L2GRE', () => {
     })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
+      pathname: `/${params.tenantId}/t/services/personalIdentityNetwork/list`,
       search: ''
-    }))
+    }, { replace: true }))
   })
 })
