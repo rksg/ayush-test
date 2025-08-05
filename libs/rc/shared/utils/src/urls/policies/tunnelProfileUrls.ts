@@ -41,5 +41,17 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:clusterId/tunnelProfiles/:id',
     newApi: true,
     opsApi: 'DELETE:/venues/{id}/edgeClusters/{id}/tunnelProfiles/{id}'
+  },
+  activateTunnelProfileByIpsecProfile: {
+    method: 'put',
+    url: '/tunnelServiceProfiles/:tunnelServiceProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    opsApi: 'PUT:/tunnelServiceProfiles/{id}/ipsecProfiles/{id}'
+  },
+  deactivateTunnelProfileByIpsecProfile: {
+    method: 'delete',
+    url: '/tunnelServiceProfiles/:tunnelServiceProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    opsApi: 'DELETE:/tunnelServiceProfiles/{id}/ipsecProfiles/{id}'
   }
 }

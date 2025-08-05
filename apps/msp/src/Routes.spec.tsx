@@ -45,7 +45,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   DHCPForm: () => <div>DHCPForm</div>,
   PortalForm: () => <div>PortalForm</div>,
   VLANPoolForm: () => <div>VLANPoolForm</div>,
-  CliProfileForm: () => <div>CliProfileForm</div>,
   IdentityGroupForm: () => <div>IdentityGroupForm</div>,
   WifiCallingForm: () => <div>WifiCallingForm</div>,
   AddEthernetPortProfile: () => <div>AddEthernetPortProfile</div>,
@@ -87,6 +86,7 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 
 jest.mock('@acx-ui/switch/components', () => ({
+  CliProfileForm: () => <div>CliProfileForm</div>,
   ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>
 }))
 
