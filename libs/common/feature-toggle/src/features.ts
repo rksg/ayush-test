@@ -312,7 +312,8 @@ export enum Features {
   SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle',
   MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
-  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality'
+  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
