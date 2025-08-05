@@ -196,7 +196,7 @@ export function NewManageIntegrator () {
     { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload, skip: multiLicenseFFToggle })
+    { params: useParams(), payload: entitlementSummaryPayload }, {skip: multiLicenseFFToggle})
 
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
@@ -208,7 +208,7 @@ export function NewManageIntegrator () {
         licenseType: ['APSW', 'SLTN_TOKEN'],
         // isTrial: true
       }
-    }, skip: !multiLicenseFFToggle })
+    } }, {skip: !multiLicenseFFToggle})
 
   const { data: privacySettingsData } =
    useGetPrivacySettingsQuery({ params: useParams() },

@@ -192,7 +192,7 @@ export function NewManageCustomer () {
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload, skip: multiLicenseFFToggle })
+    { params: useParams(), payload: entitlementSummaryPayload }, {skip: multiLicenseFFToggle})
 
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
@@ -204,7 +204,7 @@ export function NewManageCustomer () {
         licenseType: ['APSW', 'SLTN_TOKEN'],
         // isTrial: true
       }
-    }, skip: !multiLicenseFFToggle })
+    } }, { skip: !multiLicenseFFToggle})
   
 
 
@@ -818,6 +818,9 @@ export function NewManageCustomer () {
     solutionTokenTrialLic?: number ) => {
       // ServiceTier
       // const needTierCheck = entitlements.filter(p => p.skuTier)
+      const hasSkuTier = entitlements.some(item => item.skuTier != null)
+      const currentTier = formRef.current?.getFieldsValue(['tier'])
+
 
 
       const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
@@ -1008,14 +1011,14 @@ export function NewManageCustomer () {
                 // isMDU : show only Core
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
-                return (
-                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
-                  (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
-                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
-                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
-                ) &&
-                <Radio
+                // return (true
+                //   // (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
+                //   // (isHospitality && value === MspEcTierEnum.Professional) ||
+                //   // ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                //   // (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
+                //   // (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                // ) &&
+              return  <Radio
                   onChange={handleServiceTierChange}
                   key={value}
                   value={value}

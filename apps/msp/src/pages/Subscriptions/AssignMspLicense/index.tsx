@@ -42,7 +42,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { CatchErrorDetails, useTableQuery } from '@acx-ui/utils'
+import { AccountTier, CatchErrorDetails, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from '../styledComponent'
 
@@ -135,7 +135,7 @@ export function AssignMspLicense () {
     useIsSplitOn(Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({
-     params: useParams(),  skip: multiLicenseFFToggle })
+     params: useParams() }, {skip: multiLicenseFFToggle})
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
       operator: 'MAX_QUANTITY',
@@ -146,7 +146,7 @@ export function AssignMspLicense () {
         licenseType: ['APSW', 'SLTN_TOKEN'],
         // isTrial: true
       }
-    }, skip: !multiLicenseFFToggle })
+    }}, {skip: !multiLicenseFFToggle})
 
   const { data: assignment } =
     useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
@@ -467,8 +467,11 @@ export function AssignMspLicense () {
   (entitlements: LicenseCalculatorDataV2[], wLic?: number, swLic?: number, apswLic?: number,
     apswTrialLic?: number) => {
 
+    const hasSkuTier = entitlements.some(item => item.skuTier != null)
     const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
-      p.licenseType === EntitlementDeviceType.MSP_APSW && p.isTrial === false)
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false
+      && (!hasSkuTier || p.skuTier === AccountTier.PLATINUM))
+   
     let remainingApsw = 0
     apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingApsw += lic.quantity
@@ -476,7 +479,8 @@ export function AssignMspLicense () {
     setAvailableApswLicense(remainingApsw + (apswLic || 0))
 
     const apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
-      p.licenseType === EntitlementDeviceType.MSP_APSW && p.isTrial === true)
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true
+      && (!hasSkuTier || p.skuTier === AccountTier.PLATINUM))
     let remainingApswTrial = 0
     apswTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingApswTrial += lic.quantity
