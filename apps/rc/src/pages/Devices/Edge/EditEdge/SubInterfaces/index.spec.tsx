@@ -68,7 +68,13 @@ jest.mock('../ClusterNavigateWarning', () => ({
 jest.mock('@acx-ui/rc/components', () => {
   const original = jest.requireActual('@acx-ui/rc/components')
   return {
-    EdgeEditContext: original.EdgeEditContext,
+    EdgeEditContext: original.EdgeEditContext
+  }
+})
+
+jest.mock('@acx-ui/rc/common/components', () => {
+  const original = jest.requireActual('@acx-ui/rc/common/components')
+  return {
     CsvSize: original.CsvSize,
     ImportFileDrawer: original.ImportFileDrawer,
     ImportFileDrawerType: original.ImportFileDrawerType

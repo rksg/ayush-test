@@ -117,7 +117,7 @@ describe('TunnelProfileDetail', () => {
       expect(screen.getByText('PMTU Timeout')).toBeInTheDocument()
       expect(screen.getByText('PMTU Retries')).toBeInTheDocument()
       expect(screen.getByText('Keep Alive Interval')).toBeInTheDocument()
-      expect(screen.getByText('Keep Alive Reties')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Retries')).toBeInTheDocument()
     })
   })
 

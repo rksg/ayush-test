@@ -62,7 +62,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     useWatch<boolean>('overrideAccountingEnabled')
   ]
 
-  const getRadiusServerProfiles = useConfigTemplateQueryFnSwitcher({
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAAAPolicyListQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateListQuery,
     payload: {
@@ -84,10 +84,8 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     )
 
   useEffect(() => {
-    const { data, isLoading } = getRadiusServerProfiles
     if (isLoading === false && data && venueId) {
       const excludeRecSec = data.data?.filter(radius => radius.radSecOptions?.tlsEnabled !== true)
-
       const authServices = excludeRecSec.filter(radius => radius.type === 'AUTHENTICATION')
       const initAuthServiceId = authServices.find(radius => radius.venueIds?.includes(venueId))?.id
       const authOptions = authServices?.map(radius => ({ label: radius.name, value: radius.id })) ?? []
@@ -110,7 +108,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
       const curAuthRadiusId = hasIncludedAuthOptions? createdAuthId : initAuthServiceId
 
       const createdAccountingId = createAccountingRadiusIdRef.current
-      const hasIncludedAccountingOptions = createdAuthId && accountingOptions.find((option) => option.value === createdAccountingId)
+      const hasIncludedAccountingOptions = createdAccountingId && accountingOptions.find((option) => option.value === createdAccountingId)
       const curAccountingRadiusId = hasIncludedAccountingOptions? createdAccountingId : initAccountingServiceId
 
       form.setFieldValue('overrideAuthEnabled', !!curAuthRadiusId)
@@ -125,8 +123,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
         createAccountingRadiusIdRef.current = undefined
       }
     }
-
-  }, [form, getRadiusServerProfiles, venueId])
+  }, [form, data, isLoading, venueId])
 
   const handleUpdateRadiusService = async () => {
     const curAuthId = form.getFieldValue('authServiceId')
@@ -193,7 +190,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
   const acctTooltipTitle = $t({ defaultMessage: 'Only non-proxy accounting servers from active networks will be overridden' })
 
   return (<Loader states={[{
-    isLoading: getRadiusServerProfiles.isLoading,
+    isLoading: isLoading,
     isFetching: isActivating || isDeactivating
   }]}>
     <StepsForm.FieldLabel width={'330px'}>

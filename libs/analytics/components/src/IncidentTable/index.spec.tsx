@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
+import userEvent                           from '@testing-library/user-event'
+import { MemoryRouter, MemoryRouterProps } from 'react-router-dom'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'
 import { TableProps }                  from '@acx-ui/components'
-import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }      from '@acx-ui/user'
-import { DateRange }                           from '@acx-ui/utils'
+import { DateRange, fixedEncodeURIComponent }  from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
@@ -27,13 +27,16 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigateToPath: (path: string) => () => mockedNavigate({ pathname: path })
 }))
+
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   handleBlobDownloadFile: jest.fn()
 }))
+
 const incidentTests = [
   {
     severity: 0.12098536225957168,
+    severityLabel: 'P1',
     startTime: '2022-08-03T05:45:00.000Z',
     endTime: '2022-08-03T05:54:00.000Z',
     code: 'radius-failure',
@@ -62,7 +65,8 @@ const incidentTests = [
     mutedAt: null
   },
   {
-    severity: 0.15997624339040492,
+    severity: 1,
+    severityLabel: 'P3',
     startTime: '2022-07-21T08:12:00.000Z',
     endTime: '2022-07-21T08:21:00.000Z',
     code: 'auth-failure',
@@ -92,6 +96,7 @@ const incidentTests = [
   },
   {
     severity: 0.12098536225957168,
+    severityLabel: 'P4',
     startTime: '2022-08-03T05:45:00.000Z',
     endTime: '2022-08-03T05:54:00.000Z',
     code: 'radius-failure',
@@ -184,6 +189,26 @@ const filters : IncidentFilter = {
   filter: {}
 }
 
+const RouterWrapper = ({
+  children,
+  initialEntries
+}: {
+  children: React.ReactNode
+  initialEntries?: MemoryRouterProps['initialEntries']
+}) => {
+  return (
+    <Provider>
+      <MemoryRouter
+        initialEntries={
+          initialEntries ?? [{ pathname: '/tenantId/t/analytics/incidents' }]
+        }
+      >
+        {children}
+      </MemoryRouter>
+    </Provider>
+  )
+}
+
 describe('IncidentTable', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
@@ -193,7 +218,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
-    render(<Router><Provider><IncidentTable filters={filters}/></Provider></Router>)
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
@@ -202,12 +227,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
@@ -215,17 +235,140 @@ describe('IncidentTable', () => {
     expect(screen.getAllByText('P4')).toHaveLength(2)
   })
 
+  it('should use search parameters for filters', async () => {
+    const incidents = [
+      {
+        severity: 0.52098536225957168,
+        severityLabel: 'P2',
+        startTime: '2022-08-03T05:45:00.000Z',
+        endTime: '2022-08-03T05:54:00.000Z',
+        code: 'radius-failure',
+        sliceType: 'ap',
+        sliceValue: 'r710_!216',
+        id: 'c5917024-fd4f-4e11-b65d-610f0251242b',
+        path: [
+          {
+            type: 'zone',
+            name: 'Vaibhav-venue'
+          },
+          {
+            type: 'apGroup',
+            name: 'No group (inherit from Venue)'
+          },
+          {
+            type: 'ap',
+            name: '60:D0:2C:22:6B:90'
+          }
+        ],
+        metadata: {},
+        clientCount: 3,
+        impactedClientCount: 2,
+        isMuted: false,
+        mutedBy: null,
+        mutedAt: null
+      },
+      {
+        severity: 0.15997624339040492,
+        severityLabel: 'P1',
+        startTime: '2022-07-21T08:12:00.000Z',
+        endTime: '2022-07-21T08:21:00.000Z',
+        code: 'auth-failure',
+        sliceType: 'ap',
+        sliceValue: 'Unknown',
+        id: '24e8e00b-2564-4ce9-8933-c153273dfe2d',
+        path: [
+          {
+            type: 'zone',
+            name: 'Venue-3-US'
+          },
+          {
+            type: 'apGroup',
+            name: 'No group (inherit from Venue)'
+          },
+          {
+            type: 'ap',
+            name: '70:CA:97:3A:3A:40'
+          }
+        ],
+        metadata: {},
+        clientCount: 4,
+        impactedClientCount: 2,
+        isMuted: true,
+        mutedBy: null,
+        mutedAt: null
+      },
+      {
+        severity: 1,
+        severityLabel: 'P3',
+        startTime: '2022-08-03T05:45:00.000Z',
+        endTime: '2022-08-03T05:54:00.000Z',
+        code: 'radius-failure',
+        sliceType: 'ap',
+        sliceValue: 'r710_!21690',
+        id: 'c5917024-fd4f-4e11-b65d-610f0251242b123',
+        path: [
+          {
+            type: 'zone',
+            name: 'Vaibhav-venue'
+          },
+          {
+            type: 'apGroup',
+            name: 'No group (inherit from Venue)'
+          },
+          {
+            type: 'ap',
+            name: '60:D0:2C:22:6B:90'
+          }
+        ],
+        metadata: {
+          dominant: {
+            ssid: 'test'
+          },
+          rootCauseChecks: {
+            checks: [
+              {
+                CCD_REASON_AAA_AUTH_FAIL: true
+              }
+            ],
+            params: {}
+          }
+        },
+        clientCount: 3,
+        impactedClientCount: 2,
+        isMuted: false,
+        mutedBy: null,
+        mutedAt: null
+      }
+    ]
+
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents } } }
+    })
+
+    const encodedFilter = fixedEncodeURIComponent(JSON.stringify({ severity: 'P1' }))
+    render(
+      <RouterWrapper initialEntries={[{
+        pathname: '/tenantId/t/analytics/incidents',
+        search: `?incidentTableFilters=${encodedFilter}`
+      }]}>
+        <IncidentTable filters={filters}/>
+      </RouterWrapper>
+    )
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByText('P2')).not.toBeInTheDocument()
+  })
+
   it('should render empty table on undefined incidents', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: undefined } } }
     })
 
-    const { container } = render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
+    const { container } = render(
+      <RouterWrapper>
+        <IncidentTable filters={filters} />
+      </RouterWrapper>
+    )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     // jest not rendering sticky position
@@ -252,15 +395,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
 
@@ -275,15 +410,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     const checkboxes = await screen.findAllByRole('checkbox', {
       checked: false
@@ -311,15 +438,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     // clear default visibility isMuted = false filter
@@ -358,15 +477,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     // clear default visibility isMuted = false filter
@@ -412,15 +523,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(
       screen.queryByRole('img', { name: 'loader' })
@@ -471,15 +574,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     // reset severity header
     const headerList = await screen.findAllByText(columnHeaders[0].name)
@@ -525,15 +620,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     // reset severity header
     const headerList = await screen.findAllByText(columnHeaders[0].name)
@@ -584,15 +671,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(
       screen.queryByRole('img', { name: 'loader' })
@@ -619,12 +698,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(
@@ -646,12 +720,7 @@ describe('IncidentTable', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(
       await screen.findByText(
@@ -674,12 +743,7 @@ describe('IncidentTable', () => {
         incidents: [{ ...incidentTests[0], sliceType: 'switchId' }]
       } } }
     })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(
       await screen.findByText(
@@ -695,15 +759,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>,{
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     fireEvent.click(
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
@@ -716,15 +772,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: airtimeTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>,{
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     fireEvent.click(
       await screen.findByText(
         'Airtime Rx is unusually high in 2.4 GHz in Venue: SV-AX-APs'
@@ -739,15 +787,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>,{
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
     fireEvent.click(
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
@@ -764,15 +804,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>,{
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     fireEvent.click(
       await screen.findByText(
@@ -787,12 +819,7 @@ describe('IncidentTable', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTable filters={filters}/></Provider>,{
-      route: {
-        path: '/:tenantId/t/analytics/incidents',
-        params: { tenantId: '1' }
-      }
-    })
+    render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
 
     await userEvent.click(
       await screen.findByText(
@@ -807,21 +834,34 @@ describe('IncidentTable', () => {
       pathname: `/analytics/incidents/${incidentTests[0].id}`
     }))
   })
+
+  it('should filter table based on params', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    const encodedFilter = fixedEncodeURIComponent(JSON.stringify({ severity: 'P1' }))
+    render(
+      <RouterWrapper initialEntries={[{
+        pathname: '/tenantId/t/analytics/incidents',
+        search: `?incidentTableFilters=${encodedFilter}`
+      }]}>
+        <IncidentTable filters={filters}/>
+      </RouterWrapper>
+    )
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('P1')).toBeInTheDocument()
+    expect(screen.queryByText('P2')).not.toBeInTheDocument()
+    expect(screen.queryByText('P3')).not.toBeInTheDocument()
+  })
 })
 it('should render download button', async () => {
   mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
     data: { network: { hierarchyNode: { incidents: incidentTests } } }
   })
 
-  render(<Provider><IncidentTable filters={filters}/></Provider>,{
-    route: {
-      path: '/tenantId/t/analytics/incidents',
-      wrapRoutes: false,
-      params: {
-        tenantId: '1'
-      }
-    }
-  })
+  render(<RouterWrapper><IncidentTable filters={filters}/></RouterWrapper>)
   fireEvent.click(await screen.findByTestId('DownloadOutlined'))
   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
 })
