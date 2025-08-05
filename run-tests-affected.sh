@@ -13,6 +13,11 @@ AFFECTED_PROJECTS=$(cat /tmp/diff.txt)
 
 PROJECT_LIST=$(echo "$AFFECTED_PROJECTS" | tr -d ' ')
 
+if [ -z "$PROJECT_LIST" ]; then
+  echo "No affected projects to test."
+  exit 0
+fi
+
 echo "Testing affected projects: $PROJECT_LIST"
 
 npx nx run-many --target=test --projects="$PROJECT_LIST" $NX_RUN_OPTIONS 
