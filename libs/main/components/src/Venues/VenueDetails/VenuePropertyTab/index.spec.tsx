@@ -69,7 +69,7 @@ const mockPersona: Persona = {
   expirationDate: moment().add(-8, 'days').toISOString()
 }
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/rc/common/components', () => ({
   ImportFileDrawer: ({ importRequest, onClose, visible }: {
     visible: boolean
     importRequest: () => void

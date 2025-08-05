@@ -21,14 +21,16 @@ import {
   RogueAPDetectionDetailView,
   SyslogForm,
   SyslogDetailView,
-  CliProfileForm, ApGroupDetails, ApGroupEdit,
+  ApGroupDetails,
+  ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
   EthernetPortProfileDetail,
   IdentityGroupForm,
   PersonaGroupDetails,
   AddTunnelProfileTemplate,
-  EditTunnelProfileTemplate
+  EditTunnelProfileTemplate,
+  TunnelProfileTemplateDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -45,7 +47,7 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
-import { ConfigurationProfileForm }                                              from '@acx-ui/switch/components'
+import { CliProfileForm, ConfigurationProfileForm }                              from '@acx-ui/switch/components'
 import { SwitchScopes }                                                          from '@acx-ui/types'
 import { aiOpsApis, AuthRoute, hasPermission }                                   from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
@@ -508,6 +510,13 @@ export function ConfigTemplatesRoutes () {
                 oper: PolicyOperation.EDIT
               })}
               element={<EditTunnelProfileTemplate />}
+            />
+            <Route
+              path={getPolicyRoutePath({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.DETAIL
+              })}
+              element={<TunnelProfileTemplateDetail />}
             />
           </>
         }
