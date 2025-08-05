@@ -1533,7 +1533,7 @@ export const apApi = baseApApi.injectEndpoints({
     getApPassword: build.query<ApPassword, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = {
-          ... GetApiVersionHeader(ApiVersionEnum.v1),
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
           ...ignoreErrorModal
         }
         const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, customHeaders)

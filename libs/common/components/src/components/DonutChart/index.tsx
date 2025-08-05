@@ -280,7 +280,7 @@ export function DonutChart ({
       subtext: props.value
         ? props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '29%' : 'center',
+      left: props.showLegend && !isEmpty ? '25%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -339,7 +339,7 @@ export function DonutChart ({
         data: chartData.length === 0 ? buildEmptyData() : chartData,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
-        center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
+        center: [props.showLegend && !isEmpty ? '26%' : '50%', '50%'],
         radius: getDonutRadius(),
         avoidLabelOverlap: true,
         label: {
