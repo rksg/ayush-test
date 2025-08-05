@@ -6,7 +6,7 @@ import { useIntl }               from 'react-intl'
 
 import { Button, Card, showActionModal, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { CsvSize }                                                from '@acx-ui/rc/components'
+import { CsvSize }                                                from '@acx-ui/rc/common/components'
 import {
   useGetAdminListQuery,
   useDeleteTenantAuthenticationsMutation,

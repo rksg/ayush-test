@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { SwitchConfigHistoryTable }              from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchConfigHistoryTable }              from '@acx-ui/switch/components'
 
 import { SwitchDetailsContext } from '..'
 

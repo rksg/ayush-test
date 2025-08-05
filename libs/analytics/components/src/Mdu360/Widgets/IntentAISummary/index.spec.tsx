@@ -92,7 +92,7 @@ describe('IntentAISummaryWidget', () => {
     expect(await screen.findByText('Paused:')).toBeVisible()
     expect(await screen.findAllByText('19')).toHaveLength(2)
     expect(await screen.findByText('Verified:')).toBeVisible()
-    expect(await screen.findAllByText('24')).toHaveLength(2)
+    expect(await screen.findAllByText('24')).toHaveLength(1)
   })
 
   it.each([

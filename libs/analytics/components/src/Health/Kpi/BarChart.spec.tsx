@@ -6,7 +6,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import BarChart, { formatTimeForXAxis, formatYDataPoint } from './BarChart'
+import BarChart, { formatTimeForXAxis, formatYDataPoint, needToQueryOneMoreDay } from './BarChart'
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -99,5 +99,49 @@ describe('Threshold barchart', () => {
     expect(moment(time, 'YYYY/MM/DD').date()).toStrictEqual(9)
     expect(moment(time).date()).toStrictEqual(10)
     expect(formatTimeForXAxis(time)).toStrictEqual(10)
+  })
+})
+
+describe('needToQueryOneMoreDay', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should handle UTC timezone correctly', () => {
+    jest.spyOn(moment.tz, 'guess').mockReturnValue('UTC')
+
+    const endDateAtStartOfDay = '2024-01-15T00:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtStartOfDay)).toBe(true)
+
+    const endDateAtMiddleOfDay = '2024-01-15T12:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtMiddleOfDay)).toBe(false)
+    const endDateAtEndOfDay = '2024-01-15T23:59:59Z'
+    expect(needToQueryOneMoreDay(endDateAtEndOfDay)).toBe(false)
+  })
+
+  it('should handle Asia/Taipei timezone correctly', () => {
+    jest.spyOn(moment.tz, 'guess').mockReturnValue('Asia/Taipei')
+
+    const endDateAtStartOfDay = '2024-01-14T16:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtStartOfDay)).toBe(true)
+
+    const endDateAtMiddleOfDay = '2024-01-15T04:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtMiddleOfDay)).toBe(false)
+  })
+
+  it('should handle America/New_York timezone correctly', () => {
+    jest.spyOn(moment.tz, 'guess').mockReturnValue('America/New_York')
+
+    const endDateAtStartOfDay = '2024-01-15T05:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtStartOfDay)).toBe(true)
+
+    const endDateAtMiddleOfDay = '2024-01-15T17:00:00Z'
+    expect(needToQueryOneMoreDay(endDateAtMiddleOfDay)).toBe(false)
+  })
+
+  it('should handle edge case with milliseconds', () => {
+    jest.spyOn(moment.tz, 'guess').mockReturnValue('UTC')
+    const endDateAtStartOfDayWithMs = '2024-01-15T00:00:00.123Z'
+    expect(needToQueryOneMoreDay(endDateAtStartOfDayWithMs)).toBe(false)
   })
 })

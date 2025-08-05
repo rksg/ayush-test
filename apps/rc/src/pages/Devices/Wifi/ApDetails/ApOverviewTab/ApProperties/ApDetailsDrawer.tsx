@@ -5,9 +5,9 @@ import { Button, Divider, Tooltip } from 'antd'
 import { capitalize, includes }     from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { Drawer, Descriptions, Loader, SuspenseBoundary } from '@acx-ui/components'
+import { get }                                            from '@acx-ui/config'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   useGetVenueQuery,
   useGetApValidChannelQuery,
@@ -16,7 +16,8 @@ import {
   useLazyGetLagListQuery,
   useGetApOperationalQuery,
   useGetFlexAuthenticationProfilesQuery,
-  useLazyGetApNeighborsQuery
+  useLazyGetApNeighborsQuery,
+  useLazyGetApPasswordQuery
 } from '@acx-ui/rc/services'
 import {
   defaultSwitchPayload
@@ -36,7 +37,8 @@ import {
   SwitchRbacUrlsInfo,
   useApContext,
   ApLldpNeighbor,
-  ApRfNeighbor } from '@acx-ui/rc/utils'
+  ApRfNeighbor,
+  ApPassword } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import {
   EditPortDrawer,
@@ -57,7 +59,6 @@ import { useApNeighbors }       from '../../ApNeighbors/useApNeighbors'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { poeClassDisplayMap }   from './constants'
-import * as UI                  from './styledComponents'
 
 
 interface ApDetailsDrawerProps {
@@ -67,14 +68,14 @@ interface ApDetailsDrawerProps {
   apDetails: ApDetails
 }
 
-const useGetApPassword = (currentAP: ApViewModel) => {
+const useGetApPassword = (currentAP: ApViewModel, skip: boolean) => {
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
 
   const { data: venueRbacApSettings } = useGetApOperationalQuery({ params, enableRbac: true },
-    { skip: !currentAP?.venueId })
+    { skip: skip || !currentAP?.venueId })
 
   return venueRbacApSettings?.loginPassword
 }
@@ -84,6 +85,11 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
+
+  const isPerApPassword = useIsSplitOn(Features.WIFI_AP_PASSWORD_PER_AP_TOGGLE)
+  const isApPasswordVisibility = useIsSplitOn(Features.WIFI_AP_PASSWORD_VISIBILITY_TOGGLE)
+  const isPerApPasswordAndVisibility = isPerApPassword && isApPasswordVisibility
+
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { serialNumber, venueId } = useApContext()
@@ -102,6 +108,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
+  const [needGetApPassword, setNeedGetApPassword] = useState(false)
+  const [apPasswordParam, setApPassword] = useState<ApPassword>()
+  const [showPassword, setShowPassword] = useState(false)
 
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
@@ -151,7 +160,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId
   })
 
-  const apPassword = useGetApPassword(currentAP)
+  const apPassword = useGetApPassword(currentAP, isPerApPasswordAndVisibility)
+
+  const [getApPassword] = useLazyGetApPasswordQuery()
 
   const fetchSwitchDetails = async () => {
     if (!hasPermission({
@@ -226,8 +237,24 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }, [currentAP])
 
+  useEffect(() => {
+    const updateApPassword = async () => {
+      const apPasswordData = await getApPassword({ params }).unwrap()
+      setApPassword(apPasswordData)
+    }
+
+    if (needGetApPassword) {
+      updateApPassword()
+    }
+  }, [needGetApPassword])
+
+
   const onClose = () => {
     setVisible(false)
+    // Reset password visibility for security
+    setShowPassword(false)
+    setNeedGetApPassword(false)
+    setApPassword(undefined)
   }
 
   const displayAFCInfo = () => {
@@ -310,6 +337,62 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }
 
+  const handleShowPassword = () => {
+    if (!isPerApPasswordAndVisibility || !params.serialNumber || !params.venueId) return
+    setNeedGetApPassword(true)
+    setShowPassword(true)
+  }
+
+  const getPasswordRegenerationMessage = () => {
+    const isConnected = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+    const lastSeenTime = currentAP?.lastSeenTime
+    const expireTime = apPasswordParam?.expireTime
+
+    if (!lastSeenTime || !expireTime) {
+      return null
+    }
+
+    // Format expire time for display
+    const expireDate = new Date(expireTime)
+    const now = new Date()
+    const expireTimeString = expireDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+
+    // Check if expireTime is today or tomorrow
+    const isToday = expireDate.toDateString() === now.toDateString()
+    const dayLabel = isToday ? 'today' : 'tomorrow'
+    const timeWithDay = `${expireTimeString} ${dayLabel}`
+
+    if (isConnected) {
+      return (
+        <>
+          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
+          <span style={{ color: '#000' }}>{timeWithDay}</span>
+          {$t({ defaultMessage: '.' })}
+        </>
+      )
+    }
+
+    // For disconnected devices, check if it's been more than 24 hours
+    const lastSeenDate = new Date(lastSeenTime)
+    const timeDiffHours = (now.getTime() - lastSeenDate.getTime()) / (1000 * 60 * 60)
+
+    if (timeDiffHours > 24) {
+      return $t({ defaultMessage: 'AP Password will regenerate upon cloud reconnection.' })
+    } else {
+      return (
+        <>
+          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
+          <span style={{ color: '#000' }}>{timeWithDay}</span>
+          {$t({ defaultMessage: ', or upon cloud reconnection.' })}
+        </>
+      )
+    }
+  }
+
   const PropertiesTab = () => {
     return (<>
       <Descriptions labelWidthPercent={50}>
@@ -349,16 +432,30 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
-          (userProfile?.support || userProfile?.var || userProfile?.dogfood) && apPassword &&
+          (userProfile?.support || userProfile?.var || userProfile?.dogfood) &&
+          (isPerApPasswordAndVisibility || apPassword) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={<UI.DetailsPassword>
-              <PasswordInput
-                readOnly
-                bordered={false}
-                value={apPassword}
-              />
-            </UI.DetailsPassword>}
+            children={
+              !showPassword ? (
+                <Button
+                  type='link'
+                  onClick={handleShowPassword}
+                  style={{ padding: 0, height: 'auto', fontSize: '14px' }}
+                >
+                  {$t({ defaultMessage: 'Show AP Password' })}
+                </Button>
+              ) : (
+                <>
+                  <span>{apPasswordParam?.apPasswords ?? apPassword}</span>
+                  {getPasswordRegenerationMessage() && (
+                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                      {getPasswordRegenerationMessage()}
+                    </div>
+                  )}
+                </>
+              )
+            }
           />
         }
         <Descriptions.Item
