@@ -37,7 +37,8 @@ import {
   useGetMspEcDelegatedAdminsQuery,
   useMspCustomerListQuery,
   useGetAssignedMspEcToIntegratorQuery,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useGetCalculatedLicencesListQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -51,7 +52,8 @@ import {
   defaultAddress,
   addressParser,
   MspEcTierEnum,
-  MspEcTierPayload
+  MspEcTierPayload,
+  LicenseCalculatorDataV2
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                         from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
@@ -194,7 +196,19 @@ export function NewManageIntegrator () {
     { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload })
+    { params: useParams(), payload: entitlementSummaryPayload, skip: multiLicenseFFToggle })
+
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+    { payload: {
+      operator: 'MAX_QUANTITY',
+      effectiveDate: moment().format('YYYY-MM-DD'),
+      expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+      filters: {
+        usageType: 'ASSIGNED',
+        licenseType: ['APSW', 'SLTN_TOKEN'],
+        // isTrial: true
+      }
+    }, skip: !multiLicenseFFToggle })
 
   const { data: privacySettingsData } =
    useGetPrivacySettingsQuery({ params: useParams() },
@@ -215,11 +229,17 @@ export function NewManageIntegrator () {
   }, [privacySettingsData])
 
   useEffect(() => {
-    if (licenseSummaryResults) {
-      checkAvailableLicense(licenseSummaryResults)
+    const hasCalculatedLicencesList = multiLicenseFFToggle && calculatedLicencesList
+    if (licenseSummaryResults || hasCalculatedLicencesList) {
+      if(hasCalculatedLicencesList) {
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else if (licenseSummaryResults) {
+        checkAvailableLicense(licenseSummaryResults)
+      }
     }
 
-    if (licenseSummaryResults && isEditMode && data && licenseAssignment) {
+    if ((licenseSummaryResults || hasCalculatedLicencesList) 
+      && isEditMode && data && licenseAssignment) {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
       }
@@ -233,8 +253,13 @@ export function NewManageIntegrator () {
         en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN && en.status === 'VALID')
       const solutionTokenLic = solutionToken.length > 0
         ? solutionToken.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-      checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
-
+      
+        if(hasCalculatedLicencesList) {
+          checkAvailableLicenseV2(calculatedLicencesList.data, apswLic, solutionTokenLic)
+        } else if (licenseSummaryResults) {
+          checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
+        }
+     
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
@@ -626,6 +651,30 @@ export function NewManageIntegrator () {
     let remainingSltn = 0
     solutionTokenLicenses.forEach( (lic: EntitlementSummaries) => {
       remainingSltn += lic.remainingQuantity
+    })
+    solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSltn+solutionTokenLic)
+      : setAvailableSolutionTokenLicense(remainingSltn)
+  }
+
+  const checkAvailableLicenseV2 =
+  (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
+    solutionTokenLic?: number) => {
+
+    const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingApsw += lic.quantity
+    })
+    apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
+      : setAvailableApswLicense(remainingApsw)
+
+
+    const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
+        p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+    let remainingSltn = 0
+    solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingSltn += lic.quantity
     })
     solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSltn+solutionTokenLic)
       : setAvailableSolutionTokenLicense(remainingSltn)

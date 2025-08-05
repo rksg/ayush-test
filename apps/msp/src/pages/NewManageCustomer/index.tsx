@@ -194,17 +194,17 @@ export function NewManageCustomer () {
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
     { params: useParams(), payload: entitlementSummaryPayload, skip: multiLicenseFFToggle })
 
-    const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
-      { payload: {
-        operator: 'MAX_QUANTITY',
-        effectiveDate: moment().format('YYYY-MM-DD'),
-        expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
-        filters: {
-          usageType: 'ASSIGNED',
-          licenseType: ['APSW', 'SLTN_TOKEN'],
-          // isTrial: true
-        }
-      }, skip: !multiLicenseFFToggle })
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+    { payload: {
+      operator: 'MAX_QUANTITY',
+      effectiveDate: moment().format('YYYY-MM-DD'),
+      expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+      filters: {
+        usageType: 'ASSIGNED',
+        licenseType: ['APSW', 'SLTN_TOKEN'],
+        // isTrial: true
+      }
+    }, skip: !multiLicenseFFToggle })
   
 
 
@@ -394,7 +394,7 @@ export function NewManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummaryResults,
+  }, [data, licenseSummaryResults, calculatedLicencesList,
     licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
