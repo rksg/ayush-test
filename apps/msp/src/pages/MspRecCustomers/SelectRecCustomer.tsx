@@ -105,7 +105,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
-  function highlightAsterisks (str: string) {
+  function highlightAsterisks (str: string, highlightFn: (text: string) => React.ReactNode) {
     if (str.startsWith('** ')) {
       return (
         <span style={{ fontWeight: 'bold' }}>
@@ -113,7 +113,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
             color: 'var(--acx-accents-orange-50)',
             paddingRight: '4px'
           }}>**</span>
-          {str.slice(3)}
+          {highlightFn(str.slice(3))}
         </span>
       )
     }
@@ -124,7 +124,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
             color: 'var(--acx-accents-orange-50)',
             paddingRight: '4px'
           }}>*</span>
-          {str.slice(2)}
+          {highlightFn(str.slice(2))}
         </span>
       )
     }
@@ -150,11 +150,11 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       sorter: { compare: sortProp('account_name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
+      render: function (_, row, __, highlightFn) {
         const hasAsterisks = row.account_name.startsWith('* ') ||
           row.account_name.startsWith('** ')
         return (isRecToMspREcConversionEnabled && hasAsterisks)
-          ? highlightAsterisks(row.account_name)
+          ? highlightAsterisks(row.account_name, highlightFn)
           : row.account_name
       }
     },
