@@ -2,6 +2,7 @@ import React from 'react'
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { IntlProvider }                       from 'react-intl'
+import { MemoryRouter }                       from 'react-router-dom'
 
 import { VenueExtended } from '@acx-ui/rc/utils'
 import { Provider }      from '@acx-ui/store'
@@ -64,11 +65,13 @@ describe('VenueDrawer', () => {
 
   const renderComponent = (props = {}) => {
     return render(
-      <IntlProvider locale='en' messages={messages}>
-        <Provider>
-          <VenueDrawer {...defaultProps} {...props} />
-        </Provider>
-      </IntlProvider>
+      <MemoryRouter>
+        <IntlProvider locale='en' messages={messages}>
+          <Provider>
+            <VenueDrawer {...defaultProps} {...props} />
+          </Provider>
+        </IntlProvider>
+      </MemoryRouter>
     )
   }
 
@@ -87,22 +90,26 @@ describe('VenueDrawer', () => {
   describe('Rendering', () => {
     it('renders correctly when open', async () => {
       render(
-        <IntlProvider locale='en' messages={messages}>
-          <Provider>
-            <VenueDrawer {...defaultProps} />
-          </Provider>
-        </IntlProvider>
+        <MemoryRouter>
+          <IntlProvider locale='en' messages={messages}>
+            <Provider>
+              <VenueDrawer {...defaultProps} />
+            </Provider>
+          </IntlProvider>
+        </MemoryRouter>
       )
       expect(screen.getByTestId('drawer')).toBeInTheDocument()
     })
 
     it('does not render when closed', () => {
       render(
-        <IntlProvider locale='en' messages={messages}>
-          <Provider>
-            <VenueDrawer {...defaultProps} open={false} />
-          </Provider>
-        </IntlProvider>
+        <MemoryRouter>
+          <IntlProvider locale='en' messages={messages}>
+            <Provider>
+              <VenueDrawer {...defaultProps} open={false} />
+            </Provider>
+          </IntlProvider>
+        </MemoryRouter>
       )
 
       expect(screen.queryByTestId('drawer')).not.toBeInTheDocument()
