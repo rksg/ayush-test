@@ -43,7 +43,7 @@ export enum IpSecDhGroupEnum {
   MODP4096 = 'MODP4096',
   MODP6144 = 'MODP6144',
   MODP8192 = 'MODP8192',
-  ESP384 = 'ESP384'
+  ECP384 = 'ECP384'
 }
 
 export enum IpSecEncryptionAlgorithmEnum {
