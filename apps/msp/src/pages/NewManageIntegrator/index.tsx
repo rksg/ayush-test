@@ -36,7 +36,8 @@ import {
   useMspAdminListQuery,
   useGetMspEcDelegatedAdminsQuery,
   useMspCustomerListQuery,
-  useGetAssignedMspEcToIntegratorQuery
+  useGetAssignedMspEcToIntegratorQuery,
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -49,7 +50,8 @@ import {
   AssignActionEnum,
   defaultAddress,
   addressParser,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                         from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
@@ -107,6 +109,7 @@ export function NewManageIntegrator () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
   const multiLicenseFFToggle = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
   const createEcWithTierFFToggle = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
@@ -139,6 +142,7 @@ export function NewManageIntegrator () {
 
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
   
   const { acx_account_vertical } = getJwtTokenPayload()
 
@@ -450,6 +454,7 @@ export function NewManageIntegrator () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -492,6 +497,13 @@ export function NewManageIntegrator () {
       await updateIntegrator({
         params: { mspEcTenantId: mspEcTenantId },
         payload: customer, enableRbac: isRbacEnabled }).unwrap()
+      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
