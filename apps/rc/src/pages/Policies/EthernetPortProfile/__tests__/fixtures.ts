@@ -56,6 +56,19 @@ export const mockedApsResult = {
   }]
 }
 
+export const mockedSwitchResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'id001',
+    clientMac: 'A8:0B:FB:0F:98:20',
+    switchId: 'switchId001',
+    switchName: 'switchName',
+    switchSerialNumber: 'FEK3227R06L',
+    switchPort: 'switchPort001'
+  }]
+}
+
 export const dummyEthernetPortProfileTrunk = {
   id: mockEthernetPortProfileId,
   name: mockEthernetPortProfileId,

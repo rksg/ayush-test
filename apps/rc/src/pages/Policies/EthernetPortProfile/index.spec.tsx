@@ -5,6 +5,7 @@ import {
   AaaUrls,
   CommonUrlsInfo,
   CommonRbacUrlsInfo,
+  SwitchRbacUrlsInfo,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
@@ -14,7 +15,7 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult, mockedApsResult } from './__tests__/fixtures'
+import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult, mockedApsResult, mockedSwitchResult } from './__tests__/fixtures'
 
 
 import EthernetPortProfile from '.'
@@ -81,9 +82,9 @@ describe('EthernetPortProfileTable', ()=>{
       ),
 
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
         (req, res, ctx) => {
-          return res(ctx.json(mockedApsResult))
+          return res(ctx.json(mockedSwitchResult))
         }
       )
     )

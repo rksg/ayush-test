@@ -41,7 +41,6 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const defaultApPayload = {
     fields: ['serialNumber', 'name'],
     pageSize: 10000
@@ -93,7 +92,7 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   const { apNameMap =[] } = useApListQuery({
     params: { tenantId: params.tenantId },
     payload: defaultApPayload,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   }, {
     selectFromResult: ({ data }) => ({
       apNameMap: data?.data?.map(ap => ({ key: ap.serialNumber, value: ap.name }))
