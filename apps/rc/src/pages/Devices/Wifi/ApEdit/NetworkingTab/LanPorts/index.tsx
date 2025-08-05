@@ -665,36 +665,45 @@ export function LanPorts (props: ApEditItemProps) {
               </Col>
             </Row>
           }
-          {formRef?.current?.getFieldsValue()?.globalAccessVlanIdEnabled &&
-            <Row gutter={24}>
-              <Col span={8}>
-                <Form.Item
-                  name='globalAccessVlanId'
-                  label={$t({ defaultMessage: 'Global Untagged VLAN ID' })}
-                  rules={[
-                    {
-                      required: true,
-                      message: $t({ defaultMessage: 'Please enter Untagged VLAN ID' })
-                    },
-                    {
-                      type: 'number',
-                      min: 1,
-                      max: 4094,
-                      message: $t({ defaultMessage: 'Value must be between 1-4094' })
-                    }
-                  ]}
-                >
-                  <InputNumber
-                    min={1}
-                    max={4094}
-                    disabled={!isAllowEdit || useVenueSettings || shouldDisableGlobalAccessVlan}
-                    style={{ width: '120px' }}
-                    defaultValue={1}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          }
+          {/* {formRef?.current?.getFieldsValue()?.globalAccessVlanIdEnabled && */}
+          <Form.Item
+            dependencies={['globalAccessVlanIdEnabled']}
+            noStyle
+          >
+            {({ getFieldValue }) => {
+              return getFieldValue('globalAccessVlanIdEnabled') && (
+                <Row gutter={24}>
+                  <Col span={8}>
+                    <Form.Item
+                      name='globalAccessVlanId'
+                      label={$t({ defaultMessage: 'Global Untagged VLAN ID' })}
+                      rules={[
+                        {
+                          required: true,
+                          message: $t({ defaultMessage: 'Please enter Untagged VLAN ID' })
+                        },
+                        {
+                          type: 'number',
+                          min: 1,
+                          max: 4094,
+                          message: $t({ defaultMessage: 'Value must be between 1-4094' })
+                        }
+                      ]}
+                    >
+                      <InputNumber
+                        min={1}
+                        max={4094}
+                        disabled={!isAllowEdit || useVenueSettings || shouldDisableGlobalAccessVlan}
+                        style={{ width: '120px' }}
+                        defaultValue={1}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )
+            }}
+          </Form.Item>
+
           <Row gutter={24}>
             <Col span={24}>
               <Tabs

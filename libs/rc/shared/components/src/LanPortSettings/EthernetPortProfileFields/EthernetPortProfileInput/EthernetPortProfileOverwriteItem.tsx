@@ -123,8 +123,10 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       { !isEditMode &&
         <Space>
           {currentFieldValue}{
-            isGlobalOverride ? '(Global)' :
-              (isEditable && !hasVni) ? (isDirty ? '(Custom)' : '(Default)') : ''
+            isGlobalOverride ? $t({ defaultMessage: '(Global)' }) :
+              (isEditable && !hasVni) ?
+                (isDirty ? $t({ defaultMessage: '(Custom)' }) :
+                  $t({ defaultMessage: '(Default)' })) : ''
           }
           { isEditable &&
             <>
