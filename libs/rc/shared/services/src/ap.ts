@@ -20,6 +20,7 @@ import {
   ApIot,
   ApIotController,
   ApClientAdmissionControl,
+  ApClientAdmissionControl_v1_1,
   ApGroupClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -1560,7 +1561,7 @@ export const apApi = baseApApi.injectEndpoints({
     getApPassword: build.query<ApPassword, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = {
-          ... GetApiVersionHeader(ApiVersionEnum.v1),
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
           ...ignoreErrorModal
         }
         const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, customHeaders)
@@ -2171,6 +2172,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     }),
+    getApClientAdmissionControl_v1_1: build.query<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApClientAdmissionControlSettings_v1_1, params)
+      },
+      providesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    updateApClientAdmissionControl_v1_1: build.mutation<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApClientAdmissionControlSettings_v1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
     getApGroupClientAdmissionControl: build.query<ApGroupClientAdmissionControl, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings, params)
@@ -2427,6 +2444,9 @@ export const {
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
+  useGetApClientAdmissionControl_v1_1Query,
+  useUpdateApClientAdmissionControl_v1_1Mutation,
+  useLazyGetApGroupClientAdmissionControlQuery,
   useGetApGroupClientAdmissionControlQuery,
   useUpdateApGroupClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
