@@ -186,6 +186,8 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
                 <Select
                   placeholder={$t({ defaultMessage: 'Select profile...' })}
                   options={vlanPoolList as unknown as DefaultOptionType[]}
+                  value={editingApGroup.vlanPoolId}
+                  onChange={(e) => form.setFieldValue(['vlanPoolId'], e)}
                   style={{ width: '187px' }} />
                 { isApGroupMoreParameterPhase1Enabled &&
                   <Tooltip>

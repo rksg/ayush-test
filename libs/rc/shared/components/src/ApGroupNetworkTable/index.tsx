@@ -1,18 +1,24 @@
 /* eslint-disable max-len */
-import { createContext, ReactNode, useEffect, useRef, useState } from 'react'
+import React, { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
-import { cloneDeep } from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Switch }         from 'antd'
+import { cloneDeep, get } from 'lodash'
+import { AlignType }      from 'rc-table/lib/interface'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
-import { Loader, Table, TableProps }      from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useApGroupNetworkListV2Query,
-  useNewApGroupNetworkListQuery,
-  useNewApGroupNetworkListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useAddRbacNetworkVenueMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useDeleteRbacNetworkVenueMutation,
+  useEnhanceVenueNetworkTableV2Query,
+  useNewVenueNetworkTableQuery,
   useUpdateNetworkVenueMutation,
-  useUpdateNetworkVenueTemplateMutation
+  useUpdateNetworkVenueTemplateMutation,
+  useVenueDetailsHeaderQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -25,15 +31,23 @@ import {
   NetworkVenue,
   useConfigTemplateMutationFnSwitcher,
   networkTypes,
-  SupportNetworkTypes
+  SupportNetworkTypes,
+  WifiRbacUrlsInfo,
+  generateDefaultNetworkVenue,
+  IsNetworkSupport6g,
+  RadioTypeEnum, RadioEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useTableQuery }  from '@acx-ui/utils'
+import { TenantLink }                                                          from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                          from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasPermission } from '@acx-ui/user'
+import { getOpsApi, useTableQuery }                                            from '@acx-ui/utils'
 
-import { useGetVLANPoolPolicyInstance }                 from '../ApGroupEdit/ApGroupVlanRadioTab'
-import { renderConfigTemplateDetailsComponent }         from '../configTemplates'
-import { transformApGroupRadios, transformApGroupVlan } from '../pipes/apGroupPipes'
+import { useApGroupContext }                                                    from '../ApGroupDetails/ApGroupContextProvider'
+import { useGetVLANPoolPolicyInstance }                                         from '../ApGroupEdit/ApGroupVlanRadioTab'
+import { renderConfigTemplateDetailsComponent }                                 from '../configTemplates'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedVenueNetworks } from '../EdgeSdLan/useEdgeSdLanActions'
+import { AddNetworkModal }                                                      from '../NetworkForm'
+import { transformApGroupRadios, transformApGroupVlan }                         from '../pipes/apGroupPipes'
 
 import { ApGroupNetworkVlanRadioDrawer } from './ApGroupNetworkVlanRadioDrawer'
 
@@ -117,26 +131,71 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { venueId, apGroupId } = props
+  const { name } = useApGroupContext()
+
+  const { rbacOpsApiEnabled } = getUserProfile()
+
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
+  const [isTableUpdating, setIsTableUpdating] = useState<boolean>(false)
+  const [networkModalVisible, setNetworkModalVisible] = useState(false)
 
   const [tableData, setTableData] = useState(defaultArray)
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   const settingsId = 'apgroup-network-table'
-
-  const tableQuery = useApGroupNetworkList({ settingsId, ...props })
+  const tableQuery = useVenueNetworkList({ settingsId, venueId })
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyInstance(!tableData.length)
   const updateDataRef = useRef<NetworkVenue[]>([])
   const oldDataRef = useRef<NetworkVenue[]>([])
   const networkDataRef = useRef<string[]>([])
 
+  const addNetworkVenueOpsAPi = getOpsApi(WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const addNetworkOpsApi = getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)
+
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
 
+  const [ addRbacNetworkVenue, { isLoading: isAddRbacNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRbacNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+
+  const [ deleteRbacNetworkVenue, { isLoading: isDeleteRbacNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteRbacNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
+
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasActivatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasActivatePermission)
+
+  const actions: TableProps<Network>['actions'] = isApGroupMoreParameterPhase3Enabled ? [
+    {
+      label: $t({ defaultMessage: 'Add Network' }),
+      scopeKey: [WifiScopes.CREATE],
+      rbacOpsIds: [addNetworkOpsApi],
+      onClick: () => { setNetworkModalVisible(true) }
+    }
+  ] : []
+
   useEffect(()=>{
-    if (tableQuery.data) {
+    if (tableQuery.data && venueId) {
       const data: React.SetStateAction<NetworkExtended[]> = []
       // showing onboarded networks
       const _rows: string[]=[]
@@ -149,18 +208,19 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
 
         data.push({
           ...item,
-          deepVenue: activatedVenue // seems not using now?
+          deepVenue: activatedVenue, // seems not using now?
+          activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
       })
 
       setTableData(data)
     }
-  }, [tableQuery.data])
+  }, [tableQuery.data, venueId])
 
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit VLAN & Radio' }),
     visible: (rows) => rows.length > 0,
-    disabled: drawerStatus?.visible,
+    disabled: drawerStatus?.visible && !hasUpdateNetworkVenuePermission,
     onClick: (rows) => {
       setDrawerStatus({
         visible: true,
@@ -207,82 +267,182 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
     }
   }
 
-  const columns = useApGroupNetworkColumns(apGroupId!, venueId!, vlanPoolingNameMap)
+  const activateNetwork = async (checked: boolean, row: Network) => {
+    if (row.allApDisabled) {
+      // TODO:
+      // manageAPGroups(row);
+    }
+    else {
+      if (row.deepNetwork) {
+        if (checked) { // activate
+          const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
+          if (IsNetworkSupport6g(row.deepNetwork, { isSupport6gOWETransition })) {
+            newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
+          }
 
-  const isAllApGroupsScope = (record: Network) => {
-    const currentVenue = getCurrentVenue(record, venueId!)
-    return currentVenue?.isAllApGroups
+          const apiParams = {
+            tenantId,
+            venueId,
+            networkId: newNetworkVenue.networkId
+          }
+
+          setIsTableUpdating(true)
+          addRbacNetworkVenue({
+            params: apiParams,
+            payload: newNetworkVenue,
+            enableRbac: true,
+            callback: () => {
+              updateNetworkVenue({
+                params: {
+                  tenantId: tenantId,
+                  venueId: venueId,
+                  networkId: newNetworkVenue.networkId
+                },
+                payload: {
+                  ...{
+                    oldPayload: newNetworkVenue,
+                    newPayload: {
+                      ...newNetworkVenue,
+                      isAllApGroups: false,
+                      apGroups: [
+                        {
+                          apGroupId: apGroupId,
+                          radioTypes: [
+                            RadioTypeEnum._2_4_GHz,
+                            RadioTypeEnum._5_GHz,
+                            RadioTypeEnum._6_GHz
+                          ],
+                          radio: RadioEnum.Both
+                        }
+                      ]
+                    }
+                  }
+                },
+                enableRbac: true
+              }).then(()=>{
+                setIsTableUpdating(false)
+              })
+            }
+          })
+
+        } else { // deactivate
+          row.deepNetwork.venues.forEach((networkVenue) => {
+            if (networkVenue.venueId === venueId) {
+              const apiParams = {
+                tenantId,
+                venueId,
+                networkId: networkVenue.networkId,
+                networkVenueId: networkVenue.id
+              }
+
+              setIsTableUpdating(true)
+              deleteRbacNetworkVenue({
+                params: apiParams,
+                enableRbac: true,
+                callback: () => {
+                  setIsTableUpdating(false)
+                }
+              })
+            }
+          })
+        }
+      }
+    }
   }
 
+  const columns = useApGroupNetworkColumns(
+    apGroupId!, venueId!,
+    vlanPoolingNameMap, undefined,
+    activateNetwork, hasActivateNetworkVenuePermission,
+    tableQuery.data?.data.map(item => item.id)
+  )
+
+  const isAllApGroupsScopeOrNotActivated = (record: Network) => {
+    const currentVenue = getCurrentVenue(record, venueId!)
+    const notActivated = !currentVenue?.apGroups?.find((apGroup) => apGroup.apGroupId === apGroupId)
+    return currentVenue?.isAllApGroups || notActivated
+  }
+
+  const networkFormDefaultVals = useMemo(() => (
+    venueId
+      ? {
+        defaultActiveVenues: [venueId],
+        defaultActiveApGroups: [{
+          apGroupId: apGroupId,
+          apGroupName: name,
+          radioTypes: [
+            RadioTypeEnum._2_4_GHz,
+            RadioTypeEnum._5_GHz,
+            RadioTypeEnum._6_GHz
+          ],
+          radio: RadioEnum.Both
+        }]
+      }
+      : undefined
+  ), [venueId])
+
+  const isFetching = isTableUpdating || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
+
   return (
-    <Loader states={[ tableQuery ]}>
-      <ApGroupNetworkVlanRadioContext.Provider value={{
-        venueId: venueId!, apGroupId: apGroupId!,
-        tableData, setTableData,
-        drawerStatus, setDrawerStatus,
-        vlanPoolingNameMap }} >
-        <Table
-          rowKey='id'
-          settingsId={settingsId}
-          columns={columns}
-          dataSource={tableData}
-          pagination={tableQuery.pagination}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{
-            type: 'checkbox',
-            getCheckboxProps: (record) => ({
-              disabled: drawerStatus?.visible || isAllApGroupsScope(record)
-            })
-          }}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-        <ApGroupNetworkVlanRadioDrawer updateData={handleUpdateAllApGroupVlanRadio} />
-      </ApGroupNetworkVlanRadioContext.Provider>
-    </Loader>
+    <>
+      <Loader states={[ tableQuery, { isLoading: false, isFetching: isFetching } ]}>
+        <ApGroupNetworkVlanRadioContext.Provider value={{
+          venueId: venueId!, apGroupId: apGroupId!,
+          tableData, setTableData,
+          drawerStatus, setDrawerStatus,
+          vlanPoolingNameMap }} >
+          <Table
+            rowKey='id'
+            settingsId={settingsId}
+            columns={columns}
+            dataSource={tableData}
+            pagination={tableQuery.pagination}
+            actions={filterByAccess(actions)}
+            rowActions={filterByAccess(rowActions)}
+            rowSelection={{
+              type: 'checkbox',
+              getCheckboxProps: (record) => ({
+                disabled: drawerStatus?.visible || isAllApGroupsScopeOrNotActivated(record)
+              })
+            }}
+            onChange={tableQuery.handleTableChange}
+            onFilterChange={tableQuery.handleFilterChange}
+            enableApiFilter={true}
+          />
+          <ApGroupNetworkVlanRadioDrawer updateData={handleUpdateAllApGroupVlanRadio} />
+        </ApGroupNetworkVlanRadioContext.Provider>
+      </Loader>
+      <AddNetworkModal
+        visible={networkModalVisible}
+        setVisible={setNetworkModalVisible}
+        defaultValues={networkFormDefaultVals}
+      />
+    </>
   )
 }
 
-const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
-  apGroupId?: string } ) => {
-  const { settingsId, venueId, apGroupId } = props
+const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) => {
+  const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
-
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
-  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
-
-  const nonRbacTableQuery = useTableQuery({
-    useQuery: useApGroupNetworkListV2Query,
-    apiParams: { venueId: venueId || '' },
-    defaultPayload: {
-      ...defaultApGroupNetworkPayload,
-      isTemplate: isTemplate
-    },
-    pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled }
-  })
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const rbacTableQuery = useTableQuery({
-    useQuery: isUseNewRbacNetworkVenueApi ? useNewApGroupNetworkListV2Query : useNewApGroupNetworkListQuery,
-    apiParams: { venueId: venueId! },
+    useQuery: isApCompatibilitiesByModel
+      ? useEnhanceVenueNetworkTableV2Query
+      : useNewVenueNetworkTableQuery,
     defaultPayload: {
       ...defaultNewApGroupNetworkPayload,
-      filters: {
-        'venueApGroups.apGroupIds': [apGroupId]
-      },
-      search: {
-        searchTargetFields: defaultNewApGroupNetworkPayload.searchTargetFields as string[]
-      },
-      isTemplate: isTemplate,
-      isTemplateRbacEnabled
+      isTemplate: isTemplate
+    },
+    search: {
+      searchTargetFields: defaultNewApGroupNetworkPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !venueId || !apGroupId }
+    apiParams: { venueId: venueId || '' },
+    option: { skip: !venueId }
   })
-  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+
+  return rbacTableQuery
 }
 
 export const getCurrentVenue = (row: Network, venueId: string) => {
@@ -296,11 +456,24 @@ export const getCurrentVenue = (row: Network, venueId: string) => {
 export function useApGroupNetworkColumns (
   apGroupId: string, venueId: string,
   vlanPoolingNameMap?: KeyValue<string, string>[],
-  isEditable?: boolean
+  isEditable?: boolean,
+  activateNetwork?: (checked: boolean, row: Network) => void,
+  hasActivateNetworkVenuePermission?: boolean,
+  networkIds?: string[] | undefined
 ) {
 
   const { $t } = useIntl()
+  const params = useParams()
   const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase3Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(venueId, networkIds)
+
+  const venueDetailsQuery = useVenueDetailsHeaderQuery({ params: { ...params, venueId } })
+
+  const isSystemCreatedNetwork = (row: Network) => {
+    return row?.isOweMaster === false && row?.owePairNetworkId !== undefined
+  }
 
   const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
     return { key: networkType, value: $t(networkTypes[networkType]) }
@@ -341,14 +514,60 @@ export function useApGroupNetworkColumns (
         row={row}
       />
     },
+    ...(isApGroupMoreParameterPhase3Enabled && activateNetwork ? [{
+      key: 'activated',
+      title: $t({ defaultMessage: 'Activated' }),
+      dataIndex: ['activated', 'isActivated'],
+      align: 'center' as AlignType,
+      render: function (_: ReactNode, row: Network) {
+        let disabled = false
+        const currentVenue = getCurrentVenue(row, venueId)
+        if (currentVenue?.isAllApGroups) {
+          disabled = true
+        }
+        let title = ''
+        if (hasActivateNetworkVenuePermission) {
+          if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
+            disabled = true
+            title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          } else if (row?.isOnBoarded) {
+            disabled = true
+            title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
+          } else if (isSystemCreatedNetwork(row)) {
+            disabled = true
+            title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
+          }
+        }
+
+        return <Tooltip
+          title={title}
+          placement='bottom'>
+          <Switch
+            checked={Boolean(row.activated?.isActivated)}
+            disabled={disabled}
+            onClick={(checked, event) => {
+              if (!checked) {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks.scopedNetworkIds, [row.id], () => {
+                  activateNetwork(checked, row)
+                })
+              } else {
+                activateNetwork(checked, row)
+              }
+              event.stopPropagation()
+            }}
+          />
+        </Tooltip>
+      }
+    }] : []),
     ...(isEditable? [] : [{
       key: 'venues',
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'venues',
       render: function (_: ReactNode, row: Network) {
         const currentVenue = getCurrentVenue(row, venueId)
-        return currentVenue?.isAllApGroups?
-          $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) : $t({ defaultMessage: 'AP Group' })
+        return currentVenue?.isAllApGroups
+          ? $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+          : currentVenue?.apGroups?.find((apGroup) => apGroup.apGroupId === apGroupId) ? $t({ defaultMessage: 'AP Group' }) : ''
       }
     }]), {
       key: 'vlan',

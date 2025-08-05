@@ -58,7 +58,7 @@ import {
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
-  Network,
+  Network, NetworkApGroup,
   NetworkSaveData,
   NetworkTunnelIpsecAction,
   NetworkTunnelSdLanAction,
@@ -1398,7 +1398,10 @@ export function NetworkForm (props:{
                   title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                   onFinish={handleVenues}
                 >
-                  <Venues defaultActiveVenues={defaultValues?.defaultActiveVenues as string[]} />
+                  <Venues
+                    defaultActiveVenues={defaultValues?.defaultActiveVenues as string[]}
+                    defaultActiveApGroups={defaultValues?.defaultActiveApGroups as NetworkApGroup[]}
+                  />
                 </StepsFormLegacy.StepForm>}
 
               <StepsFormLegacy.StepForm
