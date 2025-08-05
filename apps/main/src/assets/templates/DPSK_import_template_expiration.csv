@@ -4,7 +4,7 @@
 "#Passphrase (if empty, system generated passphrase will be used)",,,,,
 "#VLAN ID (if empty, network's default VLAN will be used)",,,,,
 "#Passphrase Expiration (If empty, will be considered the value set in linked DPSK Networks. Otherwise,  the valid values: UNLIMITED, ONE_DAY, TWO_DAYS, ONE_WEEK, TWO_WEEKS, ONE_MONTH, SIX_MONTHS, ONE_YEAR, TWO_YEARS)",,,,,
-"#Email (Optional. Used to associate an email address with the passphrase. Must be a valid email format)",,,,,
-"#PhoneNumber (Optional. Used to associate a phone number with the passphrase. Must be in international format)",,,,,
+"#Email (Optional. Email address of the passphrase owner)",,,,,
+"#PhoneNumber (Optional. Phone number of the passphrase owner. Must start with '+', followed by country code and number)",,,,,
 #,,,,,
 Username,Number of devices,MAC Address,Passphrase,VLAN ID,Passphrase Expiration,Email,PhoneNumber
