@@ -34,12 +34,21 @@ export const GeneralForm = () => {
   const currentTunnelTemplate = availableTunnelProfiles.find((tunnelProfile) =>
     tunnelProfile.id === tunnelTemplateId)
 
-  const onTunnelProfileChange = (tunnelProfileId: string) => {
+  const onTunnelProfileChange = (value: string) => {
     const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
-      tunnelProfile.id === tunnelProfileId)
+      tunnelProfile.id === value)
     form.setFieldsValue({
       edgeClusterName: targetTunnelProfile?.destinationEdgeClusterName,
       tunnelProfileName: targetTunnelProfile?.name
+    })
+  }
+
+  const onTunnelTemplateChange = (value: string) => {
+    const targetTunnelTemplate = availableTunnelTemplates.find((tunnelTemplate) =>
+      tunnelTemplate.id === value)
+    form.setFieldsValue({
+      templateEdgeClusterName: targetTunnelTemplate?.destinationEdgeClusterName,
+      tunnelTemplateName: targetTunnelTemplate?.name
     })
   }
 
@@ -137,7 +146,7 @@ export const GeneralForm = () => {
                                   name={tunnelTemplateFieldName}
                                   // eslint-disable-next-line max-len
                                   label={$t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })}
-                                  // onChange={onTunnelTemplateChange}
+                                  onChange={onTunnelTemplateChange}
                                   disabled={editMode}
                                   tunnelProfiles={availableTunnelTemplates}
                                   associatedEdgeClusters={templateAssociatedEdgeClusters}
