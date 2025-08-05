@@ -287,17 +287,6 @@ export const propertiesMappingData = { data: [
     integratorCount: 0
   }
 ] }
-export const mockAccountTiers = {
-  data: {
-    accountTiers: {
-      result: {
-        '0541e34b28ce4daf97b602f3ec71db6e': 'Platinum',
-        'b067f6fc4c0f4da588914df68af7bca3': 'Gold',
-        'f716a2e6a0cb424282197000fb0e8e2b': 'Silver'
-      }
-    }
-  }
-}
 
 export const franchisorZones = {
   data: [

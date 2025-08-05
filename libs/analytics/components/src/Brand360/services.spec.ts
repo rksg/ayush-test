@@ -3,8 +3,8 @@ import { get }                  from '@acx-ui/config'
 import { dataApiURL, store }    from '@acx-ui/store'
 import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 
-import { mockBrandTimeseries, franchisorZones, mockAccountTiers } from './__tests__/fixtures'
-import { api }                                                    from './services'
+import { mockBrandTimeseries, franchisorZones } from './__tests__/fixtures'
+import { api }                                  from './services'
 
 jest.mock('@acx-ui/config')
 
@@ -85,36 +85,6 @@ describe('services', () => {
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(franchisorZones.data)
-  })
-
-  it('should handle fetching account tiers correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'GetAccountTiers', mockAccountTiers)
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.fetchAccountTier.initiate({
-        tenantIds: [
-          '0541e34b28ce4daf97b602f3ec71db6e',
-          'b067f6fc4c0f4da588914df68af7bca3',
-          'f716a2e6a0cb424282197000fb0e8e2b'
-        ]
-      })
-    )
-    expect(error).toBeUndefined()
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(mockAccountTiers.data.accountTiers.result)
-  })
-
-  it('should handle null accountTiers response and return empty object', async () => {
-    mockGraphqlQuery(dataApiURL, 'GetAccountTiers', {
-      data: { accountTiers: null }
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.fetchAccountTier.initiate({
-        tenantIds: ['0541e34b28ce4daf97b602f3ec71db6e']
-      })
-    )
-    expect(error).toBeUndefined()
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual({})
   })
 
   it('should calc granularity for brand360 correctly', async () => {
