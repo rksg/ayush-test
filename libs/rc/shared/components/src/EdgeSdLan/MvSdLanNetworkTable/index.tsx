@@ -6,8 +6,8 @@ import { find, isNil, merge }     from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
+import { useVenueNetworkActivationsViewModelListQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
   isOweTransitionNetwork,
@@ -17,7 +17,7 @@ import {
   sortProp,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                        from '@acx-ui/types'
+import { WifiScopes, type TableColumn }      from '@acx-ui/types'
 import { filterByAccess }                    from '@acx-ui/user'
 import { getIntl, getOpsApi, useTableQuery } from '@acx-ui/utils'
 

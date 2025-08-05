@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs, cssStr }                           from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { LocationExtended }                       from '@acx-ui/rc/utils'
 import {
@@ -12,7 +13,6 @@ import {
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { ApGroupEditContext } from './context'
 
@@ -40,18 +40,20 @@ export function ApGroupEditTabs () {
 
   const ApGroupEditTabKeys = [
     'general',
+    'vlanRadio',
     ...(isApGroupMoreParameterPhase1Enabled
       ? ['radio']
-      : ['vlanRadio']
+      : []
     )
   ]
 
   const tabTitleMap = (tabkey: string) => {
     const tabTitle = {
       general: $t({ defaultMessage: 'General' }),
+      vlanRadio: $t({ defaultMessage: 'VLAN & Radio' }),
       ...(isApGroupMoreParameterPhase1Enabled
         ? { radio: $t({ defaultMessage: 'Radio' }) }
-        : { vlanRadio: $t({ defaultMessage: 'VLAN & Radio' }) }
+        : {}
       )
     }
 

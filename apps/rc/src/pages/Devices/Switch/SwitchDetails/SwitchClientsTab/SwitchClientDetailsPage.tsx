@@ -1,4 +1,4 @@
-import { SwitchClientDetails } from '@acx-ui/rc/components'
+import { SwitchClientDetails } from '@acx-ui/switch/components'
 
 export function SwitchClientDetailsPage () {
   return (

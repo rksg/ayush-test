@@ -1,32 +1,27 @@
 import { Form } from 'antd'
 
-import { IpSecAuthEnum, IpSecFailoverModeEnum, IpSecAdvancedOptionEnum, IpSecRetryDurationEnum } from '@acx-ui/rc/utils'
-import { fireEvent, render, renderHook, screen }                                                 from '@acx-ui/test-utils'
+import { IpSecAuthEnum, IpSecFailoverModeEnum, IpSecAdvancedOptionEnum, IpSecRetryDurationEnum, defaultIpsecFormData } from '@acx-ui/rc/utils'
+import { fireEvent, render, renderHook, screen, MockSelect, MockSelectProps }                                          from '@acx-ui/test-utils'
 
 import FailoverSettings from './FailoverSettings'
 
 const initialFormValue = {
-  advancedOption: {
-    failoverRetryPeriod: 0,
-    failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE
-  },
+  // advancedOption: {
+  //   failoverRetryPeriod: 0,
+  //   failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE
+  // },
   id: 'testId',
   name: 'testName',
   serverAddress: '1.1.1.1',
-  authType: IpSecAuthEnum.PSK
+  authType: IpSecAuthEnum.PSK,
+  ...defaultIpsecFormData
 }
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
-    </select>
+  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
@@ -43,65 +38,64 @@ describe('FailoverSettings', () => {
       return form
     })
     render(<Form form={formRef.current}>
-      <FailoverSettings loadFailoverSettings setLoadFailoverSettings={jest.fn()} /></Form>)
+      <FailoverSettings />
+    </Form>)
     expect(screen.getByText('Retry Duration')).toBeInTheDocument()
     expect(screen.getByText('Retry Interval')).toBeInTheDocument()
     expect(screen.getByText('Retry Mode')).toBeInTheDocument()
   })
 
-  it('renders with initIpSecData prop', () => {
+  it('renders with editData prop', () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       form.setFieldsValue(initialFormValue)
       return form
     })
 
-    const initIpSecData = {
+    const editData = {
       advancedOption: {
+        ...defaultIpsecFormData.advancedOption,
         failoverRetryPeriod: 10,
         failoverMode: IpSecFailoverModeEnum.REVERTIVE
       }
     }
     render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={initIpSecData}
-        loadFailoverSettings
-        setLoadFailoverSettings={jest.fn()} /></Form>)
+      <FailoverSettings editData={editData}/>
+    </Form>)
     expect(screen.getByText('Retry Duration')).toBeInTheDocument()
     expect(screen.getByText('Retry Interval')).toBeInTheDocument()
     expect(screen.getByText('Retry Mode')).toBeInTheDocument()
     expect(screen.getByText('Check Interval')).toBeInTheDocument()
   })
 
-  it('updates retryDuration state when initIpSecData changes', async () => {
+  it('updates retryDuration state when editData changes', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       form.setFieldsValue(initialFormValue)
       return form
     })
-    const initIpSecData = {
+    const editData = {
       advancedOption: {
         failoverRetryPeriod: 10
       }
     }
     render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={initIpSecData}
-        loadFailoverSettings
-        setLoadFailoverSettings={jest.fn()} /></Form>)
+      <FailoverSettings editData={editData} />
+    </Form>)
     expect(screen.getByText('Specific Period')).toBeInTheDocument()
 
     expect(screen.getByText('Forever')).toBeInTheDocument()
   })
 
-  it('updates retryMode state when initIpSecData changes', async () => {
+  it('updates retryMode state when editData changes', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       form.setFieldsValue(initialFormValue)
       return form
     })
     render(<Form form={formRef.current}>
-      <FailoverSettings
-        loadFailoverSettings
-        setLoadFailoverSettings={jest.fn()} /></Form>)
+      <FailoverSettings />
+    </Form>)
 
     expect(screen.queryByText('Check Interval')).not.toBeInTheDocument()
 
@@ -115,6 +109,7 @@ describe('FailoverSettings', () => {
       const [form] = Form.useForm()
       return form
     })
+
     let advancedOption = {
       dhcpOpt43Subcode: 1,
       retryLimit: 1,
@@ -135,11 +130,10 @@ describe('FailoverSettings', () => {
       advancedOption: advancedOption,
       failoverRetryPeriodIsForever: false // Ensure the checkbox is disabled
     }
-    render(<Form form={formRef.current}>
+    render(<Form form={formRef.current} initialValues={defaultIpsecFormData}>
       <FailoverSettings
-        initIpSecData={customizedValue}
-        loadFailoverSettings
-        setLoadFailoverSettings={jest.fn()} /></Form>)
+        editData={customizedValue}
+      /></Form>)
     expect(screen.getByText('Retry Duration')).toBeInTheDocument()
 
     // Check if the keep alive element is not visible

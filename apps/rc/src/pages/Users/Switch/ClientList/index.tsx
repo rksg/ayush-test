@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader }                                                          from '@acx-ui/components'
-import { SwitchClientsTable, SwitchClientContext, defaultSwitchClientPayload } from '@acx-ui/rc/components'
 import { useGetSwitchClientListQuery }                                         from '@acx-ui/rc/services'
+import { SwitchClientsTable, SwitchClientContext, defaultSwitchClientPayload } from '@acx-ui/switch/components'
 import { usePollingTableQuery }                                                from '@acx-ui/utils'
 
 export default function ClientList () {

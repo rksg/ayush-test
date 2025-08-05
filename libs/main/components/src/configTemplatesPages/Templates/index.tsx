@@ -52,6 +52,7 @@ import { useTableQuery, getOpsApi }                from '@acx-ui/utils'
 import { ConfigTemplateViewProps } from '..'
 
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
+import { ConfigTemplateListContext }                        from './ConfigTemplateListContext'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
 import {
   ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
@@ -179,7 +180,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const allowedRowActions = filterByAccess(rowActions)
 
   return (
-    <>
+    <ConfigTemplateListContext.Provider value={{ setAppliedToViewVisible }}>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
@@ -232,7 +233,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
         ShowDriftsView={ShowDriftsView}
       />}
-    </>
+    </ConfigTemplateListContext.Provider>
   )
 }
 
@@ -443,6 +444,6 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate,
     [ConfigTemplateType.IDENTITY_GROUP]: deleteIdentityGroupTemplate,
-    [ConfigTemplateType.TUNNEL_PROFILE]: deleteTunnelProfileTemplate
+    [ConfigTemplateType.TUNNEL_SERVICE]: deleteTunnelProfileTemplate
   }
 }

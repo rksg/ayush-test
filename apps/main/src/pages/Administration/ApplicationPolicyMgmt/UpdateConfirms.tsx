@@ -4,7 +4,6 @@ import { Input, Modal }              from 'antd'
 import { useIntl,MessageDescriptor } from 'react-intl'
 
 import { Button, Collapse }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { ExpandSquareDown, ExpandSquareUp }             from '@acx-ui/icons'
 import { useGetSigPackQuery, useUpdateSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                        from '@acx-ui/rc/utils'
@@ -21,7 +20,6 @@ import { changedApplicationTypeTextMap } from '.'
 export const UpdateConfirms = (props: UpdateConfirmsProps) => {
   const { changedAppsInfoMap } = props
   const { $t } = useIntl()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { updateSigPack, isLoading: isUpdating, payload } = useUpdateSigPack()
 
   const doUpdate = () => {
@@ -29,7 +27,7 @@ export const UpdateConfirms = (props: UpdateConfirmsProps) => {
       updateSigPack({
         params: {},
         payload,
-        enableRbac: isWifiRbacEnabled
+        enableRbac: true
       }).unwrap()
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
@@ -175,18 +173,15 @@ function getRemovedCount (changedAppsInfoMap: ChangedAppsInfoMap): number {
 function useUpdateSigPack () {
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ updateSigPack, { isLoading } ] = useUpdateSigPackMutation()
   const { data } = useGetSigPackQuery({
     params: { changesIncluded: 'false' },
     enableRbac: true
   }, {
     refetchOnMountOrArgChange: 300,
-    skip: !isWifiRbacEnabled || isCore
+    skip: isCore
   })
-  const payload = isWifiRbacEnabled
-    ? { version: data?.latestVersion }
-    : { action: 'UPDATE' }
+  const payload = { version: data?.latestVersion }
 
   return {
     updateSigPack,

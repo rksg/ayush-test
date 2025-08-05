@@ -12,10 +12,10 @@ import {
   ModalRef,
   ModalType,
   Table,
-  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
@@ -40,12 +40,12 @@ import {
   IdentityDetailsLink,
   doProfileDelete, getDisabledActionMessage, showAppliedInstanceMessage
 } from '@acx-ui/rc/utils'
-import { RequestPayload, RolesEnum, WifiScopes } from '@acx-ui/types'
+import { RolesEnum, WifiScopes } from '@acx-ui/types'
+import type { RequestPayload, TableColumn } from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 import { getIntl, getOpsApi, validationMessages, TableQuery }                                   from '@acx-ui/utils'
 
 
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 import { NetworkForm } from '../../NetworkForm'
 import { PassphraseViewer } from '../../PassphraseViewer'
 

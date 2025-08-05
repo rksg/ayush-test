@@ -2,12 +2,14 @@ import { rest } from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
   MdnsProxyUrls,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -40,8 +42,12 @@ describe('MdnsProxyDetail', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedApList }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

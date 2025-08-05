@@ -4,14 +4,12 @@ import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import {
   Button,
-  ColumnType,
   Loader,
   PageHeader,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { CountAndNamesTooltip }   from '@acx-ui/rc/components'
+import { CountAndNamesTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteApSnmpPolicyMutation,
   useGetApSnmpViewModelQuery
@@ -31,6 +29,7 @@ import {
   doProfileDelete
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import type { ColumnType }           from '@acx-ui/types'
 import { useTableQuery }             from '@acx-ui/utils'
 
 const rbacSnmpFields = [
@@ -50,15 +49,10 @@ export default function SnmpAgentTable () {
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const defaultPayload = {
     searchString: '',
-    fields: (isUseRbacApi) ? rbacSnmpFields:
-      [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
-    searchTargetFields: (isUseRbacApi) ?
-      ['name', 'communityNames', 'userNames', 'apNames'] :
-      ['name', 'v2Agents.name', 'v3Agents.name', 'aps.name'],
+    fields: rbacSnmpFields,
+    searchTargetFields: ['name', 'communityNames', 'userNames', 'apNames'],
     sortField: 'name',
     sortOrder: 'ASC',
     page: 1,
@@ -67,14 +61,14 @@ export default function SnmpAgentTable () {
 
   const filterPayload = {
     searchString: '',
-    fields: (isUseRbacApi) ? ['id', 'name', 'venueIds']: [ 'id', 'name', 'venues' ]
+    fields: ['id', 'name', 'venueIds']
   }
 
 
   // eslint-disable-next-line
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     pagination: {
       pageSize: 100
     },
@@ -83,10 +77,7 @@ export default function SnmpAgentTable () {
       sortOrder: 'ASC'
     },
     defaultPayload: filterPayload,
-    customHeaders:
-    ( isUseRbacApi ?
-      GetApiVersionHeader(ApiVersionEnum.v1_1):
-      undefined)
+    customHeaders: GetApiVersionHeader(ApiVersionEnum.v1_1)
   })
 
   const list = filterResults.data
@@ -107,15 +98,12 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
-    enableRbac: isUseRbacApi,
+    enableRbac: true,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
-    customHeaders:
-    ( isUseRbacApi ?
-      GetApiVersionHeader(ApiVersionEnum.v1_1):
-      undefined)
+    customHeaders: GetApiVersionHeader(ApiVersionEnum.v1_1)
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
@@ -157,7 +145,7 @@ export default function SnmpAgentTable () {
             const ids = selectedRows.map(row => row.id)
             await deleteFn({
               params: { tenantId, policyId: ids[0] },
-              enableRbac: isUseRbacApi
+              enableRbac: true
             }).then(clearSelection)
           }
         )
@@ -211,7 +199,6 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }) {
   const intl = useIntl()
   const { $t } = intl
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const columns: TableProps<ApSnmpViewModelData>['columns'] = [
     {
@@ -260,7 +247,7 @@ function useColumns (
       dataIndex: 'venues',
       align: 'center',
       sorter: true,
-      filterKey: (isUseRbacApi) ? 'venueNames' :'venues.name.keyword',
+      filterKey: 'venueNames',
       filterable: filterables ? filterables['venues'] : false,
       render: (_, row) => (
         <CountAndNamesTooltip data={row.venues} maxShow={25}/>

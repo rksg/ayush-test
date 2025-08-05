@@ -37,6 +37,7 @@ describe('SoftGreForm', () => {
   describe('addSoftGreForm', () => {
     const addFn = jest.fn()
     beforeEach(() => {
+      addFn.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
       mockServer.use(
         rest.post(
@@ -156,6 +157,8 @@ describe('SoftGreForm', () => {
     const updateFn = jest.fn()
     const getListFn = jest.fn()
     beforeEach(() => {
+      updateFn.mockClear()
+      getListFn.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
 
       mockServer.use(

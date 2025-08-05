@@ -4,9 +4,9 @@ import { useIntl } from 'react-intl'
 
 import { formattedPath }          from '@acx-ui/analytics/utils'
 import { Drawer, Table, Tooltip } from '@acx-ui/components'
-import type { TableColumn }       from '@acx-ui/components'
 import { get }                    from '@acx-ui/config'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { TableColumn }       from '@acx-ui/types'
 import { NetworkPath }            from '@acx-ui/utils'
 
 import { ImpactedVlan, ImpactedSwitch } from './services'

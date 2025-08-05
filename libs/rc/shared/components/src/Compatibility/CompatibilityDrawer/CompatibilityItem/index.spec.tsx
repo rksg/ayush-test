@@ -14,10 +14,10 @@ import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 import {
   mockApCompatibilitiesVenue,
   mockApFeatureCompatibilities
-} from '../../Ap/ApCompatibilityDrawer/__test__/fixtures'
+} from '../../Ap/ApCompatibilityDrawer/__tests__/fixtures'
 import {
   transformedMockEdgeCompatibilitiesVenue
-} from '../../Edge/EdgeCompatibilityDrawer/__test__/fixtures'
+} from '../../Edge/EdgeCompatibilityDrawer/__tests__/fixtures'
 
 import { FeatureItemProps } from './FeatureItem'
 

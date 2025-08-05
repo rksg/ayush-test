@@ -22,6 +22,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useParams: () => mockedParams
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v'
+}))
+
 describe('config-template-utils', () => {
   it('should generate correct breadcrumb for config template', () => {
     const breadcrumb = generateConfigTemplateBreadcrumb()
