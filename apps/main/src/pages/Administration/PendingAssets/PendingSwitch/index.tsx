@@ -64,7 +64,7 @@ export const PendingSwitch = () => {
   }, {
     selectFromResult: ({ data }) => {
       return {
-        modelFilterMap: data?.map(model =>
+        modelFilterMap: data?.map((model: string) =>
           ({ key: model, value: model })) ?? emptyModelFilterMap
       }
     }

@@ -70,7 +70,7 @@ export const PendingAp = () => {
   }, {
     selectFromResult: ({ data }) => {
       return {
-        modelFilterMap: data?.map(model =>
+        modelFilterMap: data?.map((model: string) =>
           ({ key: model, value: model })) ?? emptyModelFilterMap
       }
     }

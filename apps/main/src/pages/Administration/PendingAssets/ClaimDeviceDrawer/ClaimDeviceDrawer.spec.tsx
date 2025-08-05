@@ -200,7 +200,7 @@ describe('ClaimDeviceDrawer', () => {
   })
 
   describe('Form Interactions', () => {
-    it('handles venue selection', async () => {
+    it('handles venue and AP group selection for AP devices', async () => {
       renderComponent()
 
       await waitFor(() => {
@@ -208,25 +208,6 @@ describe('ClaimDeviceDrawer', () => {
       })
 
       await selectVenue()
-
-      // Check that venue selection was successful by verifying AP Group is available
-      await waitFor(() => {
-        expect(screen.getByText('AP Group')).toBeInTheDocument()
-      })
-    })
-
-    it('shows AP groups when venue is selected for AP devices', async () => {
-      renderComponent()
-
-      await waitFor(() => {
-        expect(screen.getByText('Venue')).toBeInTheDocument()
-      })
-
-      await selectVenue()
-
-      await waitFor(() => {
-        expect(screen.getByText('AP Group')).toBeInTheDocument()
-      })
 
       // Wait for AP groups to load and be enabled
       await waitFor(() => {
@@ -460,39 +441,30 @@ describe('ClaimDeviceDrawer', () => {
       })
     })
 
-    it('handles add venue button click', async () => {
+    it('handles add venue and AP group button clicks', async () => {
       const onAddVenueMock = jest.fn()
-      renderComponent({ onAddVenue: onAddVenueMock })
+      const onAddApGroupMock = jest.fn()
+      renderComponent({ onAddVenue: onAddVenueMock, onAddApGroup: onAddApGroupMock })
 
       await waitFor(() => {
         expect(screen.getByText('Venue')).toBeInTheDocument()
       })
 
+      // Test add venue button
       const addButtons = screen.getAllByText('Add')
       const venueAddButton = addButtons[0]
       fireEvent.click(venueAddButton)
-
       expect(onAddVenueMock).toHaveBeenCalled()
-    })
 
-    it('handles add AP group button click', async () => {
-      const onAddApGroupMock = jest.fn()
-      renderComponent({ onAddApGroup: onAddApGroupMock })
-
-      await waitFor(() => {
-        expect(screen.getByText('Venue')).toBeInTheDocument()
-      })
-
+      // Test add AP group button
       await selectVenue()
 
       await waitFor(() => {
         expect(screen.getByText('AP Group')).toBeInTheDocument()
       })
 
-      const addButtons = screen.getAllByText('Add')
       const apGroupAddButton = addButtons[1]
       fireEvent.click(apGroupAddButton)
-
       expect(onAddApGroupMock).toHaveBeenCalled()
     })
   })

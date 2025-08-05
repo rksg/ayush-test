@@ -157,7 +157,8 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
       },
       invalidatesTags: [
         { type: 'deviceProvision', id: 'AP_STATUS' },
-        { type: 'deviceProvision', id: 'AP_PROVISIONS' }
+        { type: 'deviceProvision', id: 'AP_PROVISIONS' },
+        { type: 'deviceProvision', id: 'AP_MODELS' }
       ]
     }),
     refreshSwitchStatus: build.mutation<CommonResult, RequestPayload>({
@@ -169,7 +170,8 @@ export const deviceProvisionApi = baseDeviceProvisionApi.injectEndpoints({
       },
       invalidatesTags: [
         { type: 'deviceProvision', id: 'SWITCH_STATUS' },
-        { type: 'deviceProvision', id: 'SWITCH_PROVISIONS' }
+        { type: 'deviceProvision', id: 'SWITCH_PROVISIONS' },
+        { type: 'deviceProvision', id: 'SWITCH_MODELS' }
       ]
     }),
     getApModels: build.query<string[], RequestPayload>({
