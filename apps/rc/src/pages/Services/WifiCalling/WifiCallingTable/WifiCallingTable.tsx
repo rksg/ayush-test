@@ -11,8 +11,9 @@ import {
   Tooltip,
   SimpleListTooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { defaultRbacNetworkPayload, useEnforcedStatus } from '@acx-ui/rc/components'
+import { useEnforcedStatus }         from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { defaultRbacNetworkPayload } from '@acx-ui/rc/components'
 import {
   useDeleteWifiCallingServicesMutation,
   useGetEnhancedWifiCallingServiceListQuery,

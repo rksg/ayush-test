@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { useEnforcedStatus }                                      from '@acx-ui/config-template/utils'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
@@ -39,7 +40,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus } from '../../configTemplates'
 
 import { AAASettingForm } from './AAASettingForm'
 

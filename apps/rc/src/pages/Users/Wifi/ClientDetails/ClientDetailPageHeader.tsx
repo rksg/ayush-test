@@ -18,11 +18,10 @@ import {
   useGetClientsQuery,
   useGetHistoryClientDetailQuery
 } from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
+import { ClientInfo, ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
-  useSearchParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { WifiScopes } from '@acx-ui/types'
@@ -61,16 +60,16 @@ function ClientDetailPageHeader () {
   const { $t } = useIntl()
   const { clientId } = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
-  const [searchParams] = useSearchParams()
-  const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-  const isHistoricalClient = (status === ClientStatusEnum.HISTORICAL)
 
   // Connection Client
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: isHistoricalClient })?.data?.data[0]
+  } })?.data?.data[0] ?? {} as ClientInfo
+  const status = (Object.keys(clientInfo).length !== 0) ?
+    ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
+  const isHistoricalClient = (status === ClientStatusEnum.HISTORICAL)
 
   // historical client
   const histClientInfo = useGetHistoryClientDetailQuery({

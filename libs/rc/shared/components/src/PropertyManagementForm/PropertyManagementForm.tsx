@@ -25,8 +25,8 @@ import { TemplateSelector }                       from '../TemplateSelector'
 import { hasCreateIdentityGroupPermission }       from '../useIdentityGroupUtils'
 import { PersonaGroupDrawer, PersonaGroupSelect } from '../users'
 
-import { AddResidentPortalModal }                       from './AddResidentPortalModal'
-import { getResidentPortalTypeOptions, msgCategoryIds } from './utils'
+import { AddResidentPortalModal }                                              from './AddResidentPortalModal'
+import { getResidentPortalTypeOptions, msgCategoryIds, msgCategoryIdsLimited } from './utils'
 
 export interface PropertyManagementFormProps {
   form: FormInstance
@@ -38,6 +38,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const { form, venueId, initialValues } = props
   const { $t } = useIntl()
   const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSuspendNotificationRequired = useIsSplitOn(Features.UNIT_SUSPEND_NOTIFICATION_TOGGLE)
   const dpskRequireIdentityGroupEnabled = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const hasAddResidentPortalPermission = hasServicePermission({
     type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
@@ -49,6 +50,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
+  const notifyOnUnitSuspend = Form.useWatch(['communicationConfig', 'notifyOnUnitSuspend'], form)
 
   const { hasUnits } = useGetPropertyUnitListQuery({
     params: { venueId },
@@ -76,6 +78,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   })
 
   const personaGroupHasBound = personaGroupId && hasUnits
+  const notifyOnSuspend = isSuspendNotificationRequired && notifyOnUnitSuspend
 
   const onResidentPortalModalClose = () => {
     setResidentPortalModalVisible(false)
@@ -236,7 +239,16 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               valuePropName={'checked'}
               children={<Switch/>}/>
           </StepsForm.FieldLabel>
-          {msgCategoryIds.map(categoryId => venueId &&
+          {isSuspendNotificationRequired && <StepsForm.FieldLabel width={'190px'}>
+            {$t({ defaultMessage: 'Notify on unit suspension' })}
+            <Form.Item
+              name={['communicationConfig', 'notifyOnUnitSuspend']}
+              rules={[{ required: true }]}
+              valuePropName={'checked'}
+              children={<Switch/>}/>
+          </StepsForm.FieldLabel>}
+          {(notifyOnSuspend ? msgCategoryIds : msgCategoryIdsLimited)
+            .map(categoryId => venueId &&
             <TemplateSelector
               key={categoryId}
               formItemProps={{ name: categoryId }}
