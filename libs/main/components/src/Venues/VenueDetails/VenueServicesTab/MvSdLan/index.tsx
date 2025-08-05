@@ -2,7 +2,7 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Card, SummaryCard, SpaceWrapper } from '@acx-ui/components'
-import { Features }          from '@acx-ui/feature-toggle'
+import { Features }                        from '@acx-ui/feature-toggle'
 import {
   EdgeServiceStatusLight,
   SdLanTopologyDiagram
