@@ -68,6 +68,11 @@ describe('VenueDrawer', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.resetModules()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   const renderComponent = (props = {}) => {
