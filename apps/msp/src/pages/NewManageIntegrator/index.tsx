@@ -19,6 +19,7 @@ import { useIntl } from 'react-intl'
 import {
   DatePicker,
   PageHeader,
+  showActionModal,
   StepsFormLegacy,
   StepsFormLegacyInstance,
   Subtitle
@@ -47,7 +48,8 @@ import {
   MspEcDelegatedAdmins,
   AssignActionEnum,
   defaultAddress,
-  addressParser
+  addressParser,
+  MspEcTierEnum
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                         from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
@@ -68,8 +70,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                 from '@acx-ui/types'
-import { useUserProfileContext }                     from '@acx-ui/user'
-import { AccountType, noDataDisplay, useTableQuery } from '@acx-ui/utils'
+import { getUserProfile, isCoreTier, useUserProfileContext }                     from '@acx-ui/user'
+import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
@@ -91,7 +93,8 @@ interface EcFormData {
     apswLicense: number,
     ecCustomers: MspEc[],
     number_of_days: string,
-    solutionTokenLicense: number
+    solutionTokenLicense: number,
+    tier: MspEcTierEnum
 }
 
 export function NewManageIntegrator () {
@@ -104,6 +107,10 @@ export function NewManageIntegrator () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
+  const multiLicenseFFToggle = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+  const createEcWithTierFFToggle = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
+  const createEcWithTierEnabled = multiLicenseFFToggle && createEcWithTierFFToggle
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -121,6 +128,7 @@ export function NewManageIntegrator () {
   const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [originalTier, setOriginalTier] = useState('')
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
@@ -131,6 +139,11 @@ export function NewManageIntegrator () {
 
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
+  
+  const { acx_account_vertical } = getJwtTokenPayload()
+
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -183,6 +196,12 @@ export function NewManageIntegrator () {
    useGetPrivacySettingsQuery({ params: useParams() },
      { skip: isEditMode || !isAppMonitoringEnabled })
 
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
+    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+  }
+    
+
   useEffect(() => {
     if (privacySettingsData) {
       const privacyMonitoringSetting =
@@ -217,7 +236,8 @@ export function NewManageIntegrator () {
         service_effective_date: data?.service_effective_date,
         apswLicense: apswLic,
         solutionTokenLicense: solutionTokenLic,
-        service_expiration_date: moment(data?.service_expiration_date)
+        service_expiration_date: moment(data?.service_expiration_date),
+        tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
@@ -355,6 +375,7 @@ export function NewManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -647,6 +668,70 @@ export function NewManageIntegrator () {
         <Form.Item children={<div>{displayAccessPeriod()}</div>} />
       </UI.FieldLabelAdmins>
     </>
+  }
+
+  const EcTierForm = () => {
+    return <Form.Item
+      name='tier'
+      label={intl.$t({ defaultMessage: 'Service Tier' })}
+      style={{ width: '300px' }}
+      rules={[{ required: true }]}
+      initialValue={(mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+        : (isHospitality ? MspEcTierEnum.Professional : undefined)}
+      children={
+        <Radio.Group>
+          <Space direction='vertical'>
+            {
+              Object.entries(MspEcTierEnum).map(([label, value]) => {
+                // isMDU : show only Core
+                // isHospitality: show only Professional
+                // everything else: show both Professional and Essentials
+                return (
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
+                  (isHospitality && value === MspEcTierEnum.Professional) ||
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
+                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                ) &&
+                <Radio
+                  onChange={handleServiceTierChange}
+                  key={value}
+                  value={value}
+                  children={intl.$t({
+                    defaultMessage: '{label}' }, { label })} />
+              })
+            }
+          </Space>
+        </Radio.Group>
+      }
+    />
+  }
+
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
+      const modalContent = (
+        <>
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features.
+          Downgrade from Professional to Essentials may also result in data loss.` })}</p>
+          <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
+        </>
+      )
+      showActionModal({
+        type: 'confirm',
+        title: intl.$t({
+          defaultMessage: 'Save'
+        }),
+        content: modalContent,
+        okText: intl.$t({ defaultMessage: 'Save' }),
+        onCancel: () => {
+          if (tier.target.value === MspEcTierEnum.Essentials) {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
+          } else {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
+          }
+        }
+      })
+    }
   }
 
   const CustomerAdminsForm = () => {
@@ -1082,8 +1167,8 @@ export function NewManageIntegrator () {
               value={address.addressLine}
             />
           </Form.Item >
-
           <MspAdminsForm />
+          {createEcWithTierEnabled && <EcTierForm />}
           <ManageAssignedEcForm />
           <CustomerAdminsForm />
           <Subtitle level={3}>
@@ -1145,6 +1230,7 @@ export function NewManageIntegrator () {
               <GoogleMapWithPreference libraries={['places']} />
             </Form.Item>
             <MspAdminsForm />
+            {createEcWithTierEnabled && <EcTierForm />}
             <CustomerAdminsForm />
           </StepsFormLegacy.StepForm>
 
