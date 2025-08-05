@@ -6,7 +6,7 @@ import { formatter }                           from '@acx-ui/formatter'
 import { MspEc }                               from '@acx-ui/msp/utils'
 import { getIntl, noDataDisplay, TableResult } from '@acx-ui/utils'
 
-import { type Response, type BrandVenuesSLA } from './services'
+import type { Response, BrandVenuesSLA } from './services'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]

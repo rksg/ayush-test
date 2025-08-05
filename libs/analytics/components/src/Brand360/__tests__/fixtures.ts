@@ -287,7 +287,6 @@ export const propertiesMappingData = { data: [
     integratorCount: 0
   }
 ] }
-
 export const franchisorZones = {
   data: [
     {
