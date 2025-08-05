@@ -25,7 +25,13 @@ RUN source ${ENV_FILE} \
 
 COPY . .
 RUN npm install
-RUN npx nx print-affected --base=origin/master --select=projects > /tmp/diff.txt
+RUN if [ "$GIT_COMMIT_BRANCH" = "master" ]; then \
+      BASE="HEAD~1" ; \
+    else \
+      BASE="origin/master" ; \
+    fi && \
+    echo "Using base: $BASE" && \
+    npx nx print-affected --base=$BASE --head=HEAD --select=projects > /tmp/diff.txt
 
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
