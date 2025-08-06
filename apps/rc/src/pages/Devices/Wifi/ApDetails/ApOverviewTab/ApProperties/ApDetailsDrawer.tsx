@@ -5,9 +5,16 @@ import { Button, Divider, Tooltip }  from 'antd'
 import { capitalize, includes }      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, Loader, SuspenseBoundary, PasswordInput, cssStr } from '@acx-ui/components'
-import { get }                                                                   from '@acx-ui/config'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import {
+  Drawer,
+  Descriptions,
+  Loader,
+  SuspenseBoundary,
+  PasswordInput,
+  cssStr
+} from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetVenueQuery,
   useGetApValidChannelQuery,
@@ -339,18 +346,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   const handleShowPassword = () => {
-    // New version: use per-AP password API
-    if (isPerApPasswordAndVisibility && params.serialNumber && params.venueId) {
-      setNeedGetApPassword(true)
-      setShowPassword(true)
-      return
-    }
-
-    // Old version: directly show the existing password
-    if (apPassword) {
-      setShowPassword(true)
-      return
-    }
+    if (!isPerApPasswordAndVisibility || !params.serialNumber || !params.venueId) return
+    setNeedGetApPassword(true)
+    setShowPassword(true)
   }
 
   const passwordRegenerationMessage = useMemo(() => {
