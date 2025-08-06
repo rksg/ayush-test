@@ -44,6 +44,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   const isRecToMspREcConversionEnabled =
     useIsSplitOn(Features.DURGA_TENANT_CONVERSION_REC_TO_MSP_REC)
   const mspHspDisplayToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
+  const isR1SalesOrderToggleEnabled = useIsSplitOn(Features.MSP_R1_SALES_ORDER_TOGGLE)
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
     enableRbac: isRbacEnabled },
@@ -58,13 +59,26 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       }
 
       const _childAccounts = (data as AvailableMspRecCustomers)?.child_accounts?.map((account) => {
-        return (!account?.is_tenant_onboarded)
-          ? { ...account, account_name: '* ' + account.account_name }
-          : account
-      }).sort((a,b) => {
-        if(a.account_name < b.account_name) { return -1 }
-        if(a.account_name > b.account_name) { return 1 }
-        return 0
+        if (isR1SalesOrderToggleEnabled && account?.acx_closed_sales_order
+              && !account?.is_tenant_onboarded) {
+          return { ...account, account_name: '** ' + account.account_name }
+        }
+        if (!account?.is_tenant_onboarded) {
+          return { ...account, account_name: '* ' + account.account_name }
+        }
+        return account
+      }).sort((a, b) => {
+        const getPriority = (name: string) => {
+          if (name.startsWith('** ')) return 1
+          if (name.startsWith('* ')) return 2
+          return 3
+        }
+
+        const aPriority = getPriority(a.account_name)
+        const bPriority = getPriority(b.account_name)
+
+        if (aPriority !== bPriority) return aPriority - bPriority
+        return a.account_name < b.account_name ? -1 : 1
       })
 
       return {
@@ -91,17 +105,30 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
-  function highlightFirstAsterisk (str: string, highlightFn: (text: string) => React.ReactNode) {
-    const index = str.indexOf('*')
-    if (index === -1) return str
-    return (
-      <span
-        style={{ fontWeight: 'bold' }}><span style={{
-          color: 'var(--acx-accents-orange-50)',
-          paddingRight: '4px'
-        }}>*</span>
-        {highlightFn(str.slice(index + 1))} </span>
-    )
+  function highlightAsterisks (str: string, highlightFn: (text: string) => React.ReactNode) {
+    if (str.startsWith('** ')) {
+      return (
+        <span style={{ fontWeight: 'bold' }}>
+          <span style={{
+            color: 'var(--acx-accents-orange-50)',
+            paddingRight: '4px'
+          }}>**</span>
+          {highlightFn(str.slice(3))}
+        </span>
+      )
+    }
+    if (str.startsWith('* ')) {
+      return (
+        <span style={{ fontWeight: 'bold' }}>
+          <span style={{
+            color: 'var(--acx-accents-orange-50)',
+            paddingRight: '4px'
+          }}>*</span>
+          {highlightFn(str.slice(2))}
+        </span>
+      )
+    }
+    return str
   }
   const propertyIdColumn: TableColumn<MspRecCustomer, 'text'>[] = (!mspHspDisplayToggle ? [] :
     [{
@@ -123,10 +150,12 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       sorter: { compare: sortProp('account_name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row,__, highlightFn) {
-        return (isRecToMspREcConversionEnabled && !row?.is_tenant_onboarded)
-          ? highlightFn(highlightFirstAsterisk(row.account_name,highlightFn) as string)
-          : highlightFn(row.account_name)
+      render: function (_, row, __, highlightFn) {
+        const hasAsterisks = row.account_name.startsWith('* ') ||
+          row.account_name.startsWith('** ')
+        return (isRecToMspREcConversionEnabled && hasAsterisks)
+          ? highlightAsterisks(row.account_name, highlightFn)
+          : row.account_name
       }
     },
     ...(propertyIdColumn),
@@ -175,13 +204,25 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       }}>{$t({ defaultMessage:
         'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
         { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
-      { isRecToMspREcConversionEnabled && <label>{ <span style={{
-        color: 'var(--acx-accents-orange-50)',
-        margin: '0 4px'
-      }}>*</span> }
-      { $t({ defaultMessage:
-          'Property has RUCKUS One cloud subscription but has not been onboarded.' })}
-      </label> }
+      { isRecToMspREcConversionEnabled && <div>
+        {isR1SalesOrderToggleEnabled && <div>
+          <label>{ <span style={{
+            color: 'var(--acx-accents-orange-50)',
+            margin: '0 4px'
+          }}>**</span> }
+          { $t({ defaultMessage:
+              'Property purchased RUCKUS One cloud subscription but hasnt been onboarded.' })}
+          </label>
+          <br />
+        </div>}
+        <label>{ <span style={{
+          color: 'var(--acx-accents-orange-50)',
+          margin: '0 4px'
+        }}>*</span> }
+        { $t({ defaultMessage:
+            'Property has RUCKUS One cloud subscription but has not been onboarded.' })}
+        </label>
+      </div> }
     </div>
 
     <Button

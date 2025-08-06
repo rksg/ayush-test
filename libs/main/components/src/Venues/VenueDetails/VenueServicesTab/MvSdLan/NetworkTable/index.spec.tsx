@@ -1,10 +1,25 @@
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
-import { rest }  from 'msw'
+/* eslint-disable max-len */
+import userEvent    from '@testing-library/user-event'
+import { NamePath } from 'antd/lib/form/interface'
+import _            from 'lodash'
+import { rest }     from 'msw'
 
-import { Features }                                                                                                              from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanViewData, EdgePinFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                              from '@acx-ui/store'
+import { Features }              from '@acx-ui/feature-toggle'
+import { NetworkActivationType } from '@acx-ui/rc/components'
+import {
+  EdgeCompatibilityFixtures,
+  EdgeMvSdLanViewData,
+  EdgePinFixtures,
+  EdgePinUrls,
+  EdgeSdLanFixtures,
+  EdgeSdLanTunneledWlan,
+  EdgeUrlsInfo,
+  Network,
+  NetworkTypeEnum,
+  SoftGreUrls,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,12 +39,14 @@ const mockedEdgeSdLanDmz = mockedMvSdLanDataList[0]
 const guestNetwork = _.find(mockNetworkViewmodelList, { nwSubType: NetworkTypeEnum.CAPTIVEPORTAL })
 const mockedSdLanVenueId = mockedEdgeSdLanDmz.tunneledWlans![0].venueId
 const { mockPinStatsList } = EdgePinFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
 const mockedSubmitData = jest.fn()
 const mockedDisableFnParams = jest.fn()
 
+const mockedTunnelProfileId = 'tunnel_profile_id'
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeMvSdLanActivatedNetworksTable: (props:
@@ -59,13 +76,30 @@ jest.mock('@acx-ui/rc/components', () => ({
           </>
       }
     </div>
-  }
+  },
+  NetworkSelectTable: (props: {
+    onActivateChange?: (
+      data: Network,
+      checked: boolean,
+      ) => void | ((
+      data: Network,
+      checked: boolean,
+      activated: string[],
+      ) => Promise<void>),
+    onTunnelProfileChange?: ((data: Network, tunnelProfileId: string, namePath?: NamePath) => void) |
+      ((data: Network, tunnelProfileId: string, namePath?: NamePath) => Promise<void>),
+    activated?: NetworkActivationType
+    }) => <div data-testid='NetworkSelectTable'>
+    <button onClick={() => props.onActivateChange?.(mockNetworkViewmodelList[0], true)}>Activate</button>
+    <button onClick={() => props.onActivateChange?.(mockNetworkViewmodelList[0], false)}>Deactivate</button>
+    <button onClick={() => props.onTunnelProfileChange?.(mockNetworkViewmodelList[0], mockedTunnelProfileId, '')}>ChangeTunnel</button>
+    {JSON.stringify(props.activated)}
+  </div>
 }))
 
-const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 jest.mock('@acx-ui/rc/services', () => ({
@@ -98,6 +132,14 @@ jest.mock('@acx-ui/rc/services', () => ({
   }
 }))
 
+jest.mock('@acx-ui/edge/components', () => ({
+  ...jest.requireActual('@acx-ui/edge/components'),
+  useGetAvailableTunnelProfile: jest.fn().mockReturnValue({
+    availableTunnelProfiles: [],
+    isDataLoading: false
+  })
+}))
+
 const renderTestComponent = ({ params, sdLan }:
   { params: { tenantId: string, venueId: string }, sdLan: EdgeMvSdLanViewData }) => {
   render(
@@ -123,6 +165,16 @@ describe('venue > Multi-venue SDLAN - network table', () => {
     mockedDeactivateNetworkReq.mockReset()
     mockedSubmitData.mockReset()
     mockedDisableFnParams.mockReturnValue(undefined)
+
+    mockServer.use(
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
+    )
   })
 
   it('should render correctly', async () => {
@@ -387,10 +439,16 @@ describe('venue > Multi-venue SDLAN - network table', () => {
   })
 
   describe('PIN is ON', () => {
-    it('should greyout when the WLAN is used by PIN', async () => {
-      // eslint-disable-next-line max-len
-      mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+        ff === Features.EDGE_PIN_HA_TOGGLE)
+    })
 
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should greyout when the WLAN is used by PIN', async () => {
       mockServer.use(
         rest.post(
           EdgePinUrls.getEdgePinStatsList.url,
@@ -415,6 +473,100 @@ describe('venue > Multi-venue SDLAN - network table', () => {
       expect(within(networkTable).getByText(/tooltip:This network already used in Personal Identity Network/)).toBeVisible()
     })
 
+  })
+
+  describe('when L2GRE is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+        ff === Features.EDGE_L2OGRE_TOGGLE)
+      jest.mocked(mockedActivateNetworkReq).mockReset()
+      jest.mocked(mockedDeactivateNetworkReq).mockReset()
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render correctly', async () => {
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDmz })
+      expect(screen.getByTestId('NetworkSelectTable')).toBeVisible()
+    })
+
+    it('should activate network successfully', async () => {
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDmz })
+      await userEvent.click(screen.getByRole('button', { name: 'Activate' }))
+      expect(mockedActivateNetworkReq).toBeCalledWith({
+        serviceId: mockedEdgeSdLanDmz.id,
+        venueId: mockedEdgeSdLanDmz.venueId,
+        wifiNetworkId: mockNetworkViewmodelList[0].id
+      }, {
+        forwardingTunnelProfileId: ''
+      })
+    })
+
+    it('should deactivate network successfully', async () => {
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDmz })
+      await userEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
+      expect(mockedDeactivateNetworkReq).toBeCalledWith({
+        serviceId: mockedEdgeSdLanDmz.id,
+        venueId: mockedEdgeSdLanDmz.venueId,
+        wifiNetworkId: mockNetworkViewmodelList[0].id
+      })
+    })
+
+    it('should deactivate latest network successfully', async () => {
+      renderTestComponent({ params, sdLan: {
+        ...mockedEdgeSdLanDmz,
+        tunneledWlans: mockedEdgeSdLanDmz.tunneledWlans!.slice(0, 1)
+      } })
+      await userEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toBeVisible()
+      expect(screen.getByText('SD-LAN Removal')).toBeVisible()
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
+      expect(mockedDeactivateNetworkReq).toBeCalledWith({
+        serviceId: mockedEdgeSdLanDmz.id,
+        venueId: mockedEdgeSdLanDmz.venueId,
+        wifiNetworkId: mockNetworkViewmodelList[0].id
+      })
+    })
+
+    it('should change tunnel profile successfully', async () => {
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDmz })
+      await userEvent.click(screen.getByRole('button', { name: 'ChangeTunnel' }))
+      setTimeout(() => {
+        expect(mockedActivateNetworkReq).toBeCalledWith({
+          serviceId: mockedEdgeSdLanDmz.id,
+          venueId: mockedEdgeSdLanDmz.venueId,
+          wifiNetworkId: mockNetworkViewmodelList[0].id
+        })
+      })
+    })
+
+    it('should popup conflict when change tunnel profile', async () => {
+      renderTestComponent({ params, sdLan: {
+        ...mockedEdgeSdLanDmz,
+        tunneledWlans: [...mockedEdgeSdLanDmz.tunneledWlans!, {
+          venueId: mockedEdgeSdLanDmz.venueId,
+          venueName: mockedEdgeSdLanDmz.venueName,
+          networkId: mockNetworkViewmodelList[0].id,
+          networkName: mockNetworkViewmodelList[0].name,
+          wlanId: mockedEdgeSdLanDmz.tunneledWlans![0].wlanId
+        } as EdgeSdLanTunneledWlan]
+      } })
+      await userEvent.click(screen.getByRole('button', { name: 'ChangeTunnel' }))
+      setTimeout(async () => {
+        const dialog = await screen.findByRole('dialog')
+        expect(dialog).toBeVisible()
+        expect(screen.getByText('Configuration Conflict Detected')).toBeVisible()
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
+        expect(mockedActivateNetworkReq).toBeCalledWith({
+          serviceId: mockedEdgeSdLanDmz.id,
+          venueId: mockedEdgeSdLanDmz.venueId,
+          wifiNetworkId: mockNetworkViewmodelList[0].id
+        })
+      })
+    })
   })
 })
 
