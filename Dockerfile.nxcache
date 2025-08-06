@@ -1,9 +1,10 @@
 # FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
-FROM us-docker.pkg.dev/alto-cicd/acx-service/baseimage/acx-ui-unit-test-base:latest AS build-base
+ARG NODE_VERSION=16.14.2-alpine3.14
+FROM docker.io/library/node:${NODE_VERSION} AS build-base
 
 WORKDIR /app
 
-RUN apk add curl
+RUN apk add curl xz
 
 # Install dependencies
 COPY package.json package-lock.json ./
@@ -47,8 +48,8 @@ RUN if [ -f ./nxcache.tar.xz ]; then \
     fi
 
 # Remove files and folders older than 24 hours from the nx cache
-RUN find /app/node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
-    find /app/node_modules/.cache/nx -mindepth 1 -type d -mmin +1440 -exec rm -rf {} +
+RUN find ./node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
+    find ./node_modules/.cache/nx -mindepth 1 -type d -mmin +1440 -empty -delete
 
 
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
@@ -67,4 +68,7 @@ RUN CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS
-RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,cloudpath-components,edge-components,switch-components,wifi-components,rc-common-components,rc-generic-features-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run reports-routes:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run reports-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run ra:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,cloudpath-components,edge-components,switch-components,wifi-components,rc-common-components,rc-generic-features-components,main,analytics-components,msp,msp-components,main-components,reports-routes,reports-components,ra $NX_RUN_OPTIONS

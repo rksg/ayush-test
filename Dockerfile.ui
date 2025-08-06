@@ -52,8 +52,6 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
-RUN rm -rf /app/node_modules/.cache/nx && mkdir -p /app/node_modules/.cache/nx
-
 RUN if [ -d /app/node_modules/.cache/nx/coverage ]; then \
       cp -r /app/node_modules/.cache/nx/coverage /app && \
       rm -rf /app/node_modules/.cache/nx/coverage; \
@@ -83,11 +81,6 @@ RUN source ${ENV_FILE} \
 FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
-
-
-ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
-
-RUN node ./node_modules/.bin/nx run-many --target=test --all $NX_RUN_OPTIONS
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 # FROM build-base as acx-ui-tslint
