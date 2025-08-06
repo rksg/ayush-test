@@ -7,13 +7,13 @@ import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import { IpsecViewData }                from '@acx-ui/rc/utils'
 import { render, screen, renderHook }   from '@acx-ui/test-utils'
 
-import IpsecDrawer from '../../../policies/Ipsec/IpsecForm/IpsecDrawer'
+import IpsecDrawer from '../../../policies/Ipsec/IpsecForm/IpsecAddDrawer'
 
 import { IpsecFormItem } from './index'
 
 // Mock dependencies
 jest.mock('@acx-ui/rc/services')
-jest.mock('../../../policies/Ipsec/IpsecForm/IpsecDrawer')
+jest.mock('../../../policies/Ipsec/IpsecForm/IpsecAddDrawer')
 jest.mock('@acx-ui/edge/components', () => ({
   getIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
   getEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
@@ -243,8 +243,7 @@ describe('IpsecFormItem', () => {
 
       expect(mockIpsecDrawer).toHaveBeenCalledWith(
         expect.objectContaining({
-          visible: true,
-          readMode: false
+          visible: true
         }),
         expect.anything()
       )

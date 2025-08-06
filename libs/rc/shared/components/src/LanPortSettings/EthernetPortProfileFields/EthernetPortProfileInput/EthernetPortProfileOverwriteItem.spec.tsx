@@ -18,6 +18,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
           initialData={'2'}
           defaultValue={'1'}
           isEditable={true}
+          currentIndex={1}
           fieldName={['lan', 1, 'untagId']} />
       </Form>
     )
@@ -43,6 +44,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
           initialData={'9'}
           defaultValue={'1-4094'}
           isEditable={true}
+          currentIndex={1}
           fieldName={['lan', 1, 'vlanMembers']} />
       </Form>
     )

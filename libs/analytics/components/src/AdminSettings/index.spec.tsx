@@ -66,7 +66,7 @@ describe('AdminSettings', () => {
     jest.mocked(useGetTenantSettingsQuery).mockReturnValue({
       ...mockSettingsQuery,
       data: {
-        'fetaure-related-events-suppression': 'true'
+        'feature-related-events-suppression': 'true'
       }
     })
 
@@ -85,7 +85,7 @@ describe('AdminSettings', () => {
     jest.mocked(useGetTenantSettingsQuery).mockReturnValue({
       ...mockSettingsQuery,
       data: {
-        'fetaure-related-events-suppression': 'false'
+        'feature-related-events-suppression': 'false'
       }
     })
 
@@ -110,7 +110,7 @@ describe('AdminSettings', () => {
     await userEvent.click(checkbox)
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({
-      'fetaure-related-events-suppression': 'true'
+      'feature-related-events-suppression': 'true'
     })
   })
 
@@ -119,7 +119,7 @@ describe('AdminSettings', () => {
     jest.mocked(useGetTenantSettingsQuery).mockReturnValue({
       ...mockSettingsQuery,
       data: {
-        'fetaure-related-events-suppression': 'true'
+        'feature-related-events-suppression': 'true'
       }
     })
 
@@ -135,7 +135,7 @@ describe('AdminSettings', () => {
     await userEvent.click(checkbox)
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({
-      'fetaure-related-events-suppression': 'false'
+      'feature-related-events-suppression': 'false'
     })
   })
 

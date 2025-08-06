@@ -1,9 +1,9 @@
 import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { cloneDeep }                            from 'lodash'
-import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
-import { FormattedMessage, useIntl }            from 'react-intl'
+import { Col, Form, Image, Row, Space, Switch, InputNumber } from 'antd'
+import { cloneDeep }                                         from 'lodash'
+import { FormChangeInfo }                                    from 'rc-field-form/lib/FormContext'
+import { FormattedMessage, useIntl }                         from 'react-intl'
 
 import {
   AnchorContext,
@@ -46,7 +46,8 @@ import {
   Voter,
   SoftGreDuplicationChangeState,
   SoftGreDuplicationChangeDispatcher,
-  IpsecOptionChangeState
+  IpsecOptionChangeState,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -103,6 +104,8 @@ export function LanPorts (props: ApEditItemProps) {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isGlobalAccessVlanUntaggedIdEnabled =
+    useIsSplitOn(Features.ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
@@ -136,8 +139,6 @@ export function LanPorts (props: ApEditItemProps) {
     isLoading: isDeactivateClientIsolationOnAp
   }] = useDeactivateClientIsolationOnApMutation()
 
-
-
   const [apLanPorts, setApLanPorts] = useState({} as WifiApSetting)
   const [venueLanPorts, setVenueLanPorts] = useState({})
   const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
@@ -148,6 +149,60 @@ export function LanPorts (props: ApEditItemProps) {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const [shouldDisableGlobalAccessVlan, setShouldDisableGlobalAccessVlan] = useState(false)
+
+  const ethernetPortProfilesRef = useRef<{ [key: string]: EthernetPortProfileViewData }>({})
+
+  const handleEthernetPortProfileDataChanged = (
+    portIndex: number,
+    profileData: EthernetPortProfileViewData
+  ) => {
+    ethernetPortProfilesRef.current[portIndex.toString()] = profileData
+
+    checkAndUpdateGlobalAccessVlanState()
+  }
+
+  const checkAndUpdateGlobalAccessVlanState = () => {
+    if(!isGlobalAccessVlanUntaggedIdEnabled) return
+
+    const currentLanPorts = formRef?.current?.getFieldsValue()?.lan as LanPort[] ||
+      selectedModel?.lanPorts || []
+
+    // Check if ethernet ref data is in sync with current lan data
+    const isEthernetRefInSync = currentLanPorts.every((port, index) => {
+      if (!isEthernetPortProfileEnabled) return true
+      const refData = ethernetPortProfilesRef.current[index.toString()]
+      return refData !== undefined
+    })
+
+    // Count access ports, considering both traditional type and ethernet port profile data
+    const accessPortCount = currentLanPorts.filter((port, index) => {
+      if (!port.enabled) return false
+
+      // If ethernet port profile is enabled, ref data is in sync, and we have profile data for this port
+      if (isEthernetPortProfileEnabled &&
+          isEthernetRefInSync &&
+          ethernetPortProfilesRef.current[index.toString()]) {
+        const profileData = ethernetPortProfilesRef.current[index.toString()]
+        return profileData.type === 'ACCESS'
+      }
+
+      // For traditional port configuration or when ref data is not in sync, check the type field
+      return port.type === ApLanPortTypeEnum.ACCESS
+    }).length
+
+    const shouldDisable = accessPortCount <= 1
+    setShouldDisableGlobalAccessVlan(shouldDisable)
+
+    // Auto disable the setting when access port count <= 1
+    // Only auto-disable when ethernet ref data is in sync to ensure accurate count
+    if (shouldDisable &&
+        formRef?.current &&
+        (!isEthernetPortProfileEnabled || isEthernetRefInSync)) {
+      formRef.current.setFieldValue('globalAccessVlanIdEnabled', false)
+    }
+  }
+
   const isResetClick = useRef(false)
   const {
     softGREProfileOptionList,
@@ -251,6 +306,11 @@ export function LanPorts (props: ApEditItemProps) {
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
   const handleCustomize = async (useVenueSettings: boolean) => {
+    if (useVenueSettings) {
+      formRef?.current?.setFieldValue('globalAccessVlanIdEnabled', false)
+      // formRef?.current?.setFieldValue('globalAccessVlanId', 1)
+    }
+
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
     lanPorts.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
       (lanPorts.lanPorts || []),
@@ -463,6 +523,7 @@ export function LanPorts (props: ApEditItemProps) {
         : lanData?.[idx]})) as LanPort[]
 
     setLanData(newLanData)
+
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
 
@@ -531,6 +592,7 @@ export function LanPorts (props: ApEditItemProps) {
   const onGUIChanged = () => {
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
+
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||
@@ -545,7 +607,15 @@ export function LanPorts (props: ApEditItemProps) {
         onFormChange={handleFormChange}
       >
         <StepsFormLegacy.StepForm
-          initialValues={{ lan: selectedModel?.lanPorts }}
+          initialValues={{
+            lan: selectedModel?.lanPorts,
+            globalAccessVlanIdEnabled: (selectedModel &&
+              'globalAccessVlanIdEnabled' in selectedModel) ?
+              selectedModel.globalAccessVlanIdEnabled : false,
+            globalAccessVlanId: (selectedModel &&
+              'globalAccessVlanId' in selectedModel) ?
+              selectedModel.globalAccessVlanId : 1
+          }}
         >
           <Row gutter={24}
             style={
@@ -555,6 +625,7 @@ export function LanPorts (props: ApEditItemProps) {
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
           </Row>
+
           <Row gutter={24}>
             <Col span={24}>
               <Form.Item
@@ -579,6 +650,60 @@ export function LanPorts (props: ApEditItemProps) {
               }
             </Col>
           </Row>
+          {isGlobalAccessVlanUntaggedIdEnabled &&
+            <Row gutter={24}>
+              <Col span={24}>
+                <Form.Item
+                  name={'globalAccessVlanIdEnabled'}
+                  label={$t({ defaultMessage: 'Set VLAN ID for All Access Ports' })}
+                  valuePropName='checked'
+                  children={<Switch
+                    data-testid={'global-access-vlan-id-switch'}
+                    disabled={!isAllowEdit || useVenueSettings || shouldDisableGlobalAccessVlan}
+                  />}
+                />
+              </Col>
+            </Row>
+          }
+          {/* {formRef?.current?.getFieldsValue()?.globalAccessVlanIdEnabled && */}
+          <Form.Item
+            dependencies={['globalAccessVlanIdEnabled']}
+            noStyle
+          >
+            {({ getFieldValue }) => {
+              return getFieldValue('globalAccessVlanIdEnabled') && (
+                <Row gutter={24}>
+                  <Col span={8}>
+                    <Form.Item
+                      name='globalAccessVlanId'
+                      label={$t({ defaultMessage: 'Global Untagged VLAN ID' })}
+                      rules={[
+                        {
+                          required: true,
+                          message: $t({ defaultMessage: 'Please enter Untagged VLAN ID' })
+                        },
+                        {
+                          type: 'number',
+                          min: 1,
+                          max: 4094,
+                          message: $t({ defaultMessage: 'Value must be between 1-4094' })
+                        }
+                      ]}
+                    >
+                      <InputNumber
+                        min={1}
+                        max={4094}
+                        disabled={!isAllowEdit || useVenueSettings || shouldDisableGlobalAccessVlan}
+                        style={{ width: '120px' }}
+                        defaultValue={1}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              )
+            }}
+          </Form.Item>
+
           <Row gutter={24}>
             <Col span={24}>
               <Tabs
@@ -611,9 +736,19 @@ export function LanPorts (props: ApEditItemProps) {
                           optionDispatch={duplicationChangeDispatch}
                           validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                           ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
-                          ipsecOptionDispatch={isIpSecOverNetworkEnabled ?
-                            ipsecOptionDispatch : undefined}
+                          ipsecOptionDispatch={
+                            isIpSecOverNetworkEnabled ? ipsecOptionDispatch : undefined
+                          }
                           usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
+                          globalAccessPortUntaggedIdEnabled={
+                            formRef?.current?.getFieldsValue()?.globalAccessVlanIdEnabled ?? false
+                          }
+                          globalAccessPortUntaggedId={
+                            formRef?.current?.getFieldsValue()?.globalAccessVlanId ?? 1
+                          }
+                          onEthernetPortProfileDataChanged={(profileData) =>
+                            handleEthernetPortProfileDataChanged(index, profileData)
+                          }
                         />
                       </Col>
                     </Row>
