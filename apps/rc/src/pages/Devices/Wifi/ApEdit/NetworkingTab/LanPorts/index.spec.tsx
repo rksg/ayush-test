@@ -7,6 +7,7 @@ import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonUrlsInfo,
+  DHCPUrls,
   EthernetPortProfileUrls,
   IpsecUrls,
   LanPortsUrls,
@@ -29,9 +30,14 @@ import {
   ApCap_T750SE,
   ApData_H670,
   ApData_T750SE,
+  apDetailsList,
   ApLanPorts_H670,
   ApLanPorts_has_vni,
   ApLanPorts_T750SE,
+  defaultAccessTypeId,
+  defaultTrunkTypeId,
+  dummyRadiusServiceList,
+  mockDefaultAccessEthertnetPortProfile,
   mockDefaultTunkEthertnetPortProfile,
   mockedAPLanPortSettings1,
   mockedAPLanPortSettings2,
@@ -68,21 +74,14 @@ describe('Lan Port', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.get(WifiUrlsInfo.getApLanPorts.url,
-        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
       rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
-      rest.put(WifiUrlsInfo.updateApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        LanPortsUrls.getApLanPortSettings.url,
+      rest.get(LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedAPLanPortSettings1))
@@ -99,8 +98,7 @@ describe('Lan Port', () => {
           return res(ctx.json({}))
         }
       ),
-      rest.get(
-        LanPortsUrls.getVenueLanPortSettings.url,
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedVenueLanPortSettings1))
@@ -120,7 +118,13 @@ describe('Lan Port', () => {
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(IpsecUrls.getIpsecViewDataList.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(DHCPUrls.queryDhcpProfiles.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(
+        WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetailsList[1]))
+      )
     )
   })
 
@@ -443,8 +447,7 @@ describe('H670', () => {
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        LanPortsUrls.getApLanPortSettings.url,
+      rest.get(LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedAPLanPortSettings1))
@@ -469,8 +472,7 @@ describe('H670', () => {
           return res(ctx.json({}))
         }
       ),
-      rest.get(
-        LanPortsUrls.getVenueLanPortSettings.url,
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => {
           if(_.params.portId === '1') {
             return res(ctx.json(mockedVenueLanPortSettings1))
@@ -498,7 +500,26 @@ describe('H670', () => {
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(IpsecUrls.getIpsecViewDataList.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(DHCPUrls.queryDhcpProfiles.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
+      rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(ApData_H670))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(dummyRadiusServiceList))),
+      rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => {
+          if(_.params.id === defaultAccessTypeId) {
+            return res(ctx.json(mockDefaultAccessEthertnetPortProfile))
+          }
+          if(_.params.id === defaultTrunkTypeId) {
+            return res(ctx.json(mockDefaultTunkEthertnetPortProfile))
+          }
+          return res(ctx.json({}))
+        }
+      )
     )
   })
   describe('AP Lan port settings', () => {
@@ -557,6 +578,56 @@ describe('H670', () => {
 
         expect(screen.queryAllByText('802.3af (15.4 W)').length).toBeGreaterThan(0)
         expect(screen.queryAllByText('802.3at (30 W)').length).toBeGreaterThan(0)
+      })
+    })
+
+    describe('Global overwrite VLAN ID settings', () => {
+      it('Should render global overwrite access port VLAN ID settings correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+          ff === Features.ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE)
+        render(
+          <Provider>
+            <ApEditContext.Provider value={{
+              editContextData: {
+                tabTitle: '',
+                isDirty: false,
+                hasError: false,
+                updateChanges: jest.fn(),
+                discardChanges: jest.fn()
+              },
+              setEditContextData: jest.fn(),
+              editNetworkingContextData: {} as ApNetworkingContext,
+              setEditNetworkingContextData: jest.fn()
+            }}>
+              <ApDataContext.Provider value={defaultH670ApCtxData}>
+                <LanPorts />
+              </ApDataContext.Provider>
+            </ApEditContext.Provider>
+          </Provider>, {
+            route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+          }
+        )
+
+        await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+        const tabs = await screen.findAllByRole('tab')
+        await userEvent.click(tabs[1])
+        await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+
+        // confirm global overwrite switch there
+        const globalOverwriteSwitch =
+          await screen.findByRole('switch', { name: 'Set VLAN ID for All Access Ports' })
+        expect(globalOverwriteSwitch).not.toBeChecked()
+        expect(globalOverwriteSwitch).toBeInTheDocument()
+        await userEvent.click(globalOverwriteSwitch)
+        expect(globalOverwriteSwitch).toBeChecked()
+
+        // confirm global untagged vlan id input there
+        const globalUntaggedVlanIdInput =
+          await screen.findByRole('spinbutton', { name: 'Global Untagged VLAN ID' })
+        expect(globalUntaggedVlanIdInput).toBeInTheDocument()
+
       })
     })
   })

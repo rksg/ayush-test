@@ -8,6 +8,7 @@ import { cloneDeep }                                          from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawerType }                          from '@acx-ui/rc/common/components'
 import { useGetServerCertificatesQuery }                          from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -25,9 +26,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate } from '@acx-ui/react-router-dom'
 
-import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
-import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
-import { IdentityAttributesInput }       from '../../IdentityAttributesInput'
+import CertificateDrawer           from '../../CertificateUtil/CertificateDrawer'
+import { IdentityAttributesInput } from '../../IdentityAttributesInput'
 
 import { ImportXMLFileDrawer } from './styledComponents'
 

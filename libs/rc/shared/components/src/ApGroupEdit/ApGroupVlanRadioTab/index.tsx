@@ -4,8 +4,9 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy }      from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListV2Query,
@@ -30,8 +31,7 @@ import {
   defaultNewApGroupNetworkPayload,
   getCurrentVenue
 } from '../../ApGroupNetworkTable'
-import { usePathBasedOnConfigTemplate } from '../../configTemplates'
-import { ApGroupEditContext }           from '../context'
+import { ApGroupEditContext } from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'

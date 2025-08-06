@@ -535,7 +535,7 @@ export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>
   apSwitchInfoMap:Map<string, SwitchInformation>, identityInfoMap?: Map<string, Persona>) => {
   const data:ClientInfo[] = []
 
-  clientList?.data.forEach(client => {
+  clientList?.data?.forEach(client => {
     const apMac = client.apInformation?.macAddress ?? ''
     const switchInformation = apSwitchInfoMap.get(apMac)
 

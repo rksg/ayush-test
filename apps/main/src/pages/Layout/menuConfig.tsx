@@ -74,6 +74,7 @@ export function useMenuConfig () {
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
+    && tenantType === TenantType.REC
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -470,7 +471,8 @@ export function useMenuConfig () {
               !isCustomRoleCheck ? [
                 ...(
                   hasAllowedOperations([
-                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ?
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients),
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipientsPaginated)]) ?
                     [{
                       uri: '/administration/notifications',
                       label: $t({ defaultMessage: 'Notifications' })

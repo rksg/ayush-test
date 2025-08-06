@@ -139,7 +139,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
         if (health === 'Default') return
 
         return <TenantLink
-          to={`users/wifi/clients/${row.macAddress}/details/overview?clientStatus=connected`}
+          to={`users/wifi/clients/${row.macAddress}/details/overview`}
         >{row.hostname || noDataDisplay}</TenantLink>
       }
     },

@@ -1,7 +1,7 @@
 
 import styled from 'styled-components/macro'
 
-import { ImportFileDrawer } from '../../../ImportFileDrawer'
+import { ImportFileDrawer } from '@acx-ui/rc/common/components'
 
 export const Description = styled.div`
   color: var(--acx-neutrals-60);

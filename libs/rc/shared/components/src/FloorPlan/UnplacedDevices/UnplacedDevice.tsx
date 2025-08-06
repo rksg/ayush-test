@@ -4,7 +4,6 @@ import { useDrag }       from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useIntl }       from 'react-intl'
 
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { DeviceOutlined, DevicesOutlined, SignalUp } from '@acx-ui/icons'
 import {
   APMeshRole,
@@ -34,7 +33,6 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   const { device } = props
   const { $t } = useIntl()
   const deviceContext = useContext(NetworkDeviceContext) as Function
-  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
   const canDrag = () => {
     if(device?.networkDeviceType === NetworkDeviceType.ap) {
@@ -113,7 +111,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
           }}>  {
               getDeviceIcon(device?.networkDeviceType)
             }
-          </div>{getDeviceName(device)} {isApMeshTopologyFFOn && getApMeshRoleAbbr()}
+          </div>{getDeviceName(device)} {getApMeshRoleAbbr()}
         </>
       }
       { isDragging && <CustomDragLayer key={device?.id} device={device}/> }

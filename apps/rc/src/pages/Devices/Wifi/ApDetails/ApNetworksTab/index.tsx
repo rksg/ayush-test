@@ -2,9 +2,8 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { useApNetworkListQuery, useGetRbacApNetworkListQuery } from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }    from '@acx-ui/components'
+import { useGetRbacApNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -28,12 +27,11 @@ const defaultPayload = {
 
 export function ApNetworksTab () {
   const { $t } = useIntl()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apiParams = useApContext() as Record<string, string>
   const settingsId = 'ap-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isWifiRbacEnabled? useGetRbacApNetworkListQuery : useApNetworkListQuery,
+    useQuery: useGetRbacApNetworkListQuery,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]

@@ -38,7 +38,8 @@ import {
   convertPoeUsage,
   getSwitchModelInfo,
   calculatePortOrderValue,
-  checkSwitchUpdateFields
+  checkSwitchUpdateFields,
+  isNotSupportStackModel
 } from '.'
 
 const switchRow ={
@@ -863,5 +864,91 @@ describe('Test isSpecific8100Model function', () => {
   it('should return false for valid strings that do not match', () => {
     expect(isSpecific8100Model('ABC1234567890')).toBe(false)
     expect(isSpecific8100Model('XYZ9876543210')).toBe(false)
+  })
+})
+
+describe('Test isNotSupportStackModel function', () => {
+  it('should return true for always unsupported models regardless of isSupport8100Phase2', () => {
+    const unsupportedModels = [
+      'ICX7150-C08P',
+      'ICX7150-C08PT',
+      'ICX8100-24',
+      'ICX8100-24P',
+      'ICX8100-48',
+      'ICX8100-48P',
+      'ICX8100-C08PF',
+      'ICX 8100-48PF'
+    ]
+
+    unsupportedModels.forEach(model => {
+      expect(isNotSupportStackModel(model, true)).toBe(true)
+      expect(isNotSupportStackModel(model, false)).toBe(true)
+    })
+  })
+
+  it('should return false for X models when isSupport8100Phase2 is true', () => {
+    const xModels = [
+      'ICX8100-24-X',
+      'ICX8100-24P-X',
+      'ICX8100-48-X',
+      'ICX8100-48P-X',
+      'ICX8100-48PF-X',
+      'ICX8100-C08PF-X',
+      'ICX8100-C16PF-X'
+    ]
+
+    xModels.forEach(model => {
+      expect(isNotSupportStackModel(model, true)).toBe(false)
+    })
+  })
+
+  it('should return true for X models when isSupport8100Phase2 is false', () => {
+    const xModels = [
+      'ICX8100-24-X',
+      'ICX8100-24P-X',
+      'ICX8100-48-X',
+      'ICX8100-48P-X',
+      'ICX8100-48PF-X',
+      'ICX8100-C08PF-X',
+      'ICX8100-C16PF-X'
+    ]
+
+    xModels.forEach(model => {
+      expect(isNotSupportStackModel(model, false)).toBe(true)
+    })
+  })
+
+  it('should return false for supported models regardless of isSupport8100Phase2', () => {
+    const supportedModels = [
+      'ICX7150-24P',
+      'ICX7150-48P',
+      'ICX7150-C12P',
+      'ICX7150-48ZP',
+      'ICX7550-24P',
+      'ICX7550-48P',
+      'ICX7650-48P',
+      'ICX8200-24P',
+      'ICX8200-48P',
+      'UNKNOWN-MODEL'
+    ]
+
+    supportedModels.forEach(model => {
+      expect(isNotSupportStackModel(model, true)).toBe(false)
+      expect(isNotSupportStackModel(model, false)).toBe(false)
+    })
+  })
+
+  it('should handle edge cases', () => {
+    expect(isNotSupportStackModel('', true)).toBe(false)
+    expect(isNotSupportStackModel('', false)).toBe(false)
+    expect(isNotSupportStackModel('invalid-model', true)).toBe(false)
+    expect(isNotSupportStackModel('invalid-model', false)).toBe(false)
+  })
+
+  it('should handle case sensitivity', () => {
+    // Function appears to be case-sensitive based on the exact string matches
+    expect(isNotSupportStackModel('icx7150-c08p', true)).toBe(false)
+    expect(isNotSupportStackModel('ICX7150-c08p', true)).toBe(false)
+    expect(isNotSupportStackModel('ICX7150-C08P', true)).toBe(true)
   })
 })

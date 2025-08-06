@@ -5,6 +5,7 @@ import { Col, Form, FormInstance, Row, Switch, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
 import { Loader, StepsForm, Tooltip } from '@acx-ui/components'
+import { useEnforcedStatus }          from '@acx-ui/config-template/utils'
 import {
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
@@ -23,7 +24,6 @@ import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates'
 
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
@@ -149,7 +149,15 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
               portalAccessResetHtmlRegId: venueId,
               portalAccessResetTextRegId: venueId,
               portAssignmentHtmlRegId: venueId,
-              portAssignmentTextRegId: venueId
+              portAssignmentTextRegId: venueId,
+              unitSuspendHtmlRegId: venueId,
+              unitSuspendTextRegId: venueId,
+              unitUserSuspendHtmlRegId: venueId,
+              unitUserSuspendTextRegId: venueId,
+              unitReactivateHtmlRegId: venueId,
+              unitReactivateTextRegId: venueId,
+              unitUserReactivateHtmlRegId: venueId,
+              unitUserReactivateTextRegId: venueId
             }
           }
         }).unwrap()

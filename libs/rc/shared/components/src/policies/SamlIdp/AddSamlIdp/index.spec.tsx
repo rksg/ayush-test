@@ -21,7 +21,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 // Add mock for ImportFileDrawer
-jest.mock('../../../ImportFileDrawer', () => ({
+jest.mock('@acx-ui/rc/common/components', () => ({
   ImportFileDrawer: ({
     importRequest
   }: {

@@ -8,7 +8,8 @@ import {
   NoData,
   useDateRange
 } from '@acx-ui/components'
-import { formats } from '@acx-ui/formatter'
+import { formats }   from '@acx-ui/formatter'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { useTopNApplicationsQuery } from './services'
 
@@ -38,12 +39,14 @@ export const getTruncatedLegendFormatter = (
 export const TopApplications = () => {
   const { $t } = useIntl()
   const { timeRange, selectedRange } = useDateRange()
+  const { personaId: identityId, personaGroupId: identityGroupId } = useParams()
   const queryResults = useTopNApplicationsQuery({
     startDate: timeRange[0].format(),
     endDate: timeRange[1].format(),
     n: 10,
     range: selectedRange,
-    filter: {}
+    filter: {},
+    identityFilter: { identityId, identityGroupId }
   })
   const results = queryResults?.data
   const data = results?.topNApplicationByTraffic.map((item) => ({
