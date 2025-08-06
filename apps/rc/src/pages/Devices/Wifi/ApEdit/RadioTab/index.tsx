@@ -13,12 +13,13 @@ import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
-import { AntennaSection }                 from './Antenna/AntennaSection'
-import { ExternalAntennaSettings }        from './Antenna/ExternalAntennaSettings'
-import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
-import { ClientSteering }                 from './ClientSteering/ClientSteering'
-import { RadioSettings }                  from './RadioSettings/RadioSettings'
-import { RadioSettingsV1Dot1 }            from './RadioSettings/RadioSettingsV1Dot1'
+import { AntennaSection }                       from './Antenna/AntennaSection'
+import { ExternalAntennaSettings }              from './Antenna/ExternalAntennaSettings'
+import { ClientAdmissionControlSettings }       from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
+import { ClientAdmissionControlSettingsV1Dot1 } from './ClientAdmissionControlSettings/ClientAdmissionControlSettingsV1Dot1'
+import { ClientSteering }                       from './ClientSteering/ClientSteering'
+import { RadioSettings }                        from './RadioSettings/RadioSettings'
+import { RadioSettingsV1Dot1 }                  from './RadioSettings/RadioSettingsV1Dot1'
 
 export interface ApRadioContext {
   updateWifiRadio?: (data?: unknown) => void | Promise<void>
@@ -70,6 +71,7 @@ export function RadioTab () {
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
 
   const apGroupPhase1Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const apGroupPhase3Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE3_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
@@ -118,8 +120,9 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        {
-          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
+        { apGroupPhase3Toggle
+          ? <ClientAdmissionControlSettingsV1Dot1 isAllowEdit={isAllowEditClientAdmissionControl} />
+          : <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
         }
       </>
     )

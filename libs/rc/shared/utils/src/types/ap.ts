@@ -640,6 +640,12 @@ export interface ApUsbSettings {
   useVenueSettings: boolean
 }
 
+export interface ApPassword {
+  apPasswords: string,
+  expireTime: string,
+  updatedTime: string
+}
+
 export interface ApBandModeSettings {
   bandMode: BandModeEnum,
   useVenueSettings: boolean
@@ -756,6 +762,8 @@ export interface WifiApSetting {
   poeOutMode?: PoeOutModeEnum;
   lanPorts?: LanPort[];
   lan?: LanPort[];
+  globalAccessVlanIdEnabled?: boolean
+  globalAccessVlanId?: number
 }
 
 export interface ApDirectedMulticast {

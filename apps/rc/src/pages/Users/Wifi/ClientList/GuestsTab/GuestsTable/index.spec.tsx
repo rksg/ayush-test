@@ -46,6 +46,10 @@ const mockFormData = new FormData()
 
 jest.mock('@acx-ui/rc/components', () => ({
   NetworkForm: () => <div data-testid='network-form' />,
+  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />
+}))
+
+jest.mock('@acx-ui/rc/common/components', () => ({
   ImportFileDrawer: ({ importRequest, onClose, visible }: {
     visible: boolean
     importRequest: (formData: FormData, values: object) => void
@@ -62,8 +66,7 @@ jest.mock('@acx-ui/rc/components', () => ({
       }}>Cancel</button>
     </div>,
   CsvSize: {},
-  ImportFileDrawerType: {},
-  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />
+  ImportFileDrawerType: {}
 }))
 
 jest.mock('./addGuestDrawer', () => ({

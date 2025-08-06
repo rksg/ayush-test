@@ -27,7 +27,11 @@ describe('useTrafficQuery', () => {
       startDate: '2021-01-01T00:00:00+08:00',
       endDate: '2021-01-01T01:00:00+08:00',
       range: DateRange.last1Hour,
-      filter: {}
+      filter: {},
+      identityFilter: {
+        identityId: '123',
+        identityGroupId: '456'
+      }
     }))
 
     const expected = {
@@ -48,7 +52,11 @@ describe('useTrafficQuery', () => {
       startDate: '2021-01-01T00:00:00+08:00',
       endDate: '2021-01-01T01:00:00+08:00',
       range: DateRange.last1Hour,
-      filter: {}
+      filter: {},
+      identityFilter: {
+        identityId: '123',
+        identityGroupId: '456'
+      }
     }))
 
     expect(status).toBe('rejected')

@@ -1,5 +1,5 @@
-import { Space } from 'antd'
-import styled    from 'styled-components'
+import { Form, Space } from 'antd'
+import styled          from 'styled-components'
 
 import { InformationSolid } from '@acx-ui/icons'
 
@@ -19,7 +19,7 @@ export const StyledSpace = styled(Space)`
   }
 `
 
-export const FormItemWrapper = styled.div`
+export const FormItemWrapper = styled(Form.Item)`
   & .ant-form-item-control {
       display: none;
   }

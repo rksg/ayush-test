@@ -61,6 +61,7 @@ export enum Features {
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
   EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
+  EDGE_IPSEC_VXLAN_TOGGLE = 'edge-ipsec-vxlan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -303,13 +304,17 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
+  WIFI_AP_PASSWORD_PER_AP_TOGGLE = 'wifi-ap-password-per-ap-toggle',
+  WIFI_AP_PASSWORD_VISIBILITY_TOGGLE = 'wifi-ap-password-visibility-toggle',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
   EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
   SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle',
   MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
-  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality'
+  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
+  MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -332,6 +337,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
   EDGE_DELEGATION = 'EDGE-DELEGATION',
+  EDGE_IPSEC_VXLAN = 'EDGE-IPSEC-VXLAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

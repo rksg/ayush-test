@@ -8,6 +8,7 @@ import { useIdentityListQuery }                                  from '@acx-ui/c
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                      from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }       from '@acx-ui/rc/common/components'
 import {
   useDeletePersonasMutation,
   useGetPersonaGroupByIdQuery,
@@ -25,7 +26,6 @@ import { filterByAccess, getUserProfile, hasCrossVenuesPermission, isCoreTier } 
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping, FILTER, SEARCH } from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
@@ -92,6 +92,13 @@ function useColumns (
       ...props.name
     },
     {
+      key: 'displayName',
+      dataIndex: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      sorter: true,
+      ...props.displayName
+    },
+    {
       key: 'revoked',
       dataIndex: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
@@ -151,6 +158,13 @@ function useColumns (
       ,
       sorter: true,
       ...props.name
+    },
+    {
+      key: 'displayName',
+      dataIndex: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      sorter: true,
+      ...props.displayName
     },
     {
       key: 'revoked',

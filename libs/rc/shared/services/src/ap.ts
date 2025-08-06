@@ -20,6 +20,7 @@ import {
   ApIot,
   ApIotController,
   ApClientAdmissionControl,
+  ApClientAdmissionControl_v1_1,
   ApGroupClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -97,7 +98,9 @@ import {
   ApExternalAntennaSettings,
   ApGroupQueryRadioCustomization,
   WifiNetwork,
+  ApPassword,
   ApJwtToken,
+  ApLanPortTypeEnum,
   ApGroupApAntennaTypeSettings,
   ApGroupApExternalAntennaSettings,
   ApExternalAntennaSettingsV1001,
@@ -1227,7 +1230,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
-              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId'],
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId', 'untagId'],
               pageSize: 1000
             })
           }
@@ -1264,6 +1267,33 @@ export const apApi = baseApApi.injectEndpoints({
                   targetPort.authRadiusId = eth.authRadiusId
                   targetPort.accountingRadiusId = eth.accountingRadiusId
                 }
+              }
+            }
+
+            const accessPorts = apLanPorts.lanPorts?.filter(port => port.type === ApLanPortTypeEnum.ACCESS) ?? []
+
+            apLanPorts.globalAccessVlanIdEnabled = false
+
+            if (accessPorts.length > 1) {
+              const allPortsOverwritten = accessPorts.every(port => {
+                const ethProfile = apActivateEths?.find(eth => {
+                  const portActivation = eth.apActivations?.find(ap =>
+                    ap.apSerialNumber === params.serialNumber &&
+                    ap.portId?.toString() === port.portId
+                  )
+                  return !!portActivation
+                })
+
+                if (ethProfile) {
+                  return port.untagId !== ethProfile.untagId
+                }
+
+                return false
+              })
+
+              if (allPortsOverwritten) {
+                apLanPorts.globalAccessVlanIdEnabled = true
+                apLanPorts.globalAccessVlanId = accessPorts[0].untagId
               }
             }
           }
@@ -1527,6 +1557,19 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'USB' }]
+    }),
+    getApPassword: build.query<ApPassword, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApPassword, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     }),
     updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2129,6 +2172,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     }),
+    getApClientAdmissionControl_v1_1: build.query<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiRbacUrlsInfo.getApClientAdmissionControlSettings_v1_1, params)
+      },
+      providesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    updateApClientAdmissionControl_v1_1: build.mutation<ApClientAdmissionControl_v1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApClientAdmissionControlSettings_v1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
     getApGroupClientAdmissionControl: build.query<ApGroupClientAdmissionControl, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WifiRbacUrlsInfo.getApGroupClientAdmissionControlSettings, params)
@@ -2316,6 +2375,8 @@ export const {
   useUpdateApLedMutation,
   useResetApLedMutation,
   useGetApUsbQuery,
+  useGetApPasswordQuery,
+  useLazyGetApPasswordQuery,
   useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
@@ -2383,6 +2444,9 @@ export const {
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation,
+  useGetApClientAdmissionControl_v1_1Query,
+  useUpdateApClientAdmissionControl_v1_1Mutation,
+  useLazyGetApGroupClientAdmissionControlQuery,
   useGetApGroupClientAdmissionControlQuery,
   useUpdateApGroupClientAdmissionControlMutation,
   useGetApManagementVlanQuery,
