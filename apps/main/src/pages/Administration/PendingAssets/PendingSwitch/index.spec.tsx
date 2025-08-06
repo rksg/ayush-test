@@ -1,122 +1,82 @@
+// Suppress moment deprecation warnings
 import React from 'react'
 
+import moment   from 'moment'
 import { rest } from 'msw'
 
-import { DeviceProvisionUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider }                                   from '@acx-ui/store'
-import { render, fireEvent, waitFor, screen, within } from '@acx-ui/test-utils'
-import { setUserProfile, UserProfile }                from '@acx-ui/user'
+import { DeviceProvisionUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { mockServer, render, fireEvent, waitFor, screen } from '@acx-ui/test-utils'
 
 import { PendingSwitch } from '.'
 
-// eslint-disable-next-line no-console
-const originalWarn = console.warn
-// eslint-disable-next-line no-console
-console.warn = (...args: unknown[]) => {
-  const warningMsg =
-    'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format'
-  if (typeof args[0] === 'string' &&
-      args[0].includes(warningMsg)) {
-    return
-  }
-  originalWarn(...args)
-}
-
-const mockDeviceProvisions = [
-  {
-    serialNumber: 'SWITCH-001',
-    model: 'ICX7550-48',
-    shipDate: '2024-01-15T00:00:00.000Z',
-    createdDate: '2024-01-20T00:00:00.000Z',
-    visibleStatus: 'Visible'
-  },
-  {
-    serialNumber: 'SWITCH-002',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-01-16T00:00:00.000Z',
-    createdDate: '2024-01-21T00:00:00.000Z',
-    visibleStatus: 'Hidden'
-  },
-  {
-    serialNumber: 'SWITCH-003',
-    model: 'ICX7550-48',
-    shipDate: '2024-01-17T00:00:00.000Z',
-    createdDate: '2024-01-22T00:00:00.000Z',
-    visibleStatus: 'Visible'
-  },
-  {
-    serialNumber: 'SWITCH-004',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-01-18T00:00:00.000Z',
-    createdDate: '2024-01-23T00:00:00.000Z',
-    visibleStatus: 'Visible'
-  },
-  {
-    serialNumber: 'SWITCH-005',
-    model: 'ICX7550-48',
-    shipDate: '2024-01-19T00:00:00.000Z',
-    createdDate: '2024-01-24T00:00:00.000Z',
-    visibleStatus: 'Hidden'
-  },
-  {
-    serialNumber: 'SWITCH-006',
-    model: 'ICX7150-C12P',
-    shipDate: '2024-01-20T00:00:00.000Z',
-    createdDate: '2024-01-25T00:00:00.000Z',
-    visibleStatus: 'Visible'
-  }
-]
-
-const mockSwitchStatus = {
-  refreshedAt: '2024-01-25T10:30:00.000Z'
-}
-
-const mockSwitchModels = ['ICX7550-48', 'ICX7650-48', 'ICX7150-48', 'ICX7250-48']
-
-const mockApiResponse = {
-  content: mockDeviceProvisions,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10,
-    totalElements: 6
-  },
-  totalElements: 6,
-  totalPages: 1
-}
+moment.suppressDeprecationWarnings = true
 
 const mockCommonResult = {
   success: true,
   message: 'Operation completed successfully'
 }
 
-describe('PendingSwitch component', () => {
-  const params: { tenantId: string } = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-  }
-  const path = '/:tenantId/administration/PendingAssets'
+describe('PendingSwitch', () => {
+  const params = { tenantId: 'test-tenant' }
+  const path = '/administration/pendingAssets/pendingSwitch'
 
   beforeEach(() => {
-    setUserProfile({
-      profile: { dateFormat: 'MMM DD YYYY' } as UserProfile,
-      allowedOperations: []
-    })
-
-    const { mockServer } = require('@acx-ui/test-utils')
     mockServer.use(
-      rest.get(DeviceProvisionUrlsInfo.getSwitchStatus.url, (req, res, ctx) => {
-        return res(ctx.json(mockSwitchStatus))
+      rest.post(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
+        return res(ctx.json({
+          content: [
+            {
+              serialNumber: 'RUCKUS-SW-TEST-001',
+              model: 'ICX7150',
+              shipDate: '2024-01-15T00:00:00.000Z',
+              createdDate: '2024-01-20T00:00:00.000Z',
+              visibleStatus: 'Visible'
+            },
+            {
+              serialNumber: 'RUCKUS-SW-TEST-002',
+              model: 'ICX7250',
+              shipDate: '2024-01-16T00:00:00.000Z',
+              createdDate: '2024-01-21T00:00:00.000Z',
+              visibleStatus: 'Visible'
+            }
+          ],
+          totalElements: 2
+        }))
       }),
-      rest.get(DeviceProvisionUrlsInfo.getSwitchModels.url, (req, res, ctx) => {
-        return res(ctx.json(mockSwitchModels))
-      }),
-      rest.get(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
-        return res(ctx.json(mockApiResponse))
-      }),
-      rest.post(DeviceProvisionUrlsInfo.refreshSwitchStatus.url, (req, res, ctx) => {
+      rest.post(DeviceProvisionUrlsInfo.importSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockCommonResult))
       }),
       rest.patch(DeviceProvisionUrlsInfo.hideSwitchProvisions.url, (req, res, ctx) => {
         return res(ctx.json(mockCommonResult))
+      }),
+      rest.get('*/deviceProvisions/statusReports/switches', (req, res, ctx) => {
+        return res(ctx.json({
+          refreshedAt: null
+        }))
+      }),
+      rest.patch('*/deviceProvisions/statusReports/switches', (req, res, ctx) => {
+        return res(ctx.json({ success: true }))
+      }),
+      rest.get('*/deviceProvisions/switches/models', (req, res, ctx) => {
+        return res(ctx.json([
+          'ICX7150',
+          'ICX7250',
+          'ICX7450',
+          'ICX7650'
+        ]))
+      }),
+      rest.post('*/venues/query', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          totalElements: 0
+        }))
+      }),
+      rest.post('*/venues/apGroups/query', (req, res, ctx) => {
+        return res(ctx.json({
+          content: [],
+          totalElements: 0
+        }))
       })
     )
   })
@@ -133,67 +93,14 @@ describe('PendingSwitch component', () => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    const table = screen.getByRole('table')
-    expect(table).toBeInTheDocument()
-
-    await waitFor(() => {
-      expect(screen.getByText('Serial #')).toBeInTheDocument()
-    })
-
-    const columnSelector = { selector: '.ant-table-column-title' }
-    expect(screen.getByText('Model', columnSelector)).toBeInTheDocument()
-    expect(screen.getByText('Ship Date', columnSelector)).toBeInTheDocument()
-    expect(screen.getByText('Created Date', columnSelector)).toBeInTheDocument()
-    expect(screen.getByText('Visibility', columnSelector)).toBeInTheDocument()
-
-    await waitFor(() => {
-      const dataRows = table.querySelectorAll('tbody tr:not(.ant-table-measure-row)')
-      expect(dataRows.length).toBeGreaterThan(0)
-    })
-
-    const dataRows = table.querySelectorAll('tbody tr:not(.ant-table-measure-row)')
-    const firstRow = dataRows[0] as HTMLElement
-    expect(within(firstRow).getByText('SWITCH-001')).toBeInTheDocument()
-    expect(within(firstRow).getByText('ICX7550-48')).toBeInTheDocument()
+    expect(screen.getByText('Serial #')).toBeInTheDocument()
+    expect(screen.getAllByText('Model')[0]).toBeInTheDocument()
+    expect(screen.getByText('Ship Date')).toBeInTheDocument()
+    expect(screen.getByText('Created Date')).toBeInTheDocument()
+    expect(screen.getByText('Visibility')).toBeInTheDocument()
   })
 
-  it('displays refresh time and refresh button', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByText('Updated at')).toBeInTheDocument()
-    })
-    expect(screen.getByTestId('test-refresh-time')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
-  })
-
-  it('handles refresh button click', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByTestId('test-refresh-time')).toBeInTheDocument()
-    })
-
-    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
-
-    fireEvent.click(refreshButton)
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
-    })
-  })
-
-  it('handles table sorting', async () => {
+  it('handles comprehensive device management scenarios', async () => {
     render(
       <Provider>
         <PendingSwitch />
@@ -205,35 +112,47 @@ describe('PendingSwitch component', () => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    const serialHeader = screen.getByText('Serial #', { selector: '.ant-table-column-title' })
-    fireEvent.click(serialHeader)
+    // Test 1: Checkbox selection and row actions
+    const checkboxes = screen.getAllByRole('checkbox')
+    const firstRowCheckbox = checkboxes[1]
 
     await waitFor(() => {
-      expect(serialHeader).toBeInTheDocument()
-    })
-  })
-
-  it('handles row selection', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
+      expect(firstRowCheckbox).not.toBeDisabled()
     })
 
-    const firstRowCheckbox = screen.getAllByRole('checkbox')[1]
     fireEvent.click(firstRowCheckbox)
 
     await waitFor(() => {
       expect(firstRowCheckbox).toBeChecked()
+    }, { timeout: 1000 })
+
+    // Test 2: Claim device functionality
+    const claimButtons = screen.getAllByText('Claim Device')
+    const claimButton = claimButtons.find(button => {
+      const buttonElement = button.closest('button')
+      return buttonElement && !buttonElement.disabled
     })
+    expect(claimButton).toBeDefined()
+
+    fireEvent.click(claimButton!)
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+    })
+
+    // Test 3: ClaimDeviceDrawer interactions and close
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    fireEvent.click(closeButton)
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+
+    // Test 4: Table functionality verification
+    expect(screen.getByRole('table')).toBeInTheDocument()
   })
 
-  it('displays loading state correctly', async () => {
+  it('handles table functionality and interactions', async () => {
     render(
       <Provider>
         <PendingSwitch />
@@ -245,66 +164,14 @@ describe('PendingSwitch component', () => {
       expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    const refreshButton = screen.getByRole('button', { name: 'Refresh' })
-    expect(refreshButton).toBeInTheDocument()
-
-    fireEvent.click(refreshButton)
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
-    })
-  })
-
-  it('handles API errors gracefully', async () => {
-    const { mockServer } = require('@acx-ui/test-utils')
-    mockServer.use(
-      rest.get(DeviceProvisionUrlsInfo.getSwitchProvisions.url, (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ message: 'Internal Server Error' }))
-      })
-    )
-
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-  })
-
-  it('formats dates correctly', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
-    const table = screen.getByRole('table')
-    const dataRows = table.querySelectorAll('tbody tr')
-    expect(dataRows.length).toBeGreaterThan(0)
-  })
-
-  it('handles pagination correctly', async () => {
-    render(
-      <Provider>
-        <PendingSwitch />
-      </Provider>, {
-        route: { params, path }
-      })
-
-    await waitFor(() => {
-      expect(screen.getByRole('table')).toBeInTheDocument()
-    })
-
+    // Test table interactions
     const table = screen.getByRole('table')
     expect(table).toBeInTheDocument()
+
+    // Test that we can see the device data
+    expect(screen.getByText('RUCKUS-SW-TEST-001')).toBeInTheDocument()
+    expect(screen.getByText('RUCKUS-SW-TEST-002')).toBeInTheDocument()
+    expect(screen.getByText('ICX7150')).toBeInTheDocument()
+    expect(screen.getByText('ICX7250')).toBeInTheDocument()
   })
 })

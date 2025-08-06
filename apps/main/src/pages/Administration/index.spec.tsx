@@ -10,7 +10,7 @@ import {
   fireEvent,
   mockServer
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
+import { TenantType, UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile }                                     from './AccountSettings/__tests__/fixtures'
 import { fakeDelegationList }                                  from './Administrators/__tests__/fixtures'
@@ -313,10 +313,16 @@ describe('Administration page', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_PROVISION_MANAGEMENT)
     params.activeTab = 'pendingAssets'
 
+    // Mock tenant type to be REC for Pending Assets to show
+    const mockUserProfileContextValues = {
+      ...userProfileContextValues,
+      tenantType: TenantType.REC
+    }
+
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={userProfileContextValues}
+          value={mockUserProfileContextValues}
         >
           <Administration />
         </UserProfileContext.Provider>
