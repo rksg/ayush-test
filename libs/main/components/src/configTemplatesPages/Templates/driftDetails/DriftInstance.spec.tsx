@@ -1,10 +1,8 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { configTemplateApi }                                              from '@acx-ui/rc/services'
-import { ConfigTemplateDriftSet, ConfigTemplateUrlsInfo }                 from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { ConfigTemplateDriftSet }  from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedDriftResponse }               from './__tests__/fixtures'
 import { DriftInstance, DriftInstanceProps } from './DriftInstance'
