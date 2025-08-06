@@ -19,7 +19,7 @@ import {
   layer3Response, networkListResponse
 } from '../__tests__/fixtures'
 
-import Layer3Component from './Layer3Component'
+import Layer3ComponentSet from './Layer3ComponentSet'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -50,7 +50,7 @@ describe('AccessControlTable - Layer3', () => {
     )
   })
 
-  it('should render Layer3Component in AccessControlTable', async () => {
+  it('should render Layer3ComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
@@ -70,7 +70,7 @@ describe('AccessControlTable - Layer3', () => {
 
     render(
       <Provider>
-        <Layer3Component />
+        <Layer3ComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -89,7 +89,7 @@ describe('AccessControlTable - Layer3', () => {
     })
   })
 
-  it('should delete selected row from Layer3Component in AccessControlTable', async () => {
+  it('should delete selected row from Layer3ComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
@@ -114,7 +114,7 @@ describe('AccessControlTable - Layer3', () => {
 
     render(
       <Provider>
-        <Layer3Component />
+        <Layer3ComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }

@@ -6,6 +6,8 @@ import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, PersonaUrls, Switch
 import { Provider }                                                                            from '@acx-ui/store'
 import { mockServer, render, waitFor, screen }                                                 from '@acx-ui/test-utils'
 
+import { mockPersona, mockPersonaTableResult } from '../__tests__/fixtures'
+
 import IdentityClientTable from './IdentityClientTable'
 
 import { IdentityDetailsContext } from '.'
@@ -103,6 +105,10 @@ describe('IdentityClientTable', () => {
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       )
     )
   })
@@ -119,7 +125,7 @@ describe('IdentityClientTable', () => {
         }}>
         <Provider>
           <IdentityClientTable
-            personaId={testPersonaId}
+            personaData={mockPersona}
             personaGroupId={testPersonaGroupId}
           />
         </Provider>

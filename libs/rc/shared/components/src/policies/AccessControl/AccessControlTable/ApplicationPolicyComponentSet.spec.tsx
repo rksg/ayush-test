@@ -17,7 +17,7 @@ import {
   enhancedApplicationPolicyListResponse, networkListResponse, queryApplication
 } from '../__tests__/fixtures'
 
-import ApplicationPolicyComponent from './ApplicationPolicyComponent'
+import ApplicationPolicyComponentSet from './ApplicationPolicyComponentSet'
 
 
 const mockedUseNavigate = jest.fn()
@@ -79,10 +79,10 @@ describe('AccessControlTable - ApplicationPolicy', () => {
     )
   })
 
-  it('should render ApplicationPolicyComponent in AccessControlTable', async () => {
+  it('should render ApplicationPolicyComponentSet in AccessControlTable', async () => {
     render(
       <Provider>
-        <ApplicationPolicyComponent />
+        <ApplicationPolicyComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -102,7 +102,7 @@ describe('AccessControlTable - ApplicationPolicy', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('should delete selected row from ApplicationPolicyComponent in AccessControlTable', async () => {
+  it('should delete selected row from ApplicationPolicyComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.delete(
       AccessControlUrls.delAppAclPolicies.url,
       (_, res, ctx) => res(
@@ -117,7 +117,7 @@ describe('AccessControlTable - ApplicationPolicy', () => {
 
     render(
       <Provider>
-        <ApplicationPolicyComponent />
+        <ApplicationPolicyComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }

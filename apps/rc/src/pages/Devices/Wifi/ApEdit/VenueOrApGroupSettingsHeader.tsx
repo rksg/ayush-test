@@ -32,7 +32,8 @@ export function VenueOrApGroupSettingsHeader (props: {
                       ' <venueOrApGroupName></venueOrApGroupName>'}
                     values={{
                       venueOrApGroupName: () => {
-                        return apGroupId ? 'AP Group' : '<VenueSingular></VenueSingular>'
+                        // eslint-disable-next-line max-len
+                        return apGroupId ? 'AP Group' : $t({ defaultMessage: '<venueSingular></venueSingular>' })
                       }
                     }}
                   />

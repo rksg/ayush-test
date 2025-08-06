@@ -4,6 +4,8 @@ import { getFilterPayload }     from '@acx-ui/analytics/utils'
 import { dataApi }              from '@acx-ui/store'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
+import { IdentityFilter } from '../types'
+
 type SLA = [number, number] | [null, null]
 
 export interface IdentityHealthData {
@@ -17,21 +19,22 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     IdentityHealth: build.query<
       IdentityHealthData[],
-      AnalyticsFilter
+      AnalyticsFilter & IdentityFilter
     >({
       query: (payload) => ({
         document: gql`
           query IdentityHealth(
-            $path: [HierarchyNodeInput],
-            $start: DateTime,
-            $end: DateTime,
+            $path: [HierarchyNodeInput]
+            $start: DateTime
+            $end: DateTime
             $filter: FilterInput
-            ) {
-            network(start: $start, end: $end, filter : $filter) {
+            $identityFilter: IdentityFilter
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
-                health{
-                    timeToConnectSLA
-                    clientThroughputSLA
+                health(filter: $identityFilter) {
+                  timeToConnectSLA
+                  clientThroughputSLA
                 }
               }
             }
@@ -40,6 +43,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
+          identityFilter: payload.identityFilter,
           ...getFilterPayload(payload)
         }
       }),

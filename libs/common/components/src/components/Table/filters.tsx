@@ -108,7 +108,7 @@ export function getFilteredData <RecordType> (
         return typeof target === 'string' && target
           ?.toString()
           .toLowerCase()
-          .includes(searchValue.toLowerCase())
+          .includes(searchValue.trim().toLowerCase())
       })
     }
     return true

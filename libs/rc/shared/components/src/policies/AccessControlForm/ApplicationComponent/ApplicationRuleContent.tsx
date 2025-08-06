@@ -20,9 +20,11 @@ import {
   customizePromiseAny
 } from '@acx-ui/rc/utils'
 
+import PolicyFormItem from '../PolicyFormItem'
+
 import QosContent from './QosContent'
 
-import { ApplicationsRule, DrawerFormItem } from './index'
+import { ApplicationsRule } from './index'
 
 const { useWatch } = Form
 
@@ -354,7 +356,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   )
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <DrawerFormItem
+    <PolicyFormItem
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}
       initialValue={''}
@@ -374,7 +376,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a short description, up to 32 characters' })}
       />}
     />
-    <DrawerFormItem
+    <PolicyFormItem
       name='ruleType'
       label={$t({ defaultMessage: 'Rule Type' })}
       initialValue={drawerForm.getFieldValue('ruleType')}
@@ -389,7 +391,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       }
     />
     {/* systemDefined option */}
-    { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
+    { ruleType === ApplicationRuleType.SIGNATURE && <PolicyFormItem
       name='applicationCategory'
       label={$t({ defaultMessage: 'Application Category' })}
       rules={[
@@ -404,7 +406,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       initialValue={category || $t({ defaultMessage: 'Select Category...' })}
       children={selectCategory}
     /> }
-    { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
+    { ruleType === ApplicationRuleType.SIGNATURE && <PolicyFormItem
       name='applicationNameSystemDefined'
       label={$t({ defaultMessage: 'Application Name' })}
       rules={[
@@ -423,7 +425,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       )}
     /> }
     {/* userDefined option */}
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && <PolicyFormItem
       name='applicationNameUserDefined'
       label={$t({ defaultMessage: 'Application Name' })}
       initialValue={''}
@@ -435,7 +437,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter the application name' })}
       />}
     /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && <PolicyFormItem
       name='portMappingOnly'
       label={' '}
       colon={false}
@@ -443,7 +445,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       valuePropName='checked'
       children={<Checkbox>{$t({ defaultMessage: 'Port Mapping Only' })}</Checkbox>}
     /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <PolicyFormItem
       name='destinationIp'
       label={$t({ defaultMessage: 'Destination Ip' })}
       initialValue={''}
@@ -455,7 +457,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a destination Ip' })}
       />}
     /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <PolicyFormItem
       name='netmask'
       label={$t({ defaultMessage: 'Netmask' })}
       initialValue={''}
@@ -469,7 +471,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a mask' })}
       />}
     /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && <PolicyFormItem
       name='destinationPort'
       label={$t({ defaultMessage: 'Destination Port' })}
       initialValue={''}
@@ -481,7 +483,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a port number' })}
       />}
     /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
+    { ruleType === ApplicationRuleType.USER_DEFINED && <PolicyFormItem
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
       initialValue={PROTOCOL_TYPE[0]}
@@ -493,7 +495,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         options={PROTOCOL_TYPE.map(protocol =>
           ({ label: protocol, value: protocol }))} />}
     /> }
-    <DrawerFormItem
+    <PolicyFormItem
       name='accessControl'
       label={$t({ defaultMessage: 'Access Control' })}
       initialValue={sourceValue}
