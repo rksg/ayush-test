@@ -18,7 +18,7 @@ import {
   enhancedDevicePolicyListResponse, networkListResponse
 } from '../__tests__/fixtures'
 
-import DevicePolicyComponent from './DevicePolicyComponent'
+import DevicePolicyComponentSet from './DevicePolicyComponentSet'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -54,7 +54,7 @@ describe('AccessControlTable - Device', () => {
     )
   })
 
-  it('should render DeviceComponent in AccessControlTable', async () => {
+  it('should render DevicePolicyComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
@@ -64,7 +64,7 @@ describe('AccessControlTable - Device', () => {
 
     render(
       <Provider>
-        <DevicePolicyComponent />
+        <DevicePolicyComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -83,7 +83,8 @@ describe('AccessControlTable - Device', () => {
     })
   })
 
-  it.skip('should delete selected row from DeviceComponent in AccessControlTable', async () => {
+  // eslint-disable-next-line max-len
+  it.skip('should delete selected row from DevicePolicyComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
@@ -98,7 +99,7 @@ describe('AccessControlTable - Device', () => {
 
     render(
       <Provider>
-        <DevicePolicyComponent />
+        <DevicePolicyComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }

@@ -14,7 +14,7 @@ import { mockServer, render, screen, waitFor }               from '@acx-ui/test-
 import { enhancedApplicationPolicyListResponse } from '../../AccessControl/__tests__/fixtures'
 import { applicationDetail, avcApp, avcCat }     from '../__tests__/fixtures'
 
-import { ApplicationDrawer } from './index'
+import { ApplicationComponent } from './index'
 
 const applicationResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
@@ -64,6 +64,12 @@ jest.mock('antd', () => {
   }
 
   return { ...antd, Select, Slider }
+})
+
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
 })
 
 const systemDefinedSection = async () => {
@@ -123,7 +129,7 @@ describe('ApplicationDrawer Component with view mode', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer
+          <ApplicationComponent
             onlyViewMode={{ id: 'edac8b0c22e140cd95e63a9e81421576', viewText: 'viewText' }}
             isOnlyViewMode={true}
           />
@@ -202,7 +208,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -261,7 +267,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -323,7 +329,7 @@ describe('ApplicationDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -425,6 +431,22 @@ describe('ApplicationDrawer Component', () => {
     await userEvent.click(screen.getByText(/delete rule/i))
 
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
+  })
+
+  it('Render ApplicationComponent in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <ApplicationComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 
 })
