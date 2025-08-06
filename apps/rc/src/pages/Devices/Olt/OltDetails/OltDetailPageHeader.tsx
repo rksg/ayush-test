@@ -23,11 +23,12 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes } from '@acx-ui/types'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { filterByAccess, hasAllowedOperations, hasPermission } from '@acx-ui/user'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getOpsApi, useDateFilter } from '@acx-ui/utils'
+
+import { useOltActions } from '../useOltActions'
 
 enum MoreActions {
   SYNC_DATA = 'SYNC_DATA',
@@ -50,6 +51,7 @@ export function OltDetailPageHeader (props: {
 
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const oltActions = useOltActions()
 
   const [isSyncing, setIsSyncing] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,23 +68,36 @@ export function OltDetailPageHeader (props: {
         setIsSyncing(true)
         break
       case MoreActions.REBOOT_OLT:
+        oltActions.showRebootOlt({
+          rows: [oltDetails],
+          callBack: () => {
+          }
+        })
         break
       case MoreActions.REBOOT_LINE_CARD:
         break
       case MoreActions.REBOOT_ONT_ONU:
         break
       case MoreActions.DELETE:
+        oltActions.showDeleteOltes({
+          rows: [oltDetails],
+          callBack: () => {
+          }
+        })
         break
     }
   }
 
-  const hasUpdatePermission = hasPermission({
-    scopes: [EdgeScopes.UPDATE] })
-  const hasDeletPermission = hasPermission({
-    scopes: [EdgeScopes.DELETE]
-    //rbacOpsIds: [getOpsApi(EdgeTnmServiceUrls.)]
-  })
-  const showDivider = hasUpdatePermission && isOnline && (hasDeletPermission) //TODO
+  // const hasUpdatePermission = hasPermission({
+  //   scopes: []
+  // })
+  // const hasDeletPermission = hasPermission({
+  //   scopes: []
+  //   rbacOpsIds: [getOpsApi()]
+  // })
+  const hasUpdatePermission = true //TODO
+  const hasDeletPermission = true
+  const showDivider = hasUpdatePermission && isOnline && (hasDeletPermission)
   // hasAllowedOperations([
   //   getOpsApi(EdgeTnmServiceUrls.)
   // ])
@@ -157,7 +172,8 @@ export function OltDetailPageHeader (props: {
             // rbacOpsIds={[
             //   getOpsApi(EdgeTnmServiceUrls.),
             // ]}
-            scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}>{() =>
+            // scopeKey={[]}
+          >{() =>
               <Button>
                 <Space>
                   {$t({ defaultMessage: 'More Actions' })}
@@ -167,8 +183,8 @@ export function OltDetailPageHeader (props: {
             }</Dropdown>: null,
           <Button
             type='primary'
-            // rbacOpsIds={[getOpsApi(EdgeTnmServiceUrls.)]}
-            scopeKey={[EdgeScopes.UPDATE]}
+            // rbacOpsIds={[]}
+            // scopeKey={[]}
             onClick={() =>
               navigate({
                 ...basePath,

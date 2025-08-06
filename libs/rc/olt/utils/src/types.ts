@@ -20,6 +20,7 @@ export interface Olt {
 
   venueId: string
   venueName: string
+  adminPassword?: string
 }
 
 export interface OltCage {

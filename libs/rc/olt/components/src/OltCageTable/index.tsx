@@ -50,23 +50,6 @@ export const OltCageTable = (props: OltCageTableProps) => {
     setVisible(true)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleCageStateChange = async (cage: string, checked: boolean) => {
-    // try {
-    //   const params = { venueId, edgeClusterId, oltId }
-    //   await toggleEdgeCageState({
-    //     params,
-    //     payload: {
-    //       cage,
-    //       state: checked ? 'UP' : 'DOWN'
-    //     }
-    //   }).unwrap()
-    // }catch(error) {
-    //   // eslint-disable-next-line no-console
-    //   console.log(error)
-    // }
-  }
-
   const columns: TableProps<OltCage>['columns'] = [
     {
       key: 'cage',
@@ -111,10 +94,6 @@ export const OltCageTable = (props: OltCageTableProps) => {
       render: (_, row) => {
         return <Switch
           checked={row.state === OltCageStateEnum.UP}
-          // disabled={isUpdating}
-          onChange={async (checked) => {
-            await handleCageStateChange(row.cage, checked)
-          }}
         />
       }
     }

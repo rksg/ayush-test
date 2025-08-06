@@ -8,7 +8,6 @@ export const mockOlt = {
   model: 'MF-2',
   firmware: '22.649',
   ip: '134.242.136.112',
-
   venueId: 'mock_venue_1',
   venueName: 'Mock Venue 1'
 }

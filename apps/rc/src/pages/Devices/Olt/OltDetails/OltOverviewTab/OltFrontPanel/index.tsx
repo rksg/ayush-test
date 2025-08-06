@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Subtitle }                   from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons-new'
-import { Olt }                        from '@acx-ui/olt/utils'
+import { Olt, OltCageStateEnum }      from '@acx-ui/olt/utils'
 
 import * as UI  from './styledComponents'
 import { Unit } from './Unit'
@@ -20,7 +20,7 @@ type SlotData = {
 
 export type SlotCage = {
   label: string,
-  status?: string,
+  status?: OltCageStateEnum,
   info?: string,
   portSpeed?: string,
   taggedVlan?: string,
@@ -32,34 +32,34 @@ const mockNetworkTermination = [
     type: SlotType.NT,
     ports: [{
       label: 'TOD',
-      status: 'UP',
+      status: 'up' as OltCageStateEnum,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }, {
       label: 'ALM',
-      status: 'UP',
+      status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }, {
       label: 'OOB',
-      status: 'UP',
+      status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }, {
       label: 'LEMI',
-      status: 'UP',
+      status: OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }, {
       label: 'UPLINK',
-      status: 'UP',
+      status: OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec',
       taggedVlan: '2,3,4',
       unTaggedVlan: '1'
     }, {
       label: 'UPLINK',
-      status: 'UP',
+      status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec',
       taggedVlan: '2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17',
@@ -73,7 +73,7 @@ const mockLineTermination = [
     type: SlotType.LT,
     ports: Array.from({ length: 32 }, (_, index) => ({
       label: `S1/${index + 1}`,
-      status: 'UP',
+      status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }))
@@ -82,7 +82,7 @@ const mockLineTermination = [
     type: SlotType.LT,
     ports: Array.from({ length: 16 }, (_, index) => ({
       label: `S2/${index + 1}`,
-      status: 'UP',
+      status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }))
@@ -102,10 +102,10 @@ export const OltFrontPanel = (props: { oltDetails?: Olt }) => {
     </UI.CardTitle>
     <UI.Wrapper>
       { mockNetworkTermination.map((item, index) => {
-        return <Slot index={index+1} data={item} />
+        return <Slot key={`network-${index}`} index={index+1} data={item} />
       })}
       { mockLineTermination.map((item, index) => {
-        return <Slot index={index+1} data={item} />
+        return <Slot key={`line-${index}`} index={index+1} data={item} />
       })}
     </UI.Wrapper>
 

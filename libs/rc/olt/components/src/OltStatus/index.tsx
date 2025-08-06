@@ -9,9 +9,9 @@ type StatusValue = OltStatusEnum | OltCageStateEnum
 
 interface OltStatusProps {
   type?: 'olt' | 'cage'
-  status: OltStatusEnum | OltCageStateEnum
+  status?: OltStatusEnum | OltCageStateEnum
   showText?: boolean
-  className?: string
+  style?: React.CSSProperties
 }
 
 // eslint-disable-next-line max-len
@@ -48,10 +48,11 @@ const getStatusInfo = (type: StatusType, status: StatusValue) => {
 
 export const OltStatus = (props: OltStatusProps) => {
   const { $t } = getIntl()
-  const { type = 'olt', status, showText, className } = props
+  const { type = 'olt', status = OltStatusEnum.UNKNOWN, showText, style } = props
   const { color, text } = getStatusInfo(type, status)
+
   return <Badge
-    className={className}
+    style={style}
     color={color}
     text={showText ? $t(text) : ''}
   />

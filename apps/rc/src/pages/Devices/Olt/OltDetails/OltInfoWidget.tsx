@@ -29,12 +29,13 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
     }
   }, [oltCages])
 
-  const infoWidgetConfig = [ //mock data
+  //TODO: temp, remove when api is ready
+  const infoWidgetConfig = [
     {
       title: $t({ defaultMessage: 'Alarms' }),
       data: [{
         color: cssStr('--acx-semantics-red-50'),
-        name: $t({ defaultMessage: 'Critical' }), //TODO: check
+        name: $t({ defaultMessage: 'Critical' }),
         value: 1
       }, {
         color: cssStr('--acx-semantics-yellow-50'),
@@ -48,7 +49,7 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
       title: $t({ defaultMessage: 'Incidents' }),
       data: [{
         color: cssStr('--acx-semantics-red-50'),
-        name: $t({ defaultMessage: 'Critical' }), //TODO: check
+        name: $t({ defaultMessage: 'Critical' }),
         value: 3
       }, {
         color: cssStr('--acx-semantics-yellow-50'),
@@ -108,7 +109,6 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
             </GridCol>
           </GridRow>
           <GridRow style={{ flexGrow: '1', justifyContent: 'center' }}>
-            {/* TODO */}
             {infoWidgetConfig.map((item) => (
               <GridCol col={{ span: 4 }} key={item.title}>
                 <EdgeOverviewDonutWidget
@@ -119,9 +119,6 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
                 />
               </GridCol>
             ))}
-            {/* TODO: POE */}
-            {/* <GridCol col={{ span: 4 }}>
-            </GridCol> */}
           </GridRow>
         </Card>
       </GridCol>

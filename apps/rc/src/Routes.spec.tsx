@@ -651,7 +651,7 @@ describe('RcRoutes: Devices', () => {
 
   describe('RcRoutes: Devices > Edge Optical', () => {
     test('should navigate to devices edge optical list', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_OLT_MGMT_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_INTEGRATION_CORE_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/devices/optical',
@@ -662,7 +662,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should navigate to devices edge optical details', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_OLT_MGMT_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_INTEGRATION_CORE_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/devices/optical/mockOltId/details',

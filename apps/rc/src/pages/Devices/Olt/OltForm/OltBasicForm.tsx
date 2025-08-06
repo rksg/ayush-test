@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Select } from 'antd'
-import { useIntl }                           from 'react-intl'
+import { Col, Form, FormInstance, Input, Row, Select } from 'antd'
+import { FormattedMessage, useIntl }                   from 'react-intl'
 
 import {
+  Alert,
   Loader,
   PageHeader,
   StepsForm
@@ -14,8 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   LocationExtended,
-  redirectPreviousPage,
-  networkWifiIpRegExp
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -30,6 +30,25 @@ const venueOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
+/* eslint-disable max-len */
+const AlertMessage = () => (
+  <Alert
+    message={<FormattedMessage
+      defaultMessage={
+        `<b>Hardware Modules Auto-Install with OLT Activation</b><br></br>
+        R1 will automatically install all compatible hardware components upon OLT initialization, including connected <b>line cards</b> and <b>network cards</b>.`
+      }
+      values={{
+        b: (text: string) => <strong>{text}</strong>,
+        br: () => <br />
+      }} />}
+    type='info'
+    showIcon
+    style={{ marginBottom: 20 }}
+  />
+)
+/* eslint-enable max-len */
+
 export const OltBasicForm = (props: {
   editMode?: boolean
   data?: Partial<Olt>
@@ -41,31 +60,25 @@ export const OltBasicForm = (props: {
   const [form] = Form.useForm()
   const { editMode, onFinish } = props
   const pageTitle = editMode
-    ? $t({ defaultMessage: 'Edd Optical Switch' }) : $t({ defaultMessage: 'Add Optical Switch' })
-  // const previousPath = 'devices/optical' //usePolicyPreviousPath(PolicyType.FLEX_AUTH, PolicyOperation.LIST)
+    ? $t({ defaultMessage: 'Edit Optical Switch' }) : $t({ defaultMessage: 'Add Optical Switch' })
   const [previousPath, setPreviousPath] = useState('')
 
   const location = useLocation()
   const basePath = useTenantLink('/devices/')
+  const { venueOptions, isVenueOptsLoading } = useVenuesListQuery({
+    payload: venueOptionsDefaultPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isVenueOptsLoading: isLoading
+      }
+    }
+  })
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
-
-  const {
-    venueOptions, isVenueOptsLoading
-  } = useVenuesListQuery(
-    {
-      payload: venueOptionsDefaultPayload
-    }, {
-      // skip: !visible,
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-          isVenueOptsLoading: isLoading
-        }
-      }
-    })
 
   return (
     <>
@@ -84,7 +97,6 @@ export const OltBasicForm = (props: {
         onCancel={() =>
           redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/optical`)
         }
-        style={{ width: '280px' }}
         buttonLabel={{
           submit: editMode ?
             $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
@@ -95,67 +107,50 @@ export const OltBasicForm = (props: {
           <Loader
             states={[{
               isLoading: false
-              // isLoading: editMode ? (!props.data || isProfileListLoading) : isProfileListLoading
             }]}
           >
-            <StepsForm.Subtitle children={$t({ defaultMessage: 'Settings' })} />
-            <Form.Item
-              name='venueId'
-              label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-              rules={[{
-                required: true,
-                message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
-              }]}
-              children={
-                <Select
-                  loading={isVenueOptsLoading}
-                  placeholder={$t({ defaultMessage: 'Select <venueSingular></venueSingular>...' })}
-                  options={venueOptions}
-                  disabled={editMode}
+            { !editMode && <AlertMessage /> }
+            <Row gutter={20}>
+              <Col span={8}>
+                <Form.Item
+                  name='venueId'
+                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+                  rules={[{
+                    required: true,
+                    // eslint-disable-next-line max-len
+                    message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
+                  }]}
+                  children={
+                    <Select
+                      loading={isVenueOptsLoading}
+                      placeholder={
+                        $t({ defaultMessage: 'Select <venueSingular></venueSingular>...' })
+                      }
+                      options={venueOptions}
+                      disabled={editMode}
+                    />
+                  }
                 />
-              }
-            />
-            <Form.Item
-              name='serialNumber'
-              label={$t({ defaultMessage: 'Serial Number' })}
-              rules={[{
-                required: true
-                //message: $t({ defaultMessage: 'Please input serial number' })
-              }]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='name'
-              label={$t({ defaultMessage: 'Device Name' })}
-              rules={[{
-                required: true
-                //message: $t({ defaultMessage: 'Please input device name' })
-              }]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='ip'
-              label={$t({ defaultMessage: 'IP Address' })}
-              rules={[{
-                required: true
-                //message: $t({ defaultMessage: 'Please input IP address' })
-              }, { validator: async (_, value) => {
-                return networkWifiIpRegExp(value)
-              } }]}
-              children={<Input disabled={editMode} />}
-            />
+                <Form.Item
+                  name='serialNumber'
+                  label={$t({ defaultMessage: 'Serial Number' })}
+                  rules={[{
+                    required: true
+                  }]}
+                  children={<Input disabled={editMode} />}
+                />
+                <Form.Item
+                  name='name'
+                  label={$t({ defaultMessage: 'OLT Name' })}
+                  rules={[{
+                    required: true
+                  }]}
+                  children={<Input />}
+                />
 
-            <StepsForm.Subtitle children={$t({ defaultMessage: 'Credential' })} />
-            <Form.Item
-              name='username'
-              label={$t({ defaultMessage: 'Username' })}
-              children={<Input disabled value='admin'/>}
-            />
-            <Form.Item
-              name='password'
-              label={$t({ defaultMessage: 'Password' })}
-              children={<Input disabled type='password' value='admin'/>}
-            />
+              </Col>
+            </Row>
+
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>

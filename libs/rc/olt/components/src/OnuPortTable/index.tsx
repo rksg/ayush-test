@@ -68,7 +68,7 @@ function useColumns (
       width: 60,
       render: (_, row) => {
         return <Row>
-          <OltStatus status={row.status} showText />
+          <OltStatus type='cage' status={row.status} showText />
         </Row>
       }
     },

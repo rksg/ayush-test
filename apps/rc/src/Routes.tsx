@@ -505,7 +505,7 @@ function NetworkRoutes () {
 }
 
 const useOltRoutes = () => {
-  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
 
   return isNokiaOltEnabled ? <>
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
@@ -516,7 +516,7 @@ const useOltRoutes = () => {
 }
 
 const useEdgeOltRoutes = () => {
-  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   return isEdgeOltReady && !isNokiaOltEnabled ? <>

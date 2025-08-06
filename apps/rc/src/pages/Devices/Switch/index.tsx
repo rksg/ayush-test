@@ -35,7 +35,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const opticalPageTitle = isNokiaOltEnabled
     ? $t({ defaultMessage: 'Optical Switches' }) : $t({ defaultMessage: 'Wired Devices' })
 

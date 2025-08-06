@@ -4,13 +4,26 @@ export const oltList = [{
   edgeClusterId: '1cfd6c88-97b7-4d94-8888-45bd72163eb8',
   edgeClusterName: 'MWC_Demo_OVA_72',
   tenantId: '1cdc11256f8144e6802b661de4e5c46e',
-  name: 'nokia_mf_2_mwc_2025',
+  name: 'mock_nokia_mf_2_1',
   status: 'online',
   vendor: 'Nokia',
   model: 'MF-2',
   firmware: '24.449',
   ip: '134.242.137.40',
   serialNumber: 'FH2302A073A'
+}, {
+  venueId: 'e407295d681b4016ae15d4422618b770',
+  venueName: 'Raj-Venue-MWC-1',
+  edgeClusterId: '1cfd6c88-97b7-4d94-8888-45bd72163eb8',
+  edgeClusterName: 'MWC_Demo_OVA_72',
+  tenantId: '1cdc11256f8144e6802b661de4e5c46e',
+  name: 'mock_nokia_mf_2_2',
+  status: 'online',
+  vendor: 'Nokia',
+  model: 'MF-2',
+  firmware: '24.449',
+  ip: '134.242.137.41',
+  serialNumber: 'FH2302A073B'
 }]
 
 export const oltCageList = [
@@ -86,7 +99,7 @@ export const oltData = {
   edgeClusterId: '1cfd6c88-97b7-4d94-8888-45bd72163eb8',
   edgeClusterName: 'MWC_Demo_OVA_72',
   tenantId: '1cdc11256f8144e6802b661de4e5c46e',
-  name: 'nokia_mf_2_mwc_2025',
+  name: 'mock_nokia_mf_2_1',
   status: 'online',
   vendor: 'Nokia',
   model: 'MF-2',
@@ -95,3 +108,34 @@ export const oltData = {
   serialNumber: 'FH2302A073A'
 }
 
+export const networkCardInfo = [{
+  serialNumber: 'FH2302A073A',
+  version: '%software-version%',
+  uptime: '%uptime%',
+  status: 'Online',
+  speed: '%speed%',
+  info: '%optic-info%',
+  vlans: '1,2,3,4,5',
+  lag: '10'
+}, {
+  serialNumber: 'FH2302A073A',
+  version: '%software-version%',
+  uptime: '%uptime%',
+  status: 'Online',
+  speed: '%speed%',
+  info: '%optic-info%',
+  vlans: '1,2,3,4,5',
+  lag: '10'
+}]
+
+export const lineCardInfo = [{
+  status: 'Online',
+  model: 'LWLT-C',
+  cages: 16,
+  serialNumber: 'YP2306F4B2D'
+}, {
+  status: 'Online',
+  model: 'LWLT-C',
+  cages: 16,
+  serialNumber: 'YP2306F4B2D'
+}]

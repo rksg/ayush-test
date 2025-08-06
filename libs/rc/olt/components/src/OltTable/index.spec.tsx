@@ -64,12 +64,7 @@ describe('OltTable', () => {
   it('should delete OLT', async () => {
     // const mockedDeleteReq = jest.fn()
     mockServer.use(
-      // rest.delete(
-      //   EdgeTnmServiceUrls.deleteEdgeOlt.url,
-      //   (_, res, ctx) => {
-      //     mockedDeleteReq()
-      //     return res(ctx.status(202))
-      //   })
+      // rest.delete()
     )
 
     render(<Provider>
@@ -89,12 +84,7 @@ describe('OltTable', () => {
   it('should delete OLTs', async () => {
     // const mockedDeleteReq = jest.fn()
     mockServer.use(
-      // rest.delete(
-      //   EdgeTnmServiceUrls.deleteEdgeOlt.url,
-      //   (_, res, ctx) => {
-      //     mockedDeleteReq()
-      //     return res(ctx.status(202))
-      //   })
+      // rest.delete()
     )
 
     render(<Provider>
@@ -118,8 +108,8 @@ describe('OltTable', () => {
 
   it('should reboot OLT', async () => {
     // const mockedRebootReq = jest.fn()
-    mockServer.use(
-    )
+    // mockServer.use(
+    // )
 
     render(<Provider>
       <OltTable data={mockOltList} />
@@ -134,8 +124,8 @@ describe('OltTable', () => {
 
   it('should reboot OLTs', async () => {
     // const mockedRebootReq = jest.fn()
-    mockServer.use(
-    )
+    // mockServer.use(
+    // )
 
     render(<Provider>
       <OltTable data={[
@@ -163,12 +153,7 @@ describe('OltTable', () => {
     it('should delete OLT with IP and display status with UNKNOWN', async () => {
       // const mockedDeleteReq = jest.fn()
       mockServer.use(
-        // rest.delete(
-        //   EdgeTnmServiceUrls.deleteEdgeOlt.url,
-        //   (req, res, ctx) => {
-        //     mockedDeleteReq(req.params)
-        //     return res(ctx.status(202))
-        //   })
+        // rest.delete()
       )
 
       render(<Provider>

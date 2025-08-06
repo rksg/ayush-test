@@ -1,6 +1,7 @@
 import { Space, Tooltip } from 'antd'
 
 import { TagsSolid, TagsOutline } from '@acx-ui/icons-new'
+import { OltStatus }              from '@acx-ui/olt/components'
 import { getIntl }                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -32,7 +33,12 @@ const getTooltip = (data: SlotCage) => {
       />
       <UI.TooltipStyle.Item
         label={$t({ defaultMessage: 'Status' })}
-        children={data.status}
+        children={<OltStatus
+          type='cage'
+          status={data.status}
+          showText
+          style={{ color: 'var(--acx-primary-white)' }}
+        />}
       />
       { data.unTaggedVlan && <UI.TooltipStyle.Item
         label={$t({ defaultMessage: 'VLAN' })}

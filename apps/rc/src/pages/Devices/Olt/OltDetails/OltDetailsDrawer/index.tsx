@@ -1,14 +1,22 @@
 import { Fragment } from 'react'
 
-import { Divider } from 'antd'
-import { useIntl } from 'react-intl'
+import { Divider }            from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
-import { Descriptions, Drawer, Subtitle } from '@acx-ui/components'
-import { OltStatus }                      from '@acx-ui/olt/components'
-import { Olt, OltStatusEnum }             from '@acx-ui/olt/utils'
-import { transformDisplayText }           from '@acx-ui/rc/utils'
-import { TenantLink }                     from '@acx-ui/react-router-dom'
-import { noDataDisplay }                  from '@acx-ui/utils'
+import {
+  ContentSwitcher,
+  ContentSwitcherProps,
+  Descriptions,
+  Drawer,
+  Subtitle
+} from '@acx-ui/components'
+import { OltStatus }            from '@acx-ui/olt/components'
+import { Olt, OltStatusEnum }   from '@acx-ui/olt/utils'
+import { transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import { noDataDisplay }        from '@acx-ui/utils'
+
+import { lineCardInfo, networkCardInfo } from '../../mockdata'
 
 interface OltDetailsDrawerProps {
   visible: boolean
@@ -16,25 +24,54 @@ interface OltDetailsDrawerProps {
   oltDetails?: Olt,
 }
 
+type FieldDef<T> = {
+  label: React.ReactNode
+  key: keyof T
+  render?: (value: T[keyof T], item: T) => React.ReactNode
+}
+
+type LineCard = {
+  status: OltStatusEnum
+  model: string
+  cages: number
+  serialNumber: string
+}
+
+type NetworkCard = {
+  status: OltStatusEnum
+  serialNumber: string
+  version: string
+  uptime: string
+  speed: string
+  info: string
+  vlans: string
+  lag: string
+}
+
 export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, oltDetails } = props
-  const isOnline = oltDetails?.status === OltStatusEnum.ONLINE
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const lineCardInfo = [{ //TODO: temp, remove when api is ready
-    status: 'Online',
-    model: 'LWLT-C',
-    cages: 16,
-    serialNumber: 'YP2306F4B2D'
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [{
+    label: $t({ defaultMessage: 'Network Card' }),
+    value: 'network',
+    children: <CardInfo
+      title={$t({ defaultMessage: 'Network Card' })}
+      items={networkCardInfo as NetworkCard[]}
+      fields={getNetworkCardFields($t)}
+    />
   }, {
-    status: 'Online',
-    model: 'LWLT-C',
-    cages: 16,
-    serialNumber: 'YP2306F4B2D'
+    label: $t({ defaultMessage: 'Line Card' }),
+    value: 'line',
+    children: <CardInfo
+      title={$t({ defaultMessage: 'PON Line Card' })}
+      items={lineCardInfo as LineCard[]}
+      fields={getLineCardFields($t)}
+    />
   }]
 
   return (
@@ -47,33 +84,23 @@ export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
         <Descriptions labelWidthPercent={50} key='olt-details'>
           <Descriptions.Item
             label={$t({ defaultMessage: 'IP Address' })}
-            children={
-              isOnline ? transformDisplayText(oltDetails?.ip) : noDataDisplay
-            }
+            children={transformDisplayText(oltDetails?.ip)}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Vendor' })}
-            children={
-              isOnline ? transformDisplayText(oltDetails?.vendor) : noDataDisplay
-            }
+            children={transformDisplayText(oltDetails?.vendor)}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'S/N' })}
-            children={
-              isOnline ? transformDisplayText(oltDetails?.serialNumber) : noDataDisplay
-            }
+            children={transformDisplayText(oltDetails?.serialNumber)}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Model' })}
-            children={
-              isOnline ? transformDisplayText(oltDetails?.model) : noDataDisplay
-            }
+            children={transformDisplayText(oltDetails?.model)}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Firmware Version' })}
-            children={
-              isOnline ? transformDisplayText(oltDetails?.firmware) : noDataDisplay
-            }
+            children={transformDisplayText(oltDetails?.firmware)}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
@@ -87,46 +114,78 @@ export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={noDataDisplay} //TODO
+            children={transformDisplayText(oltDetails?.adminPassword)}
           />
         </Descriptions>
 
         <Divider/>
 
-        { // Line Card Info
-          lineCardInfo.map((item, index) => (
-            <Fragment key={`line-card-${index}`}>
-              <Subtitle level={5}>
-                {$t({ defaultMessage: 'PON Line Card {index}' }, { index: index + 1 })}
-              </Subtitle>
-              <Descriptions labelWidthPercent={50}>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={
-                    <OltStatus
-                      status={item.status as OltStatusEnum}
-                      showText
-                    />
-                  }
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Model' })}
-                  children={item.model}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Cages' })}
-                  children={item.cages}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Serial Number' })}
-                  children={item.serialNumber}
-                />
-              </Descriptions>
-              { index + 1 < lineCardInfo.length ? <Divider/> : null}
-            </Fragment>
-          ))
-        }
+        <ContentSwitcher
+          defaultValue='network'
+          tabDetails={tabDetails}
+          size='small'
+          align='center'
+        />
+
       </div>}
     />
   )
+}
+
+function CardInfo<T> ({ title, items, fields }: {
+  title: string
+  items: T[]
+  fields: FieldDef<T>[]
+}) {
+  const { $t } = useIntl()
+  return <>
+    {items.map((item, index) => (
+      <Fragment key={`${title}-${index}`}>
+        <Subtitle level={5}>
+          {$t({ defaultMessage: '{title} {index}' }, { title, index: index + 1 })}
+        </Subtitle>
+        <Descriptions labelWidthPercent={50}>
+          {fields.map(({ label, key, render }) => (
+            <Descriptions.Item key={String(key)} label={label}>
+              {render
+                ? render(item[key], item)
+                : transformDisplayText(item[key] as unknown as string)
+              }
+            </Descriptions.Item>
+          ))}
+        </Descriptions>
+        {index + 1 < items.length ? <Divider /> : null}
+      </Fragment>
+    ))}
+  </>
+}
+
+function getNetworkCardFields ($t: IntlShape['$t']): FieldDef<NetworkCard>[] {
+  return [
+    { label: $t({ defaultMessage: 'S/N' }), key: 'serialNumber' },
+    { label: $t({ defaultMessage: 'Software Version' }), key: 'version' },
+    { label: $t({ defaultMessage: 'Uptime' }), key: 'uptime' },
+    {
+      label: $t({ defaultMessage: 'Uplink Ports Status' }),
+      key: 'status',
+      render: (value) => <OltStatus status={value as OltStatusEnum} showText />
+    },
+    { label: $t({ defaultMessage: 'Uplink Ports Speed' }), key: 'speed' },
+    { label: $t({ defaultMessage: 'Optic Information' }), key: 'info' },
+    { label: $t({ defaultMessage: 'VLANs' }), key: 'vlans' },
+    { label: $t({ defaultMessage: 'LAG' }), key: 'lag' }
+  ]
+}
+
+function getLineCardFields ($t: IntlShape['$t']): FieldDef<LineCard>[] {
+  return [
+    {
+      label: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      render: (value) => <OltStatus status={value as OltStatusEnum} showText />
+    },
+    { label: $t({ defaultMessage: 'Model' }), key: 'model' },
+    { label: $t({ defaultMessage: 'Cages' }), key: 'cages' },
+    { label: $t({ defaultMessage: 'Serial Number' }), key: 'serialNumber' }
+  ]
 }

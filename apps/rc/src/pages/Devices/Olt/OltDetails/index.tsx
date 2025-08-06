@@ -11,8 +11,8 @@ import { oltData, oltCageList } from '../mockdata'
 
 import { OltDetailPageHeader } from './OltDetailPageHeader'
 import { OltInfoWidget }       from './OltInfoWidget'
-import { OltOLineCardTab }     from './OltOLineCardTab'
-import { OltONetworkCardTab }  from './OltONetworkCardTab'
+import { OltLineCardTab }      from './OltLineCardTab'
+import { OltNetworkCardTab }   from './OltNetworkCardTab'
 import { OltOverviewTab }      from './OltOverviewTab'
 
 enum OverviewInfoType {
@@ -51,11 +51,11 @@ export const OltDetails = () => {
   }, {
     label: $t({ defaultMessage: 'Network Card' }),
     value: OverviewInfoType.NETWORK,
-    children: <OltONetworkCardTab />
+    children: <OltNetworkCardTab />
   }, {
     label: $t({ defaultMessage: 'Line Card' }),
     value: OverviewInfoType.LINE,
-    children: <OltOLineCardTab
+    children: <OltLineCardTab
       oltDetails={oltDetails}
       oltCages={oltCages}
       isLoading={false}
