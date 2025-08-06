@@ -26,6 +26,10 @@ export const mockVenueName = '__Venue_ID_Name_1__'
 export const mockVenueName2 = '__Venue_ID_Name_2__'
 export const mockVenueName3 = '__Venue_ID_Name_3__'
 
+export const mockApSerialNumber1 = 'mock_AP_Serial_number__'
+
+export const mockApName = 'ap_name_1'
+
 export const mockApSerialNumber = 'mock_AP_Serial_number__'
 
 export const mockedVenuesResult = {
@@ -43,6 +47,27 @@ export const mockedVenuesResult = {
   }]
 }
 
+export const mockedApsResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    serialNumber: mockApSerialNumber1,
+    name: mockApName
+  }]
+}
+
+export const mockedSwitchResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'id001',
+    clientMac: 'A8:0B:FB:0F:98:20',
+    switchId: 'switchId001',
+    switchName: 'switchName',
+    switchSerialNumber: 'FEK3227R06L',
+    switchPort: 'switchPort001'
+  }]
+}
 
 export const dummyEthernetPortProfileTrunk = {
   id: mockEthernetPortProfileId,
