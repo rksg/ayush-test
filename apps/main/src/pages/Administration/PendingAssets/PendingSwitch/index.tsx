@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -11,7 +11,10 @@ import {  DeviceProvision,  HideProvisionsPayload }                             
 import { TimeStamp }                                                                                                                                      from '@acx-ui/types'
 import { useTableQuery }                                                                                                                                  from '@acx-ui/utils'
 
-import { MessageMapping } from '../messageMapping'
+import { ClaimDeviceDrawer } from '../ClaimDeviceDrawer'
+import { MessageMapping }    from '../messageMapping'
+import { VenueDrawer }       from '../VenueDrawer'
+
 
 export const PendingSwitch = () => {
   const { $t } = useIntl()
@@ -19,6 +22,10 @@ export const PendingSwitch = () => {
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
+  const [ claimDrawerVisible, setClaimDrawerVisible ] = useState(false)
+  const [ selectedDevices, setSelectedDevices ] = useState<DeviceProvision[]>([])
+  const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
+  const clearSelectionRef = useRef<(() => void) | null>(null)
 
   const { data: switchStatus, refetch: refetchSwitchStatus } = useGetSwitchStatusQuery(
     { params },
@@ -28,30 +35,11 @@ export const PendingSwitch = () => {
 
   const [ hideSwitchProvisions ] = useHideSwitchProvisionsMutation()
 
-  const emptyModelFilterMap: { key: string, value: string }[] = []
-  const { modelFilterMap } = useGetSwitchModelsQuery({
-    params: { tenantId: params.tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10_000
-    }
-  }, {
-    selectFromResult: ({ data }) => {
-      return {
-        modelFilterMap: data?.map(model =>
-          ({ key: model, value: model })) ?? emptyModelFilterMap
-      }
-    }
-  })
-
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetSwitchProvisionsQuery,
     defaultPayload: {
       page: 0,
-      pageSize: 10,
+      size: 10,
       filters: {}
     },
     search: {
@@ -61,6 +49,24 @@ export const PendingSwitch = () => {
     sorter: {
       sortField: 'serialNumber',
       sortOrder: 'asc'
+    }
+  })
+
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const tableFilters = tableQuery.payload.filters as { includeHidden?: boolean[] }
+  const { modelFilterMap } = useGetSwitchModelsQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      filters: {
+        includeHidden: tableFilters?.includeHidden || [false]
+      }
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map((model: string) =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
     }
   })
 
@@ -81,17 +87,33 @@ export const PendingSwitch = () => {
     autoRefresh()
   }, [switchStatus, hasAutoRefreshed])
 
+  // Handle add venue button click
+  const handleAddVenue = () => {
+    setVenueDrawerVisible(true)
+  }
+
+  // Handle venue drawer close
+  const handleVenueDrawerClose = () => {
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle venue creation success
+  const handleVenueCreated = async () => {
+    setVenueDrawerVisible(false)
+  }
+
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
       key: 'serialNumber',
-      title: 'Serial #',
+      title: $t({ defaultMessage: 'Serial #' }),
       dataIndex: 'serialNumber',
       sorter: true,
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       key: 'model',
-      title: 'Model',
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true,
       searchable: true,
@@ -99,7 +121,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'shipDate',
-      title: 'Ship Date',
+      title: $t({ defaultMessage: 'Ship Date' }),
       dataIndex: 'shipDate',
       sorter: true,
       render: (_, row) => {
@@ -108,7 +130,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'createdDate',
-      title: 'Created Date',
+      title: $t({ defaultMessage: 'Created Date' }),
       dataIndex: 'createdDate',
       sorter: true,
       filterable: true,
@@ -120,7 +142,7 @@ export const PendingSwitch = () => {
     },
     {
       key: 'visibleStatus',
-      title: 'Visibility',
+      title: $t({ defaultMessage: 'Visibility' }),
       dataIndex: 'visibleStatus',
       sorter: true,
       filterKey: 'includeHidden',
@@ -132,7 +154,10 @@ export const PendingSwitch = () => {
   const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
-      onClick: () => {
+      onClick: (selectedRows, clearSelection) => {
+        setSelectedDevices(selectedRows)
+        setClaimDrawerVisible(true)
+        clearSelectionRef.current = clearSelection
       }
     },
     {
@@ -182,6 +207,7 @@ export const PendingSwitch = () => {
       </div>
 
       <Table<DeviceProvision>
+        key={refreshAt}
         settingsId={'pending-switches-tab'}
         loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
@@ -195,6 +221,32 @@ export const PendingSwitch = () => {
           rowActions?.length > 0 && { type: 'checkbox' }
         }
         rowKey='serialNumber'
+      />
+
+      <ClaimDeviceDrawer
+        deviceType='switch'
+        devices={selectedDevices.map(device => ({
+          serial: device.serialNumber,
+          model: device.model
+        }))}
+        visible={claimDrawerVisible}
+        onClose={() => {
+          setClaimDrawerVisible(false)
+          setSelectedDevices([])
+          // Clear selection when drawer closes
+          if (clearSelectionRef.current) {
+            clearSelectionRef.current()
+            clearSelectionRef.current = null
+          }
+        }}
+        onAddVenue={handleAddVenue}
+      />
+
+      {/* Venue Drawer */}
+      <VenueDrawer
+        open={venueDrawerVisible}
+        onClose={handleVenueDrawerClose}
+        onSuccess={handleVenueCreated}
       />
     </Loader>
   )
