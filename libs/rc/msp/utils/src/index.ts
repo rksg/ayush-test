@@ -280,7 +280,7 @@ export const MSPUtils = () => {
           sum + (+(en.adaptivePolicyCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.SLTN_PIN_FOR_IDENTITY:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (+(en.piNetworkCount || 0)), 0)
+          sum + (+(en.pinForIdentityCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.SLTN_SIS_INT:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (+(en.sisIntegrationCount || 0)), 0)
