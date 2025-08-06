@@ -476,22 +476,18 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             (currentAP?.IP)? `${currentAP.IP}${ipTypeDisplay}` : '--'
           }
         />
-        { includes(ipTypeDisplay, 'Static') && (
-          <>
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Network Mask' })}
-              children={
-                APSystem?.netmask || '--'
-              }
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Gateway' })}
-              children={
-                APSystem?.gateway || '--'
-              }
-            />
-          </>
-        )}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Network Mask' })}
+          children={
+            APSystem?.netmask || '--'
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Gateway' })}
+          children={
+            APSystem?.gateway || '--'
+          }
+        />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Primary DNS' })}
           children={
