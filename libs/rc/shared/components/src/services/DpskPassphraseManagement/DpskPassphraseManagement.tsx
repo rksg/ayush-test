@@ -141,6 +141,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
           return (item ? <IdentityDetailsLink
             disableLink={isDpskRole}
             name={item.name}
+            displayName={item.displayName}
             personaId={item.id}
             personaGroupId={item.groupId}
             revoked={item.revoked}

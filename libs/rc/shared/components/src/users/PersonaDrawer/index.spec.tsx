@@ -72,6 +72,10 @@ describe('Persona Drawer', () => {
     const nameField = await screen.findByLabelText('Identity Name')
     await userEvent.type(nameField , 'New Identity Name')
 
+    // Type Identity Display Name field
+    const displayNameField = await screen.findByLabelText('Display Name')
+    await userEvent.type(displayNameField , 'New Display Name')
+
     const groupSelector = await screen.findByRole('combobox', { name: /identity group/i })
 
     // Expend PersonaGroupSelector and select one option
@@ -101,6 +105,9 @@ describe('Persona Drawer', () => {
     await screen.findByText('Edit Identity')
     const groupField = await screen.findByLabelText('Identity Name') as HTMLInputElement
     expect(groupField.value).toBe(mockPersona.name)
+
+    const displayNameField = await screen.findByLabelText('Display Name') as HTMLInputElement
+    expect(displayNameField.value).toBe(mockPersona.displayName)
 
     // Change description field
     const descriptionField = await screen.findByLabelText('Description') as HTMLTextAreaElement

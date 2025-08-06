@@ -7,6 +7,7 @@ export function PersonaTable () {
     <BasePersonaTable
       colProps={{
         name: { searchable: true },
+        displayName: { searchable: true },
         email: { searchable: true },
         description: { searchable: true },
         vni: { show: false },
