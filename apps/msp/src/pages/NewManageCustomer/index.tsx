@@ -38,7 +38,6 @@ import {
   useDisableMspEcSupportMutation,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  usePatchCustomerMutation,
   useMspRbacEcAssignmentHistoryQuery,
   useGetCalculatedLicencesListQuery
 } from '@acx-ui/msp/services'
@@ -165,6 +164,9 @@ export function NewManageCustomer () {
   const [updateCustomer] = useUpdateCustomerMutation()
   const params = useParams()
 
+  const [licenseCalcData, setLicenseCalcData] = useState({
+    apswLic: 0, apswTrialLic: 0, solutionTokenLic: 0, solutionTokenTrialLic: 0 })
+
   const { Option } = Select
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
@@ -189,7 +191,7 @@ export function NewManageCustomer () {
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload }, {skip: multiLicenseFFToggle})
+    { params: useParams(), payload: entitlementSummaryPayload }, { skip: multiLicenseFFToggle })
 
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
@@ -198,11 +200,11 @@ export function NewManageCustomer () {
       expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
       filters: {
         usageType: 'ASSIGNED',
-        licenseType: ['APSW', 'SLTN_TOKEN'],
+        licenseType: ['APSW', 'SLTN_TOKEN']
         // isTrial: true
       }
-    } }, { skip: !multiLicenseFFToggle})
-  
+    } }, { skip: !multiLicenseFFToggle })
+
 
 
   const { data: rbacAssignment } = useTableQuery({
@@ -280,6 +282,8 @@ export function NewManageCustomer () {
     }
   }, [ecSupport])
 
+
+
   useEffect(() => {
     if (licenseSummaryResults || calculatedLicencesList) {
       if(multiLicenseFFToggle && calculatedLicencesList) {
@@ -319,17 +323,18 @@ export function NewManageCustomer () {
         const solutionTokenTrialLic = solutionTokenTrial.length > 0 ?
           solutionTokenTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-          if(multiLicenseFFToggle && calculatedLicencesList) {
-            isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data)
+        if(multiLicenseFFToggle && calculatedLicencesList) {
+          setLicenseCalcData({ apswLic, apswTrialLic, solutionTokenLic, solutionTokenTrialLic })
+          isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data)
             : checkAvailableLicenseV2(calculatedLicencesList.data, apswLic,
               apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
-              
-          } else if (licenseSummaryResults) {
-            isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
-          : checkAvailableLicense(licenseSummaryResults, apswLic,
-            apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
-          }
-        
+
+        } else if (licenseSummaryResults) {
+          isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
+            : checkAvailableLicense(licenseSummaryResults, apswLic,
+              apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
+        }
+
         setSolutionTokenTrialLicense(solutionTokenTrialLic)
         formRef.current?.setFieldValue('solutionTokenTrialLicense', solutionTokenTrialLic)
 
@@ -805,51 +810,54 @@ export function NewManageCustomer () {
   const checkAvailableLicenseV2 = (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     apswTrialLic?: number, solutionTokenLic?: number,
     solutionTokenTrialLic?: number ) => {
-      // ServiceTier
-      // const needTierCheck = entitlements.filter(p => p.skuTier)
-      const hasSkuTier = entitlements.some(item => item.skuTier != null)
-      const currentTier = formRef.current?.getFieldsValue(['tier'])
+    const hasSkuTier = entitlements.some(item => item.skuTier != null)
+    const currentTier = formRef.current?.getFieldValue('tier')
 
-
-
-      const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
+    let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
         p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
-      let remainingApsw = 0
-      apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-        remainingApsw += lic.quantity
-      })
-      const apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
-        p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
-      let remainingApswTrial = 0
-      apswTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-        remainingApswTrial += lic.quantity
-      })
-  
-      apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
-        : setAvailableApswLicense(remainingApsw)
-      apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
-        : setAvailableApswTrialLicense(remainingApswTrial)
-  
-  
-      const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
-            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
-      let remainingSolutionTokens = 0
-      solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-        remainingSolutionTokens += lic.quantity
-      })
-      const solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
-            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === true)
-      let remainingSolutionTokenTrial = 0
-      solutionTokenTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-        remainingSolutionTokenTrial += lic.quantity
-      })
-  
-      solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSolutionTokens+solutionTokenLic)
-        : setAvailableSolutionTokenLicense(remainingSolutionTokens)
-      solutionTokenTrialLic
-        ? setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial+solutionTokenTrialLic)
-        : setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial)
+    let apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
+
+    if (hasSkuTier) {
+      apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
+      apswTrialLicenses = apswTrialLicenses.filter(p => p.skuTier === currentTier)
     }
+
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingApsw += lic.quantity
+    })
+
+    let remainingApswTrial = 0
+    apswTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingApswTrial += lic.quantity
+    })
+
+    apswLic ? setAvailableApswLicense(remainingApsw + apswLic)
+      : setAvailableApswLicense(remainingApsw)
+    apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
+      : setAvailableApswTrialLicense(remainingApswTrial)
+
+
+    const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
+            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+    let remainingSolutionTokens = 0
+    solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingSolutionTokens += lic.quantity
+    })
+    const solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
+            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === true)
+    let remainingSolutionTokenTrial = 0
+    solutionTokenTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
+      remainingSolutionTokenTrial += lic.quantity
+    })
+
+    solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSolutionTokens+solutionTokenLic)
+      : setAvailableSolutionTokenLicense(remainingSolutionTokens)
+    solutionTokenTrialLic
+      ? setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial+solutionTokenTrialLic)
+      : setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial)
+  }
 
   const checkAvailableLicense =
   (entitlements: EntitlementSummaries[], apswLic?: number,
@@ -958,6 +966,20 @@ export function NewManageCustomer () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(multiLicenseFFToggle) {
+      if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else { // Edit Mode (not TrailEditMode)
+        checkAvailableLicenseV2(
+          calculatedLicencesList.data,
+          licenseCalcData.apswLic,
+          licenseCalcData.apswTrialLic,
+          licenseCalcData.solutionTokenLic,
+          licenseCalcData.solutionTokenTrialLic)
+      }
+    }
+
+
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>
@@ -1007,7 +1029,7 @@ export function NewManageCustomer () {
                 //   // (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
                 //   // (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
                 // ) &&
-              return  <Radio
+                return <Radio
                   onChange={handleServiceTierChange}
                   key={value}
                   value={value}

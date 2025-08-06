@@ -113,6 +113,7 @@ export function Subscriptions () {
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
   const isSubscriptionPagesizeToggleEnabled = useIsSplitOn(Features.SUBSCRIPTIONS_PAGESIZE_TOGGLE)
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+  // eslint-disable-next-line max-len
   const isMultiLicensePoolToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
   const entitlementListPayload = {

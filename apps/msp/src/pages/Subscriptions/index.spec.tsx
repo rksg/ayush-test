@@ -6,7 +6,7 @@ import { Features, useIsSplitOn }                                            fro
 import { mspApi }                                                            from '@acx-ui/msp/services'
 import { MspRbacUrlsInfo, MspUrlsInfo }                                      from '@acx-ui/msp/utils'
 import { administrationApi }                                                 from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, LicenseUrlsInfo, AccountTier }              from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
 import { store, Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile }                                    from '@acx-ui/user'

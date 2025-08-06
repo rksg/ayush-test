@@ -73,9 +73,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                 from '@acx-ui/types'
-import { getUserProfile, isCoreTier, useUserProfileContext }                     from '@acx-ui/user'
-import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay, useTableQuery } from '@acx-ui/utils'
+import { RolesEnum }                                                                      from '@acx-ui/types'
+import { useUserProfileContext }                                                          from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
@@ -134,6 +134,7 @@ export function NewManageIntegrator () {
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [originalTier, setOriginalTier] = useState('')
+  const [licenseCalcData, setLicenseCalcData] = useState({ apswLic: 0, solutionTokenLic: 0 })
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
@@ -145,7 +146,7 @@ export function NewManageIntegrator () {
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
   const [patchCustomer] = usePatchCustomerMutation()
-  
+
   const { acx_account_vertical } = getJwtTokenPayload()
 
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
@@ -196,7 +197,7 @@ export function NewManageIntegrator () {
     { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload }, {skip: multiLicenseFFToggle})
+    { params: useParams(), payload: entitlementSummaryPayload }, { skip: multiLicenseFFToggle })
 
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
@@ -205,10 +206,10 @@ export function NewManageIntegrator () {
       expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
       filters: {
         usageType: 'ASSIGNED',
-        licenseType: ['APSW', 'SLTN_TOKEN'],
+        licenseType: ['APSW', 'SLTN_TOKEN']
         // isTrial: true
       }
-    } }, {skip: !multiLicenseFFToggle})
+    } }, { skip: !multiLicenseFFToggle })
 
   const { data: privacySettingsData } =
    useGetPrivacySettingsQuery({ params: useParams() },
@@ -218,7 +219,7 @@ export function NewManageIntegrator () {
     return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
       : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
   }
-    
+
 
   useEffect(() => {
     if (privacySettingsData) {
@@ -238,7 +239,7 @@ export function NewManageIntegrator () {
       }
     }
 
-    if ((licenseSummaryResults || hasCalculatedLicencesList) 
+    if ((licenseSummaryResults || hasCalculatedLicencesList)
       && isEditMode && data && licenseAssignment) {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
@@ -253,13 +254,14 @@ export function NewManageIntegrator () {
         en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN && en.status === 'VALID')
       const solutionTokenLic = solutionToken.length > 0
         ? solutionToken.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-      
-        if(hasCalculatedLicencesList) {
-          checkAvailableLicenseV2(calculatedLicencesList.data, apswLic, solutionTokenLic)
-        } else if (licenseSummaryResults) {
-          checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
-        }
-     
+
+      if(hasCalculatedLicencesList) {
+        setLicenseCalcData({ apswLic, solutionTokenLic })
+        checkAvailableLicenseV2(calculatedLicencesList.data, apswLic, solutionTokenLic)
+      } else if (licenseSummaryResults) {
+        checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
+      }
+
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
@@ -268,6 +270,7 @@ export function NewManageIntegrator () {
         service_expiration_date: moment(data?.service_expiration_date),
         tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
       })
+      setOriginalTier(data?.tier ?? '')
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
       setSubscriptionStartDate(moment(data?.service_effective_date))
@@ -659,9 +662,19 @@ export function NewManageIntegrator () {
   const checkAvailableLicenseV2 =
   (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     solutionTokenLic?: number) => {
+    const hasSkuTier = entitlements.some(item => item.skuTier != null)
+    const currentTier = formRef.current?.getFieldValue('tier')
 
-    const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
+    let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
       p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+    let solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
+      p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+
+    if (hasSkuTier) {
+      apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
+      solutionTokenLicenses = solutionTokenLicenses.filter(p => p.skuTier === currentTier)
+    }
+
     let remainingApsw = 0
     apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingApsw += lic.quantity
@@ -669,9 +682,6 @@ export function NewManageIntegrator () {
     apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
       : setAvailableApswLicense(remainingApsw)
 
-
-    const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
-        p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
     let remainingSltn = 0
     solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingSltn += lic.quantity
@@ -769,6 +779,17 @@ export function NewManageIntegrator () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(multiLicenseFFToggle) {
+      if(!isEditMode) { // AddMode
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else { // Edit Mode
+        checkAvailableLicenseV2(
+          calculatedLicencesList.data,
+          licenseCalcData.apswLic,
+          licenseCalcData.solutionTokenLic)
+      }
+    }
+
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>

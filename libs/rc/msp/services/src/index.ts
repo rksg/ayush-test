@@ -295,7 +295,7 @@ export const mspApi = baseMspApi.injectEndpoints({
           : response as MspEntitlementSummary[]
       }
     }),
- 
+
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
       query: ({ params }) => {
         const mspAssignmentSummaryReq =
@@ -1305,7 +1305,7 @@ export const {
   useCustomerNamesFilterListQuery,
   useDeviceModelFilterListQuery,
   useVenueNamesFilterListQuery,
-  useGetCalculatedLicencesListQuery,
+  useGetCalculatedLicencesListQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

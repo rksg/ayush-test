@@ -15,8 +15,8 @@ import {
   Subtitle,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
@@ -135,7 +135,7 @@ export function AssignMspLicense () {
     useIsSplitOn(Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({
-     params: useParams() }, {skip: multiLicenseFFToggle})
+    params: useParams() }, { skip: multiLicenseFFToggle })
   const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
     { payload: {
       operator: 'MAX_QUANTITY',
@@ -143,10 +143,10 @@ export function AssignMspLicense () {
       expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
       filters: {
         usageType: 'ASSIGNED',
-        licenseType: ['APSW', 'SLTN_TOKEN'],
+        licenseType: ['APSW', 'SLTN_TOKEN']
         // isTrial: true
       }
-    }}, {skip: !multiLicenseFFToggle})
+    } }, { skip: !multiLicenseFFToggle })
 
   const { data: assignment } =
     useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
@@ -159,7 +159,7 @@ export function AssignMspLicense () {
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
   const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
-  
+
 
   const getAssignmentId = (deviceType: string) => {
     const license =
@@ -471,7 +471,7 @@ export function AssignMspLicense () {
     const apswLicenses = entitlements.filter(p => p.quantity > 0 &&
       p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false
       && (!hasSkuTier || p.skuTier === AccountTier.PLATINUM))
-   
+
     let remainingApsw = 0
     apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingApsw += lic.quantity
