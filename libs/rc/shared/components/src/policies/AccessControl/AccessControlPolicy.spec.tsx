@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { AccessControlUrls, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                    from '@acx-ui/test-utils'
+import { mockServer, render, screen }                                             from '@acx-ui/test-utils'
 
 import {
   applicationDetailResponse,
@@ -188,11 +188,10 @@ describe('AccessControlPolicy component', () => {
       }
     )
 
-    await waitFor(() => expect(mockLibSetting).toHaveBeenCalled())
-    await waitFor(() => expect(mockAvcCategory).toHaveBeenCalled())
-    await waitFor(() => expect(mockAvcApp).toHaveBeenCalled())
-
     expect(await screen.findByText(/Application Access Settings/i)).toBeVisible()
+    expect(mockLibSetting).not.toHaveBeenCalled()
+    expect(mockAvcCategory).not.toHaveBeenCalled()
+    expect(mockAvcApp).not.toHaveBeenCalled()
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelButton)
     expect(screen.queryByText(/Application Access Settings/i)).toBeNull()
