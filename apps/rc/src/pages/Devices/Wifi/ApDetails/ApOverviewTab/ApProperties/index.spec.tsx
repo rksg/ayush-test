@@ -268,6 +268,7 @@ const mockedSocket = {
 describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
 
     // Mock userProfile to show Admin Password field
     const { useUserProfileContext } = require('@acx-ui/user')
@@ -373,10 +374,6 @@ describe('ApProperties', () => {
         }
       )
     )
-  })
-
-  beforeEach(() => {
-    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
   })
 
   afterEach(() => {
@@ -699,7 +696,7 @@ describe('ApProperties', () => {
 
 
 
-    it('should show Show AP Password button when per-AP password is enabled', async () => {
+    it('should show the "Show AP Password" button when per-AP password is enabled', async () => {
       // Mock feature flags to enable per-AP password and visibility
       jest.mocked(useIsSplitOn).mockImplementation((feature) => {
         if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
@@ -736,7 +733,8 @@ describe('ApProperties', () => {
       expect(showPasswordButton).toBeVisible()
     })
 
-    it('should not show Admin Password field when no feature flags are enabled and user has no permission', async () => {
+    // eslint-disable-next-line max-len
+    it('should hide Admin Password field when no feature flags are enabled and user without permission', async () => {
       // Mock feature flags to disable both per-AP password and visibility
       jest.mocked(useIsSplitOn).mockImplementation((feature) => {
         if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
@@ -766,7 +764,8 @@ describe('ApProperties', () => {
       expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
     })
 
-    it('should show Admin Password field with legacy password when feature flags are disabled but user has permission', async () => {
+    // eslint-disable-next-line max-len
+    it('should show Admin Password field with legacy password when feature flags are disabled', async () => {
       // Mock feature flags to disable both per-AP password and visibility
       jest.mocked(useIsSplitOn).mockImplementation((feature) => {
         if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
@@ -820,7 +819,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: '2024-01-15T10:30:00Z',
               updatedTime: '2024-01-15T09:30:00Z'
             }))
@@ -860,7 +859,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: undefined,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
@@ -898,7 +897,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: todayExpireTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
@@ -957,7 +956,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: tomorrowExpireTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
@@ -1019,7 +1018,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: todayExpireTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
@@ -1074,7 +1073,7 @@ describe('ApProperties', () => {
           rest.get(
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
-              apPasswords: 'testPassword123',
+              apPassword: 'testPassword123',
               expireTime: over24ExpireTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
