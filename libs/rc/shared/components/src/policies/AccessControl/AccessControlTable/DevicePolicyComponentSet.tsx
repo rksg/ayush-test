@@ -7,24 +7,29 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  useDelAppPoliciesMutation,
-  useGetEnhancedApplicationProfileListQuery,
+  useDelDevicePoliciesMutation,
+  useGetEnhancedDeviceProfileListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  ApplicationPolicy, AclOptionType, Network,
-  WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
-  filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation, doProfileDelete
+  AclOptionType,
+  DevicePolicy, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
+  getScopeKeyByPolicy,
+  Network, PolicyOperation,
+  PolicyType,
+  WifiNetwork,
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { useTableQuery } from '@acx-ui/utils'
 
-import { defaultNetworkPayload }                from '../../../NetworkTable'
-import { AddModeProps }                         from '../../AccessControlForm'
-import { ApplicationDrawer }                    from '../../AccessControlForm/ApplicationDrawer'
-import { getToolTipByNetworkFilterOptions }     from '../AccessControlPolicy'
-import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { DeviceOSComponent }                from '../../AccessControlForm/DeviceOSComponent'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY }  from '../constants'
+
 
 const defaultPayload = {
   fields: [
@@ -38,8 +43,7 @@ const defaultPayload = {
   ],
   page: 1
 }
-
-const ApplicationPolicyComponent = () => {
+const DevicePolicyComponentSet = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { $t } = useIntl()
@@ -48,7 +52,7 @@ const ApplicationPolicyComponent = () => {
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ deleteFn ] = useDelAppPoliciesMutation()
+  const [ deleteFn ] = useDelDevicePoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -69,9 +73,9 @@ const ApplicationPolicyComponent = () => {
     id: '', isEdit: false
   })
 
-  const settingsId = 'policies-access-control-application-policy-table'
+  const settingsId = 'policies-access-control-device-policy-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedApplicationProfileListQuery,
+    useQuery: useGetEnhancedDeviceProfileListQuery,
     defaultPayload,
     pagination: { settingsId },
     enableRbac
@@ -108,16 +112,16 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
-    scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
-    label: $t({ defaultMessage: 'Add Application Policy' }),
-    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
+    scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
+    label: $t({ defaultMessage: 'Add Device & OS Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
-  const doDelete = (selectedRows: ApplicationPolicy[], callback: () => void) => {
+  const doDelete = (selectedRows: DevicePolicy[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
@@ -131,10 +135,10 @@ const ApplicationPolicyComponent = () => {
     )
   }
 
-  const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
+  const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
-      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -142,8 +146,8 @@ const ApplicationPolicyComponent = () => {
       }
     },
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
-      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -157,10 +161,10 @@ const ApplicationPolicyComponent = () => {
 
   return <Loader states={[tableQuery]}>
     <Form>
-      <ApplicationDrawer
+      <DeviceOSComponent
         onlyAddMode={addModeStatus}
       />
-      <Table<ApplicationPolicy>
+      <Table<DevicePolicy>
         settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
@@ -184,7 +188,7 @@ function useColumns (
   ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<ApplicationPolicy>['columns'] = [
+  const columns: TableProps<DevicePolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -194,7 +198,7 @@ function useColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <ApplicationDrawer
+        return <DeviceOSComponent
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
@@ -231,4 +235,4 @@ function useColumns (
 }
 
 
-export default ApplicationPolicyComponent
+export default DevicePolicyComponentSet

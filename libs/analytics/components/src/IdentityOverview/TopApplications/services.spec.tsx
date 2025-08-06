@@ -16,7 +16,11 @@ describe('TopApplications services', () => {
     endDate: '2025-06-01T00:00:00+00:00',
     n: 10,
     range: DateRange.last24Hours,
-    filter: {}
+    filter: {},
+    identityFilter: {
+      identityId: '123',
+      identityGroupId: '456'
+    }
   }
 
   it('should return correct data', async () => {

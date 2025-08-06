@@ -7,16 +7,18 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  useDelL3AclPoliciesMutation,
-  useGetEnhancedL3AclProfileListQuery,
+  useDelL2AclPoliciesMutation,
+  useGetEnhancedL2AclProfileListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   AclOptionType, filterByAccessForServicePolicyMutation,
-  getPolicyAllowedOperation, getScopeKeyByPolicy,
-  L3AclPolicy,
-  Network, PolicyOperation, PolicyType,
+  getPolicyAllowedOperation,
+  getScopeKeyByPolicy,
+  L2AclPolicy,
+  Network, PolicyOperation,
+  PolicyType,
   WifiNetwork,
   doProfileDelete
 } from '@acx-ui/rc/utils'
@@ -24,36 +26,37 @@ import { useTableQuery } from '@acx-ui/utils'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { AddModeProps }                     from '../../AccessControlForm'
-import { Layer3Drawer }                     from '../../AccessControlForm/Layer3Drawer'
+import { Layer2Component }                  from '../../AccessControlForm/Layer2Component'
 import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY }  from '../constants'
-
+import { PROFILE_MAX_COUNT_LAYER2_POLICY }  from '../constants'
 
 const defaultPayload = {
+  searchString: '',
   fields: [
     'id',
     'name',
     'description',
-    'rules',
+    'macAddressCount',
     'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
-  page: 1
+  page: 1,
+  sortField: 'macAddressCount',
+  sortOrder: 'DESC'
 }
 
-const Layer3Component = () => {
+const Layer2ComponentSet = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { $t } = useIntl()
   const params = useParams()
+  const form = Form.useFormInstance()
   const [addModeStatus, setAddModeStatus] = useState(
     { enable: true, visible: false } as AddModeProps
   )
 
-  const form = Form.useFormInstance()
-
-  const [ deleteFn ] = useDelL3AclPoliciesMutation()
+  const [ deleteFn ] = useDelL2AclPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -74,9 +77,9 @@ const Layer3Component = () => {
     id: '', isEdit: false
   })
 
-  const settingsId = 'policies-access-control-layer3-table'
+  const settingsId = 'policies-access-control-layer2-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedL3AclProfileListQuery,
+    useQuery: useGetEnhancedL2AclProfileListQuery,
     defaultPayload,
     pagination: { settingsId },
     enableRbac
@@ -85,9 +88,9 @@ const Layer3Component = () => {
   useEffect(() => {
     if (tableQuery.data) {
       let unionNetworkIds = [] as string[]
-      tableQuery.data.data.map(layer3Policy => {
-        if (layer3Policy.networkIds) {
-          unionNetworkIds.push(...layer3Policy.networkIds)
+      tableQuery.data.data.map(layer2Policy => {
+        if (layer2Policy.networkIds) {
+          unionNetworkIds.push(...layer2Policy.networkIds)
         }
       })
       setNetworkIds([...new Set(unionNetworkIds)])
@@ -113,16 +116,16 @@ const Layer3Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
-    scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
-    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
-    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE),
+    scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE),
+    label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
-  const doDelete = (selectedRows: L3AclPolicy[], callback: () => void) => {
+  const doDelete = (selectedRows: L2AclPolicy[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
@@ -136,10 +139,10 @@ const Layer3Component = () => {
     )
   }
 
-  const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
+  const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
-      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.DELETE),
+      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -147,8 +150,8 @@ const Layer3Component = () => {
       }
     },
     {
-      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
-      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT),
+      scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -162,10 +165,10 @@ const Layer3Component = () => {
 
   return <Loader states={[tableQuery]}>
     <Form form={form}>
-      <Layer3Drawer
+      <Layer2Component
         onlyAddMode={addModeStatus}
       />
-      <Table<L3AclPolicy>
+      <Table<L2AclPolicy>
         settingsId={settingsId}
         columns={useColumns(networkFilterOptions, editMode, setEditMode)}
         enableApiFilter={true}
@@ -189,17 +192,18 @@ function useColumns (
   ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<L3AclPolicy>['columns'] = [
+  const columns: TableProps<L2AclPolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <Layer3Drawer
+        return <Layer2Component
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
@@ -214,19 +218,20 @@ function useColumns (
       sorter: true
     },
     {
-      key: 'rules',
-      title: $t({ defaultMessage: 'Rules' }),
-      dataIndex: 'rules',
+      key: 'macAddress',
+      title: $t({ defaultMessage: 'MAC Addresses' }),
+      dataIndex: 'macAddress',
       align: 'center',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend']
+      sortDirections: ['descend', 'ascend', 'descend'],
+      render: (_, row) => row.macAddress?.length
     },
     {
       key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
-      align: 'center',
       filterable: networkFilterOptions,
+      align: 'center',
       sorter: true,
       render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
@@ -236,4 +241,4 @@ function useColumns (
 }
 
 
-export default Layer3Component
+export default Layer2ComponentSet

@@ -13,7 +13,7 @@ import { mockServer, render, screen, within }                from '@acx-ui/test-
 import { enhancedLayer3PolicyListResponse } from '../AccessControl/__tests__/fixtures'
 
 import { layer3PolicyListResponse } from './__tests__/fixtures'
-import { Layer3Drawer }             from './Layer3Drawer'
+import { Layer3Component }          from './Layer3Component'
 
 const queryLayer3 = [
   {
@@ -105,6 +105,12 @@ jest.mock('antd', () => {
     <option role='option' {...otherProps}>{children}</option>
 
   return { ...antd, Select }
+})
+
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
 })
 
 const findDrawer = async (label: string) => {
@@ -215,7 +221,7 @@ const subnetSetting = async () => {
 
 const layer3Data = enhancedLayer3PolicyListResponse.data
 
-describe('Layer3Drawer Component', () => {
+describe('Layer3Component', () => {
   const mockAddL3AclPolicy = jest.fn()
   beforeEach(() => {
     store.dispatch(baseConfigTemplateApi.util.resetApiState())
@@ -234,11 +240,11 @@ describe('Layer3Drawer Component', () => {
     )
   })
 
-  it('Render Layer3Drawer component with anyIp option successfully', async () => {
+  it('Render Layer3Component with anyIp option successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer3Drawer />
+          <Layer3Component />
         </Form>
       </Provider>, {
         route: {
@@ -280,11 +286,11 @@ describe('Layer3Drawer Component', () => {
     expect(await screen.findByRole('option', { name: newLayer3Policy.name })).toBeVisible()
   })
 
-  it.skip('Render Layer3Drawer component with ip option successfully', async () => {
+  it.skip('Render Layer3Component with ip option successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer3Drawer />
+          <Layer3Component />
         </Form>
       </Provider>, {
         route: {
@@ -307,11 +313,11 @@ describe('Layer3Drawer Component', () => {
 
   })
 
-  it('Render Layer3Drawer component with subnet option and save successfully', async () => {
+  it('Render Layer3Component with subnet option and save successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer3Drawer />
+          <Layer3Component />
         </Form>
       </Provider>, {
         route: {
@@ -374,11 +380,11 @@ describe('Layer3Drawer Component', () => {
     expect(await screen.findByRole('option', { name: 'layer3-test' })).toBeInTheDocument()
   })
 
-  it('Render Layer3Drawer component with subnet option and edit successfully', async () => {
+  it('Render Layer3Component with subnet option and edit successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer3Drawer />
+          <Layer3Component />
         </Form>
       </Provider>, {
         route: {
@@ -408,7 +414,7 @@ describe('Layer3Drawer Component', () => {
     expect(await mainDrawer.findByText('layer3-test-desc-subnet-ruleDescription')).toBeVisible()
   })
 
-  it('Render Layer3Drawer component in viewMode successfully', async () => {
+  it('Render Layer3Component in viewMode successfully', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL3AclPolicy.url,
       (_, res, ctx) => res(
@@ -419,7 +425,7 @@ describe('Layer3Drawer Component', () => {
     render(
       <Provider>
         <Form>
-          <Layer3Drawer />
+          <Layer3Component />
         </Form>
       </Provider>, {
         route: {
@@ -438,5 +444,21 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/layer 3 rules \(1\)/i)
+  })
+
+  it('Render Layer3Component component in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Layer3Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

@@ -34,7 +34,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
   const { $t } = useIntl()
 
   // eslint-disable-next-line max-len
-  const defaultIdentityNameToolTip = $t({ defaultMessage: 'If "Identity Name" is empty or does not match, it will default to the identity\'s username.' })
+  const defaultIdentityNameToolTip = $t({ defaultMessage: 'If "Identity Display Name" is empty or does not match, it will default to the identity\'s username.' })
 
   const {
     fieldLabel, attributeMappings, description, readMode = false,
@@ -81,7 +81,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
       name='identityName'
       label={
         <>
-          {$t({ defaultMessage: 'Identity Name' })}
+          {$t({ defaultMessage: 'Identity Display Name' })}
           <Tooltip.Question
             // eslint-disable-next-line max-len
             title={identityNameToolTip}
