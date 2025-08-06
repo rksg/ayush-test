@@ -223,12 +223,13 @@ describe('Kpi Section', () => {
         await userEvent.click(tableTab)
 
         // Should show the banner with Table KPI names
-        expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
+        expect(screen.getByText(/Unlock Additional Wired AI Health Compliance KPIs/))
+          .toBeInTheDocument()
         expect(screen.getByText(/IPv4 Unicast Table Compliance/)).toBeInTheDocument()
         expect(screen.getByText(/IPv6 Unicast Table Compliance/)).toBeInTheDocument()
         expect(screen.getByText(/ARP Table Compliance/)).toBeInTheDocument()
         expect(screen.getByText(/MAC Table Compliance/)).toBeInTheDocument()
-        expect(screen.getByText(/FastIron version 10.0.10h or greater/)).toBeInTheDocument()
+        expect(screen.getByText(/FastIron version 10.0.10h or later/)).toBeInTheDocument()
       })
 
     it('should not show banner when device count is > 0 for infrastructure tab', async () => {
@@ -328,7 +329,8 @@ describe('Kpi Section', () => {
       await userEvent.click(tableTab)
 
       // Should show banner because totalCount defaults to 0
-      expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
+      expect(screen.getByText(/Unlock Additional Wired AI Health Compliance KPIs/))
+        .toBeInTheDocument()
     })
 
     it('should use info-bg Card type for banner', async () => {
@@ -354,7 +356,8 @@ describe('Kpi Section', () => {
       await userEvent.click(tableTab)
 
       // Verify the card content is displayed (Card replaced Alert)
-      expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
+      expect(screen.getByText(/Unlock Additional Wired AI Health Compliance KPIs/))
+        .toBeInTheDocument()
 
       // Verify the compliance KPIs content is displayed
       expect(screen.getByText('IPv4 Unicast Table Compliance')).toBeInTheDocument()
@@ -385,7 +388,8 @@ describe('Kpi Section', () => {
 
       // Verify the API call was made with switchIpv4UnicastUtilization
       // This would be checked through the mocked GraphQL query
-      expect(screen.getByText(/Additional Wired AI Health compliance KPIs/)).toBeInTheDocument()
+      expect(screen.getByText(/Unlock Additional Wired AI Health Compliance KPIs/))
+        .toBeInTheDocument()
     })
 
     it('should use phase 2 KPI configuration when feature flags are enabled', async () => {
@@ -450,7 +454,7 @@ describe('Kpi Section', () => {
       await userEvent.click(tableTab)
 
       // Verify Card displays compliance message (Card replaced Alert)
-      expect(screen.getByText(/Additional Wired AI Health compliance KPIs below are/))
+      expect(screen.getByText(/Unlock Additional Wired AI Health Compliance KPIs/))
         .toBeInTheDocument()
 
       // Verify all compliance KPIs are listed in the Card
@@ -468,7 +472,7 @@ describe('Kpi Section', () => {
       })
 
       // Verify upgrade requirement is mentioned
-      expect(screen.getByText(/FastIron version 10.0.10h or greater/))
+      expect(screen.getByText(/FastIron version 10.0.10h or later/))
         .toBeInTheDocument()
     })
   })

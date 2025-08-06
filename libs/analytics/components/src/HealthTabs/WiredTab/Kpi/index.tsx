@@ -78,13 +78,15 @@ function CustomKpiSection (props: {
           children: (
             <div style={{ marginTop: '16px' }}>
               <Card
+                title={$t({ defaultMessage: 'Unlock Additional Wired AI Health Compliance KPIs' })}
                 type='info-bg'
               >
                 <div>
-                  <p style={{ marginBottom: '12px' }}>
+                  <p style={{ marginBottom: '2px' }}>
                     {$t({
-                      defaultMessage: 'Additional Wired AI Health compliance KPIs below are ' +
-                        'available on upgrading switches to FastIron version 10.0.10h or greater.'
+                      defaultMessage: 'By upgrading your switches to FastIron version 10.0.10h or' +
+                        ' later, you can access enhanced Wired AI Health compliance insights, ' +
+                        'including: '
                     })}
                   </p>
                   <ul style={{ margin: '0', paddingLeft: '20px' }}>
@@ -95,6 +97,12 @@ function CustomKpiSection (props: {
                     <li>ARP Table Compliance</li>
                     <li>MAC Table Compliance</li>
                   </ul>
+                  <p style={{ marginTop: '15px', marginBottom: '0' }}>
+                    {$t({
+                      defaultMessage: 'This upgrade helps ensure greater network visibility' +
+                        ' and improved standards compliance.'
+                    })}
+                  </p>
                 </div>
               </Card>
             </div>
