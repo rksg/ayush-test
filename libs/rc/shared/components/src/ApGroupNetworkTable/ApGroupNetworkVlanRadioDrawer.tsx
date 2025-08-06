@@ -87,7 +87,6 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupNetworkVlanRadioContext)
   const { visible, editData } = drawerStatus || {}
-  console.log(drawerStatus)
 
   const [form] = Form.useForm()
   const vlanType = Form.useWatch('vlanType', form)
@@ -109,19 +108,15 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
 
   useEffect(() => {
     if (visible && editData) {
-      console.log('initial editData', editData)
       const data = cloneDeep(editData[0])
       const initApGroupData = getApGroupData(data, venueId, apGroupId)
       setEditingAgGroup(initApGroupData)
       setIsSupport6G(IsSupport6g(data, { isSupport6gOWETransition }))
-      console.log(initApGroupData)
       form.setFieldsValue({
         ...initApGroupData
       })
     }
-  }, [visible, editData, vlanChecked])
-
-  console.log(editData)
+  }, [visible, editData])
 
   const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()
 

@@ -145,7 +145,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   const settingsId = 'apgroup-network-table'
-  const tableQuery = useVenueNetworkList({ settingsId, venueId })
+  const tableQuery = useVenueNetworkList({ settingsId, venueId, apGroupId })
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyInstance(!tableData.length)
   const updateDataRef = useRef<NetworkVenue[]>([])
@@ -268,6 +268,50 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   }
 
   const activateNetwork = async (checked: boolean, row: Network) => {
+    if (((row as NetworkExtended).deepVenue?.apGroups?.length ?? 0) > 1) {
+      const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
+      setIsTableUpdating(true)
+      let apGroupsUpdated = []
+      if (checked) {
+        apGroupsUpdated = [
+          ...newNetworkVenue.apGroups,
+          {
+            apGroupId: apGroupId,
+            radioTypes: [
+              RadioTypeEnum._2_4_GHz,
+              RadioTypeEnum._5_GHz,
+              ...(IsNetworkSupport6g(row.deepNetwork, { isSupport6gOWETransition }) ? [RadioTypeEnum._6_GHz] : [])
+            ],
+            radio: RadioEnum.Both
+          }
+        ]
+      } else {
+        apGroupsUpdated = newNetworkVenue.apGroups.filter((apGroup) => {
+          return apGroup.apGroupId !== apGroupId
+        })
+      }
+      updateNetworkVenue({
+        params: {
+          tenantId: tenantId,
+          venueId: venueId,
+          networkId: newNetworkVenue.networkId
+        },
+        payload: {
+          ...{
+            oldPayload: newNetworkVenue,
+            newPayload: {
+              ...newNetworkVenue,
+              isAllApGroups: false,
+              apGroups: apGroupsUpdated
+            }
+          }
+        },
+        enableRbac: true
+      }).then(()=>{
+        setIsTableUpdating(false)
+      })
+    }
+
     if (row.allApDisabled) {
       // TODO:
       // manageAPGroups(row);
@@ -372,8 +416,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
           apGroupName: name,
           radioTypes: [
             RadioTypeEnum._2_4_GHz,
-            RadioTypeEnum._5_GHz,
-            RadioTypeEnum._6_GHz
+            RadioTypeEnum._5_GHz
           ],
           radio: RadioEnum.Both
         }]
@@ -421,8 +464,8 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   )
 }
 
-const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) => {
-  const { settingsId, venueId } = props
+const useVenueNetworkList = (props: { settingsId: string, venueId?: string, apGroupId?: string } ) => {
+  const { settingsId, venueId, apGroupId } = props
   const { isTemplate } = useConfigTemplate()
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
@@ -432,7 +475,8 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       : useNewVenueNetworkTableQuery,
     defaultPayload: {
       ...defaultNewApGroupNetworkPayload,
-      isTemplate: isTemplate
+      isTemplate: isTemplate,
+      apGroupId: apGroupId
     },
     search: {
       searchTargetFields: defaultNewApGroupNetworkPayload.searchTargetFields as string[]
@@ -567,7 +611,7 @@ export function useApGroupNetworkColumns (
         const currentVenue = getCurrentVenue(row, venueId)
         return currentVenue?.isAllApGroups
           ? $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
-          : currentVenue?.apGroups?.find((apGroup) => apGroup.apGroupId === apGroupId) ? $t({ defaultMessage: 'AP Group' }) : ''
+          : !!currentVenue?.apGroups?.length ? $t({ defaultMessage: 'AP Group' }) : ''
       }
     }]), {
       key: 'vlan',
