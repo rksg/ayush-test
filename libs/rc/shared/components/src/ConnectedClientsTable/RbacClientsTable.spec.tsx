@@ -1,14 +1,16 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn  }                                                          from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
+import { useIsSplitOn  }                                                                       from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, PersonaUrls, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                            from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+
+import { mockPersonaTableResult } from '../users/__tests__/fixtures'
 
 import { rbacClientList  }  from './__tests__/fixtures'
 import { RbacClientsTable } from './RbacClientsTable'
@@ -46,6 +48,10 @@ describe('Connected Clients Table - with RBAC API', () => {
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       )
     )
   })

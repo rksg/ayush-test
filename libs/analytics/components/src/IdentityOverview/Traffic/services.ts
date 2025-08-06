@@ -4,6 +4,8 @@ import { getFilterPayload } from '@acx-ui/analytics/utils'
 import { dataApi }          from '@acx-ui/store'
 import { AnalyticsFilter }  from '@acx-ui/utils'
 
+import { IdentityFilter } from '../types'
+
 export interface TrafficData {
   userRxTraffic: number
   userTxTraffic: number
@@ -11,26 +13,29 @@ export interface TrafficData {
 
 type Response = { network: { hierarchyNode: TrafficData } }
 
-type Payload = AnalyticsFilter
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    Traffic: build.query<
-      TrafficData,
-      Payload
-    >({
+    Traffic: build.query<TrafficData, AnalyticsFilter & IdentityFilter>({
       query: (payload) => ({
         document: gql`
           query Traffic(
-            $path: [HierarchyNodeInput],
-            $start: DateTime,
-            $end: DateTime,
+            $path: [HierarchyNodeInput]
+            $start: DateTime
+            $end: DateTime
             $filter: FilterInput
-            ) {
-            network(start: $start, end: $end, filter : $filter) {
+            $identityFilter: IdentityFilter
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
-                userRxTraffic: userTraffic(direction: "rx")
-                userTxTraffic: userTraffic(direction: "tx")
+                userRxTraffic: userTraffic(
+                  direction: "rx"
+                  filter: $identityFilter
+                )
+                userTxTraffic: userTraffic(
+                  direction: "tx"
+                  filter: $identityFilter
+                )
               }
             }
           }
@@ -38,6 +43,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
+          identityFilter: payload.identityFilter,
           ...getFilterPayload(payload)
         }
       }),

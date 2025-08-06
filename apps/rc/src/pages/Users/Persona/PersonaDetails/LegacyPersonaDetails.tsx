@@ -179,6 +179,7 @@ function LegacyPersonaDetails () {
   }
 
   const details = [
+    { label: $t({ defaultMessage: 'Display Name' }), value: personaDetailsQuery.data?.displayName },
     { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
     { label: $t({ defaultMessage: 'Phone' }), value: personaDetailsQuery.data?.phoneNumber },

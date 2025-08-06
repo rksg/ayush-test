@@ -53,6 +53,7 @@ export interface DelegationEntitlementRecord {
   sisIntegrationCount?: number;
   pmsIntegrationCount?: number;
   hybridCloudSecCount?: number;
+  pinForIdentityCount?: number;
 }
 
 export interface MspEc {
@@ -503,7 +504,8 @@ export interface MspRecCustomer {
   acx_trial_in_progress?: boolean,
   email_id?: string,
   is_tenant_onboarded?: boolean,
-  propertyCode?: string
+  propertyCode?: string,
+  acx_closed_sales_order?: boolean
 }
 
 export enum MspEcTierEnum {

@@ -16,8 +16,9 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
+import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
+import { NetworkForm }                                     from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useWifiNetworkListQuery,

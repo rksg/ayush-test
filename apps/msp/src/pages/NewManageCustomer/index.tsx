@@ -53,7 +53,6 @@ import {
   MspIntegratorDelegated,
   AssignActionEnum,
   MspEcTierEnum,
-  MspEcTierPayload,
   defaultAddress,
   addressParser,
   LicenseCalculatorDataV2
@@ -117,7 +116,6 @@ export function NewManageCustomer () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
-  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
@@ -165,7 +163,6 @@ export function NewManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
-  const [patchCustomer] = usePatchCustomerMutation()
   const params = useParams()
 
   const { Option } = Select
@@ -678,7 +675,7 @@ export function NewManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -694,14 +691,6 @@ export function NewManageCustomer () {
       await updateCustomer({
         params: { mspEcTenantId: mspEcTenantId }, payload: customer,
         enableRbac: isRbacEnabled }).unwrap()
-
-      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
-        const patchTier: MspEcTierPayload = {
-          type: 'serviceTierStatus',
-          serviceTierStatus: ecFormData.tier
-        }
-        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
-      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {

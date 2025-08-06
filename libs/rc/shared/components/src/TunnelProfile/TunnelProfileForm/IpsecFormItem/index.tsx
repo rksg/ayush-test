@@ -7,7 +7,7 @@ import { useIntl }                from 'react-intl'
 
 import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 
-import IpsecDrawer         from '../../../policies/Ipsec/IpsecForm/IpsecDrawer'
+import IpsecAddDrawer      from '../../../policies/Ipsec/IpsecForm/IpsecAddDrawer'
 import { FormItemWrapper } from '../styledComponents'
 
 import { IpsecProfileSelector } from './IpsecProfileSelector'
@@ -107,10 +107,9 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
             </Col>}
           }
         </Form.Item>
-        <IpsecDrawer
+        <IpsecAddDrawer
           visible={ipsecDrawerVisible}
           setVisible={setIpsecDrawerVisible}
-          readMode={false}
           callbackFn={(newOption: DefaultOptionType) => {
             // auto select the new option
             form.setFieldValue('ipsecProfileId', newOption.value)

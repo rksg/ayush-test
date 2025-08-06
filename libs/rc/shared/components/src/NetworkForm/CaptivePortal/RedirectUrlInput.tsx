@@ -10,7 +10,11 @@ import { useIntl }             from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { HttpURLRegExp }              from '@acx-ui/rc/utils'
+import {
+  HttpURLRegExp,
+  HttpDualModeURLRegExp,
+  useSelectValidatorByIpModeFF
+} from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -41,6 +45,7 @@ export function RedirectUrlInput () {
     useWatch(['guestPortal','redirectUrl'])
   ]
   const [redirectUrlValue, setRedirectUrlValue] = useState('')
+  const urlValidator = useSelectValidatorByIpModeFF(HttpURLRegExp, HttpDualModeURLRegExp)
 
   useEffect(() => {
     if((editMode || cloneMode) && data){
@@ -95,7 +100,7 @@ export function RedirectUrlInput () {
           { required: redirectCheckbox,
             message: REDIRECT_INVALID_MSG
           },
-          { validator: (_, value) => redirectCheckbox ? HttpURLRegExp(value) : Promise.resolve(),
+          { validator: (_, value) => redirectCheckbox ? urlValidator(value) : Promise.resolve(),
             message: REDIRECT_INVALID_MSG
           }
         ]}

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -15,8 +15,6 @@ import {
   CertificateForm,
   CertificateTemplateForm,
   ClientIsolationForm,
-  CliProfileForm,
-  CliTemplateForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
@@ -49,7 +47,8 @@ import {
   SamlIdpDetail,
   IdentityGroupForm,
   IdentityForm,
-  PersonaGroupDetails
+  PersonaGroupDetails,
+  Layer2Component, Layer3Component, DeviceOSComponent, ApplicationComponent
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -81,6 +80,8 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import {
+  CliProfileForm,
+  CliTemplateForm,
   ConfigurationProfileForm
 } from '@acx-ui/switch/components'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
@@ -1194,6 +1195,42 @@ function PolicyRoutes () {
         element={
           <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
             <AccessControlForm editMode={false}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_2_POLICY} oper={PolicyOperation.CREATE}>
+            <Layer2Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_3_POLICY} oper={PolicyOperation.CREATE}>
+            <Layer3Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.DEVICE_POLICY} oper={PolicyOperation.CREATE}>
+            <DeviceOSComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.APPLICATION_POLICY} oper={PolicyOperation.CREATE}>
+            <ApplicationComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
           </PolicyAuthRoute>
         }
       />
