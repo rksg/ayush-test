@@ -220,7 +220,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit VLAN & Radio' }),
     visible: (rows) => rows.length > 0,
-    disabled: drawerStatus?.visible && !hasUpdateNetworkVenuePermission,
+    disabled: drawerStatus?.visible || !hasUpdateNetworkVenuePermission,
     onClick: (rows) => {
       setDrawerStatus({
         visible: true,
