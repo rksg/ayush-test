@@ -6,7 +6,7 @@ import { Olt }             from '@acx-ui/olt/utils'
 export function useOltActions () {
   const { $t } = useIntl()
 
-  const showDeleteOltes = async ({ rows, callBack }: {
+  const showDeleteOlt = async ({ rows, callBack }: {
     rows: Olt[],
     callBack?: () => void
   }) => {
@@ -56,7 +56,7 @@ export function useOltActions () {
   }
 
   return {
-    showDeleteOltes,
+    showDeleteOlt,
     showRebootOlt,
     doSyncData
   }

@@ -1,10 +1,8 @@
 import  userEvent from '@testing-library/user-event'
-// import { rest }   from 'msw'
 
-import { OltFixtures } from '@acx-ui/olt/utils'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Provider, store }                    from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { OltFixtures }            from '@acx-ui/olt/utils'
+import { Provider }               from '@acx-ui/store'
+import { render, screen, within } from '@acx-ui/test-utils'
 
 import { CageDetailsDrawer } from './CageDetailsDrawer'
 const { mockOlt, mockOnuList, mockOltCageList } = OltFixtures
@@ -17,24 +15,17 @@ describe('CageDetailsDrawer', () => {
     currentCage: mockOltCageList[0]
   }
 
-  beforeEach(() => {
-    mockServer.use(
-    )
-  })
-
-  it('should correctly render ONU', async () => {
-
+  it('should render ONU correctly', async () => {
     render(<Provider>
       <CageDetailsDrawer {...defaultProps} />
     </Provider>)
     expect(screen.getByText('S1/1')).toBeInTheDocument()
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = screen.getByRole('row', { name: /ont_9 3/ })
     expect(row).toBeVisible()
     screen.getByRole('row', { name: /ont_7 1/ })
   })
 
-  it('renders with invalid props (missing currentCage)', () => {
+  it('should render with invalid props (missing currentCage)', () => {
     const props = {
       ...defaultProps,
       currentCage: undefined
@@ -45,7 +36,7 @@ describe('CageDetailsDrawer', () => {
     expect(screen.queryByText('S1/1')).toBeNull()
   })
 
-  it('calls onClose function when closed', async () => {
+  it('should call onClose function when closed', async () => {
     render(<Provider>
       <CageDetailsDrawer {...defaultProps} />
     </Provider>)
@@ -55,7 +46,7 @@ describe('CageDetailsDrawer', () => {
     expect(defaultProps.setVisible).toHaveBeenCalledWith(false)
   })
 
-  it('show ONU port list when an ONU is clicked', async () => {
+  it('should show ONU port list when an ONU is clicked', async () => {
     render(<Provider>
       <CageDetailsDrawer {...defaultProps} />
     </Provider>)

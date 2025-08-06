@@ -17,7 +17,7 @@ describe('OltStatus', () => {
 
   it('renders with up status and showText true', () => {
     render(<OltStatus type='cage' status={OltCageStateEnum.UP} showText />)
-    expect(screen.getByText('UP')).toBeInTheDocument()
+    expect(screen.getByText('Up')).toBeInTheDocument()
   })
 
   it('renders with showText true and false', () => {
@@ -31,7 +31,7 @@ describe('OltStatus', () => {
   it('renders with undefined status', () => {
     render(<OltStatus
       {...validProps}
-      status={OltStatusEnum.UNKNOWN}
+      status={undefined}
       showText
     />)
     expect(screen.getByText('Unknown')).toBeInTheDocument()

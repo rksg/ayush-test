@@ -29,17 +29,17 @@ const STATUS_CONFIG: Record<StatusType, Record<string, { color: string; text: Me
   cage: {
     [OltCageStateEnum.UP]: {
       color: 'var(--acx-semantics-green-50)',
-      text: defineMessage({ defaultMessage: 'UP' })
+      text: defineMessage({ defaultMessage: 'Up' })
     },
     [OltCageStateEnum.DOWN]: {
       color: 'var(--acx-neutrals-50)',
-      text: defineMessage({ defaultMessage: 'DOWN' })
+      text: defineMessage({ defaultMessage: 'Down' })
     }
   }
 }
 
 const getStatusInfo = (type: StatusType, status: StatusValue) => {
-  const key = status?.toLowerCase?.() ?? ''
+  const key = status.toLowerCase()
   return STATUS_CONFIG[type][key] ?? {
     color: 'var(--acx-neutrals-50)',
     text: defineMessage({ defaultMessage: 'Unknown' })

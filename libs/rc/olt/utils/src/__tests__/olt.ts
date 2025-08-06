@@ -1,4 +1,4 @@
-import { OltStatusEnum, OltCageStateEnum } from '../'
+import { OltStatusEnum, OltCageStateEnum } from '../types'
 
 export const mockOlt = {
   name: 'TestOlt',
@@ -95,3 +95,35 @@ export const mockOnuList = [
     ]
   }
 ]
+
+export const mockVenuelist = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      city: 'New York',
+      country: 'United States',
+      description: 'My-Venue',
+      id: '3f10af1401b44902a88723cb68c4bc77',
+      latitude: '40.769141',
+      longitude: '-73.9429713',
+      name: 'My-Venue',
+      status: '1_InSetupPhase',
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
+    },
+    {
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      description: '',
+      id: 'a919812d11124e6c91b56b9d71eacc31',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      name: 'test',
+      status: '1_InSetupPhase',
+      switchClients: 2,
+      switches: 1,
+      edges: 3,
+      clients: 1
+    }
+  ]
+}

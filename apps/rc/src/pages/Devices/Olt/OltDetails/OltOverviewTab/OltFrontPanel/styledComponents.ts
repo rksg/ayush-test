@@ -95,7 +95,7 @@ export const UnitTitle = styled.div`
   color: var(--acx-neutrals-60);
 `
 
-export const TooltipStyle = styled(Descriptions)`
+export const TooltipDescriptions = styled(Descriptions)`
   .ant-descriptions-item-content,
   .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
     color: var(--acx-primary-white) !important;

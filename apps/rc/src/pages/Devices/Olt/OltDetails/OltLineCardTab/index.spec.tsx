@@ -6,7 +6,6 @@ import { OltDetailsContext } from '../index'
 
 import { OltLineCardTab } from './index'
 
-
 const params = {
   tenantId: 'tenant-id',
   oltId: 'olt-id'

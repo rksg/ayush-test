@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { OltFixtures }                                       from '@acx-ui/olt/utils'
 import { CommonUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import { screen, render, renderHook, mockServer, fireEvent } from '@acx-ui/test-utils'
@@ -25,19 +26,7 @@ describe('AddOlt', ()=>{ //TODO
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json({
-          data: [{
-            city: 'New York',
-            country: 'United States',
-            description: 'My-Venue',
-            id: '2c16284692364ab6a01f4c60f5941836',
-            latitude: '40.769141',
-            longitude: '-73.9429713',
-            name: 'My-Venue',
-            status: '1_InSetupPhase',
-            aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
-          }]
-        }))
+        (_req, res, ctx) => res(ctx.json(OltFixtures.mockVenuelist))
       )
     )
   })
@@ -105,7 +94,7 @@ describe('EditOlt', ()=>{ //TODO
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json({ data: [] }))
+        (_req, res, ctx) => res(ctx.json(OltFixtures.mockVenuelist))
       )
     )
   })

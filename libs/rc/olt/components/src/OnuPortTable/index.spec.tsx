@@ -1,6 +1,5 @@
 import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
-// import { rest }      from 'msw'
 
 import { OltOnuPort, OltFixtures }            from '@acx-ui/olt/utils'
 import { Provider }                           from '@acx-ui/store'
@@ -34,9 +33,9 @@ describe('OnuPortTable', () => {
     </Provider>)
     expect(screen.getByText('Port')).toBeVisible()
     expect(screen.getByText('Status')).toBeVisible()
-    screen.getByRole('row', { name: /1 UP 5% \(2.5 \/ 50 W\)/ })
-    screen.getByRole('row', { name: /2 DOWN 20% \(10 \/ 50 W\)/ })
-    expect(screen.getByRole('row', { name: /3 UP 6% \(3 \/ 50 W\)/ })).toBeVisible()
+    screen.getByRole('row', { name: /1 Up 5% \(2.5 \/ 50 W\)/ })
+    screen.getByRole('row', { name: /2 Down 20% \(10 \/ 50 W\)/ })
+    expect(screen.getByRole('row', { name: /3 Up 6% \(3 \/ 50 W\)/ })).toBeVisible()
   })
 
   it('renders with empty data', () => {
@@ -66,7 +65,7 @@ describe('OnuPortTable', () => {
     render(<Provider>
       <OnuPortTable {...props} />
     </Provider>)
-    const row = screen.getByRole('row', { name: /DOWN/ })
+    const row = screen.getByRole('row', { name: /Down/ })
     const onChangeButton = within(row).getByRole('button', { name: 'Test onChange' })
     await userEvent.click(onChangeButton)
     expect(mockSetVlanReq).toBeCalled()
@@ -87,7 +86,7 @@ describe('OnuPortTable', () => {
     </Provider>)
     expect(screen.getByText('Port')).toBeVisible()
     expect(screen.getByText('Status')).toBeVisible()
-    const targetRow= screen.getByRole('row', { name: /1 UP 5% \(2.5 \/ 50 W\)/ })
+    const targetRow= screen.getByRole('row', { name: /1 Up 5% \(2.5 \/ 50 W\)/ })
     expect(within(within(targetRow).getByTestId('TextInlineEditor'))
       .getByTestId('value')).toHaveTextContent('0')
   })
@@ -106,7 +105,7 @@ describe('OnuPortTable', () => {
     </Provider>)
     expect(screen.getByText('Port')).toBeVisible()
     expect(screen.getByText('Status')).toBeVisible()
-    const targetRow= screen.getByRole('row', { name: /1 DOWN 0% \(0 \/ 50 W\)/ })
+    const targetRow= screen.getByRole('row', { name: /1 Down 0% \(0 \/ 50 W\)/ })
     expect(within(within(targetRow).getByTestId('TextInlineEditor'))
       .getByTestId('value')).toHaveTextContent('0')
   })

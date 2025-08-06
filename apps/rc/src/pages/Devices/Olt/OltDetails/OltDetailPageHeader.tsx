@@ -14,9 +14,9 @@ import {
   Tooltip,
   getDefaultEarliestStart
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { OltStatus }              from '@acx-ui/olt/components'
-import { Olt, OltStatusEnum }     from '@acx-ui/olt/utils'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { OltStatus, useOltActions } from '@acx-ui/olt/components'
+import { Olt, OltStatusEnum }       from '@acx-ui/olt/utils'
 import {
   useLocation,
   useNavigate,
@@ -27,8 +27,6 @@ import {
 import { filterByAccess, hasAllowedOperations, hasPermission } from '@acx-ui/user'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getOpsApi, useDateFilter } from '@acx-ui/utils'
-
-import { useOltActions } from '../useOltActions'
 
 enum MoreActions {
   SYNC_DATA = 'SYNC_DATA',
@@ -68,22 +66,14 @@ export function OltDetailPageHeader (props: {
         setIsSyncing(true)
         break
       case MoreActions.REBOOT_OLT:
-        oltActions.showRebootOlt({
-          rows: [oltDetails],
-          callBack: () => {
-          }
-        })
+        oltActions.showRebootOlt({ rows: [oltDetails] })
         break
       case MoreActions.REBOOT_LINE_CARD:
         break
       case MoreActions.REBOOT_ONT_ONU:
         break
       case MoreActions.DELETE:
-        oltActions.showDeleteOltes({
-          rows: [oltDetails],
-          callBack: () => {
-          }
-        })
+        oltActions.showDeleteOlt({ rows: [oltDetails] })
         break
     }
   }

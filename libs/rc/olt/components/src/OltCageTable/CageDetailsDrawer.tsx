@@ -14,7 +14,6 @@ import { onuData }      from '../mockdata'
 import { OnuPortTable } from '../OnuPortTable'
 import { OnuTable }     from '../OnuTable'
 
-
 import { OnuDetailWrapper, StyledFormItem } from './styledComponents'
 
 interface CageDetailsDrawerProps {

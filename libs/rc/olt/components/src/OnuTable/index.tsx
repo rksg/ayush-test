@@ -65,7 +65,7 @@ function useColumns (props: OnuTableProps) {
       sorter: true,
       fixed: 'left',
       render: (_, row) =>
-        <Button type='link' onClick={() => props.onClickRow(row)}>
+        <Button type='link' size='small' onClick={() => props.onClickRow(row)}>
           {row.name}
         </Button>
     },

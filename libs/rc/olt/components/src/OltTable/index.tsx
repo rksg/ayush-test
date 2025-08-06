@@ -1,18 +1,14 @@
-import { Row, Button } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Row }     from 'antd'
+import { useIntl } from 'react-intl'
 
-import {
-  Table,
-  TableProps,
-  Loader,
-  showActionModal
-} from '@acx-ui/components'
-import { Olt }                        from '@acx-ui/olt/utils'
-import { VenueLink }                  from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { Table, TableProps, Loader }              from '@acx-ui/components'
+import { Olt }                                    from '@acx-ui/olt/utils'
+import { VenueLink }                              from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
 
-import { OltStatus } from '../OltStatus'
+import { OltStatus }     from '../OltStatus'
+import { useOltActions } from '../useOltActions'
 
 interface OltTableProps {
   data?: Olt[]
@@ -26,6 +22,7 @@ export const OltTable = (props: OltTableProps) => {
 
   const navigate = useNavigate()
   const linkToOLT = useTenantLink('/devices/optical/')
+  const oltActions = useOltActions()
 
   const rowActions: TableProps<Olt>['rowActions'] = [
     {
@@ -40,42 +37,14 @@ export const OltTable = (props: OltTableProps) => {
     {
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: rows.length === 1
-            ? $t({ defaultMessage: 'Reboot "{name}"?' }, { name: rows[0].name })
-            : $t({ defaultMessage: 'Reboot "{num} OLT Devices"?' }, { num: rows.length }),
-          content: rows.length === 1
-            ? $t({ defaultMessage: 'Are you sure you want to reboot this OLT device?' })
-            : $t({ defaultMessage: 'Are you sure you want to reboot these OLT devices?' }),
-          okText: $t({ defaultMessage: 'Reboot' }),
-          cancelText: $t({ defaultMessage: 'Cancel' }),
-          onOk: () => {
-            //TODO
-            clearSelection()
-          }
-        })
+        oltActions.showRebootOlt({ rows, callBack: clearSelection })
       }
       // scopeKey:
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: rows.length === 1
-              ? $t({ defaultMessage: 'OLT Device' })
-              : $t({ defaultMessage: 'OLT Devices' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            //TODO
-            clearSelection()
-          }
-        })
+        oltActions.showDeleteOlt({ rows, callBack: clearSelection })
       }
       // scopeKey:
     }
@@ -97,8 +66,6 @@ export const OltTable = (props: OltTableProps) => {
 
 function useColumns () {
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('')
 
   const columns: TableProps<Olt>['columns'] = [{
     key: 'name',
@@ -108,15 +75,12 @@ function useColumns () {
     searchable: true,
     fixed: 'left',
     render: (_, row) => {
-      return <Button type='link'
-        onClick={() => {
-          navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/devices/optical/${row.serialNumber}/details`
-          })
-        }}>
+      return <TenantLink
+        to={`/devices/optical/${row.serialNumber}/details`}
+        style={{ lineHeight: '20px' }}
+      >
         {row.name}
-      </Button>
+      </TenantLink>
     }
   }, {
     title: $t({ defaultMessage: 'Status' }),

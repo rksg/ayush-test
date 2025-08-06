@@ -2,6 +2,7 @@ import { Space, Tooltip } from 'antd'
 
 import { TagsSolid, TagsOutline } from '@acx-ui/icons-new'
 import { OltStatus }              from '@acx-ui/olt/components'
+import { OltCageStateEnum }       from '@acx-ui/olt/utils'
 import { getIntl }                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -24,23 +25,24 @@ export const Unit = (props: {
 
 const getTooltip = (data: SlotCage) => {
   const { $t } = getIntl()
+  const hasTagInfo = data.taggedVlan || data.unTaggedVlan
 
   return <div>
-    <UI.TooltipStyle labelWidthPercent={50}>
-      <UI.TooltipStyle.Item
+    <UI.TooltipDescriptions labelWidthPercent={50}>
+      <UI.TooltipDescriptions.Item
         label={$t({ defaultMessage: 'Port' })}
         children={data.label}
       />
-      <UI.TooltipStyle.Item
+      <UI.TooltipDescriptions.Item
         label={$t({ defaultMessage: 'Status' })}
         children={<OltStatus
           type='cage'
-          status={data.status}
+          status={data.status as OltCageStateEnum}
           showText
           style={{ color: 'var(--acx-primary-white)' }}
         />}
       />
-      { data.unTaggedVlan && <UI.TooltipStyle.Item
+      { hasTagInfo && <UI.TooltipDescriptions.Item
         label={$t({ defaultMessage: 'VLAN' })}
         children={<>
           <Space size={4} style={{ width: '100%' }}>
@@ -52,14 +54,14 @@ const getTooltip = (data: SlotCage) => {
         </>
         }
       />}
-      <UI.TooltipStyle.Item
+      <UI.TooltipDescriptions.Item
         label={$t({ defaultMessage: 'Optic information' })}
         children={data.info}
       />
-      <UI.TooltipStyle.Item
+      <UI.TooltipDescriptions.Item
         label={$t({ defaultMessage: 'Port Speed' })}
         children={data.portSpeed}
       />
-    </UI.TooltipStyle>
+    </UI.TooltipDescriptions>
   </div>
 }

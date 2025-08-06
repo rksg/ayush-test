@@ -17,7 +17,6 @@ export interface Olt {
   serialNumber: string
   firmware: string
   ip: string
-
   venueId: string
   venueName: string
   adminPassword?: string
@@ -42,3 +41,4 @@ export interface OltOnuPort {
   vlan: string[]
   poePower: number
 }
+
