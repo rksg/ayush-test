@@ -157,8 +157,8 @@ export default function SolutionTokenLicenses () {
     }] : []),
     ...(piNetworkToggle ? [{
       title: $t({ defaultMessage: 'PIN For Ruckus One Identity' }),
-      dataIndex: 'piNetworkCount',
-      key: 'piNetworkCount',
+      dataIndex: 'pinForIdentityCount',
+      key: 'pinForIdentityCount',
       align: 'center' as AlignType,
       sorter: false,
       width: 140,
