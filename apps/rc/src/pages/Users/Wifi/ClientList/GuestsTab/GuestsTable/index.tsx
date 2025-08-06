@@ -233,7 +233,7 @@ export const GuestsTable = () => {
       fixed: 'left',
       filterable: true,
       filterKey: 'fromTime',
-      filterComponent: { type: 'rangepicker' },
+      filterComponent: { type: 'rangepicker', unlimitedRange: true },
       render: (_, row) =>
         <Button
           type='link'
