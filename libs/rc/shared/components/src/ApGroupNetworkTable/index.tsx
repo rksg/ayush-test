@@ -310,7 +310,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
                           radioTypes: [
                             RadioTypeEnum._2_4_GHz,
                             RadioTypeEnum._5_GHz,
-                            RadioTypeEnum._6_GHz
+                            ...(IsNetworkSupport6g(row.deepNetwork, { isSupport6gOWETransition }) ? [RadioTypeEnum._6_GHz] : [])
                           ],
                           radio: RadioEnum.Both
                         }

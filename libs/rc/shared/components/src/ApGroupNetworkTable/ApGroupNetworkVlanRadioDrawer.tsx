@@ -87,6 +87,7 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupNetworkVlanRadioContext)
   const { visible, editData } = drawerStatus || {}
+  console.log(drawerStatus)
 
   const [form] = Form.useForm()
   const vlanType = Form.useWatch('vlanType', form)
@@ -108,15 +109,19 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
 
   useEffect(() => {
     if (visible && editData) {
+      console.log('initial editData', editData)
       const data = cloneDeep(editData[0])
       const initApGroupData = getApGroupData(data, venueId, apGroupId)
       setEditingAgGroup(initApGroupData)
       setIsSupport6G(IsSupport6g(data, { isSupport6gOWETransition }))
+      console.log(initApGroupData)
       form.setFieldsValue({
         ...initApGroupData
       })
     }
-  }, [visible, editData])
+  }, [visible, editData, vlanChecked])
+
+  console.log(editData)
 
   const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()
 
@@ -176,32 +181,35 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
               />
             } />
         ) : (!(editData.length > 1 && !vlanChecked) &&
-          <Form.Item
-            name='vlanPoolId'
-            label={$t({ defaultMessage: 'VLAN Pool' })}
-            rules={[{ required: true }]}
-            style={{ flex: '0 0 auto', minWidth: '220px' }}
-            children={
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Form.Item
+              name='vlanPoolId'
+              label={$t({ defaultMessage: 'VLAN Pool' })}
+              rules={[{ required: true }]}
+              style={{ flex: '0 0 auto' }}
+              children={
+
                 <Select
                   placeholder={$t({ defaultMessage: 'Select profile...' })}
                   options={vlanPoolList as unknown as DefaultOptionType[]}
-                  value={editingApGroup.vlanPoolId}
-                  onChange={(e) => form.setFieldValue(['vlanPoolId'], e)}
                   style={{ width: '187px' }} />
-                { isApGroupMoreParameterPhase1Enabled &&
-                  <Tooltip>
-                    <VLANPoolModal updateInstance={(data)=>{
-                      vlanPoolList &&
-                      setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
-                      form.setFieldValue(['vlanPoolId'], data.id)
-                    }}
-                    vlanCount={vlanPoolList?.length||0}
-                    />
-                  </Tooltip>
-                }
-              </div>
-            } />
+
+              } />
+            { isApGroupMoreParameterPhase1Enabled &&
+              <Tooltip>
+                <div style={{ marginTop: '7px' }}>
+                  <VLANPoolModal updateInstance={(data)=>{
+                    vlanPoolList &&
+                    setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
+                    form.setFieldValue(['vlanPoolId'], data.id)
+                  }}
+                  vlanCount={vlanPoolList?.length||0}
+                  />
+                </div>
+
+              </Tooltip>
+            }
+          </div>
         )}
       </div>
 

@@ -15,7 +15,7 @@ export const generateDefaultNetworkVenue = (venueId: string, networkId:string, a
     scheduler: {
       type: SchedulerTypeEnum.ALWAYS_ON
     },
-    isAllApGroups: !apGroups,
+    isAllApGroups: !apGroups?.length,
     allApGroupsRadio: RadioEnum.Both,
     allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
     venueId,
