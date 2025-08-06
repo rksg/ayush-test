@@ -302,7 +302,7 @@ const chats = [
     updatedDate: '2025-01-20T09:30:40.517+00:00'
   }
 ]
-xdescribe('AICanvas', () => {
+describe('AICanvas', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
