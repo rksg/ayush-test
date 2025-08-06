@@ -338,9 +338,18 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   const handleShowPassword = () => {
-    if (!isPerApPasswordAndVisibility || !params.serialNumber || !params.venueId) return
-    setNeedGetApPassword(true)
-    setShowPassword(true)
+    // New version: use per-AP password API
+    if (isPerApPasswordAndVisibility && params.serialNumber && params.venueId) {
+      setNeedGetApPassword(true)
+      setShowPassword(true)
+      return
+    }
+    
+    // Old version: directly show the existing password
+    if (apPassword) {
+      setShowPassword(true)
+      return
+    }
   }
 
   const getPasswordRegenerationMessage = () => {

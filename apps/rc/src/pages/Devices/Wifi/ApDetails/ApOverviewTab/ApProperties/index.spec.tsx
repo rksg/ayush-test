@@ -736,7 +736,7 @@ describe('ApProperties', () => {
       expect(showPasswordButton).toBeVisible()
     })
 
-    it('should not show Admin Password field when no feature flags are enabled', async () => {
+    it('should not show Admin Password field when no feature flags are enabled and user has no permission', async () => {
       // Mock feature flags to disable both per-AP password and visibility
       jest.mocked(useIsSplitOn).mockImplementation((feature) => {
         if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
@@ -764,6 +764,37 @@ describe('ApProperties', () => {
       const apPropertiesDialog = await screen.findByRole('dialog')
 
       expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
+    })
+
+    it('should show Admin Password field with legacy password when feature flags are disabled but user has permission', async () => {
+      // Mock feature flags to disable both per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
     })
 
     describe('Password Regeneration Message', () => {
