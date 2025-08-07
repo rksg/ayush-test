@@ -14,16 +14,16 @@ export const DeviceProvisionUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/deviceProvisions/statusReports/switches'
   },
   refreshApStatus: {
-    method: 'post',
+    method: 'PATCH',
     url: '/deviceProvisions/statusReports/aps',
     newApi: true,
-    opsApi: 'GET:/deviceProvisions/statusReport/aps'
+    opsApi: 'PATCH:/deviceProvisions/statusReports/aps'
   },
   refreshSwitchStatus: {
-    method: 'post',
+    method: 'PATCH',
     url: '/deviceProvisions/statusReports/switches',
     newApi: true,
-    opsApi: 'GET:/deviceProvisions/statusReport/switches'
+    opsApi: 'PATCH:/deviceProvisions/statusReports/switches'
   },
   getApModels: {
     method: 'GET',
@@ -38,28 +38,28 @@ export const DeviceProvisionUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/deviceProvisions/switches/models'
   },
   getApProvisions: {
-    method: 'GET',
-    url: '/deviceProvisions/aps',
+    method: 'POST',
+    url: '/deviceProvisions/aps/query',
     newApi: true,
-    opsApi: 'GET:/deviceProvisions/aps'
+    opsApi: 'POST:/deviceProvisions/aps/query'
   },
   getSwitchProvisions: {
-    method: 'GET',
-    url: '/deviceProvisions/switches',
+    method: 'POST',
+    url: '/deviceProvisions/switches/query',
     newApi: true,
-    opsApi: 'GET:/deviceProvisions/switches'
+    opsApi: 'POST:/deviceProvisions/switches/query'
   },
   importApProvisions: {
     method: 'POST',
-    url: '/deviceProvisions/venue/:venueId/apGroups/:apGroupId/aps',
+    url: '/deviceProvisions/venues/:venueId/apGroups/:apGroupId/aps',
     newApi: true,
-    opsApi: 'POST:/deviceProvisions/venue/{venueId}/apGroups/{apGroupId}/aps'
+    opsApi: 'POST:/deviceProvisions/venues/{venueId}/apGroups/{apGroupId}/aps'
   },
   importSwitchProvisions: {
     method: 'POST',
-    url: '/deviceProvisions/venue/:venueId/switches',
+    url: '/deviceProvisions/venues/:venueId/switches',
     newApi: true,
-    opsApi: 'POST:/deviceProvisions/venue/{venueId}/switches'
+    opsApi: 'POST:/deviceProvisions/venues/{venueId}/switches'
   },
   hideApProvisions: {
     method: 'PATCH',

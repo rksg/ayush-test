@@ -75,6 +75,7 @@ export function useMenuConfig () {
   const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
+    && tenantType === TenantType.REC
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)

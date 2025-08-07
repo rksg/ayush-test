@@ -5,17 +5,20 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card, DonutChart, DonutChartData, Loader, NoData, useDateRange } from '@acx-ui/components'
 import { formats }                                                        from '@acx-ui/formatter'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
 
 import { useTrafficQuery } from './services'
 
 export const Traffic = () => {
   const { $t } = useIntl()
   const { timeRange, selectedRange } = useDateRange()
+  const { personaId: identityId, personaGroupId: identityGroupId } = useParams()
   const queryResults = useTrafficQuery({
     startDate: timeRange[0].format(),
     endDate: timeRange[1].format(),
     range: selectedRange,
-    filter: {}
+    filter: {},
+    identityFilter: { identityId, identityGroupId }
   })
 
   const data: Array<DonutChartData> = useMemo(
