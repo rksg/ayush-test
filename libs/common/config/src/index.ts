@@ -17,11 +17,13 @@ type commonEnvironment = {
   DRUID_RETAIN_PERIOD_DAYS: string
   DRUID_ROLLUP_DAYS: string
   DRUID_COLD_TIER_DAYS: string
+  CONTEXT_QA_KEY: string
 }
 
 type R1Environment = {
   GOOGLE_MAPS_KEY: string
   DISABLE_PENDO: string
+  ENABLE_CONTEXTQA: string,
   CAPTIVE_PORTAL_DOMAIN_NAME: string
   CHANGE_PASSWORD: string
   MANAGE_LICENSES: string
@@ -72,7 +74,9 @@ export async function initialize () {
     ...{
       GOOGLE_MAPS_KEY: jsonValue.GOOGLE_MAPS,
       SPLIT_IO_KEY: jsonValue.SPLIT_IO,
-      PENDO_API_KEY: jsonValue.PENDO_API
+      PENDO_API_KEY: jsonValue.PENDO_API,
+      ENABLE_CONTEXTQA: jsonValue.ENABLE_CONTEXTQA,
+      CONTEXT_QA_KEY: jsonValue.CONTEXT_QA_KEY
     }
   }
 }

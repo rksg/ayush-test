@@ -72,3 +72,9 @@ data:
       - configmap: configmap-acx-ui
         key: afc.feature.enabled
         name: AFC_FEATURE_ENABLED
+      - configmap: configmap-acx-ui
+        key: enable.contextqa
+        name: ENABLE_CONTEXTQA
+      - configmap: configmap-acx-ui
+        key: contextqa.key
+        name: CONTEXT_QA_KEY

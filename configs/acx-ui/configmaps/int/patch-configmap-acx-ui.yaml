@@ -7,6 +7,7 @@ data:
   google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   split.io.key: "54426nn43sd814m9drt1lg1jeupgr06jd9st"
   disable.pendo: "true"
+  enable.contextqa: "true"
   new.api.domain.name: "api.int.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
 
