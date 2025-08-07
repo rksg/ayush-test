@@ -6,13 +6,10 @@ import { OltDetailsContext } from '../index'
 
 import { OltLineCardTab } from './index'
 
-const params = {
-  tenantId: 'tenant-id',
-  oltId: 'olt-id'
-}
 const { mockOlt, mockOltCageList } = OltFixtures
 
-describe('OltLineCardTab', ()=>{ //TODO
+describe('OltLineCardTab', () => { //TODO
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   it('should render correctly', () => {
     render(
       <Provider>

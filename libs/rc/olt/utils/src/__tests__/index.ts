@@ -1,1 +1,1 @@
-export * as OltFixtures           from './olt'
+export *           from './olt'

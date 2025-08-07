@@ -17,7 +17,7 @@ jest.mock( './CageDetailsDrawer', () => ({
       : ''
 }))
 describe('OltCageTable', () => {
-  const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
   const mockToggleCageReq = jest.fn()
 

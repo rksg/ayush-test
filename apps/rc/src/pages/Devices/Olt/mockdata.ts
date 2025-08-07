@@ -147,7 +147,7 @@ export const lineCardInfo = [{
 export const networkCardSlots = [
   {
     type: OltSlotType.NT,
-    ports: [{
+    slots: [{
       label: 'TOD',
       status: OltCageStateEnum.UP,
       info: '%info%',
@@ -188,7 +188,7 @@ export const networkCardSlots = [
 export const lineCardSlots = [
   {
     type: OltSlotType.LT,
-    ports: Array.from({ length: 32 }, (_, index) => ({
+    slots: Array.from({ length: 32 }, (_, index) => ({
       label: `S1/${index + 1}`,
       status: OltCageStateEnum.UP,
       info: '%info%',
@@ -197,7 +197,7 @@ export const lineCardSlots = [
   },
   {
     type: OltSlotType.LT,
-    ports: Array.from({ length: 16 }, (_, index) => ({
+    slots: Array.from({ length: 16 }, (_, index) => ({
       label: `S2/${index + 1}`,
       status: OltCageStateEnum.UP,
       info: '%info%',

@@ -1,9 +1,7 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { screen, render, mockServer } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { screen, render } from '@acx-ui/test-utils'
 
 import { OltDetails } from './index'
 
@@ -25,21 +23,8 @@ jest.mock('./OltDetailsDrawer', () => ({
   OltDetailsDrawer: () => <div data-testid={'OltDetailsDrawer'} />
 }))
 
-const params = {
-  tenantId: 'tenant-id',
-  oltId: 'olt-id'
-}
-
-describe('OltDetails', ()=>{ //TODO
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_req, res, ctx) => res(ctx.json([]))
-      )
-    )
-  })
-
+describe('OltDetails', () => { //TODO
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   it('should render correctly', async () => {
     render(<Provider>
       <OltDetails />

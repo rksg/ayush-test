@@ -8,12 +8,8 @@ import { OltOverviewTab } from './'
 
 const { mockOlt } = OltFixtures
 
-describe('OltOverviewTab', ()=>{ //TODO
-  const params = {
-    tenantId: 'tenant-id',
-    oltId: 'olt-id'
-  }
-
+describe('OltOverviewTab', () => { //TODO
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   it('should render correctly', async () => {
     render(<Provider>
       <OltDetailsContext.Provider value={{

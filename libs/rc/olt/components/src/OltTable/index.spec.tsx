@@ -24,7 +24,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 const { click } = userEvent
 describe('OltTable', () => {
-  const params = { tenantId: 'mock-tenant-id' }
+  const params = { tenantId: 'tenant-id' }
   const mockPath = '/:tenantId/devices/optical'
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('OltTable', () => {
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Edit' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      '/mock-tenant-id/t/devices/optical/testSerialNumber/edit', { replace: false }
+      '/mock-tenant-id/t/devices/optical/olt-id/edit', { replace: false }
     ))
   })
 
@@ -161,9 +161,6 @@ describe('OltTable', () => {
       await waitForElementToBeRemoved(dialogTitle)
       expect(screen.queryByRole('dialog')).toBeNull()
       // expect(mockedDeleteReq).toBeCalledWith({
-      //   venueId: mockEmptySnOlt.venueId,
-      //   edgeClusterId: mockEmptySnOlt.edgeClusterId,
-      //   oltId: mockEmptySnOlt.ip
       // })
     })
   })

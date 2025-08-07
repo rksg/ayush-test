@@ -12,7 +12,7 @@ import { Unit } from './Unit'
 
 type SlotData = {
   type: OltSlotType,
-  ports: SlotCage[]
+  slots: SlotCage[]
 }
 
 export type SlotCage = {
@@ -69,7 +69,7 @@ export const Slot = (props: {
         : $t({ defaultMessage: 'NT {index}' }, { index })
     }</UI.SlotTitle>
     <UI.SlotUnits type={data.type}>
-      { data.ports.map((item, index) =>
+      { data.slots.map((item, index) =>
         <Unit
           key={`${index}-${item.label}`}
           num={index+1}

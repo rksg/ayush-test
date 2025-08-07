@@ -15,13 +15,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('AddOlt', ()=>{ //TODO
+describe('AddOlt', () => { //TODO
   const mockedFinish = jest.fn()
-  const params = {
-    tenantId: 'tenant-id',
-    action: 'add'
-  }
-
+  const params = { tenantId: 'tenant-id', action: 'add' }
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -82,14 +78,9 @@ describe('AddOlt', ()=>{ //TODO
   })
 })
 
-describe('EditOlt', ()=>{ //TODO
+describe('EditOlt', () => { //TODO
   const mockedFinish = jest.fn()
-  const params = {
-    tenantId: 'tenant-id',
-    oltId: 'olt-id',
-    action: 'edit'
-  }
-
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', action: 'edit' }
   beforeEach(() => {
     mockServer.use(
       rest.post(

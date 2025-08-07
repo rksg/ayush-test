@@ -1,4 +1,4 @@
-export * from './__tests__'
+export * as OltFixtures from './__tests__'
 export * from './types'
 
 export enum OltSlotType {

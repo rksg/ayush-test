@@ -2,7 +2,7 @@ import { OltStatusEnum, OltCageStateEnum } from '../types'
 
 export const mockOlt = {
   name: 'TestOlt',
-  serialNumber: 'testSerialNumber',
+  serialNumber: 'olt-id',
   status: OltStatusEnum.ONLINE,
   vendor: 'Nokia',
   model: 'MF-2',

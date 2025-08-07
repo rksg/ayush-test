@@ -89,7 +89,7 @@ export function OltDetailPageHeader (props: {
   const hasDeletPermission = true
   const showDivider = hasUpdatePermission && isOnline && (hasDeletPermission)
   // hasAllowedOperations([
-  //   getOpsApi(EdgeTnmServiceUrls.)
+  //   getOpsApi()
   // ])
 
   const menu = (
@@ -97,7 +97,7 @@ export function OltDetailPageHeader (props: {
       onClick={handleMenuClick}
       items={[
         ...(hasUpdatePermission &&
-            // hasAllowedOperations([getOpsApi(EdgeTnmServiceUrls.syncData)]) ? [{
+            // hasAllowedOperations([getOpsApi()]) ? [{
             true ? [{
             key: MoreActions.SYNC_DATA,
             disabled: isSyncing || !isOnline,
@@ -109,7 +109,7 @@ export function OltDetailPageHeader (props: {
           }] : []),
 
         ...(isOnline && hasUpdatePermission &&
-          // hasAllowedOperations([getOpsApi(EdgeTnmServiceUrls.reboot)]) ? [{
+          // hasAllowedOperations([getOpsApi()]) ? [{
           true ? [{
             key: MoreActions.REBOOT_OLT,
             label: $t({ defaultMessage: 'Reboot OLT' })
@@ -160,7 +160,7 @@ export function OltDetailPageHeader (props: {
         ...filterByAccess([
           isOnline ? <Dropdown overlay={menu}
             // rbacOpsIds={[
-            //   getOpsApi(EdgeTnmServiceUrls.),
+            //   getOpsApi(),
             // ]}
             // scopeKey={[]}
           >{() =>
@@ -188,8 +188,6 @@ export function OltDetailPageHeader (props: {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
-      // footer={<></>}
-      // footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
     />
   )
 }

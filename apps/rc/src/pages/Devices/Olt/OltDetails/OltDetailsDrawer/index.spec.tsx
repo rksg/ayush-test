@@ -8,9 +8,8 @@ import { OltDetailsDrawer } from '.'
 
 const { mockOlt } = OltFixtures
 describe('OltDetailsDrawer', () => { //TODO
-  const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
-
   const defaultProps = {
     visible: true,
     setVisible: jest.fn(),
