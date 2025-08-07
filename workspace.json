@@ -32,6 +32,7 @@
     "rc-common-components": "libs/rc/common/components",
     "rc-config-template-utils": "libs/rc/configTemplate/utils",
     "rc-olt-components": "libs/rc/olt/components",
+    "rc-olt-services": "libs/rc/olt/services",
     "rc-olt-utils": "libs/rc/olt/utils",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
