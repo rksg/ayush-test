@@ -17,7 +17,7 @@ import {
   devicePolicyDetailWith32RulesResponse,
   devicePolicyListResponse } from '../__tests__/fixtures'
 
-import { DeviceOSDrawer } from './index'
+import { DeviceOSComponent } from './index'
 
 const queryDevice = [
   {
@@ -126,6 +126,12 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const selectOptionSet = async (device: string, vendor: string) => {
   await screen.findByRole('combobox', { name: 'Device Type' })
 
@@ -161,11 +167,11 @@ describe('DeviceOSDrawer Component setting I', () => {
     )
   })
 
-  it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
+  it('Render DeviceOSComponent successfully with Smartphone & Ios', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -217,11 +223,11 @@ describe('DeviceOSDrawer Component setting I', () => {
     await userEvent.click(screen.getAllByText('Save')[0])
   })
 
-  it('Render DeviceOSDrawer component successfully with Tablet & AmazonKindle', async () => {
+  it('Render DeviceOSComponent successfully with Tablet & AmazonKindle', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -256,11 +262,11 @@ describe('DeviceOSDrawer Component setting I', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with Voip & CiscoIpPhone', async () => {
+  it('Render DeviceOSComponent successfully with Voip & CiscoIpPhone', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -296,7 +302,7 @@ describe('DeviceOSDrawer Component setting I', () => {
   })
 })
 
-describe('DeviceOSDrawer Component setting II', () => {
+describe('DeviceOSComponent setting II', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -313,7 +319,7 @@ describe('DeviceOSDrawer Component setting II', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
-  it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
+  it('Render DeviceOSComponent successfully with Gaming & XBOX360', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
@@ -324,7 +330,7 @@ describe('DeviceOSDrawer Component setting II', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -359,11 +365,11 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
+  it('Render DeviceOSComponent successfully without Gaming & PlayStation', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -413,7 +419,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
+  it.skip('Render DeviceOSComponent successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -432,7 +438,7 @@ describe('DeviceOSDrawer Component setting II', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -473,11 +479,11 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with Printer & HpPrinter', async () => {
+  it('Render DeviceOSComponent successfully with Printer & HpPrinter', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -512,11 +518,11 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with IotDevice & NextCamera', async () => {
+  it('Render DeviceOSComponent successfully with IotDevice & NextCamera', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -552,7 +558,7 @@ describe('DeviceOSDrawer Component setting II', () => {
   })
 })
 
-describe('DeviceOSDrawer Component setting III', () => {
+describe('DeviceOSComponent setting III', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -568,11 +574,11 @@ describe('DeviceOSDrawer Component setting III', () => {
     )
   })
 
-  it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
+  it('Render DeviceOSComponent successfully with HomeAvEquipment & SonyPlayer', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -607,11 +613,11 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with WdsDevice & TelenetCpe', async () => {
+  it('Render DeviceOSComponent successfully with WdsDevice & TelenetCpe', async () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -647,7 +653,7 @@ describe('DeviceOSDrawer Component setting III', () => {
   })
 })
 
-describe('DeviceOSDrawer Component', () => {
+describe('DeviceOSComponent', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -664,7 +670,7 @@ describe('DeviceOSDrawer Component', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
-  it('Render DeviceOSDrawer component successfully', async () => {
+  it('Render DeviceOSComponent successfully', async () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
@@ -676,7 +682,7 @@ describe('DeviceOSDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -765,7 +771,7 @@ describe('DeviceOSDrawer Component', () => {
   }
 
   // eslint-disable-next-line max-len
-  it.skip('Render DeviceDrawer component successfully with max number of rules validation', async () => {
+  it.skip('Render DeviceOSComponent successfully with max number of rules validation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -784,7 +790,7 @@ describe('DeviceOSDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -889,7 +895,7 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   // eslint-disable-next-line max-len
-  it.skip('Render DeviceDrawer component successfully with Xbox in the existing rules', async () => {
+  it.skip('Render DeviceOSComponent successfully with Xbox in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -921,7 +927,7 @@ describe('DeviceOSDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -1017,7 +1023,7 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   // eslint-disable-next-line max-len
-  it.skip('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
+  it.skip('Render DeviceOSComponent successfully with PlayStation in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -1049,7 +1055,7 @@ describe('DeviceOSDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -1144,7 +1150,7 @@ describe('DeviceOSDrawer Component', () => {
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
   })
 
-  it('Render DeviceDrawer component in viewMode successfully', async () => {
+  it('Render DeviceOSComponent in viewMode successfully', async () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.getEnhancedDevicePolicies.url,
@@ -1165,7 +1171,7 @@ describe('DeviceOSDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <DeviceOSDrawer />
+          <DeviceOSComponent />
         </Form>
       </Provider>, {
         route: {
@@ -1188,5 +1194,21 @@ describe('DeviceOSDrawer Component', () => {
     await userEvent.click(screen.getAllByText('Cancel')[0])
 
     expect(await screen.findByText('Rules (0)')).toBeInTheDocument()
+  })
+
+  it('Render DeviceOSComponent in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

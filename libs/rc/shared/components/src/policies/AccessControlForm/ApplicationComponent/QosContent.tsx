@@ -5,6 +5,8 @@ import { useIntl }                    from 'react-intl'
 
 import { GridCol, GridRow } from '@acx-ui/components'
 
+import PolicyFormItem from '../PolicyFormItem'
+
 import {
   appRateStrategyLabelMapping,
   appRateTypeLabelMapping,
@@ -12,7 +14,6 @@ import {
   RateTypeEnum
 } from './ApplicationRuleContent'
 
-import { DrawerFormItem } from './index'
 
 export interface QosContentProps {
   drawerForm: FormInstance
@@ -74,22 +75,22 @@ const QosContent = (props: QosContentProps) => {
   </GridRow>
 
   return <>
-    <DrawerFormItem
+    <PolicyFormItem
       name='uplinkMarking'
       style={{ width: '100%' }}
       wrapperCol={{ span: 24 }}
       label={$t({ defaultMessage: 'Uplink Marking' })}
     >
       {maxUplinkRateContent}
-    </DrawerFormItem>
-    <DrawerFormItem
+    </PolicyFormItem>
+    <PolicyFormItem
       name='downlinkPriority'
       style={{ width: '100%' }}
       wrapperCol={{ span: 24 }}
       label={$t({ defaultMessage: 'Downlink Priority' })}
     >
       {maxDownlinkRateContent}
-    </DrawerFormItem>
+    </PolicyFormItem>
   </>
 }
 

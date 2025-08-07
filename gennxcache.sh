@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 # First parameter as directory
 FEATURE_BRANCH=$(git branch --show-current)
 CACHE_PATH="nxcache"
@@ -13,20 +16,17 @@ fi
 #Build the Docker Image
 sudo docker build -f Dockerfile.nxcache -t acx-ui-nx-cache .
 
-#Create a Temporary Docker Container
-sudo docker create --name temp-container acx-ui-nx-cache sh
+#Create a Temporary Docker Container and compress cache inside it
+sudo docker run --name temp-container acx-ui-nx-cache sh -c "tar -cJf /tmp/nxcache.tar.xz -C /app/node_modules/.cache/nx ."
 
-#Copy the Cache from the Container
-sudo docker cp temp-container:/app/node_modules/.cache/nx ./nxcachetmp
+#Copy the compressed cache from the Container
+sudo docker cp temp-container:/tmp/nxcache.tar.xz "$CACHE_PATH/nxcache.tar.xz"
 
 #Remove the Temporary Container
 sudo docker rm temp-container
 
-#Compress the Cache
-tar -cJf "$CACHE_PATH/nxcache.tar.xz" -C nxcachetmp .
-
-#Delete cache directory
-sudo rm -rf nxcachetmp
+#Update .gitmodules to point to the current feature branch
+sed -i "s|branch = .*|branch = $FEATURE_BRANCH|" .gitmodules
 
 #create nx cache feature branch through slack "/alto-ci createfb ACX-73320 acx-ui-cache" before execute commands below
 #commit cache

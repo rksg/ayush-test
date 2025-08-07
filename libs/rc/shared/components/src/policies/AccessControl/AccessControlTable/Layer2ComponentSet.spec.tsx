@@ -19,7 +19,7 @@ import {
   layer2Response, networkListResponse
 } from '../__tests__/fixtures'
 
-import Layer2Component from './Layer2Component'
+import Layer2ComponentSet from './Layer2ComponentSet'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -50,7 +50,7 @@ describe('AccessControlTable - Layer2', () => {
     )
   })
 
-  it('should render Layer2Component in AccessControlTable', async () => {
+  it('should render Layer2ComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
@@ -70,7 +70,7 @@ describe('AccessControlTable - Layer2', () => {
 
     render(
       <Provider>
-        <Layer2Component />
+        <Layer2ComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -89,7 +89,7 @@ describe('AccessControlTable - Layer2', () => {
     })
   })
 
-  it('should delete selected row from Layer2Component in AccessControlTable', async () => {
+  it('should delete selected row from Layer2ComponentSet in AccessControlTable', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
@@ -114,7 +114,7 @@ describe('AccessControlTable - Layer2', () => {
 
     render(
       <Provider>
-        <Layer2Component />
+        <Layer2ComponentSet />
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }

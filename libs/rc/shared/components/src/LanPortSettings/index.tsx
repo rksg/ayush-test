@@ -76,6 +76,9 @@ export function LanPortSettings (props: {
   usedProfileData?: { data: SoftGreIpsecProfile[], operations: SoftGreIpsecProfile[] },
   ipsecOptionList?: DefaultOptionType[],
   ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
+  globalAccessPortUntaggedIdEnabled?: boolean,
+  globalAccessPortUntaggedId?: number,
+  onEthernetPortProfileDataChanged?: (profileData: EthernetPortProfileViewData) => void,
 }) {
   const { $t } = useIntl()
   const {
@@ -95,7 +98,10 @@ export function LanPortSettings (props: {
     validateIsFQDNDuplicate,
     usedProfileData,
     ipsecOptionList,
-    ipsecOptionDispatch
+    ipsecOptionDispatch,
+    globalAccessPortUntaggedIdEnabled,
+    globalAccessPortUntaggedId,
+    onEthernetPortProfileDataChanged
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -155,6 +161,7 @@ export function LanPortSettings (props: {
 
   const onEthernetPortProfileChange = (data: EthernetPortProfileViewData) => {
     setCurrentEthernetPortData(data)
+    onEthernetPortProfileDataChanged?.(data)
   }
 
   useEffect(() => {
@@ -240,6 +247,8 @@ export function LanPortSettings (props: {
           selectedPortCaps={selectedPortCaps}
           selectedModelCaps={selectedModelCaps}
           onEthernetPortProfileChanged={onEthernetPortProfileChange}
+          globalAccessPortUntaggedIdEnabled={globalAccessPortUntaggedIdEnabled}
+          globalAccessPortUntaggedId={globalAccessPortUntaggedId}
         />
         {!isTemplate && isEthernetSoftgreEnabled && isModelSupportSoftGRE && <SoftGRETunnelSettings
           readonly={

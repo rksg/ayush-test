@@ -39,7 +39,7 @@ import {
   sortProp,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
@@ -47,10 +47,12 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { TableResult }               from '@acx-ui/utils'
 
 import { AddModeProps, editModeProps }                            from '../AccessControlForm'
+import { ComponentModeForm }                                      from '../ComponentModeForm'
 import { PROFILE_MAX_COUNT_DEVICE_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
+import PolicyFormItem                                             from '../PolicyFormItem'
 import { useScrollLock }                                          from '../ScrollLock'
 
-import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
+import DeviceOSRuleContent from './DeviceOSRuleContent'
 
 const { Option } = Select
 
@@ -68,13 +70,14 @@ export interface DeviceOSRule {
   }
 }
 
-export interface DeviceOSDrawerProps {
+export interface DeviceOSComponentProps {
   inputName?: string[],
   onlyViewMode?: {
     id: string,
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  isComponentMode?: boolean,
   drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
@@ -121,13 +124,14 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
+export const DeviceOSComponent = (props: DeviceOSComponentProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
+    isComponentMode = false,
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     drawerViewModeId = '',
@@ -150,10 +154,14 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
+  const [policyId, setPolicyId] = useState<string | null>(null)
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
+  const breadcrumb = usePoliciesBreadcrumb()
+  const pageTitle = usePolicyPageHeaderTitle(editMode.isEdit, PolicyType.DEVICE_POLICY)
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -187,11 +195,20 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
+  useEffect(() => {
+    if (isOnlyViewMode) {
+      setPolicyId(onlyViewMode.id)
+    }
+    if (isComponentMode) {
+      setPolicyId(params.policyId || null)
+    }
+  }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
+
   const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDevicePolicyQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
-    skip: !visible || skipFetch,
-    extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId },
+    skip: !isComponentMode && (!visible || skipFetch),
+    extraParams: { devicePolicyId: policyId || devicePolicyId },
     enableRbac: resolvedRbacEnabled
   })
 
@@ -357,8 +374,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     setDeviceOSRuleList([])
   }
 
-  const handleDeviceOSDrawerClose = () => {
-    setDrawerVisible(false)
+  const handleContentClose = () => {
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -371,9 +387,23 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (!isComponentMode) {
+      setDrawerVisible(false)
+    }
     callBack()
   }
 
+  const handleContentFinish = async () => {
+    try {
+      if (!isViewMode()) {
+        await contentForm.validateFields()
+        await handleDevicePolicy(editMode.isEdit || localEditMode.isEdit)
+      }
+      handleContentClose()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
+  }
 
   const handleEditDetailsInfo = (rule: DeviceOSRule) => {
     drawerForm.setFieldValue('access', rule.access)
@@ -531,8 +561,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   const content = <>
-    <Form layout='horizontal' form={contentForm}>
-      <DrawerFormItem
+    <Form layout={isComponentMode ? 'vertical' : 'horizontal'} form={contentForm}>
+      <PolicyFormItem
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
@@ -552,7 +582,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         ]}
         children={<Input disabled={isViewMode()}/>}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
@@ -560,7 +590,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />
-      <DrawerFormItem
+      <PolicyFormItem
         name='deviceDefaultAccess'
         label={<div style={{ textAlign: 'left' }}>
           <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -635,7 +665,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   )
 
   const modelContent = () => {
-    if (onlyAddMode.enable || drawerViewModeId !== '') {
+    if (isComponentMode || onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -708,32 +738,31 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   return (
     <>
       {modelContent()}
-      <Drawer
+      {isComponentMode && <ComponentModeForm
+        pageTitle={pageTitle}
+        breadcrumb={breadcrumb}
+        form={form}
+        editMode={editMode.isEdit || localEditMode.isEdit}
+        content={content}
+        handleContentClose={handleContentClose}
+        handleContentFinish={handleContentFinish} />
+      }
+      {!isComponentMode &&<Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
-        onClose={() => handleDeviceOSDrawerClose()}
+        onClose={() => handleContentClose()}
         children={content}
         push={false}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
             showSaveButton={!isViewMode()}
-            onCancel={handleDeviceOSDrawerClose}
-            onSave={async () => {
-              try {
-                if (!isViewMode()) {
-                  await contentForm.validateFields()
-                  await handleDevicePolicy(editMode.isEdit || localEditMode.isEdit)
-                }
-                handleDeviceOSDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
+            onCancel={handleContentClose}
+            onSave={handleContentFinish}
           />
         }
         width={'830px'}
-      />
+      />}
     </>
   )
 }

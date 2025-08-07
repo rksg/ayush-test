@@ -148,6 +148,22 @@ export function HttpURLRegExp (value: string) {
   }
   return Promise.resolve()
 }
+export function HttpIPv6URLRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|\\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\\]|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}
+
+export function HttpDualModeURLRegExp (value: string) {
+  return customizePromiseAny([HttpURLRegExp(value), HttpIPv6URLRegExp(value)])
+    .catch((err: Error) => {
+      return Promise.reject(err)
+    })
+}
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   let ok = true
@@ -215,18 +231,39 @@ export function domainNameDuplicationValidation (domainArray: string[]) {
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
 }
 
-export function walledGardensRegExp (value:string) {
+export function walledGardensRegExp (value: string) {
   const { $t } = getIntl()
   if (!value) {
     return Promise.resolve()
   }
   const walledGardens = value.split('\n')
-  const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
+  const walledGardenRegex = new RegExp(/^(((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|((\*\.){0,1})((([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z|[A-Za-z][A-Za-z0-9\‌-]*[A-Za-z0-9])))$/)
   const isValid = walledGardens.every(walledGarden=>{
     return !(walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim()))
   })
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))
 }
+
+export function walledGardensIPv6RegExp (value: string) {
+  const { $t } = getIntl()
+  if (!value) {
+    return Promise.resolve()
+  }
+  const walledGardens = value.split('\n')
+  const walledGardenIPv6Regex = new RegExp(/^((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|((([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z|[A-Za-z][A-Za-z0-9\‌​-]*[A-Za-z0-9])))$/)
+  const isValid = walledGardens.every(walledGarden=>{
+    return !(walledGarden.trim()&&!walledGardenIPv6Regex.test(walledGarden.trim()))
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))
+}
+
+export function walledGardensDualModeRegExp (value: string) {
+  return customizePromiseAny([walledGardensRegExp(value), walledGardensIPv6RegExp(value)])
+    .catch((err: Error) => {
+      return Promise.reject(err)
+    })
+}
+
 export function syslogServerRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
