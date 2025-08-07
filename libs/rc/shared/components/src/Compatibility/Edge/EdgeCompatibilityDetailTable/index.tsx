@@ -6,13 +6,13 @@ import { sumBy }             from 'lodash'
 import moment                from 'moment'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps }                                                                                                                                                                                                                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
-import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useStartEdgeFirmwareVenueUpdateNowMutation, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeFirmwareVenueScheduleMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeIncompatibleFeature, EdgeIncompatibleFeatureV1_1, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility, EntityCompatibilityV1_1, IncompatibilityFeatureGroups, IncompatibilityFeatures, getCompatibilityFeatureDisplayName }         from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                                                                                                                                                                               from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                                                                                                                                            from '@acx-ui/user'
-import { compareVersions }                                                                                                                                                                                                                                                          from '@acx-ui/utils'
+import { Table, TableProps }                                                                                                                                                                                                                                                from '@acx-ui/components'
+import { Features }                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
+import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useStartEdgeFirmwareVenueUpdateNowMutation, useUpdateEdgeFirmwareVenueScheduleMutation }                                                                from '@acx-ui/rc/services'
+import { EdgeFirmwareVersion, EdgeIncompatibleFeature, EdgeIncompatibleFeatureV1_1, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility, EntityCompatibilityV1_1, IncompatibilityFeatureGroups, IncompatibilityFeatures, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                                                                                                                                                                       from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                                                                                                    from '@acx-ui/user'
+import { compareVersions }                                                                                                                                                                                                                                                  from '@acx-ui/utils'
 
 import { EdgeChangeScheduleDialog } from '../../../EdgeFirmware/ChangeScheduleDialog'
 import { EdgeUpdateNowDialog }      from '../../../EdgeFirmware/UpdateNowDialog'
@@ -80,7 +80,6 @@ const useColumns = (isGroupedData: boolean) => {
 export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTableProps) => {
   const { $t } = useIntl()
 
-  const isBatchOperationEnable = useIsSplitOn(Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
   const { data, requirementOnly = false, venueId } = props
 
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
@@ -90,8 +89,6 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
-  const [updateNow] = useUpdateEdgeFirmwareNowMutation()
-  const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [startEdgeFirmwareVenueUpdateNow] = useStartEdgeFirmwareVenueUpdateNowMutation()
   const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
 
@@ -117,23 +114,14 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   const columns = useColumns(isGroupedData)
 
   const handleUpdateNowSubmit = async (data: string) => {
-    const payload = { version: data }
-
     try {
-      if (isBatchOperationEnable) {
-        await startEdgeFirmwareVenueUpdateNow({
-          payload: {
-            venueIds: [venueId!],
-            version: data,
-            state: 'UPDATE_NOW'
-          }
-        }).unwrap()
-      } else {
-        await updateNow({
-          params: { venueId },
-          payload
-        }).unwrap()
-      }
+      await startEdgeFirmwareVenueUpdateNow({
+        payload: {
+          venueIds: [venueId!],
+          version: data,
+          state: 'UPDATE_NOW'
+        }
+      }).unwrap()
 
       setSelectedRowKeys([])
     } catch (error) {
@@ -148,21 +136,14 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     }
 
     try {
-      if (isBatchOperationEnable) {
-        await updateEdgeFirmwareVenueSchedule({
-          payload: {
-            venueIds: [venueId!],
-            date: payload.date,
-            time: payload.time,
-            version: payload.version
-          }
-        }).unwrap()
-      } else {
-        await updateSchedule({
-          params: { venueId },
-          payload
-        }).unwrap()
-      }
+      await updateEdgeFirmwareVenueSchedule({
+        payload: {
+          venueIds: [venueId!],
+          date: payload.date,
+          time: payload.time,
+          version: payload.version
+        }
+      }).unwrap()
 
       setSelectedRowKeys([])
     } catch (error) {

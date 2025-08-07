@@ -40,6 +40,7 @@ export const mockUnBlockedPersona: Persona = {
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
+  displayName: 'persona-display-name-1',
   groupId: 'persona-group-id-1',
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',

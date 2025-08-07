@@ -15,8 +15,7 @@ import {
   useDisconnectClientMutation,
   useLazyApListQuery,
   useWifiNetworkListQuery,
-  useGetClientsQuery
-} from '@acx-ui/rc/services'
+  useGetClientsQuery } from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
@@ -246,6 +245,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
           personaId={row.identityId}
           personaGroupId={row.identityGroupId}
           name={row.identityName}
+          displayName={row.identityDisplayName}
         />
       }
     }]),
@@ -579,7 +579,6 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const { rbacOpsApiEnabled } = getUserProfile()
   const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as string[],
@@ -611,6 +610,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     pagination: { settingsId }
   })
 
+
   // Backend API will send Client Mac by uppercase, that will make Ant Table
   // treats same UE as two different UE and cause sending duplicate mac in
   // disconnect/revoke request. The API should be fixed in near future.
@@ -618,7 +618,6 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   useEffect(() => {
     // Remove selection when UE is disconnected.
     const connectedClientList = tableQuery.data?.data
-
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -651,6 +650,8 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         ...(tableQuery.payload as typeof defaultRbacClientPayload), searchString })
     }
   }, [searchString])
+
+
 
   const rowSelection = {
     selectedRowKeys: tableSelected.selectedRowKeys,
