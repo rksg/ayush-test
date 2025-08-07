@@ -78,7 +78,7 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
   return <Form.Item
     name={name}
     label={label}
-    rules={ruleMap[name]}
+    // rules={ruleMap[name]}
     validateFirst
   >
     <Select

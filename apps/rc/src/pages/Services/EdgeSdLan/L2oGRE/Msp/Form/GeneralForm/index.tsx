@@ -12,7 +12,7 @@ import { tunnelProfileFieldName, TunnelProfileFormItem, tunnelTemplateFieldName 
 import { StyledAntdDescriptions, VerticalSplitLine, Wrapper }                     from '../../../styledComponents'
 import { useEdgeMspSdLanContext }                                                 from '../EdgeMspSdLanContextProvider'
 
-enum ApplyTo {
+export enum ApplyTo {
   MY_ACCOUNT = 'myAccount',
   MY_CUSTOMERS = 'myCustomers'
 }

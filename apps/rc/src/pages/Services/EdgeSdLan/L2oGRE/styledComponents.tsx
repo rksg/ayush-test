@@ -58,3 +58,7 @@ export const StyledAntdDescriptions = styled(Descriptions)`
     padding-bottom: 0px;
   }
 `
+
+export const DescriptionWrapper = styled.div`
+  margin-bottom: var(--acx-content-horizontal-space);
+`
