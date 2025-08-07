@@ -1,4 +1,4 @@
-import { OltCageStateEnum, OltSlotType } from '@acx-ui/olt/utils'
+import { OltStatusEnum, OltCageStateEnum, OltSlotType } from '@acx-ui/olt/utils'
 
 export const oltList = [{
   venueId: 'e407295d681b4016ae15d4422618b770',
@@ -104,7 +104,7 @@ export const oltData = {
   edgeClusterName: 'MWC_Demo_OVA_72',
   tenantId: '1cdc11256f8144e6802b661de4e5c46e',
   name: 'mock_nokia_mf_2_1',
-  status: 'online',
+  status: OltStatusEnum.ONLINE,
   vendor: 'Nokia',
   model: 'MF-2',
   firmware: '24.449',

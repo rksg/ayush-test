@@ -108,6 +108,13 @@ export const OltCageTable = (props: OltCageTableProps) => {
               dataSource={get(groupedLineCardCages, item.value)}
               rowActions={filterByAccess(rowActions)}
               rowSelection={{ type: 'checkbox' }}
+              actions={filterByAccess([{
+                label: $t({ defaultMessage: 'Manage ONT S/N' })
+                // onClick: () => { setOntDrawerVisible(true) }
+              }, {
+                label: $t({ defaultMessage: 'Manage Cage Group' })
+                // onClick: () => { setCageGroupDrawerVisible(true) }
+              }])}
             />
           </Tabs.TabPane>
         })}

@@ -35,7 +35,7 @@ export const OltTable = (props: OltTableProps) => {
       // scopeKey:
     },
     {
-      label: $t({ defaultMessage: 'Reboot' }),
+      label: $t({ defaultMessage: 'Reboot Chassis' }),
       onClick: (rows, clearSelection) => {
         oltActions.showRebootOlt({ rows, callBack: clearSelection })
       }

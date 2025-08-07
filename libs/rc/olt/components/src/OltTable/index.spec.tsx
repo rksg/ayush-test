@@ -110,8 +110,8 @@ describe('OltTable', () => {
 
     const row = await screen.findByRole('row', { name: /TestOlt/i })
     await click(within(row).getByRole('checkbox'))
-    await click(screen.getByRole('button', { name: 'Reboot' }))
-    const dialogTitle = await screen.findByText('Reboot "TestOlt"?')
+    await click(screen.getByRole('button', { name: 'Reboot Chassis' }))
+    const dialogTitle = await screen.findByText('Reboot the Chassis of "TestOlt"?')
     expect(dialogTitle).toBeInTheDocument()
   })
 
@@ -134,8 +134,8 @@ describe('OltTable', () => {
     const offlineRow = await screen.findByRole('row', { name: /TestOfflineOlt/i })
     await click(within(row).getByRole('checkbox'))
     await click(within(offlineRow).getByRole('checkbox'))
-    await click(screen.getByRole('button', { name: 'Reboot' }))
-    const dialogTitle = await screen.findByText('Reboot "2 OLT Devices"?')
+    await click(screen.getByRole('button', { name: 'Reboot Chassis' }))
+    const dialogTitle = await screen.findByText('Reboot the Chassis of "2 OLT Chassis"?')
     expect(dialogTitle).toBeInTheDocument()
   })
 

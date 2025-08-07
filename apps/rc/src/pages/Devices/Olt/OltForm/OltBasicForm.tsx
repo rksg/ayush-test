@@ -80,6 +80,12 @@ export const OltBasicForm = (props: {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
 
+  useEffect(() => {
+    if (editMode && props.data) {
+      form.setFieldsValue(props.data)
+    }
+  }, [editMode, props.data])
+
   return (
     <>
       <PageHeader

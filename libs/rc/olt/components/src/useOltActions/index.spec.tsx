@@ -75,6 +75,6 @@ describe('Test useOltActions', () => {
     })
 
     const modalArgs = mockShowActionModal.mock.calls[0][0]
-    expect(modalArgs.title).toMatch(/OLT Devices/)
+    expect(modalArgs.title).toMatch(/2 OLT Chassis/)
   })
 })

@@ -3,6 +3,8 @@ import { Form } from 'antd'
 import { Olt }                                   from '@acx-ui/olt/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { oltData } from '../mockdata'
+
 import { OltBasicForm } from './OltBasicForm'
 
 const OltForm = () => {
@@ -30,6 +32,7 @@ const OltForm = () => {
   return (
     <OltBasicForm
       form={form}
+      data={editMode ? oltData : undefined}
       editMode={editMode}
       onFinish={onFinish}
     />
