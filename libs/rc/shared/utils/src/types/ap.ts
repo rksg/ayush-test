@@ -641,7 +641,7 @@ export interface ApUsbSettings {
 }
 
 export interface ApPassword {
-  apPasswords: string,
+  apPassword: string,
   expireTime: string,
   updatedTime: string
 }
