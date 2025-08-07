@@ -371,7 +371,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   ConnectionMeteringFormMode: {},
   IdentityForm: () => <div data-testid='IdentityForm' />,
   IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />,
-  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />
+  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />,
+  DeviceOSComponent: () => <div data-testid='DeviceOSComponent' />,
+  ApplicationComponent: () => <div data-testid='ApplicationComponent' />,
+  Layer2Component: () => <div data-testid='Layer2Component' />,
+  Layer3Component: () => <div data-testid='Layer3Component' />
 }))
 
 jest.mock('@acx-ui/switch/components', () => ({
