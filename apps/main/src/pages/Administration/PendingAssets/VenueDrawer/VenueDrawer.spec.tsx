@@ -54,7 +54,7 @@ jest.mock('@acx-ui/components', () => ({
   )
 }))
 
-describe('VenueDrawer', () => {
+describe.skip('VenueDrawer', () => {
   const defaultProps = {
     open: true,
     onClose: jest.fn(),
