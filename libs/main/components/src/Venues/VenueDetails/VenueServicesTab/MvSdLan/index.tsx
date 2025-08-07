@@ -2,6 +2,7 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Card, SummaryCard, SpaceWrapper } from '@acx-ui/components'
+import { Features }                        from '@acx-ui/feature-toggle'
 import {
   EdgeServiceStatusLight,
   SdLanTopologyDiagram
@@ -13,7 +14,8 @@ import {
   EdgeMvSdLanViewData,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation } from '@acx-ui/rc/utils'
+  PolicyOperation,
+  useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { NetworkTable } from './NetworkTable'
@@ -38,6 +40,7 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     guestTunnelProfileName,
     edgeAlarmSummary
   } = data
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const infoFields = [{
     title: $t({ defaultMessage: 'Service Name' }),
@@ -56,7 +59,9 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
       />
     )
   }, {
-    title: $t({ defaultMessage: 'Cluster' }),
+    title: isEdgeL2greReady ?
+      $t({ defaultMessage: 'Destination RUCKUS Edge cluster' }) :
+      $t({ defaultMessage: 'Cluster' }),
     content: () => (
       <TenantLink to={`devices/edge/cluster/${edgeClusterId}/edit/cluster-details`}>
         {edgeClusterName}
@@ -69,7 +74,9 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
       </TenantLink>
     )
   }] : []),{
-    title: $t({ defaultMessage: 'Tunnel Profile (AP- Cluster tunnel)' }),
+    title: isEdgeL2greReady ?
+      $t({ defaultMessage: 'Tunnel Profile (AP to Cluster)' }) :
+      $t({ defaultMessage: 'Tunnel Profile (AP- Cluster tunnel)' }),
     colSpan: 6,
     content: () => <TenantLink to={getPolicyDetailsLink({
       type: PolicyType.TUNNEL_PROFILE,
@@ -79,7 +86,9 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
       {tunnelProfileName}
     </TenantLink>
   }, ...(isGuestTunnelEnabled ? [{
-    title: $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }),
+    title: isEdgeL2greReady ?
+      $t({ defaultMessage: 'Tunnel Profile (Cluster to DMZ)' }) :
+      $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }),
     colSpan: 6,
     content: () => (
       <TenantLink to={getPolicyDetailsLink({
@@ -95,12 +104,15 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>
-      <Card>
-        <SdLanTopologyDiagram
-          isGuestTunnelEnabled={!!isGuestTunnelEnabled}
-          vertical={false}
-        />
-      </Card>
+      {
+        !isEdgeL2greReady &&
+        <Card>
+          <SdLanTopologyDiagram
+            isGuestTunnelEnabled={!!isGuestTunnelEnabled}
+            vertical={false}
+          />
+        </Card>
+      }
       <SummaryCard data={infoFields} />
       <Row>
         <Col span={24}>

@@ -641,7 +641,7 @@ export interface ApUsbSettings {
 }
 
 export interface ApPassword {
-  apPasswords: string,
+  apPassword: string,
   expireTime: string,
   updatedTime: string
 }
@@ -762,6 +762,8 @@ export interface WifiApSetting {
   poeOutMode?: PoeOutModeEnum;
   lanPorts?: LanPort[];
   lan?: LanPort[];
+  globalAccessVlanIdEnabled?: boolean
+  globalAccessVlanId?: number
 }
 
 export interface ApDirectedMulticast {

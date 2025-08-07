@@ -7,11 +7,11 @@ import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { useWifiAclTotalCount } from '../counterUtils'
 
-import AccessControlSet           from './AccessControlSet'
-import ApplicationPolicyComponent from './ApplicationPolicyComponent'
-import DevicePolicyComponent      from './DevicePolicyComponent'
-import Layer2Component            from './Layer2Component'
-import Layer3Component            from './Layer3Component'
+import AccessControlSet              from './AccessControlSet'
+import ApplicationPolicyComponentSet from './ApplicationPolicyComponentSet'
+import DevicePolicyComponentSet      from './DevicePolicyComponentSet'
+import Layer2ComponentSet            from './Layer2ComponentSet'
+import Layer3ComponentSet            from './Layer3ComponentSet'
 
 
 export function AccessControlTabs () {
@@ -51,21 +51,21 @@ export function AccessControlTabs () {
         key='layer2'
         style={paddingStyle}
       >
-        <Layer2Component />
+        <Layer2ComponentSet />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Layer 3 ({l3AclCount})' }, { l3AclCount })}
         key='layer3'
         style={paddingStyle}
       >
-        <Layer3Component />
+        <Layer3ComponentSet />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Device & OS ({deviceAclCount})' }, { deviceAclCount })}
         key='device'
         style={paddingStyle}
       >
-        <DevicePolicyComponent />
+        <DevicePolicyComponentSet />
       </Tabs.TabPane>
       {
         !isCore && <Tabs.TabPane
@@ -73,7 +73,7 @@ export function AccessControlTabs () {
           key='application'
           style={paddingStyle}
         >
-          <ApplicationPolicyComponent />
+          <ApplicationPolicyComponentSet />
         </Tabs.TabPane>
       }
     </Tabs>

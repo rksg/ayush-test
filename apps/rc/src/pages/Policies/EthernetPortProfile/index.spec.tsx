@@ -4,6 +4,8 @@ import { rest }  from 'msw'
 import {
   AaaUrls,
   CommonUrlsInfo,
+  CommonRbacUrlsInfo,
+  SwitchRbacUrlsInfo,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
@@ -13,7 +15,7 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult } from './__tests__/fixtures'
+import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult, mockedApsResult, mockedSwitchResult } from './__tests__/fixtures'
 
 
 import EthernetPortProfile from '.'
@@ -70,10 +72,24 @@ describe('EthernetPortProfileTable', ()=>{
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json(mockedVenuesResult))
-      )
+      ),
 
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedApsResult))
+        }
+      ),
+
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedSwitchResult))
+        }
+      )
     )
   })
+
   it('should create EthernetPortProfileList successfully', async () => {
 
     render(
@@ -211,6 +227,20 @@ describe('EthernetPortProfileTable', ()=>{
     await user.click(within(row[0]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+  })
+
+  it('hover Ethernet Port Profile aps tooltip', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EthernetPortProfile />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findByRole('row', { name: /ethernetPortProfile_3/i })
+    const trigger = within(row).getAllByText('1')[2]
+    await user.hover(trigger)
+    expect(await screen.findByText('ap_name_1')).toBeInTheDocument()
   })
 
 })
