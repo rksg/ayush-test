@@ -48,7 +48,8 @@ import {
   dualModeGeneralIpAddressRegExp,
   HttpURLRegExp,
   HttpIPv6URLRegExp,walledGardensRegExp,
-  walledGardensIPv6RegExp
+  walledGardensIPv6RegExp,
+  walledGardensDualModeRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -863,6 +864,13 @@ describe('validator', () => {
         'For more information see the help information'
       )
     })
+    it('Should display error message if url with mix ipv4/ipv6 values is incorrectly', async () => {
+      const result = walledGardensRegExp('10.206.84.25\n1234::5678')
+      await expect(result).rejects.toEqual(
+        'Please make sure that all destinations comply to allowed formats. ' +
+        'For more information see the help information'
+      )
+    })
   })
   describe('walledGardensIPv6RegExp', () => {
     it('Should take care of url with domain values correctly', async () => {
@@ -888,6 +896,48 @@ describe('validator', () => {
         'Please make sure that all destinations comply to allowed formats. ' +
         'For more information see the help information'
       )
+    })
+  })
+  describe('walledGardensDualRegExp', () => {
+    it('Should take care of url with domain values correctly', async () => {
+      const result = walledGardensDualModeRegExp('test.ruckus.cloud')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of url with ipv4 values correctly', async () => {
+      const result = walledGardensDualModeRegExp('10.206.84.25')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    // eslint-disable-next-line max-len
+    it('Should take care of url with ipv6 values correctly', async () => {
+      const result = walledGardensDualModeRegExp('1111:2222:3333::6666:7777')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    // eslint-disable-next-line max-len
+    it('Should display error message if url domain name values incorrectly', async () => {
+      const result = walledGardensDualModeRegExp('test...ruckus.cloud')
+      await expect(result).rejects.toEqual(
+        'Please make sure that all destinations comply to allowed formats. ' +
+        'For more information see the help information'
+      )
+    })
+    it('Should display error message if url with ipv4 values incorrectly', async () => {
+      const result = walledGardensDualModeRegExp('999.999.999.999')
+      await expect(result).rejects.toEqual(
+        'Please make sure that all destinations comply to allowed formats. ' +
+        'For more information see the help information'
+      )
+    })
+    it('Should display error message if url with ipv6 values incorrectly', async () => {
+      const result = walledGardensDualModeRegExp('aaaa:bbbb:cccc::dddd:kkkk')
+      await expect(result).rejects.toEqual(
+        'Please make sure that all destinations comply to allowed formats. ' +
+        'For more information see the help information'
+      )
+    })
+    it('Should take care of url with mix ipv4/ipv6 and domain values correctly', async () => {
+      const result = walledGardensDualModeRegExp('10.206.84.25\ntest.ruckus.cloud\n'+
+        '1111:2222:3333::6666:7777')
+      await expect(result).resolves.toEqual(undefined)
     })
   })
 })
