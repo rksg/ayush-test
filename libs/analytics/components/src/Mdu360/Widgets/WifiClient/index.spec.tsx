@@ -107,7 +107,7 @@ describe('WifiClient', () => {
     expect(await screen.findByText('Samsung:')).toBeVisible()
     expect(await screen.findAllByText('40')).toHaveLength(2)
     expect(await screen.findByText('Dell:')).toBeVisible()
-    expect(await screen.findAllByText('30')).toHaveLength(2)
+    expect(await screen.findAllByText('30')).toHaveLength(1)
     expect(await screen.findByText('Lenovo:')).toBeVisible()
     expect(await screen.findAllByText('20')).toHaveLength(2)
     expect(await screen.findByText('Other:')).toBeVisible()

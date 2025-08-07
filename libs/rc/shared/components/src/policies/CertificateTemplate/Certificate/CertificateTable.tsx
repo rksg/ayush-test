@@ -159,6 +159,7 @@ export function CertificateTable (
         const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
         return (item ? <IdentityDetailsLink
           name={item.name}
+          displayName={item.displayName}
           personaId={item.id}
           personaGroupId={item.groupId}
           revoked={item.revoked}

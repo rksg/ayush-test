@@ -93,4 +93,18 @@ describe('Input', () => {
     const eyeSlashIcon = await screen.findByTestId('EyeSlashSolid')
     expect(eyeSlashIcon).toBeVisible()
   })
+
+  it('should call setForceFocusOn(false) when input is blurred', async () => {
+    const setForceFocusOn = jest.fn()
+    render(
+      <PasswordInputStrength
+        placeholder='Password'
+        setForceFocusOn={setForceFocusOn}
+      />
+    )
+    const input = await screen.findByPlaceholderText('Password')
+    fireEvent.focus(input)  // simulate focus first
+    fireEvent.blur(input)   // then blur it
+    expect(setForceFocusOn).toHaveBeenCalledWith(false)
+  })
 })

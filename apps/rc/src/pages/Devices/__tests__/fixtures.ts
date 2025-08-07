@@ -29,7 +29,7 @@ export const mockVenue = {
   id: 'venue-id'
 }
 
-export const venuelist = {
+export const venueList = {
   totalCount: 5,
   page: 1,
   data: [
@@ -1453,6 +1453,28 @@ export const apLanPorts = [
   }
 ]
 
+//default access type id
+export const defaultAccessTypeId = 'default_access_id'
+export const defaultTrunkTypeId = 'default_trunk_id'
+
+export const mockDefaultTrunkEthertnetPortProfile = {
+  id: defaultTrunkTypeId,
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  isDefault: true
+}
+
+export const mockDefaultAccessEthertnetPortProfile = {
+  id: defaultAccessTypeId,
+  name: 'Default Access',
+  type: 'ACCESS',
+  untagId: 1,
+  vlanMembers: '1',
+  isDefault: true
+}
+
 export const mockEthProfiles = {
   fields: [
     'id',
@@ -1467,12 +1489,7 @@ export const mockEthProfiles = {
   page: 1,
   data: [
     {
-      id: 'ed4b396d848e465d8044064ff3da9d33',
-      name: 'Default Trunk',
-      type: 'TRUNK',
-      untagId: 1,
-      vlanMembers: '1-4094',
-      isDefault: true,
+      ...mockDefaultTrunkEthertnetPortProfile,
       apSerialNumbers: ['serial-number'],
       venueIds: [],
       apActivations: [
@@ -1484,12 +1501,7 @@ export const mockEthProfiles = {
       ]
     },
     {
-      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
-      name: 'Default Access',
-      type: 'ACCESS',
-      untagId: 1,
-      vlanMembers: '1',
-      isDefault: true,
+      ...mockDefaultAccessEthertnetPortProfile,
       apSerialNumbers: ['serial-number'],
       venueIds: [],
       apActivations: [
@@ -2137,7 +2149,8 @@ export const ApData_H670 = {
   model: 'H670',
   poeMode: 'Auto',
   poeOut: false,
-  poeOutMode: PoeOutModeEnum._802_3af
+  poeOutMode: PoeOutModeEnum._802_3af,
+  globalAccessPortUntaggedIdEnabled: false
 }
 
 export const ApCap_H670 = {
@@ -4712,6 +4725,17 @@ export const deviceAps = {
   ]
 }
 
+export const rbacDeviceAps = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    serialNumber: '422039000034',
+    name: 'UI team AP',
+    apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
+    status: '2_00_Operational'
+  }]
+}
+
 export const portlistData = {
   data: [{
     adminStatus: 'Up',
@@ -4816,9 +4840,135 @@ export const resultOfGetApSnmpAgentSettings = {
 }
 
 export const resultOfGetVenueApSnmpAgentSettings = {
-  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
-  enableApSnmp: true
+  data: [{
+    apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    enableApSnmp: true
+  }]
 }
+
+export const mockVenueApSnmpViewModel = {
+  totalCount: 1,
+  data: [{
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs',
+    name: 'SNMP-2',
+    communityNames: [],
+    userNames: ['SNMPV3'],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: ['0e2f68ab79154ffea64aa52c5cc48826'],
+    venueNames: [],
+    apActivations: []
+  }]
+}
+
+export const mockApSnmpViewModel = {
+  totalCount: 1,
+  data: [{
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    name: 'SNMP-1',
+    communityNames: [],
+    userNames: [
+      'SNMPV3'
+    ],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: [],
+    venueNames: [],
+    apActivations: [{
+      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+      apSerialNumber: '302002030366'
+    }]
+  }]
+}
+
+export const mockAllSnmpViewModel = {
+  totalCount: 2,
+  data: [{
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7',
+    name: 'SNMP-1',
+    communityNames: [],
+    userNames: [
+      'SNMPV3'
+    ],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: [],
+    venueNames: [],
+    apActivations: [{
+      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+      apSerialNumber: '302002030366'
+    }]
+  }, {
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs',
+    name: 'SNMP-2',
+    communityNames: [],
+    userNames: ['SNMPV3'],
+    apSerialNumbers: [],
+    apNames: [],
+    venueIds: ['0e2f68ab79154ffea64aa52c5cc48826'],
+    venueNames: [],
+    apActivations: []
+  }]
+}
+
+export const resultOfGetRbacApSnmpAgentProfiles = [
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authenticationType: 'SHA',
+        authenticationPassphrase: '00000000',
+        privacyType: 'AES',
+        privacyPassphrase: '00000000'
+      }
+    ],
+    policyName: 'SNMP-1',
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7'
+  },
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authenticationType: 'SHA',
+        authenticationPassphrase: '00000000',
+        privacyType: 'AES',
+        privacyPassphrase: '00000000'
+      }
+    ],
+    policyName: 'SNMP-2',
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]
 
 export const resultOfUpdateApSnmpAgentSettings
 = { requestId: '5aa421fd-25e9-4952-b3e0-a3a39c9a52bb' }
@@ -5125,4 +5275,45 @@ export const mockedVenueLanPortSettings2 = {
 
 export const mockedVenueLanPortSettings3 = {
   enabled: true
+}
+
+// Enhanced Radius Server Profiles data
+export const mockAuthRadiusId = '__Auth_Radius_ID__'
+export const mockAuthRadiusId2 = '__Auth_Radius_ID_2__'
+export const mockAuthRadiusName = '__Auth_Radius_Name__'
+export const mockAuthRadiusName2 = '__Auth_Radius_Name_2__'
+export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
+export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
+
+export const dummyRadiusServiceList = {
+  totalCount: 3,
+  page: 1,
+  data: [{
+    id: mockAuthRadiusId,
+    name: mockAuthRadiusName,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.100:1812',
+    secondary: '192.168.0.101:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAuthRadiusId2,
+    name: mockAuthRadiusName2,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.200:1812',
+    secondary: '192.168.0.210:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAccountingRadiusId,
+    name: mockAccuntingRadiusName,
+    type: 'ACCOUNTING',
+    primary: '192.168.0.201:1813',
+    secondary: '',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }]
 }

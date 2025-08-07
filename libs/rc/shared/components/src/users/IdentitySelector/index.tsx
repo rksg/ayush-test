@@ -89,7 +89,7 @@ export const IdentitySelector = ({
           <Typography>{!selectedIdentityId
             ? noDataDisplay
             : selectedIdentity
-              ? selectedIdentity.name
+              ? selectedIdentity.displayName ?? selectedIdentity.name
               : isLoading || isFetching || (!data && !error)
                 ? $t({ defaultMessage: 'Loading identity...' })
                 : $t({ defaultMessage: 'Identity not found' })}

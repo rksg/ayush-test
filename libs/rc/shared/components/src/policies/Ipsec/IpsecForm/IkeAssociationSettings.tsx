@@ -17,13 +17,13 @@ import {
 import { messageMapping } from './messageMapping'
 
 interface IkeAssociationSettingsFormProps {
-  initIpSecData?: Ipsec
-  loadIkeSettings: boolean
-  setLoadIkeSettings: (state: boolean) => void
+  editData?: Ipsec
 }
 
 export default function IkeAssociationSettings (props: IkeAssociationSettingsFormProps) {
-  const { initIpSecData, loadIkeSettings, setLoadIkeSettings } = props
+  const { editData } = props
+
+  const [loadIkeSettings, setLoadIkeSettings] = useState(true)
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -42,6 +42,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
     let isValid = true
     let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
     let proposals = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposals'])
+
     if (proposalType === IpSecProposalTypeEnum.SPECIFIC) {
       if (proposals.length === MAX_PROPOSALS) {
         if (proposals[0].encAlg === proposals[1].encAlg &&
@@ -64,15 +65,15 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
     let ikeProposalSelection = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
     setIkeProposalType(ikeProposalSelection ? ikeProposalSelection : IpSecProposalTypeEnum.DEFAULT)
 
-    if (loadIkeSettings && initIpSecData) {
-      if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
-        setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
+    if (loadIkeSettings && editData) {
+      if (editData?.ikeSecurityAssociation?.ikeProposalType) {
+        setIkeProposalType(editData.ikeSecurityAssociation.ikeProposalType)
       } else {
         setIkeProposalType(IpSecProposalTypeEnum.DEFAULT)
       }
     }
     setLoadIkeSettings(false)
-  }, [initIpSecData, form])
+  }, [editData, form])
 
   const onProposalTypeChange = (value: IpSecProposalTypeEnum) => {
     setIkeProposalType(value)
@@ -172,7 +173,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_encryption_${index}`}
@@ -189,7 +189,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_integrity_${index}`}
@@ -203,7 +202,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       rules={[
                         { required: true }
                       ]}
-                      initialValue={IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG}
                       children={
                         <Select style={{ minWidth: 180 }}
                           data-testid={`select_prf_${index}`}
@@ -215,7 +213,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       name={[field.name, 'dhGroup']}
                       label={$t({ defaultMessage: 'DH Group' })}
                       rules={[{ required: true }]}
-                      initialValue={IpSecDhGroupEnum.MODP2048}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_dh_${index}`}
@@ -224,14 +221,13 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                         />}
                     />
                     {fields.length > 1 &&
-                <Button
-                  aria-label='delete'
-                  type='link'
-                  icon={<DeleteOutlinedIcon />}
-                  style={{ width: '50px' }}
-                  onClick={() => remove(field.name)}
-                />
-                    }
+                      <Button
+                        aria-label='delete'
+                        type='link'
+                        icon={<DeleteOutlinedIcon />}
+                        style={{ width: '50px' }}
+                        onClick={() => remove(field.name)}
+                      />}
                   </Space>
                 </Space>
               )}

@@ -70,7 +70,8 @@ export function IdentityForm (props: IdentityFormProps) {
   const handleUpdatePersona = async (submittedData: Persona) => {
     if (!dataFromServer) return
 
-    const personaKeys = ['name', 'email', 'description', 'vlan', 'phoneNumber'] as const
+    const personaKeys = ['name', 'email', 'description',
+      'vlan', 'phoneNumber', 'displayName'] as const
     const patchData = {}
 
     personaKeys.forEach(key => {

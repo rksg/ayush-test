@@ -1,10 +1,17 @@
 import { rest } from 'msw'
 
-import { Features, TierFeatures, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
-import { networkApi, tunnelProfileApi }                                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeTunnelProfileFixtures, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                from '@acx-ui/test-utils'
+import { Features, TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { networkApi, tunnelProfileApi }             from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  EdgeTunnelProfileFixtures,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType,
+  TunnelProfileUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockedNetworkViewData } from '../__tests__/fixtures'
 
@@ -51,7 +58,7 @@ describe('TunnelProfileDetail', () => {
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       ),
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => {
           mockedGetVMNetworksList()
           return res(ctx.json(mockedNetworkViewData))
@@ -110,7 +117,7 @@ describe('TunnelProfileDetail', () => {
       expect(screen.getByText('PMTU Timeout')).toBeInTheDocument()
       expect(screen.getByText('PMTU Retries')).toBeInTheDocument()
       expect(screen.getByText('Keep Alive Interval')).toBeInTheDocument()
-      expect(screen.getByText('Keep Alive Reties')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Retries')).toBeInTheDocument()
     })
   })
 

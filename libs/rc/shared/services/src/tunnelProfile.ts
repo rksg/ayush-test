@@ -114,6 +114,20 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
           ...createHttpRequest(TunnelProfileUrls.deactivateTunnelProfileByEdgeCluster, params)
         }
       }
+    }),
+    activateTunnelProfileByIpsecProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(TunnelProfileUrls.activateTunnelProfileByIpsecProfile, params)
+        }
+      }
+    }),
+    deactivateTunnelProfileByIpsecProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(TunnelProfileUrls.deactivateTunnelProfileByIpsecProfile, params)
+        }
+      }
     })
   })
 })
@@ -125,5 +139,7 @@ export const {
   useGetTunnelProfileByIdQuery,
   useUpdateTunnelProfileMutation,
   useActivateTunnelProfileByEdgeClusterMutation,
-  useDeactivateTunnelProfileByEdgeClusterMutation
+  useDeactivateTunnelProfileByEdgeClusterMutation,
+  useActivateTunnelProfileByIpsecProfileMutation,
+  useDeactivateTunnelProfileByIpsecProfileMutation
 } = tunnelProfileApi

@@ -3,8 +3,8 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                            from '@acx-ui/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
   useConfigTemplate,
