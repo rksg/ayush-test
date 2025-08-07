@@ -32,7 +32,10 @@ jest.mock('./ApGroupNetworkVlanRadioDrawer', () => ({
         <button
           data-testid='drawer-save-button'
           onClick={() => {
-            updateData([{ id: 'test-network' }], [{ id: 'old-test-network' }])
+            updateData(
+              [{ id: 'test-network' } as unknown as Network],
+              [{ id: 'old-test-network' } as unknown as Network]
+            )
           }}
         >
           ok
@@ -54,7 +57,7 @@ describe('ApGroupNetworksTable with activated column', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: {} }))),
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (_, res, ctx) => res(ctx.json({ venue: venueData }))

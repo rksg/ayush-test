@@ -8,9 +8,9 @@ import {
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { AnalyticsFilter }                          from '@acx-ui/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { AnalyticsFilter }                 from '@acx-ui/utils'
 
 import {
   apGroupMembers,
@@ -29,6 +29,26 @@ jest.mock('@acx-ui/analytics/components', () => ({
   IncidentTabContent: (props: { filters: AnalyticsFilter }) => <div
     data-testid='incidents-table'>{JSON.stringify(props.filters)}</div>
 }))
+
+jest.mock('./ApGroupNetworksTab', () => {
+  const MockedApGroupNetworksTab = () => (
+    <div data-testid='ApGroupNetworksTab'>Mocked ApGroupNetworksTab</div>
+  )
+  return {
+    __esModule: true,
+    default: MockedApGroupNetworksTab
+  }
+})
+
+jest.mock('./ApGroupMembersTab', () => {
+  const MockedApGroupMembersTab = () => (
+    <div data-testid='ApGroupMembersTab'>Mocked ApGroupMembersTab</div>
+  )
+  return {
+    __esModule: true,
+    default: MockedApGroupMembersTab
+  }
+})
 
 const mockvenueNetworkApGroup = jest.fn()
 
@@ -106,7 +126,7 @@ describe('ApGroupDetails', () => {
       route: { params, path: '/:tenantId/devices/apgroups/:apGroupId/details/:activeTab' }
     })
 
-    expect(await screen.findByText(/APs/)).toBeVisible()
+    expect(await screen.findByTestId(/ApGroupMembersTab/)).toBeVisible()
     expect(await screen.findAllByRole('tab')).toHaveLength(3)
   })
 
@@ -120,8 +140,7 @@ describe('ApGroupDetails', () => {
       route: { params, path: '/:tenantId/devices/apgroups/:apGroupId/details/:activeTab' }
     })
 
-    await waitFor(() => expect(mockvenueNetworkApGroup).toBeCalledTimes(1))
-    expect(await screen.findByText(/Networks/)).toBeVisible()
+    expect(await screen.findByTestId(/ApGroupNetworksTab/)).toBeVisible()
     expect(await screen.findAllByRole('tab')).toHaveLength(3)
   })
 
