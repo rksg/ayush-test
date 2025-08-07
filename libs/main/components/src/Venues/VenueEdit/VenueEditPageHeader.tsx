@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }           from '@acx-ui/components'
-import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { useConfigTemplateBreadcrumb }  from '@acx-ui/rc/utils'
 import {
   useNavigate,

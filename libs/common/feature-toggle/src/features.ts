@@ -46,7 +46,6 @@ export enum Features {
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
   EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
-  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE = 'removable-ff',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
@@ -61,6 +60,7 @@ export enum Features {
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
   EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
+  EDGE_IPSEC_VXLAN_TOGGLE = 'edge-ipsec-vxlan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -165,7 +165,6 @@ export enum Features {
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
-  WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_RBAC_API = 'removable-ff',
@@ -250,6 +249,7 @@ export enum Features {
   WIFI_POE_OUT_MODE_SETTING_TOGGLE = 'wifi-poe-out-mode-setting-toggle',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
   UNITS_ADVANCED_SEARCH = 'units-advanced-search',
+  UNIT_SUSPEND_NOTIFICATION_TOGGLE = 'unit-suspend-notification',
   DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
@@ -303,10 +303,17 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
+  WIFI_AP_PASSWORD_PER_AP_TOGGLE = 'wifi-ap-password-per-ap-toggle',
+  WIFI_AP_PASSWORD_VISIBILITY_TOGGLE = 'wifi-ap-password-visibility-toggle',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
   EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
-  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle'
+  SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle',
+  MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
+  SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
+  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
+  MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -329,6 +336,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
   EDGE_DELEGATION = 'EDGE-DELEGATION',
+  EDGE_IPSEC_VXLAN = 'EDGE-IPSEC-VXLAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

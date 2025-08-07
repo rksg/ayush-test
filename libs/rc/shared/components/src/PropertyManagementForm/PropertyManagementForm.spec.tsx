@@ -2,10 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   NewPersonaBaseUrl,
   PersonaUrls,
+  PropertyConfigs,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -23,8 +24,8 @@ import {
   mockPropertyUnitList,
   mockResidentPortalProfileList
 } from './__tests__/fixtures'
-import { PropertyManagementForm } from './PropertyManagementForm'
-import { msgCategoryIds }         from './utils'
+import { PropertyManagementForm }                from './PropertyManagementForm'
+import { msgCategoryIds, msgCategoryIdsLimited } from './utils'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -149,6 +150,7 @@ describe('Property Config Form', () => {
   describe('msgTemplateEnabled is true', () => {
     beforeEach(async () => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     it('should render form items for Ruckcus Portal', async () => {
@@ -164,6 +166,33 @@ describe('Property Config Form', () => {
         </Form>
       </Provider>)
 
+      await screen.findByText('Resident Portal')
+      await screen.findByText('Communication Templates')
+      msgCategoryIdsLimited.forEach(msgCategoryId => {
+        expect(screen.getByTestId(`TemplateSelector-${msgCategoryId}`)).toBeVisible()
+      })
+    })
+
+    it('should render suspend templates when suspend toggle is selected', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm<PropertyConfigs>()
+        form.setFieldsValue({
+          communicationConfig: {
+            type: 'communicationConfig',
+            sendEmail: true,
+            sendSms: false,
+            notifyOnUnitSuspend: true
+          }
+        })
+        return form
+      })
+      render(<Provider>
+        <Form form={formRef.current}>
+          <PropertyManagementForm form={formRef.current}
+            venueId={'mocked-venue-id'}
+            initialValues={mockEnabledNoPinPropertyConfig} />
+        </Form>
+      </Provider>)
       await screen.findByText('Resident Portal')
       await screen.findByText('Communication Templates')
       msgCategoryIds.forEach(msgCategoryId => {

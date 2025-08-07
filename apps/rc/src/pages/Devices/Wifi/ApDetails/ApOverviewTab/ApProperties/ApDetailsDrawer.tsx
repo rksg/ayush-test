@@ -1,26 +1,22 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Button, Divider, Tooltip } from 'antd'
-import { capitalize, includes }     from 'lodash'
-import { useIntl }                  from 'react-intl'
+import { Button, Divider, Tooltip }  from 'antd'
+import { capitalize, includes }      from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput, Loader, SuspenseBoundary } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
-  defaultSwitchPayload,
-  EditPortDrawer,
-  getInactiveTooltip,
-  isLAGMemberPort,
-  SwitchLagModal,
-  SwitchLagParams,
-  isOperationalSwitchPort,
-  isStackPort
-} from '@acx-ui/rc/components'
+  Drawer,
+  Descriptions,
+  Loader,
+  SuspenseBoundary,
+  PasswordInput,
+  cssStr
+} from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetVenueQuery,
-  useGetVenueSettingsQuery,
   useGetApValidChannelQuery,
   useSwitchListQuery,
   useLazySwitchPortlistQuery,
@@ -28,8 +24,11 @@ import {
   useGetApOperationalQuery,
   useGetFlexAuthenticationProfilesQuery,
   useLazyGetApNeighborsQuery,
-  useLazyGetApLldpNeighborsQuery
+  useLazyGetApPasswordQuery
 } from '@acx-ui/rc/services'
+import {
+  defaultSwitchPayload
+}                 from '@acx-ui/rc/switch/utils'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -45,8 +44,18 @@ import {
   SwitchRbacUrlsInfo,
   useApContext,
   ApLldpNeighbor,
-  ApRfNeighbor } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+  ApRfNeighbor,
+  ApPassword } from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import {
+  EditPortDrawer,
+  getInactiveTooltip,
+  isLAGMemberPort,
+  SwitchLagModal,
+  SwitchLagParams,
+  isOperationalSwitchPort,
+  isStackPort
+} from '@acx-ui/switch/components'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { useUserProfileContext, hasPermission }         from '@acx-ui/user'
 import { getOpsApi, CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'
@@ -67,28 +76,28 @@ interface ApDetailsDrawerProps {
   apDetails: ApDetails
 }
 
-const useGetApPassword = (currentAP: ApViewModel) => {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+const useGetApPassword = (currentAP: ApViewModel, skip: boolean) => {
   const params = {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
 
-  const { data: venueSettings } = useGetVenueSettingsQuery({ params },
-    { skip: isUseRbacApi || !currentAP?.venueId })
+  const { data: venueRbacApSettings } = useGetApOperationalQuery({ params, enableRbac: true },
+    { skip: skip || !currentAP?.venueId })
 
-  const { data: venueRbacApSetings } = useGetApOperationalQuery({ params, enableRbac: isUseRbacApi },
-    { skip: !isUseRbacApi || !currentAP?.venueId })
-
-  return isUseRbacApi ? venueRbacApSetings?.loginPassword : venueSettings?.apPassword
+  return venueRbacApSettings?.loginPassword
 }
 
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
+
+  const isPerApPassword = useIsSplitOn(Features.WIFI_AP_PASSWORD_PER_AP_TOGGLE)
+  const isApPasswordVisibility = useIsSplitOn(Features.WIFI_AP_PASSWORD_VISIBILITY_TOGGLE)
+  const isPerApPasswordAndVisibility = isPerApPassword && isApPasswordVisibility
+
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { serialNumber, venueId } = useApContext()
@@ -107,6 +116,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
+  const [needGetApPassword, setNeedGetApPassword] = useState(false)
+  const [apPasswordParam, setApPassword] = useState<ApPassword>()
+  const [showPassword, setShowPassword] = useState(false)
 
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
@@ -115,14 +127,14 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     venueId: currentAP?.venueId,
     serialNumber: currentAP?.serialNumber
   }
-  const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: isUseRbacApi },
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: true },
     { skip: !params.venueId })
 
 
   const { data: apCapabilities } = useGetApCapabilities({
     params,
     modelName: currentAP?.model,
-    enableRbac: isUseRbacApi })
+    enableRbac: true })
 
   const { data: venueData } = useGetVenueQuery({ params }, { skip: !params.venueId })
 
@@ -139,11 +151,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     })
   })
 
-  const apNeighborQuery = isUseRbacApi ?
-    useLazyGetApNeighborsQuery :
-    useLazyGetApLldpNeighborsQuery
   const [ getApNeighbors,
-    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = apNeighborQuery()
+    { data: apNeighborsData, isLoading: isLoadingApNeighbors } ] = useLazyGetApNeighborsQuery()
   const { isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({
@@ -159,7 +168,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId
   })
 
-  const apPassword = useGetApPassword(currentAP)
+  const apPassword = useGetApPassword(currentAP, isPerApPasswordAndVisibility)
+
+  const [getApPassword] = useLazyGetApPasswordQuery()
 
   const fetchSwitchDetails = async () => {
     if (!hasPermission({
@@ -234,8 +245,24 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }, [currentAP])
 
+  useEffect(() => {
+    const updateApPassword = async () => {
+      const apPasswordData = await getApPassword({ params }).unwrap()
+      setApPassword(apPasswordData)
+    }
+
+    if (needGetApPassword) {
+      updateApPassword()
+    }
+  }, [needGetApPassword])
+
+
   const onClose = () => {
     setVisible(false)
+    // Reset password visibility for security
+    setShowPassword(false)
+    setNeedGetApPassword(false)
+    setApPassword(undefined)
   }
 
   const displayAFCInfo = () => {
@@ -318,6 +345,61 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }
 
+  const handleShowPassword = () => {
+    if (!isPerApPasswordAndVisibility || !params.serialNumber || !params.venueId) return
+    setNeedGetApPassword(true)
+    setShowPassword(true)
+  }
+
+  const passwordRegenerationMessage = useMemo(() => {
+    const { lastSeenTime, deviceStatusSeverity } = currentAP ?? {}
+    const isConnected = deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+    const expireTime = apPasswordParam?.expireTime
+
+    if (!lastSeenTime || !expireTime) {
+      return null
+    }
+
+    // Format expire time for display
+    const expireDate = new Date(expireTime)
+    const now = new Date()
+    const expireTimeString = expireDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+
+    // Check if expireTime is today or tomorrow
+    const isToday = expireDate.toDateString() === now.toDateString()
+    const dayLabel = isToday ? 'today' : 'tomorrow'
+    const timeWithDay = `${expireTimeString} ${dayLabel}`
+
+    if (isConnected) {
+      return (
+        <FormattedMessage
+          defaultMessage={'AP Password will regenerate at <time></time>.'}
+          values={{ time: () => <span style={{ fontWeight: 600 }}>{timeWithDay}</span> }}
+        />
+      )
+    }
+
+    // For disconnected devices, check if it's been more than 24 hours
+    const lastSeenDate = new Date(lastSeenTime)
+    const timeDiffHours = (now.getTime() - lastSeenDate.getTime()) / (1000 * 60 * 60)
+
+    if (timeDiffHours > 24) {
+      return $t({ defaultMessage: 'AP Password will regenerate upon cloud reconnection.' })
+    } else {
+      return (
+        <FormattedMessage
+          defaultMessage={'AP Password will regenerate at <time></time>, or upon cloud reconnection.'}
+          values={{ time: () => <span style={{ fontWeight: 600 }}>{timeWithDay}</span> }}
+        />
+      )
+    }
+
+  }, [currentAP?.lastSeenTime, currentAP?.lastSeenTime, apPasswordParam?.expireTime])
+
   const PropertiesTab = () => {
     return (<>
       <Descriptions labelWidthPercent={50}>
@@ -357,16 +439,43 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
-          (userProfile?.support || userProfile?.var || userProfile?.dogfood) && apPassword &&
+          (userProfile?.support || userProfile?.var || userProfile?.dogfood) &&
+          (isPerApPasswordAndVisibility || apPassword) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={<UI.DetailsPassword>
-              <PasswordInput
-                readOnly
-                bordered={false}
-                value={apPassword}
-              />
-            </UI.DetailsPassword>}
+            children={isPerApPasswordAndVisibility ? (
+              !showPassword ? (
+                <Button
+                  type='link'
+                  onClick={handleShowPassword}
+                  style={{ padding: 0, height: 'auto', fontSize: '12px' }}
+                >
+                  {$t({ defaultMessage: 'Show AP Password' })}
+                </Button>
+              ) : (
+                <>
+                  <span>{apPasswordParam?.apPassword}</span>
+                  {passwordRegenerationMessage &&
+                    <div style={{
+                      lineHeight: cssStr('--acx-body-6-line-height'),
+                      fontSize: cssStr('--acx-body-4-font-size'),
+                      fontStyle: 'italic',
+                      color: cssStr('--acx-neutrals-60'),
+                      marginTop: '8px' }}>
+                      {passwordRegenerationMessage}
+                    </div>
+                  }
+                </>
+              )
+            ) : (
+              <UI.DetailsPassword>
+                <PasswordInput
+                  readOnly
+                  bordered={false}
+                  value={apPassword}
+                />
+              </UI.DetailsPassword>
+            )}
           />
         }
         <Descriptions.Item

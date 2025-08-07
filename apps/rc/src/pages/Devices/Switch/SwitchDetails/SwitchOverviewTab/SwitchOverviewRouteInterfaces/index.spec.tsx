@@ -4,7 +4,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { SwitchOverviewRouteInterfaces } from './'
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/switch/components', () => ({
   SwitchVeTable: () => <div data-testid='SwitchVeTable' />
 }))
 

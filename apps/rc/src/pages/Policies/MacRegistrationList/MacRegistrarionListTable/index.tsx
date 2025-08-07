@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
@@ -14,7 +15,6 @@ import { Features, useIsSplitOn }                      from '@acx-ui/feature-tog
 import {
   useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation, useGetVenuesQuery,
-  useNetworkListQuery,
   useSearchMacRegListsQuery, useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -65,8 +65,6 @@ export default function MacRegistrationListsTable () {
     { isLoading: isDeleteMacRegListUpdating }
   ] = useDeleteMacRegListMutation()
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },
@@ -97,9 +95,7 @@ export default function MacRegistrationListsTable () {
       }
     })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-
-  const { networkVenuesMap } = getNetworkListQuery({
+  const { networkVenuesMap } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: [ 'venues', 'id', 'venueApGroups' ],
@@ -112,7 +108,8 @@ export default function MacRegistrationListsTable () {
     selectFromResult: ({ data }) => {
       const networkList = new Map()
       data?.data.forEach( n => {
-        networkList.set(n.id, isWifiRbacEnabled ? n.venues.ids : n.venues.names) })
+        networkList.set(n.id, n.venues.ids)
+      })
       return {
         networkVenuesMap: networkList
       }
@@ -195,11 +192,8 @@ export default function MacRegistrationListsTable () {
         align: 'center',
         render: function (_, row) {
           if(networkVenuesMap.size > 0) {
-            // eslint-disable-next-line max-len
             const venues = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item) ?? []
-            const toolTipItems: string [] = isWifiRbacEnabled ?
-              venueNameMap.filter(v => venues!.includes(v.key)).map(v => v.value)
-              : Array.from(new Set(venues))
+            const toolTipItems: string [] = venueNameMap.filter(v => venues!.includes(v.key)).map(v => v.value)
             return toolTipItems.length === 0 ? 0 :
               <SimpleListTooltip items={toolTipItems} displayText={toolTipItems.length}/>
           }

@@ -297,7 +297,7 @@ function PersonaDetails () {
           /> : <></>
       case IdentityTabKey.DEVICE:
         return <IdentityClientTable
-          personaId={personaId}
+          personaData={personaData}
           personaGroupId={personaGroupId}
         />
       default:

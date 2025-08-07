@@ -20,6 +20,7 @@ interface EthernetPortProfileOverwriteProps {
     rules?: Rule[]
     currentIndex: number,
     onGUIChanged?: (fieldName: string) => void
+    isGlobalOverride?: boolean
 }
 
 const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProps) => {
@@ -33,7 +34,8 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
     width='200px',
     currentIndex,
     onGUIChanged,
-    rules=[] } = props
+    rules=[],
+    isGlobalOverride=false } = props
 
   const form = Form.useFormInstance()
   const [isEditMode, setEditMode] = useState(false)
@@ -42,7 +44,6 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
   const isDirty = (currentFieldValue?.toString() !== defaultValue)
   const lan = form?.getFieldValue('lan')?.[currentIndex]
   const hasVni = lan?.vni > 0
-
   useEffect(() => {
     if (currentFieldValue !== initialData ){
       form.setFieldValue(fieldName, initialData)
@@ -121,7 +122,12 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       }
       { !isEditMode &&
         <Space>
-          {currentFieldValue}{(isEditable && !hasVni) ? (isDirty? '(Custom)': '(Default)') : ''}
+          {currentFieldValue}{
+            isGlobalOverride ? $t({ defaultMessage: '(Global)' }) :
+              (isEditable && !hasVni) ?
+                (isDirty ? $t({ defaultMessage: '(Custom)' }) :
+                  $t({ defaultMessage: '(Default)' })) : ''
+          }
           { isEditable &&
             <>
               <Tooltip

@@ -10,6 +10,7 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
+import { useEnforcedStatus }                                      from '@acx-ui/config-template/utils'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useDeleteNetworkMutation }                               from '@acx-ui/rc/services'
 import {
@@ -39,7 +40,6 @@ import {
 import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime,
   widgetsMapping, TableQuery } from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates'
 
 
 const disabledType: NetworkTypeEnum[] = []

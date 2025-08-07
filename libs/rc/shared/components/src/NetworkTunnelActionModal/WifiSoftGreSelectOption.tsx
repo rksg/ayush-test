@@ -12,8 +12,9 @@ import {
 } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
-import IpsecDrawer   from '../policies/Ipsec/IpsecForm/IpsecDrawer'
-import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
+import IpsecAddDrawer         from '../policies/Ipsec/IpsecForm/IpsecAddDrawer'
+import { IpsecDetailsDrawer } from '../policies/Ipsec/IpsecForm/IpsecDetailsDrawer'
+import SoftGreDrawer          from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                         from './styledComponents'
 import { NetworkTunnelTypeEnum }       from './types'
@@ -372,14 +373,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         setVisible={setAddDrawerVisible}
         callbackFn={addOption}
       />
-      <IpsecDrawer
+      <IpsecDetailsDrawer
         visible={detailIpsecDrawerVisible}
         setVisible={setDetailIpsecDrawerVisible}
-        policyId={ipsecProfileId}
-        policyName={ipsecOption.find(item => item.value === ipsecProfileId)?.label as string}
-        readMode
+        ipsecId={ipsecProfileId}
       />
-      <IpsecDrawer
+      <IpsecAddDrawer
         visible={addIpsecDrawerVisible}
         setVisible={setAddIpsecDrawerVisible}
         callbackFn={addIpsecOption}
