@@ -44,6 +44,7 @@ export function NetworkControlTab () {
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
+  const isNetworkApplicationControlEnabled = !isCore
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })
@@ -258,6 +259,7 @@ export function NetworkControlTab () {
       </UI.FieldLabel>
 
       {
+        isNetworkApplicationControlEnabled &&
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             {$t({ defaultMessage: 'Application Recognition & Control' })}
