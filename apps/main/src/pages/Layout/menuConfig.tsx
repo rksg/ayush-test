@@ -290,7 +290,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Switch List' }),
               isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
             },
-            ...(isEdgeOltMgmtEnabled ? [{
+            ...((isEdgeOltMgmtEnabled || isNokiaOltEnabled) ? [{
               uri: '/devices/optical',
               isActiveCheck: new RegExp('^/devices/optical'),
               label: isNokiaOltEnabled
