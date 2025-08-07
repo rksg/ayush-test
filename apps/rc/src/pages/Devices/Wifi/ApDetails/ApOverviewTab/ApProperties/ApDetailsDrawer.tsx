@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 import { Button, Divider, Tooltip } from 'antd'
-import { capitalize, includes }     from 'lodash'
+import { capitalize }               from 'lodash'
 import { useIntl }                  from 'react-intl'
 
 import { Drawer, Descriptions, Loader, SuspenseBoundary } from '@acx-ui/components'
