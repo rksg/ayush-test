@@ -1,13 +1,20 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Button, Divider, Tooltip } from 'antd'
-import { capitalize }               from 'lodash'
-import { useIntl }                  from 'react-intl'
+import { Button, Divider, Tooltip }  from 'antd'
+import { capitalize }                from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, Loader, SuspenseBoundary } from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import {
+  Drawer,
+  Descriptions,
+  Loader,
+  SuspenseBoundary,
+  PasswordInput,
+  cssStr
+} from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetVenueQuery,
   useGetApValidChannelQuery,
@@ -59,6 +66,7 @@ import { useApNeighbors }       from '../../ApNeighbors/useApNeighbors'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { poeClassDisplayMap }   from './constants'
+import * as UI                  from './styledComponents'
 
 
 interface ApDetailsDrawerProps {
@@ -343,9 +351,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     setShowPassword(true)
   }
 
-  const getPasswordRegenerationMessage = () => {
-    const isConnected = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
-    const lastSeenTime = currentAP?.lastSeenTime
+  const passwordRegenerationMessage = useMemo(() => {
+    const { lastSeenTime, deviceStatusSeverity } = currentAP ?? {}
+    const isConnected = deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
     const expireTime = apPasswordParam?.expireTime
 
     if (!lastSeenTime || !expireTime) {
@@ -368,11 +376,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
     if (isConnected) {
       return (
-        <>
-          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
-          <span style={{ color: '#000' }}>{timeWithDay}</span>
-          {$t({ defaultMessage: '.' })}
-        </>
+        <FormattedMessage
+          defaultMessage={'AP Password will regenerate at <time></time>.'}
+          values={{ time: () => <span style={{ fontWeight: 600 }}>{timeWithDay}</span> }}
+        />
       )
     }
 
@@ -384,14 +391,14 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       return $t({ defaultMessage: 'AP Password will regenerate upon cloud reconnection.' })
     } else {
       return (
-        <>
-          {$t({ defaultMessage: 'AP Password will regenerate at ' })}
-          <span style={{ color: '#000' }}>{timeWithDay}</span>
-          {$t({ defaultMessage: ', or upon cloud reconnection.' })}
-        </>
+        <FormattedMessage
+          defaultMessage={'AP Password will regenerate at <time></time>, or upon cloud reconnection.'}
+          values={{ time: () => <span style={{ fontWeight: 600 }}>{timeWithDay}</span> }}
+        />
       )
     }
-  }
+
+  }, [currentAP?.lastSeenTime, currentAP?.lastSeenTime, apPasswordParam?.expireTime])
 
   const PropertiesTab = () => {
     return (<>
@@ -436,26 +443,39 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           (isPerApPasswordAndVisibility || apPassword) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={
+            children={isPerApPasswordAndVisibility ? (
               !showPassword ? (
                 <Button
                   type='link'
                   onClick={handleShowPassword}
-                  style={{ padding: 0, height: 'auto', fontSize: '14px' }}
+                  style={{ padding: 0, height: 'auto', fontSize: '12px' }}
                 >
                   {$t({ defaultMessage: 'Show AP Password' })}
                 </Button>
               ) : (
                 <>
-                  <span>{apPasswordParam?.apPasswords ?? apPassword}</span>
-                  {getPasswordRegenerationMessage() && (
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                      {getPasswordRegenerationMessage()}
+                  <span>{apPasswordParam?.apPassword}</span>
+                  {passwordRegenerationMessage &&
+                    <div style={{
+                      lineHeight: cssStr('--acx-body-6-line-height'),
+                      fontSize: cssStr('--acx-body-4-font-size'),
+                      fontStyle: 'italic',
+                      color: cssStr('--acx-neutrals-60'),
+                      marginTop: '8px' }}>
+                      {passwordRegenerationMessage}
                     </div>
-                  )}
+                  }
                 </>
               )
-            }
+            ) : (
+              <UI.DetailsPassword>
+                <PasswordInput
+                  readOnly
+                  bordered={false}
+                  value={apPassword}
+                />
+              </UI.DetailsPassword>
+            )}
           />
         }
         <Descriptions.Item
