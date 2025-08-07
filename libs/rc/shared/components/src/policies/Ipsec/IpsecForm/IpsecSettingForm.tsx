@@ -8,6 +8,7 @@ import { Features }                         from '@acx-ui/feature-toggle'
 import { useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  getTunnelUsageTypeOptions,
   Ipsec,
   IpSecTunnelUsageTypeEnum,
   servicePolicyNameRegExp,
@@ -72,12 +73,10 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
           >
             <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
-                <Radio value={IpSecTunnelUsageTypeEnum.VXLAN_GPE}>
-                  {$t({ defaultMessage: 'For RUCKUS Devices(VxLAN GPE)' })}
-                </Radio>
-                <Radio value={IpSecTunnelUsageTypeEnum.SOFT_GRE}>
-                  {$t({ defaultMessage: 'For 3rd Party Devices(SoftGRE)' })}
-                </Radio>
+                {
+                  getTunnelUsageTypeOptions().map(o =>
+                    <Radio key={o.value} value={o.value}>{o.label}</Radio>)
+                }
               </Space>
             </Radio.Group>
           </Form.Item>}

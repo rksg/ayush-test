@@ -83,6 +83,7 @@ export interface IpSecFormData extends Ipsec {
 export interface IpsecViewData {
   id: string
   name: string
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
   serverAddress: string
   authenticationType: IpSecAuthEnum
   preSharedKey: string
@@ -95,6 +96,7 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
+  tunnelActivations?: IpsecTunnelActivation[]
 }
 
 export interface VenueTableUsageByIpsec extends IpsecActivation {
@@ -126,6 +128,10 @@ export interface IpsecWiredActivation extends ProfileLanVenueActivations {
 
 export interface IpsecWiredApActivation extends ProfileLanApActivations {
   softGreProfileId: string
+}
+
+export interface IpsecTunnelActivation {
+  tunnelProfileId: string
 }
 
 export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {

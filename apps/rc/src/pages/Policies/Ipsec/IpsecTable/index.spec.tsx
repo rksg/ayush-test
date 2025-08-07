@@ -1,17 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
-import { ipSecApi }                                                                                         from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Path }                                                                                             from '@acx-ui/react-router-dom'
-import { Provider, store }                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                      from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                             from '@acx-ui/feature-toggle'
+import { ipSecApi, useGetIpsecViewDataListQuery, useGetTunnelProfileViewDataListQuery }                                                                       from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath, CommonUrlsInfo, useIsEdgeFeatureReady, EdgeTunnelProfileFixtures } from '@acx-ui/rc/utils'
+import { Path }                                                                                                                                               from '@acx-ui/react-router-dom'
+import { Provider, store }                                                                                                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                                        from '@acx-ui/test-utils'
 
 import { mockedVenueQueryData, mockIpSecTable } from '../__tests__/fixtures'
 
 import IpsecTable from '.'
 
+const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: '/ecc2d7cf9d2342fdb31ae0e24958fcac/t',
@@ -24,6 +25,31 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetIpsecViewDataListQuery: jest.fn(),
+  useGetTunnelProfileViewDataListQuery: jest.fn()
+}))
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  SimpleListTooltip: (props: {
+    displayText: string,
+    items: string[]
+  }) => <div data-testid='SimpleListTooltip'>
+    <div data-testid='SimpleListTooltip-display'>{props.displayText}</div>
+    <div data-testid='SimpleListTooltip-items'>{props.items.join(', ')}</div>
+  </div>
+}))
+
+const mockUseGetIpsecViewDataListQuery = useGetIpsecViewDataListQuery as jest.Mock
+const mockUseGetTunnelProfileViewDataListQuery = useGetTunnelProfileViewDataListQuery as jest.Mock
 
 const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
   type: PolicyType.IPSEC,
@@ -44,11 +70,12 @@ describe('IpsecTable', () => {
     store.dispatch(ipSecApi.util.resetApiState())
     mockedSingleDeleteApi.mockClear()
 
+    mockUseGetIpsecViewDataListQuery.mockReturnValue(mockIpSecTable)
     mockServer.use(
-      rest.post(
-        IpsecUrls.getIpsecViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockIpSecTable))
-      ),
+      // rest.post(
+      //   IpsecUrls.getIpsecViewDataList.url,
+      //   (_, res, ctx) => res(ctx.json(mockIpSecTable))
+      // ),
       rest.delete(
         IpsecUrls.deleteIpsec.url,
         (_, res, ctx) => {
@@ -161,5 +188,61 @@ describe('IpsecTable', () => {
     // eslint-disable-next-line max-len
     await(within(dialog).findByText('You are unable to delete this record due to its usage in Network with Venue,AP LAN Port with Venue,Venue LAN Port'))
     await user.click(screen.getByRole('button', { name: 'OK' }))
+  })
+
+  describe('VxLAN IPSec supported', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
+      mockUseGetIpsecViewDataListQuery.mockReturnValue(mockIpSecTable)
+      mockUseGetTunnelProfileViewDataListQuery.mockReturnValue({
+        tunnelProfileNameMap: mockedTunnelProfileViewData.data.map(tp => ({
+          id: tp.id,
+          name: tp.name
+        }))
+      })
+    })
+    afterEach(() => jest.clearAllMocks())
+
+    it('should display `Tunnel Usage Type` correctly', async () => {
+      render(
+        <Provider>
+          <IpsecTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await screen.findByText('Tunnel Usage Type')
+      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices(VxLAN GPE)/ })
+      expect(within(vxlanRow).getByText('For RUCKUS Devices(VxLAN GPE)')).toBeInTheDocument()
+      expect(within(vxlanRow).getByText('N/A')).toBeInTheDocument()
+
+      const softGreRow = screen.getByRole('row', { name: /For 3rd party Devices(SoftGRe)/ })
+      expect(within(softGreRow).getByText('2.2.2.2')).toBeInTheDocument()
+    })
+
+    it('should display venue instances correctly', async () => {
+      render(
+        <Provider>
+          <IpsecTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+      await screen.findByText('Tunnel Usage Type')
+      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices(VxLAN GPE)/ })
+      expect(within(vxlanRow).getByText('For RUCKUS Devices(VxLAN GPE)')).toBeInTheDocument()
+
+    })
+
+    it('should display tunnel instances correctly', async () => {
+      render(
+        <Provider>
+          <IpsecTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+    })
   })
 })
