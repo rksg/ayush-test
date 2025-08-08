@@ -125,7 +125,7 @@ const TunnelProfileDetail = () => {
         noDataDisplay
     },
     {
-      title: $t({ defaultMessage: 'Keep Alive Reties' }),
+      title: $t({ defaultMessage: 'Keep Alive Retries' }),
       content: tunnelProfileData.keepAliveRetry ?
         `${tunnelProfileData.keepAliveRetry} ${$t({ defaultMessage: 'retries' })}` :
         noDataDisplay

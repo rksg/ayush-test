@@ -56,7 +56,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled']
   const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format']
   const dhcpOption82SubOption151TextFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text']
-  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macFormat']
+  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macDelimiter']
   /* eslint-enable max-len */
 
   const dhcpOption82EnabledValue = Form.useWatch(dhcpOption82FieldName, form)
@@ -82,7 +82,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
       dhcpOption82SubOption151TextFieldName,
       dhcpSettings?.subOption151Text
     )
-    form?.setFieldValue(dhcpOption82MacFormat, dhcpSettings?.macFormat)
+    form?.setFieldValue(dhcpOption82MacFormat, dhcpSettings?.macDelimiter)
   }
 
   const setFormDataFromSettings = (settings: LanPortSoftGreProfileSettings) => {
@@ -126,7 +126,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
       subOption151Enabled: form.getFieldValue(dhcpOption82SubOption151EnabledFieldName),
       subOption151Format: form.getFieldValue(dhcpOption82SubOption151FormatFieldName),
       subOption151Text: form.getFieldValue(dhcpOption82SubOption151TextFieldName),
-      macFormat: form.getFieldValue(dhcpOption82MacFormat)
+      macDelimiter: form.getFieldValue(dhcpOption82MacFormat)
     }
 
     originalSettings.current = currentSettings

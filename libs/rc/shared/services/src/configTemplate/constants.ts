@@ -153,6 +153,12 @@ export const useCasesToRefreshEthernetPortTemplateList = [
   'DeleteEthernetPortProfileTemplate'
 ]
 
+export const useCasesToRefreshTunnelServiceProfileTemplateList = [
+  'AddTunnelServiceProfileTemplate',
+  'UpdateTunnelServiceProfileTemplate',
+  'DeleteTunnelServiceProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   'SyncTemplate',
@@ -172,5 +178,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshSwitchConfigProfileTemplateList,
   ...useCasesToRefreshApGroupTemplateList,
   ...useCasesToRefreshEthernetPortTemplateList,
-  ...useCasesToRefreshIdentityGroupTemplateList
+  ...useCasesToRefreshIdentityGroupTemplateList,
+  ...useCasesToRefreshTunnelServiceProfileTemplateList
 ]

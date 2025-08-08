@@ -201,6 +201,7 @@ export function PersonaOverview ({
   }, [externalIdentityData])
 
   const details = [
+    { label: $t({ defaultMessage: 'DisplayName' }), value: personaData?.displayName },
     { label: $t({ defaultMessage: 'Email' }), value: personaData?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaData?.description },
     { label: $t({ defaultMessage: 'Phone' }), value: personaData?.phoneNumber },

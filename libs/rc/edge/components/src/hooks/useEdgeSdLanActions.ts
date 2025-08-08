@@ -22,13 +22,13 @@ export const useEdgeSdLanActions = () => {
     currentData: EdgeSdLanServiceProfile['activeNetwork'],
     originData?: EdgeSdLanServiceProfile['activeNetwork']
   ) => {
-    const rmNetworks = originData?.filter(origin =>
+    const deactivateList = originData?.filter(origin =>
       !currentData.some(current =>
         origin.venueId === current.venueId &&
         current.networkId === origin.networkId
       )
     )
-    const addNetworks = currentData.filter(current =>
+    const activateList = currentData.filter(current =>
       !originData?.some(origin =>
         origin.venueId === current.venueId &&
         origin.networkId === current.networkId &&
@@ -37,8 +37,8 @@ export const useEdgeSdLanActions = () => {
     )
 
     return {
-      rmNetworks,
-      addNetworks
+      deactivateList,
+      activateList
     }
   }
 
@@ -96,9 +96,12 @@ export const useEdgeSdLanActions = () => {
     isTemplate = false
   ) => {
     const actions = []
-    const { rmNetworks = [], addNetworks = [] } = diffVenueNetworks(currentData ?? [], originData)
-    if (rmNetworks.length > 0) {
-      actions.push(...rmNetworks.map(network => deactivateNetwork({
+    const {
+      deactivateList = [],
+      activateList = []
+    } = diffVenueNetworks(currentData ?? [], originData)
+    if (deactivateList.length > 0) {
+      actions.push(...deactivateList.map(network => deactivateNetwork({
         customHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1.1+json'
         },
@@ -110,9 +113,9 @@ export const useEdgeSdLanActions = () => {
       }).unwrap()))
     }
 
-    if (addNetworks.length > 0) {
+    if (activateList.length > 0) {
       // eslint-disable-next-line max-len
-      actions.push(...addNetworks.map(network => (isTemplate? activateNetworkTemplate : activateNetwork)({
+      actions.push(...activateList.map(network => (isTemplate? activateNetworkTemplate : activateNetwork)({
         customHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1.1+json'
         },
@@ -214,9 +217,53 @@ export const useEdgeSdLanActions = () => {
     }
   }
 
+  const activateSdLanForNetwork = async (
+    serviceId: string,
+    venueId: string,
+    networkId: string,
+    tunnelProfileId: string,
+    callback?: () => void
+  ) => {
+    await activateNetwork({
+      customHeaders: {
+        'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      },
+      params: {
+        serviceId,
+        venueId,
+        wifiNetworkId: networkId
+      },
+      payload: {
+        forwardingTunnelProfileId: tunnelProfileId
+      },
+      callback
+    }).unwrap()
+  }
+
+  const removeSdLanFromNetwork = async (
+    serviceId: string,
+    venueId: string,
+    networkId: string,
+    callback?: () => void
+  ) => {
+    await deactivateNetwork({
+      customHeaders: {
+        'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      },
+      params: {
+        serviceId,
+        venueId,
+        wifiNetworkId: networkId
+      },
+      callback
+    }).unwrap()
+  }
+
   return {
     createEdgeSdLan,
     updateEdgeSdLan,
-    toggleNetworkChange
+    toggleNetworkChange,
+    activateSdLanForNetwork,
+    removeSdLanFromNetwork
   }
 }

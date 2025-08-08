@@ -1,14 +1,20 @@
-import { dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
-import { DateRange }         from '@acx-ui/utils'
+import { dataApiURL, store }          from '@acx-ui/store'
+import { mockGraphqlQuery }           from '@acx-ui/test-utils'
+import { AnalyticsFilter, DateRange } from '@acx-ui/utils'
+
+import { IdentityFilter } from '../types'
 
 import { api } from './services'
 
-const payLoad = {
+const payLoad: AnalyticsFilter & IdentityFilter = {
   startDate: '2025-07-06T15:12:00+08:00',
   endDate: '2025-07-07T15:12:00+08:00',
   range: DateRange.last1Hour,
-  filter: {}
+  filter: {},
+  identityFilter: {
+    identityId: '123',
+    identityGroupId: '456'
+  }
 }
 
 describe('IdentityOverview services', () => {
