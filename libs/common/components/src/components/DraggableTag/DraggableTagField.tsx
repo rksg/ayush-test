@@ -46,7 +46,7 @@ export const DraggableTagField = ({ name, rules = [], customTags, onChange, read
         {
           validator: async (_, tags: DraggableTag[]) => {
             let errorMsg = ''
-            const customTags = tags.filter(t => t.isCustom)
+            const customTags = (tags ?? []).filter(t => t.isCustom)
             for (let i = 0; i < customTags.length; i++) {
               const tag = customTags[i]
               for (const rule of customTagRules) {
