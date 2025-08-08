@@ -23,5 +23,5 @@
   "AFC_FEATURE_ENABLED": "true",
   "ENABLE_CONTEXTQA": "false",
   "CONTEXT_QA": "phc_WIcDskiqCroNW6JNdTbjMRbb51aO5dLVMbXKot7ZRxZ",
-  "CONTEXTQA_TENANTS": ""
+  "CONTEXTQA_TENANTS": []
 }

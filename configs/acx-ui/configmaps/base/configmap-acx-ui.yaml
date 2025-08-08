@@ -26,4 +26,4 @@ data:
   druid.retain.period.days: "90"
   druid.cold.tier.days: "31"
   afc.feature.enabled: "true"
-  contextqa.tenants: ""
+  contextqa.tenants: []
