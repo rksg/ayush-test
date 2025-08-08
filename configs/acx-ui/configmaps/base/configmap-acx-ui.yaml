@@ -8,7 +8,7 @@ data:
   pendo.api.key: "b775f526-720b-449c-7fca-f45b7c3df0ae"
   disable.pendo: "false"
   enable.contextqa: "false"
-  contextqa.key: "phc_WIcDskiqCroNW6JNdTbjMRbb51aO5dLVMbXKot7ZRxZ"
+  contextqa.key: ""
   captive.portal.domain.name: "dev.ruckus.cloud"
   change.password: "https://support-uat.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support-uat.ruckuswireless.com/cloud_subscriptions"
@@ -26,3 +26,4 @@ data:
   druid.retain.period.days: "90"
   druid.cold.tier.days: "31"
   afc.feature.enabled: "true"
+  contextqa.tenants: ""

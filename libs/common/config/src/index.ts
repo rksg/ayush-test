@@ -76,7 +76,7 @@ export async function initialize () {
       SPLIT_IO_KEY: jsonValue.SPLIT_IO,
       PENDO_API_KEY: jsonValue.PENDO_API,
       ENABLE_CONTEXTQA: jsonValue.ENABLE_CONTEXTQA,
-      CONTEXT_QA_KEY: jsonValue.CONTEXT_QA_KEY
+      CONTEXT_QA_KEY: jsonValue.CONTEXT_QA
     }
   }
 }

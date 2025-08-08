@@ -8,6 +8,10 @@ data:
   split.io.key: "54426nn43sd814m9drt1lg1jeupgr06jd9st"
   disable.pendo: "true"
   enable.contextqa: "true"
+  contextqa.key: "phc_WIcDskiqCroNW6JNdTbjMRbb51aO5dLVMbXKot7ZRxZ"
   new.api.domain.name: "api.int.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
+  contextqa.tenants: '[
+    "96eb9b1a093843d2b75e5c94b4da79c0"
+  ]'
 

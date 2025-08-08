@@ -1,11 +1,19 @@
 import { get } from '@acx-ui/config'
+
+import { getTenantId } from './getTenantId'
 export function renderContextQA () {
+  const tenantId = getTenantId()
   if (get('ENABLE_CONTEXTQA') === 'true') {
     const key = get('CONTEXT_QA_KEY')
-    const script = document.createElement('script')
-    script.setAttribute('nonce', 'contextQA')
-    script.defer = true
-    script.appendChild(document.createTextNode(`
+    const tenants = get('CONTEXT_QA_KEY')
+
+    // eslint-disable-next-line no-console
+    console.log(tenants, tenantId)
+    if (tenants) {
+      const script = document.createElement('script')
+      script.setAttribute('nonce', 'contextQA')
+      script.defer = true
+      script.appendChild(document.createTextNode(`
       !function(t,e){var
           o,n,p,r;e.__SV||(window.contextqa=e,e._i=[],e.init=function(i){
           window.cqakey = i;
@@ -15,6 +23,7 @@ export function renderContextQA () {
           },e.__SV=1)}(document,window.contextqa||[]);
           window.contextqa.init('${key}');
     `))
-    document.body.appendChild(script)
+      document.body.appendChild(script)
+    }
   }
 }
