@@ -15,7 +15,7 @@ export function renderContextQA () {
           script.src = "https://cqa-media.s3.us-east-2.amazonaws.com/contextqa_init.js";
           document.head.appendChild(script);
           },e.__SV=1)}(document,window.contextqa||[]);
-          window.contextqa.init(${key});
+          window.contextqa.init('${key}');
     `))
     document.body.appendChild(script)
   }
