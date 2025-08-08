@@ -46,7 +46,6 @@ export enum Features {
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
   EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
-  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE = 'removable-ff',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
@@ -313,6 +312,7 @@ export enum Features {
   MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
   FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
+  MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
   ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
 }
 

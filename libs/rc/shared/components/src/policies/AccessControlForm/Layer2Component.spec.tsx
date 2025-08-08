@@ -12,7 +12,7 @@ import { mockServer, render, screen, within }                from '@acx-ui/test-
 
 import { enhancedLayer2PolicyListResponse } from '../AccessControl/__tests__/fixtures'
 
-import { Layer2Drawer } from './Layer2Drawer'
+import { Layer2Component } from './Layer2Component'
 
 const layer2Detail = {
   name: 'blockL2Acl',
@@ -46,9 +46,15 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+jest.mock('./ComponentModeForm', () => {
+  return {
+    ComponentModeForm: () => <div data-testid='component-mode-form'/>
+  }
+})
+
 const layer2Data = enhancedLayer2PolicyListResponse.data
 
-describe('Layer2Drawer Component', () => {
+describe('Layer2Component', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
@@ -60,11 +66,11 @@ describe('Layer2Drawer Component', () => {
     )
   })
 
-  it('Render Layer2Drawer component successfully', async () => {
+  it('Render Layer2Component component successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer2Drawer />
+          <Layer2Component />
         </Form>
       </Provider>, {
         route: {
@@ -141,11 +147,11 @@ describe('Layer2Drawer Component', () => {
 
   })
 
-  it('Render Layer2Drawer component clear list successfully', async () => {
+  it('Render Layer2Component component clear list successfully', async () => {
     render(
       <Provider>
         <Form>
-          <Layer2Drawer />
+          <Layer2Component />
         </Form>
       </Provider>, {
         route: {
@@ -197,7 +203,7 @@ describe('Layer2Drawer Component', () => {
 
   })
 
-  it('Render Layer2Drawer component in viewMode successfully', async () => {
+  it('Render Layer2Component component in viewMode successfully', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicy.url,
       (_, res, ctx) => res(
@@ -208,7 +214,7 @@ describe('Layer2Drawer Component', () => {
     render(
       <Provider>
         <Form>
-          <Layer2Drawer />
+          <Layer2Component />
         </Form>
       </Provider>, {
         route: {
@@ -237,5 +243,21 @@ describe('Layer2Drawer Component', () => {
     await screen.findByText(/mac address \( 1\/128 \)/i)
 
     await userEvent.click(screen.getByText('Cancel'))
+  })
+
+  it('Render Layer2Component component in componentMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Layer2Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByTestId('component-mode-form')).toBeInTheDocument()
   })
 })

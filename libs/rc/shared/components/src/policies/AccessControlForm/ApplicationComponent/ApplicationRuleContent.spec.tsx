@@ -14,7 +14,7 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 import { enhancedApplicationPolicyListResponse } from '../../AccessControl/__tests__/fixtures'
 import { avcApp, avcCat }                        from '../__tests__/fixtures'
 
-import { ApplicationDrawer } from './index'
+import { ApplicationComponent } from './index'
 
 const applicationResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f'
@@ -100,7 +100,7 @@ describe('ApplicationRuleContent Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -181,7 +181,7 @@ describe('ApplicationRuleContent Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {
@@ -239,7 +239,7 @@ describe('ApplicationRuleContent Component', () => {
     render(
       <Provider>
         <Form>
-          <ApplicationDrawer />
+          <ApplicationComponent />
         </Form>
       </Provider>, {
         route: {

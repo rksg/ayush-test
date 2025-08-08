@@ -23,7 +23,8 @@ import {
   DhcpOption82SubOption1CustomizationType,
   NewDhcpOption82SubOption1Enum,
   NewDhcpOption82SubOption2Enum,
-  NewDhcpOption82SubOption151Enum
+  NewDhcpOption82SubOption151Enum,
+  DhcpOption82MacDelimiterEnum
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -84,7 +85,7 @@ const selectDhcpOption82FormField = (isLanPortSettings?: boolean) : DhcpOption82
       dhcpOption82SubOption151FormatFieldName: 'subOption151Format',
       // In LAN port the subOption151Text is used for input field
       dhcpOption82SubOption151InputFieldName: 'subOption151Text',
-      dhcpOption82MacFormat: 'macFormat'
+      dhcpOption82MacFormat: 'macDelimiter'
     } as DhcpOption82FormField
   }
   else {
@@ -435,23 +436,40 @@ export const DhcpOption82SettingsFormField = (props: {
               />
             </Tooltip>
           </Space>
-          <Form.Item
+          { isLanPortSettings ? <Form.Item
             name={dhcpOption82MacFormat}
-            initialValue={DhcpOption82MacEnum.COLON}
+            initialValue={DhcpOption82MacDelimiterEnum.COLON}
             children={
               <Select disabled={readOnly}>
-                <Option value={DhcpOption82MacEnum.COLON}>
+                <Option value={DhcpOption82MacDelimiterEnum.COLON}>
                   {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
                 </Option>
-                <Option value={DhcpOption82MacEnum.HYPHEN}>
+                <Option value={DhcpOption82MacDelimiterEnum.HYPHEN}>
                   {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
                 </Option>
-                <Option value={DhcpOption82MacEnum.NODELIMITER}>
+                <Option value={DhcpOption82MacDelimiterEnum.NONE}>
                   {$t({ defaultMessage: 'AABBCCDDEEFF' })}
                 </Option>
               </Select>
             }
-          />
+          /> :
+            <Form.Item
+              name={dhcpOption82MacFormat}
+              initialValue={DhcpOption82MacEnum.COLON}
+              children={
+                <Select disabled={readOnly}>
+                  <Option value={DhcpOption82MacEnum.COLON}>
+                    {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
+                  </Option>
+                  <Option value={DhcpOption82MacEnum.HYPHEN}>
+                    {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
+                  </Option>
+                  <Option value={DhcpOption82MacEnum.NODELIMITER}>
+                    {$t({ defaultMessage: 'AABBCCDDEEFF' })}
+                  </Option>
+                </Select>
+              }
+            /> }
         </UI.FieldLabel>
       }
 

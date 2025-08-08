@@ -4,6 +4,8 @@ import { getFilterPayload } from '@acx-ui/analytics/utils'
 import { dataApi }          from '@acx-ui/store'
 import { AnalyticsFilter }  from '@acx-ui/utils'
 
+import { IdentityFilter } from '../types'
+
 interface HierarchyNodeData {
   topNApplicationByTraffic: {
     applicationTraffic: number
@@ -11,9 +13,10 @@ interface HierarchyNodeData {
   }[]
 }
 
-export type ApplicationsPayload = AnalyticsFilter & {
-  n: number
-}
+export type ApplicationsPayload = AnalyticsFilter &
+  IdentityFilter & {
+    n: number
+  }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -21,14 +24,15 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           query Network(
-            $path: [HierarchyNodeInput],
-            $start: DateTime,
-            $end: DateTime,
+            $path: [HierarchyNodeInput]
+            $start: DateTime
+            $end: DateTime
             $n: Int!
+            $identityFilter: IdentityFilter
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
-                topNApplicationByTraffic(n: $n) {
+                topNApplicationByTraffic(n: $n, filter: $identityFilter) {
                   applicationTraffic
                   name
                 }
@@ -40,6 +44,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           n: payload.n,
+          identityFilter: payload.identityFilter,
           ...getFilterPayload(payload)
         }
       }),
