@@ -1,5 +1,6 @@
 import { get } from '@acx-ui/config'
 export function renderContextQA () {
+  console.log(get('ENABLE_CONTEXTQA'))
   if (get('ENABLE_CONTEXTQA') === 'true') {
     const key = get('CONTEXT_QA_KEY')
     const script = document.createElement('script')
