@@ -17,7 +17,6 @@ type commonEnvironment = {
   DRUID_RETAIN_PERIOD_DAYS: string
   DRUID_ROLLUP_DAYS: string
   DRUID_COLD_TIER_DAYS: string
-  CONTEXT_QA_KEY: string
 }
 
 type R1Environment = {
@@ -37,6 +36,8 @@ type R1Environment = {
   API_DOCUMENTATION_URL: string
   MIB_FILES: string
   AFC_FEATURE_ENABLED: string
+  CONTEXT_QA_KEY: string
+  CONTEXTQA_TENANTS: string
 }
 
 type RAEnvironment = {
@@ -76,7 +77,8 @@ export async function initialize () {
       SPLIT_IO_KEY: jsonValue.SPLIT_IO,
       PENDO_API_KEY: jsonValue.PENDO_API,
       ENABLE_CONTEXTQA: jsonValue.ENABLE_CONTEXTQA,
-      CONTEXT_QA_KEY: jsonValue.CONTEXT_QA
+      CONTEXT_QA_KEY: jsonValue.CONTEXT_QA,
+      CONTEXTQA_TENANTS: jsonValue.CONTEXTQA_TENANTS
     }
   }
 }

@@ -5,7 +5,7 @@ export function renderContextQA () {
   const tenantId = getTenantId()
   if (get('ENABLE_CONTEXTQA') === 'true') {
     const key = get('CONTEXT_QA_KEY')
-    const tenants = get('CONTEXT_QA_KEY')
+    const tenants = get('CONTEXTQA_TENANTS')
 
     // eslint-disable-next-line no-console
     console.log(tenants, tenantId)
