@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }                                              from 'react-intl'
 
 import { Button, PageHeader, StepsForm, Tooltip, SpaceWrapper } from '@acx-ui/components'
-import { Features } from '@acx-ui/feature-toggle'
-import { formatter } from '@acx-ui/formatter'
+import { Features }                                             from '@acx-ui/feature-toggle'
+import { formatter }                                            from '@acx-ui/formatter'
 import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon,
@@ -16,10 +16,10 @@ import {
   EdgeClusterTypeCard
 } from '@acx-ui/rc/components'
 import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }                                                                       from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
-import * as UI from './styledComponents'
+import * as UI                        from './styledComponents'
 
 export const SelectType = () => {
   const { $t } = useIntl()
@@ -43,10 +43,10 @@ export const SelectType = () => {
         // eslint-disable-next-line max-len
         const currentSubInterfaces = clusterNetworkSettings.subInterfaceSettings?.filter(
           item => item.serialNumber === portSetting.serialNumber).flatMap(setting => {
-            const portSubInterfaces = setting.ports?.flatMap(item => item.subInterfaces) ?? []
-            const lagSubInterfaces = setting.lags?.flatMap(item => item.subInterfaces) ?? []
-            return portSubInterfaces.concat(lagSubInterfaces)
-          }) ?? []
+          const portSubInterfaces = setting.ports?.flatMap(item => item.subInterfaces) ?? []
+          const lagSubInterfaces = setting.lags?.flatMap(item => item.subInterfaces) ?? []
+          return portSubInterfaces.concat(lagSubInterfaces)
+        }) ?? []
         try {
           await validateEdgeGateway(
             portSetting.ports,
@@ -190,7 +190,7 @@ export const SelectType = () => {
           {$t({
             defaultMessage: `Select which configuration you want to quickly set up for
       all RUCKUS Edges in this cluster:` },
-            { clusterName })}
+          { clusterName })}
         </Typography.Text>
       </Row>
       <Radio.Group
@@ -239,9 +239,10 @@ export const SelectType = () => {
               {
                 // eslint-disable-next-line max-len
                 $t({
-                  defaultMessage: 'The number of CPU cores, memory, or physical ports on the RUCKUS Edges do not meet the requirements for High Availability. {br}' +
-                    // eslint-disable-next-line max-len
-                    'Please ensure the devices have matching specifications to establish a reliable HA configurations.'
+                  defaultMessage: 'The number of CPU cores, memory, or physical ports on the ' +
+                    'RUCKUS Edges do not meet the requirements for High Availability. {br}' +
+                    'Please ensure the devices have matching specifications to establish a ' +
+                    'reliable HA configurations.'
                 }, {
                   br: <br />
                 })}

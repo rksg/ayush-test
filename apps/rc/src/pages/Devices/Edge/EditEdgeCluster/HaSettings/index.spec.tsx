@@ -1,7 +1,6 @@
 
 import { rest } from 'msw'
 
-import { Features }                                             from '@acx-ui/feature-toggle'
 import { edgeApi }                                              from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                      from '@acx-ui/store'
@@ -55,9 +54,6 @@ describe('Edit Edge Cluster - HaSettings', () => {
   })
 
   it('should render EdgeHaSettingsForm correctly', async () => {
-    mockUseIsEdgeFeatureReady.mockImplementation(ff =>
-      ff === Features.EDGE_HA_AA_FALLBACK_TOGGLE)
-
     render(
       <Provider>
         <HaSettings
@@ -79,21 +75,5 @@ describe('Edit Edge Cluster - HaSettings', () => {
     expect(dailyTime).toBeVisible()
 
     expect(await screen.findByText('Per AP group distribution')).toBeVisible()
-  })
-
-  it('should not render EdgeHaSettingsForm correctly when FF is off', async () => {
-    render(
-      <Provider>
-        <HaSettings
-          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus}
-        />
-      </Provider>,
-      {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
-    })
   })
 })

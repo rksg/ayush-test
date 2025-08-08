@@ -1,10 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { StepsForm }      from '@acx-ui/components'
-import { Features }       from '@acx-ui/feature-toggle'
 import { render, screen } from '@acx-ui/test-utils'
-
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { EdgeHaSettingsForm } from './'
 
@@ -16,9 +13,6 @@ jest.mock('../../useEdgeActions', () => ({
 describe('EdgeHaSettingsForm', () => {
 
   it('should correctly render', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      ff === Features.EDGE_HA_AA_FALLBACK_TOGGLE)
-
     render(
       <StepsForm >
         <StepsForm.StepForm>

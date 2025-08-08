@@ -43,8 +43,6 @@ export enum Features {
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
-  EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
-  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
