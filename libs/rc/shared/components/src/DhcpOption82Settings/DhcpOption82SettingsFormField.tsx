@@ -31,6 +31,18 @@ import * as UI from './styledComponents'
 const { useWatch } = Form
 const { Option } = Select
 
+// Mapping for DhcpOption82SubOption1CustomizationType enum values to labels
+const dhcpOption82SubOption1CustomizationTypeLabels = {
+  [DhcpOption82SubOption1CustomizationType.INTERFACE]: 'IF-Name',
+  [DhcpOption82SubOption1CustomizationType.INTERFACE_NO_PREFIX]: 'IF-Name (No prefix)',
+  [DhcpOption82SubOption1CustomizationType.VLAN]: 'VLAN ID',
+  [DhcpOption82SubOption1CustomizationType.ESSID]: 'ESSID',
+  [DhcpOption82SubOption1CustomizationType.AP_MODEL]: 'AP Model',
+  [DhcpOption82SubOption1CustomizationType.AP_NAME]: 'AP Name',
+  [DhcpOption82SubOption1CustomizationType.AP_MAC]: 'AP MAC',
+  [DhcpOption82SubOption1CustomizationType.USER_DEFINED]: 'User Defined'
+}
+
 interface DhcpOption82FormField {
   dhcpOption82SubOption1EnabledFieldName: NamePath
   dhcpOption82SubOption1FormatFieldName: NamePath
@@ -59,20 +71,20 @@ const defaultDhcpOption82FormField = {
 } as DhcpOption82FormField
 
 
-const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOption82FormField => {
-  if (context && context === 'lanport') {
+const selectDhcpOption82FormField = (isLanPortSettings?: boolean) : DhcpOption82FormField => {
+  if (isLanPortSettings) {
     return {
-      dhcpOption82SubOption1EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled'],
-      dhcpOption82SubOption1FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format'],
-      dhcpOption82SubOption1CustomizationFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Customization'],
-      dhcpOption82SubOption2EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled'],
-      dhcpOption82SubOption2FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format'],
-      dhcpOption82SubOption150EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled'],
-      dhcpOption82SubOption151EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled'],
-      dhcpOption82SubOption151FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format'],
+      dhcpOption82SubOption1EnabledFieldName: 'subOption1Enabled',
+      dhcpOption82SubOption1FormatFieldName: 'subOption1Format',
+      dhcpOption82SubOption1CustomizationFieldName: 'subOption1Customization',
+      dhcpOption82SubOption2EnabledFieldName: 'subOption2Enabled',
+      dhcpOption82SubOption2FormatFieldName: 'subOption2Format',
+      dhcpOption82SubOption150EnabledFieldName: 'subOption150Enabled',
+      dhcpOption82SubOption151EnabledFieldName: 'subOption151Enabled',
+      dhcpOption82SubOption151FormatFieldName: 'subOption151Format',
       // In LAN port the subOption151Text is used for input field
-      dhcpOption82SubOption151InputFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text'],
-      dhcpOption82MacFormat: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings','macFormat']
+      dhcpOption82SubOption151InputFieldName: 'subOption151Text',
+      dhcpOption82MacFormat: 'macFormat'
     } as DhcpOption82FormField
   }
   else {
@@ -83,10 +95,8 @@ const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOpt
 
 export const DhcpOption82SettingsFormField = (props: {
   labelWidth?: string
-  context?: string
-  index?: number
-  onGUIChanged?: (fieldName: string) => void
-  readonly: boolean
+  isLanPortSettings?: boolean
+  readOnly?: boolean
  }) => {
 
   const form = Form.useFormInstance()
@@ -94,13 +104,9 @@ export const DhcpOption82SettingsFormField = (props: {
   const { $t } = useIntl()
   const {
     labelWidth = '250px',
-    context,
-    index = 0,
-    onGUIChanged,
-    readonly
+    isLanPortSettings = false,
+    readOnly = false
   } = props
-
-  const isUsedByLanPortDrawer = (context !== undefined && context === 'lanport')
 
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
 
@@ -115,21 +121,19 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption151FormatFieldName,
     dhcpOption82SubOption151InputFieldName,
     dhcpOption82MacFormat
-  } = selectDhcpOption82FormField(context, index)
+  } = selectDhcpOption82FormField(isLanPortSettings)
 
-  const onFormFieldChange = () => {
-    onGUIChanged && onGUIChanged('DHCPOption82Settings')
-  }
+  const customizationFieldName = '_customization_tags'
 
   // eslint-disable-next-line max-len
-  const Option82SubOption1Enum = isUsedByLanPortDrawer ? NewDhcpOption82SubOption1Enum : DhcpOption82SubOption1Enum
+  const Option82SubOption1Enum = isLanPortSettings ? NewDhcpOption82SubOption1Enum : DhcpOption82SubOption1Enum
   // eslint-disable-next-line max-len
-  const Option82SubOption2Enum = isUsedByLanPortDrawer ? NewDhcpOption82SubOption2Enum : DhcpOption82SubOption2Enum
+  const Option82SubOption2Enum = isLanPortSettings ? NewDhcpOption82SubOption2Enum : DhcpOption82SubOption2Enum
   // eslint-disable-next-line max-len
-  const Option82SubOption151Enum = isUsedByLanPortDrawer ? NewDhcpOption82SubOption151Enum : DhcpOption82SubOption151Enum
+  const Option82SubOption151Enum = isLanPortSettings ? NewDhcpOption82SubOption151Enum : DhcpOption82SubOption151Enum
 
   const dhcp82SubOption1Options = [
-    ...(!isUsedByLanPortDrawer ? [
+    ...(!isLanPortSettings ? [
       {
         value: Option82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
         // eslint-disable-next-line max-len
@@ -160,7 +164,7 @@ export const DhcpOption82SettingsFormField = (props: {
       value: Option82SubOption1Enum.SUBOPT1_AP_NAME_ESSID,
       label: $t({ defaultMessage: 'AP Name: ESSID' })
     },
-    ...(isUsedByLanPortDrawer ? [{
+    ...(isLanPortSettings ? [{
       value: Option82SubOption1Enum.SUBOPT1_CUSTOMIZED,
       label: $t({ defaultMessage: 'Custom' })
     }] : [])
@@ -199,6 +203,7 @@ export const DhcpOption82SettingsFormField = (props: {
   const [
     dhcpOption82SubOption1Enabled,
     dhcpOption82SubOption2Enabled,
+    dhcpOption82SubOption150Enabled,
     dhcpOption82SubOption151Enabled,
     dhcpOption82SubOption2Format,
     dhcpOption82SubOption151Format,
@@ -206,6 +211,7 @@ export const DhcpOption82SettingsFormField = (props: {
   ] = [
     useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
+    useWatch<boolean>(dhcpOption82SubOption150EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
     useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName),
@@ -213,29 +219,31 @@ export const DhcpOption82SettingsFormField = (props: {
   ]
 
   useEffect(() => {
-    if(isUsedByLanPortDrawer) {
+    if(isLanPortSettings) {
       const customization = form.getFieldValue(dhcpOption82SubOption1CustomizationFieldName)
       if (customization) {
-        // eslint-disable-next-line max-len
-        const transformedTags = customization.attributes.map((attribute: DhcpOption82SubOption1CustomizationAttribute, index: string) => {
-          if (attribute.type === DhcpOption82SubOption1CustomizationType.USER_DEFINED) {
-            return {
-              id: index,
-              value: attribute.text,
-              isCustom: true,
-              valid: true
-            } as DraggableTag
-          } else {
-            return {
-              id: index,
-              value: attribute.type,
-              isCustom: false,
-              valid: true
-            } as DraggableTag
-          }
-        })
-        // eslint-disable-next-line max-len
-        form.setFieldValue(`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`, transformedTags)
+        const transformedTags =
+          customization.attributes.map(
+            (attribute: DhcpOption82SubOption1CustomizationAttribute) => {
+              if (attribute.type === DhcpOption82SubOption1CustomizationType.USER_DEFINED) {
+                return {
+                  id: attribute.text,
+                  value: attribute.text,
+                  isCustom: true,
+                  valid: true
+                } as DraggableTag
+              } else {
+                return {
+                  id: attribute.type,
+                  value: dhcpOption82SubOption1CustomizationTypeLabels[
+                    attribute.type as DhcpOption82SubOption1CustomizationType
+                  ],
+                  isCustom: false,
+                  valid: true
+                } as DraggableTag
+              }
+            })
+        form.setFieldValue(customizationFieldName, transformedTags)
       }
 
     }
@@ -254,8 +262,7 @@ export const DhcpOption82SettingsFormField = (props: {
             valuePropName='checked'
             initialValue={true}
             children={<Switch
-              disabled={readonly}
-              onChange={onFormFieldChange}
+              disabled={readOnly}
               data-testid={'dhcpOption82SubOption1-switch'}
 
             />}
@@ -266,16 +273,16 @@ export const DhcpOption82SettingsFormField = (props: {
               initialValue={Option82SubOption1Enum.SUBOPT1_AP_INFO}
               children={
                 <Select
-                  disabled={readonly}
+                  disabled={readOnly}
                   options={dhcp82SubOption1Options}
-                  onChange={onFormFieldChange} />
+                />
               }
             />
           }
         </div>
       </UI.FieldLabel>
       {
-        isUsedByLanPortDrawer &&
+        isLanPortSettings &&
         isDhcpOption82Enabled &&
         Option82SubOption1Enum.SUBOPT1_CUSTOMIZED === dhcpOption82SubOption1Format &&
       <>
@@ -289,28 +296,42 @@ export const DhcpOption82SettingsFormField = (props: {
           {$t({ defaultMessage: 'Select attribute from the list or input custom attribute.' })}
         </div>
         <UI.FieldLabelFullWidth>
-          <DraggableTagField
-            name={`lan_${index}_dhcpOption82_dhcpOption82Settings_customization`}
-            options={Object.values(DhcpOption82SubOption1CustomizationType).filter(
-              option => option !== DhcpOption82SubOption1CustomizationType.USER_DEFINED
-            )}
-            maxTags={8}
-            readonly={readonly}
-            onChange={(val) => {
-              form.setFieldValue(dhcpOption82SubOption1CustomizationFieldName, {
-                attributes: val.map((tag) => {
-                  if(tag.isCustom) {
-                    return {
-                      type: DhcpOption82SubOption1CustomizationType.USER_DEFINED,
-                      text: tag.value
-                    }
-                  } else {
-                    return { type: tag.value }
+          <Form.Item>
+            <DraggableTagField
+              name={customizationFieldName}
+              options={Object.values(DhcpOption82SubOption1CustomizationType)
+                .filter(option => option !== DhcpOption82SubOption1CustomizationType.USER_DEFINED)
+                .map(option => dhcpOption82SubOption1CustomizationTypeLabels[option])}
+              maxTags={8}
+              readonly={readOnly}
+              rules={[{
+                validator: async (_, tags?: DraggableTag[]) => {
+                  if (!tags || tags.length === 0) {
+                    throw new Error($t({ defaultMessage: 'Please add at least one attribute' }))
                   }
+                }
+              }]}
+              onChange={(val) => {
+                form.setFieldValue(dhcpOption82SubOption1CustomizationFieldName, {
+                  attributes: val.map((tag) => {
+                    if(tag.isCustom) {
+                      return {
+                        type: DhcpOption82SubOption1CustomizationType.USER_DEFINED,
+                        text: tag.value
+                      }
+                    } else {
+                    // Find the enum value by label
+                      // eslint-disable-next-line max-len
+                      const enumValue = Object.entries(dhcpOption82SubOption1CustomizationTypeLabels)
+                        .find(([, label]) => label === tag.value)?.[0]
+                      return { type: enumValue as DhcpOption82SubOption1CustomizationType }
+                    }
+                  })
                 })
-              })
-            }}
-          />
+              }}
+            />
+          </Form.Item>
+          <Form.Item name={dhcpOption82SubOption1CustomizationFieldName} hidden />
         </UI.FieldLabelFullWidth>
       </>}
       <UI.FieldLabel width={labelWidth}>
@@ -323,7 +344,7 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
+            children={<Switch disabled={readOnly} />}
           />
           { dhcpOption82SubOption2Enabled &&
             <Form.Item
@@ -331,9 +352,9 @@ export const DhcpOption82SettingsFormField = (props: {
               initialValue={Option82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
                 <Select
-                  disabled={readonly}
+                  disabled={readOnly}
                   options={dhcp82SubOption2Options}
-                  onChange={onFormFieldChange}/>
+                />
               }
             />
           }
@@ -348,7 +369,7 @@ export const DhcpOption82SettingsFormField = (props: {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
+          children={<Switch disabled={readOnly} />}
         />
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
@@ -362,14 +383,14 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
+            children={<Switch disabled={readOnly} />}
           />
           { dhcpOption82SubOption151Enabled &&
             <Form.Item
               name={dhcpOption82SubOption151FormatFieldName}
               initialValue={Option82SubOption151Enum.SUBOPT151_AREA_NAME}
               children={
-                <Select disabled={readonly} onChange={onFormFieldChange}>
+                <Select disabled={readOnly}>
                   <Option value={Option82SubOption151Enum.SUBOPT151_AREA_NAME}>
                     {$t({ defaultMessage: 'Area Name' })}
                   </Option>
@@ -385,12 +406,12 @@ export const DhcpOption82SettingsFormField = (props: {
               name={dhcpOption82SubOption151InputFieldName}
               style={{ marginLeft: '10px' }}
               rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter Area Name' }) }
+                { required: true, message: $t({ defaultMessage: 'Please enter Area Name' }) },
+                { max: 26 }
               ]}
               children={
                 <Input style={{ width: '320px' }}
-                  disabled={readonly}
-                  onChange={onFormFieldChange}
+                  disabled={readOnly}
                 />
               }
             />
@@ -418,7 +439,7 @@ export const DhcpOption82SettingsFormField = (props: {
             name={dhcpOption82MacFormat}
             initialValue={DhcpOption82MacEnum.COLON}
             children={
-              <Select disabled={readonly} onChange={onFormFieldChange}>
+              <Select disabled={readOnly}>
                 <Option value={DhcpOption82MacEnum.COLON}>
                   {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
                 </Option>
@@ -433,8 +454,26 @@ export const DhcpOption82SettingsFormField = (props: {
           />
         </UI.FieldLabel>
       }
+
+      <Form.Item
+        name='globalValidation'
+        rules={[
+          {
+            validator: async () => {
+              const atLeastOneEnabled = dhcpOption82SubOption1Enabled ||
+                                       dhcpOption82SubOption2Enabled ||
+                                       dhcpOption82SubOption150Enabled ||
+                                       dhcpOption82SubOption151Enabled
+
+              if (!atLeastOneEnabled) {
+                throw new Error($t({
+                  defaultMessage: 'At least one DHCP Option 82 sub-option must be enabled'
+                }))
+              }
+            }
+          }
+        ]}
+      />
     </>
-
   )
-
 }
