@@ -1,6 +1,7 @@
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { ConfigTemplateType, useIsEdgeFeatureReady }              from '@acx-ui/rc/utils'
-import { isRecSite }                                              from '@acx-ui/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                  from '@acx-ui/feature-toggle'
+import { configTemplatePolicyTypeMap, configTemplateServiceTypeMap, ConfigTemplateType, useConfigTemplate, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { isRecSite }                                                                                                               from '@acx-ui/utils'
+
 export * from './ConfigTemplateLink'
 export * from './utils'
 export * from './EnforceTemplateToggle'
@@ -99,4 +100,19 @@ function useRecConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolea
   }
 
   return visibilityMap
+}
+
+// eslint-disable-next-line max-len
+export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
+  const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
+  const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(configTemplateType)
+
+  // Return false if neither policy nor service config template
+  if (!isPolicyConfigTemplate && !isServiceConfigTemplate) {
+    return false
+  }
+
+  return !isTemplate || isConfigTemplateEnabledByType
 }

@@ -85,8 +85,6 @@ jest.mock('./WifiConfigTab/AdvancedTab/ApManagementVlan', () => ({
   ApManagementVlan: () => <div data-testid='ApManagementVlan' />
 }))
 
-
-
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -97,6 +95,12 @@ const mockedUseIsConfigTemplateGA = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
+}))
+
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
 }))
 
 let dialog = null
@@ -197,6 +201,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockedUseIsConfigTemplateGA.mockReturnValue(false)
+    mockedIsRecSite.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -222,6 +227,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     it('should display Switch Configuration tab when the condition is met', async () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
       mockedUseIsConfigTemplateGA.mockReturnValue(false)
+      mockedIsRecSite.mockReturnValue(true)
 
       const { rerender } = render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -231,6 +237,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
 
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
       mockedUseIsConfigTemplateGA.mockReturnValue(true)
+      mockedIsRecSite.mockReturnValue(false)
 
       rerender(<Provider><VenueEdit /></Provider>)
       // eslint-disable-next-line max-len

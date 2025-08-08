@@ -66,7 +66,6 @@ import {
 import {
   AuthRadiusEnum,
   CommonResult,
-  ConfigTemplateType,
   ConfigTemplateUrlsInfo,
   DpskWlanAdvancedCustomization,
   GuestNetworkTypeEnum,
@@ -80,8 +79,6 @@ import {
   TunnelProfileViewData,
   VlanPool,
   WifiRbacUrlsInfo,
-  configTemplatePolicyTypeMap,
-  configTemplateServiceTypeMap,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
@@ -95,8 +92,7 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
-import { useIsConfigTemplateEnabledByType } from '../configTemplates'
-import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useLazyGetAAAPolicyInstance } from '../policies/AAAForm/aaaPolicyQuerySwitcher'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -222,23 +218,6 @@ export const useNetworkVxLanTunnelProfileInfo =
       vxLanTunnels
     }
   }
-
-// eslint-disable-next-line max-len
-export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
-  const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
-  const { isTemplate } = useConfigTemplate()
-  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(configTemplateType)
-  const result = !isTemplate || isConfigTemplateEnabledByType
-
-  if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
-
-  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
-    return result
-  }
-
-  return false
-}
 
 export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {

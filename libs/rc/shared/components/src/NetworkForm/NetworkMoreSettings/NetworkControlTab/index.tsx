@@ -17,8 +17,8 @@ import {
   PrivacyFeatureName } from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
+import { useServicePolicyEnabledWithConfigTemplate } from '../../../configTemplates'
 import NetworkFormContext                            from '../../NetworkFormContext'
-import { useServicePolicyEnabledWithConfigTemplate } from '../../utils'
 import { AccessControlForm }                         from '../AccessControlForm'
 import ClientIsolationForm                           from '../ClientIsolation/ClientIsolationForm'
 import { DhcpOption82Form }                          from '../DhcpOption82Form'
@@ -44,6 +44,7 @@ export function NetworkControlTab () {
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
+  const isAccessControlSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })
@@ -294,7 +295,7 @@ export function NetworkControlTab () {
 
       <DhcpOption82Form labelWidth={'240px'} />
 
-      <AccessControlForm/>
+      {isAccessControlSupported && <AccessControlForm/>}
     </>
   )
 }

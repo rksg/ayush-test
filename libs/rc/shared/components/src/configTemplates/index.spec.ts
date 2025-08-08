@@ -2,7 +2,7 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { ConfigTemplateType }                       from '@acx-ui/rc/utils'
 import { renderHook }                               from '@acx-ui/test-utils'
 
-import { useConfigTemplateVisibilityMap } from '.'
+import { useConfigTemplateVisibilityMap, useServicePolicyEnabledWithConfigTemplate } from '.'
 
 const mockedIsRecSite = jest.fn()
 jest.mock('@acx-ui/utils', () => ({
@@ -10,9 +10,16 @@ jest.mock('@acx-ui/utils', () => ({
   isRecSite: () => mockedIsRecSite()
 }))
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('useIsConfigTemplateOnByType', () => {
   beforeEach(() => {
     mockedIsRecSite.mockReturnValue(false)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
   })
 
   it('should return the correct map when the BETA user is OFF', () => {
@@ -177,6 +184,50 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
       [ConfigTemplateType.IDENTITY_GROUP]: false
+    })
+  })
+
+  describe('useServicePolicyEnabledWithConfigTemplate', () => {
+    beforeEach(() => {
+      jest.restoreAllMocks()
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+    })
+
+    it('should return false if neither policy nor service config template', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.VENUE))
+
+      expect(result.current).toBe(false)
+    })
+
+    it('should return true if policy config template and policy enabled', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL))
+
+      expect(result.current).toBe(true)
+    })
+
+    it('should return true if service config template and service enabled', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
+
+      expect(result.current).toBe(true)
+    })
+
+    it('should return true if it is not a config template', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
+
+      expect(result.current).toBe(true)
     })
   })
 })

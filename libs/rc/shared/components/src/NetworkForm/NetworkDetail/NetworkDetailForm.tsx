@@ -25,12 +25,11 @@ import {
 import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
 
-import { ProtectedEnforceTemplateToggle }            from '../../configTemplates'
-import { networkTypesDescription }                   from '../contentsMap'
-import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                            from '../NetworkFormContext'
-import { RadioDescription }                          from '../styledComponents'
-import { useServicePolicyEnabledWithConfigTemplate } from '../utils'
+import { ProtectedEnforceTemplateToggle, useServicePolicyEnabledWithConfigTemplate } from '../../configTemplates'
+import { networkTypesDescription }                                                   from '../contentsMap'
+import { NetworkDiagram }                                                            from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                                                            from '../NetworkFormContext'
+import { RadioDescription }                                                          from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 

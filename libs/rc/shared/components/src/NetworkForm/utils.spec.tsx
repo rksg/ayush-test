@@ -8,7 +8,6 @@ import {
   AaaUrls,
   ClientIsolationUrls,
   ConfigTemplateContext,
-  ConfigTemplateType,
   DpskWlanAdvancedCustomization,
   GuestNetworkTypeEnum,
   NetworkSaveData,
@@ -37,7 +36,7 @@ import {
   shouldSaveRadiusServerProfile,
   shouldSaveRadiusServerSettings,
   useClientIsolationActivations,
-  useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
+  useNetworkVxLanTunnelProfileInfo, useRadiusServer,
   useUpdateSoftGreActivations,
   useWifiCalling,
   useCertificateTemplateActivation
@@ -47,11 +46,6 @@ const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
-}))
-
-const mockedUseIsConfigTemplateEnabledByType = jest.fn()
-jest.mock('../configTemplates', () => ({
-  useIsConfigTemplateEnabledByType: () => mockedUseIsConfigTemplateEnabledByType()
 }))
 
 describe('Network utils test', () => {
@@ -365,49 +359,6 @@ describe('Network utils test', () => {
       expect(result.current.enableVxLan).toBe(false)
       expect(result.current.enableTunnel).toBe(false)
       expect(result.current.vxLanTunnels).toBe(undefined)
-    })
-  })
-
-  describe('useServicePolicyEnabledWithConfigTemplate', () => {
-    beforeEach(() => {
-      jest.restoreAllMocks()
-      mockedUseIsConfigTemplateEnabledByType.mockReturnValue(true)
-    })
-
-    it('should return false if neither policy nor service config template', () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.VENUE))
-
-      expect(result.current).toBe(false)
-    })
-
-    it('should return true if policy config template and policy enabled', () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL))
-
-      expect(result.current).toBe(true)
-    })
-
-    it('should return true if service config template and service enabled', () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
-
-      expect(result.current).toBe(true)
-    })
-
-    it('should return true if it is not a config template', () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
-
-      expect(result.current).toBe(true)
     })
   })
 

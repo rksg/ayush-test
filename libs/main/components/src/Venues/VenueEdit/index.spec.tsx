@@ -36,6 +36,14 @@ jest.mock('@acx-ui/rc/components', () => ({
   useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
 }))
 
+const mockedResolveTenantTypeFromPath = jest.fn()
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => mockedResolveTenantTypeFromPath(),
+  isRecSite: () => mockedIsRecSite()
+}))
+
 describe('VenueEdit', () => {
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -59,6 +67,8 @@ describe('VenueEdit', () => {
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockedUseIsConfigTemplateGA.mockReturnValue(false)
+    mockedResolveTenantTypeFromPath.mockReturnValue('t')
+    mockedIsRecSite.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -78,6 +88,8 @@ describe('VenueEdit', () => {
   it('should render correctly when it is a config template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     mockedUseIsConfigTemplateGA.mockReturnValue(true)
+    mockedResolveTenantTypeFromPath.mockReturnValue('v')
+    mockedIsRecSite.mockReturnValue(false)
 
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     await screen.findByRole('tab', { name: 'Venue Details' })
