@@ -5,7 +5,7 @@ import { ServiceType, ServiceOperation } from '../../constants'
 import { PolicyType, PolicyOperation }   from '../../types'
 
 import {
-  applyTemplateIfNeeded,
+  convertToTemplateAllowedOperationIfNeeded,
   getServiceAllowedOperation,
   getPolicyAllowedOperation,
   useTemplateAwareServiceAllowedOperation,
@@ -25,15 +25,16 @@ describe('allowedOperationUtils', () => {
     mockedUseConfigTemplate.mockReset()
   })
 
-  describe('applyTemplateIfNeeded', () => {
+  describe('convertToTemplateAllowedOperationIfNeeded', () => {
     it('should modify the operation when isTemplate is true', () => {
       const operation = ['http:/path']
-      expect(applyTemplateIfNeeded(operation, true)).toEqual(['http:/templates/path'])
+      // eslint-disable-next-line max-len
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/templates/path'])
     })
 
     it('should not modify the operation when isTemplate is false', () => {
       const operation = ['http:/path']
-      expect(applyTemplateIfNeeded(operation, false)).toEqual(['http:/path'])
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, false)).toEqual(['http:/path'])
     })
   })
 
