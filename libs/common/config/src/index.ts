@@ -78,7 +78,7 @@ export async function initialize () {
       PENDO_API_KEY: jsonValue.PENDO_API,
       ENABLE_CONTEXTQA: jsonValue.ENABLE_CONTEXTQA,
       CONTEXT_QA_KEY: jsonValue.CONTEXT_QA,
-      CONTEXTQA_TENANTS: JSON.stringify(jsonValue.CONTEXTQA_TENANTS)
+      CONTEXTQA_TENANTS: jsonValue.CONTEXTQA_TENANTS
     }
   }
 }
