@@ -5,7 +5,7 @@ import { ServiceType, ServiceOperation } from '../../constants'
 import { PolicyType, PolicyOperation }   from '../../types'
 
 import {
-  applyTemplateIfNeeded,
+  convertToTemplateAllowedOperationIfNeeded,
   getServiceAllowedOperation,
   getPolicyAllowedOperation,
   useTemplateAwareServiceAllowedOperation,
@@ -19,21 +19,40 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
+}))
+
 describe('allowedOperationUtils', () => {
+
+  beforeEach(() => {
+    mockedIsRecSite.mockReturnValue(false)
+  })
 
   afterEach(() => {
     mockedUseConfigTemplate.mockReset()
+    mockedIsRecSite.mockReset()
   })
 
-  describe('applyTemplateIfNeeded', () => {
+  describe('convertToTemplateAllowedOperationIfNeeded', () => {
     it('should modify the operation when isTemplate is true', () => {
       const operation = ['http:/path']
-      expect(applyTemplateIfNeeded(operation, true)).toEqual(['http:/templates/path'])
+      // eslint-disable-next-line max-len
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/templates/path'])
     })
 
     it('should not modify the operation when isTemplate is false', () => {
       const operation = ['http:/path']
-      expect(applyTemplateIfNeeded(operation, false)).toEqual(['http:/path'])
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, false)).toEqual(['http:/path'])
+    })
+
+    it('should modify the operation when isTemplate is true and isRecSite is true', () => {
+      mockedIsRecSite.mockReturnValue(true)
+      const operation = ['http:/path']
+      // eslint-disable-next-line max-len
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/rec/templates/path'])
     })
   })
 

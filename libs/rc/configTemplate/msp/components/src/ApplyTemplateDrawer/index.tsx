@@ -6,21 +6,23 @@ import { useIntl }        from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
-  ConfigTemplateOverrideModal, MAX_APPLICABLE_EC_TENANTS,
-  overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
-  useConfigTemplateOverride, useEcFilters,
-  CommonConfigTemplateDrawerProps
+  ConfigTemplateOverrideModal, overrideDisplayViewMap,
+  OverrideValuesPerTarget, transformOverrideValues,
+  useConfigTemplateOverride, CommonConfigTemplateDrawerProps,
+  ConfigTemplatePageUI
 } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                 from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                         from '@acx-ui/msp/utils'
+import { HspContext, MSPUtils, MspEc }             from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }          from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType }      from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 import { AccountTier, AccountType, useTableQuery } from '@acx-ui/utils'
 
-import HspContext                   from '../../../../HspContext'
-import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
-import * as UI                      from '../styledComponents'
+import { MAX_APPLICABLE_EC_TENANTS } from '../constants'
+import { CustomerFirmwareReminder }  from '../CustomerFirmwareReminder'
+import { useEcFilters }              from '../utils'
+
+import { TemplateListContainer } from './styledComponents'
 
 
 const mspUtils = MSPUtils()
@@ -159,11 +161,11 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
     { hasReachedTheMaxRecord() &&
-      <UI.Warning>{
+      <ConfigTemplatePageUI.Warning>{
         // eslint-disable-next-line max-len
         $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
       }
-      </UI.Warning>
+      </ConfigTemplatePageUI.Warning>
     }
     <Loader states={[tableQuery]}>
       <Table<MspEc>
@@ -235,7 +237,7 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
 interface ApplyTemplateConfirmationDrawerProps {
   targetMspEcs: MspEc[]
   selectedTemplate: ConfigTemplate
-  overrideValues: OverrideValuesPerMspEcType | undefined
+  overrideValues: OverrideValuesPerTarget | undefined
   onBack: () => void
   onApply: () => void
   onCancel: () => void
@@ -258,9 +260,9 @@ export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmatio
         overrideValues={overrideValues}
       />
       <Divider />
-      <UI.TemplateListContainer>
+      <TemplateListContainer>
         <li key={selectedTemplate.name}>- {selectedTemplate.name}</li>
-      </UI.TemplateListContainer>
+      </TemplateListContainer>
     </Space>
 
   const footer =<div>
@@ -302,7 +304,7 @@ export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmatio
 interface AppliedMspEcListProps {
   targetMspEcs: MspEc[]
   templateType: ConfigTemplateType
-  overrideValues: OverrideValuesPerMspEcType | undefined
+  overrideValues: OverrideValuesPerTarget | undefined
 }
 export function AppliedMspEcListView (props: AppliedMspEcListProps) {
   const { targetMspEcs, templateType, overrideValues } = props
