@@ -47,6 +47,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
 
+import { useIsConfigTemplateEnabledByType } from '../../configTemplates'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
@@ -68,7 +69,8 @@ export function DpskForm (props: DpskFormProps) {
 
   const idAfterCreatedRef = useRef<string>()
   const { isTemplate } = useConfigTemplate()
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   const isIdentityGroupRequired =
     useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
     && (isTemplate ? isIdentityGroupTemplateEnabled : true)

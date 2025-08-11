@@ -76,7 +76,10 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <TunnelProfileFormItems isDefaultTunnelProfile={isDefaultTunnel} />
+              <TunnelProfileFormItems
+                isDefaultTunnelProfile={isDefaultTunnel}
+                isTemplate={isTemplate}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>
