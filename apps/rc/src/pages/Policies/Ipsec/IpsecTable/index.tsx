@@ -210,18 +210,27 @@ function useColumns () {
     data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
     data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
     if (venueIds.size === 0) return 0
-    // eslint-disable-next-line max-len
+
     const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
-    // eslint-disable-next-line max-len
-    return <SimpleListTooltip items={tooltipItems} displayText={venueIds.size} />
+    return <SimpleListTooltip
+      title={isEdgeVxLanIpsecReady
+        ? $t({ defaultMessage: '<VenuePlural></VenuePlural>:' })
+        : undefined}
+      items={tooltipItems}
+      displayText={venueIds.size}
+    />
   }
 
   const vxlanInstancesRenderer = (data: IpsecViewData) => {
     const tunnelProfileIds = data.tunnelActivations?.map(ta => ta.tunnelProfileId)
     if (!tunnelProfileIds?.length) return 0
+
     // eslint-disable-next-line max-len
     const tooltipItems = tunnelProfileNameMap?.filter(v => tunnelProfileIds.includes(v.key)).map(v => v.value)
-    return <SimpleListTooltip items={tooltipItems} displayText={tunnelProfileIds.length} />
+    return <SimpleListTooltip
+      title={$t({ defaultMessage: 'Tunnels:' })}
+      items={tooltipItems}
+      displayText={tunnelProfileIds.length} />
   }
 
   const columns: TableProps<IpsecViewData>['columns'] = [
@@ -280,7 +289,9 @@ function useColumns () {
       title: $t({ defaultMessage: 'IKE Proposal' }),
       key: 'ikeProposalType',
       dataIndex: 'ikeProposalType',
-      sorter: true,
+      // when sorting by ikeProposalType, the sorting will be wrong due to VXLAN_GPE type is displayed in text
+      // so sorting need to be disabled when VXLAN_GPE FF is enabled
+      sorter: isEdgeVxLanIpsecReady ? false :true,
       align: 'left',
       render: (_, row) => {
         return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
@@ -297,7 +308,9 @@ function useColumns () {
       title: $t({ defaultMessage: 'ESP Proposal' }),
       key: 'espProposalType',
       dataIndex: 'espProposalType',
-      sorter: true,
+      // when sorting by espProposalType, the sorting will be wrong due to VXLAN_GPE type is displayed in text
+      // so sorting need to be disabled when VXLAN_GPE FF is enabled
+      sorter: isEdgeVxLanIpsecReady ? false :true,
       align: 'left',
       render: (_, row) => {
         return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
