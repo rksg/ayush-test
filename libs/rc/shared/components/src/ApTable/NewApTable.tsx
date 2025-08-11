@@ -26,8 +26,7 @@ import {
   CheckMark,
   DownloadOutlined
 } from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
-import { VenueSelector }                                   from '@acx-ui/rc/generic-features/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType, VenueSelector } from '@acx-ui/rc/common/components'
 import {
   useApGroupsListQuery,
   useGetApGroupsTemplateListQuery,
