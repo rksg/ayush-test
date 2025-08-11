@@ -285,7 +285,8 @@ describe('NewManageCustomer', () => {
   })
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
   })
   let params: { tenantId: string, mspEcTenantId: string, action: string, status?: string }
   beforeEach(async () => {
@@ -592,7 +593,8 @@ describe('NewManageCustomer', () => {
     jest.mocked(useIsSplitOn)
       .mockImplementation(ff => ff !== Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE
           && ff !== Features.G_MAP
-        && ff !== Features.MSP_APP_MONITORING)
+        && ff !== Features.MSP_APP_MONITORING
+      && ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
     render(
       <Provider>

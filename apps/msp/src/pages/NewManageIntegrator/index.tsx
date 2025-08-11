@@ -524,7 +524,7 @@ export function NewManageIntegrator () {
       await updateIntegrator({
         params: { mspEcTenantId: mspEcTenantId },
         payload: customer, enableRbac: isRbacEnabled }).unwrap()
-      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
+      if (isPatchTierEnabled && multiLicenseFFToggle && originalTier !== ecFormData.tier) {
         const patchTier: MspEcTierPayload = {
           type: 'serviceTierStatus',
           serviceTierStatus: ecFormData.tier
@@ -661,7 +661,7 @@ export function NewManageIntegrator () {
   const checkAvailableLicenseV2 =
   (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     solutionTokenLic?: number) => {
- 
+
     const currentTier = formRef.current?.getFieldValue('tier')
 
     let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
