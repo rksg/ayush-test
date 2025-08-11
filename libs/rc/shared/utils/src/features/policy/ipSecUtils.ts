@@ -101,7 +101,11 @@ export const getTunnelUsageTypeDisplayName = (type: IpSecTunnelUsageTypeEnum | u
   return getTunnelUsageTypeOptions().find(o => o.value === type)?.label
 }
 
-export const getIkeProposalsDisplayText = (proposals: IkeProposal[]) => {
+export const getIkeProposalsDisplayText = (proposals: IkeProposal[] | undefined) => {
+  if (!proposals?.length) {
+    return ['All']
+  }
+
   const retArr: string[] = []
   proposals.forEach((proposal: IkeProposal) => {
     retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
@@ -110,7 +114,11 @@ export const getIkeProposalsDisplayText = (proposals: IkeProposal[]) => {
   return retArr
 }
 
-export const getEspProposalsDisplayText = (proposals: EspProposal[]) => {
+export const getEspProposalsDisplayText = (proposals: EspProposal[] | undefined) => {
+  if (!proposals?.length) {
+    return ['All']
+  }
+
   const retArr: string[] = []
   proposals.forEach((proposal: EspProposal) => {
     retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?

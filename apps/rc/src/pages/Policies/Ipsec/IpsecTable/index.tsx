@@ -283,12 +283,10 @@ function useColumns () {
       sorter: true,
       align: 'left',
       render: (_, row) => {
-        const proposals = row.ikeProposals?.length === 0 ?
-          ['All'] : getIkeProposalsDisplayText(row.ikeProposals)
         return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
           ? getVxlanIkeProposalText(row)
           : <SimpleListTooltip
-            items={proposals}
+            items={getIkeProposalsDisplayText(row.ikeProposals)}
             displayText={
               row.ikeProposalType === IpSecProposalTypeEnum.DEFAULT ?
                 $t({ defaultMessage: 'Default' }) :
@@ -302,12 +300,10 @@ function useColumns () {
       sorter: true,
       align: 'left',
       render: (_, row) => {
-        const proposals = row.espProposals?.length === 0 ?
-          ['All'] : getEspProposalsDisplayText(row.espProposals)
         return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
           ? getVxlanEspProposalText(row)
           : <SimpleListTooltip
-            items={proposals}
+            items={getEspProposalsDisplayText(row.espProposals)}
             displayText={
               row.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
                 $t({ defaultMessage: 'Default' }) :
