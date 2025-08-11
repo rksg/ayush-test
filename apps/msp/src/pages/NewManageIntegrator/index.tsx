@@ -38,7 +38,7 @@ import {
   useMspCustomerListQuery,
   useGetAssignedMspEcToIntegratorQuery,
   usePatchCustomerMutation,
-  useGetCalculatedLicencesListQuery
+  useGetCalculatedLicencesListV2Query
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -199,7 +199,7 @@ export function NewManageIntegrator () {
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
     { params: useParams(), payload: entitlementSummaryPayload }, { skip: multiLicenseFFToggle })
 
-  const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListV2Query(
     { payload: {
       operator: 'MAX_QUANTITY',
       effectiveDate: moment().format('YYYY-MM-DD'),
@@ -207,7 +207,6 @@ export function NewManageIntegrator () {
       filters: {
         usageType: 'ASSIGNED',
         licenseType: ['APSW', 'SLTN_TOKEN']
-        // isTrial: true
       }
     } }, { skip: !multiLicenseFFToggle })
 
@@ -662,7 +661,7 @@ export function NewManageIntegrator () {
   const checkAvailableLicenseV2 =
   (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     solutionTokenLic?: number) => {
-    const hasSkuTier = entitlements.some(item => item.skuTier != null)
+ 
     const currentTier = formRef.current?.getFieldValue('tier')
 
     let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
@@ -670,8 +669,13 @@ export function NewManageIntegrator () {
     let solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
       p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
 
-    if (hasSkuTier) {
+    const hasApswSkuTier = apswLicenses.some(item => item.skuTier != null)
+    const hasSolutionTokenSkuTier = solutionTokenLicenses.some(item => item.skuTier != null)
+
+    if (hasApswSkuTier) {
       apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
+    }
+    if (hasSolutionTokenSkuTier) {
       solutionTokenLicenses = solutionTokenLicenses.filter(p => p.skuTier === currentTier)
     }
 
@@ -779,15 +783,11 @@ export function NewManageIntegrator () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
-    if(multiLicenseFFToggle) {
-      if(!isEditMode) { // AddMode
-        checkAvailableLicenseV2(calculatedLicencesList.data)
-      } else { // Edit Mode
-        checkAvailableLicenseV2(
-          calculatedLicencesList.data,
-          licenseCalcData.apswLic,
-          licenseCalcData.solutionTokenLic)
-      }
+    if(multiLicenseFFToggle && calculatedLicencesList) {
+      checkAvailableLicenseV2(
+        calculatedLicencesList.data,
+        ...(isEditMode ? [licenseCalcData.apswLic, licenseCalcData.solutionTokenLic] : [])
+      )
     }
 
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {

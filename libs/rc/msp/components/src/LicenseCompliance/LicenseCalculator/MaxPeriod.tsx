@@ -13,6 +13,8 @@ import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                        from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
+
 export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -177,26 +179,24 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item) => {
         return <Row style={{
-          alignItems: 'center'
+          alignItems: 'center',
+          marginBottom: '5px'
         }}>
           <Col style={{
-            marginRight: '4px'
+            width: '155px'
           }}>
-            {item.skuTier ? <Typography.Text>
+            {item.skuTier ? <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date for {skuTier} Tier:' },
                 { skuTier: item.skuTier }) }
-            </Typography.Text> : <Typography.Text>
+            </UI.LicenseLabel> : <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date:' }) }
-            </Typography.Text>
+            </UI.LicenseLabel>
             }
           </Col>
           <Col>
-            <Typography.Title style={{
-              margin: '0px',
-              fontSize: '20px'
-            }}> {item.expirationDate ?
-                formatter(DateFormatEnum.DateFormat)(item.expirationDate) : noDataDisplay}
-            </Typography.Title>
+            <UI.LicenseHighlihghtLabel> {item.expirationDate ?
+              formatter(DateFormatEnum.DateFormat)(item.expirationDate) : noDataDisplay}
+            </UI.LicenseHighlihghtLabel>
           </Col>
         </Row>
       })}

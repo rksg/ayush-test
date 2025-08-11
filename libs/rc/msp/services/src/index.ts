@@ -1096,7 +1096,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
-    getCalculatedLicencesList: build.query<LicenseCalculatorDataResponseV2, RequestPayload>({
+    getCalculatedLicencesListV2: build.query<LicenseCalculatorDataResponseV2, RequestPayload>({
       query: ({ payload }) => {
         const header = customHeaders.v2
         const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, {}, header)
@@ -1298,14 +1298,14 @@ export const {
   useUpdateSolutionTokenSettingsMutation,
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
-  useGetCalculatedLicencesV2Mutation,
   useUpdateMspEcDelegationsMutation,
   useUpdateMspMultipleEcDelegationsMutation,
   useGetLicenseMileageReportsQuery,
   useCustomerNamesFilterListQuery,
   useDeviceModelFilterListQuery,
   useVenueNamesFilterListQuery,
-  useGetCalculatedLicencesListQuery
+  useGetCalculatedLicencesV2Mutation,
+  useGetCalculatedLicencesListV2Query
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

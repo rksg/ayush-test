@@ -39,7 +39,7 @@ import {
   useMspAdminListQuery,
   useMspCustomerListQuery,
   useMspRbacEcAssignmentHistoryQuery,
-  useGetCalculatedLicencesListQuery
+  useGetCalculatedLicencesListV2Query
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -193,7 +193,7 @@ export function NewManageCustomer () {
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
     { params: useParams(), payload: entitlementSummaryPayload }, { skip: multiLicenseFFToggle })
 
-  const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListV2Query(
     { payload: {
       operator: 'MAX_QUANTITY',
       effectiveDate: moment().format('YYYY-MM-DD'),
@@ -201,7 +201,6 @@ export function NewManageCustomer () {
       filters: {
         usageType: 'ASSIGNED',
         licenseType: ['APSW', 'SLTN_TOKEN']
-        // isTrial: true
       }
     } }, { skip: !multiLicenseFFToggle })
 
@@ -810,7 +809,6 @@ export function NewManageCustomer () {
   const checkAvailableLicenseV2 = (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     apswTrialLic?: number, solutionTokenLic?: number,
     solutionTokenTrialLic?: number ) => {
-    const hasSkuTier = entitlements.some(item => item.skuTier != null)
     const currentTier = formRef.current?.getFieldValue('tier')
 
     let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
@@ -818,8 +816,14 @@ export function NewManageCustomer () {
     let apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
       p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
 
-    if (hasSkuTier) {
+    const hasApswSkuTier = apswLicenses.some(item => item.skuTier != null)
+    const hasApswTrialSkuTier = apswTrialLicenses.some(item => item.skuTier != null)
+
+    if (hasApswSkuTier) {
       apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
+    }
+
+    if (hasApswTrialSkuTier) {
       apswTrialLicenses = apswTrialLicenses.filter(p => p.skuTier === currentTier)
     }
 
@@ -839,15 +843,30 @@ export function NewManageCustomer () {
       : setAvailableApswTrialLicense(remainingApswTrial)
 
 
-    const solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
+    let solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
             p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+    const hasSolutionTokenSkuTier = solutionTokenLicenses.some(item => item.skuTier != null)
     let remainingSolutionTokens = 0
+
+    if (hasSolutionTokenSkuTier) {
+      solutionTokenLicenses = solutionTokenLicenses.filter(p => p.skuTier === currentTier)
+    }
+
     solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingSolutionTokens += lic.quantity
     })
-    const solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
+
+
+    let solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
             p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === true)
+    // eslint-disable-next-line max-len
+    const hasSolutionTokenTrialSkuTier = solutionTokenTrialLicenses.some(item => item.skuTier != null)
     let remainingSolutionTokenTrial = 0
+
+    if (hasSolutionTokenTrialSkuTier) {
+      solutionTokenTrialLicenses = solutionTokenTrialLicenses.filter(p => p.skuTier === currentTier)
+    }
+
     solutionTokenTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
       remainingSolutionTokenTrial += lic.quantity
     })
@@ -966,7 +985,7 @@ export function NewManageCustomer () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
-    if(multiLicenseFFToggle) {
+    if(multiLicenseFFToggle && calculatedLicencesList) {
       if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
         checkAvailableLicenseV2(calculatedLicencesList.data)
       } else { // Edit Mode (not TrailEditMode)
@@ -1022,14 +1041,14 @@ export function NewManageCustomer () {
                 // isMDU : show only Core
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
-                // return (true
-                //   // (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
-                //   // (isHospitality && value === MspEcTierEnum.Professional) ||
-                //   // ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
-                //   // (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
-                //   // (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
-                // ) &&
-                return <Radio
+                return (
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
+                  (isHospitality && value === MspEcTierEnum.Professional) ||
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
+                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                ) &&
+                <Radio
                   onChange={handleServiceTierChange}
                   key={value}
                   value={value}

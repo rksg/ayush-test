@@ -15,8 +15,8 @@ import {
   Subtitle,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
@@ -24,7 +24,7 @@ import {
   useUpdateMspAssignmentMutation,
   useDeleteMspAssignmentMutation,
   useMspRbacAssignmentHistoryQuery,
-  useGetCalculatedLicencesListQuery
+  useGetCalculatedLicencesListV2Query
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -136,7 +136,7 @@ export function AssignMspLicense () {
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({
     params: useParams() }, { skip: multiLicenseFFToggle })
-  const { data: calculatedLicencesList } = useGetCalculatedLicencesListQuery(
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListV2Query(
     { payload: {
       operator: 'MAX_QUANTITY',
       effectiveDate: moment().format('YYYY-MM-DD'),
@@ -144,7 +144,6 @@ export function AssignMspLicense () {
       filters: {
         usageType: 'ASSIGNED',
         licenseType: ['APSW', 'SLTN_TOKEN']
-        // isTrial: true
       }
     } }, { skip: !multiLicenseFFToggle })
 

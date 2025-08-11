@@ -11,6 +11,8 @@ import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                        from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
+
 export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -187,23 +189,22 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item) => {
         return <Row style={{
-          alignItems: 'center'
+          alignItems: 'center',
+          marginBottom: '5px'
         }}>
           <Col style={{
-            marginRight: '4px'
+            width: '210px'
           }}>
-            {item.skuTier ? <Typography.Text>
+            {item.skuTier ? <UI.LicenseLabel>
               { $t({ defaultMessage: 'Available Licenses for {skuTier} Tier:' },
                 { skuTier: item.skuTier }) }
-            </Typography.Text> : <Typography.Text>
+            </UI.LicenseLabel> : <UI.LicenseLabel>
               { $t({ defaultMessage: 'Available Licenses:' }) }
-            </Typography.Text>
+            </UI.LicenseLabel>
             }
           </Col>
           <Col>
-            <Typography.Title style={{
-              margin: '0px'
-            }}> {item.quantity} </Typography.Title>
+            <UI.LicenseHighlihghtLabel> {item.quantity} </UI.LicenseHighlihghtLabel>
           </Col>
         </Row>
       })}
