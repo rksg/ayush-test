@@ -201,11 +201,10 @@ export function AssignMspLicense () {
         const apswTrialLic =
           apswTrial.length > 0 ? apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        if(hasCalculatedLicencesList) {
-          checkAvailableLicenseV2(calculatedLicencesList.data, wLic, sLic, apswLic, apswTrialLic)
-        } else if (licenseSummary) {
-          checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
-        }
+        hasCalculatedLicencesList ?
+          checkAvailableLicenseV2(calculatedLicencesList.data, wLic, sLic, apswLic, apswTrialLic) :
+          // eslint-disable-next-line max-len
+          (licenseSummary && checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic))
 
         isDeviceAgnosticEnabled ?
           form.setFieldsValue({
@@ -221,12 +220,9 @@ export function AssignMspLicense () {
             switchLicenses: sLic
           })
       } else {
-        if(hasCalculatedLicencesList) {
-          checkAvailableLicenseV2(calculatedLicencesList.data)
-        } else if (licenseSummary) {
-          checkAvailableLicense(licenseSummary)
-        }
-
+        hasCalculatedLicencesList ?
+          checkAvailableLicenseV2(calculatedLicencesList.data) :
+          licenseSummary && checkAvailableLicense(licenseSummary)
       }
     }
     setSubscriptionStartDate(moment())
