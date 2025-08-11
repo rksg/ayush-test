@@ -232,7 +232,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       const { rerender } = render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
-      // eslint-disable-next-line max-len
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
 
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -240,7 +239,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       mockedIsRecSite.mockReturnValue(false)
 
       rerender(<Provider><VenueEdit /></Provider>)
-      // eslint-disable-next-line max-len
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
     })
   })
