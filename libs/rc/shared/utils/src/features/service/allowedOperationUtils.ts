@@ -1,6 +1,6 @@
-import { RbacOpsIds }           from '@acx-ui/types'
-import { hasAllowedOperations } from '@acx-ui/user'
-import { ApiInfo, getOpsApi }   from '@acx-ui/utils'
+import { RbacOpsIds }                    from '@acx-ui/types'
+import { hasAllowedOperations }          from '@acx-ui/user'
+import { ApiInfo, getOpsApi, isRecSite } from '@acx-ui/utils'
 
 import { useConfigTemplate }             from '../../configTemplate'
 import { ServiceType, ServiceOperation } from '../../constants'
@@ -21,11 +21,13 @@ export const convertToTemplateAllowedOperationIfNeeded = (
 ): RbacOpsIds | undefined => {
   if (!isTemplate) return allowedOperation
 
+  const target = isRecSite() ? ':/rec/templates/' : ':/templates/'
+
   return allowedOperation?.map(item => {
     if (typeof item === 'string') {
-      return item.replace(':/', ':/templates/')
+      return item.replace(':/', target)
     } else if (Array.isArray(item)) {
-      return item.map(str => str.replace(':/', ':/templates/'))
+      return item.map(str => str.replace(':/', target))
     }
     return item
   })

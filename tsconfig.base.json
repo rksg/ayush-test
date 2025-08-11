@@ -42,6 +42,8 @@
       "@acx-ui/rc/common/utils": ["libs/rc/common/utils/src/index.ts"],
       "@acx-ui/rc/common/components": ["libs/rc/common/components/src/index.ts"],
       "@acx-ui/config-template/utils": ["libs/rc/configTemplate/utils/src/index.ts"],
+      "@acx-ui/config-template/rec/components": ["libs/rc/configTemplate/rec/components/src/index.ts"],
+      "@acx-ui/config-template/msp/components": ["libs/rc/configTemplate/msp/components/src/index.ts"],
       "@acx-ui/rc/generic-features/components": ["libs/rc/generic-features/components/src/index.ts"],
       "@acx-ui/rc/utils": ["libs/rc/shared/utils/src/index.ts"],
       "@acx-ui/react-router-dom": ["libs/common/react-router-dom/src/index.ts"],
