@@ -149,6 +149,11 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
     }
   }
 
+  const handleDiscardRadiusService = async () => {
+    createdAuthRadiusIdRef.current = undefined
+    createAccountingRadiusIdRef.current = undefined
+  }
+
   const handleChanged = () => {
     setEditContextData && setEditContextData({
       ...editContextData,
@@ -159,7 +164,8 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
 
     setEditNetworkingContextData && setEditNetworkingContextData({
       ...editNetworkingContextData,
-      updateRadiusService: handleUpdateRadiusService
+      updateRadiusService: handleUpdateRadiusService,
+      discardRadiusService: handleDiscardRadiusService
     })
 
   }

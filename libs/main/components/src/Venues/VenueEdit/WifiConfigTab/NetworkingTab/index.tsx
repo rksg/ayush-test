@@ -45,6 +45,7 @@ export interface NetworkingSettingContext {
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
   updateRadiusService?: (() => void),
+  discardRadiusService?: (() => void),
   updateRadiusOptions?: (() => void),
   updateSmartMonitor?: (() => void)
 }
