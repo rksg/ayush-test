@@ -7,7 +7,6 @@ import {
 import { OltOnt }               from '@acx-ui/olt/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 
-
 export const OntDetailsDrawer = (props: {
   ontDetails: OltOnt
   visible: boolean

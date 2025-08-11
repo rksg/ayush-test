@@ -18,7 +18,6 @@ export type CageDetailsAction =
   | { type: 'OPEN_DRAWER'; payload: DrawerKey }
   | { type: 'CLOSE_DRAWER'; payload: DrawerKey }
 
-
 export const initialCageDetailsState: CageDetailsState = {
   cageDetails: {} as OltCage,
   selectedOnt: undefined,
@@ -86,12 +85,6 @@ export const CageDetailsProvider = ({
       {children}
     </CageDetailsContext.Provider>
   )
-}
-
-export type DrawerActions = {
-  [K in DrawerKey as `open${K}`]: () => void
-} & {
-  [K in DrawerKey as `close${K}`]: () => void
 }
 
 export const useDrawerActions = () => {

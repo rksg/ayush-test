@@ -1,7 +1,6 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-
 export const OntHeader = styled.div`
   display: flex;
   margin-bottom: 4px;
