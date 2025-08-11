@@ -1,13 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Form,  Switch, Space } from 'antd'
-import _                        from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import { Tooltip }                                               from '@acx-ui/components'
-import { LanPortSoftGreProfileSettings }                         from '@acx-ui/rc/utils'
 import type { DhcpOption82Settings as DhcpOption82SettingsType } from '@acx-ui/rc/utils'
-
 
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
@@ -15,13 +12,7 @@ import { FieldLabel, ConfigIcon }     from './styledComponents'
 interface DhcpOption82SettingsProps {
   index: number,
   onGUIChanged?: (fieldName: string) => void
-  isUnderAPNetworking: boolean
-  serialNumber?: string
-  venueId?: string
-  portId?: string
-  apModel?: string
-  readonly: boolean
-  sourceData?: LanPortSoftGreProfileSettings
+  readOnly: boolean
 }
 
 export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
@@ -30,129 +21,32 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const [ iconVisible, setIconVisible ] = useState<boolean>(false)
   const [ drawerVisible, setDrawerVisible ] = useState<boolean>(false)
   const form = Form.useFormInstance()
-  const prevValues = useRef<{
-    apModel?: string
-    serialNumber?: string
-  } | null>(null)
-  const originalSettings = useRef<Partial<DhcpOption82SettingsType> | null>(null)
-  const isFirstTimeEdit = useRef<boolean>(false)
 
   const {
     index,
     onGUIChanged,
-    readonly,
-    sourceData,
-    isUnderAPNetworking,
-    apModel,
-    serialNumber
+    readOnly
   } = props
-  /* eslint-disable max-len */
-  const dhcpOption82FieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
-  const dhcpOption82SubOption1EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled']
-  const dhcpOption82SubOption1FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format']
-  const dhcpOption82SubOption2EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled']
-  const dhcpOption82SubOption2FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format']
-  const dhcpOption82SubOption150EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled']
-  const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled']
-  const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format']
-  const dhcpOption82SubOption151TextFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Text']
-  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macDelimiter']
-  /* eslint-enable max-len */
 
-  const dhcpOption82EnabledValue = Form.useWatch(dhcpOption82FieldName, form)
-  const setDhcpSubOptionsFields = (dhcpSettings: Partial<DhcpOption82SettingsType>) => {
-    // Set each field individually to avoid computed property name issues
-    form?.setFieldValue(dhcpOption82SubOption1EnabledFieldName, dhcpSettings?.subOption1Enabled)
-    form?.setFieldValue(dhcpOption82SubOption1FormatFieldName, dhcpSettings?.subOption1Format)
-    form?.setFieldValue(dhcpOption82SubOption2EnabledFieldName, dhcpSettings?.subOption2Enabled)
-    form?.setFieldValue(dhcpOption82SubOption2FormatFieldName, dhcpSettings?.subOption2Format)
-    form?.setFieldValue(
-      dhcpOption82SubOption150EnabledFieldName,
-      dhcpSettings?.subOption150Enabled
-    )
-    form?.setFieldValue(
-      dhcpOption82SubOption151EnabledFieldName,
-      dhcpSettings?.subOption151Enabled
-    )
-    form?.setFieldValue(
-      dhcpOption82SubOption151FormatFieldName,
-      dhcpSettings?.subOption151Format
-    )
-    form?.setFieldValue(
-      dhcpOption82SubOption151TextFieldName,
-      dhcpSettings?.subOption151Text
-    )
-    form?.setFieldValue(dhcpOption82MacFormat, dhcpSettings?.macDelimiter)
-  }
-
-  const setFormDataFromSettings = (settings: LanPortSoftGreProfileSettings) => {
-    if (settings?.dhcpOption82Enabled) {
-      form.setFieldValue(dhcpOption82FieldName, true)
-      const dhcpSettings = settings?.dhcpOption82Settings
-      if (dhcpSettings) {
-        setDhcpSubOptionsFields(dhcpSettings as Partial<DhcpOption82SettingsType>)
-      }
-    }
-  }
+  const dhcpOption82EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
+  const dhcpOption82SettingsFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings']
+  const dhcpOption82EnabledValue = Form.useWatch(dhcpOption82EnabledFieldName, form)
+  const dhcpOption82SettingsValues = Form.useWatch(dhcpOption82SettingsFieldName, form)
 
   useEffect(() => {
     setIconVisible(!!dhcpOption82EnabledValue)
   }, [dhcpOption82EnabledValue])
 
-  useEffect(() => {
-    if (sourceData && !_.isEmpty(sourceData)) {
-      const prev = prevValues.current
-      const shouldUpdate =
-        !prev ||
-        (!isUnderAPNetworking && prev.apModel !== apModel) ||
-        (isUnderAPNetworking && prev.serialNumber !== serialNumber)
-
-      if (shouldUpdate) {
-        setFormDataFromSettings(sourceData)
-        prevValues.current = { apModel, serialNumber }
-      }
-    }
-  }, [sourceData, isUnderAPNetworking, apModel, serialNumber])
-
-
-  const storeCurrentSettings = () => {
-    // Store current form values when drawer opens (only sub-options settings)
-    const currentSettings: Partial<DhcpOption82SettingsType> = {
-      subOption1Enabled: form.getFieldValue(dhcpOption82SubOption1EnabledFieldName),
-      subOption1Format: form.getFieldValue(dhcpOption82SubOption1FormatFieldName),
-      subOption2Enabled: form.getFieldValue(dhcpOption82SubOption2EnabledFieldName),
-      subOption2Format: form.getFieldValue(dhcpOption82SubOption2FormatFieldName),
-      subOption150Enabled: form.getFieldValue(dhcpOption82SubOption150EnabledFieldName),
-      subOption151Enabled: form.getFieldValue(dhcpOption82SubOption151EnabledFieldName),
-      subOption151Format: form.getFieldValue(dhcpOption82SubOption151FormatFieldName),
-      subOption151Text: form.getFieldValue(dhcpOption82SubOption151TextFieldName),
-      macDelimiter: form.getFieldValue(dhcpOption82MacFormat)
-    }
-
-    originalSettings.current = currentSettings
-
-    const hasExistingSettings = Object.values(currentSettings).some(value =>
-      value !== undefined && value !== null && value !== false
-    )
-    isFirstTimeEdit.current = !hasExistingSettings
-  }
-
-  const applyCallbackFn = () => {
-    form.setFieldValue(dhcpOption82FieldName, true)
-
-    originalSettings.current = null
-    isFirstTimeEdit.current = false
+  const applyCallbackFn = (dhcpOption82Settings: DhcpOption82SettingsType) => {
+    form.setFieldValue(dhcpOption82EnabledFieldName, true)
+    form.setFieldValue(dhcpOption82SettingsFieldName, dhcpOption82Settings)
+    onGUIChanged && onGUIChanged('DHCPOption82Settings')
   }
 
   const cancelCallbackFn = () => {
-    if (isFirstTimeEdit.current) {
-      form.setFieldValue(dhcpOption82FieldName, false)
-    } else if (originalSettings.current) {
-      setDhcpSubOptionsFields(originalSettings.current)
+    if (!dhcpOption82SettingsValues) {
+      form.setFieldValue(dhcpOption82EnabledFieldName, false)
     }
-
-    originalSettings.current = null
-    isFirstTimeEdit.current = false
   }
 
   return (
@@ -177,16 +71,16 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
             <>
               <Form.Item
                 valuePropName='checked'
-                name={dhcpOption82FieldName}
+                name={dhcpOption82EnabledFieldName}
                 noStyle>
                 <Switch
                   data-testid={'dhcpoption82-switch-toggle'}
-                  disabled={readonly}
+                  disabled={readOnly}
                   onChange={(checked) => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
-                    if (checked) {
-                      storeCurrentSettings()
-                      setDrawerVisible(true)
+                    setDrawerVisible(checked)
+                    if (!checked) {
+                      cancelCallbackFn()
                     }
                   }}
                 />
@@ -196,7 +90,6 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                   style={{ cursor: 'pointer' }}
                   data-testid={'dhcp82toption-icon'}
                   onClick={() => {
-                    storeCurrentSettings()
                     setDrawerVisible(true)
                   }}
                 />
@@ -204,15 +97,18 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
             </>
           }
         />
+        <Form.Item
+          name={dhcpOption82SettingsFieldName}
+          hidden
+        />
       </FieldLabel>
       <DhcpOption82SettingsDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         applyCallbackFn={applyCallbackFn}
         cancelCallbackFn={cancelCallbackFn}
-        index={index}
-        onGUIChanged={onGUIChanged}
-        readonly={readonly}
+        readOnly={readOnly}
+        sourceData={dhcpOption82SettingsValues}
       />
     </>
   )

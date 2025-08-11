@@ -1,40 +1,45 @@
+import { useEffect } from 'react'
+
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }                                              from '@acx-ui/components'
+import { DhcpOption82Settings, LanPortSoftGreProfileSettings } from '@acx-ui/rc/utils'
 
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
+
 interface DhcpOption82SettingsDrawerProps {
   visible: boolean
+  readOnly: boolean
   setVisible: (visible: boolean) => void
-  applyCallbackFn: () => void
+  applyCallbackFn: (dhcpOption82Settings: DhcpOption82Settings) => void
   cancelCallbackFn: () => void
-  index: number
-  onGUIChanged?: (fieldName: string) => void
-  readonly: boolean
+  sourceData?: LanPortSoftGreProfileSettings
 }
-
 
 export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProps) => {
 
   const {
     visible,
+    readOnly,
     setVisible,
     applyCallbackFn,
     cancelCallbackFn,
-    index,
-    onGUIChanged,
-    readonly
+    sourceData
   } = props
 
   const { $t } = useIntl()
+  const [form] = Form.useForm()
 
   const handleAdd = async () => {
     try {
+      await form.validateFields()
+      const formValues = form.getFieldsValue()
+      const { '_customization_tags': _customization, ...rest } = formValues
+      applyCallbackFn(rest)
       setVisible(false)
-      onGUIChanged && onGUIChanged('AddDHCPOption82')
-      applyCallbackFn()
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      console.log('Form validation failed:', error) // eslint-disable-line no-console
     }
   }
 
@@ -43,25 +48,36 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
     setVisible(false)
   }
 
+  useEffect(() => {
+    if (visible) {
+      if (sourceData) {
+        form.setFieldsValue(sourceData)
+      } else {
+        // Avoid the form is not reset
+        form.resetFields()
+      }
+    }
+  }, [visible, sourceData])
+
   return (
     <Drawer
       title={$t({ defaultMessage: 'DHCP Option 82 Sub Options' })}
       visible={visible}
       width={850}
       children={
-        <DhcpOption82SettingsFormField
-          readonly={readonly}
-          labelWidth={'280px'}
-          context={'lanport'}
-          onGUIChanged={onGUIChanged}
-          index={index}
-        />
+        <Form form={form}>
+          <DhcpOption82SettingsFormField
+            readOnly={readOnly}
+            labelWidth={'280px'}
+            isLanPortSettings={true}
+          />
+        </Form>
       }
       onClose={handleClose}
       destroyOnClose={true}
       footer={
         <Drawer.FormFooter
-          showSaveButton={!readonly}
+          showSaveButton={!readOnly}
           buttonLabel={{
             save: $t({ defaultMessage: 'Apply' })
           }}
