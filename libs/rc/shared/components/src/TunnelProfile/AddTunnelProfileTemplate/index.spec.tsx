@@ -22,6 +22,11 @@ jest.mock('../TunnelProfileForm/useTunnelProfileActions', () => ({
   })
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v'
+}))
+
 const createViewPath = '/:tenantId/t/policies/tunnelProfile/create'
 
 describe('AddTunnelProfileTemplate', () => {
