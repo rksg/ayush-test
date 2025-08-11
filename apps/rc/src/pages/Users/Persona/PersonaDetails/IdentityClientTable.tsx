@@ -8,7 +8,8 @@ import { defaultRbacClientPayload, useRbacClientTableColumns }   from '@acx-ui/r
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
   ClientInfo, defaultSort, sortProp,
-  IdentityClient
+  IdentityClient,
+  Persona
 } from '@acx-ui/rc/utils'
 import { TABLE_MAX_PAGE_SIZE, SORTER,
   usePollingTableQuery  } from '@acx-ui/utils'
@@ -38,9 +39,9 @@ const getOnboardingTerm = (type?: string): string => {
   return onboardingTypesMapping[type] || type.toUpperCase()
 }
 
-function IdentityClientTable (props: { personaId?: string, personaGroupId?: string }) {
+function IdentityClientTable (props: { personaData?: Persona, personaGroupId?: string }) {
   const { $t } = useIntl()
-  const { personaId, personaGroupId } = props
+  const { personaData, personaGroupId } = props
 
   const { setDeviceCount } = useContext(IdentityDetailsContext)
   const settingsId = 'identity-client-table'
@@ -61,8 +62,8 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       sortField: 'updatedAt',
       sortOrder: 'DESC'
     },
-    defaultPayload: { identityIds: [personaId] },
-    option: { skip: !personaId || !personaGroupId }
+    defaultPayload: { identityIds: [personaData?.id] },
+    option: { skip: !personaData?.id || !personaGroupId }
   })
 
   // ClientMac format should be: 11:22:33:44:55:66
@@ -111,6 +112,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       identityClientMap.forEach(identityClient => {
         aggregatedClients.push({
           ...identityClient,
+          identityDisplayName: personaData?.displayName,
           macAddress: identityClient.clientMac,
           signalStatus: { health: 'Default' } // disconnected icon
         } as unknown as ClientInfo)
@@ -126,7 +128,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
         ...esSorter,
         filters: {
           macAddress: [...clientMacs], // should be lowered case
-          identityId: [personaId] // fetch the latest identity-associated clients
+          identityId: [personaData?.id] // fetch the latest identity-associated clients
         }
       }
     })

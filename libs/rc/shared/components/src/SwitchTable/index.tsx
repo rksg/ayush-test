@@ -26,6 +26,7 @@ import {
   DownloadOutlined,
   InformationOutlined
 } from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -33,7 +34,8 @@ import {
   getAckMsg,
   getSwitchName,
   getSwitchModel,
-  isFirmwareSupportAdminPassword
+  isFirmwareSupportAdminPassword,
+  isNotSupportStackModel
 } from '@acx-ui/rc/switch/utils'
 import {
   defaultSwitchPayload
@@ -72,12 +74,11 @@ import {
   GROUPBY
 } from '@acx-ui/utils'
 
-import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { SwitchBlinkLEDsDrawer, SwitchInfo }               from '../SwitchBlinkLEDsDrawer'
-import { SwitchCliSession }                                from '../SwitchCliSession'
-import { useSwitchActions }                                from '../useSwitchActions'
-import { VenueSelector }                                   from '../VenueSelector'
+import { seriesSwitchStatusMapping }         from '../DevicesWidget/helper'
+import { SwitchBlinkLEDsDrawer, SwitchInfo } from '../SwitchBlinkLEDsDrawer'
+import { SwitchCliSession }                  from '../SwitchCliSession'
+import { useSwitchActions }                  from '../useSwitchActions'
+import { VenueSelector }                     from '../VenueSelector'
 
 import {
   getGroupableConfig
@@ -141,7 +142,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSupport8100Phase2 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE)
+  const isSupport8100XStacking = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_STACKING)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -639,29 +640,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
-  const isNotSupportStackModel = (model: string) => {
-    switch(model) {
-      case 'ICX7150-C08P':
-      case 'ICX7150-C08PT':
-      case 'ICX8100-24':
-      case 'ICX8100-24P':
-      case 'ICX8100-48':
-      case 'ICX8100-48P':
-      case 'ICX8100-C08PF':
-        return true
-      case 'ICX8100-24-X':
-      case 'ICX8100-24P-X':
-      case 'ICX8100-48-X':
-      case 'ICX8100-48P-X':
-      case 'ICX8100-48PF-X':
-      case 'ICX8100-C08PF-X':
-      case 'ICX8100-C16PF-X':
-        return !isSupport8100Phase2
-      default:
-        return false
-    }
-  }
-
   const checkSelectedRowsStatus = (rows: SwitchRow[]) => {
     const modelFamily = rows[0]?.model?.split('-')[0]
     const venueId = rows[0]?.venueId
@@ -669,7 +647,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     const notOperational = rows.find(i =>
       !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
     const invalid = rows.find(i =>
-      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model)))
+      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model, isSupport8100XStacking)))
     const hasStack = rows.find(i => i.isStack || i.formStacking)
 
     return {

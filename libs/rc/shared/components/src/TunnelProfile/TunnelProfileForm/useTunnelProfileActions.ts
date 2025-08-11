@@ -1,11 +1,11 @@
-import { cloneDeep, isEqual } from 'lodash'
+import { cloneDeep, isEqual, omit } from 'lodash'
 
 import { Features }                        from '@acx-ui/feature-toggle'
 import {
-  useActivateTunnelProfileByEdgeClusterMutation,
+  useActivateTunnelProfileByEdgeClusterMutation, useActivateTunnelProfileByIpsecProfileMutation,
   useCreateTunnelProfileMutation,
   useCreateTunnelProfileTemplateMutation,
-  useDeactivateTunnelProfileByEdgeClusterMutation,
+  useDeactivateTunnelProfileByEdgeClusterMutation, useDeactivateTunnelProfileByIpsecProfileMutation,
   useUpdateTunnelProfileMutation,
   useUpdateTunnelProfileTemplateMutation
 } from '@acx-ui/rc/services'
@@ -23,8 +23,15 @@ import { CatchErrorDetails } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
+export const nonTunnelProfileConfigKeys = [
+  'edgeClusterId', 'venueId',
+  'tunnelEncryptionEnabled', 'ipsecProfileId'
+]
+
 export const useTunnelProfileActions = () => {
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   // eslint-disable-next-line max-len
   const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   // eslint-disable-next-line max-len
@@ -35,6 +42,9 @@ export const useTunnelProfileActions = () => {
   const [updateTunnelProfileTemplate, { isLoading: isTunnelProfileTemplateUpdating }] = useUpdateTunnelProfileTemplateMutation()
   const [activateByEdgeCluster] = useActivateTunnelProfileByEdgeClusterMutation()
   const [deactivateByEdgeCluster] = useDeactivateTunnelProfileByEdgeClusterMutation()
+  const [activateByIpsecProfile] = useActivateTunnelProfileByIpsecProfileMutation()
+  const [deactivateByIpsecProfile] = useDeactivateTunnelProfileByIpsecProfileMutation()
+
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
     if (data.ageTimeUnit === AgeTimeUnit.WEEK) {
@@ -71,6 +81,11 @@ export const useTunnelProfileActions = () => {
       }
     }
 
+    if (isEdgeIpsecVxLanReady) {
+      delete result.ipsecProfileId
+      delete result.tunnelEncryptionEnabled
+    }
+
     delete result.mtuRequestTimeoutUnit
     delete result.ageTimeUnit
     //remove for acitvate api params
@@ -101,6 +116,7 @@ export const useTunnelProfileActions = () => {
     const venueId = data.venueId
     const clusterId = data.edgeClusterId
     const payload = requestPreProcess(data)
+
     return await createTunnelProfile({
       payload,
       callback: async (addResponse: CommonResult) => {
@@ -120,6 +136,10 @@ export const useTunnelProfileActions = () => {
         try {
           // eslint-disable-next-line max-len
           const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+          if(isEdgeIpsecVxLanReady && data.tunnelEncryptionEnabled && data.ipsecProfileId) {
+            await associationWithIpsecProfile(tunnelProfileId, data.ipsecProfileId)
+          }
+
           callback?.(reqResult)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
@@ -133,13 +153,12 @@ export const useTunnelProfileActions = () => {
     initData: TunnelProfileFormType) => {
     try {
       const compareResult = compareConfigChanges(data, initData)
-
       if (compareResult.hasChanges) {
-        await handleUpdateTunnelProfile({ id,data })
+        await handleUpdateTunnelProfile({ id, data })
       }
 
       handleTunnelProfileEdgeClusterAssociation(id, data, initData)
-
+      handleTunnelProfileIpsecAssociation(id, data, initData)
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -174,7 +193,7 @@ export const useTunnelProfileActions = () => {
 
     if (clusterId && venueId && data?.tunnelType === TunnelTypeEnum.L2GRE) {
       try {
-        await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+        await disassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
@@ -211,7 +230,7 @@ export const useTunnelProfileActions = () => {
     }
   }
 
-  const deassociationWithEdgeCluster = async (
+  const disassociationWithEdgeCluster = async (
     venueId?: string,
     clusterId?: string,
     tunnelProfileId?: string
@@ -222,6 +241,69 @@ export const useTunnelProfileActions = () => {
           venueId: venueId,
           clusterId: clusterId,
           id: tunnelProfileId
+        }
+      }).unwrap()
+      return response
+    } catch (error) {
+      return error as CommonErrorsResult<CatchErrorDetails>
+    }
+  }
+
+  const handleTunnelProfileIpsecAssociation = async (
+    id: string,
+    data: TunnelProfileFormType,
+    initData: TunnelProfileFormType
+  ) => {
+    if(!isEdgeIpsecVxLanReady) {
+      return
+    }
+
+    const tunnelProfileId = id
+    const isIpsecChangedDisable = !data.tunnelEncryptionEnabled && initData.ipsecProfileId
+
+    // tunnel type is change into not VXLAN_GPE, or ipsec is changed to disabled
+    if (data?.tunnelType !== TunnelTypeEnum.VXLAN_GPE || isIpsecChangedDisable) {
+      await disassociationWithIpsecProfile(tunnelProfileId, initData.ipsecProfileId!)
+      return
+    }
+
+    const ipsecProfileId = data.ipsecProfileId
+    const isIpsecProfileChanged = data.tunnelEncryptionEnabled
+     && ipsecProfileId !== initData.ipsecProfileId
+
+    if(!isIpsecProfileChanged) {
+      return
+    }
+
+    await associationWithIpsecProfile(tunnelProfileId, ipsecProfileId!)
+  }
+
+  const associationWithIpsecProfile = async (
+    tunnelProfileId: string,
+    ipsecProfileId: string
+  ): Promise<CommonResult | CommonErrorsResult<CatchErrorDetails>> => {
+    try {
+      const response = await activateByIpsecProfile({
+        params: {
+          tunnelServiceProfileId: tunnelProfileId,
+          ipsecProfileId: ipsecProfileId
+        }
+      }).unwrap()
+      return response
+    } catch (error) {
+      return error as CommonErrorsResult<CatchErrorDetails>
+    }
+  }
+
+  const disassociationWithIpsecProfile = async (
+    tunnelProfileId: string,
+    ipsecProfileId: string
+  ): Promise<CommonResult | CommonErrorsResult<CatchErrorDetails>> => {
+    try {
+      const response = await deactivateByIpsecProfile({
+        params: {
+          tunnelServiceProfileId: tunnelProfileId,
+          ipsecProfileId: ipsecProfileId
         }
       }).unwrap()
       return response
@@ -292,6 +374,7 @@ export const useTunnelProfileActions = () => {
       }
 
       handleTunnelProfileEdgeClusterAssociation(id, data, initData)
+      handleTunnelProfileIpsecAssociation(id, data, initData)
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -302,14 +385,9 @@ export const useTunnelProfileActions = () => {
     data: TunnelProfileFormType,
     initData: TunnelProfileFormType
   ): { hasChanges: boolean } => {
-    const preUpdateData = cloneDeep(data)
-    delete preUpdateData.edgeClusterId
-    delete preUpdateData.venueId
-    delete preUpdateData.disabledFields
+    const preUpdateData = omit(data, nonTunnelProfileConfigKeys)
+    const initDataCopy = omit(initData, nonTunnelProfileConfigKeys)
 
-    const initDataCopy = cloneDeep(initData)
-    delete initDataCopy.disabledFields
-    delete initDataCopy.edgeClusterId
     const hasChanges = !isEqual(preUpdateData, initDataCopy)
     return { hasChanges }
   }

@@ -1,0 +1,322 @@
+import React, { useEffect, useState } from 'react'
+
+import { Checkbox, Form, FormInstance, Input, Select, Slider } from 'antd'
+import { useIntl }                                             from 'react-intl'
+
+import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import {
+  AccessStatus,
+  DeviceTypeEnum,
+  deviceTypeLabelMapping,
+  osVenderLabelMapping,
+  OsVendorEnum
+} from '@acx-ui/rc/utils'
+
+import PolicyFormItem from '../PolicyFormItem'
+
+import {
+  deviceOsVendorMappingTable,
+  getDeviceOsVendorMap,
+  getDeviceTypeOptions,
+  getOsVendorOptions,
+  isDeviceOSEnabled,
+  isDeviceTypeEnabled
+} from './DeviceOSDrawerUtils'
+
+interface DeviceOSRuleContentProps {
+  drawerForm: FormInstance,
+  deviceOSRuleList: DeviceOSRule[],
+  ruleDrawerEditMode: boolean
+}
+
+interface DeviceOSRule {
+  ruleName: string,
+  deviceType: string,
+  osVendor: string,
+  access: string,
+  details: {
+    vlan: number,
+    upLink: number,
+    downLink: number
+  }
+}
+
+const { useWatch } = Form
+
+const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
+  const { $t } = useIntl()
+  const { drawerForm, deviceOSRuleList, ruleDrawerEditMode } = props
+  const [deviceType, setDeviceType] = useState(
+    drawerForm.getFieldValue('deviceType') as DeviceTypeEnum
+  )
+  const [osVendor, setOsVendor] = useState(
+    drawerForm.getFieldValue('osVendor') as OsVendorEnum
+  )
+  const [deviceOSMappingTable] = useState(
+    deviceOsVendorMappingTable(
+      getDeviceOsVendorMap(), deviceOSRuleList
+    ) as { [key: string]: string[] }
+  )
+
+  const [
+    access
+  ] = [
+    useWatch<string>('access', drawerForm)
+  ]
+  const [osVendorOptionList, setOsVendorOptionList] = useState([] as {
+    value: string, label: string
+  }[])
+  const [fromClient, setFromClient] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClient') : false
+  )
+  const [fromClientValue, setFromClientValue] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClientValue') : 200
+  )
+  const [toClient, setToClient] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('toClient') : false
+  )
+  const [toClientValue, setToClientValue] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 200
+  )
+
+  const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
+
+  useEffect(() => {
+    const tempOsVendor = drawerForm.getFieldValue('tempOsVendor')
+    setOsVendorOptionList([
+      { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
+      ...getOsVendorOptions(deviceType)
+        .filter(option => deviceType !== DeviceTypeEnum.Gaming ||
+          !(isAP70Allowed ?
+            [OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.PlayStation3] :
+            [OsVendorEnum.PlayStation]).includes(option))
+        .map(option => ({
+          value: option,
+          label: $t(osVenderLabelMapping[option as OsVendorEnum]),
+          disabled: isDeviceOSEnabled(
+            deviceType,
+            option,
+            deviceOSMappingTable,
+            ruleDrawerEditMode ? tempOsVendor : '')
+        }))
+    ] as { value: string, label: string }[])
+  }, [deviceType, osVendor])
+
+  useEffect(() => {
+    if (fromClient) {
+      drawerForm.setFieldValue('fromClientValue', fromClientValue)
+    }
+    if (toClient) {
+      drawerForm.setFieldValue('toClientValue', toClientValue)
+    }
+  }, [fromClient, toClient])
+
+  const EmptyElement = (props: { access: AccessStatus }) => {
+    drawerForm.setFieldValue('deviceOSAccess', props.access)
+    return <></>
+  }
+
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    {
+      label: $t({ defaultMessage: 'Allow Traffic' }),
+      children: <EmptyElement access={AccessStatus.ALLOW} />,
+      value: AccessStatus.ALLOW
+    },
+    {
+      label: $t({ defaultMessage: 'Block Traffic' }),
+      children: <EmptyElement access={AccessStatus.BLOCK} />,
+      value: AccessStatus.BLOCK
+    }
+  ]
+
+  const handleOsVendorChange = (value: OsVendorEnum) => {
+    setOsVendor(value)
+  }
+
+  const handleDeviceTypeChange = (value: DeviceTypeEnum) => {
+    setDeviceType(value)
+    drawerForm.resetFields(['osVendor'])
+  }
+
+  const rateLimitContent = <div>
+    <div style={{ display: 'flex' }}>
+      <span style={{ width: '150px' }}>
+        <Checkbox
+          checked={fromClient}
+          onChange={() => {
+            drawerForm.setFieldValue('fromClient', !fromClient)
+            drawerForm.setFieldValue('fromClientValue', 200)
+            setFromClient(!fromClient)
+            setFromClientValue(200)
+          }}>
+          {$t({ defaultMessage: 'From Client:' })}
+        </Checkbox>
+      </span>
+      <Slider
+        style={{
+          display: fromClient ? '' : 'none',
+          width: '100%', marginLeft: '10px', marginRight: '10px' }}
+        marks={{ 0.1: '0.1 Mbps', 200: '200 Mbps' }}
+        step={0.1}
+        min={0.1}
+        max={200}
+        defaultValue={fromClientValue ?? 200}
+        onChange={(value) => {
+          drawerForm.setFieldValue('fromClientValue', value)
+          setFromClientValue(value)
+        }}
+      />
+    </div>
+    <div style={{ display: 'flex' }}>
+      <span style={{ width: '150px' }}>
+        <Checkbox
+          checked={toClient}
+          onChange={() => {
+            drawerForm.setFieldValue('toClient', !toClient)
+            drawerForm.setFieldValue('toClientValue', 200)
+            setToClient(!toClient)
+            setToClientValue(200)
+          }}>
+          {$t({ defaultMessage: 'To Client:' })}
+        </Checkbox>
+      </span>
+      <Slider
+        style={{
+          display: toClient ? '' : 'none',
+          width: '100%', marginLeft: '10px', marginRight: '10px' }}
+        marks={{ 0.1: '0.1 Mbps', 200: '200 Mbps' }}
+        step={0.1}
+        min={0.1}
+        max={200}
+        defaultValue={toClientValue ?? 200}
+        onChange={(value) => {
+          drawerForm.setFieldValue('toClientValue', value)
+          setToClientValue(value)
+        }}
+      />
+    </div>
+  </div>
+
+
+  return <Form layout='horizontal' form={drawerForm}>
+    <PolicyFormItem
+      name='ruleName'
+      label={$t({ defaultMessage: 'Rule Name' })}
+      initialValue={''}
+      validateFirst
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 32 },
+        { validator: (_, value) => {
+          if (deviceOSRuleList
+            .filter((rule: DeviceOSRule) => ruleDrawerEditMode ? (rule.ruleName !== value) : true)
+            .findIndex((rule: DeviceOSRule) => rule.ruleName === value) !== -1) {
+            return Promise.reject('The rule name has already used')
+          }
+          return Promise.resolve()
+        }
+        }
+      ]}
+      children={<Input />}
+    />
+    <PolicyFormItem
+      name='access'
+      label={$t({ defaultMessage: 'Access' })}
+      initialValue={AccessStatus.ALLOW}
+      children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
+    />
+    <PolicyFormItem
+      name='deviceType'
+      label={$t({ defaultMessage: 'Device Type' })}
+      initialValue={$t({ defaultMessage: 'Select...' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => {
+          if (value === 'Select...') {
+            return Promise.reject($t({ defaultMessage: 'Please select the Device Type option' }))
+          }
+          return Promise.resolve()
+        }
+        }
+      ]}
+      children={<Select
+        style={{ width: '100%' }}
+        onChange={handleDeviceTypeChange}
+        options={[
+          { value: 'Select...', label: $t({ defaultMessage: 'Select...' }) },
+          ...getDeviceTypeOptions().map(option => ({
+            value: option,
+            label: $t(deviceTypeLabelMapping[option as DeviceTypeEnum]),
+            disabled: isDeviceTypeEnabled(option, deviceOSMappingTable)
+          }))
+        ]}
+      />}
+    />
+    <PolicyFormItem
+      name='osVendor'
+      label={$t({ defaultMessage: 'OS or Manufacturer' })}
+      initialValue={$t({ defaultMessage: 'Please select...' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => {
+          if (value === 'Please select...') {
+            return Promise.reject($t({
+              defaultMessage: 'Please select the OS or Manufacturer option'
+            }))
+          }
+          if (isAP70Allowed && deviceOSRuleList.length >= 30) {
+            if (value === OsVendorEnum.PlayStation) {
+              // eslint-disable-next-line max-len
+              if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              if (deviceOSRuleList.length === 31) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 1 additional rule slot for PlayStation'
+                }))
+              }
+            }
+            if (value === OsVendorEnum.Xbox) {
+              // eslint-disable-next-line max-len
+              if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              if (deviceOSRuleList.length === 31) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 1 additional rule slot for Xbox'
+                }))
+              }
+            }
+          }
+          return Promise.resolve()
+        }
+        }
+      ]}
+      children={<Select
+        style={{ width: '100%' }}
+        onChange={handleOsVendorChange}
+        options={osVendorOptionList}
+      />}
+    />
+    {access !== AccessStatus.BLOCK && <PolicyFormItem
+      name='rateLimit'
+      label={$t({ defaultMessage: 'Rate Limit' })}
+      initialValue={''}
+      children={rateLimitContent}
+    />}
+    {access !== AccessStatus.BLOCK && <PolicyFormItem
+      name='vlan'
+      label={$t({ defaultMessage: 'VLAN' })}
+      initialValue={''}
+      children={<Input />}
+    />}
+  </Form>
+}
+
+export default DeviceOSRuleContent

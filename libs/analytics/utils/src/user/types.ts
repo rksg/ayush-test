@@ -50,7 +50,7 @@ export type Settings = {
   'property-name': string
   'property-code-name': string
   'enabled-intent-features': string,
-  'fetaure-related-events-suppression': string
+  'feature-related-events-suppression': string
 }
 
 export type ManagedUser = {

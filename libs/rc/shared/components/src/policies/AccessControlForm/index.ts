@@ -1,7 +1,7 @@
-export * from './Layer2Drawer'
-export * from './Layer3Drawer'
-export * from './ApplicationDrawer'
-export * from './DeviceOSDrawer'
+export * from './Layer2Component'
+export * from './Layer3Component'
+export * from './ApplicationComponent'
+export * from './DeviceOSComponent'
 export * from './ClientRateLimit'
 
 export * from './AccessControlForm'

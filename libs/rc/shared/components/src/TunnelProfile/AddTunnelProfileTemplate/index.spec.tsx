@@ -52,7 +52,7 @@ describe('AddTunnelProfileTemplate', () => {
       </Provider>
       , { route: { path: createViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    const policyNameField = screen.getByRole('textbox', { name: 'Template Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
