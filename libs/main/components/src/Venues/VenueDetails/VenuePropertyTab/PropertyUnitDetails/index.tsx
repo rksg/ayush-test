@@ -264,6 +264,12 @@ export function PropertyUnitDetails () {
       }
     },
     {
+      key: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      dataIndex: 'displayName',
+      searchable: true
+    },
+    {
       key: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'revoked',

@@ -18,7 +18,8 @@ import {
 } from '@acx-ui/msp/services'
 import {
   EcDeviceInventory,
-  MspUrlsInfo
+  MspUrlsInfo,
+  HspContext
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -33,8 +34,6 @@ import {
 import { TenantLink, useParams }                                       from '@acx-ui/react-router-dom'
 import { getUserProfile, hasAllowedOperations }                        from '@acx-ui/user'
 import { AccountType, exportMessageMapping, getOpsApi, useTableQuery } from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),

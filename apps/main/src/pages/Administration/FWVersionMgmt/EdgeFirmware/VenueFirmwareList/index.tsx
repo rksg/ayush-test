@@ -9,7 +9,6 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   EdgeChangeScheduleDialog, EdgeUpdateNowDialog, compareVersions,
   getNextScheduleTpl,
@@ -22,12 +21,9 @@ import {
   useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
   useSkipEdgeFirmwareVenueScheduleMutation,
-  useSkipEdgeUpgradeSchedulesMutation,
   useStartEdgeFirmwareVenueUpdateNowMutation,
-  useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeFirmwareVenueScheduleMutation,
-  useUpdateEdgeUpgradePreferencesMutation,
-  useUpdateEdgeVenueSchedulesMutation
+  useUpdateEdgeUpgradePreferencesMutation
 } from '@acx-ui/rc/services'
 import {
   EdgeFirmwareVersion,
@@ -92,13 +88,8 @@ export function VenueFirmwareList () {
       }
     }
   })
-  const [updateNow] = useUpdateEdgeFirmwareNowMutation()
   const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
-  const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
-  const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
 
-  const isBatchOperationEnable = useIsSplitOn(
-    Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
   const [startEdgeFirmwareVenueUpdateNow] = useStartEdgeFirmwareVenueUpdateNowMutation()
   const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
   const [skipEdgeFirmwareVenueSchedule] = useSkipEdgeFirmwareVenueScheduleMutation()
@@ -169,9 +160,7 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: isBatchOperationEnable ?
-        [getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)] :
-        [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware)],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -188,9 +177,7 @@ export function VenueFirmwareList () {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: isBatchOperationEnable ?
-        [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
-        [getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)],
       visible: (selectedRows: EdgeVenueFirmware[]) => {
         return selectedRows.every(row => hasSchedule(row))
       },
@@ -207,9 +194,7 @@ export function VenueFirmwareList () {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: isBatchOperationEnable ?
-        [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
-        [getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)],
       visible: (selectedRows: EdgeVenueFirmware[]) => {
         return selectedRows.every(row => hasSchedule(row))
       },
@@ -226,17 +211,9 @@ export function VenueFirmwareList () {
           onOk () {
             const requests = []
             try {
-              if (isBatchOperationEnable) {
-                requests.push(skipEdgeFirmwareVenueSchedule({
-                  payload: { venueIds: selectedRows.map((row) => row.id) }
-                }))
-              } else {
-                for(let row of selectedRows) {
-                  requests.push(skipSchedule({
-                    params: { venueId: row.id }
-                  }))
-                }
-              }
+              requests.push(skipEdgeFirmwareVenueSchedule({
+                payload: { venueIds: selectedRows.map((row) => row.id) }
+              }))
               Promise.all(requests).then(() => clearSelection())
             } catch (error) {
               console.log(error) // eslint-disable-line no-console
@@ -254,26 +231,14 @@ export function VenueFirmwareList () {
 
   const handleUpdateModalSubmit = async (data: string) => {
     const requests = []
-    const payload = {
-      version: data
-    }
     try {
-      if (isBatchOperationEnable) {
-        requests.push(startEdgeFirmwareVenueUpdateNow({
-          payload: {
-            venueIds: venueIds,
-            version: data,
-            state: 'UPDATE_NOW'
-          }
-        }))
-      } else {
-        for(let venueId of venueIds) {
-          requests.push(updateNow({
-            params: { venueId },
-            payload
-          }))
+      requests.push(startEdgeFirmwareVenueUpdateNow({
+        payload: {
+          venueIds: venueIds,
+          version: data,
+          state: 'UPDATE_NOW'
         }
-      }
+      }))
       Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -300,23 +265,14 @@ export function VenueFirmwareList () {
     const requests = []
     const payload = { ...data }
     try {
-      if (isBatchOperationEnable) {
-        requests.push(updateEdgeFirmwareVenueSchedule({
-          payload: {
-            venueIds: venueIds,
-            date: payload.date,
-            time: payload.time,
-            version: payload.version
-          }
-        }))
-      } else {
-        for(let venueId of venueIds) {
-          requests.push(updateSchedule({
-            params: { venueId },
-            payload
-          }))
+      requests.push(updateEdgeFirmwareVenueSchedule({
+        payload: {
+          venueIds: venueIds,
+          date: payload.date,
+          time: payload.time,
+          version: payload.version
         }
-      }
+      }))
       Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -325,16 +281,11 @@ export function VenueFirmwareList () {
 
   const isSelectionVisible = hasPermission({
     scopes: [EdgeScopes.UPDATE],
-    rbacOpsIds: isBatchOperationEnable ?
+    rbacOpsIds:
       [
         getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow),
         getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule),
         getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)
-      ] :
-      [
-        getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware),
-        getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules),
-        getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
       ]
   })
 

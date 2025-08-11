@@ -224,6 +224,9 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
+  }, {
+    start: '1/3/1', end: '1/3/4',
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL', 'OPTIC']
   }],
 
   'ICX7550-48ZP': [{
@@ -238,6 +241,9 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
+  }, {
+    start: '1/3/1', end: '1/3/4',
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL', 'OPTIC']
   }],
 
   'ICX7550-24F': [{
@@ -246,6 +252,9 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
+  }, {
+    start: '1/3/1', end: '1/3/4',
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL', 'OPTIC']
   }],
 
   'ICX7550-48F': [{
@@ -257,6 +266,9 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
+  }, {
+    start: '1/3/1', end: '1/3/4',
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL', 'OPTIC']
   }],
 
   'ICX7550-24XZP': [{
