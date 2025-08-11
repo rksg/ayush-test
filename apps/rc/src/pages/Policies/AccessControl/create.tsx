@@ -56,7 +56,7 @@ export default function CreateAccessControl () {
   const accessControlInstance = {
     [NetworkTypeTabsEnum.WIFI]: <Form.Item name='accessControlInstanceType'
       label={$t({ defaultMessage: 'Wi-Fi Access Control Profile' })}
-      initialValue={NetworkTypeTabsEnum.WIFI}>
+      initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
         <Space direction='vertical'>
           {/* eslint-disable-next-line max-len */}
@@ -94,7 +94,7 @@ export default function CreateAccessControl () {
     </Form.Item>,
     [NetworkTypeTabsEnum.SWITCH]: <Form.Item name='accessControlInstanceType'
       label={$t({ defaultMessage: 'Switch Access Control Profile' })}
-      initialValue={NetworkTypeTabsEnum.SWITCH}>
+      initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
         <Space direction='vertical'>
           {/* eslint-disable-next-line max-len */}

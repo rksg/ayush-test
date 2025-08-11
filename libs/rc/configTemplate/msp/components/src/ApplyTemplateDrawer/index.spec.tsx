@@ -1,13 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspEc, MspUrlsInfo }                          from '@acx-ui/msp/utils'
+import { HspContext, MspEc, MspUrlsInfo }              from '@acx-ui/msp/utils'
 import { ConfigTemplateType }                          from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import HspContext                                                                     from '../../../../HspContext'
-import { mockedConfigTemplateList, mockedMSPCustomerList }                            from '../../__tests__/fixtures'
+import { mockedConfigTemplateList, mockedMSPCustomerList }                            from '../__tests__/fixtures'
 import { AppliedMspEcListView, ApplyTemplateConfirmationDrawer, ApplyTemplateDrawer } from '../ApplyTemplateDrawer'
 
 jest.mock('../CustomerFirmwareReminder', () => ({
@@ -17,7 +16,10 @@ jest.mock('../CustomerFirmwareReminder', () => ({
 
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
-  ConfigTemplateOverrideModal: () => <div>ConfigTemplateOverrideModal</div>,
+  ConfigTemplateOverrideModal: () => <div>ConfigTemplateOverrideModal</div>
+}))
+
+jest.mock('../constants', () => ({
   MAX_APPLICABLE_EC_TENANTS: 2
 }))
 

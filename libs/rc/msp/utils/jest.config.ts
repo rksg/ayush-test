@@ -2,6 +2,8 @@ module.exports = {
   displayName: 'msp-utils',
   preset: '../../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],

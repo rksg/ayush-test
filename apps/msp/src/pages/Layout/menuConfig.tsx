@@ -23,14 +23,12 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }                                                           from '@acx-ui/msp/utils'
+import { HspContext, MspRbacUrlsInfo }                                               from '@acx-ui/msp/utils'
 import { getConfigTemplatePath, hasConfigTemplateAccess }                            from '@acx-ui/rc/utils'
 import { TenantType }                                                                from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                 from '@acx-ui/types'
 import { aiOpsApis, getUserProfile, hasAllowedOperations, hasPermission, hasRoles  } from '@acx-ui/user'
 import { AccountType, getOpsApi  }                                                   from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean,
   isOnboardMsp?: boolean
