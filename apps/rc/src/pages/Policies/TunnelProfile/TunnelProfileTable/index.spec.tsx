@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features }                             from '@acx-ui/feature-toggle'
-import { networkApi, pinApi, tunnelProfileApi } from '@acx-ui/rc/services'
+import { Features }                                                      from '@acx-ui/feature-toggle'
+import { networkApi, pinApi, tunnelProfileApi, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
   EdgePinUrls,
   EdgeSdLanUrls,
   EdgeTunnelProfileFixtures,
@@ -39,6 +38,7 @@ const mockedSdLanDataList = {
   totalCount: 1,
   data: [{ id: 'testSDLAN-id', name: 'testSDLAN' }]
 }
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
@@ -50,6 +50,11 @@ jest.mock('@acx-ui/utils', () => ({
   getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
+
 const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -57,6 +62,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 const mockedSingleDeleteApi = jest.fn()
+const mockNetworkOptions = useWifiNetworkListQuery as jest.Mock
 
 describe('TunnelProfileList', () => {
   let params: { tenantId: string }
@@ -72,6 +78,7 @@ describe('TunnelProfileList', () => {
     store.dispatch(pinApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     mockedSingleDeleteApi.mockClear()
+    mockNetworkOptions.mockReturnValue({ networkOptions: mockedNetworkOptions.data })
 
     mockServer.use(
       rest.post(
@@ -81,10 +88,6 @@ describe('TunnelProfileList', () => {
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
         (_, res, ctx) => res(ctx.json(mockedPinOptions))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.delete(
         TunnelProfileUrls.deleteTunnelProfile.url,

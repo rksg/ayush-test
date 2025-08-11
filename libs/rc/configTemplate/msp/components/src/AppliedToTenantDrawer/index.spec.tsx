@@ -6,7 +6,7 @@ import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplate, ConfigTemplateUrlsInfo } f
 import { Provider }                                                            from '@acx-ui/store'
 import { mockServer, render, screen }                                          from '@acx-ui/test-utils'
 
-import { mockedConfigTemplateList, mockedMSPCustomerList } from '../../__tests__/fixtures'
+import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
 import { AppliedToTenantDrawer } from '.'
 
