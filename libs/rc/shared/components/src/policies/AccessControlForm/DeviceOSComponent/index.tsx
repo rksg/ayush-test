@@ -36,13 +36,13 @@ import {
   OsVendorEnum,
   PolicyOperation,
   PolicyType,
-  sortProp,
+  sortProp, useAfterPolicySaveRedirectPath,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }    from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { TableResult }               from '@acx-ui/utils'
 
@@ -126,6 +126,8 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 export const DeviceOSComponent = (props: DeviceOSComponentProps) => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPath = useAfterPolicySaveRedirectPath(PolicyType.ACCESS_CONTROL)
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
@@ -389,6 +391,8 @@ export const DeviceOSComponent = (props: DeviceOSComponentProps) => {
     }
     if (!isComponentMode) {
       setDrawerVisible(false)
+    } else {
+      navigate(redirectPath, { replace: true })
     }
     callBack()
   }
