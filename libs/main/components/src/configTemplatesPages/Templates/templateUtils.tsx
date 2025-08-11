@@ -1,39 +1,20 @@
-import { useMemo } from 'react'
-
 import moment                               from 'moment'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { Button }                                                                                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, userDateTimeFormat }                                                                                                                           from '@acx-ui/formatter'
 import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, renderConfigTemplateDetailsComponent, subPolicyMappingType } from '@acx-ui/rc/components'
 import {
+  AccessControlPolicyForTemplateCheckType,
   ConfigTemplate,
   ConfigTemplateDriftType,
   ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
   serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                             from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { configTemplateDriftTypeLabelMap } from './driftDetails/contents'
-
-export const useEcFilters = () => {
-  const { data: userProfile } = useUserProfileContext()
-  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
-  const isSupportToMspDashboardAllowed =
-    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-
-  const ecFilters = useMemo(() => {
-    return isPrimeAdmin || isSupportToMspDashboardAllowed
-      ? { tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
-      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
-  }, [isPrimeAdmin, isSupportToMspDashboardAllowed])
-
-  return ecFilters
-}
 
 const partialConfigTemplateTypeLabelMap: Partial<Record<ConfigTemplateType, MessageDescriptor>> = {
   [ConfigTemplateType.NETWORK]: defineMessage({ defaultMessage: 'Wi-Fi Network' }),
@@ -130,4 +111,13 @@ export function useFormatTemplateDate () {
   return (date?: number) => {
     return date ? moment(date).format(dateFormat) : noDataDisplay
   }
+}
+
+export function isTemplateTypeAllowed (type: ConfigTemplateType) {
+  const disallowedTypes = [
+    ...Object.values(AccessControlPolicyForTemplateCheckType),
+    ConfigTemplateType.AP_GROUP
+  ]
+
+  return !disallowedTypes.includes(type)
 }
