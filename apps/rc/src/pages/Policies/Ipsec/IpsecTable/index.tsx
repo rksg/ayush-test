@@ -2,6 +2,7 @@ import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { getVxlanEspProposalText, getVxlanIkeProposalText }                 from '@acx-ui/edge/components'
 import { Features }                                                         from '@acx-ui/feature-toggle'
 import {
   useDeleteIpsecMutation,
@@ -284,12 +285,14 @@ function useColumns () {
       render: (_, row) => {
         const proposals = row.ikeProposals?.length === 0 ?
           ['All'] : getIkeProposalsDisplayText(row.ikeProposals)
-        return <SimpleListTooltip
-          items={proposals}
-          displayText={
-            row.ikeProposalType === IpSecProposalTypeEnum.DEFAULT ?
-              $t({ defaultMessage: 'Default' }) :
-              $t({ defaultMessage: 'Custom' })} />
+        return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? getVxlanIkeProposalText(row)
+          : <SimpleListTooltip
+            items={proposals}
+            displayText={
+              row.ikeProposalType === IpSecProposalTypeEnum.DEFAULT ?
+                $t({ defaultMessage: 'Default' }) :
+                $t({ defaultMessage: 'Custom' })} />
       }
     },
     {
@@ -301,12 +304,14 @@ function useColumns () {
       render: (_, row) => {
         const proposals = row.espProposals?.length === 0 ?
           ['All'] : getEspProposalsDisplayText(row.espProposals)
-        return <SimpleListTooltip
-          items={proposals}
-          displayText={
-            row.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
-              $t({ defaultMessage: 'Default' }) :
-              $t({ defaultMessage: 'Custom' })} />
+        return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? getVxlanEspProposalText(row)
+          : <SimpleListTooltip
+            items={proposals}
+            displayText={
+              row.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
+                $t({ defaultMessage: 'Default' }) :
+                $t({ defaultMessage: 'Custom' })} />
       }
     },
     ...isEdgeVxLanIpsecReady ? [{

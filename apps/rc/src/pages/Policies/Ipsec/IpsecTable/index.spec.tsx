@@ -1,6 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
+import { getVxlanEspProposalText, getVxlanIkeProposalText }                                                                                                   from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                                                                                             from '@acx-ui/feature-toggle'
 import { ipSecApi, useGetIpsecViewDataListQuery, useGetTunnelProfileViewDataListQuery }                                                                       from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath, CommonUrlsInfo, useIsEdgeFeatureReady, EdgeTunnelProfileFixtures } from '@acx-ui/rc/utils'
@@ -8,7 +10,7 @@ import { Path }                                                                 
 import { Provider, store }                                                                                                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                                                                        from '@acx-ui/test-utils'
 
-import { mockedVenueQueryData, mockIpSecTable } from '../__tests__/fixtures'
+import { mockedVenueQueryData, mockIpSecDetailFromListQueryWithVxlan, mockIpSecTable } from '../__tests__/fixtures'
 
 import IpsecTable from '.'
 
@@ -48,6 +50,12 @@ jest.mock('@acx-ui/components', () => ({
   </div>
 }))
 
+jest.mock('@acx-ui/edge/components', () => ({
+  ...jest.requireActual('@acx-ui/edge/components'),
+  getVxlanIkeProposalText: jest.fn(),
+  getVxlanEspProposalText: jest.fn()
+}))
+
 const mockUseGetIpsecViewDataListQuery = useGetIpsecViewDataListQuery as jest.Mock
 const mockUseGetTunnelProfileViewDataListQuery = useGetTunnelProfileViewDataListQuery as jest.Mock
 
@@ -70,12 +78,10 @@ describe('IpsecTable', () => {
     store.dispatch(ipSecApi.util.resetApiState())
     mockedSingleDeleteApi.mockClear()
 
-    mockUseGetIpsecViewDataListQuery.mockReturnValue(mockIpSecTable)
+    mockUseGetIpsecViewDataListQuery.mockReturnValue({ data: mockIpSecTable })
+    mockUseGetTunnelProfileViewDataListQuery.mockReturnValue({ data: [] })
+
     mockServer.use(
-      // rest.post(
-      //   IpsecUrls.getIpsecViewDataList.url,
-      //   (_, res, ctx) => res(ctx.json(mockIpSecTable))
-      // ),
       rest.delete(
         IpsecUrls.deleteIpsec.url,
         (_, res, ctx) => {
@@ -90,6 +96,8 @@ describe('IpsecTable', () => {
     )
   })
 
+  afterEach(() => jest.clearAllMocks())
+
   it('should render Breadcrumb and IpsecTable correctly', async () => {
     render(
       <Provider>
@@ -97,7 +105,6 @@ describe('IpsecTable', () => {
       </Provider>,
       { route: { params, path: tablePath } }
     )
-    expect(screen.getByText('IPsec (0)')).toBeInTheDocument()
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
     expect(await screen.findByText('IPsec (4)')).toBeInTheDocument()
@@ -195,15 +202,14 @@ describe('IpsecTable', () => {
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
-      mockUseGetIpsecViewDataListQuery.mockReturnValue(mockIpSecTable)
+      mockUseGetIpsecViewDataListQuery.mockReturnValue(mockIpSecDetailFromListQueryWithVxlan)
       mockUseGetTunnelProfileViewDataListQuery.mockReturnValue({
         tunnelProfileNameMap: mockedTunnelProfileViewData.data.map(tp => ({
-          id: tp.id,
-          name: tp.name
+          key: tp.id,
+          value: tp.name
         }))
       })
     })
-    afterEach(() => jest.clearAllMocks())
 
     it('should display `Tunnel Usage Type` correctly', async () => {
       render(
@@ -214,12 +220,13 @@ describe('IpsecTable', () => {
         })
 
       await screen.findByText('Tunnel Usage Type')
-      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices(VxLAN GPE)/ })
-      expect(within(vxlanRow).getByText('For RUCKUS Devices(VxLAN GPE)')).toBeInTheDocument()
+      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices\(VxLAN GPE\)/ })
+      expect(vxlanRow).toHaveTextContent('ipsecVxlanProfileName')
       expect(within(vxlanRow).getByText('N/A')).toBeInTheDocument()
 
-      const softGreRow = screen.getByRole('row', { name: /For 3rd party Devices(SoftGRe)/ })
-      expect(within(softGreRow).getByText('2.2.2.2')).toBeInTheDocument()
+      const softGreRow = screen.getByRole('row', { name: /For 3rd Party Devices\(SoftGRE\)/ })
+      expect(softGreRow).toHaveTextContent('ipsecSoftgreProfileName')
+      expect(softGreRow).toHaveTextContent('7.7.7.7')
     })
 
     it('should display venue instances correctly', async () => {
@@ -230,9 +237,12 @@ describe('IpsecTable', () => {
           route: { params, path: tablePath }
         })
       await screen.findByText('Tunnel Usage Type')
-      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices(VxLAN GPE)/ })
-      expect(within(vxlanRow).getByText('For RUCKUS Devices(VxLAN GPE)')).toBeInTheDocument()
-
+      const softGreRow = screen.getByRole('row', { name: /For 3rd Party Devices\(SoftGRE\)/ })
+      const tooltips = within(softGreRow).getAllByTestId('SimpleListTooltip')
+      expect(tooltips.length).toBe(3)
+      expect(within(tooltips[2]).getByTestId('SimpleListTooltip-display')).toHaveTextContent('1')
+      // eslint-disable-next-line max-len
+      expect(within(tooltips[2]).getByTestId('SimpleListTooltip-items')).toHaveTextContent('mockedVenueName1')
     })
 
     it('should display tunnel instances correctly', async () => {
@@ -242,7 +252,52 @@ describe('IpsecTable', () => {
         </Provider>, {
           route: { params, path: tablePath }
         })
+      await screen.findByText('Tunnel Usage Type')
+      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices\(VxLAN GPE\)/ })
+      expect(within(vxlanRow).getByTestId('SimpleListTooltip-display')).toHaveTextContent('1')
+      // eslint-disable-next-line max-len
+      expect(within(vxlanRow).getByTestId('SimpleListTooltip-items')).toHaveTextContent('tunnelProfile1')
+    })
 
+    it('should display 0 venue/tunnel instance correctly', async () => {
+      const mockZeroActivations = cloneDeep(mockIpSecDetailFromListQueryWithVxlan)
+      mockZeroActivations.data.data[0].tunnelActivations = []
+      mockZeroActivations.data.data[1].activations = []
+      mockUseGetIpsecViewDataListQuery.mockReturnValue(mockZeroActivations)
+
+      render(
+        <Provider>
+          <IpsecTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+      await screen.findByText('Tunnel Usage Type')
+      const vxlanRow = screen.getByRole('row', { name: /For RUCKUS Devices\(VxLAN GPE\)/ })
+      expect(vxlanRow).toHaveTextContent(/0$/)
+      expect(within(vxlanRow).queryByTestId('SimpleListTooltip-display')).toBeNull()
+      // eslint-disable-next-line max-len
+      const softGreRow = screen.getByRole('row', { name: /For 3rd Party Devices\(SoftGRE\)/ })
+      expect(softGreRow).toHaveTextContent(/0$/)
+    })
+
+    it('should display ike proposal and esp proposal correctly', async () => {
+      const mockGetVxlanIkeProposalText = jest.fn()
+      const mockGetVxlanEspProposalText = jest.fn()
+      jest.mocked(getVxlanIkeProposalText).mockImplementation(mockGetVxlanIkeProposalText)
+      jest.mocked(getVxlanEspProposalText).mockImplementation(mockGetVxlanEspProposalText)
+
+      render(
+        <Provider>
+          <IpsecTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+      await screen.findByText('Tunnel Usage Type')
+      screen.getByRole('row', { name: /For RUCKUS Devices\(VxLAN GPE\)/ })
+      // eslint-disable-next-line max-len
+      expect(mockGetVxlanIkeProposalText).toHaveBeenCalledWith(mockIpSecDetailFromListQueryWithVxlan.data.data[0])
+      // eslint-disable-next-line max-len
+      expect(mockGetVxlanEspProposalText).toHaveBeenCalledWith(mockIpSecDetailFromListQueryWithVxlan.data.data[0])
     })
   })
 })

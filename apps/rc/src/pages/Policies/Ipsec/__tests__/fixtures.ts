@@ -1,4 +1,4 @@
-import { EspProposal, IkeProposal, IpsecActivation, IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpSecRekeyTimeUnitEnum, IpsecViewData  } from '@acx-ui/rc/utils'
+import { EspProposal, IkeProposal, IpsecActivation, IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpSecRekeyTimeUnitEnum, IpSecTunnelUsageTypeEnum, IpsecViewData  } from '@acx-ui/rc/utils'
 
 export const mockedVenueId1 = '__Venue_ID1__'
 export const mockedVenueId2 = '__Venue_ID2__'
@@ -179,6 +179,46 @@ export const mockIpSecDetailFromListQueryById = {
             ]
           }
         ]
+      }
+    ]
+  }
+}
+
+
+export const mockIpSecDetailFromListQueryWithVxlan = {
+  data: {
+    totalCount: 2,
+    page: 1,
+    data: [
+      {
+        id: '380043b71ed7411d8e95a41af65d0f58',
+        name: 'ipsecVxlanProfileName',
+        serverAddress: '',
+        tunnelUsageType: IpSecTunnelUsageTypeEnum.VXLAN_GPE,
+        authenticationType: IpSecAuthEnum.PSK,
+        ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+        ikeProposals: [
+          {
+            encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+            authAlg: IpSecIntegrityAlgorithmEnum.SHA1,
+            prfAlg: IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG,
+            dhGroup: IpSecDhGroupEnum.MODP2048
+          }
+        ],
+        espProposalType: IpSecProposalTypeEnum.SPECIFIC,
+        espProposals: [{
+          encAlg: IpSecEncryptionAlgorithmEnum.AES256,
+          authAlg: IpSecIntegrityAlgorithmEnum.SHA384,
+          dhGroup: IpSecDhGroupEnum.ECP384
+        }] as EspProposal[],
+        activations: [],
+        tunnelActivations: [{
+          tunnelProfileId: 'tunnelProfileId1'
+        }]
+      }, {
+        ...mockIpSecDetailFromListQueryById.data.data[0],
+        name: 'ipsecSoftgreProfileName',
+        tunnelUsageType: IpSecTunnelUsageTypeEnum.SOFT_GRE
       }
     ]
   }
