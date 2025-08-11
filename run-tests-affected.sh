@@ -17,5 +17,5 @@ echo "Testing affected projects: $PROJECT_LIST"
 
 for project in $PROJECT_LIST; do
   echo "Running test for project: $project"
-  node ./node_modules/.bin/nx run "$project:test" $NX_RUN_OPTIONS || exit 1
+  node ./node_modules/.bin/nx run "$project:test" $NX_RUN_OPTIONS -- --coverageDirectory="coverage/$project" || exit 1
 done
