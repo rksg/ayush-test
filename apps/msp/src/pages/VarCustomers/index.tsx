@@ -25,7 +25,8 @@ import {
   DelegationEntitlementRecord,
   MspRbacUrlsInfo,
   MSPUtils,
-  VarCustomer
+  VarCustomer,
+  HspContext
 } from '@acx-ui/msp/utils'
 import {
   AdminRbacUrlsInfo,
@@ -36,8 +37,6 @@ import { Link, TenantLink, useParams }                               from '@acx-
 import { RolesEnum }                                                 from '@acx-ui/types'
 import { hasAllowedOperations, useUserProfileContext }               from '@acx-ui/user'
 import { getOpsApi, isDelegationMode, noDataDisplay, useTableQuery } from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 const transformNextExpirationDate = (row: VarCustomer) => {
   let expirationDate = ''
