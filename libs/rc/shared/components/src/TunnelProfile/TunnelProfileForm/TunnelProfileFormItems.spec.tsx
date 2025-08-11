@@ -43,22 +43,16 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('./useGetAvailableEdgeClusterData', () => ({
+  useGetAvailableEdgeClusterData: jest.fn().mockReturnValue({
+    availableClusterData: [],
+    isLoading: false
+  })
+}))
+
 
 describe('TunnelProfileForm', () => {
   const defaultValues = getTunnelProfileFormDefaultValues()
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterServiceList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
-    )
-  })
 
   it('should render TunnelProfileForm successfully', () => {
     render(
