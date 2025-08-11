@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import { Form, Radio, Space } from 'antd'
 import { useWatch }           from 'antd/lib/form/Form'
 import { useIntl }            from 'react-intl'
@@ -59,36 +61,26 @@ export default function CreateAccessControl () {
       initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
         <Space direction='vertical'>
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
-              {$t({ defaultMessage: 'Access Control Set' })}
-            </Radio>
-          }
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.LAYER_2_POLICY}>
-              {$t({ defaultMessage: 'Layer 2' })}
-            </Radio>
-          },
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.LAYER_3_POLICY}>
-              {$t({ defaultMessage: 'Layer 3' })}
-            </Radio>
-          },
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.DEVICE_POLICY}>
-              {$t({ defaultMessage: 'Device & OS' })}
-            </Radio>
-          },
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.APPLICATION_POLICY}>
-              {$t({ defaultMessage: 'Applications' })}
-            </Radio>
-          }
+          <Radio value={PolicyType.ACCESS_CONTROL}
+            disabled={!hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Access Control Set' })}
+          </Radio>
+          <Radio value={PolicyType.LAYER_2_POLICY}
+            disabled={!hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Layer 2' })}
+          </Radio>
+          <Radio value={PolicyType.LAYER_3_POLICY}
+            disabled={!hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Layer 3' })}
+          </Radio>
+          <Radio value={PolicyType.DEVICE_POLICY}
+            disabled={!hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Device & OS' })}
+          </Radio>
+          <Radio value={PolicyType.APPLICATION_POLICY}
+            disabled={!hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Applications' })}
+          </Radio>
         </Space>
       </Radio.Group>
     </Form.Item>,
@@ -97,18 +89,14 @@ export default function CreateAccessControl () {
       initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
         <Space direction='vertical'>
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
-              {$t({ defaultMessage: 'Access Control Set' })}
-            </Radio>
-          }
-          {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.LAYER_2_POLICY}>
-              {$t({ defaultMessage: 'Layer 2' })}
-            </Radio>
-          }
+          <Radio value={PolicyType.ACCESS_CONTROL}
+            disabled={!hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Access Control Set' })}
+          </Radio>
+          <Radio value={PolicyType.LAYER_2_POLICY}
+            disabled={!hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })}>
+            {$t({ defaultMessage: 'Layer 2' })}
+          </Radio>
         </Space>
       </Radio.Group>
     </Form.Item>
