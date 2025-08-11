@@ -76,7 +76,7 @@ function useColumns () {
     fixed: 'left',
     render: (_, row) => {
       return <TenantLink
-        to={`/devices/optical/${row.serialNumber}/details`}
+        to={`/devices/optical/${row.serialNumber}/details/overview`}
         style={{ lineHeight: '20px' }}
       >
         {row.name}

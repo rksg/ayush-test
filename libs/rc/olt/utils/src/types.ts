@@ -27,15 +27,22 @@ export interface OltCage {
   state: OltCageStateEnum
 }
 
-export interface OltOnu {
+export interface OltOnt {
+  id: string
   name: string
   poeClass: string
   ports: number
   usedPorts: number
-  portDetails: OltOnuPort[]
+  portDetails: OltOntPort[]
+
+  model?: string //TODO
+  profileName?: string
+  version?: string
+  uptime?: string
+  poeUtilization?: string
 }
 
-export interface OltOnuPort {
+export interface OltOntPort {
   portIdx: string
   status: OltCageStateEnum
   vlan: string[]

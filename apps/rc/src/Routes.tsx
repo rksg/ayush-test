@@ -100,6 +100,7 @@ import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/O
 import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
+import { CageDetails }                              from './pages/Devices/Olt/CageDetails'
 import { OltDetails }                               from './pages/Devices/Olt/OltDetails'
 import OltForm                                      from './pages/Devices/Olt/OltForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
@@ -513,6 +514,8 @@ const useOltRoutes = () => {
     <Route path='devices/optical/:action' element={<OltForm />} />
     <Route path='devices/optical/:oltId/:action' element={<OltForm />} />
     <Route path='devices/optical/:oltId/details' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/details/:activeTab' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/cages/:cageId' element={<CageDetails />} />
   </> : null
 }
 

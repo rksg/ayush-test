@@ -1,19 +1,16 @@
 import { useState, useMemo } from 'react'
 
-import { Button }       from 'antd'
 import { get, groupBy } from 'lodash'
 import { useIntl }      from 'react-intl'
 
 import { Table, TableProps, Loader, Tabs }                    from '@acx-ui/components'
 import { Olt, OltCage, OltCageStateEnum, oltLineCardOptions } from '@acx-ui/olt/utils'
 import { sortProp, defaultSort }                              from '@acx-ui/rc/utils'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
 import { filterByAccess }                                     from '@acx-ui/user'
 import { noDataDisplay }                                      from '@acx-ui/utils'
 
 import { OltStatus } from '../OltStatus'
-
-import { CageDetailsDrawer } from './CageDetailsDrawer'
-
 interface OltCageTableProps {
   oltDetails: Olt,
   oltCages: OltCage[] | undefined,
@@ -24,20 +21,13 @@ export const OltCageTable = (props: OltCageTableProps) => {
   const { $t } = useIntl()
   const { oltDetails, oltCages: data, isLoading, isFetching } = props
 
-  const [visible, setVisible] = useState<boolean>(false)
-  const [currentCage, setCurrentCage] = useState<OltCage | undefined>(undefined)
-  const [selectedLineCard, setSelectedLineCard] = useState<string>(oltLineCardOptions[0].value)
+  const [activeKey, setActiveKey] = useState<string>(oltLineCardOptions[0].value)
 
   const groupedLineCardCages = useMemo(() => {
     return groupBy(data, (item: OltCage) => {
       return item.cage.split('/')[0]
     })
   }, [data])
-
-  const handleRowClick = (cage: string) => {
-    setCurrentCage(data?.find(item => item.cage === cage))
-    setVisible(true)
-  }
 
   const columns: TableProps<OltCage>['columns'] = [
     {
@@ -49,9 +39,10 @@ export const OltCageTable = (props: OltCageTableProps) => {
       fixed: 'left',
       render: (_, row) =>
         row.state === OltCageStateEnum.UP
-          ? <Button type='link' size='small' onClick={() => handleRowClick(row.cage)}>
+          // eslint-disable-next-line max-len
+          ? <TenantLink to={`/devices/optical/${oltDetails.serialNumber}/cages/${row.cage.replace('/', '-')}`}>
             {row.cage}
-          </Button>
+          </TenantLink>
           : row.cage
     },
     {
@@ -87,45 +78,38 @@ export const OltCageTable = (props: OltCageTableProps) => {
     }
   ]
 
-  return <>
-    <Loader
-      states={[{ isLoading, isFetching }]}
-      style={{ minHeight: '100px', backgroundColor: 'transparent' }}
-    >
-      <Tabs
-        type='third'
-        activeKey={selectedLineCard}
-        onChange={(val) => {
-          setSelectedLineCard(val)
-        }}>
-        {oltLineCardOptions.map((item) => {
-          return <Tabs.TabPane tab={item.label} key={item.value} >
-            <Table
-              rowKey='cage'
-              columns={columns}
-              // for resolving flashing issue while doing tab switch
-              style={{ minHeight: '300px' }}
-              dataSource={get(groupedLineCardCages, item.value)}
-              rowActions={filterByAccess(rowActions)}
-              rowSelection={{ type: 'checkbox' }}
-              actions={filterByAccess([{
-                label: $t({ defaultMessage: 'Manage ONT S/N' })
-                // onClick: () => { setOntDrawerVisible(true) }
-              }, {
-                label: $t({ defaultMessage: 'Manage Cage Group' })
-                // onClick: () => { setCageGroupDrawerVisible(true) }
-              }])}
-            />
-          </Tabs.TabPane>
-        })}
-      </Tabs>
-    </Loader>
+  const handleTabChange = (val: string) => {
+    setActiveKey(val)
+  }
 
-    <CageDetailsDrawer
-      visible={visible}
-      setVisible={setVisible}
-      oltDetails={oltDetails}
-      currentCage={currentCage}
-    />
-  </>
+  return <Loader
+    states={[{ isLoading, isFetching }]}
+    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+  >
+    <Tabs
+      type='third'
+      activeKey={activeKey}
+      onChange={handleTabChange}>
+      {oltLineCardOptions.map((item) => {
+        return <Tabs.TabPane tab={item.label} key={item.value} >
+          <Table
+            rowKey='cage'
+            columns={columns}
+            // for resolving flashing issue while doing tab switch
+            style={{ minHeight: '300px' }}
+            dataSource={get(groupedLineCardCages, item.value)}
+            rowActions={filterByAccess(rowActions)}
+            rowSelection={{ type: 'checkbox' }}
+            actions={filterByAccess([{
+              label: $t({ defaultMessage: 'Manage ONT S/N' })
+              // onClick: () => { setOntDrawerVisible(true) }
+            }, {
+              label: $t({ defaultMessage: 'Manage Cage Group' })
+              // onClick: () => { setCageGroupDrawerVisible(true) }
+            }])}
+          />
+        </Tabs.TabPane>
+      })}
+    </Tabs>
+  </Loader>
 }

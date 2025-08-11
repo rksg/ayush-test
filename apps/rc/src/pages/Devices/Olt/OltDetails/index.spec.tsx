@@ -24,17 +24,21 @@ jest.mock('./OltDetailsDrawer', () => ({
 }))
 
 describe('OltDetails', () => { //TODO
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', activeTab: 'overview' }
   it('should render correctly', async () => {
     render(<Provider>
       <OltDetails />
     </Provider>, {
-      route: { params }
+      route: { params: { ...params, activeTab: 'unexisting-tab' } }
     })
     expect(screen.getByText('Overview')).toBeInTheDocument()
     expect(screen.getByTestId('OltOverviewTab')).toBeInTheDocument()
     await userEvent.click(screen.getByText(/Network Card/))
-    expect(screen.getByTestId('OltNetworkCardTab')).toBeInTheDocument()
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/devices/optical/olt-id/details/network',
+      search: '',
+      hash: ''
+    })
   })
 
   it('should render details drawer correctly', async () => {
@@ -104,4 +108,5 @@ describe('OltDetails', () => { //TODO
     await userEvent.click(screen.getByText(/Delete OLT/))
     expect(screen.getByText('Delete OLT')).toBeInTheDocument()
   })
+
 })

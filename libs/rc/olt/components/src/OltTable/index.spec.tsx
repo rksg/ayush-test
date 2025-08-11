@@ -34,14 +34,14 @@ describe('OltTable', () => {
     Modal.destroyAll()
   })
 
-  it('renders with loading state', () => {
+  it('should render with loading state', () => {
     render(<Provider>
       <OltTable data={mockOltList} isFetching />
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
 
-  it('should open OLT form when edit', async () => {
+  it('should navigate to edit page correctly', async () => {
     render(<Provider>
       <OltTable data={mockOltList} />
     </Provider>, { route: { params, path: mockPath } })
@@ -54,7 +54,7 @@ describe('OltTable', () => {
     ))
   })
 
-  it('should delete OLT', async () => {
+  it('should delete OLT correctly', async () => {
     // const mockedDeleteReq = jest.fn()
     // mockServer.use(
     //   rest.delete()
@@ -74,7 +74,7 @@ describe('OltTable', () => {
     // expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
-  it('should delete OLTs', async () => {
+  it('should delete OLTs correctly', async () => {
     // const mockedDeleteReq = jest.fn()
     // mockServer.use(
     //   rest.delete()
@@ -99,7 +99,7 @@ describe('OltTable', () => {
     expect(dialogTitle).toBeInTheDocument()
   })
 
-  it('should reboot OLT', async () => {
+  it('should reboot OLT correctly', async () => {
     // const mockedRebootReq = jest.fn()
     // mockServer.use(
     // )
@@ -115,7 +115,7 @@ describe('OltTable', () => {
     expect(dialogTitle).toBeInTheDocument()
   })
 
-  it('should reboot OLTs', async () => {
+  it('should reboot OLTs correctly', async () => {
     // const mockedRebootReq = jest.fn()
     // mockServer.use(
     // )

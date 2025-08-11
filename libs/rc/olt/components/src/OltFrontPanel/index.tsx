@@ -5,7 +5,7 @@ import { Subtitle }                           from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }         from '@acx-ui/icons-new'
 import { Olt, OltCageStateEnum, OltSlotType } from '@acx-ui/olt/utils'
 
-import { networkCardSlots, lineCardSlots } from '../../../mockdata'
+import { networkCardSlots, lineCardSlots } from '../mockdata'
 
 import * as UI  from './styledComponents'
 import { Unit } from './Unit'
@@ -30,6 +30,7 @@ export const OltFrontPanel = (props: { oltDetails?: Olt }) => {
     <UI.CardTitle>
       <Subtitle level={5}>{ oltDetails?.model }</Subtitle>
       <div>
+        {/* TODO */}
         <Tooltip title='Front Panel'>
           <QuestionMarkCircleOutlined size='sm' />
         </Tooltip>

@@ -54,47 +54,187 @@ export const mockOltCageList = [{
   state: OltCageStateEnum.DOWN
 }]
 
-export const mockOnuList = [
-  {
-    name: 'ont_9',
-    ports: 3,
-    usedPorts: 2,
-    poeClass: '2',
-    portDetails: [
-      {
-        portIdx: '1',
-        status: 'up',
-        vlan: ['30'],
-        poePower: 2.5
-      },
-      {
-        portIdx: '2',
-        status: OltCageStateEnum.DOWN,
-        vlan: ['11'],
-        poePower: 10
-      },
-      {
-        portIdx: '3',
-        status: 'up',
-        vlan: ['66'],
-        poePower: 3
-      }
-    ]
-  }, {
-    name: 'ont_7',
-    ports: 1,
-    usedPorts: 0,
-    poeClass: '2',
-    portDetails: [
-      {
-        portIdx: '1',
-        status: OltCageStateEnum.DOWN,
-        vlan: [],
-        poePower: 0
-      }
-    ]
-  }
-]
+export const mockOntList = [{
+  id: 'ont-id-1',
+  name: 'ont_1',
+  ports: 3,
+  usedPorts: 2,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.UP,
+      vlan: ['30'],
+      poePower: 2.5
+    },
+    {
+      portIdx: '2',
+      status: OltCageStateEnum.DOWN,
+      vlan: ['11'],
+      poePower: 10
+    },
+    {
+      portIdx: '3',
+      status: OltCageStateEnum.UP,
+      vlan: ['66'],
+      poePower: 3
+    }
+  ]
+}, {
+  id: 'ont-id-2',
+  name: 'ont_2',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-3',
+  name: 'ont_3',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-4',
+  name: 'ont_4',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-5',
+  name: 'ont_5',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-6',
+  name: 'ont_6',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-7',
+  name: 'ont_7',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-8',
+  name: 'ont_8',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-9',
+  name: 'ont_9',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-10',
+  name: 'ont_10',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-11',
+  name: 'ont_11',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}, {
+  id: 'ont-id-12',
+  name: 'ont_12',
+  ports: 1,
+  usedPorts: 0,
+  poeClass: '2',
+  portDetails: [
+    {
+      portIdx: '1',
+      status: OltCageStateEnum.DOWN,
+      vlan: [],
+      poePower: 0
+    }
+  ]
+}]
 
 export const mockVenuelist = {
   totalCount: 10,

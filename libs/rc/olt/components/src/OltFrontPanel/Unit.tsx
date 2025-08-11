@@ -1,9 +1,10 @@
 import { Space, Tooltip } from 'antd'
 
 import { TagsSolid, TagsOutline } from '@acx-ui/icons-new'
-import { OltStatus }              from '@acx-ui/olt/components'
 import { OltCageStateEnum }       from '@acx-ui/olt/utils'
 import { getIntl }                from '@acx-ui/utils'
+
+import { OltStatus } from '../OltStatus'
 
 import * as UI from './styledComponents'
 

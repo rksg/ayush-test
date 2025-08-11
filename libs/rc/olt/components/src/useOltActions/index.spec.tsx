@@ -50,6 +50,18 @@ describe('Test useOltActions', () => {
     expect(callback).toBeCalled()
   })
 
+  it('should call doSyncData correctly', async () => {
+    const { result } = renderHook(() => useOltActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    await act(async () => {
+      await result.current.doSyncData({ rows: [mockOlt], callBack: callback })
+    })
+
+    expect(callback).toBeCalled()
+  })
+
   it('should delete multiple rows', async () => {
     const { result } = renderHook(() => useOltActions(), {
       wrapper: ({ children }) => <Provider>{children}</Provider>

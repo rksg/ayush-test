@@ -51,6 +51,8 @@ export function useOltActions () {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const doSyncData = async ({ rows, callBack }: OltActionProps) => {
+    //TODO
+    callBack?.()
   }
 
   return {

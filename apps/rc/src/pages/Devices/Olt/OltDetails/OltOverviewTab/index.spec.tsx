@@ -8,6 +8,10 @@ import { OltOverviewTab } from './'
 
 const { mockOlt } = OltFixtures
 
+jest.mock('@acx-ui/olt/components', () => ({
+  OltFrontPanel: () => <div data-testid='OltFrontPanel' />
+}))
+
 describe('OltOverviewTab', () => { //TODO
   const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
   it('should render correctly', async () => {
@@ -20,6 +24,6 @@ describe('OltOverviewTab', () => { //TODO
     </Provider>, {
       route: { params }
     })
-    expect(screen.getByText(/MF-2/)).toBeInTheDocument()
+    expect(screen.getByTestId('OltFrontPanel')).toBeInTheDocument()
   })
 })

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { createContext }       from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Tabs, Loader } from '@acx-ui/components'
-import { Olt, OltCage } from '@acx-ui/olt/utils'
+
+import { Tabs, Loader }                          from '@acx-ui/components'
+import { Olt, OltCage }                          from '@acx-ui/olt/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { oltData, oltCageList } from '../mockdata'
 
@@ -16,9 +17,9 @@ import { OltNetworkCardTab }   from './OltNetworkCardTab'
 import { OltOverviewTab }      from './OltOverviewTab'
 
 enum OverviewInfoType {
-  OVERVIEW = 'Overview',
-  NETWORK = 'Network',
-  LINE = 'Line'
+  OVERVIEW = 'overview',
+  NETWORK = 'network',
+  LINE = 'line'
 }
 
 export const OltDetailsContext = createContext({} as {
@@ -27,22 +28,26 @@ export const OltDetailsContext = createContext({} as {
 
 export const OltDetails = () => {
   const { $t } = useIntl()
-  // const { oltId } = useParams()
-  const { activeSubTab } = useParams()
+  const navigate = useNavigate()
+  const { activeTab, oltId } = useParams()
+  const basePath = useTenantLink(`/devices/optical/${oltId}/details/`)
 
   const oltDetails = oltData as Olt //TODO: temp, remove when api is ready
   const oltCages = oltCageList as OltCage[] //TODO: temp, remove when api is ready
 
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
 
-  const handleTabChange = (val: string) => {
-    setCurrentTab(val)
+  const handleTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
   }
 
   useEffect(() => {
-    if (activeSubTab && Object.values(OverviewInfoType).includes(activeSubTab as OverviewInfoType))
-      setCurrentTab(activeSubTab)
-  }, [activeSubTab])
+    if (activeTab && Object.values(OverviewInfoType).includes(activeTab as OverviewInfoType))
+      setCurrentTab(activeTab)
+  }, [activeTab])
 
   const tabs = [{
     label: $t({ defaultMessage: 'Overview' }),
@@ -77,7 +82,7 @@ export const OltDetails = () => {
     />
     <Tabs type='card'
       activeKey={currentTab}
-      defaultActiveKey={activeSubTab || tabs[0].value}
+      defaultActiveKey={currentTab || tabs[0].value}
       onChange={handleTabChange}
     >
       {tabs.map((tab) => (
