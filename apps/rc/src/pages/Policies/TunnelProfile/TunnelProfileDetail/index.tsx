@@ -1,9 +1,9 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features }                                      from '@acx-ui/feature-toggle'
-import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard }              from '@acx-ui/components'
+import { Features }                                                   from '@acx-ui/feature-toggle'
+import { useGetIpsecByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
@@ -21,7 +21,8 @@ import {
   transformDisplayOnOff,
   TunnelProfileViewData,
   TunnelTypeEnum,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -31,9 +32,22 @@ import { ageTimeUnitConversion } from '../util'
 import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
+const IpsecProfileName = (props: { id: string | undefined }) => {
+  const { id } = props
+  const { data, isFetching } = useGetIpsecByIdQuery({
+    params: { policyId: id }
+  }, { skip: !id })
+
+  return <span>{isFetching
+    ? ''
+    : transformDisplayText(data?.name)}</span>
+}
+
 const TunnelProfileDetail = () => {
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const { $t } = useIntl()
   const params = useParams()
 
@@ -59,6 +73,13 @@ const TunnelProfileDetail = () => {
         return getTunnelTypeString($t, tunnelProfileData.tunnelType || TunnelTypeEnum.VXLAN_GPE)
       }
     }] : []),
+    {
+      title: $t({ defaultMessage: 'Network Segment Type' }),
+      content: () => {
+        // eslint-disable-next-line max-len
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
+      }
+    },
     ...(isEdgeL2greReady ? [{
       title: $t({ defaultMessage: 'Destination' }),
       content: () => {
@@ -67,13 +88,18 @@ const TunnelProfileDetail = () => {
           `${tunnelProfileData.destinationIpAddress || noDataDisplay}`
       }
     }] : []),
-    {
-      title: $t({ defaultMessage: 'Network Segment Type' }),
+    ...(isEdgeIpsecVxLanReady ? [{
+      title: $t({ defaultMessage: 'Encryption' }),
       content: () => {
-        // eslint-disable-next-line max-len
-        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
+        return transformDisplayOnOff(!!tunnelProfileData.ipsecProfileId)
       }
-    },
+    }] : []),
+    ...(isEdgeIpsecVxLanReady && !!tunnelProfileData.ipsecProfileId ? [{
+      title: $t({ defaultMessage: 'IPSec Profile' }),
+      content: () => {
+        return <IpsecProfileName id={tunnelProfileData.ipsecProfileId} />
+      }
+    }] : []),
     ...(isEdgeNatTraversalP1Ready ? [
       {
         title: $t({ defaultMessage: 'NAT-T Support' }),

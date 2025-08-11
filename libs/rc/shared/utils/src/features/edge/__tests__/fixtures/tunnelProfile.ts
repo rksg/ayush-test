@@ -102,6 +102,14 @@ export const mockedTunnelProfileViewData = {
   ]
 }
 
+export const mockedTunnelProfileViewDataWithIpsecProfileId = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    { ...mockedTunnelProfileViewData.data[0], ipsecProfileId: 'ipsecProfileId1' }
+  ]
+}
+
 export const mockedDefaultTunnelProfileViewData = {
   totalCount: 1,
   page: 1,
