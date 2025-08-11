@@ -94,6 +94,8 @@ ARG GIT_COMMIT_BRANCH
 COPY run-tests-affected.sh /app/run-tests-affected.sh
 RUN chmod +x /app/run-tests-affected.sh
 RUN /app/run-tests-affected.sh
+RUN echo "=== Coverage files generated ===" && \
+    find . -type f -name lcov.info -printf "%p\n"
 
 RUN find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} +
 RUN if [ -d ./coverage ]; then \
