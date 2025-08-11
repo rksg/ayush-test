@@ -30,7 +30,7 @@ export const validateTagIsAlphanumeric = (val: DraggableTag[]) => {
 export const validateTagMaxLength = (val: DraggableTag[], maxNumber: number) => {
   const { $t } = getIntl()
   const value = val?.[0]?.value
-  if (value.length > maxNumber) {
+  if (value && value.length > maxNumber) {
     return Promise.reject($t(DraggableTagMessageMapping.ExceedTagAttributeLengthLimit, { maxNumber }))
   }
   return Promise.resolve()
