@@ -41,9 +41,6 @@ export enum Features {
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
-  EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
-  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
-  EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
@@ -148,7 +145,7 @@ export enum Features {
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle', //'removable-ff',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
-  SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
+  SWITCH_SUPPORT_ICX8100 = 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_FLEXIBLE_AUTHENTICATION = 'switch-consumer-flexible-authentication-toggle',
@@ -354,7 +351,7 @@ interface BetaList {
 // from displaying in UI drawer component BetaFeaturesDrawer.
 // If we don't have a description blurb and
 // don't want it to be displayed then add status = false
-export const BetaListDetails:BetaList[] = [
+export const BetaListDetails: BetaList[] = [
   { key: TierFeatures.WORKFLOW_ONBOARD, description: defineMessage({ defaultMessage: 'Workflows: ' }), status: false },
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
