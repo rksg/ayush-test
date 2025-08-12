@@ -176,30 +176,35 @@ export function ApGroupNetworkVlanRadioDrawer ({ updateData }: { updateData: (da
               />
             } />
         ) : (!(editData.length > 1 && !vlanChecked) &&
-          <Form.Item
-            name='vlanPoolId'
-            label={$t({ defaultMessage: 'VLAN Pool' })}
-            rules={[{ required: true }]}
-            style={{ flex: '0 0 auto', minWidth: '220px' }}
-            children={
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Form.Item
+              name='vlanPoolId'
+              label={$t({ defaultMessage: 'VLAN Pool' })}
+              rules={[{ required: true }]}
+              style={{ flex: '0 0 auto' }}
+              children={
+
                 <Select
                   placeholder={$t({ defaultMessage: 'Select profile...' })}
                   options={vlanPoolList as unknown as DefaultOptionType[]}
                   style={{ width: '187px' }} />
-                { isApGroupMoreParameterPhase1Enabled &&
-                  <Tooltip>
-                    <VLANPoolModal updateInstance={(data)=>{
-                      vlanPoolList &&
-                      setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
-                      form.setFieldValue(['vlanPoolId'], data.id)
-                    }}
-                    vlanCount={vlanPoolList?.length||0}
-                    />
-                  </Tooltip>
-                }
-              </div>
-            } />
+
+              } />
+            { isApGroupMoreParameterPhase1Enabled &&
+              <Tooltip>
+                <div style={{ marginTop: '7px' }}>
+                  <VLANPoolModal updateInstance={(data)=>{
+                    vlanPoolList &&
+                    setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
+                    form.setFieldValue(['vlanPoolId'], data.id)
+                  }}
+                  vlanCount={vlanPoolList?.length||0}
+                  />
+                </div>
+
+              </Tooltip>
+            }
+          </div>
         )}
       </div>
 
