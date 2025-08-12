@@ -5,7 +5,6 @@ metadata:
 data:
   split.io.key: "mv0ie7nqslfon47mabelfdloqdem1alfctqp"
   disable.pendo: "true"
-  enable.contextqa: "false"
   google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   captive.portal.domain.name: "stage.qaalto.ruckuswireless.com"
   new.api.domain.name: "api.stage.qaalto.ruckuswireless.com"
