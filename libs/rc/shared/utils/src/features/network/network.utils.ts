@@ -3,16 +3,19 @@ import { IntlShape } from 'react-intl'
 
 import { NetworkTypeEnum, WlanSecurityEnum } from '../../constants'
 import { RadioEnum, RadioTypeEnum }          from '../../contents'
+import { NetworkApGroup }                    from '../../models'
 import { SchedulerTypeEnum }                 from '../../models/SchedulerTypeEnum'
 import { Network, NetworkSaveData }          from '../../types'
 
-export const generateDefaultNetworkVenue = (venueId: string, networkId:string) => {
+// eslint-disable-next-line max-len
+export const generateDefaultNetworkVenue = (venueId: string, networkId:string, apGroups?: NetworkApGroup[]) => {
+  const defaultApGroups = apGroups || []
   return {
-    apGroups: [],
+    apGroups: defaultApGroups,
     scheduler: {
       type: SchedulerTypeEnum.ALWAYS_ON
     },
-    isAllApGroups: true,
+    isAllApGroups: !apGroups?.length,
     allApGroupsRadio: RadioEnum.Both,
     allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
     venueId,
