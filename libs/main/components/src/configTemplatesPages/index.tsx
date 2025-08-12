@@ -2,19 +2,20 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader }       from '@acx-ui/components'
-import { ConfigTemplate }   from '@acx-ui/rc/utils'
-import type { TableColumn } from '@acx-ui/types'
+import { PageHeader }                   from '@acx-ui/components'
+import { ConfigTemplate }               from '@acx-ui/rc/utils'
+import type { RbacOpsIds, TableColumn } from '@acx-ui/types'
 
 import { ConfigTemplateList } from './Templates'
 
 export * from './Wrappers'
-export * from './constants'
 export * from './Overrides'
 
-export { useEcFilters }             from './Templates/templateUtils'
+export { isTemplateTypeAllowed } from './Templates/templateUtils'
 export * as ConfigTemplatePageUI from './Templates/styledComponents'
-export { DriftInstance }            from './Templates/driftDetails'
+export { DriftInstance, DriftComparisonSet } from './Templates/driftDetails'
+export { DetailsItemList } from './Templates/DetailsDrawer'
+export { useConfigTemplateListContext } from './Templates/ConfigTemplateListContext'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void
@@ -23,10 +24,15 @@ export interface CommonConfigTemplateDrawerProps {
 
 export interface ConfigTemplateViewProps {
   ApplyTemplateView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
-  AppliedToView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  canApplyTemplate?: (template: ConfigTemplate) => boolean
+  AppliedToView?: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  AppliedToListView?: (props: { selectedTemplate: ConfigTemplate }) => JSX.Element
   ShowDriftsView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   // eslint-disable-next-line max-len
   appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
+  actionRbacOpsIds?: {
+    apply?: RbacOpsIds
+  }
 }
 
 export function ConfigTemplateView (props: ConfigTemplateViewProps) {
@@ -35,12 +41,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
   return (
     <>
       <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
-      <ConfigTemplateList
-        ApplyTemplateView={props.ApplyTemplateView}
-        AppliedToView={props.AppliedToView}
-        ShowDriftsView={props.ShowDriftsView}
-        appliedToColumn={props.appliedToColumn}
-      />
+      <ConfigTemplateList {...props} />
     </>
   )
 }

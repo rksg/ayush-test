@@ -33,7 +33,7 @@ export const DraggableTagField = ({ name, rules = [], customTags, onChange, read
   const customTagRules = [
     /* eslint-disable max-len */
     { validator: (_: RuleObject, val: DraggableTag[]) => validateTagIsAlphanumeric(val) },
-    { validator: (_: RuleObject, val: DraggableTag[]) => validateTagIsUnique(form.getFieldValue('tags'), val) },
+    { validator: (_: RuleObject, val: DraggableTag[]) => validateTagIsUnique(form.getFieldValue(name), val) },
     { validator: (_: RuleObject, val: DraggableTag[]) => validateTagMaxLength(val, maxLength) },
     ...customRules
     /* eslint-enable max-len */
@@ -46,7 +46,7 @@ export const DraggableTagField = ({ name, rules = [], customTags, onChange, read
         {
           validator: async (_, tags: DraggableTag[]) => {
             let errorMsg = ''
-            const customTags = tags.filter(t => t.isCustom)
+            const customTags = (tags ?? []).filter(t => t.isCustom)
             for (let i = 0; i < customTags.length; i++) {
               const tag = customTags[i]
               for (const rule of customTagRules) {
