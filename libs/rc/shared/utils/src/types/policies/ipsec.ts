@@ -83,7 +83,6 @@ export interface IpSecFormData extends Ipsec {
 export interface IpsecViewData {
   id: string
   name: string
-  tunnelUsageType?: IpSecTunnelUsageTypeEnum
   serverAddress: string
   authenticationType: IpSecAuthEnum
   preSharedKey: string
@@ -96,6 +95,7 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
   tunnelActivations?: IpsecTunnelActivation[]
 }
 

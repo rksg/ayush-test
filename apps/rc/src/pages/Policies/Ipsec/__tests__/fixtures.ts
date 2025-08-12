@@ -184,7 +184,6 @@ export const mockIpSecDetailFromListQueryById = {
   }
 }
 
-
 export const mockIpSecDetailFromListQueryWithVxlan = {
   data: {
     totalCount: 2,
