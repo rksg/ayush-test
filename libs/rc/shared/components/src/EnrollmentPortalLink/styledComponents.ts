@@ -20,3 +20,22 @@ path {
     fill: var(--acx-accents-blue-50) !important;
   }
 `
+
+export const QRCodeModalStyle = `
+  .qr-code-modal .ant-modal-title,
+  div.qr-code-modal .ant-modal-header .ant-modal-title,
+  .ant-modal-wrap .qr-code-modal .ant-modal-title {
+    font-size: 16px !important;
+  }
+
+  .qr-code-modal .ant-btn-primary,
+  div.qr-code-modal .ant-modal-footer .ant-btn-primary,
+  .ant-modal-wrap .qr-code-modal .ant-btn-primary {
+    width: 240px !important;
+    margin: 0 auto !important;
+    display: block !important;
+    background-color: white !important;
+    color: black !important;
+    border-color: black !important;
+  }
+`

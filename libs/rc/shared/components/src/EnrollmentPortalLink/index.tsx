@@ -9,7 +9,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { ChatbotLink }            from '@acx-ui/icons'
 import { CopyOutlined }           from '@acx-ui/icons-new'
 
-import { StyledChatbotLink, StyledQRLink } from './styledComponents'
+import { StyledChatbotLink, StyledQRLink, QRCodeModalStyle } from './styledComponents'
 
 export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const { Link } = Typography
@@ -87,6 +87,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: QRCodeModalStyle }} />
       <div style={{ display: 'flex' }}>
         {!workFlowQrCodeGenerate && (
           <>
@@ -176,7 +177,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
         )}
       </div>
       <Modal
-        title={$t({ defaultMessage: 'QR Code' })}
+        title={truncatedWorkflowName}
         width={400}
         visible={qrModalVisible}
         okText={$t({ defaultMessage: 'Download' })}
@@ -184,9 +185,19 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
         onCancel={handleModalCancel}
         onOk={handleDownloadQr}
         maskClosable={false}
+        className='qr-code-modal'
+        okButtonProps={{
+          style: {
+            width: '240px',
+            margin: '0 auto',
+            display: 'block',
+            backgroundColor: 'white',
+            color: 'black',
+            borderColor: 'black'
+          }
+        }}
       >
         <div style={{ textAlign: 'center' }}>
-          <h3>{truncatedWorkflowName}</h3>
           <QRCodeSVG
             value={JSON.stringify({ name, url })}
             size={240}
