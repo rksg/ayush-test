@@ -50,6 +50,18 @@ export function useOltActions () {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const showRebootLineCard = async ({ rows, callBack }: OltActionProps) => {
+    //TODO
+    callBack?.()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const showRebootOnt = async ({ rows, callBack }: OltActionProps) => {
+    //TODO
+    callBack?.()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const doSyncData = async ({ rows, callBack }: OltActionProps) => {
     //TODO
     callBack?.()
@@ -58,6 +70,8 @@ export function useOltActions () {
   return {
     showDeleteOlt,
     showRebootOlt,
+    showRebootLineCard,
+    showRebootOnt,
     doSyncData
   }
 }

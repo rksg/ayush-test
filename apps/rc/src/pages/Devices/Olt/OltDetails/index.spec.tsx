@@ -10,29 +10,30 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mock('./OltOverviewTab', () => ({
-  OltOverviewTab: () => <div data-testid={'OltOverviewTab'} />
-}))
-jest.mock('./OltNetworkCardTab', () => ({
-  OltNetworkCardTab: () => <div data-testid={'OltNetworkCardTab'} />
-}))
-jest.mock('./OltLineCardTab', () => ({
-  OltLineCardTab: () => <div data-testid={'OltLineCardTab'} />
-}))
-jest.mock('./OltDetailsDrawer', () => ({
-  OltDetailsDrawer: () => <div data-testid={'OltDetailsDrawer'} />
-}))
+jest.mock('@acx-ui/olt/components', () => {
+  const original = jest.requireActual('@acx-ui/olt/components')
+  return {
+    ...original,
+    OltDetailPageHeader: () => <div data-testid='OltDetailPageHeader' />,
+    OltInfoWidget: () => <div data-testid='OltInfoWidget' />,
+    OltLineCardTab: () => <div data-testid='OltLineCardTab' />,
+    OltNetworkCardTab: () => <div data-testid='OltNetworkCardTab' />,
+    OltOverviewTab: () => <div data-testid='OltOverviewTab' />
+  }
+})
 
-describe('OltDetails', () => { //TODO
+describe('OltDetails', () => {
   const params = { tenantId: 'tenant-id', oltId: 'olt-id', activeTab: 'overview' }
   it('should render correctly', async () => {
     render(<Provider>
       <OltDetails />
     </Provider>, {
-      route: { params: { ...params, activeTab: 'unexisting-tab' } }
+      route: { params }
     })
     expect(screen.getByText('Overview')).toBeInTheDocument()
+    expect(screen.getByTestId('OltDetailPageHeader')).toBeInTheDocument()
     expect(screen.getByTestId('OltOverviewTab')).toBeInTheDocument()
+    expect(screen.getByTestId('OltInfoWidget')).toBeInTheDocument()
     await userEvent.click(screen.getByText(/Network Card/))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/devices/optical/olt-id/details/network',
@@ -41,72 +42,15 @@ describe('OltDetails', () => { //TODO
     })
   })
 
-  it('should render details drawer correctly', async () => {
+  it('should navigate to default tab correctly', async () => {
     render(<Provider>
       <OltDetails />
     </Provider>, {
-      route: { params }
+      route: { params: { ...params, activeTab: 'unexisting-tab' } }
     })
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    await userEvent.click(screen.getByText(/Device Details/))
-    expect(screen.getByTestId('OltDetailsDrawer')).toBeInTheDocument()
-  })
 
-  it('should navigate to config page correctly', async () => {
-    render(<Provider>
-      <OltDetails />
-    </Provider>, {
-      route: { params }
-    })
     expect(screen.getByText('Overview')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: /Configure/ }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/tenant-id/t/devices/optical/olt-id/edit',
-      search: '',
-      hash: ''
-    }, {
-      state: {
-        from: expect.any(Object)
-      }
-    })
-  })
-
-  it('should sync data correctly', async () => {
-    render(<Provider>
-      <OltDetails />
-    </Provider>, {
-      route: { params }
-    })
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    await userEvent.click(screen.getByText(/More/))
-    await userEvent.click(screen.getByText(/Sync Data/))
-    expect(
-      screen.getByRole('menuitem', { name: 'Sync Data' }).getAttribute('aria-disabled')
-    ).toBe('true')
-  })
-
-  it('should reboot olt correctly', async () => {
-    render(<Provider>
-      <OltDetails />
-    </Provider>, {
-      route: { params }
-    })
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    await userEvent.click(screen.getByText(/More/))
-    await userEvent.click(screen.getByText(/Reboot OLT/))
-    expect(screen.getByText('Reboot OLT')).toBeInTheDocument()
-  })
-
-  it('should delete olt correctly', async () => {
-    render(<Provider>
-      <OltDetails />
-    </Provider>, {
-      route: { params }
-    })
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    await userEvent.click(screen.getByText(/More/))
-    await userEvent.click(screen.getByText(/Delete OLT/))
-    expect(screen.getByText('Delete OLT')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true')
   })
 
 })

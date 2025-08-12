@@ -4,25 +4,23 @@ import { useParams }        from 'react-router-dom'
 
 import { Tabs, Loader } from '@acx-ui/components'
 import {
+  CageDetailPageHeader,
+  CageDetailsProvider,
   EditOntDrawer,
+  OntClientTab,
+  OntOverviewTab,
+  OntPortTab,
   OntDetailsDrawer,
   OntInfoWidget,
-  OntTable
+  OntTable,
+  useCageDetails
 }    from '@acx-ui/olt/components'
 import { Olt, OltCage, OltOnt } from '@acx-ui/olt/utils'
 import { noDataDisplay }        from '@acx-ui/utils'
 
 import { oltData, oltCageList, ontData } from '../mockdata'
 
-import { CageDetailPageHeader } from './CageDetailPageHeader'
-import {
-  CageDetailsProvider,
-  useCageDetails
-}   from './cageDetailsState'
-import { OntClientTab }   from './OntClientTab'
-import { OntOverviewTab } from './OntOverviewTab'
-import { OntPortTab }     from './OntPortTab'
-import * as UI            from './styledComponents'
+import * as UI from './styledComponents'
 
 enum OverviewInfoType {
   PANEL = 'Panel',
@@ -110,7 +108,8 @@ const CageDetailsContent = () => {
             isFetching={false}
           />
 
-          <Tabs type='line'
+          <Tabs
+            type='line'
             activeKey={state.currentTab}
             defaultActiveKey={activeSubTab || tabs[0].value}
             onChange={handleTabChange}

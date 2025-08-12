@@ -10,17 +10,17 @@ describe('OltStatus', () => {
     showText: true
   }
 
-  it('renders with online status and showText true', () => {
+  it('should render online status with text correctly', () => {
     render(<OltStatus {...validProps} />)
     expect(screen.getByText('Online')).toBeInTheDocument()
   })
 
-  it('renders with up status and showText true', () => {
+  it('should render cage up status with text correctly', () => {
     render(<OltStatus type='cage' status={OltCageStateEnum.UP} showText />)
     expect(screen.getByText('Up')).toBeInTheDocument()
   })
 
-  it('renders with showText true and false', () => {
+  it('should render online status without text correctly', () => {
     const { rerender } = render(<OltStatus {...validProps} />)
     expect(screen.getByText('Online')).toBeInTheDocument()
 
@@ -28,7 +28,7 @@ describe('OltStatus', () => {
     expect(screen.queryByText('Online')).toBeNull()
   })
 
-  it('renders with undefined status', () => {
+  it('should render unknown status correctly', () => {
     render(<OltStatus
       {...validProps}
       status={undefined}

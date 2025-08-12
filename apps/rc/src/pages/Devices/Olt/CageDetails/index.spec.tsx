@@ -5,42 +5,26 @@ import { screen, render } from '@acx-ui/test-utils'
 
 import { CageDetails } from './index'
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
-jest.mock('./OntOverviewTab', () => ({
-  OntOverviewTab: () => <div data-testid='OntOverviewTab' />
-}))
-jest.mock('./OntPortTab', () => ({
-  OntPortTab: () => <div data-testid='OntPortTab' />
-}))
-jest.mock('./OntClientTab', () => ({
-  OntClientTab: () => <div data-testid='OntClientTab' />
-}))
-jest.mock('./CageDetailPageHeader', () => ({
-  CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />
-}))
+jest.mock('@acx-ui/olt/components', () => {
+  return {
+    ...jest.requireActual('@acx-ui/olt/components'),
+    OntOverviewTab: () => <div data-testid='OntOverviewTab' />,
+    OntPortTab: () => <div data-testid='OntPortTab' />,
+    OntClientTab: () => <div data-testid='OntClientTab' />,
+    CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />,
+    OntInfoWidget: () => <div data-testid='OntInfoWidget' />,
+    EditOntDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
+      visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null,
+    OntDetailsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
+      visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null
+  }
+})
 
 const mockOntTableProps = {
   data: [],
   selectedOnt: null,
   setSelectedOnt: jest.fn()
 }
-
-jest.mock('@acx-ui/olt/components', () => {
-  const original = jest.requireActual('@acx-ui/olt/components')
-  return {
-    ...original,
-    EditOntDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-      visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null,
-    OntDetailsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-      visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null,
-    OntInfoWidget: ({ ontDetails }: { ontDetails: Record<string, unknown> }) =>
-      ontDetails ? <div data-testid='OntInfoWidget' /> : null
-  }
-})
 
 describe('CageDetails', () => {
   const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
@@ -114,4 +98,5 @@ describe('CageDetails', () => {
     await userEvent.click(await screen.findByRole('tab', { name: 'Ports' }))
     expect(screen.getByTestId('OntPortTab')).toBeInTheDocument()
   })
+
 })

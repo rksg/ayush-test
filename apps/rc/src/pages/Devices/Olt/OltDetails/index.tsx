@@ -1,29 +1,26 @@
 import { useEffect, useState } from 'react'
-import { createContext }       from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Loader }                          from '@acx-ui/components'
+import { Tabs, Loader } from '@acx-ui/components'
+import {
+  OltDetailsContext,
+  OltDetailPageHeader,
+  OltInfoWidget,
+  OltLineCardTab,
+  OltNetworkCardTab,
+  OltOverviewTab
+} from '@acx-ui/olt/components'
 import { Olt, OltCage }                          from '@acx-ui/olt/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { oltData, oltCageList } from '../mockdata'
-
-import { OltDetailPageHeader } from './OltDetailPageHeader'
-import { OltInfoWidget }       from './OltInfoWidget'
-import { OltLineCardTab }      from './OltLineCardTab'
-import { OltNetworkCardTab }   from './OltNetworkCardTab'
-import { OltOverviewTab }      from './OltOverviewTab'
 
 enum OverviewInfoType {
   OVERVIEW = 'overview',
   NETWORK = 'network',
   LINE = 'line'
 }
-
-export const OltDetailsContext = createContext({} as {
-  oltDetailsContextData: Olt
-})
 
 export const OltDetails = () => {
   const { $t } = useIntl()

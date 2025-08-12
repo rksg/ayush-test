@@ -61,3 +61,35 @@ export const lineCardSlots = [
     }))
   }
 ]
+
+export const networkCardInfo = [{
+  serialNumber: 'FH2302A073A',
+  version: '%software-version%',
+  uptime: '%uptime%',
+  status: 'Online',
+  speed: '%speed%',
+  info: '%optic-info%',
+  vlans: '1,2,3,4,5',
+  lag: '10'
+}, {
+  serialNumber: 'FH2302A073A',
+  version: '%software-version%',
+  uptime: '%uptime%',
+  status: 'Online',
+  speed: '%speed%',
+  info: '%optic-info%',
+  vlans: '1,2,3,4,5',
+  lag: '10'
+}]
+
+export const lineCardInfo = [{
+  status: 'Online',
+  model: 'LWLT-C',
+  cages: 16,
+  serialNumber: 'YP2306F4B2D'
+}, {
+  status: 'Online',
+  model: 'LWLT-C',
+  cages: 16,
+  serialNumber: 'YP2306F4B2D'
+}]

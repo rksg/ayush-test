@@ -50,6 +50,30 @@ describe('Test useOltActions', () => {
     expect(callback).toBeCalled()
   })
 
+  it('should call showRebootLineCard correctly', async () => {
+    const { result } = renderHook(() => useOltActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    await act(async () => {
+      await result.current.showRebootLineCard({ rows: [mockOlt], callBack: callback })
+    })
+
+    expect(callback).toBeCalled()
+  })
+
+  it('should call showRebootOnt correctly', async () => {
+    const { result } = renderHook(() => useOltActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    await act(async () => {
+      await result.current.showRebootOnt({ rows: [mockOlt], callBack: callback })
+    })
+
+    expect(callback).toBeCalled()
+  })
+
   it('should call doSyncData correctly', async () => {
     const { result } = renderHook(() => useOltActions(), {
       wrapper: ({ children }) => <Provider>{children}</Provider>
