@@ -18,7 +18,7 @@ import {
   useSwitchDetailHeaderQuery,
   useVenueSwitchSettingQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isFirmwareVersionAbove10010h, isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   VenueMessages,
   VeViewModel,
@@ -42,6 +42,8 @@ export function SwitchVeTable (props: {
   const { isVenueLevel, switchInfo } = props
   const [cliApplied, setCliApplied] = useState(false)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100StaticRouteMaxVe =
+    useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_STATIC_ROUTE_MAX_VE_TOGGLE)
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({
@@ -273,8 +275,9 @@ export function SwitchVeTable (props: {
   })
 
   const isActionHidden = (data?: VeViewModel[]) => {
-    return !isVenueLevel && switchDetail?.model?.startsWith('ICX8100')
-      && (data?.length || 0) > 0
+    return !isVenueLevel && switchDetail?.model?.startsWith('ICX8100') &&
+      !isSupport8100StaticRouteMaxVe &&
+      !isFirmwareVersionAbove10010h(switchDetail?.firmwareVersion) && (data?.length || 0) > 0
   }
 
   return <Loader states={[tableQuery]}>
