@@ -51,7 +51,6 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
       onChange={onChangeDhcpOption82}>
       <DhcpOption82SettingsFormField
         labelWidth={labelWidth}
-        readonly={false}
       />
     </FieldsetItem>
   )

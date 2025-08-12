@@ -36,24 +36,28 @@ import {
 import {
   AccessStatus,
   CommonResult,
+  customizePromiseAny,
+  dualModeSubnetMaskIpRegExp,
+  ipv6PrefixRegExp,
+  ipv6RegExp,
   L3AclPolicy,
   layer3ProtocolLabelMapping,
   Layer3ProtocolType,
-  networkWifiIpRegExp,
   networkWifiDualModeIpRegExp,
-  dualModeSubnetMaskIpRegExp,
-  customizePromiseAny,
+  networkWifiIpRegExp,
   PolicyOperation,
   PolicyType,
   portRegExp,
   subnetMaskIpRegExp,
-  ipv6RegExp,
-  ipv6PrefixRegExp,
+  useAfterPolicySaveRedirectPath,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
+  useConfigTemplateQueryFnSwitcher,
+  usePoliciesBreadcrumb,
+  usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
+import { useNavigate }               from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { TableResult }               from '@acx-ui/utils'
 
@@ -129,6 +133,8 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 export const Layer3Component = (props: Layer3ComponentProps) => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPath = useAfterPolicySaveRedirectPath(PolicyType.ACCESS_CONTROL)
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
@@ -429,6 +435,8 @@ export const Layer3Component = (props: Layer3ComponentProps) => {
     }
     if (!isComponentMode) {
       setDrawerVisible(false)
+    } else {
+      navigate(redirectPath, { replace: true })
     }
     callBack()
   }
