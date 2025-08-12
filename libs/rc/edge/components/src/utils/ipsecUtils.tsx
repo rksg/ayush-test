@@ -25,7 +25,7 @@ export const getIpSecEspAlgorithmOptions = () => {
   }]
 }
 
-export const getIkeProposalText = (profile: IpsecViewData) => {
+export const getVxlanIkeProposalText = (profile: IpsecViewData) => {
   if (profile.ikeProposalType === 'DEFAULT') {
     return 'AES128-SHA1-MODP2048' // Default proposal
   }
@@ -37,7 +37,7 @@ export const getIkeProposalText = (profile: IpsecViewData) => {
   return 'AES128-SHA1-MODP2048'
 }
 
-export const getEspProposalText = (profile: IpsecViewData) => {
+export const getVxlanEspProposalText = (profile: IpsecViewData) => {
   if (profile.espProposalType === 'DEFAULT') {
     return 'AES128-SHA1-MODP2048' // Default proposal
   }
