@@ -809,7 +809,7 @@ export function NewManageCustomer () {
   const checkAvailableLicenseV2 = (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     apswTrialLic?: number, solutionTokenLic?: number,
     solutionTokenTrialLic?: number ) => {
-    const currentTier = formRef.current?.getFieldValue('tier')
+    const currentTier = formRef.current?.getFieldValue('tier') || data?.tier
 
     let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
         p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)

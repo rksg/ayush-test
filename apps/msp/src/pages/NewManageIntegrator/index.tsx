@@ -219,7 +219,6 @@ export function NewManageIntegrator () {
       : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
   }
 
-
   useEffect(() => {
     if (privacySettingsData) {
       const privacyMonitoringSetting =
@@ -662,7 +661,7 @@ export function NewManageIntegrator () {
   (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
     solutionTokenLic?: number) => {
 
-    const currentTier = formRef.current?.getFieldValue('tier')
+    const currentTier = formRef.current?.getFieldValue('tier') || data?.tier
 
     let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
       p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
