@@ -185,7 +185,6 @@ export enum NotificationRecipientType {
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
-  name?: string;
   recipientType: NotificationRecipientType;
   emailPreferences?: boolean;
   smsPreferences?: boolean,
