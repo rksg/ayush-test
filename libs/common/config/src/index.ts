@@ -35,8 +35,6 @@ type R1Environment = {
   API_DOCUMENTATION_URL: string
   MIB_FILES: string
   AFC_FEATURE_ENABLED: string
-  CONTEXT_QA_KEY: string
-  CONTEXTQA_TENANTS: string
 }
 
 type RAEnvironment = {
