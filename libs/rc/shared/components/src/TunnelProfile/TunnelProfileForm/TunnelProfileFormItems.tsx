@@ -25,7 +25,8 @@ import {
   NetworkSegmentTypeEnum,
   TunnelTypeEnum,
   serverIpAddressRegExp,
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  TunnelProfileFormType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -74,6 +75,7 @@ async function validateMtuRequestTimeValue (value: number, mtuRequestUnit: strin
 }
 
 interface TunnelProfileFormItemsProps {
+  editData?: TunnelProfileFormType
   isDefaultTunnelProfile?: boolean
   isTemplate?: boolean
 }
@@ -95,7 +97,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
-  const { isDefaultTunnelProfile = false, isTemplate = false } = props
+  const { editData, isDefaultTunnelProfile = false, isTemplate = false } = props
   const form = Form.useFormInstance()
 
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
@@ -103,8 +105,9 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelType = useWatch('tunnelType')
-  const edgeClusterId = useWatch('edgeClusterId')
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
+  const initialEdgeClusterId = editData?.edgeClusterId
+
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
@@ -128,7 +131,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     isLoading: isClusterOptionsLoading
   } = useGetAvailableEdgeClusterData({
     isTemplate,
-    currentBoundEdgeClusterId: edgeClusterId
+    currentBoundEdgeClusterId: initialEdgeClusterId
   })
 
   const clusterOptions = useMemo(() => {
