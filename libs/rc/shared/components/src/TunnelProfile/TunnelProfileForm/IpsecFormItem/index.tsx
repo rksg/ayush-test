@@ -6,6 +6,8 @@ import { find }                   from 'lodash'
 import { useIntl }                from 'react-intl'
 
 import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import { IpSecTunnelUsageTypeEnum }     from '@acx-ui/rc/utils'
+
 
 import IpsecAddDrawer      from '../../../policies/Ipsec/IpsecForm/IpsecAddDrawer'
 import { FormItemWrapper } from '../styledComponents'
@@ -36,8 +38,7 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
         'espProposalType', 'ikeProposals', 'espProposals', 'tunnelUsageType'
       ],
       filters: {
-        // TODO: remove this after the ipsec profile is ready
-        // tunnelUsageType: [IpSecTunnelUsageTypeEnum.VXLAN_GPE]
+        tunnelUsageType: [IpSecTunnelUsageTypeEnum.VXLAN_GPE]
       }
     }
   }, {

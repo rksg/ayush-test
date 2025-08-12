@@ -1,13 +1,17 @@
 import { useIntl } from 'react-intl'
 
 import { PasswordInput, SimpleListTooltip, SummaryCard } from '@acx-ui/components'
+import { getEspProposalText, getIkeProposalText }        from '@acx-ui/edge/components'
+import { Features }                                      from '@acx-ui/feature-toggle'
 import {
   IpSecAuthEnum,
   IpsecViewData,
   EspProposal,
   IkeProposal,
   IpSecProposalTypeEnum,
-  IpSecEncryptionAlgorithmEnum
+  IpSecEncryptionAlgorithmEnum,
+  useIsEdgeFeatureReady,
+  IpSecTunnelUsageTypeEnum
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -19,6 +23,7 @@ interface IpsecDetailContentProps {
 export default function IpsecDetailContent (props: IpsecDetailContentProps) {
   const { data } = props
   const { $t } = useIntl()
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
   const getIkeProposals = (proposals: IkeProposal[]) => {
     const retArr: string[] = []
@@ -39,10 +44,20 @@ export default function IpsecDetailContent (props: IpsecDetailContentProps) {
   }
 
   const ipsecInfo = [
-    {
+    ...isEdgeIpsecVxLanReady ? [{
+      title: $t({ defaultMessage: 'Tunnel Usage Type' }),
+      content: () => {
+        const tunnelUsageTypeText = data?.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE ?
+          $t({ defaultMessage: 'RUCKUS Devices (VxLAN)' }) :
+          $t({ defaultMessage: '3rd Party Devices (SoftGRE)' })
+
+        return data?.tunnelUsageType ? tunnelUsageTypeText : noDataDisplay
+      }
+    }]: [],
+    ...(!isEdgeIpsecVxLanReady || data?.tunnelUsageType === IpSecTunnelUsageTypeEnum.SOFT_GRE) ? [{
       title: $t({ defaultMessage: 'Security Gateway' }),
       content: data?.serverAddress || noDataDisplay
-    },
+    }]: [],
     {
       title: $t({ defaultMessage: 'Authentication' }),
       content: IpSecAuthEnum.PSK === data?.authenticationType ?
@@ -59,7 +74,7 @@ export default function IpsecDetailContent (props: IpsecDetailContentProps) {
           value={data?.preSharedKey} />
         : data?.certificate
     },
-    {
+    ...(!isEdgeIpsecVxLanReady || data?.tunnelUsageType === IpSecTunnelUsageTypeEnum.SOFT_GRE) ? [{
       title: $t({ defaultMessage: 'IKE Proposal' }),
       content: () => {
         const proposals = data?.ikeProposals?.length === 0 ?
@@ -78,7 +93,14 @@ export default function IpsecDetailContent (props: IpsecDetailContentProps) {
           displayText={data?.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
             $t({ defaultMessage: 'Default' }) : $t({ defaultMessage: 'Custom' })} />
       }
-    }
+    }] : [],
+    ...(isEdgeIpsecVxLanReady && data?.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE) ? [{
+      title: $t({ defaultMessage: 'IKE Algorithm Combination' }),
+      content: () => getIkeProposalText(data)
+    }, {
+      title: $t({ defaultMessage: 'ESP Algorithm Combination' }),
+      content: () => getEspProposalText(data)
+    } ] : []
   ]
 
   return data ? <SummaryCard data={ipsecInfo} colPerRow={6} /> : null
