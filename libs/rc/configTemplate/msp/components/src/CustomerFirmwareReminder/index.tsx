@@ -1,13 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { MspTenantLink } from '@acx-ui/react-router-dom'
-
-import { Warning } from '../styledComponents'
-
+import { ConfigTemplatePageUI } from '@acx-ui/main/components'
+import { MspTenantLink }        from '@acx-ui/react-router-dom'
 
 export function CustomerFirmwareReminder () {
   const { $t } = useIntl()
-  return <Warning>{
+  return <ConfigTemplatePageUI.Warning>{
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'Ensure customer AP Firmware matches the template version to avoid compatibility issues. Upgrade AP Firmware for a customer in {link} by selecting {action}' }, {
       link: <MspTenantLink to='/dashboard/mspCustomers'>
@@ -15,5 +13,5 @@ export function CustomerFirmwareReminder () {
       </MspTenantLink>,
       action: <b>{$t({ defaultMessage: 'Schedule Firmware Update' })}</b>
     })
-  }</Warning>
+  }</ConfigTemplatePageUI.Warning>
 }

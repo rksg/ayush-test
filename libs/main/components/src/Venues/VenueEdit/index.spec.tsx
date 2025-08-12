@@ -30,6 +30,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedResolveTenantTypeFromPath = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => mockedResolveTenantTypeFromPath()
+}))
+
 describe('VenueEdit', () => {
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -52,6 +58,7 @@ describe('VenueEdit', () => {
 
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedResolveTenantTypeFromPath.mockReturnValue('t')
   })
 
   afterEach(() => {
@@ -70,6 +77,7 @@ describe('VenueEdit', () => {
 
   it('should render correctly when it is a config template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedResolveTenantTypeFromPath.mockReturnValue('v')
 
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     await screen.findByRole('tab', { name: 'Venue Details' })
