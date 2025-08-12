@@ -88,7 +88,13 @@ type AdditionalColumnType <RecordType, ValueType> = {
   /**
    * Allow filter to appear as one of the type specified
    */
-  filterComponent?: ({ type: 'checkbox' | 'rangepicker' , label?: string })
+  filterComponent?: ({
+    type: 'checkbox',
+    label?: string
+  } | {
+    type: 'rangepicker',
+    unlimitedRange?: boolean
+  })
   /**
    * Overwrite filterableWidth of table attribute
    */

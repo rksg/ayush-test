@@ -11,8 +11,10 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 const mockedUseConfigTemplate = jest.fn()
+const mockedUseIsEdgeFeatureReady = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: () => mockedUseIsEdgeFeatureReady(),
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
@@ -20,9 +22,10 @@ describe('useIsConfigTemplateOnByType', () => {
   beforeEach(() => {
     mockedIsRecSite.mockReturnValue(false)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseIsEdgeFeatureReady.mockReturnValue(false)
   })
 
-  it('should return the correct map when the BETA user is OFF', () => {
+  it('should return the correct map when the tier allowed is OFF', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
@@ -55,9 +58,8 @@ describe('useIsConfigTemplateOnByType', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('should return the correct map when the BETA user is ON and acx-ui-config-template is ON', () => {
+  it('should return the correct map when the tier allowed is ON', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
 
     const { result } = renderHook(() => useConfigTemplateVisibilityMap())
 
@@ -78,54 +80,22 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: true,
       [ConfigTemplateType.SYSLOG]: true,
-      [ConfigTemplateType.SWITCH_REGULAR]: false,
-      [ConfigTemplateType.SWITCH_CLI]: false,
-      [ConfigTemplateType.AP_GROUP]: false,
+      [ConfigTemplateType.SWITCH_REGULAR]: true,
+      [ConfigTemplateType.SWITCH_CLI]: true,
+      [ConfigTemplateType.AP_GROUP]: true,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
       [ConfigTemplateType.IDENTITY_GROUP]: false,
       [ConfigTemplateType.TUNNEL_SERVICE]: false
     })
   })
 
-  // eslint-disable-next-line max-len
-  it('should return the correct map when the BETA user is ON and acx-ui-config-template is OFF', () => {
+  it('should return the correct map for the other scope', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    const { result } = renderHook(() => useConfigTemplateVisibilityMap())
-
-    expect(result.current).toEqual({
-      [ConfigTemplateType.NETWORK]: true,
-      [ConfigTemplateType.VENUE]: true,
-      [ConfigTemplateType.DPSK]: true,
-      [ConfigTemplateType.RADIUS]: true,
-      [ConfigTemplateType.DHCP]: true,
-      [ConfigTemplateType.ACCESS_CONTROL]: true,
-      [ConfigTemplateType.LAYER_2_POLICY]: true,
-      [ConfigTemplateType.LAYER_3_POLICY]: true,
-      [ConfigTemplateType.APPLICATION_POLICY]: true,
-      [ConfigTemplateType.DEVICE_POLICY]: true,
-      [ConfigTemplateType.PORTAL]: true,
-      [ConfigTemplateType.VLAN_POOL]: false,
-      [ConfigTemplateType.WIFI_CALLING]: false,
-      [ConfigTemplateType.CLIENT_ISOLATION]: false,
-      [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
-      [ConfigTemplateType.SYSLOG]: false,
-      [ConfigTemplateType.SWITCH_REGULAR]: false,
-      [ConfigTemplateType.SWITCH_CLI]: false,
-      [ConfigTemplateType.AP_GROUP]: false,
-      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-      [ConfigTemplateType.IDENTITY_GROUP]: false,
-      [ConfigTemplateType.TUNNEL_SERVICE]: false
-    })
-  })
-
-  it('should return the correct map for the extra scope', () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(ff => (ff === Features.CONFIG_TEMPLATE_EXTRA ||
+    jest.mocked(useIsSplitOn).mockImplementation(ff => (
       ff === Features.ETHERNET_PORT_TEMPLATE_TOGGLE ||
       ff === Features.IDENTITY_GROUP_CONFIG_TEMPLATE
     ))
+    mockedUseIsEdgeFeatureReady.mockReturnValue(true)
 
     const { result } = renderHook(() => useConfigTemplateVisibilityMap())
 
@@ -141,17 +111,17 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.APPLICATION_POLICY]: true,
       [ConfigTemplateType.DEVICE_POLICY]: true,
       [ConfigTemplateType.PORTAL]: true,
-      [ConfigTemplateType.VLAN_POOL]: false,
-      [ConfigTemplateType.WIFI_CALLING]: false,
+      [ConfigTemplateType.VLAN_POOL]: true,
+      [ConfigTemplateType.WIFI_CALLING]: true,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
-      [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
-      [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: true,
+      [ConfigTemplateType.SYSLOG]: true,
       [ConfigTemplateType.SWITCH_REGULAR]: true,
       [ConfigTemplateType.SWITCH_CLI]: true,
       [ConfigTemplateType.AP_GROUP]: true,
       [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true,
       [ConfigTemplateType.IDENTITY_GROUP]: true,
-      [ConfigTemplateType.TUNNEL_SERVICE]: false
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
     })
   })
 

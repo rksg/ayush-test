@@ -1,9 +1,18 @@
+import { omit } from 'lodash'
+
 import { getTenantId } from '@acx-ui/utils'
 
 import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
 import { TunnelProfile, TunnelProfileViewData }                                                    from '../../types/policies/tunnelProfile'
+import { mockedTunnelProfileViewDataWithIpsecProfileId }                                           from '../edge/__tests__/fixtures/tunnelProfile'
 
-import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getTunnelTypeString, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
+import {
+  ageTimeUnitConversion, getTunnelProfileFormDefaultValues,
+  getTunnelProfileOptsWithDefault, getTunnelTypeString,
+  getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt,
+  isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile,
+  isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion
+} from './tunnelProfileUtils'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const defaultVxLANProfileName = 'Default tunnel profile (PIN)'
@@ -257,6 +266,36 @@ describe('tunnelProfileUtils', () => {
           mtuRequestTimeout: 6,
           mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS,
           natTraversalEnabled: false
+        })
+    })
+
+    it('should return default data with given valid profile and view data', () => {
+      // eslint-disable-next-line max-len
+      const viewData = mockedTunnelProfileViewDataWithIpsecProfileId.data[0] as TunnelProfileViewData
+      const profileData = {
+        // eslint-disable-next-line max-len
+        ...omit(viewData, ['ipsecProfileId', 'tags', 'personalIdentityNetworkIds', 'networkIds', 'sdLanIds', 'destinationEdgeClusterId', 'destinationEdgeClusterName'])
+      } as TunnelProfile
+
+      expect(getTunnelProfileFormDefaultValues(profileData, viewData))
+        .toStrictEqual({
+          mtuType: viewData.mtuType,
+          ageTimeMinutes: viewData.ageTimeMinutes,
+          ageTimeUnit: AgeTimeUnit.MINUTES,
+          id: viewData.id,
+          name: viewData.name,
+          mtuSize: viewData.mtuSize,
+          forceFragmentation: viewData.forceFragmentation,
+          type: viewData.type,
+          tunnelType: viewData.tunnelType,
+          keepAliveInterval: viewData.keepAliveInterval,
+          keepAliveRetry: viewData.keepAliveRetry,
+          mtuRequestRetry: viewData.mtuRequestRetry,
+          mtuRequestTimeout: viewData.mtuRequestTimeout,
+          mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS,
+          natTraversalEnabled: viewData.natTraversalEnabled,
+          ipsecProfileId: 'ipsecProfileId1',
+          tunnelEncryptionEnabled: true
         })
     })
   })

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, GridRow, GridCol,PageHeader, Button } from '@acx-ui/components'
+import { Features }                                    from '@acx-ui/feature-toggle'
 import { useGetIpsecViewDataListQuery }                from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -10,15 +11,20 @@ import {
   PolicyOperation,
   PolicyType,
   usePolicyListBreadcrumb,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  useIsEdgeFeatureReady,
+  IpSecTunnelUsageTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import IpsecDetailContent from './IpsecDetailContent'
+import IpsecTunnelDetail  from './IpsecTunnelDetail'
 import IpsecVenueDetail   from './IpsecVenueDetail'
 
 export default function IpsecDetail () {
   const { $t } = useIntl()
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const params = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.IPSEC)
   const { ipsecDetail, isLoading } = useGetIpsecViewDataListQuery(
@@ -61,7 +67,12 @@ export default function IpsecDetail () {
           <IpsecDetailContent data={ipsecDetail}/>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <IpsecVenueDetail data={ipsecDetail} />
+          {
+            // eslint-disable-next-line max-len
+            isEdgeIpsecVxLanReady && ipsecDetail.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+              ? <IpsecTunnelDetail data={ipsecDetail} />
+              : <IpsecVenueDetail data={ipsecDetail} />
+          }
         </GridCol>
       </GridRow>
     </Loader>

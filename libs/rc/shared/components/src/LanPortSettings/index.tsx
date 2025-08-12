@@ -280,15 +280,9 @@ export function LanPortSettings (props: {
         }
         {isDhcpOption82Enabled &&
             <DhcpOption82Settings
-              readonly={readOnly ?? false}
+              readOnly={readOnly ?? false}
               index={index}
               onGUIChanged={onGUIChanged}
-              isUnderAPNetworking={isUnderAPNetworking}
-              serialNumber={serialNumber}
-              venueId={venueId}
-              portId={selectedModel.lanPorts![index].portId}
-              apModel={selectedModelCaps.model}
-              sourceData={selectedModel.lanPorts?.[index].dhcpOption82}
             />
         }
         {!isTemplate && isEthernetClientIsolationEnabled &&

@@ -91,12 +91,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedUseIsConfigTemplateGA = jest.fn()
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
-}))
-
 const mockedIsRecSite = jest.fn()
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -200,7 +194,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     )
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-    mockedUseIsConfigTemplateGA.mockReturnValue(false)
     mockedIsRecSite.mockReturnValue(true)
   })
 
@@ -224,21 +217,13 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       )
     })
 
-    it('should display Switch Configuration tab when the condition is met', async () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-      mockedUseIsConfigTemplateGA.mockReturnValue(false)
-      mockedIsRecSite.mockReturnValue(true)
-
-      const { rerender } = render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
-      })
-      expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
-
+    it('should display Switch Configuration tab for config template', async () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-      mockedUseIsConfigTemplateGA.mockReturnValue(true)
       mockedIsRecSite.mockReturnValue(false)
 
-      rerender(<Provider><VenueEdit /></Provider>)
+      render(<Provider><VenueEdit /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
+      })
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
     })
   })

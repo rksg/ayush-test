@@ -6,20 +6,8 @@ export * from './ConfigTemplateLink'
 export * from './utils'
 export * from './EnforceTemplateToggle'
 
-export function useIsConfigTemplateBeta (): boolean {
+export function useIsConfigTemplateTierAllowed (): boolean {
   return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)
-}
-
-export function useIsConfigTemplateGA (): boolean {
-  const isBeta = useIsConfigTemplateBeta()
-  const isGA = useIsSplitOn(Features.CONFIG_TEMPLATE)
-  return isBeta && isGA
-}
-
-export function useIsConfigTemplateExtra (): boolean {
-  const isBeta = useIsConfigTemplateBeta()
-  const isExtraScope = useIsSplitOn(Features.CONFIG_TEMPLATE_EXTRA)
-  return isBeta && isExtraScope
 }
 
 export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolean> {
@@ -30,35 +18,33 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
 }
 
 function useMspConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolean> {
-  const isBeta = useIsConfigTemplateBeta()
-  const isGA = useIsConfigTemplateGA()
-  const isExtraScope = useIsConfigTemplateExtra()
+  const isTierAllowed = useIsConfigTemplateTierAllowed()
   const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   // eslint-disable-next-line max-len
   const isTunnelProfileTemplateEnabled = useIsEdgeFeatureReady(Features.EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE)
 
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
-    [ConfigTemplateType.NETWORK]: isBeta,
-    [ConfigTemplateType.VENUE]: isBeta,
-    [ConfigTemplateType.DPSK]: isBeta,
-    [ConfigTemplateType.RADIUS]: isBeta,
-    [ConfigTemplateType.DHCP]: isBeta,
-    [ConfigTemplateType.ACCESS_CONTROL]: isBeta,
-    [ConfigTemplateType.LAYER_2_POLICY]: isBeta,
-    [ConfigTemplateType.LAYER_3_POLICY]: isBeta,
-    [ConfigTemplateType.APPLICATION_POLICY]: isBeta,
-    [ConfigTemplateType.DEVICE_POLICY]: isBeta,
-    [ConfigTemplateType.PORTAL]: isBeta,
-    [ConfigTemplateType.VLAN_POOL]: isGA,
-    [ConfigTemplateType.WIFI_CALLING]: isGA,
-    [ConfigTemplateType.SYSLOG]: isGA,
+    [ConfigTemplateType.NETWORK]: isTierAllowed,
+    [ConfigTemplateType.VENUE]: isTierAllowed,
+    [ConfigTemplateType.DPSK]: isTierAllowed,
+    [ConfigTemplateType.RADIUS]: isTierAllowed,
+    [ConfigTemplateType.DHCP]: isTierAllowed,
+    [ConfigTemplateType.ACCESS_CONTROL]: isTierAllowed,
+    [ConfigTemplateType.LAYER_2_POLICY]: isTierAllowed,
+    [ConfigTemplateType.LAYER_3_POLICY]: isTierAllowed,
+    [ConfigTemplateType.APPLICATION_POLICY]: isTierAllowed,
+    [ConfigTemplateType.DEVICE_POLICY]: isTierAllowed,
+    [ConfigTemplateType.PORTAL]: isTierAllowed,
+    [ConfigTemplateType.VLAN_POOL]: isTierAllowed,
+    [ConfigTemplateType.WIFI_CALLING]: isTierAllowed,
+    [ConfigTemplateType.SYSLOG]: isTierAllowed,
     [ConfigTemplateType.CLIENT_ISOLATION]: false, // Not supported in the current scope
-    [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA,
-    [ConfigTemplateType.SWITCH_REGULAR]: isExtraScope,
-    [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
-    [ConfigTemplateType.AP_GROUP]: isExtraScope,
-    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled,
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: isTierAllowed,
+    [ConfigTemplateType.SWITCH_REGULAR]: isTierAllowed,
+    [ConfigTemplateType.SWITCH_CLI]: isTierAllowed,
+    [ConfigTemplateType.AP_GROUP]: isTierAllowed,
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isTierAllowed && isEthernetPortTemplateEnabled,
     [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled,
     [ConfigTemplateType.TUNNEL_SERVICE]: isTunnelProfileTemplateEnabled
   }
