@@ -98,19 +98,17 @@ ARG GIT_COMMIT_BRANCH
  
 COPY run-tests-affected.sh /app/run-tests-affected.sh
 RUN chmod +x /app/run-tests-affected.sh
-RUN set -e && \
-    /app/run-tests-affected.sh && \
-    find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} + && \
-    if [ -d ./coverage ]; then \
+RUN /app/run-tests-affected.sh
+
+RUN find ./node_modules/.cache/nx -type d -name coverage -path '*/outputs/*' -exec rm -rf {} +
+RUN if [ -d ./coverage ]; then \
       cp -r ./coverage ./node_modules/.cache/nx; \
-    fi && \
-    mkdir -p /app/coverage
- 
-RUN touch test-cases-done
+    fi
+
+RUN mkdir -p /app/coverage
 
 ###############################################################
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-group-test /app/test-cases-done /tmp/
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
