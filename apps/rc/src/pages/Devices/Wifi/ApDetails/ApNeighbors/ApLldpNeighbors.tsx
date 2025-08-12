@@ -85,7 +85,17 @@ export default function ApLldpNeighbors () {
 
 const transPSEAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
   if (!lldpPSEAllocPowerVal) return noDataDisplay
-  const allocatedPower = Number(lldpPSEAllocPowerVal) / 1000
+
+  const numericAllocPower = Number(lldpPSEAllocPowerVal)
+  if(isNaN(numericAllocPower)) {
+    return noDataDisplay
+  }
+
+  if(numericAllocPower < 1000){
+    return `${numericAllocPower} mW`
+  }
+
+  const allocatedPower = numericAllocPower / 1000
   if(Number.isInteger(allocatedPower)) {
     return `${allocatedPower} W`
   }
