@@ -361,6 +361,7 @@ export function showUnsavedModal (props: VenueEditContextProps & {
         })
       } else if (editContextData?.unsavedTabKey === 'networking') {
         editNetworkingContextData?.discardLanPorts?.()
+        editNetworkingContextData?.discardRadiusService?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,

@@ -39,7 +39,8 @@ import {
   useConfigTemplate,
   SecurityOptionsDescription,
   CertificateUrls,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
@@ -51,6 +52,7 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../../ApCompatibility'
+import { useIsConfigTemplateEnabledByType }                                                          from '../../configTemplates'
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT, MAX_CERTIFICATE_TEMPLATE_PER_NETWORK } from '../../policies'
 import { AAAInstance }                                                                               from '../AAAInstance'
 import { NetworkDiagram }                                                                            from '../NetworkDiagram/NetworkDiagram'
@@ -154,7 +156,8 @@ function SettingsForm () {
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   // eslint-disable-next-line max-len
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
   const wpa2Description = <>
