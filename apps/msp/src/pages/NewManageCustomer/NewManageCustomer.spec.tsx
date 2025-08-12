@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                                                                          from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                                                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                        from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, within }                                                                       from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                                         from '@acx-ui/types'
 import type { ToastProps }                                                                                                   from '@acx-ui/utils'
 
@@ -167,51 +168,6 @@ const fakeTenantDetails = {
   extendedTrial: true
 }
 
-const fakedPrivilegeGroupList =
-  [
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8911',
-      name: 'ADMIN',
-      description: 'Admin Role',
-      roleName: 'ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    },
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8914',
-      name: 'OFFICE_ADMIN',
-      description: 'Guest Manager',
-      roleName: 'OFFICE_ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    },
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8911',
-      name: 'PRIME_ADMIN',
-      description: 'Admin Role',
-      roleName: 'ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    }
-  ]
-
-const settings = {
-  privacyFeatures: [
-    {
-      featureName: 'APP_VISIBILITY',
-      isEnabled: false
-    },
-    {
-      featureName: 'ARC',
-      isEnabled: true
-    }
-  ]
-}
-
-
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -226,8 +182,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 const assignmentSummaryMockFn = jest.fn()
 const assignmentHistoryMockFn = jest.fn()
 const mspEcAccountMockFn = jest.fn()
-const privilegeListCallMockFn = jest.fn()
-const addCustomerMockFn = jest.fn()
+const updateCustomerMockFn = jest.fn()
 const v2Response = {
   data: [
     {
@@ -272,6 +227,7 @@ const v2Response = {
     }
   ]
 }
+
 describe('NewManageCustomer when multipool-mspec ff is enabled', () => {
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -285,37 +241,16 @@ describe('NewManageCustomer when multipool-mspec ff is enabled', () => {
         MspRbacUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
-      rest.get(
-        AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({ global: {
-          mapRegion: 'TW'
-        } }))
-      ),
-      rest.post(
-        MspRbacUrlsInfo.addMspEcAccount.url,
-        (_req, res, ctx) => {
-          addCustomerMockFn()
-          return res(ctx.json({ requestId: 'add' }))
-        }
-      ),
       rest.put(
-        MspUrlsInfo.updateMspEcAccount.url,
-        (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
-      ),
-      rest.post(
-        MspUrlsInfo.enableMspEcSupport.url,
-        (_req, res, ctx) => res(ctx.json({ requestId: 'enable' }))
-      ),
-      rest.delete(
-        MspUrlsInfo.disableMspEcSupport.url,
-        (_req, res, ctx) => res(ctx.json({ requestId: 'disable' }))
+        MspRbacUrlsInfo.updateMspEcAccount.url,
+        (_req, res, ctx) => {
+          updateCustomerMockFn()
+          return res(ctx.json({ requestId: 'update' }))}
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       ),
-      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
-        (req, res, ctx) => res(ctx.json(settings))),
       rest.get(MspRbacUrlsInfo.getMspEcAccount.url,
         (req, res, ctx) => {
           mspEcAccountMockFn()
@@ -334,24 +269,11 @@ describe('NewManageCustomer when multipool-mspec ff is enabled', () => {
       rest.get(MspRbacUrlsInfo.getMspEcSupport.url,
         (req, res, ctx) => res(ctx.json(ecSupport))
       ),
-      rest.get(AdministrationUrlsInfo.getPrivilegeGroups.url,
-        (req, res, ctx) => {
-          privilegeListCallMockFn()
-          return res(ctx.json(fakedPrivilegeGroupList)) }
-      ),
-      rest.post(MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => {
-          return res(ctx.json(list))
-        }
-      ),
       rest.post(MspRbacUrlsInfo.getMspEcAssignmentHistory.url,
         (req, res, ctx) => {
           assignmentHistoryMockFn()
           return res(ctx.json({ data: rbacMspEcAssignment }))
         }
-      ),
-      rest.get(MspUrlsInfo.getMspEcSupport.url,
-        (req, res, ctx) => res(ctx.json(ecSupport))
       ),
       rest.post(
         MspRbacUrlsInfo.getCalculatedLicences.url,
@@ -387,7 +309,34 @@ describe('NewManageCustomer when multipool-mspec ff is enabled', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
     expect(screen.getByDisplayValue('123 Main Street')).toBeVisible()
 
+    await userEvent.click(screen.getByRole('radio', { name: 'Essentials' }))
+    const dialog = await screen.findByRole('dialog')
+    await expect(
+      within(dialog).getByText('Are you sure you want to save the changes?')).toBeVisible()
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeInTheDocument())
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await expect(updateCustomerMockFn).toBeCalled()
   })
 
+  it('should render correctly for edit && Trial', async () => {
+    params.action = 'edit'
+    params.status = 'Trial'
+    render(
+      <Provider>
+        <NewManageCustomer />
+      </Provider>, {
+        route: { params }
+      })
 
+    expect(screen.queryByText('Add Customer Account')).toBeNull()
+
+    expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    expect(screen.getByDisplayValue('123 Main Street')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await expect(updateCustomerMockFn).toBeCalled()
+  })
 })

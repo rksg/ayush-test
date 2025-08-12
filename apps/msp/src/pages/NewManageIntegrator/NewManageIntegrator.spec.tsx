@@ -173,38 +173,6 @@ const v2Response = {
   ]
 }
 
-const privilegeGroupList =
-  [
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8911',
-      name: 'ADMIN',
-      description: 'Admin Role',
-      roleName: 'ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    },
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8912',
-      name: 'PRIME_ADMIN',
-      description: 'Prime Admin Role',
-      roleName: 'PRIME_ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    },
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8913',
-      name: 'READ_ONLY',
-      description: 'Read only Role',
-      roleName: 'READ_ONLY',
-      type: 'System',
-      delegation: false,
-      allCustomers: false
-    }
-  ]
-
-const addCustomerMockFn = jest.fn()
 const updateCustomerMockFn = jest.fn()
 const assignmentSummaryMockFn = jest.fn()
 const assignmentHistoryMockFn = jest.fn()
@@ -226,7 +194,6 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
     type: AccountType.MSP_INTEGRATOR
   }
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
   jest.mocked(useIsSplitOn)
     .mockImplementation(ff => ff !== Features.G_MAP)
   beforeEach(async () => {
@@ -236,24 +203,11 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({ global: {
-          mapRegion: 'TW'
-        } }))
-      ),
-      rest.get(
         MspUrlsInfo.getAssignedMspEcToIntegrator.url.split('?')[0] as Path,
         (_req, res, ctx) => res(ctx.json(assignedEc))
       ),
-      rest.post(
-        MspRbacUrlsInfo.addMspEcAccount.url,
-        (_req, res, ctx) => {
-          addCustomerMockFn()
-          return res(ctx.json({ requestId: 'add' }))
-        }
-      ),
       rest.put(
-        '/tenants/1576b79db6b549f3b1f3a7177d7d4ca5',
+        MspRbacUrlsInfo.updateMspEcAccount.url,
         (_req, res, ctx) => {
           updateCustomerMockFn()
           return res(ctx.json({ requestId: 'update' }))
@@ -271,9 +225,6 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
       rest.get(MspUrlsInfo.getAdministrators.url,
         (req, res, ctx) => res(ctx.json(administrators))
       ),
-      rest.get(AdministrationUrlsInfo.getPrivilegeGroups.url,
-        (req, res, ctx) => res(ctx.json(privilegeGroupList))
-      ),
       rest.get(MspRbacUrlsInfo.getMspEcDelegatedAdmins.url,
         (req, res, ctx) => res(ctx.json(delegatedAdmins))
       ),
@@ -286,18 +237,12 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
           return res(ctx.json(mspEcAccount))
         }
       ),
-      rest.post(MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => {
-          return res(ctx.json(list))
-        }
-      ),
       rest.post(
         MspRbacUrlsInfo.getCalculatedLicences.url,
         (_req, res, ctx) => {
           assignmentSummaryMockFn()
           return res(ctx.json(v2Response)) }
       )
-
     )
   })
   afterEach(() => {

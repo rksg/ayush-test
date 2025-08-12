@@ -457,27 +457,13 @@ describe('NewManageCustomer', () => {
       </Provider>, {
         route: { params }
       })
-
+    expect(await screen.findByText('My Customers')).toBeVisible()
     expect(screen.queryByText('Add Customer Account')).toBeNull()
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     expect(screen.getByDisplayValue('123 Main Street')).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    render(
-      <Provider>
-        <NewManageCustomer />
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
-      })
-
-    expect(await screen.findByText('My Customers')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'MSP Customers'
-    })).toBeVisible()
   })
 
   it('should validate customer name correctly', async () => {
