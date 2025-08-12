@@ -16,11 +16,6 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 
 import { ConfigTemplateList } from '.'
 
-jest.mock('../constants', () => ({
-  ...jest.requireActual('../constants'),
-  MAX_APPLICABLE_EC_TENANTS: 2
-}))
-
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -44,6 +39,12 @@ jest.mock('./useAddTemplateMenuProps', () => ({
     key: 'add-venue',
     label: <div>Venue</div>
   })
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v',
+  isRecSite: () => false
 }))
 
 describe('ConfigTemplateList component', () => {
@@ -89,9 +90,7 @@ describe('ConfigTemplateList component', () => {
     expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Template 1/i })).toBeVisible()
 
-    // Check type filter is visible or not
-    const typeFilter = screen.getByRole('combobox')
-    await userEvent.click(typeFilter)
+    await userEvent.click(screen.getByRole('combobox')) // type filter
     expect(screen.getByText(ConfigTemplateType.DPSK)).toBeInTheDocument()
   })
 

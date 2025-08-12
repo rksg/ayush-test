@@ -1,3 +1,4 @@
+import { ConfigTemplatePage }                                     from '@acx-ui/config-template/rec/components'
 import { ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
 import { AAAForm, AAAPolicyDetail,
   DpskForm,
@@ -19,7 +20,7 @@ export default function RecConfigTemplateRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} />}
         />
-        <Route path='templates' element={<div>ConfigTemplatePage</div>} />
+        <Route path='templates' element={<ConfigTemplatePage />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}

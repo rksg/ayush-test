@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl'
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
+  ConfigTemplateType,
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
   NetworkTypeEnum,
@@ -26,11 +27,12 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../../ApCompatibility'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
-import NetworkFormContext          from '../NetworkFormContext'
-import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import * as UI                     from '../styledComponents'
+import { useIsConfigTemplateEnabledByType } from '../../configTemplates'
+import { NetworkDiagram }                   from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                       from '../NetworkForm'
+import NetworkFormContext                   from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }          from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                              from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
@@ -122,7 +124,8 @@ function SettingsForm () {
   const { isTemplate } = useConfigTemplate()
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   // eslint-disable-next-line max-len
   const isOpenNetworkIntegrateIdentityGroupEnable = useIsSplitOn(Features.WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE)
 

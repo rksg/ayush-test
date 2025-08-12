@@ -7,10 +7,24 @@ export const useCasesToRefreshNetworkTemplateList = [
   'DeleteWifiNetworkTemplate'
 ]
 
+export const useCasesToRefreshRecNetworkTemplateList = [
+  'AddWifiNetworkRecTemplate',
+  'UpdateWifiNetworkRecTemplate',
+  'DeleteWifiNetworkRecTemplate',
+  'CloneWifiNetworkRecTemplate'
+]
+
 export const useCasesToRefreshVenueTemplateList = [
   'AddVenueTemplate',
   'UpdateVenueTemplate',
   'DeleteVenueTemplate'
+]
+
+export const useCasesToRefreshRecVenueTemplateList = [
+  'AddVenueRecTemplate',
+  'UpdateVenueRecTemplate',
+  'DeleteVenueRecTemplate',
+  'CloneVenueRecTemplate'
 ]
 
 export const useCasesToRefreshDhcpTemplateList = [
@@ -23,6 +37,13 @@ export const useCasesToRefreshDpskTemplateList = [
   'CREATE_POOL_TEMPLATE',
   'UPDATE_POOL_TEMPLATE',
   'DELETE_POOL_TEMPLATE'
+]
+
+export const useCasesToRefreshRecDpskTemplateList = [
+  'CREATE_POOL_REC_TEMPLATE',
+  'UPDATE_POOL_REC_TEMPLATE',
+  'DELETE_POOL_REC_TEMPLATE',
+  'CLONE_POOL_REC_TEMPLATE'
 ]
 
 export const useCasesToRefreshIdentityGroupTemplateList = [
@@ -153,6 +174,12 @@ export const useCasesToRefreshEthernetPortTemplateList = [
   'DeleteEthernetPortProfileTemplate'
 ]
 
+export const useCasesToRefreshTunnelServiceProfileTemplateList = [
+  'AddTunnelServiceProfileTemplate',
+  'UpdateTunnelServiceProfileTemplate',
+  'DeleteTunnelServiceProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   'SyncTemplate',
@@ -172,5 +199,15 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshSwitchConfigProfileTemplateList,
   ...useCasesToRefreshApGroupTemplateList,
   ...useCasesToRefreshEthernetPortTemplateList,
-  ...useCasesToRefreshIdentityGroupTemplateList
+  ...useCasesToRefreshIdentityGroupTemplateList,
+  ...useCasesToRefreshTunnelServiceProfileTemplateList
+]
+
+export const useCasesToRefreshRecTemplateList = [
+  'ApplyRecTemplate',
+  'SyncRecTemplate',
+  'EnforceRecTemplate',
+  ...useCasesToRefreshRecNetworkTemplateList,
+  ...useCasesToRefreshRecVenueTemplateList,
+  ...useCasesToRefreshRecDpskTemplateList
 ]
