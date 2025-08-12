@@ -39,7 +39,7 @@ export const PendingSwitch = () => {
     useQuery: useGetSwitchProvisionsQuery,
     defaultPayload: {
       page: 0,
-      size: 10,
+      pageSize: 10,
       filters: {}
     },
     search: {
