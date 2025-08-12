@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-import { Checkbox, Select }    from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { Cascader, Checkbox, Select } from 'antd'
+import { CheckboxChangeEvent }        from 'antd/lib/checkbox'
 import {
   BaseOptionType,
   DefaultOptionType
@@ -73,6 +73,57 @@ function RangePickerComp (props: RangePickerProps) {
     />
   </UI.FilterRangePicker>
 }
+
+/*
+function CascaderComp (props: { column: TableColumn<RecordType, 'text'> }) {
+  const { column } = props
+  const filterOptions = Array.isArray(column.filterable)
+    ? column.filterable
+    : []
+    interface FilterOption {
+      key: string | number
+      value: string
+      children?: FilterOption[]
+    }
+    interface MappedFilterOption {
+      label: string
+      value: string | number
+      children?: MappedFilterOption[]
+    }
+
+    const mappedFilterOptions = (options: FilterOption[] | undefined):
+      MappedFilterOption[] | undefined => {
+      return options?.map(option => {
+        const { key, value, children } = option
+        return {
+          label: value,
+          value: key,
+          children: children && mappedFilterOptions(children)
+        }
+      })
+    }
+
+    const options = useMemo(
+      () => mappedFilterOptions(filterOptions),
+      [filterOptions]
+    )
+
+    console.log('options: ', options)
+
+    return (<Cascader
+      data-testid='options-cascader'
+      key={index}
+      maxTagCount='responsive'
+      multiple={!!column.filterMultiple}
+      showSearch={column?.filterSearchable ?? undefined}
+      placeholder={column.filterPlaceholder ?? column.title as string}
+      showArrow
+      allowClear
+      style={{ width }}
+      options={options}
+    />)
+}
+    */
 
 export function getFilteredData <RecordType> (
   dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
@@ -182,6 +233,13 @@ export function renderFilter <RecordType> (
   filterPersistence?: boolean,
   optionLabelProp?: string
 ) {
+  const getValue = (value: unknown | string[], filterValueArray: undefined | boolean) => {
+    if (filterValueArray && value) {
+      return Array.isArray(value) ? (value as string[]).join(',') : value
+    }
+    return value
+  }
+
   const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
     return <Checkbox
       key={index}
@@ -204,6 +262,71 @@ export function renderFilter <RecordType> (
     </Checkbox>
   }
 
+  const renderCascader = (column: TableColumn<RecordType, 'text'>) => {
+    const filterOptions = Array.isArray(column.filterable)
+      ? column.filterable
+      : []
+    interface FilterOption {
+      key: string | number
+      value: string
+      children?: FilterOption[]
+    }
+    interface MappedFilterOption {
+      label: string
+      value: string | number
+      children?: MappedFilterOption[]
+    }
+
+    const mappedFilterOptions = (options: FilterOption[] | undefined):
+      MappedFilterOption[] | undefined => {
+      return options?.map(option => {
+        const { key, value, children } = option
+        return {
+          label: value,
+          value: key,
+          children: children && mappedFilterOptions(children)
+        }
+      })
+    }
+
+    const options = mappedFilterOptions(filterOptions)
+
+    return (<Cascader
+      data-testid='options-cascader'
+      key={index}
+      maxTagCount='responsive'
+      multiple={!!column.filterMultiple}
+      showSearch={column?.filterSearchable ?? undefined}
+      placeholder={column.filterPlaceholder ?? column.title as string}
+      showArrow
+      allowClear
+      style={{ width }}
+      options={options}
+      //value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
+      onChange={(value: unknown | string) => {
+        const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+        // eslint-disable-next-line max-len
+        const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
+        const filterValue = Array.isArray(value) ? value : filterArrayValue
+        let filters = {} as Filter
+
+        if (column.filterValueNullable === false &&
+        filterValue.filter(v => v != null).length === 0) {
+          filters = { ...filterValues, [key]: undefined } as Filter
+        } else {
+          filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
+        }
+
+        column?.coordinatedKeys?.forEach(key => {
+          delete filters[key]
+        })
+
+        setFilterValues(filters)
+
+      }}
+    />)
+  }
+
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
     rangepicker: <RangePickerComp
@@ -215,7 +338,8 @@ export function renderFilter <RecordType> (
       filterLabel={column.title as string}
       unlimitedRange={column.filterComponent?.type === 'rangepicker' ?
         column.filterComponent.unlimitedRange : undefined}
-    />
+    />,
+    cascader: renderCascader(column)
   }
   type Type = keyof typeof filterTypeComp
 
@@ -240,13 +364,6 @@ export function renderFilter <RecordType> (
         return data
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
-
-  const getValue = (value: unknown | string[], filterValueArray: undefined | boolean) => {
-    if (filterValueArray && value) {
-      return Array.isArray(value) ? (value as string[]).join(',') : value
-    }
-    return value
-  }
 
   return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
     optionLabelProp={optionLabelProp}
