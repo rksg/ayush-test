@@ -95,7 +95,8 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
-  tunnelUsageType?: IpSecTunnelUsageTypeEnum,
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
+  tunnelActivations?: IpsecTunnelActivation[]
 }
 
 export interface VenueTableUsageByIpsec extends IpsecActivation {
@@ -127,6 +128,10 @@ export interface IpsecWiredActivation extends ProfileLanVenueActivations {
 
 export interface IpsecWiredApActivation extends ProfileLanApActivations {
   softGreProfileId: string
+}
+
+export interface IpsecTunnelActivation {
+  tunnelProfileId: string
 }
 
 export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {
