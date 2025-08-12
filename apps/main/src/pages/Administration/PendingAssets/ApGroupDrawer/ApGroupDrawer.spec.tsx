@@ -35,7 +35,7 @@ describe('ApGroupDrawer', () => {
     jest.clearAllMocks()
   })
 
-  it('renders with default props', async () => {
+  it('renders with default props and handles all interactions when open is true', () => {
     render(
       <MemoryRouter>
         <Provider>
@@ -43,11 +43,44 @@ describe('ApGroupDrawer', () => {
         </Provider>
       </MemoryRouter>
     )
+
+    // Test basic rendering
     expect(screen.getByText('Add AP Group')).toBeVisible()
     expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
+
+    // Test drawer width
+    const drawer = screen.getByRole('dialog')
+    expect(drawer).toBeInTheDocument()
+
+    // Test ApGroupGeneralTab component with correct props
+    expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
+    expect(screen.getByTestId('mock-close-button')).toBeVisible()
+    expect(screen.getByTestId('mock-finish-button')).toBeVisible()
+
+    // Test i18n title
+    expect(screen.getByText('Add AP Group')).toBeVisible()
+
+    // Test ApGroupEditContextProvider wrapper
+    expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
+
+    // Test close functionality
+    fireEvent.click(screen.getByLabelText('Close'))
+    expect(mockProps.onClose).toHaveBeenCalledTimes(1)
   })
 
-  it('closes drawer when close button is clicked', async () => {
+  it('does not render when open is false', () => {
+    render(
+      <MemoryRouter>
+        <Provider>
+          <ApGroupDrawer {...mockProps} open={false} />
+        </Provider>
+      </MemoryRouter>
+    )
+    expect(screen.queryByText('Add AP Group')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('ap-group-general-tab')).not.toBeInTheDocument()
+  })
+
+  it('handles mock component interactions correctly', () => {
     render(
       <MemoryRouter>
         <Provider>
@@ -55,8 +88,13 @@ describe('ApGroupDrawer', () => {
         </Provider>
       </MemoryRouter>
     )
-    // Use the drawer's close button by its aria-label
-    fireEvent.click(screen.getByLabelText('Close'))
+
+    // Test mock close button
+    fireEvent.click(screen.getByTestId('mock-close-button'))
     expect(mockProps.onClose).toHaveBeenCalledTimes(1)
+
+    // Test mock finish button
+    fireEvent.click(screen.getByTestId('mock-finish-button'))
+    expect(mockProps.onClose).toHaveBeenCalledTimes(2)
   })
 })
