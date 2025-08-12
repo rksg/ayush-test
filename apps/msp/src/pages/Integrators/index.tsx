@@ -22,7 +22,8 @@ import {
 } from '@acx-ui/msp/services'
 import {
   MspEc,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  HspContext
 } from '@acx-ui/msp/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                                        from '@acx-ui/types'
@@ -32,7 +33,6 @@ import {
 } from '@acx-ui/utils'
 
 import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
-import HspContext                    from '../../HspContext'
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'

@@ -93,12 +93,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedUseIsConfigTemplateGA = jest.fn()
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
-}))
-
 let dialog = null
 const buttonAction = {
   DISCARD_CHANGES: 'Discard Changes',
@@ -196,7 +190,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     )
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-    mockedUseIsConfigTemplateGA.mockReturnValue(false)
   })
 
   afterEach(() => {
@@ -219,20 +212,12 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       )
     })
 
-    it('should display Switch Configuration tab when the condition is met', async () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-      mockedUseIsConfigTemplateGA.mockReturnValue(false)
+    it('should display Switch Configuration tab for config template', async () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
-      const { rerender } = render(<Provider><VenueEdit /></Provider>, {
+      render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
-      // eslint-disable-next-line max-len
-      expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
-
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-      mockedUseIsConfigTemplateGA.mockReturnValue(true)
-
-      rerender(<Provider><VenueEdit /></Provider>)
       // eslint-disable-next-line max-len
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
     })

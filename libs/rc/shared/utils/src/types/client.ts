@@ -146,6 +146,7 @@ export interface ClientInfo {
   identityName?: string
   identityGroupId?: string
   identityGroupName?: string
+  identityDisplayName?: string
   authenticationStatus: number
   connectedTime: string
   lastUpdatedTime: string

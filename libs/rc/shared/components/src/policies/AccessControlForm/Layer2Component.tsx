@@ -35,15 +35,15 @@ import {
   MacAddressFilterRegExp, MacRegistrationFilterRegExp,
   PolicyOperation,
   PolicyType,
-  sortProp,
+  sortProp, useAfterPolicySaveRedirectPath,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { TableResult }    from '@acx-ui/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }         from '@acx-ui/user'
+import { TableResult }            from '@acx-ui/utils'
 
 
 import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'
@@ -89,6 +89,8 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 export const Layer2Component = (props: Layer2ComponentProps) => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPath = useAfterPolicySaveRedirectPath(PolicyType.ACCESS_CONTROL)
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
@@ -327,6 +329,8 @@ export const Layer2Component = (props: Layer2ComponentProps) => {
     }
     if (!isComponentMode) {
       setDrawerVisible(false)
+    } else {
+      navigate(redirectPath, { replace: true })
     }
     callBack()
   }

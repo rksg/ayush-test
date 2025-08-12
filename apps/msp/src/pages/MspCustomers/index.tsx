@@ -33,7 +33,8 @@ import {
   MSPUtils,
   MspEcTierEnum,
   MspEcAccountType,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  HspContext
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -47,7 +48,6 @@ import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProf
 import { AccountType, getOpsApi, isDelegationMode, noDataDisplay, useTableQuery, FILTER, SEARCH }           from '@acx-ui/utils'
 
 import { useCheckDelegateAdmin }     from '../../hooks/useCheckDelegateAdmin'
-import HspContext                    from '../../HspContext'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 import { ManageMspDelegationDrawer } from '../ManageMspDelegations'

@@ -116,12 +116,6 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
       form.setFieldValue('authServiceId', curAuthRadiusId)
       form.setFieldValue('accountingServiceId', curAccountingRadiusId)
 
-      if (hasIncludedAuthOptions) {
-        createdAuthRadiusIdRef.current = undefined
-      }
-      if (hasIncludedAccountingOptions) {
-        createAccountingRadiusIdRef.current = undefined
-      }
     }
   }, [form, data, isLoading, venueId])
 
@@ -146,6 +140,18 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
         await deactivateVenueRadius({ params: { venueId, radiusId: initAccountingId } }).unwrap()
       }
     }
+
+    if (createdAuthRadiusIdRef.current) {
+      createdAuthRadiusIdRef.current = undefined
+    }
+    if (createAccountingRadiusIdRef.current) {
+      createAccountingRadiusIdRef.current = undefined
+    }
+  }
+
+  const handleDiscardRadiusService = async () => {
+    createdAuthRadiusIdRef.current = undefined
+    createAccountingRadiusIdRef.current = undefined
   }
 
   const handleChanged = () => {
@@ -158,20 +164,34 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
 
     setEditNetworkingContextData && setEditNetworkingContextData({
       ...editNetworkingContextData,
-      updateRadiusService: handleUpdateRadiusService
+      updateRadiusService: handleUpdateRadiusService,
+      discardRadiusService: handleDiscardRadiusService
     })
 
   }
 
   const handleOverrideEnableChanged = (enable: boolean, type: AaaServerTypeEnum) => {
     if (!enable) {
-      const fieldName = (type === AaaServerTypeEnum.AUTHENTICATION)? 'authServiceId' : 'accountingServiceId'
+      let fieldName: string
+      if (type === AaaServerTypeEnum.AUTHENTICATION) {
+        createdAuthRadiusIdRef.current = undefined
+        fieldName = 'authServiceId'
+      } else { // type === AaaServerTypeEnum.ACCOUNTING
+        createAccountingRadiusIdRef.current = undefined
+        fieldName = 'accountingServiceId'
+      }
+
       form.setFieldValue(fieldName, undefined)
       handleChanged()
     }
   }
 
-  const handleRadiusIdChanged = () => {
+  const handleRadiusIdChanged = (type: AaaServerTypeEnum) => {
+    if (type === AaaServerTypeEnum.AUTHENTICATION) {
+      createdAuthRadiusIdRef.current = undefined
+    } else { // type === AaaServerTypeEnum.ACCOUNTING
+      createAccountingRadiusIdRef.current = undefined
+    }
     handleChanged()
   }
 
@@ -214,7 +234,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
         type='AUTHENTICATION'
         options={authRadiusOptions}
         radiusTotalCount={radiusTotalCount}
-        onRadiusChanged={handleRadiusIdChanged}
+        onRadiusChanged={() => handleRadiusIdChanged(AaaServerTypeEnum.AUTHENTICATION)}
         onRadiusCreated={(id) => handleRadiusCreated(id, AaaServerTypeEnum.AUTHENTICATION)}
       />}
     <StepsForm.FieldLabel width={'330px'}>
@@ -238,7 +258,7 @@ export const VenueRadiusService = (props: VenueRadiusServiceProps) => {
         type='ACCOUNTING'
         options={accountingOptions}
         radiusTotalCount={radiusTotalCount}
-        onRadiusChanged={handleRadiusIdChanged}
+        onRadiusChanged={() => handleRadiusIdChanged(AaaServerTypeEnum.ACCOUNTING)}
         onRadiusCreated={(id) => handleRadiusCreated(id, AaaServerTypeEnum.ACCOUNTING)}
       />}
   </Loader>)

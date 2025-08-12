@@ -20,6 +20,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (path: string) => path
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v'
+}))
+
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
 const mockedUseIsNewServicesCatalogEnabled = jest.fn(() => false)
 jest.mock('../unifiedServices', () => ({
