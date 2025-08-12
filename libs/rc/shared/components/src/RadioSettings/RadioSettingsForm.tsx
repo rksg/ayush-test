@@ -95,7 +95,9 @@ export function RadioSettingsForm (props:{
   const [band320DrawerVisible, setBand320DrawerVisible] = useState(false)
 
   const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
-  const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
+  const aggressiveTxTooltip = context === 'ap' ?
+    $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' }) :
+    $t({ defaultMessage: 'Adjust the value based on the calibration TX power of each access point' })
   const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && (context === 'venue' || context ==='apGroup')) ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?

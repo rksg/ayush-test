@@ -10,7 +10,8 @@ import {
   IpSecDhGroupEnum,
   IpSecAdvancedOptionEnum,
   IpSecRekeyTimeUnitEnum,
-  IpSecFailoverModeEnum
+  IpSecFailoverModeEnum,
+  IpSecTunnelUsageTypeEnum
 } from '../../models'
 
 import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
@@ -29,6 +30,7 @@ export interface Ipsec {
   espRekeyTime?: number
   espRekeyTimeUnit?: IpSecRekeyTimeUnitEnum
   advancedOption?: AdvancedOption
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
 }
 
 export interface IkeSecurityAssociation {
@@ -93,6 +95,7 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum,
 }
 
 export interface VenueTableUsageByIpsec extends IpsecActivation {

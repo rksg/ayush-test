@@ -16,6 +16,10 @@ const mockActivateNetworkReq = jest.fn()
 const mockDeactivateNetworkReq = jest.fn()
 
 const mockServiceId = 'mocked_service_id'
+const mockVenueId = 'mocked_venue_id'
+const mockNetworkId = 'mocked_network_id'
+const mockTunnelProfileId = 'mocked_tunnel_profile_id'
+
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useAddEdgeMvSdLanMutation: () => {
@@ -275,9 +279,8 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: mockPayload,
-        callback: mockCallback,
-        isMsp
-      })
+        callback: mockCallback
+      }, isMsp)
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
       expect(mockCallback).toBeCalledWith(expect.objectContaining({
@@ -298,9 +301,8 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: sameNamePayload,
-        callback: mockCallback,
-        isMsp
-      })
+        callback: mockCallback
+      }, isMsp)
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
       expect(mockUpdateReq).not.toHaveBeenCalled()
@@ -363,10 +365,6 @@ describe('useEdgeSdLanActions', () => {
   })
 
   describe('toggleNetworkChange', () => {
-    const mockServiceId = 'service-123'
-    const mockVenueId = 'venue-123'
-    const mockNetworkId = 'network-123'
-
     it('should not call when tunnel IDs are the same', async () => {
       const mockCallback = jest.fn()
       const { result } = renderHook(() => useEdgeSdLanActions(), {
@@ -416,6 +414,37 @@ describe('useEdgeSdLanActions', () => {
         wifiNetworkId: mockNetworkId,
         serviceId: mockServiceId
       }, { forwardingTunnelProfileId: currentTunnelProfileId })
+    })
+  })
+
+  it('should activate SD-LAN for network successfully', async () => {
+    const { result } = renderHook(() => useEdgeSdLanActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    // eslint-disable-next-line max-len
+    await result.current.activateSdLanForNetwork(mockServiceId, mockVenueId, mockNetworkId, mockTunnelProfileId)
+
+    expect(mockActivateNetworkReq).toBeCalledTimes(1)
+    expect(mockActivateNetworkReq).toBeCalledWith({
+      venueId: mockVenueId,
+      wifiNetworkId: mockNetworkId,
+      serviceId: mockServiceId
+    }, { forwardingTunnelProfileId: mockTunnelProfileId })
+  })
+
+  it('should deactivate SD-LAN from network successfully', async () => {
+    const { result } = renderHook(() => useEdgeSdLanActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    await result.current.removeSdLanFromNetwork(mockServiceId, mockVenueId, mockNetworkId)
+
+    expect(mockDeactivateNetworkReq).toBeCalledTimes(1)
+    expect(mockDeactivateNetworkReq).toBeCalledWith({
+      venueId: mockVenueId,
+      wifiNetworkId: mockNetworkId,
+      serviceId: mockServiceId
     })
   })
 })

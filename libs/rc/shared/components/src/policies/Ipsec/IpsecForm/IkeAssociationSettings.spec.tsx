@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Form }                      from 'antd'
-import { IntlProvider }              from 'react-intl'
+import { Form }         from 'antd'
+import { IntlProvider } from 'react-intl'
 
-import { IpSecEncryptionAlgorithmEnum, IpSecProposalTypeEnum } from '@acx-ui/rc/utils'
+import { IpSecEncryptionAlgorithmEnum, IpSecProposalTypeEnum }    from '@acx-ui/rc/utils'
+import { render, screen, fireEvent, MockSelect, MockSelectProps } from '@acx-ui/test-utils'
 
 import IkeAssociationSettings from './IkeAssociationSettings'
 
@@ -10,16 +10,7 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) => {
-    delete otherProps.dropdownClassName
-    return ( <select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
-    </select>)
-  }
-
+  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
@@ -37,7 +28,7 @@ describe('IkeAssociationSettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form initialValues={initialValues}>
-          <IkeAssociationSettings loadIkeSettings setLoadIkeSettings={jest.fn()} />
+          <IkeAssociationSettings />
         </Form>
       </IntlProvider>
     )

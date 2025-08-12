@@ -83,6 +83,25 @@ describe('Common Link Helper', () => {
     )
   })
 
+  it('should render PersonaDetailLink with display name correctly', async () => {
+    render(
+      <IdentityDetailsLink
+        personaGroupId={'group-id'}
+        personaId={'persona-id'}
+        name={'persona-name'}
+        displayName={'persona-display-name'}
+      />,
+      { route: { params } }
+    )
+
+    const link = await screen.findByRole('link', { name: 'persona-display-name' })
+    expect(link).toBeVisible()
+    expect(link).toHaveAttribute(
+      'href',
+      `${tenantPrefix}/users/identity-management/identity-group/group-id/identity/persona-id`
+    )
+  })
+
   it('should render DpskPoolLink correctly', async () => {
     render(
       <DpskPoolLink
