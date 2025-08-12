@@ -1356,7 +1356,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const aggregatedList = aggregatedRbacVenueNetworksData(
           arg.params?.venueId!, networkList,
-          networkDeepListList, networkIdsToIncompatible)
+          networkDeepListList, networkIdsToIncompatible, (arg.payload as any).apGroupId)
 
         return { data: aggregatedList }
       },

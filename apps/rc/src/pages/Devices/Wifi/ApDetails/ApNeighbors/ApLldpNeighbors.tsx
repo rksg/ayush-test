@@ -11,10 +11,10 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { TenantLink }                   from '@acx-ui/react-router-dom'
-import { WifiScopes, type TableColumn } from '@acx-ui/types'
-import { filterByAccess }               from '@acx-ui/user'
-import { CatchErrorResponse }           from '@acx-ui/utils'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { WifiScopes, type TableColumn }      from '@acx-ui/types'
+import { filterByAccess }                    from '@acx-ui/user'
+import { CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'
 
 import { NewApNeighborTypes, defaultPagination } from './constants'
 import { lldpNeighborsFieldLabelMapping }        from './contents'
@@ -81,6 +81,25 @@ export default function ApLldpNeighbors () {
       setVisible={setDetailsDrawerVisible}
     />
   </Loader>
+}
+
+const transPSEAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
+  if (!lldpPSEAllocPowerVal) return noDataDisplay
+
+  const numericAllocPower = Number(lldpPSEAllocPowerVal)
+  if(isNaN(numericAllocPower)) {
+    return noDataDisplay
+  }
+
+  if(numericAllocPower < 1000){
+    return `${numericAllocPower} mW`
+  }
+
+  const allocatedPower = numericAllocPower / 1000
+  if(Number.isInteger(allocatedPower)) {
+    return `${allocatedPower} W`
+  }
+  return `${allocatedPower.toFixed(2)} W`
 }
 
 function useColumns (
@@ -176,7 +195,7 @@ function useColumns (
       key: 'lldpPSEAllocPowerVal',
       dataIndex: 'lldpPSEAllocPowerVal',
       // eslint-disable-next-line max-len
-      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPSEAllocPowerVal, highlightFn)
+      render: (_, row, __, highlightFn) => apNeighborValueRender(transPSEAllocPowerVal(row.lldpPSEAllocPowerVal), highlightFn)
     }
   ]
 

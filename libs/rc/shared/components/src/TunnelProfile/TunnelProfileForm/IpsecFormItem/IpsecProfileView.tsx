@@ -1,9 +1,9 @@
 import { Row, Col, Form, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { PasswordInput }                          from '@acx-ui/components'
-import { getEspProposalText, getIkeProposalText } from '@acx-ui/edge/components'
-import { IpsecViewData }                          from '@acx-ui/rc/utils'
+import { PasswordInput }                                    from '@acx-ui/components'
+import { getVxlanEspProposalText, getVxlanIkeProposalText } from '@acx-ui/edge/components'
+import { IpsecViewData }                                    from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -39,7 +39,7 @@ export const IpsecProfileView = (props: {
               style={{ marginBottom: 0 }}
             >
               <div style={{ padding: '4px 0' }}>
-                {getIkeProposalText(selectedIpsecProfile)}
+                {getVxlanIkeProposalText(selectedIpsecProfile)}
               </div>
             </Form.Item>
           </Col>
@@ -50,7 +50,7 @@ export const IpsecProfileView = (props: {
               style={{ marginBottom: 0 }}
             >
               <div style={{ padding: '4px 0' }}>
-                {getEspProposalText(selectedIpsecProfile)}
+                {getVxlanEspProposalText(selectedIpsecProfile)}
               </div>
             </Form.Item>
           </Col>
