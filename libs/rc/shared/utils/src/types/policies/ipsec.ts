@@ -95,6 +95,7 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum,
 }
 
 export interface VenueTableUsageByIpsec extends IpsecActivation {

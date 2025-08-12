@@ -20,7 +20,8 @@ import {
   useVenueNamesFilterListQuery
 } from '@acx-ui/msp/services'
 import {
-  EcDeviceInventory
+  EcDeviceInventory,
+  HspContext
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -35,8 +36,6 @@ import {
 import { TenantLink, useParams }                            from '@acx-ui/react-router-dom'
 import { Filter }                                           from '@acx-ui/types'
 import { AccountType, exportMessageMapping, useTableQuery } from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -291,12 +290,13 @@ export function NewDeviceInventory () {
     _customFilters = {
       ...filter
     } as Filter
-    if (isMspDeviceInventoryFirmwareDisplayEnabled && filter.hasOwnProperty('fwVersion')) {
-      const apSwitchFirmwareList = filter.fwVersion as string[]
-      delete (_customFilters as Filter).fwVersion
 
+    if (isMspDeviceInventoryFirmwareDisplayEnabled) {
+      const apSwitchFirmwareList = (filter?.fwVersion || []) as string[]
+      delete (_customFilters as Filter).fwVersion
       tableQuery.setPayload({
         ...tableQuery.payload,
+        searchString: search.searchString || '',
         filters: _customFilters,
         groupFilters: apSwitchFirmwareList?.flatMap((item) => {
           return [

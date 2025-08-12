@@ -25,6 +25,11 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v'
+}))
+
 describe('Portal Instances Table', () => {
 
   const params = {

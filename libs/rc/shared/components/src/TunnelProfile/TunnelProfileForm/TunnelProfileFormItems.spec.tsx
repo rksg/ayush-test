@@ -3,12 +3,10 @@ import { Form }  from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsBetaEnabled }                                               from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { MockSelect, MockSelectProps, mockServer, render, renderHook, screen }      from '@acx-ui/test-utils'
-
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { Features, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { Provider }                                                                                        from '@acx-ui/store'
+import { MockSelect, MockSelectProps, mockServer, render, renderHook, screen }                             from '@acx-ui/test-utils'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
@@ -33,8 +31,8 @@ jest.mock('../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
     </div>
 }))
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
@@ -43,22 +41,16 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('./useGetAvailableEdgeClusterData', () => ({
+  useGetAvailableEdgeClusterData: jest.fn().mockReturnValue({
+    availableClusterData: [],
+    isLoading: false
+  })
+}))
+
 
 describe('TunnelProfileForm', () => {
   const defaultValues = getTunnelProfileFormDefaultValues()
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterServiceList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
-    )
-  })
 
   it('should render TunnelProfileForm successfully', () => {
     render(

@@ -1,19 +1,16 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Divider, Space, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
 import { Button, cssStr, Descriptions, Loader }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                                     from '@acx-ui/msp/services'
 import { AccessControlSubPolicyVisibility }                            from '@acx-ui/rc/components'
 import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                               from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps }                                                                                                                        from '../..'
-import { useConfigTemplateListContext }                                                                                                                   from '../ConfigTemplateListContext'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
-import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
 import { ProtectedActivationViewer, ApGroupVenueViewer } from './ActivationViewer'
 
@@ -22,11 +19,12 @@ interface DetailsContentProps {
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
   ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
+  AppliedToListView?: ConfigTemplateViewProps['AppliedToListView']
 }
 
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
-  const { template, setAccessControlSubPolicyVisible, ShowDriftsView } = props
+  const { template, setAccessControlSubPolicyVisible, ShowDriftsView, AppliedToListView } = props
   const dateFormatter = useFormatTemplateDate()
   const [ showDriftsViewVisible, setShowDriftsViewVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
@@ -93,45 +91,16 @@ export function DetailsContent (props: DetailsContentProps) {
       templateId={template.id!}
       upperSplit={<Divider/>}
     />
-    <Divider/>
-    <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
+    {AppliedToListView && <>
+      <Divider/>
+      <AppliedToListView selectedTemplate={template} />
+    </>}
     {showDriftsViewVisible &&
       <ShowDriftsView
         setVisible={setShowDriftsViewVisible}
         selectedTemplate={template}
       />}
   </>
-}
-
-function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[] }) {
-  const { $t } = useIntl()
-  const { setAppliedToViewVisible } = useConfigTemplateListContext()
-  const maxItemsToShow = 25
-
-  const mspEcTenantsPayload = {
-    filters: {
-      ...useEcFilters(),
-      id: appliedOnTenants
-    },
-    page: 1,
-    pageSize: maxItemsToShow,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    fields: ['id', 'name']
-  }
-
-  const { data, isLoading } = useMspCustomerListQuery(
-    { params: {}, payload: mspEcTenantsPayload },
-    { skip: !appliedOnTenants?.length }
-  )
-
-  return <DetailsItemList
-    title={$t({ defaultMessage: 'Applied to' })}
-    items={data?.data.map(mspEcTenant => mspEcTenant.name) || []}
-    isLoading={isLoading}
-    showMore={(data?.totalCount ?? 0) > maxItemsToShow}
-    showMoreCallback={() => setAppliedToViewVisible(true)}
-  />
 }
 
 export interface DetailsItemListProps {

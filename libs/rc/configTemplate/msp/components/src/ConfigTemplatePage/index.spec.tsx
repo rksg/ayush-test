@@ -7,26 +7,27 @@ import { hasAllowedOperations }    from '@acx-ui/user'
 
 import { ConfigTemplatePage, getAppliedToColumn } from '.'
 
-jest.mock('./Templates/AppliedToTenantDrawer', () => ({
-  ...jest.requireActual('./Templates/AppliedToTenantDrawer'),
+jest.mock('../AppliedToTenantDrawer', () => ({
   AppliedToTenantDrawer: () => <div>AppliedToTenantDrawer</div>
 }))
 
-jest.mock('./Templates/ApplyTemplateDrawer', () => ({
-  ...jest.requireActual('./Templates/ApplyTemplateDrawer'),
+jest.mock('../ApplyTemplateDrawer', () => ({
   ApplyTemplateDrawer: () => <div>ApplyTemplateDrawer</div>
 }))
 
-jest.mock('./Templates/ShowDriftsDrawer', () => ({
-  ...jest.requireActual('./Templates/ShowDriftsDrawer'),
+jest.mock('../ShowDriftsDrawer', () => ({
   ShowDriftsDrawer: () => <div>ShowDriftsDrawer</div>
+}))
+
+jest.mock('../AppliedToListView', () => ({
+  AppliedToTenantList: () => <div>AppliedToTenantList</div>
 }))
 
 const mockedAppliedToCallback = jest.fn()
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   ConfigTemplateView: (props: ConfigTemplateViewProps) => {
-    const { ApplyTemplateView, AppliedToView, ShowDriftsView } = props
+    const { ApplyTemplateView, AppliedToView, ShowDriftsView, AppliedToListView } = props
     const mockedTemplate = {
       id: '1',
       name: 'Template 1',
@@ -40,8 +41,9 @@ jest.mock('@acx-ui/main/components', () => ({
     return <div>
       <div>ConfigTemplateView</div>
       <ApplyTemplateView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
-      <AppliedToView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
+      {AppliedToView && <AppliedToView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />}
       <ShowDriftsView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
+      {AppliedToListView && <AppliedToListView selectedTemplate={mockedTemplate} />}
     </div>
   }
 }))
@@ -65,6 +67,7 @@ describe('ConfigTemplatePage', () => {
     expect(screen.getByText('AppliedToTenantDrawer')).toBeVisible()
     expect(screen.getByText('ApplyTemplateDrawer')).toBeVisible()
     expect(screen.getByText('ShowDriftsDrawer')).toBeVisible()
+    expect(screen.getByText('AppliedToTenantList')).toBeVisible()
   })
 
   describe('getAppliedToColumn', () => {
