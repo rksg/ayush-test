@@ -296,6 +296,7 @@ export function NewDeviceInventory () {
       delete (_customFilters as Filter).fwVersion
       tableQuery.setPayload({
         ...tableQuery.payload,
+        searchString: search.searchString || '',
         filters: _customFilters,
         groupFilters: apSwitchFirmwareList?.flatMap((item) => {
           return [

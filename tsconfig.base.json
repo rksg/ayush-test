@@ -27,6 +27,8 @@
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/config": ["libs/common/config/src/index.ts"],
       "@acx-ui/edge/components": ["libs/rc/edge/components/src/index.ts"],
+      "@acx-ui/rc/edge/utils": ["libs/rc/edge/utils/src/index.ts"],
+      "@acx-ui/rc/edge/services": ["libs/rc/edge/services/src/index.ts"],
       "@acx-ui/feature-toggle": ["libs/common/feature-toggle/src/index.ts"],
       "@acx-ui/formatter": ["libs/common/formatter/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
