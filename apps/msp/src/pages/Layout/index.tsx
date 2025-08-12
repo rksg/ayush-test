@@ -23,15 +23,13 @@ import {
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
-import { AssignedEntitlementListPayload }                                               from '@acx-ui/msp/utils'
+import { AssignedEntitlementListPayload, HspContext }                                   from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useRbacEntitlementListQuery }                                                  from '@acx-ui/rc/services'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
 import { aiOpsApis, hasPermission, hasRoles, useUserProfileContext }                    from '@acx-ui/user'
 import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }           from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'

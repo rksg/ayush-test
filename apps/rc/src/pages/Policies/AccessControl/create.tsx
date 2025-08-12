@@ -56,12 +56,12 @@ export default function CreateAccessControl () {
   const accessControlInstance = {
     [NetworkTypeTabsEnum.WIFI]: <Form.Item name='accessControlInstanceType'
       label={$t({ defaultMessage: 'Wi-Fi Access Control Profile' })}
-      initialValue={NetworkTypeTabsEnum.WIFI}>
+      initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
-        <Space direction='vertical'>
+        <Space direction='vertical' style={{ gap: '4px' }}>
           {/* eslint-disable-next-line max-len */}
           { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
               {$t({ defaultMessage: 'Access Control Set' })}
             </Radio>
           }
@@ -94,12 +94,12 @@ export default function CreateAccessControl () {
     </Form.Item>,
     [NetworkTypeTabsEnum.SWITCH]: <Form.Item name='accessControlInstanceType'
       label={$t({ defaultMessage: 'Switch Access Control Profile' })}
-      initialValue={NetworkTypeTabsEnum.SWITCH}>
+      initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
-        <Space direction='vertical'>
+        <Space direction='vertical' style={{ gap: '4px' }}>
           {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
+          { hasPolicyPermission({ type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
               {$t({ defaultMessage: 'Access Control Set' })}
             </Radio>
           }

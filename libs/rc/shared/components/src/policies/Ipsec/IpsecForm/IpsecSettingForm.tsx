@@ -1,13 +1,16 @@
 
+import { useMemo } from 'react'
+
 import { Col, Form, Input, Radio, Row, Space } from 'antd'
 import { isNil }                               from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Loader }                           from '@acx-ui/components'
-import { Features }                         from '@acx-ui/feature-toggle'
-import { useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import { Loader, Tooltip }                                                from '@acx-ui/components'
+import { Features }                                                       from '@acx-ui/feature-toggle'
+import { useGetIpsecViewDataListQuery, useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  getTunnelUsageTypeOptions,
   Ipsec,
   IpSecTunnelUsageTypeEnum,
   servicePolicyNameRegExp,
@@ -32,6 +35,18 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
 
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
 
+  const { ipsecViewData } = useGetIpsecViewDataListQuery({
+    payload: {
+      // eslint-disable-next-line max-len
+      fields: ['name', 'id', 'activations', 'apActivations', 'venueActivations', 'tunnelActivations'],
+      filters: { id: [policyId] },
+      pageSize: 1
+    }
+  }, {
+    skip: !policyId || !isEdgeVxLanIpsecReady,
+    selectFromResult: ({ data }) => ({ ipsecViewData: data?.data[0] })
+  })
+
   const nameValidator = async (value: string) => {
     const payload = {
       fields: ['name', 'id'],
@@ -44,6 +59,15 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'IPsec' }))
   }
+
+  const isTunnelUsageTypeDisabled = useMemo(() => {
+    if (!isEdgeVxLanIpsecReady) return true
+    const hasActivations = Boolean(ipsecViewData?.tunnelActivations?.length
+      || ipsecViewData?.activations?.length
+      || ipsecViewData?.apActivations?.length || ipsecViewData?.venueActivations?.length)
+
+    return editMode && hasActivations
+  }, [editMode, ipsecViewData])
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -70,15 +94,19 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             name='tunnelUsageType'
             label={$t({ defaultMessage: 'Tunnel Usage Type' })}
           >
-            <Radio.Group disabled={editMode}>
-              <Space direction='vertical'>
-                <Radio value={IpSecTunnelUsageTypeEnum.VXLAN_GPE}>
-                  {$t({ defaultMessage: 'For RUCKUS Devices(VxLAN GPE)' })}
-                </Radio>
-                <Radio value={IpSecTunnelUsageTypeEnum.SOFT_GRE}>
-                  {$t({ defaultMessage: 'For 3rd Party Devices(SoftGRE)' })}
-                </Radio>
-              </Space>
+            <Radio.Group disabled={isTunnelUsageTypeDisabled}>
+              <Tooltip title={isTunnelUsageTypeDisabled
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'This is in use by a tunnel profile, AP, or <venueSingular></venueSingular>. Please remove its activation before making changes.' })
+                : undefined}
+              >
+                <Space direction='vertical'>
+                  {
+                    getTunnelUsageTypeOptions().map(o =>
+                      <Radio key={o.value} value={o.value}>{o.label}</Radio>)
+                  }
+                </Space>
+              </Tooltip>
             </Radio.Group>
           </Form.Item>}
         </Col>

@@ -33,6 +33,8 @@
     "rc-common-utils": "libs/rc/common/utils",
     "rc-common-components": "libs/rc/common/components",
     "rc-config-template-utils": "libs/rc/configTemplate/utils",
+    "rc-config-template-rec-components": "libs/rc/configTemplate/rec/components",
+    "rc-config-template-msp-components": "libs/rc/configTemplate/msp/components",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
     "reports-components": "libs/reports/components",

@@ -144,7 +144,7 @@ describe('Table Filters', () => {
           title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
-          filterComponent: { type: 'rangepicker' }
+          filterComponent: { type: 'rangepicker', unlimitedRange: true }
         },
         0,
         undefined,
