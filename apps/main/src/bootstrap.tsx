@@ -25,7 +25,8 @@ import {
   LangKey,
   DEFAULT_SYS_LANG,
   initializeSockets,
-  LoadTimeProvider
+  LoadTimeProvider,
+  renderContextQA
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -104,6 +105,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
+  renderContextQA()
   dynamicMiddleware.addMiddleware(errorMiddleware)
   initializeSockets()
 

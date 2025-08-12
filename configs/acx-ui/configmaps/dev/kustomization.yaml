@@ -3,4 +3,5 @@ kind: Kustomization
 bases:
   - ../base
 patchesStrategicMerge:
+  - patch-configmap-acx-ui.yaml
   - values-acx-ui.yaml
