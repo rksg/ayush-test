@@ -2,6 +2,7 @@
 import { Card, GridCol, GridRow, SummaryCard }      from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
+  ConfigTemplateType,
   DpskNetworkType,
   DpskSaveData,
   displayDefaultAccess,
@@ -14,7 +15,8 @@ import { RolesEnum } from '@acx-ui/types'
 import { hasRoles }  from '@acx-ui/user'
 import { getIntl }   from '@acx-ui/utils'
 
-import { IdentityGroupLink } from '../../CommonLinkHelper'
+import { IdentityGroupLink }                from '../../CommonLinkHelper'
+import { useIsConfigTemplateEnabledByType } from '../../configTemplates'
 
 import DpskInstancesTable from './DpskInstancesTable'
 
@@ -29,7 +31,8 @@ export function DpskOverview (props: DpskOverviewProps) {
   const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const dpskInfo = [

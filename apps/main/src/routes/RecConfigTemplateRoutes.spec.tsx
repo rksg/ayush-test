@@ -35,6 +35,10 @@ jest.mock('../pages/Venues', () => ({
   VenueEdit: () => <div>VenueEdit</div>
 }))
 
+jest.mock('@acx-ui/config-template/rec/components', () => ({
+  ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
+}))
+
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
@@ -58,7 +62,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.SWITCH_CLI]: false,
   [ConfigTemplateType.AP_GROUP]: false,
   [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
-  [ConfigTemplateType.IDENTITY_GROUP]: false
+  [ConfigTemplateType.IDENTITY_GROUP]: false,
+  [ConfigTemplateType.TUNNEL_SERVICE]: false
 }
 
 describe('RecConfigTemplateRoutes', () => {
