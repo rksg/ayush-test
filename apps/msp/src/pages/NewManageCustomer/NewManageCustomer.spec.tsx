@@ -1,46 +1,15 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import moment    from 'moment-timezone'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                          from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo, EntitlementDeviceType, LicenseUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor }                          from '@acx-ui/test-utils'
-import { RolesEnum }                                                                                          from '@acx-ui/types'
-import { UserUrlsInfo }                                                                                       from '@acx-ui/user'
-import type { ToastProps }                                                                                    from '@acx-ui/utils'
+import { AdministrationUrlsInfo }                                                                                            from '@acx-ui/rc/utils'
+import { Provider }                                                                                                          from '@acx-ui/store'
+import { mockServer, render, screen }                                                                                        from '@acx-ui/test-utils'
+import { RolesEnum }                                                                                                         from '@acx-ui/types'
+import type { ToastProps }                                                                                                   from '@acx-ui/utils'
 
 import { NewManageCustomer } from '.'
-
-const assignmentSummary =
-  [
-    {
-      quantity: 12,
-      purchasedQuantity: 20,
-      courtesyQuantity: 0,
-      usedQuantity: 2,
-      usedQuantityForOwnAssignment: 1,
-      isTrial: false,
-      licenseType: EntitlementDeviceType.APSW,
-      remainingLicenses: 8,
-      usageType: 'ASSIGNED',
-      remainingQuantity: 8
-    },
-    {
-      quantity: 12,
-      purchasedQuantity: 20,
-      courtesyQuantity: 0,
-      usedQuantity: 2,
-      usedQuantityForOwnAssignment: 1,
-      isTrial: false,
-      licenseType: EntitlementDeviceType.SLTN_TOKEN,
-      remainingLicenses: 8,
-      usageType: 'ASSIGNED',
-      remainingQuantity: 8
-    }
-  ]
 
 const rbacMspEcAssignment = [{
   effectiveDate: 'Thu Mar 06 16:36:31 UTC 2025',
