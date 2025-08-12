@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { HspContext }                               from '@acx-ui/msp/utils'
 import {
   ConfigTemplateType, PolicyOperation,
   PolicyType, ServiceOperation, ServiceType, getConfigTemplatePath,
@@ -11,7 +12,6 @@ import { NavigateProps }              from '@acx-ui/react-router-dom'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import HspContext                                 from './HspContext'
 import MspRoutes, { Init, ConfigTemplatesRoutes } from './Routes'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -19,8 +19,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   Navigate: (props: NavigateProps) => <div>{JSON.stringify(props)}</div>
 }))
 
-jest.mock('./pages/ConfigTemplates', () => ({
-  ...jest.requireActual('./pages/ConfigTemplates'),
+jest.mock('@acx-ui/config-template/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/config-template/msp/components'),
   ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
 }))
 

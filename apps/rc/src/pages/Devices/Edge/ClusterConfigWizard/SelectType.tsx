@@ -29,15 +29,14 @@ export const SelectType = () => {
   const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const [selected, setSelected] = useState<string | undefined>(undefined)
   const [hasGateway, setHasGateway] = useState(false)
-  const isEdgeHaSubInterfaceReady = useIsEdgeFeatureReady(Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   useEffect(() => {
-    if(!clusterNetworkSettings?.portSettings) return
+    if (!clusterNetworkSettings?.portSettings) return
     const validateGateway = async () => {
-      for(let i=0; i<clusterNetworkSettings.portSettings.length; i++) {
+      for (let i = 0; i < clusterNetworkSettings.portSettings.length; i++) {
         const portSetting = clusterNetworkSettings.portSettings[i]
         const lagSetting = clusterNetworkSettings.lagSettings.find(item =>
           item.serialNumber === portSetting.serialNumber)
@@ -59,7 +58,7 @@ export const SelectType = () => {
         } catch (error) {
           break
         }
-        if(i === clusterNetworkSettings.portSettings.length - 1) {
+        if (i === clusterNetworkSettings.portSettings.length - 1) {
           setHasGateway(true)
         }
       }
@@ -74,7 +73,8 @@ export const SelectType = () => {
   const handleCancel = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/devices/${Device.Edge}` })
+      pathname: `${basePath.pathname}/devices/${Device.Edge}`
+    })
   }
 
   const clusterName = clusterInfo?.name
@@ -95,9 +95,9 @@ export const SelectType = () => {
           .split(' ')
         const [memoryVal, memoryUnit] = memoryInfo
         return edge.cpuCores === targetCpuCores
-            && edge.ports === targetPorts
-            && memoryUnit === targetMemoryUnit
-            && Math.ceil(+memoryVal) === Math.ceil(+targetMemoryVal)
+          && edge.ports === targetPorts
+          && memoryUnit === targetMemoryUnit
+          && Math.ceil(+memoryVal) === Math.ceil(+targetMemoryVal)
       })
 
   const isAaCluster = clusterInfo?.highAvailabilityMode ===
@@ -116,9 +116,9 @@ export const SelectType = () => {
     targetUrl: genUrl([
       CommonCategory.Device,
       Device.EdgeCluster,
-          clusterId!,
-          'configure',
-          'interface'
+      clusterId!,
+      'configure',
+      'interface'
     ]),
     disabledList: [
       {
@@ -126,7 +126,7 @@ export const SelectType = () => {
       }
     ]
   },
-  ...(isEdgeHaSubInterfaceReady && !isEdgeCoreAccessSeparationReady ? [{
+  ...(!isEdgeCoreAccessSeparationReady ? [{
     id: 'subInterface',
     title: $t({ defaultMessage: 'Sub-interface Settings' }),
     icon: <SubInterfaceIcon />,
@@ -154,9 +154,9 @@ export const SelectType = () => {
     targetUrl: genUrl([
       CommonCategory.Device,
       Device.EdgeCluster,
-          clusterId!,
-          'configure',
-          'clusterInterface'
+      clusterId!,
+      'configure',
+      'clusterInterface'
     ]),
     disabledList: [
       {
@@ -187,7 +187,8 @@ export const SelectType = () => {
     <SpaceWrapper fullWidth size={50} direction='vertical'>
       <Row>
         <Typography.Text>
-          {$t({ defaultMessage: `Select which configuration you want to quickly set up for
+          {$t({
+            defaultMessage: `Select which configuration you want to quickly set up for
       all RUCKUS Edges in this cluster:` },
           { clusterName })}
         </Typography.Text>
@@ -236,11 +237,14 @@ export const SelectType = () => {
             </UI.WarningTitle>
             <UI.WarningTxt>
               {
-              // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'The number of CPU cores, memory, or physical ports on the RUCKUS Edges do not meet the requirements for High Availability. {br}'+
-              // eslint-disable-next-line max-len
-              'Please ensure the devices have matching specifications to establish a reliable HA configurations.' }, {
-                  br: <br/>
+                // eslint-disable-next-line max-len
+                $t({
+                  defaultMessage: 'The number of CPU cores, memory, or physical ports on the ' +
+                    'RUCKUS Edges do not meet the requirements for High Availability. {br}' +
+                    'Please ensure the devices have matching specifications to establish a ' +
+                    'reliable HA configurations.'
+                }, {
+                  br: <br />
                 })}
             </UI.WarningTxt>
           </Col>

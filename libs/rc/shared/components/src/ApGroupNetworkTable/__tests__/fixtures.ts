@@ -518,3 +518,671 @@ export const apGroupNetworkTableData = [
     }
   }
 ] as unknown as Network[]
+
+export const venueNetworkTableV2QueryMock = { data: [
+  {
+    name: 'Munich Test',
+    id: '5e8dc47d490b41119312eb73cd16eb01',
+    vlan: 1,
+    nwSubType: 'psk',
+    ssid: 'Munich Test',
+    clientCount: 0,
+    venueApGroups: [
+      {
+        venueId: 'bb40743f58d94384bd90be5541b6e6fb',
+        apGroupIds: [
+          '5eef04c02ad0431188dad49057bd6c5a',
+          'c8b70138ec2b44959d441d328d7eac6f',
+          'c7038aa542914482b74d0178232f245d'
+        ],
+        isAllApGroups: true
+      },
+      {
+        venueId: 'cdaa973ae3aa4be4ad67c4bc87f9f8e7',
+        apGroupIds: [
+          '866c17845cba430eaadcd93df374cca9',
+          'dec0bc34805549d7b97f6bd1726c1565',
+          '8aa23bcc7f8f473cbb8cbf5c00f50ab2'
+        ],
+        isAllApGroups: true
+      }
+    ],
+    clients: 0,
+    activated: {
+      isActivated: true,
+      isDisabled: false,
+      errors: []
+    },
+    deepNetwork: {
+      type: 'psk',
+      wlan: {
+        wlanSecurity: 'WPA3',
+        advancedCustomization: {
+          enableAaaVlanOverride: true,
+          userUplinkRateLimiting: 0,
+          userDownlinkRateLimiting: 0,
+          totalUplinkRateLimiting: 0,
+          totalDownlinkRateLimiting: 0,
+          maxClientsOnWlanPerRadio: 100,
+          enableBandBalancing: true,
+          clientIsolation: false,
+          clientIsolationOptions: {
+            autoVrrp: false
+          },
+          hideSsid: false,
+          forceMobileDeviceDhcp: false,
+          clientLoadBalancingEnable: true,
+          directedThreshold: 5,
+          enableNeighborReport: true,
+          enableFastRoaming: false,
+          enableAdditionalRegulatoryDomains: true,
+          mobilityDomainId: 1,
+          radioCustomization: {
+            rfBandUsage: 'BOTH',
+            bssMinimumPhyRate: 'default',
+            phyTypeConstraint: 'NONE',
+            managementFrameMinimumPhyRate: '6'
+          },
+          enableSyslog: false,
+          clientInactivityTimeout: 120,
+          respectiveAccessControl: true,
+          radiusOptions: {
+            nasIdType: 'BSSID',
+            nasIdDelimiter: 'DASH',
+            nasRequestTimeoutSec: 3,
+            nasMaxRetry: 2,
+            nasReconnectPrimaryMin: 5,
+            calledStationIdType: 'BSSID',
+            singleSessionIdAccounting: false
+          },
+          proxyARP: false,
+          enableAirtimeDecongestion: false,
+          enableJoinRSSIThreshold: false,
+          joinRSSIThreshold: -85,
+          enableTransientClientManagement: false,
+          joinWaitTime: 30,
+          joinExpireTime: 300,
+          joinWaitThreshold: 10,
+          enableOptimizedConnectivityExperience: false,
+          broadcastProbeResponseDelay: 15,
+          rssiAssociationRejectionThreshold: -75,
+          enableAntiSpoofing: false,
+          enableArpRequestRateLimit: true,
+          arpRequestRateLimit: 15,
+          enableDhcpRequestRateLimit: true,
+          dhcpRequestRateLimit: 15,
+          dnsProxyEnabled: false,
+          bssPriority: 'HIGH',
+          enableGtkRekey: true,
+          enableApHostNameAdvertisement: false,
+          dhcpOption82Enabled: false,
+          dhcpOption82SubOption1Enabled: false,
+          dhcpOption82SubOption2Enabled: false,
+          dhcpOption82SubOption150Enabled: false,
+          dhcpOption82SubOption151Enabled: false,
+          dhcpOption82MacFormat: 'COLON',
+          agileMultibandEnabled: false,
+          dtimInterval: 1,
+          wifi6Enabled: true,
+          wifi7Enabled: true,
+          multiLinkOperationEnabled: false,
+          multiLinkOperationOptions: {
+            enable24G: true,
+            enable50G: true,
+            enable6G: true
+          },
+          enableMulticastUplinkRateLimiting: false,
+          multicastUplinkRateLimiting: 1,
+          enableMulticastDownlinkRateLimiting: false,
+          multicastDownlinkRateLimiting: 1,
+          enableMulticastUplinkRateLimiting6G: false,
+          enableMulticastDownlinkRateLimiting6G: false,
+          multicastFilterEnabled: false,
+          qosMirroringEnabled: true,
+          qosMirroringScope: 'MSCS_REQUESTS_ONLY',
+          qosMapSetEnabled: false,
+          qosMapSetOptions: {},
+          centralizedForwardingEnabled: false,
+          fastRoamingOptions: {
+            statisticsOverDistributedSystemEnabled: false,
+            reassociationTimeout: 20
+          },
+          applicationVisibilityEnabled: true
+        },
+        macAddressAuthentication: false,
+        managementFrameProtection: 'Required',
+        vlanId: 1,
+        ssid: 'Munich Test',
+        enabled: true,
+        saePassphrase: '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'
+      },
+      name: 'Munich Test',
+      isEnforced: false,
+      id: '5e8dc47d490b41119312eb73cd16eb01',
+      venues: [
+        {
+          dual5gEnabled: true,
+          tripleBandEnabled: true,
+          allApGroupsRadio: 'Both',
+          isAllApGroups: true,
+          allApGroupsRadioTypes: [
+            '2.4-GHz',
+            '5-GHz',
+            '6-GHz'
+          ],
+          isEnforced: false,
+          networkId: '5e8dc47d490b41119312eb73cd16eb01',
+          apGroups: [],
+          venueId: 'bb40743f58d94384bd90be5541b6e6fb'
+        }
+      ]
+    },
+    incompatible: 4
+  },
+  {
+    name: 'Standby',
+    id: '5f6c8d1f64784012b7a910f3587ade67',
+    vlan: 1,
+    nwSubType: 'psk',
+    ssid: 'Standby',
+    clientCount: 0,
+    clients: 0,
+    activated: {
+      isActivated: false,
+      isDisabled: false,
+      errors: []
+    },
+    deepNetwork: {
+      type: 'psk',
+      wlan: {
+        wlanSecurity: 'WPA3',
+        advancedCustomization: {
+          enableAaaVlanOverride: true,
+          userUplinkRateLimiting: 0,
+          userDownlinkRateLimiting: 0,
+          totalUplinkRateLimiting: 0,
+          totalDownlinkRateLimiting: 0,
+          maxClientsOnWlanPerRadio: 100,
+          enableBandBalancing: true,
+          clientIsolation: false,
+          clientIsolationOptions: {
+            autoVrrp: false
+          },
+          hideSsid: false,
+          forceMobileDeviceDhcp: false,
+          clientLoadBalancingEnable: true,
+          directedThreshold: 5,
+          enableNeighborReport: true,
+          enableFastRoaming: false,
+          enableAdditionalRegulatoryDomains: true,
+          mobilityDomainId: 1,
+          radioCustomization: {
+            rfBandUsage: 'BOTH',
+            bssMinimumPhyRate: 'default',
+            phyTypeConstraint: 'NONE',
+            managementFrameMinimumPhyRate: '6'
+          },
+          enableSyslog: false,
+          clientInactivityTimeout: 120,
+          respectiveAccessControl: true,
+          radiusOptions: {
+            nasIdType: 'BSSID',
+            nasIdDelimiter: 'DASH',
+            nasRequestTimeoutSec: 3,
+            nasMaxRetry: 2,
+            nasReconnectPrimaryMin: 5,
+            calledStationIdType: 'BSSID',
+            singleSessionIdAccounting: false
+          },
+          proxyARP: false,
+          enableAirtimeDecongestion: false,
+          enableJoinRSSIThreshold: false,
+          joinRSSIThreshold: -85,
+          enableTransientClientManagement: false,
+          joinWaitTime: 30,
+          joinExpireTime: 300,
+          joinWaitThreshold: 10,
+          enableOptimizedConnectivityExperience: false,
+          broadcastProbeResponseDelay: 15,
+          rssiAssociationRejectionThreshold: -75,
+          enableAntiSpoofing: false,
+          enableArpRequestRateLimit: true,
+          arpRequestRateLimit: 15,
+          enableDhcpRequestRateLimit: true,
+          dhcpRequestRateLimit: 15,
+          dnsProxyEnabled: false,
+          bssPriority: 'HIGH',
+          enableGtkRekey: true,
+          enableApHostNameAdvertisement: false,
+          dhcpOption82Enabled: false,
+          dhcpOption82SubOption1Enabled: false,
+          dhcpOption82SubOption2Enabled: false,
+          dhcpOption82SubOption150Enabled: false,
+          dhcpOption82SubOption151Enabled: false,
+          dhcpOption82MacFormat: 'COLON',
+          agileMultibandEnabled: false,
+          dtimInterval: 1,
+          wifi6Enabled: true,
+          wifi7Enabled: true,
+          multiLinkOperationEnabled: false,
+          multiLinkOperationOptions: {
+            enable24G: true,
+            enable50G: true,
+            enable6G: false
+          },
+          enableMulticastUplinkRateLimiting: false,
+          multicastUplinkRateLimiting: 1,
+          enableMulticastDownlinkRateLimiting: false,
+          multicastDownlinkRateLimiting: 1,
+          enableMulticastUplinkRateLimiting6G: false,
+          enableMulticastDownlinkRateLimiting6G: false,
+          multicastFilterEnabled: false,
+          qosMirroringEnabled: true,
+          qosMirroringScope: 'MSCS_REQUESTS_ONLY',
+          qosMapSetEnabled: false,
+          qosMapSetOptions: {},
+          centralizedForwardingEnabled: false,
+          fastRoamingOptions: {
+            statisticsOverDistributedSystemEnabled: false,
+            reassociationTimeout: 20
+          },
+          applicationVisibilityEnabled: true
+        },
+        macAddressAuthentication: false,
+        managementFrameProtection: 'Required',
+        vlanId: 1,
+        ssid: 'Standby',
+        enabled: true,
+        saePassphrase: '22345678'
+      },
+      name: 'Standby',
+      isEnforced: false,
+      id: '5f6c8d1f64784012b7a910f3587ade67'
+    },
+    incompatible: 0
+  }
+]
+}
+
+export const venueNetworkTableV2QueryWithApGroupMock = {
+  data: [
+    {
+      name: 'Munich Test',
+      id: '5e8dc47d490b41119312eb73cd16eb01',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'Munich Test',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: 'bb40743f58d94384bd90be5541b6e6fb',
+          apGroupIds: [
+            'c7038aa542914482b74d0178232f245d',
+            '5eef04c02ad0431188dad49057bd6c5a',
+            'c8b70138ec2b44959d441d328d7eac6f'
+          ],
+          isAllApGroups: true
+        },
+        {
+          venueId: 'cdaa973ae3aa4be4ad67c4bc87f9f8e7',
+          apGroupIds: [
+            '8aa23bcc7f8f473cbb8cbf5c00f50ab2',
+            '866c17845cba430eaadcd93df374cca9',
+            'dec0bc34805549d7b97f6bd1726c1565'
+          ],
+          isAllApGroups: true
+        }
+      ],
+      clients: 0,
+      activated: {
+        isActivated: true
+      },
+      deepNetwork: {
+        type: 'psk',
+        wlan: {
+          wlanSecurity: 'WPA3',
+          advancedCustomization: {
+            enableAaaVlanOverride: true,
+            userUplinkRateLimiting: 0,
+            userDownlinkRateLimiting: 0,
+            totalUplinkRateLimiting: 0,
+            totalDownlinkRateLimiting: 0,
+            maxClientsOnWlanPerRadio: 100,
+            enableBandBalancing: true,
+            clientIsolation: false,
+            clientIsolationOptions: {
+              autoVrrp: false
+            },
+            hideSsid: false,
+            forceMobileDeviceDhcp: false,
+            clientLoadBalancingEnable: true,
+            directedThreshold: 5,
+            enableNeighborReport: true,
+            enableFastRoaming: false,
+            enableAdditionalRegulatoryDomains: true,
+            mobilityDomainId: 1,
+            radioCustomization: {
+              rfBandUsage: 'BOTH',
+              bssMinimumPhyRate: 'default',
+              phyTypeConstraint: 'NONE',
+              managementFrameMinimumPhyRate: '6'
+            },
+            enableSyslog: false,
+            clientInactivityTimeout: 120,
+            respectiveAccessControl: true,
+            radiusOptions: {
+              nasIdType: 'BSSID',
+              nasIdDelimiter: 'DASH',
+              nasRequestTimeoutSec: 3,
+              nasMaxRetry: 2,
+              nasReconnectPrimaryMin: 5,
+              calledStationIdType: 'BSSID',
+              singleSessionIdAccounting: false
+            },
+            proxyARP: false,
+            enableAirtimeDecongestion: false,
+            enableJoinRSSIThreshold: false,
+            joinRSSIThreshold: -85,
+            enableTransientClientManagement: false,
+            joinWaitTime: 30,
+            joinExpireTime: 300,
+            joinWaitThreshold: 10,
+            enableOptimizedConnectivityExperience: false,
+            broadcastProbeResponseDelay: 15,
+            rssiAssociationRejectionThreshold: -75,
+            enableAntiSpoofing: false,
+            enableArpRequestRateLimit: true,
+            arpRequestRateLimit: 15,
+            enableDhcpRequestRateLimit: true,
+            dhcpRequestRateLimit: 15,
+            dnsProxyEnabled: false,
+            bssPriority: 'HIGH',
+            enableGtkRekey: true,
+            enableApHostNameAdvertisement: false,
+            dhcpOption82Enabled: false,
+            dhcpOption82SubOption1Enabled: false,
+            dhcpOption82SubOption2Enabled: false,
+            dhcpOption82SubOption150Enabled: false,
+            dhcpOption82SubOption151Enabled: false,
+            dhcpOption82MacFormat: 'COLON',
+            agileMultibandEnabled: false,
+            dtimInterval: 1,
+            wifi6Enabled: true,
+            wifi7Enabled: true,
+            multiLinkOperationEnabled: false,
+            multiLinkOperationOptions: {
+              enable24G: true,
+              enable50G: true,
+              enable6G: true
+            },
+            enableMulticastUplinkRateLimiting: false,
+            multicastUplinkRateLimiting: 1,
+            enableMulticastDownlinkRateLimiting: false,
+            multicastDownlinkRateLimiting: 1,
+            enableMulticastUplinkRateLimiting6G: false,
+            enableMulticastDownlinkRateLimiting6G: false,
+            multicastFilterEnabled: false,
+            qosMirroringEnabled: true,
+            qosMirroringScope: 'MSCS_REQUESTS_ONLY',
+            qosMapSetEnabled: false,
+            qosMapSetOptions: {},
+            centralizedForwardingEnabled: false,
+            fastRoamingOptions: {
+              statisticsOverDistributedSystemEnabled: false,
+              reassociationTimeout: 20
+            },
+            applicationVisibilityEnabled: true
+          },
+          macAddressAuthentication: false,
+          managementFrameProtection: 'Required',
+          vlanId: 1,
+          ssid: 'Munich Test',
+          enabled: true,
+          saePassphrase: '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'
+        },
+        name: 'Munich Test',
+        isEnforced: false,
+        id: '5e8dc47d490b41119312eb73cd16eb01',
+        venues: [
+          {
+            dual5gEnabled: true,
+            tripleBandEnabled: true,
+            allApGroupsRadio: 'Both',
+            isAllApGroups: true,
+            allApGroupsRadioTypes: [
+              '2.4-GHz',
+              '5-GHz',
+              '6-GHz'
+            ],
+            isEnforced: false,
+            networkId: '5e8dc47d490b41119312eb73cd16eb01',
+            apGroups: [],
+            venueId: 'bb40743f58d94384bd90be5541b6e6fb'
+          }
+        ]
+      },
+      incompatible: 2,
+      deepVenue: {
+        dual5gEnabled: true,
+        tripleBandEnabled: true,
+        allApGroupsRadio: 'Both',
+        isAllApGroups: true,
+        allApGroupsRadioTypes: [
+          '2.4-GHz',
+          '5-GHz',
+          '6-GHz'
+        ],
+        isEnforced: false,
+        networkId: '5e8dc47d490b41119312eb73cd16eb01',
+        apGroups: [],
+        venueId: 'bb40743f58d94384bd90be5541b6e6fb'
+      }
+    },
+    {
+      name: 'Standby',
+      id: '5f6c8d1f64784012b7a910f3587ade67',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'Standby',
+      clientCount: 0,
+      venueApGroups: [
+        {
+          venueId: 'bb40743f58d94384bd90be5541b6e6fb',
+          apGroupIds: [
+            'c7038aa542914482b74d0178232f245d',
+            '5eef04c02ad0431188dad49057bd6c5a',
+            'c8b70138ec2b44959d441d328d7eac6f'
+          ],
+          isAllApGroups: true
+        }
+      ],
+      clients: 0,
+      activated: {
+        isActivated: true
+      },
+      deepNetwork: {
+        type: 'psk',
+        wlan: {
+          wlanSecurity: 'WPA3',
+          advancedCustomization: {
+            enableAaaVlanOverride: true,
+            userUplinkRateLimiting: 0,
+            userDownlinkRateLimiting: 0,
+            totalUplinkRateLimiting: 0,
+            totalDownlinkRateLimiting: 0,
+            maxClientsOnWlanPerRadio: 100,
+            enableBandBalancing: true,
+            clientIsolation: false,
+            clientIsolationOptions: {
+              autoVrrp: false
+            },
+            hideSsid: false,
+            forceMobileDeviceDhcp: false,
+            clientLoadBalancingEnable: true,
+            directedThreshold: 5,
+            enableNeighborReport: true,
+            enableFastRoaming: false,
+            enableAdditionalRegulatoryDomains: true,
+            mobilityDomainId: 1,
+            radioCustomization: {
+              rfBandUsage: 'BOTH',
+              bssMinimumPhyRate: 'default',
+              phyTypeConstraint: 'NONE',
+              managementFrameMinimumPhyRate: '6'
+            },
+            enableSyslog: false,
+            clientInactivityTimeout: 120,
+            respectiveAccessControl: true,
+            radiusOptions: {
+              nasIdType: 'BSSID',
+              nasIdDelimiter: 'DASH',
+              nasRequestTimeoutSec: 3,
+              nasMaxRetry: 2,
+              nasReconnectPrimaryMin: 5,
+              calledStationIdType: 'BSSID',
+              singleSessionIdAccounting: false
+            },
+            proxyARP: false,
+            enableAirtimeDecongestion: false,
+            enableJoinRSSIThreshold: false,
+            joinRSSIThreshold: -85,
+            enableTransientClientManagement: false,
+            joinWaitTime: 30,
+            joinExpireTime: 300,
+            joinWaitThreshold: 10,
+            enableOptimizedConnectivityExperience: false,
+            broadcastProbeResponseDelay: 15,
+            rssiAssociationRejectionThreshold: -75,
+            enableAntiSpoofing: false,
+            enableArpRequestRateLimit: true,
+            arpRequestRateLimit: 15,
+            enableDhcpRequestRateLimit: true,
+            dhcpRequestRateLimit: 15,
+            dnsProxyEnabled: false,
+            bssPriority: 'HIGH',
+            enableGtkRekey: true,
+            enableApHostNameAdvertisement: false,
+            dhcpOption82Enabled: false,
+            dhcpOption82SubOption1Enabled: false,
+            dhcpOption82SubOption2Enabled: false,
+            dhcpOption82SubOption150Enabled: false,
+            dhcpOption82SubOption151Enabled: false,
+            dhcpOption82MacFormat: 'COLON',
+            agileMultibandEnabled: false,
+            dtimInterval: 1,
+            wifi6Enabled: true,
+            wifi7Enabled: true,
+            multiLinkOperationEnabled: false,
+            multiLinkOperationOptions: {
+              enable24G: true,
+              enable50G: true,
+              enable6G: false
+            },
+            enableMulticastUplinkRateLimiting: false,
+            multicastUplinkRateLimiting: 1,
+            enableMulticastDownlinkRateLimiting: false,
+            multicastDownlinkRateLimiting: 1,
+            enableMulticastUplinkRateLimiting6G: false,
+            enableMulticastDownlinkRateLimiting6G: false,
+            multicastFilterEnabled: false,
+            qosMirroringEnabled: true,
+            qosMirroringScope: 'MSCS_REQUESTS_ONLY',
+            qosMapSetEnabled: false,
+            qosMapSetOptions: {},
+            centralizedForwardingEnabled: false,
+            fastRoamingOptions: {
+              statisticsOverDistributedSystemEnabled: false,
+              reassociationTimeout: 20
+            },
+            applicationVisibilityEnabled: true
+          },
+          macAddressAuthentication: false,
+          managementFrameProtection: 'Required',
+          vlanId: 1,
+          ssid: 'Standby',
+          enabled: true,
+          saePassphrase: '22345678'
+        },
+        name: 'Standby',
+        isEnforced: false,
+        id: '5f6c8d1f64784012b7a910f3587ade67',
+        venues: [
+          {
+            dual5gEnabled: true,
+            tripleBandEnabled: true,
+            allApGroupsRadio: 'Both',
+            isAllApGroups: false,
+            allApGroupsRadioTypes: [
+              '2.4-GHz',
+              '5-GHz',
+              '6-GHz'
+            ],
+            isEnforced: false,
+            networkId: '5f6c8d1f64784012b7a910f3587ade67',
+            apGroups: [
+              {
+                radioTypes: [
+                  '5-GHz',
+                  '2.4-GHz',
+                  '6-GHz'
+                ],
+                apGroupId: '5eef04c02ad0431188dad49057bd6c5a',
+                venueId: 'bb40743f58d94384bd90be5541b6e6fb',
+                networkId: '5f6c8d1f64784012b7a910f3587ade67',
+                radio: 'Both',
+                isDefault: true
+              }
+            ],
+            venueId: 'bb40743f58d94384bd90be5541b6e6fb'
+          }
+        ]
+      },
+      incompatible: 0,
+      deepVenue: {
+        dual5gEnabled: true,
+        tripleBandEnabled: true,
+        allApGroupsRadio: 'Both',
+        isAllApGroups: false,
+        allApGroupsRadioTypes: [
+          '2.4-GHz',
+          '5-GHz',
+          '6-GHz'
+        ],
+        isEnforced: false,
+        networkId: '5f6c8d1f64784012b7a910f3587ade67',
+        apGroups: [
+          {
+            radioTypes: [
+              '5-GHz',
+              '2.4-GHz',
+              '6-GHz'
+            ],
+            apGroupId: '5eef04c02ad0431188dad49057bd6c5a',
+            venueId: 'bb40743f58d94384bd90be5541b6e6fb',
+            networkId: '5f6c8d1f64784012b7a910f3587ade67',
+            radio: 'Both',
+            isDefault: true
+          }
+        ],
+        venueId: 'bb40743f58d94384bd90be5541b6e6fb'
+      }
+    }
+  ]
+}
+
+export const venueData = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  createdDate: '2022-07-08T04:59:22.351+00:00',
+  description: 'My-Venue',
+  floorPlans: [],
+  id: '__MOCKED_VENUE_ID__',
+  name: 'My-Venue',
+  updatedDate: '2022-07-08T04:59:22.351+00:00'
+}
