@@ -40,8 +40,7 @@ interface RangePickerProps {
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const isDateRangeUnlimited =
-    useIsSplitOn(Features.ACX_UI_DATE_RANGE_UNLIMITED) && !!props?.unlimitedRange
+  const isDateRangeUnlimited = !!props?.unlimitedRange
   const { filterValues, setFilterValues, settingsId, filterPersistence, filterLabel } = props
 
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
