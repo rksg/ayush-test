@@ -24,7 +24,8 @@ import {
   NewDhcpOption82SubOption1Enum,
   NewDhcpOption82SubOption2Enum,
   NewDhcpOption82SubOption151Enum,
-  DhcpOption82MacDelimiterEnum
+  DhcpOption82MacDelimiterEnum,
+  DhcpOption82SubOption1Customization
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -208,7 +209,8 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption151Enabled,
     dhcpOption82SubOption2Format,
     dhcpOption82SubOption151Format,
-    dhcpOption82SubOption1Format
+    dhcpOption82SubOption1Format,
+    dhcpOption82SubOption1Customization
   ] = [
     useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
@@ -216,39 +218,39 @@ export const DhcpOption82SettingsFormField = (props: {
     useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
     useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName),
-    useWatch<DhcpOption82SubOption1Enum>(dhcpOption82SubOption1FormatFieldName)
+    useWatch<DhcpOption82SubOption1Enum>(dhcpOption82SubOption1FormatFieldName),
+    // eslint-disable-next-line max-len
+    useWatch<DhcpOption82SubOption1Customization>(dhcpOption82SubOption1CustomizationFieldName)
   ]
 
   useEffect(() => {
     if(isLanPortSettings) {
-      const customization = form.getFieldValue(dhcpOption82SubOption1CustomizationFieldName)
-      if (customization) {
+      if (dhcpOption82SubOption1Customization) {
         const transformedTags =
-          customization.attributes.map(
-            (attribute: DhcpOption82SubOption1CustomizationAttribute) => {
-              if (attribute.type === DhcpOption82SubOption1CustomizationType.USER_DEFINED) {
-                return {
-                  id: attribute.text,
-                  value: attribute.text,
-                  isCustom: true,
-                  valid: true
-                } as DraggableTag
-              } else {
-                return {
-                  id: attribute.type,
-                  value: dhcpOption82SubOption1CustomizationTypeLabels[
+        dhcpOption82SubOption1Customization.attributes.map(
+          (attribute: DhcpOption82SubOption1CustomizationAttribute) => {
+            if (attribute.type === DhcpOption82SubOption1CustomizationType.USER_DEFINED) {
+              return {
+                id: attribute.text,
+                value: attribute.text,
+                isCustom: true,
+                valid: true
+              } as DraggableTag
+            } else {
+              return {
+                id: attribute.type,
+                value: dhcpOption82SubOption1CustomizationTypeLabels[
                     attribute.type as DhcpOption82SubOption1CustomizationType
-                  ],
-                  isCustom: false,
-                  valid: true
-                } as DraggableTag
-              }
-            })
+                ],
+                isCustom: false,
+                valid: true
+              } as DraggableTag
+            }
+          })
         form.setFieldValue(customizationFieldName, transformedTags)
       }
-
     }
-  }, [])
+  }, [dhcpOption82SubOption1Customization])
 
   return (
     <>
