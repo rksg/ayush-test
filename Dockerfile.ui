@@ -81,16 +81,16 @@ RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
 FROM build-base as acx-ui-group-test
-
+ 
 # Copy the nx cache from the lint stage
 COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
-
+ 
 # Multistage: trigger run
 COPY --from=build /app/dist/apps ./dist/apps
-
+ 
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
-
+ 
 COPY run-tests-affected.sh /app/run-tests-affected.sh
 RUN chmod +x /app/run-tests-affected.sh
 RUN set -e && \
@@ -100,13 +100,16 @@ RUN set -e && \
       cp -r ./coverage ./node_modules/.cache/nx; \
     fi && \
     mkdir -p /app/coverage
+ 
+RUN touch test-cases-done
 
 ###############################################################
 FROM build-base as acx-ui-sonar-run
+COPY --from=acx-ui-group-test /app/test-cases-done /tmp/
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
-
+ 
 RUN ./node_modules/.bin/nx reset
 RUN rm -rf ./node_modules
 
