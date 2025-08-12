@@ -1,7 +1,7 @@
 import { Col, FormInstance, Row } from 'antd'
 import { useNavigate }            from 'react-router-dom'
 
-import { PageHeader, StepsForm }     from '@acx-ui/components'
+import { PageHeader, StepsForm }      from '@acx-ui/components'
 import {
   CommonResult,
   usePolicyListBreadcrumb,
@@ -12,6 +12,7 @@ import {
   usePolicyPreviousPath,
   useConfigTemplateTenantLink,
   generateConfigTemplateBreadcrumb
+
 } from '@acx-ui/rc/utils'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
@@ -28,8 +29,15 @@ interface TunnelProfileFormProps {
 }
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
-  // eslint-disable-next-line max-len
-  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode, isTemplate } = props
+  const {
+    title, submitButtonLabel,
+    onFinish,
+    form,
+    isDefaultTunnel,
+    initialValues, editMode,
+    isTemplate
+  } = props
+
   const navigate = useNavigate()
   const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.TUNNEL_PROFILE)
   const templateFallbackPath = useConfigTemplateTenantLink('')
@@ -68,7 +76,10 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <TunnelProfileFormItems isDefaultTunnelProfile={isDefaultTunnel} />
+              <TunnelProfileFormItems
+                isDefaultTunnelProfile={isDefaultTunnel}
+                isTemplate={isTemplate}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>

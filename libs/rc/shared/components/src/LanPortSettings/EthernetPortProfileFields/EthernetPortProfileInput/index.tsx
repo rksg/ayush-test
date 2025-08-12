@@ -22,24 +22,59 @@ interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
     currentIndex: number,
     isEditable?: boolean,
-    onGUIChanged?: (fieldName: string) => void
+    onGUIChanged?: (fieldName: string) => void,
+    globalAccessPortUntaggedIdEnabled?: boolean,
+    globalAccessPortUntaggedId?: number
 }
 
 const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
   const { currentIndex, currentEthernetPortData, isEditable=true,
-    onGUIChanged } = props
+    onGUIChanged, globalAccessPortUntaggedIdEnabled, globalAccessPortUntaggedId } = props
 
   const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isGlobalAccessVlanUntaggedIdEnabled =
+    useIsSplitOn(Features.ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE)
+
 
   const form = Form.useFormInstance()
-  const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
+  const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form) as number
 
   useEffect(()=>{
     if (currentEthernetPortData?.type === EthernetPortType.ACCESS) {
       form.setFieldValue(['lan', currentIndex, 'vlanMembers'], currentUntagId)
     }
-  }, [currentUntagId])
+  }, [currentUntagId, currentEthernetPortData])
+
+  useEffect(() => {
+
+    // FF not enabled then skip all Actions
+    if(!isGlobalAccessVlanUntaggedIdEnabled) return
+
+    if (currentEthernetPortData?.type === EthernetPortType.ACCESS &&
+      globalAccessPortUntaggedId !== undefined &&
+      !!currentUntagId) {
+
+      const numberUntagId = Number(currentUntagId)
+
+      if (globalAccessPortUntaggedIdEnabled &&
+        numberUntagId !== globalAccessPortUntaggedId) {
+
+        form.setFieldValue(['lan', currentIndex, 'untagId'], globalAccessPortUntaggedId)
+        onGUIChanged?.('untagId')
+
+      } else if (!globalAccessPortUntaggedIdEnabled &&
+                   currentEthernetPortData?.untagId !== undefined) {
+        if (globalAccessPortUntaggedId !== 1 &&
+          numberUntagId === globalAccessPortUntaggedId) {
+
+          form.setFieldValue(['lan', currentIndex, 'untagId'], currentEthernetPortData.untagId)
+          onGUIChanged?.('untagId')
+
+        }
+      }
+    }
+  }, [globalAccessPortUntaggedIdEnabled, globalAccessPortUntaggedId, currentEthernetPortData])
 
   return (
     <Space direction='vertical'>
@@ -68,10 +103,14 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
           (currentEthernetPortData?.apPortOverwrites
             ?.find(p => p.portId === currentIndex+1)?.overwriteUntagId?.toString()) ??
         (currentEthernetPortData?.untagId.toString() ?? '')}
-        isEditable={isEditable}
+        isEditable={isEditable &&
+                   !(globalAccessPortUntaggedIdEnabled &&
+                     currentEthernetPortData?.type === EthernetPortType.ACCESS)}
         fieldName={['lan', currentIndex, 'untagId']}
         currentIndex={currentIndex}
         onGUIChanged={onGUIChanged}
+        isGlobalOverride={globalAccessPortUntaggedIdEnabled &&
+                         currentEthernetPortData?.type === EthernetPortType.ACCESS}
         rules={[
           { validator: (_, value) => validateVlanId(value) }
         ]}

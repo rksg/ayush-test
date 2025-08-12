@@ -35,7 +35,9 @@ interface EthernetPortProfileFieldsProps {
     serialNumber?: string,
     venueId?: string,
     onGUIChanged?: (fieldName: string) => void,
-    onEthernetPortProfileChanged?: (data: EthernetPortProfileViewData) => void
+    onEthernetPortProfileChanged?: (data: EthernetPortProfileViewData) => void,
+    globalAccessPortUntaggedIdEnabled?: boolean,
+    globalAccessPortUntaggedId?: number
 }
 
 const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
@@ -51,7 +53,9 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     selectedPortCaps,
     venueId,
     useVenueSettings=false,
-    onEthernetPortProfileChanged
+    onEthernetPortProfileChanged,
+    globalAccessPortUntaggedIdEnabled,
+    globalAccessPortUntaggedId
   } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -154,7 +158,9 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
         currentEthernetPortData={currentEthernetPortData}
         currentIndex={index}
         onGUIChanged={onGUIChanged}
-        isEditable={!readOnly && !!serialNumber && !isDhcpEnabled} />
+        isEditable={!readOnly && !!serialNumber && !isDhcpEnabled}
+        globalAccessPortUntaggedIdEnabled={globalAccessPortUntaggedIdEnabled}
+        globalAccessPortUntaggedId={globalAccessPortUntaggedId} />
       }
     </>
   )

@@ -13,7 +13,8 @@ import {
   hasPolicyPermission
 } from '@acx-ui/rc/utils'
 
-import IpsecDrawer from '../policies/Ipsec/IpsecForm/IpsecDrawer'
+import IpsecAddDrawer         from '../policies/Ipsec/IpsecForm/IpsecAddDrawer'
+import { IpsecDetailsDrawer } from '../policies/Ipsec/IpsecForm/IpsecDetailsDrawer'
 
 const defaultIpsecOption = { label: '', value: '' }
 
@@ -125,14 +126,12 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
 
         </Space>
       </Space>
-      <IpsecDrawer
+      <IpsecDetailsDrawer
         visible={detailDrawerVisible}
         setVisible={setDetailDrawerVisible}
-        policyId={ipsecProfile.value as string}
-        policyName={ipsecProfile.label as string}
-        readMode
+        ipsecId={ipsecProfile.value as string}
       />
-      <IpsecDrawer
+      <IpsecAddDrawer
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
         callbackFn={async (newOption) => {

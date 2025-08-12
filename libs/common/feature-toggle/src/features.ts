@@ -18,7 +18,6 @@ export enum Features {
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   IDENTITY_GROUP_CONFIG_TEMPLATE = 'identity-group-config-template',
-  CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
   CONFIG_TEMPLATE_CLONE_P1 = 'acx-ui-config-template-clone-phase1',
@@ -26,7 +25,6 @@ export enum Features {
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_ENFORCED_P1 = 'acx-ui-config-template-enforcement-phase1',
   CONFIG_TEMPLATE_ENFORCED_VENUE = 'acx-ui-config-template-enforcement-venue',
-  CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
   CONFIG_TEMPLATE_REC_P1 = 'acx-ui-config-template-rec-p1',
@@ -43,10 +41,6 @@ export enum Features {
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
-  EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
-  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
-  EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
-  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE = 'removable-ff',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
@@ -61,6 +55,7 @@ export enum Features {
   EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   EDGE_DELEGATION_POC_TOGGLE = 'edge-delegation-poc-toggle',
   EDGE_SDLAN_SELECTION_ENHANCE_TOGGLE = 'acx-ui-edges-sdlan-config-enhance-toggle',
+  EDGE_IPSEC_VXLAN_TOGGLE = 'edge-ipsec-vxlan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -150,7 +145,7 @@ export enum Features {
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle', //'removable-ff',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
-  SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
+  SWITCH_SUPPORT_ICX8100 = 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_FLEXIBLE_AUTHENTICATION = 'switch-consumer-flexible-authentication-toggle',
@@ -303,13 +298,17 @@ export enum Features {
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
   WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED = 'wifi-dot1x-with-mac-registration-enabled',
   WIFI_NETWORK_ACTIVATION_QUERY = 'wifi-network-activation-query',
+  WIFI_AP_PASSWORD_PER_AP_TOGGLE = 'wifi-ap-password-per-ap-toggle',
+  WIFI_AP_PASSWORD_VISIBILITY_TOGGLE = 'wifi-ap-password-visibility-toggle',
   WIFI_AP_CLI_SESSION_TOGGLE = 'wifi-ap-cli-session-toggle',
   EDGE_WIFI_TUNNEL_TEMPLATE_TOGGLE = 'edge-wifi-tunnel-template-toggle',
   EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
   SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle',
   MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
-  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality'
+  FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
+  MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -332,6 +331,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   EDGE_TUNNEL_TEMPLATE = 'EDGE-TUNNEL-TEMPLATE',
   EDGE_DELEGATION = 'EDGE-DELEGATION',
+  EDGE_IPSEC_VXLAN = 'EDGE-IPSEC-VXLAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -351,7 +351,7 @@ interface BetaList {
 // from displaying in UI drawer component BetaFeaturesDrawer.
 // If we don't have a description blurb and
 // don't want it to be displayed then add status = false
-export const BetaListDetails:BetaList[] = [
+export const BetaListDetails: BetaList[] = [
   { key: TierFeatures.WORKFLOW_ONBOARD, description: defineMessage({ defaultMessage: 'Workflows: ' }), status: false },
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },

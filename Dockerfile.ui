@@ -36,22 +36,27 @@ RUN if [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
-# COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
-RUN mkdir -p /app/node_modules/.cache/nx
-# # Remove files and folders older than 24 hours from the nx cache
+COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+
+RUN if [ -d /app/node_modules/.cache/nx/coverage ]; then \
+      cp -r /app/node_modules/.cache/nx/coverage /app && \
+      rm -rf /app/node_modules/.cache/nx/coverage; \
+    fi
+
+# Remove files and folders older than 24 hours from the nx cache
 RUN find /app/node_modules/.cache/nx -mindepth 1 -type f -mmin +1440 -delete && \
     find /app/node_modules/.cache/nx -mindepth 1 -type d -mmin +1440 -exec rm -rf {} +
 
 COPY tools/tests ./tools/tests
 
 # Copy the tar.xz file if it exists
-# COPY nxcache/nxcache.tar.xz* ./
+COPY nxcache/nxcache.tar.xz* ./
 
 # Extract it only if the file exists
-# RUN if [ -f ./nxcache.tar.xz ]; then \
-#       mkdir -p ./node_modules/.cache/nx && \
-#       tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
-#     fi
+RUN if [ -f ./nxcache.tar.xz ]; then \
+      mkdir -p ./node_modules/.cache/nx && \
+      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+    fi
 
 # dump git information
 RUN source ${ENV_FILE} \

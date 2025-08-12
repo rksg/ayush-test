@@ -3,12 +3,11 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { HspContext }                                            from '@acx-ui/msp/utils'
 import { Provider, rbacApiURL }                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor }        from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
 import { AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 import Layout from '.'
 

@@ -103,6 +103,9 @@ describe('IdentityForm', () => {
     const nameInput = screen.getByLabelText('Identity Name')
     await userEvent.type(nameInput, 'New Identity Name')
 
+    const displayNameInput = screen.getByLabelText('Display Name')
+    await userEvent.type(displayNameInput, 'New Display Name')
+
     expect(getPersonaByIdFn).not.toBeCalled()
 
     const saveButton = screen.getByRole('button', { name: 'Apply' })
@@ -122,6 +125,10 @@ describe('IdentityForm', () => {
     const nameInput = await screen.findByLabelText('Identity Name')
     expect(nameInput).toHaveValue(mockPersonaList.content[0].name)
     await userEvent.type(nameInput, 'Change Name')  // change some fields
+
+    const displayNameInput = await screen.findByLabelText('Display Name')
+    expect(displayNameInput).toHaveValue(mockPersonaList.content[0].displayName)
+    await userEvent.type(displayNameInput, 'Change DisplayName')  // change some fields
 
     const saveButton = screen.getByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)

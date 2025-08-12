@@ -15,6 +15,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
@@ -45,7 +46,6 @@ import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPerm
 import { getIntl, getOpsApi, validationMessages, TableQuery }                                   from '@acx-ui/utils'
 
 
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 import { NetworkForm } from '../../NetworkForm'
 import { PassphraseViewer } from '../../PassphraseViewer'
 
@@ -141,6 +141,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
           return (item ? <IdentityDetailsLink
             disableLink={isDpskRole}
             name={item.name}
+            displayName={item.displayName}
             personaId={item.id}
             personaGroupId={item.groupId}
             revoked={item.revoked}

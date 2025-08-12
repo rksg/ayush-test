@@ -1,3 +1,8 @@
+export enum IpSecTunnelUsageTypeEnum {
+  VXLAN_GPE = 'VXLAN_GPE',
+  SOFT_GRE = 'SOFT_GRE',
+}
+
 export enum IpSecAuthEnum {
   PSK = 'PSK',
   CERTIFICATE = 'CERTIFICATE'
@@ -38,7 +43,7 @@ export enum IpSecDhGroupEnum {
   MODP4096 = 'MODP4096',
   MODP6144 = 'MODP6144',
   MODP8192 = 'MODP8192',
-  ESP384 = 'ESP384'
+  ECP384 = 'ECP384'
 }
 
 export enum IpSecEncryptionAlgorithmEnum {

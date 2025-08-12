@@ -130,8 +130,10 @@ describe('ClientOverviewTab root', () => {
     })
 
     it('should render historical client info correctly', async () => {
-      jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-        key === 'clientStatus' ? 'historical' : null
+      mockServer.use(
+        rest.post(ClientUrlsInfo.getClients.url,
+          (_, res, ctx) => res(ctx.json({}))
+        )
       )
       render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -463,7 +465,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       }
 
       it('should render historical client correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         render(<Provider>
           <ClientProperties
             clientDetails={clientDetails as unknown as Client}
@@ -479,7 +480,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client without some data correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
             (_, res, ctx) => res(ctx.json({
@@ -518,8 +518,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (guest) correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-
         mockServer.use(
           rest.get(WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
@@ -569,8 +567,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         </Provider>, {
           route: {
             params,
-            path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview',
-            search: '?clientStatus=historical'
+            path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview'
           }
         })
         await waitFor(() => {
@@ -584,7 +581,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiRbacUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
@@ -625,12 +621,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('NMS-app6-WLAN-QA')).toBeVisible()
       })
 
-      it('should render correctly when search parameters is disappeared', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
-          key === 'clientStatus' ? 'historical' : null
-        )
+      it('should render correctly since clientStatus path parameter deprecated', async () => {
         store.dispatch(dataApi.util.resetApiState())
         mockServer.use(
+          rest.post(ClientUrlsInfo.getClients.url,
+            (_, res, ctx) => res(ctx.json({}))
+          ),
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
             (_, res, ctx) => res(ctx.json(histClientList))
           ),

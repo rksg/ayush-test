@@ -35,10 +35,12 @@ interface RangePickerProps {
   settingsId?: string,
   filterPersistence?: boolean,
   filterLabel?: string
+  unlimitedRange?: boolean
 }
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const isDateRangeUnlimited = !!props?.unlimitedRange
   const { filterValues, setFilterValues, settingsId, filterPersistence, filterLabel } = props
 
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
@@ -64,7 +66,8 @@ function RangePickerComp (props: RangePickerProps) {
         setDateFilterState(date)
       }}
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
-      maxMonthRange={isDateRangeLimit ? 1 : 3}
+      maxMonthRange={isDateRangeUnlimited ? Number.MAX_VALUE : isDateRangeLimit ? 1 : 3}
+      allowedMonthRange={isDateRangeUnlimited ? Number.MAX_VALUE : undefined}
       filterLabel={filterLabel}
       showAllTime
     />
@@ -108,7 +111,7 @@ export function getFilteredData <RecordType> (
         return typeof target === 'string' && target
           ?.toString()
           .toLowerCase()
-          .includes(searchValue.toLowerCase())
+          .includes(searchValue.trim().toLowerCase())
       })
     }
     return true
@@ -196,7 +199,9 @@ export function renderFilter <RecordType> (
               JSON.stringify({ ...filterValues, [key]: [isChecked] }))
           }
         }
-      }}>{column?.filterComponent?.label}</Checkbox>
+      }}>
+      {column?.filterComponent?.type === 'checkbox' ? column?.filterComponent?.label : ''}
+    </Checkbox>
   }
 
   const filterTypeComp = {
@@ -208,6 +213,8 @@ export function renderFilter <RecordType> (
       settingsId={settingsId}
       filterPersistence={filterPersistence}
       filterLabel={column.title as string}
+      unlimitedRange={column.filterComponent?.type === 'rangepicker' ?
+        column.filterComponent.unlimitedRange : undefined}
     />
   }
   type Type = keyof typeof filterTypeComp
