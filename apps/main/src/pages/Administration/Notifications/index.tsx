@@ -62,6 +62,7 @@ const recipientTypeFilterOpts = ($t: IntlShape['$t']) => [
 ]
 
 export const NotificationsTable = () => {
+
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
