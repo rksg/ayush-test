@@ -306,7 +306,7 @@ export function NewManageIntegrator () {
       }
       setSubscriptionStartDate(moment())
     }
-  }, [data, licenseSummaryResults,
+  }, [data, licenseSummaryResults, calculatedLicencesList,
     licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {

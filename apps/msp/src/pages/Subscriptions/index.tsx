@@ -128,7 +128,7 @@ export function Subscriptions () {
       'isTrial',
       'graceEndDate',
       'usageType',
-      ...(isMultiLicensePoolToggleEnabled ? ['skuType'] : [])
+      ...(isMultiLicensePoolToggleEnabled ? ['skuTier'] : [])
     ],
     page: 1,
     pageSize: isSubscriptionPagesizeToggleEnabled ? 10000 : 1000,
@@ -201,7 +201,7 @@ export function Subscriptions () {
       }
     ]),
     ...(isMultiLicensePoolToggleEnabled ? [{
-      title: $t({ defaultMessage: 'License Type' }),
+      title: $t({ defaultMessage: 'License Tier' }),
       dataIndex: 'skuTier',
       key: 'skuTier',
       sorter: { compare: sortProp('skuTier', defaultSort) },
