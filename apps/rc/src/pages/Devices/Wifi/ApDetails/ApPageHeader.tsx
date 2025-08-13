@@ -170,8 +170,8 @@ function ApPageHeader () {
     return (
       (currentApOperational && isHasPermission) ||
           (item.key === 'delete' && isHasPermission) ||
-          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED) ||
-          (item.key === 'cliSession' && [
+          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+          || (item.key === 'cliSession' && [
             ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED,
             ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED].includes(status))
     )
