@@ -41,11 +41,11 @@ import {
   useLazyApListQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
-import { APExtended, ApModelTypeEnum, Capabilities, ShowTopologyFloorplanOn, VenueDefaultRegulatoryChannels } from '@acx-ui/rc/utils'
-import { useNavigateToPath }                                                                                  from '@acx-ui/react-router-dom'
-import { getUserProfile, isCoreTier }                                                                         from '@acx-ui/user'
-import { generateVenueFilter, useDateFilter, LoadTimeContext }                                                from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                               from '@acx-ui/utils'
+import { APExtended, Capabilities, ShowTopologyFloorplanOn, VenueDefaultRegulatoryChannels } from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                                                 from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                                                        from '@acx-ui/user'
+import { generateVenueFilter, useDateFilter, LoadTimeContext }                               from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                              from '@acx-ui/utils'
 
 import { useVenueConfigTemplateQueryFnSwitcher } from '../../venueConfigTemplateApiSwitcher'
 
@@ -59,7 +59,7 @@ export function VenueOverviewTab () {
   const { venueId, tenantId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { onPageFilterChange } = useContext(LoadTimeContext)
-  const [hasTriBandApModel, setHasTriBandApModel] = useState('')
+  const [hasSupportAfcAp, setHasSupportAfcAp] = useState(false)
 
   const [ getApList ] = useLazyApListQuery()
 
@@ -109,13 +109,10 @@ export function VenueOverviewTab () {
 
   // Get AP List filter by the current venue ID and triBandApModelNames model.
   useEffect(() => {
-    const triBandApModelNames = isEmpty(triBandApModels)
-      ? ['R760', 'R560', 'H670', 'R670', 'T670', 'T670SN', 'R770']
-      : triBandApModels
-    const triBanOutdoorApModelNames = isEmpty(triBanOutdoorApModels)
-      ? ['T670', 'T670SN']
-      : triBanOutdoorApModels
-    let filters = { model: triBandApModelNames, venueId: [venueId] }
+    if (!venueRadio || isEmpty(triBandApModels)) {
+      return
+    }
+    let filters = { model: triBandApModels, venueId: [venueId] }
     const payload = {
       fields: ['serialNumber', 'model', 'name'],
       pageSize: 10000,
@@ -133,19 +130,21 @@ export function VenueOverviewTab () {
 
             // filter out triband outdoor AP under the venue
             const venueTriBandOutdoorApModels = venueTriBandApModels
-              .filter(apModel => triBanOutdoorApModelNames.includes(apModel))
+              .filter(apModel => triBanOutdoorApModels.includes(apModel))
 
             if (venueTriBandOutdoorApModels.length > 0) {
-              setHasTriBandApModel(ApModelTypeEnum.OUTDOOR)
-            } else {
-              setHasTriBandApModel(ApModelTypeEnum.INDOOR)
+              setHasSupportAfcAp(true)
+            } else if (venueRadio.radioParams6G?.enableAfc) {
+              setHasSupportAfcAp(true)
             }
           } else {
-            setHasTriBandApModel('')
+            setHasSupportAfcAp(false)
           }
         })
     }
-  }, [triBandApModels, triBanOutdoorApModels])
+
+    //setHasSupportAfcAp(true)
+  }, [venueRadio, triBandApModels, triBanOutdoorApModels])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -175,11 +174,7 @@ export function VenueOverviewTab () {
       {
         (
           supportChannelsData?.afcEnabled &&
-          (
-            (hasTriBandApModel === ApModelTypeEnum.OUTDOOR) ||
-            (hasTriBandApModel === ApModelTypeEnum.INDOOR &&
-             venueRadio?.radioParams6G?.enableAfc === true)
-          ) &&
+          hasSupportAfcAp &&
           (
             (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
             (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)

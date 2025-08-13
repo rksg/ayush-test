@@ -220,7 +220,7 @@ describe('VenueOverviewTab', () => {
       render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-      expect(screen.getByTitle('LowPowerBannerAndModal')).toBeVisible()
+      expect(await screen.findByTitle('LowPowerBannerAndModal')).toBeVisible()
     })
 
     it('Should show when 3R indoor AP with AFC enabled', async () => {
@@ -244,7 +244,7 @@ describe('VenueOverviewTab', () => {
       render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-      expect(screen.getByTitle('LowPowerBannerAndModal')).toBeVisible()
+      expect(await screen.findByTitle('LowPowerBannerAndModal')).toBeVisible()
     })
   })
 
