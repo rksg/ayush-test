@@ -181,8 +181,8 @@ export const NotificationsTable = () => {
   const columns: TableProps<NotificationRecipientUIModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'Recipient Name' }),
-      key: 'description',
-      dataIndex: 'description',
+      key: 'name',
+      dataIndex: 'name',
       defaultSortOrder: 'ascend',
       searchable: true,
       sorter: { compare: sortProp('description', defaultSort) },

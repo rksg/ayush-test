@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features }                             from '@acx-ui/feature-toggle'
-import { networkApi, pinApi, tunnelProfileApi } from '@acx-ui/rc/services'
+import { Features }                                                      from '@acx-ui/feature-toggle'
+import { networkApi, pinApi, tunnelProfileApi, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
   EdgePinUrls,
   EdgeSdLanUrls,
   EdgeTunnelProfileFixtures,
@@ -24,7 +23,8 @@ import { mockedNetworkOptions, mockedPinOptions } from '../__tests__/fixtures'
 import TunnelProfileTable from '.'
 const {
   mockedTunnelProfileViewData,
-  mockedDefaultVlanVxlanTunnelProfileViewData
+  mockedDefaultVlanVxlanTunnelProfileViewData,
+  mockedTunnelProfileViewDataWithIpsecProfileId
 } = EdgeTunnelProfileFixtures
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
@@ -38,6 +38,7 @@ const mockedSdLanDataList = {
   totalCount: 1,
   data: [{ id: 'testSDLAN-id', name: 'testSDLAN' }]
 }
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
@@ -49,7 +50,9 @@ jest.mock('@acx-ui/utils', () => ({
   getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
 }))
 
 const mockUseIsEdgeFeatureReady = jest.fn().mockImplementation(() => false)
@@ -59,6 +62,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 const mockedSingleDeleteApi = jest.fn()
+const mockNetworkOptions = useWifiNetworkListQuery as jest.Mock
 
 describe('TunnelProfileList', () => {
   let params: { tenantId: string }
@@ -74,6 +78,7 @@ describe('TunnelProfileList', () => {
     store.dispatch(pinApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     mockedSingleDeleteApi.mockClear()
+    mockNetworkOptions.mockReturnValue({ networkOptions: mockedNetworkOptions.data })
 
     mockServer.use(
       rest.post(
@@ -83,10 +88,6 @@ describe('TunnelProfileList', () => {
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
         (_, res, ctx) => res(ctx.json(mockedPinOptions))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.delete(
         TunnelProfileUrls.deleteTunnelProfile.url,
@@ -102,6 +103,10 @@ describe('TunnelProfileList', () => {
     )
   })
 
+  afterEach(() => {
+    mockUseIsEdgeFeatureReady.mockClear()
+  })
+
   it('should create TunnelProfileList successfully', async () => {
     render(
       <Provider>
@@ -111,6 +116,9 @@ describe('TunnelProfileList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /tunnelProfile/i })
     expect(row.length).toBe(3)
+
+    // should not display Encryption column when VxLAN IPsec is not ready
+    expect(screen.queryByRole('columnheader', { name: 'Encryption' })).toBeNull()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -390,6 +398,34 @@ describe('TunnelProfileList', () => {
       await user.click(within(row[0]).getByRole('checkbox'))
       expect(screen.queryByRole('button', { name: 'Edit' })).toBeVisible()
       expect(screen.queryByRole('button', { name: 'Delete' })).toBeVisible()
+    })
+  })
+
+  describe('when VxLAN IPsec is ready', () => {
+    beforeEach(() => {
+      mockUseIsEdgeFeatureReady
+        .mockImplementation(ff => ff === Features.EDGE_IPSEC_VXLAN_TOGGLE )
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_req, res, ctx) => res(ctx.json(mockedTunnelProfileViewDataWithIpsecProfileId))
+        )
+      )
+    })
+
+    it('should display Encryption column', async () => {
+      render(
+        <Provider>
+          <TunnelProfileTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByRole('columnheader', { name: 'Encryption' }))
+        .toBeVisible()
+      expect(screen.getAllByText('Yes')).toHaveLength(1)
     })
   })
 })
