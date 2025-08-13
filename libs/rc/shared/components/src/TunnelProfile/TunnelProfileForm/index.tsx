@@ -77,7 +77,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <Row gutter={20}>
             <Col span={10}>
               <TunnelProfileFormItems
-                editData={initialValues}
+                editData={editMode ? initialValues : undefined}
                 isDefaultTunnelProfile={isDefaultTunnel}
                 isTemplate={isTemplate}
               />
