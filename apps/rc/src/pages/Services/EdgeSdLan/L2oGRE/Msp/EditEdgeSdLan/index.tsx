@@ -10,7 +10,7 @@ import { useNavigate, useParams, useTenantLink }                                
 
 import { EdgeSdLanFormType }                       from '../../Form'
 import { transformToApiData, transformToFormData } from '../../shared/utils'
-import { EdgeSdLanFormMspContainer }               from '../Form'
+import { MspEdgeSdLanFormContainer }               from '../Form'
 import { CustomerSelectionForm }                   from '../Form/CustomerSelectionForm'
 import { GeneralForm }                             from '../Form/GeneralForm'
 import { NetworkSelectionForm }                    from '../Form/NetworkSelectionForm'
@@ -104,7 +104,7 @@ export const EditEdgeSdLan = () => {
         breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
       />
       <Loader states={[{ isLoading, isFetching }]}>
-        <EdgeSdLanFormMspContainer
+        <MspEdgeSdLanFormContainer
           form={form}
           steps={steps}
           onFinish={handleFinish}

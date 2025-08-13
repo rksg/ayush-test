@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import { waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                             from '@testing-library/user-event'
-import { Form }                              from 'antd'
-import { cloneDeep }                         from 'lodash'
-import { rest }                              from 'msw'
+import { within }    from '@testing-library/react'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { StepsForm, StepsFormProps }                                                 from '@acx-ui/components'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
@@ -16,7 +16,8 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeSdLanContext, EdgeSdLanContextType } from '../../../../Form/EdgeSdLanContextProvider'
+import { EdgeSdLanContext, EdgeSdLanContextType }       from '../../../../Form/EdgeSdLanContextProvider'
+import { MspEdgeSdLanContext, MspEdgeSdLanContextType } from '../../MspEdgeSdLanContextProvider'
 
 import { EdgeSdLanVenueNetworksTemplateTable, VenueNetworksTableProps } from '.'
 
@@ -38,6 +39,10 @@ const edgeMvSdlanContextValues = {
   allPins: [],
   availableTunnelProfiles: []
 } as unknown as EdgeSdLanContextType
+
+const mspEdgeSdLanContextValues = {
+  allVenueTemplates: mockVenueList.data
+} as unknown as MspEdgeSdLanContextType
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -65,11 +70,13 @@ const MockedTargetComponent = (props: MockedTargetComponentType) => {
   const { form, editMode, ctxValues, ...networkTableProps } = props
   return <Provider>
     <EdgeSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
-      <StepsForm form={form} editMode={editMode}>
-        <EdgeSdLanVenueNetworksTemplateTable
-          {...networkTableProps}
-        />
-      </StepsForm>
+      <MspEdgeSdLanContext.Provider value={mspEdgeSdLanContextValues}>
+        <StepsForm form={form} editMode={editMode}>
+          <EdgeSdLanVenueNetworksTemplateTable
+            {...networkTableProps}
+          />
+        </StepsForm>
+      </MspEdgeSdLanContext.Provider>
     </EdgeSdLanContext.Provider>
   </Provider>
 }
@@ -230,7 +237,6 @@ describe('Tunneled Venue Networks Table', () => {
 })
 
 const basicCheck = async () => {
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   const rows = await screen.findAllByRole('row', { name: /Mocked-Venue/i })
   expect(rows.length).toBe(2)
 }

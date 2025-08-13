@@ -15,14 +15,14 @@ import { EdgeMvSdLanFormNetwork } from '@acx-ui/rc/utils'
 
 import { useEdgeSdLanContext }    from '../../../Form/EdgeSdLanContextProvider'
 import { StyledAntdDescriptions } from '../../../styledComponents'
-import { useEdgeMspSdLanContext } from '../EdgeMspSdLanContextProvider'
 import { ApplyTo }                from '../GeneralForm'
+import { useMspEdgeSdLanContext } from '../MspEdgeSdLanContextProvider'
 
 export const SummaryForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext()
   const { allVenues } = useEdgeSdLanContext()
-  const { allVenueTemplates } = useEdgeMspSdLanContext()
+  const { allVenueTemplates } = useMspEdgeSdLanContext()
   const formValues = form.getFieldsValue(true)
   const applyTo = formValues.applyTo
 
@@ -125,7 +125,7 @@ export const SummaryForm = () => {
                       .map(([venueId, networks]) => <React.Fragment key={venueId}>
                         {
                           // eslint-disable-next-line max-len
-                          $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network} other {{networkCount} networks}})' }, {
+                          $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network template} other {{networkCount} network templates}})' }, {
                             // eslint-disable-next-line max-len
                             venueName: find(allVenueTemplates, { id: venueId })?.name ?? '',
                             networkCount: networks.length
@@ -233,7 +233,7 @@ export const SummaryForm = () => {
                         .map(([venueId, networks]) => <React.Fragment key={venueId}>
                           {
                           // eslint-disable-next-line max-len
-                            $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network} other {{networkCount} networks}})' }, {
+                            $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network template} other {{networkCount} network templates}})' }, {
                             // eslint-disable-next-line max-len
                               venueName: find(allVenueTemplates, { id: venueId })?.name ?? '',
                               networkCount: networks.length

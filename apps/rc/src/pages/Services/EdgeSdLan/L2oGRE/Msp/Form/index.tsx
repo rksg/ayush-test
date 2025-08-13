@@ -1,12 +1,12 @@
 import { EdgeSdLanForm, EdgeSdLanFormProps } from '../../Form'
 import { EdgeSdLanContextProvider }          from '../../Form/EdgeSdLanContextProvider'
 
-import { EdgeMspSdLanContextProvider } from './EdgeMspSdLanContextProvider'
+import { MspEdgeSdLanContextProvider } from './MspEdgeSdLanContextProvider'
 
-export const EdgeSdLanFormMspContainer = (props: EdgeSdLanFormProps) => {
+export const MspEdgeSdLanFormContainer = (props: EdgeSdLanFormProps) => {
   return <EdgeSdLanContextProvider serviceId={props.editData?.id}>
-    <EdgeMspSdLanContextProvider>
+    <MspEdgeSdLanContextProvider>
       <EdgeSdLanForm {...props}/>
-    </EdgeMspSdLanContextProvider>
+    </MspEdgeSdLanContextProvider>
   </EdgeSdLanContextProvider>
 }

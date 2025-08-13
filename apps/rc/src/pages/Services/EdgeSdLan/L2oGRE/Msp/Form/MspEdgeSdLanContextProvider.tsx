@@ -5,19 +5,19 @@ import { useGetAvailableTunnelTemplate }                                        
 import { useGetEdgeClusterListQuery, useGetVenuesTemplateListSkipRecRewriteQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, TunnelProfileViewData, Venue }                         from '@acx-ui/rc/utils'
 
-export interface EdgeMspSdLanContextType {
+export interface MspEdgeSdLanContextType {
   availableTunnelTemplates: TunnelProfileViewData[]
   associatedEdgeClusters?: EdgeClusterStatus[]
   allVenueTemplates?: Venue[]
 }
 
-export const EdgeMspSdLanContext = createContext({} as EdgeMspSdLanContextType)
+export const MspEdgeSdLanContext = createContext({} as MspEdgeSdLanContextType)
 
-export const useEdgeMspSdLanContext = () => {
-  return useContext(EdgeMspSdLanContext)
+export const useMspEdgeSdLanContext = () => {
+  return useContext(MspEdgeSdLanContext)
 }
 
-export const EdgeMspSdLanContextProvider = (props: { children: ReactNode, serviceId?: string }) => {
+export const MspEdgeSdLanContextProvider = (props: { children: ReactNode, serviceId?: string }) => {
   const {
     availableTunnelTemplates,
     isDataLoading
@@ -61,7 +61,7 @@ export const EdgeMspSdLanContextProvider = (props: { children: ReactNode, servic
     isLoading: isDataLoading || isAssociatedEdgeClustersLoading || isVenueTemplatesLoading
   }]
 
-  return <EdgeMspSdLanContext.Provider value={{
+  return <MspEdgeSdLanContext.Provider value={{
     availableTunnelTemplates,
     associatedEdgeClusters,
     allVenueTemplates
@@ -69,5 +69,5 @@ export const EdgeMspSdLanContextProvider = (props: { children: ReactNode, servic
     <Loader states={loadingStates}>
       {props.children}
     </Loader>
-  </EdgeMspSdLanContext.Provider>
+  </MspEdgeSdLanContext.Provider>
 }

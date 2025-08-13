@@ -9,7 +9,7 @@ import { useNavigate }                                                          
 
 import { EdgeSdLanFormType }         from '../../Form'
 import { transformToApiData }        from '../../shared/utils'
-import { EdgeSdLanFormMspContainer } from '../Form'
+import { MspEdgeSdLanFormContainer } from '../Form'
 import { CustomerSelectionForm }     from '../Form/CustomerSelectionForm'
 import { ApplyTo, GeneralForm }      from '../Form/GeneralForm'
 import { NetworkSelectionForm }      from '../Form/NetworkSelectionForm'
@@ -21,7 +21,7 @@ export const AddEdgeSdLan = () => {
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const [form] = Form.useForm()
   Form.useWatch('applyTo', form) // for rerender
-  const applyTo = form.getFieldValue('applyTo')
+  const applyTo = form.getFieldValue('applyTo') as EdgeSdLanFormType['applyTo']
   const { createEdgeSdLan } = useEdgeSdLanActions()
 
   const steps = [
@@ -78,7 +78,7 @@ export const AddEdgeSdLan = () => {
         title={$t({ defaultMessage: 'Add SD-LAN Service' })}
         breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
       />
-      <EdgeSdLanFormMspContainer
+      <MspEdgeSdLanFormContainer
         form={form}
         steps={steps}
         onFinish={handleFinish}

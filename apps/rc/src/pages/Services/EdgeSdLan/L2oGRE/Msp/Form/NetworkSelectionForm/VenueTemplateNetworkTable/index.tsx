@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { useEdgeSdLanContext }    from '../../../../Form/EdgeSdLanContextProvider'
-import { useEdgeMspSdLanContext } from '../../EdgeMspSdLanContextProvider'
+import { useMspEdgeSdLanContext } from '../../MspEdgeSdLanContextProvider'
 
 import { NetworkActivationType, NetworksDrawer } from './NetworksDrawer'
 
@@ -36,7 +36,7 @@ export const EdgeSdLanVenueNetworksTemplateTable = (props: VenueNetworksTablePro
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans, allPins } = useEdgeSdLanContext()
-  const { allVenueTemplates } = useEdgeMspSdLanContext()
+  const { allVenueTemplates } = useMspEdgeSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 

@@ -10,7 +10,7 @@ import { useEdgeSdLanContext }                                                  
 import { ClusterFirmwareInfo }                                                    from '../../../shared/ClusterFirmwareInfo'
 import { tunnelProfileFieldName, TunnelProfileFormItem, tunnelTemplateFieldName } from '../../../shared/TunnelProfileFormItem'
 import { StyledAntdDescriptions, VerticalSplitLine, Wrapper }                     from '../../../styledComponents'
-import { useEdgeMspSdLanContext }                                                 from '../EdgeMspSdLanContextProvider'
+import { useMspEdgeSdLanContext }                                                 from '../MspEdgeSdLanContextProvider'
 
 export enum ApplyTo {
   MY_ACCOUNT = 'myAccount',
@@ -24,7 +24,7 @@ export const GeneralForm = () => {
   const {
     availableTunnelTemplates,
     associatedEdgeClusters: templateAssociatedEdgeClusters
-  } = useEdgeMspSdLanContext()
+  } = useMspEdgeSdLanContext()
   const applyTo = Form.useWatch('applyTo', form)
   const tunnelProfileId = Form.useWatch('tunnelProfileId', form)
   const tunnelTemplateId = Form.useWatch('tunnelTemplateId', form)
