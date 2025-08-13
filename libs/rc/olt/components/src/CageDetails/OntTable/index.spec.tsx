@@ -16,18 +16,18 @@ describe('OntTable', () => {
 
   it('should render correctly', async () => {
     render(<Provider>
-      <OntTable {...defaultProps} />
+      <OntTable {...defaultProps} data={mockOntList.slice(0, 1)} />
     </Provider>)
     expect(screen.getByText('ont_1')).toBeInTheDocument()
   })
 
   it('should handle row click correctly', async () => {
     render(<Provider>
-      <OntTable {...defaultProps} />
+      <OntTable {...defaultProps} data={mockOntList.slice(0, 2)} />
     </Provider>)
-    const row = screen.getByRole('row', { name: /ont_7 0\/1/ })
+    const row = screen.getByRole('row', { name: /ont_2 0\/1/ })
     await userEvent.click(row)
-    expect(defaultProps.setSelectedOnt).toHaveBeenCalledWith(mockOntList[6])
+    expect(defaultProps.setSelectedOnt).toHaveBeenCalledWith(mockOntList[1])
   })
 
   it('should render without data correctly', async () => {

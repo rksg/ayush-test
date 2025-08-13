@@ -1,5 +1,4 @@
 import { Row }     from 'antd'
-import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps }                                    from '@acx-ui/components'
@@ -77,7 +76,7 @@ function useColumns () {
       align: 'center' as const,
       render: (_, row) => {
         // eslint-disable-next-line max-len
-        return row.status === OltCageStateEnum.UP ? get(row, 'clientCount') : noDataDisplay
+        return row.status === OltCageStateEnum.UP ? row?.clientCount : noDataDisplay
       }
     }
   ]
