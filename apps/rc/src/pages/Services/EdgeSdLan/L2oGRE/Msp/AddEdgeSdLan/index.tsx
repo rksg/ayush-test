@@ -1,12 +1,14 @@
-import { useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                            from '@acx-ui/components'
-import { ServiceType, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
+import { PageHeader }                                                             from '@acx-ui/components'
+import { useEdgeSdLanActions }                                                    from '@acx-ui/edge/components'
+import { ServiceType, useAfterServiceSaveRedirectPath, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
+import { useNavigate }                                                            from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormType }         from '../../Form'
+import { transformToApiData }        from '../../Form/utils'
 import { EdgeSdLanFormMspContainer } from '../Form'
 import { CustomerSelectionForm }     from '../Form/CustomerSelectionForm'
 import { ApplyTo, GeneralForm }      from '../Form/GeneralForm'
@@ -15,9 +17,12 @@ import { SummaryForm }               from '../Form/SummaryForm'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const [form] = Form.useForm()
   Form.useWatch('applyTo', form) // for rerender
   const applyTo = form.getFieldValue('applyTo')
+  const { createEdgeSdLan } = useEdgeSdLanActions()
 
   const steps = [
     {
@@ -40,7 +45,32 @@ export const AddEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeSdLanFormType) => {}
+  const handleFinish = async (formData: EdgeSdLanFormType) => {
+    const payload = transformToApiData(formData)
+
+    try {
+      await new Promise(async (resolve, reject) => {
+        await createEdgeSdLan({
+          payload,
+          callback: (result) => {
+          // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+          }
+          // need to catch basic service profile failed
+        }, true).catch(reject)
+      })
+
+      navigate(redirectPathAfterSave, { replace: true })
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
+      navigate(redirectPathAfterSave, { replace: true })
+    }
+  }
 
   return (
     <>

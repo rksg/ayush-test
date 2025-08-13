@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 
-import { useGetEdgeClusterListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetTunnelProfileTemplateViewDataListQuery } from '@acx-ui/rc/services'
-import { TunnelProfileViewData, TunnelTypeEnum }                                                                        from '@acx-ui/rc/utils'
+import {
+  useGetEdgeClusterListQuery,
+  useGetEdgeMvSdLanViewDataListQuery,
+  useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery
+} from '@acx-ui/rc/services'
+import { TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 interface GetAvailableTunnelTemplateProps {
   serviceIds?: (string|undefined)[]
@@ -27,7 +31,7 @@ export const useGetAvailableTunnelTemplate = (props?: GetAvailableTunnelTemplate
   const {
     allTunnelTemplates,
     isTunnelTemplatesLoading
-  } = useGetTunnelProfileTemplateViewDataListQuery({
+  } = useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery({
     payload: {
       fields: [
         'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',

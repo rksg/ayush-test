@@ -96,5 +96,17 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/edgeSdLanServices/:serviceId/guestSettings',
     newApi: true
+  },
+  activateEcTenantInSdLan: {
+    method: 'put',
+    url: '/edgeSdLanServices/:serviceId/tenants/:tenantId',
+    newApi: true,
+    opsApi: 'PUT:/edgeSdLanServices/{id}/tenants/{id}'
+  },
+  deactivateEcTenantInSdLan: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/tenants/:tenantId',
+    newApi: true,
+    opsApi: 'DELETE:/edgeSdLanServices/{id}/tenants/{id}'
   }
 }

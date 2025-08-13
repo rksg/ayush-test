@@ -11,6 +11,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
+import { ApplyTo } from '../Msp/Form/GeneralForm'
+
 import { EdgeSdLanContextProvider } from './EdgeSdLanContextProvider'
 import { NetworkActivationType }    from './NetworkSelectionForm/VenueNetworkTable/NetworksDrawer'
 
@@ -22,9 +24,12 @@ interface EdgeSdLanFormStep {
 export interface EdgeSdLanFormType {
   id?: string
   name: string
+  applyTo: ApplyTo[]
   tunnelProfileId: string
+  tunnelTemplateId?: string
   activatedNetworks: NetworkActivationType
   activatedNetworkTemplates?: NetworkActivationType
+  selectedCustomers?: string[]
 }
 
 export interface EdgeSdLanFormProps {

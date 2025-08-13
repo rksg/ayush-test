@@ -54,6 +54,7 @@ export interface EdgeMvSdLanViewData {
   edgeName?: string
   edgeClusterId?: string
   tunnelProfileId?: string
+  tunnelTemplateId?: string
   edgeClusterName?: string
   tunnelProfileName?: string
   isGuestTunnelEnabled?: boolean
@@ -111,6 +112,8 @@ export interface EdgeSdLanServiceProfile {
   id?: string
   name: string
   tunnelProfileId: string
+  tunnelTemplateId?: string
+  customerTenantIds?: string[]
   activeNetwork: {
     venueId: string
     networkId: string

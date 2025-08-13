@@ -3,13 +3,13 @@ import { useMemo } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                from '@acx-ui/components'
-import { Features }                              from '@acx-ui/feature-toggle'
+import { Loader }                                              from '@acx-ui/components'
+import { Features }                                            from '@acx-ui/feature-toggle'
 import {
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
   useGetTunnelProfileTemplateQuery,
-  useGetTunnelProfileTemplateViewDataListQuery
+  useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery
 } from '@acx-ui/rc/services'
 import {
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
@@ -37,7 +37,7 @@ export const EditTunnelProfileTemplate = () => {
 
 
   // eslint-disable-next-line max-len
-  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileTemplateViewDataListQuery(
+  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery(
     { payload: { filters: { id: [policyId] } } },
     {
       selectFromResult: ({ data, isFetching }) => ({

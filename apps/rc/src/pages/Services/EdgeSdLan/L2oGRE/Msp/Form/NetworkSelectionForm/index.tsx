@@ -7,6 +7,8 @@ import { EdgeSdLanVenueNetworksTable } from '../../../Form/NetworkSelectionForm/
 import { DescriptionWrapper }          from '../../../styledComponents'
 import { ApplyTo }                     from '../GeneralForm'
 
+import { EdgeSdLanVenueNetworksTemplateTable } from './VenueTemplateNetworkTable'
+
 export const NetworkSelectionForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext()
@@ -55,7 +57,7 @@ export const NetworkSelectionForm = () => {
           <Form.Item
             name='activatedNetworkTemplates'
           >
-            <EdgeSdLanVenueNetworksTable />
+            <EdgeSdLanVenueNetworksTemplateTable />
           </Form.Item>
         </Col>
       </Row>
@@ -81,7 +83,7 @@ export const NetworkSelectionForm = () => {
                 <Form.Item
                   name='activatedNetworkTemplates'
                 >
-                  <EdgeSdLanVenueNetworksTable />
+                  <EdgeSdLanVenueNetworksTemplateTable />
                 </Form.Item>
               </Tabs.TabPane>
             }

@@ -31,7 +31,7 @@ export const GeneralForm = () => {
 
   const currentTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
     tunnelProfile.id === tunnelProfileId)
-  const currentTunnelTemplate = availableTunnelProfiles.find((tunnelProfile) =>
+  const currentTunnelTemplate = availableTunnelTemplates.find((tunnelProfile) =>
     tunnelProfile.id === tunnelTemplateId)
 
   const onTunnelProfileChange = (value: string) => {
@@ -47,7 +47,7 @@ export const GeneralForm = () => {
     const targetTunnelTemplate = availableTunnelTemplates.find((tunnelTemplate) =>
       tunnelTemplate.id === value)
     form.setFieldsValue({
-      templateEdgeClusterName: targetTunnelTemplate?.destinationEdgeClusterName,
+      edgeClusterName: targetTunnelTemplate?.destinationEdgeClusterName,
       tunnelTemplateName: targetTunnelTemplate?.name
     })
   }

@@ -1494,7 +1494,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const { isTemplate } = networkApiPayload
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
 
-        const wifiNetworksListUrl = isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : CommonRbacUrlsInfo.getWifiNetworksList
+        const wifiNetworksListUrl = isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbacSkipRecRewrite : CommonRbacUrlsInfo.getWifiNetworksList
         const networkListQuery = await fetchWithBQ({
           ...createHttpRequest(wifiNetworksListUrl, apiCustomHeader),
           body: JSON.stringify(networkApiPayload) })
@@ -1504,7 +1504,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         // fetch vlan pool info
         const networkIds = networksList?.data.map(item => item.id!) || []
         if (networksList.data.length && (networkApiPayload?.fields as string[])?.includes('vlanPool')) {
-          const vlanPoolListUrl = isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
+          const vlanPoolListUrl = isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyListSkipRecRewrite : VlanPoolRbacUrls.getVLANPoolPolicyList
           const vlanPoolListQuery = await fetchWithBQ({
             ...createHttpRequest(vlanPoolListUrl),
             body: JSON.stringify({

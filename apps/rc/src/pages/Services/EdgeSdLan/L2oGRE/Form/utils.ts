@@ -4,6 +4,8 @@ import { isNil }             from 'lodash'
 import { EdgeMvSdLanViewData, EdgeSdLanServiceProfile, MtuTypeEnum, Network, NetworkSegmentTypeEnum, NetworkTypeEnum, TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                                                                            from '@acx-ui/utils'
 
+import { ApplyTo } from '../Msp/Form/GeneralForm'
+
 import { EdgeSdLanFormType } from '.'
 
 
@@ -12,6 +14,7 @@ export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServic
     id: formData.id,
     name: formData.name,
     tunnelProfileId: formData.tunnelProfileId,
+    tunnelTemplateId: formData.tunnelTemplateId,
     activeNetwork: formData.activatedNetworks
       ? Object.entries(formData.activatedNetworks)
         .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
@@ -23,7 +26,8 @@ export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServic
         .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
           venueId, networkId, tunnelProfileId
         }))).flat()
-      : undefined
+      : undefined,
+    customerTenantIds: formData.selectedCustomers
   }
 }
 
@@ -32,6 +36,11 @@ export const transformToFormData = (viewData?: EdgeMvSdLanViewData): EdgeSdLanFo
     id: viewData.id,
     name: viewData.name ?? '',
     tunnelProfileId: viewData.tunnelProfileId ?? '',
+    tunnelTemplateId: viewData.tunnelTemplateId ?? '',
+    applyTo: [
+      ...(!!viewData.tunnelProfileId ? [ApplyTo.MY_ACCOUNT] : []),
+      ...(!!viewData.tunnelTemplateId ? [ApplyTo.MY_CUSTOMERS] : [])
+    ],
     activatedNetworks: viewData.tunneledWlans
       ?.reduce((acc, curr) => {
         acc[curr.venueId] = [...(acc[curr.venueId] || []), {

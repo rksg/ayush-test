@@ -6,6 +6,12 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/query',
     newApi: true
   },
+  getConfigTemplatesSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/query',
+    newApi: true,
+    skipRecRewrite: true
+  },
   getConfigTemplatesRbac: {
     method: 'post',
     url: '/templates/query',
@@ -16,10 +22,27 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     },
     opsApi: 'POST:/templates/query'
   },
+  getConfigTemplatesRbacSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/query',
+    skipRecRewrite: true
+  },
   applyConfigTemplate: {
     method: 'post',
     url: '/templates/:templateId/tenant/:tenantId',
     newApi: true
+  },
+  applyConfigTemplateSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/:templateId/tenant/:tenantId',
+    newApi: true,
+    skipRecRewrite: true
   },
   applyConfigTemplateRbac: {
     method: 'post',
@@ -30,6 +53,17 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'POST:/templates/{id}/tenants/{id}'
+  },
+  applyConfigTemplateRbacSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/:templateId/tenants/:tenantId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/{id}/tenants/{id}',
+    skipRecRewrite: true
   },
   addNetworkTemplate: {
     method: 'post',
@@ -106,6 +140,16 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getNetworkTemplateListRbacSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/wifiNetworks/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    skipRecRewrite: true
   },
   getVenueNetworkTemplateList: {
     method: 'post',
@@ -237,6 +281,12 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/query',
     newApi: true
   },
+  getVenuesTemplateListSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true,
+    skipRecRewrite: true
+  },
   getVenuesTemplateListRbac: {
     method: 'post',
     url: '/templates/venues/query',
@@ -245,6 +295,16 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getVenuesTemplateListRbacSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    skipRecRewrite: true
   },
   addNetworkVenueTemplate: {
     method: 'post',

@@ -15,9 +15,9 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 
-import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
+import { useEdgeSdLanContext }    from '../../../../Form/EdgeSdLanContextProvider'
+import { useEdgeMspSdLanContext } from '../../EdgeMspSdLanContextProvider'
 
-import { CompatibilityCheck }                    from './CompatibilityCheck'
 import { NetworkActivationType, NetworksDrawer } from './NetworksDrawer'
 
 export interface VenueTableDataType {
@@ -31,11 +31,12 @@ export interface VenueNetworksTableProps {
   value?: NetworkActivationType
 }
 
-export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
+export const EdgeSdLanVenueNetworksTemplateTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans, allPins, allSoftGreVenueMap, allVenues } = useEdgeSdLanContext()
+  const { allSdLans, allPins } = useEdgeSdLanContext()
+  const { allVenueTemplates } = useEdgeMspSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
@@ -54,7 +55,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     return [...sdlanVenueIds, ...pinVenueIds]
   }, [allPins, allSdLans, serviceId])
 
-  const availableVenues = allVenues?.filter(venue => {
+  const availableVenueTemplates = allVenueTemplates?.filter(venue => {
     return !usedVenueIds.includes(venue.id)
   }).map(item => ({
     ...pick(item, ['id', 'name']),
@@ -72,7 +73,6 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     render: (_, row) => {
       return <Space align='center'>
         {row.name}
-        <CompatibilityCheck venueId={row.id} venueName={row.name} />
       </Space>
     }
   }, {
@@ -121,8 +121,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const handleNetworkModalSubmit = (
     activatedNetworks: NetworkActivationType
   ) => {
-    formRef.setFieldValue('activatedNetworks', activatedNetworks)
-    formRef.validateFields(['activatedNetworks'])
+    formRef.setFieldValue('activatedNetworkTemplates', activatedNetworks)
+    formRef.validateFields(['activatedNetworkTemplates'])
     closeNetworkModal()
   }
 
@@ -135,18 +135,16 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
       <Table
         rowKey='id'
         columns={columns}
-        dataSource={availableVenues}
+        dataSource={availableVenueTemplates}
       />
       {networkDrawerVenueId && <NetworksDrawer
         visible={true}
         onClose={closeNetworkModal}
         onSubmit={handleNetworkModalSubmit}
         venueId={networkDrawerVenueId!}
-        venueName={availableVenues.find(item => item.id === networkDrawerVenueId)?.name}
-        activatedNetworks={formRef.getFieldValue('activatedNetworks')}
+        venueName={availableVenueTemplates.find(item => item.id === networkDrawerVenueId)?.name}
+        activatedNetworks={formRef.getFieldValue('activatedNetworkTemplates')}
         pinNetworkIds={pinNetworkIds}
-        softGreNetworkIds={(allSoftGreVenueMap?.[networkDrawerVenueId!] ?? [])
-          .flatMap(sg => sg.networkIds)}
       />}
     </>
   )
