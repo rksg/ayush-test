@@ -9,7 +9,7 @@ import { getServiceRoutePath, isEdgeWlanTemplate, ServiceOperation, ServiceType,
 import { useNavigate, useParams, useTenantLink }                                                            from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormType }                       from '../../Form'
-import { transformToApiData, transformToFormData } from '../../Form/utils'
+import { transformToApiData, transformToFormData } from '../../shared/utils'
 import { EdgeSdLanFormMspContainer }               from '../Form'
 import { CustomerSelectionForm }                   from '../Form/CustomerSelectionForm'
 import { GeneralForm }                             from '../Form/GeneralForm'

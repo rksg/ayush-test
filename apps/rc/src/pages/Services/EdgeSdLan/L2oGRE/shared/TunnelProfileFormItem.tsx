@@ -21,10 +21,13 @@ interface TunnelProfileFormItemProps {
   disabled?: SelectProps['disabled']
   tunnelProfiles?: TunnelProfileViewData[]
   associatedEdgeClusters?: EdgeClusterStatus[]
+  extraRules?: RuleObject[]
 }
 
 export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
-  const { name, label, onChange, disabled, tunnelProfiles, associatedEdgeClusters } = props
+  const {
+    name, label, onChange, disabled, tunnelProfiles, associatedEdgeClusters, extraRules = []
+  } = props
   const { $t } = useIntl()
   const helpUrl = useHelpPageLink()
 
@@ -78,7 +81,7 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
   return <Form.Item
     name={name}
     label={label}
-    // rules={ruleMap[name]}
+    rules={[...ruleMap[name], ...extraRules]}
     validateFirst
   >
     <Select

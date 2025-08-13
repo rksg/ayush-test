@@ -29,7 +29,7 @@ import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 import { EdgeSdLanFormType }               from '../../../../../Form'
 import { useEdgeSdLanContext }             from '../../../../../Form/EdgeSdLanContextProvider'
 import { messageMappings }                 from '../../../../../Form/messageMappings'
-import { getFilteredTunnelProfileOptions } from '../../../../../Form/utils'
+import { getFilteredTunnelProfileOptions } from '../../../../../shared/utils'
 import { ValidationMessageField }          from '../../../../../styledComponents'
 import { NetworkActivationType }           from '../NetworksDrawer'
 

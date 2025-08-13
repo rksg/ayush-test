@@ -31,7 +31,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { transformToFormData } from './utils'
+import { transformToFormData } from '../shared/utils'
 
 import { EdgeSdLanFormContainer, EdgeSdLanFormProps } from '.'
 

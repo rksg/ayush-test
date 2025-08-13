@@ -8,7 +8,7 @@ import { ServiceType, useAfterServiceSaveRedirectPath, useServiceListBreadcrumb 
 import { useNavigate }                                                            from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormType }         from '../../Form'
-import { transformToApiData }        from '../../Form/utils'
+import { transformToApiData }        from '../../shared/utils'
 import { EdgeSdLanFormMspContainer } from '../Form'
 import { CustomerSelectionForm }     from '../Form/CustomerSelectionForm'
 import { ApplyTo, GeneralForm }      from '../Form/GeneralForm'

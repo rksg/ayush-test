@@ -27,9 +27,9 @@ import type { TableColumn }                        from '@acx-ui/types'
 import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 
 import { EdgeSdLanFormType }               from '../../..'
+import { getFilteredTunnelProfileOptions } from '../../../../shared/utils'
 import { useEdgeSdLanContext }             from '../../../EdgeSdLanContextProvider'
 import { messageMappings }                 from '../../../messageMappings'
-import { getFilteredTunnelProfileOptions } from '../../../utils'
 import { ValidationMessageField }          from '../../styledComponents'
 import { NetworkActivationType }           from '../../VenueNetworkTable/NetworksDrawer'
 

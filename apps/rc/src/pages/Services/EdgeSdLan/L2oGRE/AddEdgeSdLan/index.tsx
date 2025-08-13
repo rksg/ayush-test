@@ -15,7 +15,7 @@ import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
 import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
 import { SummaryForm }                               from '../Form/SummaryForm'
-import { transformToApiData }                        from '../Form/utils'
+import { transformToApiData }                        from '../shared/utils'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()

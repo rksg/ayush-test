@@ -4,9 +4,9 @@ import { isNil }             from 'lodash'
 import { EdgeMvSdLanViewData, EdgeSdLanServiceProfile, MtuTypeEnum, Network, NetworkSegmentTypeEnum, NetworkTypeEnum, TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                                                                            from '@acx-ui/utils'
 
-import { ApplyTo } from '../Msp/Form/GeneralForm'
+import { EdgeSdLanFormType } from '../Form'
+import { ApplyTo }           from '../Msp/Form/GeneralForm'
 
-import { EdgeSdLanFormType } from '.'
 
 
 export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServiceProfile => {

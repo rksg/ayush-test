@@ -17,7 +17,7 @@ import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
 import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
-import { transformToApiData, transformToFormData }   from '../Form/utils'
+import { transformToApiData, transformToFormData }   from '../shared/utils'
 
 export const EditEdgeSdLan = () => {
   const { $t } = useIntl()
