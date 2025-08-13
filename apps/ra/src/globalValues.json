@@ -6,7 +6,6 @@
   "DISABLE_PENDO": "true",
   "STATIC_ASSETS": "",
   "MLISA_REGION": "LOCAL",
-  "MLISA_VERSION": "0.0.0",
   "MLISA_UI_USER_TRACKING": "",
   "DRUID_ROLLUP_DAYS": "32",
   "MLISA_LOGOUT_URL": "/analytics/api/auth/v1/user/logout",
