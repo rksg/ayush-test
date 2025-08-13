@@ -806,76 +806,50 @@ export function NewManageCustomer () {
     }
   }
 
-  const checkAvailableLicenseV2 = (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
-    apswTrialLic?: number, solutionTokenLic?: number,
-    solutionTokenTrialLic?: number ) => {
-    const currentTier = formRef.current?.getFieldValue('tier') || data?.tier
+  const sumLicenses = (
+    entitlements: LicenseCalculatorDataV2[],
+    type: EntitlementDeviceType,
+    isTrial: boolean,
+    currentTier: MspEcTierEnum,
+    extraLic = 0
+  ) => {
+    let licenses = entitlements.filter(
+      p => p.quantity > 0 && p.licenseType === type && p.isTrial === isTrial
+    )
 
-    let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
-        p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
-    let apswTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
-      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
-
-    const hasApswSkuTier = apswLicenses.some(item => item.skuTier != null)
-    const hasApswTrialSkuTier = apswTrialLicenses.some(item => item.skuTier != null)
-
-    if (hasApswSkuTier) {
-      apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
+    const hasSkuTier = licenses.some(item => item.skuTier != null)
+    if (hasSkuTier) {
+      licenses = licenses.filter(p => p.skuTier === currentTier)
     }
 
-    if (hasApswTrialSkuTier) {
-      apswTrialLicenses = apswTrialLicenses.filter(p => p.skuTier === currentTier)
-    }
+    const remaining = licenses.reduce((sum, lic) => sum + lic.quantity, 0)
+    return remaining + extraLic
+  }
 
-    let remainingApsw = 0
-    apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingApsw += lic.quantity
-    })
+  const checkAvailableLicenseV2 = (
+    entitlements: LicenseCalculatorDataV2[],
+    apswLic?: number,
+    apswTrialLic?: number,
+    solutionTokenLic?: number,
+    solutionTokenTrialLic?: number
+  ) => {
+    const currentTier =
+      formRef.current?.getFieldValue('tier') || data?.tier
 
-    let remainingApswTrial = 0
-    apswTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingApswTrial += lic.quantity
-    })
-
-    apswLic ? setAvailableApswLicense(remainingApsw + apswLic)
-      : setAvailableApswLicense(remainingApsw)
-    apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
-      : setAvailableApswTrialLicense(remainingApswTrial)
-
-
-    let solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
-            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
-    const hasSolutionTokenSkuTier = solutionTokenLicenses.some(item => item.skuTier != null)
-    let remainingSolutionTokens = 0
-
-    if (hasSolutionTokenSkuTier) {
-      solutionTokenLicenses = solutionTokenLicenses.filter(p => p.skuTier === currentTier)
-    }
-
-    solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingSolutionTokens += lic.quantity
-    })
-
-
-    let solutionTokenTrialLicenses = entitlements.filter(p => p.quantity > 0 &&
-            p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === true)
-    // eslint-disable-next-line max-len
-    const hasSolutionTokenTrialSkuTier = solutionTokenTrialLicenses.some(item => item.skuTier != null)
-    let remainingSolutionTokenTrial = 0
-
-    if (hasSolutionTokenTrialSkuTier) {
-      solutionTokenTrialLicenses = solutionTokenTrialLicenses.filter(p => p.skuTier === currentTier)
-    }
-
-    solutionTokenTrialLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingSolutionTokenTrial += lic.quantity
-    })
-
-    solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSolutionTokens+solutionTokenLic)
-      : setAvailableSolutionTokenLicense(remainingSolutionTokens)
-    solutionTokenTrialLic
-      ? setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial+solutionTokenTrialLic)
-      : setAvailableSolutionTokenTrialLicense(remainingSolutionTokenTrial)
+    setAvailableApswLicense(
+      sumLicenses(entitlements, EntitlementDeviceType.APSW, false, currentTier, apswLic)
+    )
+    setAvailableApswTrialLicense(
+      sumLicenses(entitlements, EntitlementDeviceType.APSW, true, currentTier, apswTrialLic)
+    )
+    setAvailableSolutionTokenLicense(
+      // eslint-disable-next-line max-len
+      sumLicenses(entitlements, EntitlementDeviceType.SLTN_TOKEN, false, currentTier, solutionTokenLic)
+    )
+    setAvailableSolutionTokenTrialLicense(
+      // eslint-disable-next-line max-len
+      sumLicenses(entitlements, EntitlementDeviceType.SLTN_TOKEN, true, currentTier, solutionTokenTrialLic)
+    )
   }
 
   const checkAvailableLicense =

@@ -266,7 +266,9 @@ export function NewManageIntegrator () {
         apswLicense: apswLic,
         solutionTokenLicense: solutionTokenLic,
         service_expiration_date: moment(data?.service_expiration_date),
-        tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
+        ...(multiLicenseFFToggle && {
+          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
+        })
       })
       setOriginalTier(data?.tier ?? '')
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -405,7 +407,9 @@ export function NewManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
+        ...(createEcWithTierEnabled && {
+          tier: ecFormData.tier
+        }),
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -657,40 +661,41 @@ export function NewManageIntegrator () {
       : setAvailableSolutionTokenLicense(remainingSltn)
   }
 
-  const checkAvailableLicenseV2 =
-  (entitlements: LicenseCalculatorDataV2[], apswLic?: number,
-    solutionTokenLic?: number) => {
+  const sumLicenses = (
+    entitlements: LicenseCalculatorDataV2[],
+    type: EntitlementDeviceType,
+    isTrial: boolean,
+    currentTier: MspEcTierEnum,
+    extraLic = 0
+  ) => {
+    let licenses = entitlements.filter(
+      p => p.quantity > 0 && p.licenseType === type && p.isTrial === isTrial
+    )
 
+    const hasSkuTier = licenses.some(item => item.skuTier != null)
+    if (hasSkuTier) {
+      licenses = licenses.filter(p => p.skuTier === currentTier)
+    }
+
+    const remaining = licenses.reduce((sum, lic) => sum + lic.quantity, 0)
+    return remaining + extraLic
+  }
+
+  const checkAvailableLicenseV2 = (
+    entitlements: LicenseCalculatorDataV2[],
+    apswLic?: number,
+    solutionTokenLic?: number
+  ) => {
     const currentTier = formRef.current?.getFieldValue('tier') || data?.tier
 
-    let apswLicenses = entitlements.filter(p => p.quantity > 0 &&
-      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
-    let solutionTokenLicenses = entitlements.filter(p => p.quantity > 0 &&
-      p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
+    setAvailableApswLicense(
+      sumLicenses(entitlements, EntitlementDeviceType.APSW, false, currentTier, apswLic)
+    )
 
-    const hasApswSkuTier = apswLicenses.some(item => item.skuTier != null)
-    const hasSolutionTokenSkuTier = solutionTokenLicenses.some(item => item.skuTier != null)
-
-    if (hasApswSkuTier) {
-      apswLicenses = apswLicenses.filter(p => p.skuTier === currentTier)
-    }
-    if (hasSolutionTokenSkuTier) {
-      solutionTokenLicenses = solutionTokenLicenses.filter(p => p.skuTier === currentTier)
-    }
-
-    let remainingApsw = 0
-    apswLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingApsw += lic.quantity
-    })
-    apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
-      : setAvailableApswLicense(remainingApsw)
-
-    let remainingSltn = 0
-    solutionTokenLicenses.forEach( (lic: LicenseCalculatorDataV2) => {
-      remainingSltn += lic.quantity
-    })
-    solutionTokenLic ? setAvailableSolutionTokenLicense(remainingSltn+solutionTokenLic)
-      : setAvailableSolutionTokenLicense(remainingSltn)
+    setAvailableSolutionTokenLicense(
+      // eslint-disable-next-line max-len
+      sumLicenses(entitlements, EntitlementDeviceType.SLTN_TOKEN, false, currentTier, solutionTokenLic)
+    )
   }
 
   const getAssignmentId = (deviceType: string) => {
