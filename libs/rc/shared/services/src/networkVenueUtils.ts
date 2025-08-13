@@ -100,14 +100,14 @@ export const filterNetworksByVenueApGroupFilters =
     })))
 }
 
-export const calculateRbacNetworkActivated = (network: WifiNetwork, venueId?: string) => {
+export const calculateRbacNetworkActivated = (network: WifiNetwork, venueId?: string, apGroupId?: string) => {
   // TODO: isDisabled, validation
   const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
 
   if (network.venueApGroups) {
     activatedObj.isActivated = venueId
       ? network.venueApGroups?.some(venue => venue.venueId === venueId)
-      : Boolean(network.venueApGroups?.length)
+      : apGroupId ? network.venueApGroups?.some(venue => venue.apGroupIds?.includes(apGroupId)) : Boolean(network.venueApGroups?.length)
   }
 
   return activatedObj
@@ -117,7 +117,9 @@ export const aggregatedRbacVenueNetworksData = (
   venueId: string,
   networkList: TableResult<WifiNetwork>,
   networkDeepListList:{ response: NetworkDetail[] },
-  apCompatibilities:{ [key:string]: number } = {}) => {
+  apCompatibilities:{ [key:string]: number } = {},
+  apGroupId: string | undefined = undefined
+) => {
 
   const data:Network[] = []
   networkList.data.forEach(item => {
@@ -129,14 +131,14 @@ export const aggregatedRbacVenueNetworksData = (
       item = { ...item,
         ...{ children: [{ ...item?.dsaeOnboardNetwork,
           isOnBoarded: true,
-          activated: calculateRbacNetworkActivated(item, venueId) } as WifiNetwork] }
+          activated: calculateRbacNetworkActivated(item, venueId, apGroupId) } as WifiNetwork] }
       }
     }
 
     data.push({
       ...(item as Network),
       clients: item.clientCount ?? 0,
-      activated: calculateRbacNetworkActivated(item, venueId),
+      activated: calculateRbacNetworkActivated(item, venueId, apGroupId),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0
     })

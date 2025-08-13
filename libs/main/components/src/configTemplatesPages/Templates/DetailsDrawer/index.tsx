@@ -10,16 +10,20 @@ import { ConfigTemplateViewProps } from '../..'
 
 import { DetailsContent } from './DetailsContent'
 
+export { DetailsItemList } from './DetailsContent'
+
 interface DetailsDrawerProps {
   setVisible: (visible: boolean) => void
   selectedTemplate: ConfigTemplate
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
   ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
+  AppliedToListView?: ConfigTemplateViewProps['AppliedToListView']
 }
 
 export function DetailsDrawer (props: DetailsDrawerProps) {
-  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible, ShowDriftsView } = props
+  // eslint-disable-next-line max-len
+  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible, ShowDriftsView, AppliedToListView } = props
   const { $t } = useIntl()
 
   const onClose = () => {
@@ -40,6 +44,7 @@ export function DetailsDrawer (props: DetailsDrawerProps) {
       template={selectedTemplate}
       setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
       ShowDriftsView={ShowDriftsView}
+      AppliedToListView={AppliedToListView}
     />
   </Drawer>)
 }
