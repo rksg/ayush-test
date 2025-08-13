@@ -44,6 +44,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
 
   const [updateAdmin] = useUpdateAdminMutation()
   const [updateMspEcAdmin] = useUpdateMspEcAdminMutation()
@@ -186,7 +187,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Email' })}
         >
-          {editData.username}
+          {isPaginationEnabled ? editData.username : editData.email}
         </Form.Item>
         <PrivilegeGroupSelector disabled={editNameOnly}/>
       </Form>

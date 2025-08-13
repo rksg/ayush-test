@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useGetAdminListQuery,
   useGetAdminListPaginatedQuery,
   useGetDelegationsQuery,
   useGetNotificationRecipientsPaginatedQuery,
@@ -17,6 +18,7 @@ export const AdminsTabTitleWithCount = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId, serialNumber } = params
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
 
   const defaultPayload = {
     page: 0,
@@ -28,18 +30,30 @@ export const AdminsTabTitleWithCount = () => {
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
+
   const adminList = useGetAdminListPaginatedQuery({
     params: { tenantId },
     payload: defaultPayload
   }, {
-    pollingInterval: 30_000
+    pollingInterval: 30_000,
+    skip: !isPaginationEnabled
+  })
+
+  const adminListOriginal = useGetAdminListQuery({
+    params: { tenantId },
+    payload: { filters: defaultPayload.filters }
+  }, {
+    pollingInterval: 30_000,
+    skip: isPaginationEnabled
   })
 
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }
   )
 
-  const adminCount = (adminList?.data?.totalCount || 0) + (thirdPartyAdminList.data?.length || 0)
+  const adminCount = isPaginationEnabled
+    ? ((adminList?.data?.totalCount || 0) + (thirdPartyAdminList.data?.length || 0))
+    : ((adminListOriginal?.data?.length || 0) + (thirdPartyAdminList.data?.length || 0))
   return <>{$t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}</>
 }
 

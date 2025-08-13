@@ -9,6 +9,7 @@ import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
+  useGetAdminListQuery,
   useGetAdminListPaginatedQuery,
   useGetCustomRolesQuery,
   useGetDelegationsQuery,
@@ -43,6 +44,7 @@ const UserPrivileges = () => {
   const mspUtils = MSPUtils()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
   const usePrivilegeGrouspPaginatedAPI
   = useIsSplitOn(Features.ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API)
 
@@ -60,8 +62,11 @@ const UserPrivileges = () => {
     searchString: '',
     filters: {}
   }
+
   const adminList = useGetAdminListPaginatedQuery(
-    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled })
+    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled || !isPaginationEnabled })
+  const adminListOriginal = useGetAdminListQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled || isPaginationEnabled })
   const ssoGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
@@ -72,7 +77,9 @@ const UserPrivileges = () => {
   const customRoleList = useGetCustomRolesQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
 
-  const adminCount = adminList?.data?.totalCount || 0
+  const adminCount = isPaginationEnabled
+    ? (adminList?.data?.totalCount || 0)
+    : (adminListOriginal?.data?.length || 0)
   const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
   const privilegeGroupCount = privilegeGroupList.data?.length! || 0
