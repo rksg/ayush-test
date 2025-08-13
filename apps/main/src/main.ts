@@ -1,5 +1,4 @@
 import '@acx-ui/theme'
-//test
 async function initialize () {
   const [
     React,
