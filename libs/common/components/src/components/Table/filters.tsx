@@ -74,56 +74,6 @@ function RangePickerComp (props: RangePickerProps) {
   </UI.FilterRangePicker>
 }
 
-/*
-function CascaderComp (props: { column: TableColumn<RecordType, 'text'> }) {
-  const { column } = props
-  const filterOptions = Array.isArray(column.filterable)
-    ? column.filterable
-    : []
-    interface FilterOption {
-      key: string | number
-      value: string
-      children?: FilterOption[]
-    }
-    interface MappedFilterOption {
-      label: string
-      value: string | number
-      children?: MappedFilterOption[]
-    }
-
-    const mappedFilterOptions = (options: FilterOption[] | undefined):
-      MappedFilterOption[] | undefined => {
-      return options?.map(option => {
-        const { key, value, children } = option
-        return {
-          label: value,
-          value: key,
-          children: children && mappedFilterOptions(children)
-        }
-      })
-    }
-
-    const options = useMemo(
-      () => mappedFilterOptions(filterOptions),
-      [filterOptions]
-    )
-
-    console.log('options: ', options)
-
-    return (<Cascader
-      data-testid='options-cascader'
-      key={index}
-      maxTagCount='responsive'
-      multiple={!!column.filterMultiple}
-      showSearch={column?.filterSearchable ?? undefined}
-      placeholder={column.filterPlaceholder ?? column.title as string}
-      showArrow
-      allowClear
-      style={{ width }}
-      options={options}
-    />)
-}
-    */
 
 export function getFilteredData <RecordType> (
   dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
@@ -291,40 +241,42 @@ export function renderFilter <RecordType> (
 
     const options = mappedFilterOptions(filterOptions)
 
-    return (<Cascader
-      data-testid='options-cascader'
-      key={index}
-      maxTagCount='responsive'
-      multiple={!!column.filterMultiple}
-      showSearch={column?.filterSearchable ?? undefined}
-      placeholder={column.filterPlaceholder ?? column.title as string}
-      showArrow
-      allowClear
-      style={{ width }}
-      options={options}
-      //value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
-      onChange={(value: unknown | string) => {
-        const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-        // eslint-disable-next-line max-len
-        const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
-        const filterValue = Array.isArray(value) ? value : filterArrayValue
-        let filters = {} as Filter
+    return (<>
+      <UI.FilterCascaderGlobalOverride $optionsCount={options?.length}/>
+      <Cascader
+        data-testid='options-cascader'
+        key={index}
+        maxTagCount='responsive'
+        multiple={!!column.filterMultiple}
+        showSearch={column?.filterSearchable ?? undefined}
+        placeholder={column.filterPlaceholder ?? column.title as string}
+        showArrow
+        allowClear
+        style={{ width }}
+        options={options}
+        //value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
+        onChange={(value: unknown | string) => {
+          const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+          // eslint-disable-next-line max-len
+          const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
+          const filterValue = Array.isArray(value) ? value : filterArrayValue
+          let filters = {} as Filter
 
-        if (column.filterValueNullable === false &&
-        filterValue.filter(v => v != null).length === 0) {
-          filters = { ...filterValues, [key]: undefined } as Filter
-        } else {
-          filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
-        }
+          if (column.filterValueNullable === false &&
+              filterValue.filter(v => v != null).length === 0) {
+            filters = { ...filterValues, [key]: undefined } as Filter
+          } else {
+            filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
+          }
 
-        column?.coordinatedKeys?.forEach(key => {
-          delete filters[key]
-        })
+          column?.coordinatedKeys?.forEach(key => {
+            delete filters[key]
+          })
 
-        setFilterValues(filters)
-
-      }}
-    />)
+          setFilterValues(filters)
+        }}
+      />
+    </>)
   }
 
   const filterTypeComp = {
