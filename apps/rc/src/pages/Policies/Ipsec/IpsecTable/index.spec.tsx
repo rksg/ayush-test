@@ -2,13 +2,13 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { getVxlanEspProposalText, getVxlanIkeProposalText }                                                                                                   from '@acx-ui/edge/components'
-import { Features, useIsSplitOn }                                                                                                                             from '@acx-ui/feature-toggle'
-import { ipSecApi, useGetIpsecViewDataListQuery, useGetTunnelProfileViewDataListQuery }                                                                       from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath, CommonUrlsInfo, useIsEdgeFeatureReady, EdgeTunnelProfileFixtures } from '@acx-ui/rc/utils'
-import { Path }                                                                                                                                               from '@acx-ui/react-router-dom'
-import { Provider, store }                                                                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                                                                        from '@acx-ui/test-utils'
+import { getVxlanEspProposalText, getVxlanIkeProposalText }                                                                                   from '@acx-ui/edge/components'
+import { Features, useIsSplitOn }                                                                                                             from '@acx-ui/feature-toggle'
+import { ipSecApi, useGetIpsecViewDataListQuery, useGetTunnelProfileViewDataListQuery, useGetVenuesQuery }                                    from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath, useIsEdgeFeatureReady, EdgeTunnelProfileFixtures } from '@acx-ui/rc/utils'
+import { Path }                                                                                                                               from '@acx-ui/react-router-dom'
+import { Provider, store }                                                                                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                        from '@acx-ui/test-utils'
 
 import { mockedVenueQueryData, mockIpSecDetailFromListQueryWithVxlan, mockIpSecTable } from '../__tests__/fixtures'
 
@@ -36,7 +36,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetIpsecViewDataListQuery: jest.fn(),
-  useGetTunnelProfileViewDataListQuery: jest.fn()
+  useGetTunnelProfileViewDataListQuery: jest.fn(),
+  useGetVenuesQuery: jest.fn()
 }))
 
 jest.mock('@acx-ui/components', () => ({
@@ -58,6 +59,7 @@ jest.mock('@acx-ui/edge/components', () => ({
 
 const mockUseGetIpsecViewDataListQuery = useGetIpsecViewDataListQuery as jest.Mock
 const mockUseGetTunnelProfileViewDataListQuery = useGetTunnelProfileViewDataListQuery as jest.Mock
+const mockUseGetVenuesQuery = useGetVenuesQuery as jest.Mock
 
 const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
   type: PolicyType.IPSEC,
@@ -80,6 +82,8 @@ describe('IpsecTable', () => {
 
     mockUseGetIpsecViewDataListQuery.mockReturnValue({ data: mockIpSecTable })
     mockUseGetTunnelProfileViewDataListQuery.mockReturnValue({ data: [] })
+    mockUseGetVenuesQuery.mockReturnValue({ venueNameMap: mockedVenueQueryData.data.map(venue =>
+      ({ key: venue.id, value: venue.name })) })
 
     mockServer.use(
       rest.delete(
@@ -88,10 +92,6 @@ describe('IpsecTable', () => {
           mockedSingleDeleteApi()
           return res(ctx.status(202))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })
