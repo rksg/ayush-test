@@ -23,6 +23,7 @@ RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
 
+ARG GIT_COMMIT_BRANCH
 COPY . .
 RUN npm install
 RUN if [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
@@ -94,7 +95,6 @@ COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 COPY --from=build /app/dist/apps ./dist/apps
  
 ARG PRECOMMIT
-ARG GIT_COMMIT_BRANCH
  
 COPY run-tests-affected.sh /app/run-tests-affected.sh
 RUN chmod +x /app/run-tests-affected.sh
