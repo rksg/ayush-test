@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { softGreApi }             from '@acx-ui/rc/services'
@@ -7,23 +8,18 @@ import { Provider, store }        from '@acx-ui/store'
 import {
   render,
   screen,
-  fireEvent
+  fireEvent,
+  waitFor,
+  renderHook
 } from '@acx-ui/test-utils'
 
-import {
-  mockSourceDataEnabled,
-  mockSourceDataDisabled
-} from './__tests__/fixture'
+
 import { DhcpOption82Settings }          from './DhcpOption82Settings'
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 
 describe('DhcpOption82Settings', () => {
   const mockReqVenueData = jest.fn()
   const mockReqAPData = jest.fn()
-  const venueId = 'bad700975bbb42c1b8c7e5cdb764dfb6'
-  const portId = '1'
-  const apModel = 'H320'
-  const serialNumber = '123456'
 
   beforeEach(() => {
     mockReqVenueData.mockReset()
@@ -38,11 +34,7 @@ describe('DhcpOption82Settings', () => {
         <Form>
           <DhcpOption82Settings
             index={1}
-            isUnderAPNetworking={true}
-            venueId={venueId}
-            portId={portId}
-            serialNumber={serialNumber}
-            readonly={true}
+            readOnly={true}
           />
         </Form>
       </Provider>)
@@ -50,17 +42,22 @@ describe('DhcpOption82Settings', () => {
   })
 
   it('Should render correctly with sourceData (Venue level)', async () => {
+    const { result } = renderHook(() => Form.useForm())
+    const form = result.current[0]
+    form.setFieldsValue({
+      lan: [{
+        dhcpOption82: {
+          dhcpOption82Enabled: true
+        }
+      }]
+    })
+
     render(
       <Provider>
-        <Form>
+        <Form form={form}>
           <DhcpOption82Settings
-            index={1}
-            isUnderAPNetworking={false}
-            venueId={venueId}
-            portId={portId}
-            apModel={apModel}
-            readonly={false}
-            sourceData={mockSourceDataEnabled}
+            index={0}
+            readOnly={false}
           />
         </Form>
       </Provider>)
@@ -78,12 +75,7 @@ describe('DhcpOption82Settings', () => {
         <Form>
           <DhcpOption82Settings
             index={1}
-            isUnderAPNetworking={false}
-            venueId={venueId}
-            portId={portId}
-            apModel={apModel}
-            readonly={false}
-            sourceData={mockSourceDataDisabled}
+            readOnly={false}
           />
         </Form>
       </Provider>)
@@ -96,17 +88,15 @@ describe('DhcpOption82Settings', () => {
   })
 
   it('Should store the current settings and apply them when the drawer is opened', async () => {
+    // mock onchange function
+    const mockedOnChanged = jest.fn()
     render(
       <Provider>
         <Form>
           <DhcpOption82Settings
             index={1}
-            isUnderAPNetworking={false}
-            venueId={venueId}
-            portId={portId}
-            apModel={apModel}
-            readonly={false}
-            sourceData={mockSourceDataDisabled}
+            readOnly={false}
+            onGUIChanged={mockedOnChanged}
           />
         </Form>
       </Provider>
@@ -125,6 +115,34 @@ describe('DhcpOption82Settings', () => {
 
     // Check if the settings are applied
     expect(switchElement).toBeChecked()
+    expect(mockedOnChanged).toHaveBeenCalled()
+  })
+
+  it('Should resetFields when click Cancel button', async () => {
+    render(
+      <Provider>
+        <Form>
+          <DhcpOption82Settings
+            index={1}
+            readOnly={false}
+          />
+        </Form>
+      </Provider>
+    )
+
+    // Click the switch to enable DHCP Option 82
+    const switchElement = await screen.findByTestId('dhcpoption82-switch-toggle')
+    fireEvent.click(switchElement)
+
+    // Check the dawer title displayed
+    expect(screen.getByText('DHCP Option 82 Sub Options')).toBeInTheDocument()
+
+    // Click the close button
+    const closeButton = screen.getByText('Cancel')
+    fireEvent.click(closeButton)
+
+    // Check if the settings are reset
+    expect(switchElement).not.toBeChecked()
   })
 })
 
@@ -134,8 +152,6 @@ describe('DhcpOption82SettingsFormField', () => {
       <Provider>
         <Form>
           <DhcpOption82SettingsFormField
-            readonly={false}
-            onGUIChanged={jest.fn()}
           />
         </Form>
       </Provider>
@@ -155,10 +171,8 @@ describe('DhcpOption82SettingsFormField', () => {
       <Provider>
         <Form>
           <DhcpOption82SettingsFormField
-            context='lanport'
-            index={0}
-            readonly={false}
-            onGUIChanged={jest.fn()}
+            isLanPortSettings={true}
+            readOnly={false}
           />
         </Form>
       </Provider>
@@ -185,10 +199,8 @@ describe('DhcpOption82SettingsFormField', () => {
       <Provider>
         <Form>
           <DhcpOption82SettingsFormField
-            context='lanport'
-            index={0}
-            readonly={false}
-            onGUIChanged={jest.fn()}
+            isLanPortSettings={true}
+            readOnly={false}
           />
         </Form>
       </Provider>
@@ -214,8 +226,7 @@ describe('DhcpOption82SettingsFormField', () => {
       <Provider>
         <Form>
           <DhcpOption82SettingsFormField
-            readonly={true}
-            onGUIChanged={jest.fn()}
+            readOnly={true}
           />
         </Form>
       </Provider>
@@ -228,25 +239,48 @@ describe('DhcpOption82SettingsFormField', () => {
     })
   })
 
-  it('Should call onGUIChanged when form fields change', async () => {
-    const mockOnGUIChanged = jest.fn()
+  it('Form init with suboption 1 custom value should display the display name', async () => {
+    const { result } = renderHook(() => Form.useForm())
+    const form = result.current[0]
+
+    form.setFieldsValue({
+      subOption1Enabled: true,
+      subOption1Format: 'CUSTOMIZED',
+      subOption1Customization: {
+        attributes: [
+          { type: 'INTERFACE' },
+          { type: 'VLAN' },
+          { type: 'USER_DEFINED', text: 'Custom Value' }
+        ]
+      }
+    })
+
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE
+    )
 
     render(
       <Provider>
-        <Form>
+        <Form form={form}>
           <DhcpOption82SettingsFormField
-            readonly={false}
-            onGUIChanged={mockOnGUIChanged}
+            isLanPortSettings={true}
+            readOnly={false}
           />
         </Form>
       </Provider>
     )
 
-    // Find and click the first switch
-    const firstSwitch = screen.getByTestId('dhcpOption82SubOption1-switch')
-    fireEvent.click(firstSwitch)
+    await waitFor(() => {
+      expect(screen.getByText('Custom Attributes')).toBeInTheDocument()
+    })
+    expect(screen.getByText('Custom Value')).toBeInTheDocument()
+    expect(screen.getByText('IF-Name')).toBeInTheDocument()
+    expect(screen.getByText('VLAN ID')).toBeInTheDocument()
 
-    // Verify onGUIChanged was called
-    expect(mockOnGUIChanged).toHaveBeenCalledWith('DHCPOption82Settings')
+    userEvent.click(await screen.findByTestId('add-tag'))
+    const opt2 = await screen.findAllByText(/ESSID/)
+    await userEvent.click(opt2[1])
+    expect((await screen.findByText(/ESSID/))).toBeVisible()
+
   })
 })

@@ -150,17 +150,26 @@ export const tunnelProfileFormDefaultValues = {
 }
 
 export const getTunnelProfileFormDefaultValues
-  = (profileData?: TunnelProfile): TunnelProfileFormType => {
+  = (profileData?: TunnelProfile, profileViewData?: TunnelProfileViewData)
+  : TunnelProfileFormType => {
     const ageTime = profileData?.ageTimeMinutes || DEFAULT_AGE_TIME_MIN
-    const result = ageTimeUnitConversion(ageTime)
+    const ageTimeData = ageTimeUnitConversion(ageTime)
     const mtuRequestTime = profileData?.mtuRequestTimeout || DEFAULT_MTU_REQUEST_TIMEOUT
     const mtuRequestTimeResult = mtuRequestTimeoutUnitConversion(mtuRequestTime)
-    return {
+
+    const result = {
       ...tunnelProfileFormDefaultValues,
       ...profileData,
-      ageTimeMinutes: result?.value!,
-      ageTimeUnit: result?.unit!,
+      ageTimeMinutes: ageTimeData?.value!,
+      ageTimeUnit: ageTimeData?.unit!,
       mtuRequestTimeout: mtuRequestTimeResult?.value!,
       mtuRequestTimeoutUnit: mtuRequestTimeResult?.unit!
     } as TunnelProfileFormType
+
+    if (profileViewData) {
+      result.ipsecProfileId = profileViewData?.ipsecProfileId
+      result.tunnelEncryptionEnabled = !!profileViewData?.ipsecProfileId
+    }
+
+    return result
   }

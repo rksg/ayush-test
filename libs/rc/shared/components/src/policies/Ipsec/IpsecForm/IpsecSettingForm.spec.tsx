@@ -1,13 +1,14 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { Features }                                                          from '@acx-ui/feature-toggle'
-import { ipSecApi }                                                          from '@acx-ui/rc/services'
-import { IpsecUrls, useIsEdgeFeatureReady }                                  from '@acx-ui/rc/utils'
-import { Path }                                                              from '@acx-ui/react-router-dom'
-import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen, renderHook, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features }                                                                   from '@acx-ui/feature-toggle'
+import { ipSecApi }                                                                   from '@acx-ui/rc/services'
+import { Ipsec, IpsecUrls, useIsEdgeFeatureReady }                                    from '@acx-ui/rc/utils'
+import { Path }                                                                       from '@acx-ui/react-router-dom'
+import { Provider, store }                                                            from '@acx-ui/store'
+import { mockServer, render, screen, renderHook, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
 
 import { mockIpSecTable }   from './__tests__/fixtures'
 import { IpsecSettingForm } from './IpsecSettingForm'
@@ -160,6 +161,39 @@ describe('IpsecSettingForm', () => {
       await user.click(softgreRadio)
       expect(softgreRadio).toBeChecked()
       expect(screen.getByRole('button', { name: 'Show more settings' })).toBeVisible()
+    })
+
+    it('should greyout tunnel usage type when there are tunnel activations', async () => {
+      const mockVxLanIpsecTable = cloneDeep(mockIpSecTable)
+      mockVxLanIpsecTable.data.data[0].tunnelActivations = [{ tunnelProfileId: 'tunnelProfileId1' }]
+
+      mockServer.use(
+        rest.post(
+          IpsecUrls.getIpsecViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockVxLanIpsecTable.data))
+        )
+      )
+
+      render( <Provider>
+        <Form>
+          <IpsecSettingForm editData={mockVxLanIpsecTable.data.data[0] as unknown as Ipsec}/>
+        </Form>
+      </Provider>,
+      { route: { path: editViewPath, params } })
+
+      await screen.findByLabelText(/Profile Name/i)
+      screen.getByText('Tunnel Usage Type')
+      // eslint-disable-next-line max-len
+      const vxlanRadio = await screen.findByRole('radio', { name: 'For RUCKUS Devices(VxLAN GPE)' })
+      await waitFor(() => expect(vxlanRadio).toBeDisabled())
+
+      // eslint-disable-next-line max-len
+      const softgreRadio = await screen.findByRole('radio', { name: 'For 3rd Party Devices(SoftGRE)' })
+      expect(softgreRadio).toBeDisabled()
+
+      await userEvent.hover(vxlanRadio)
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('This is in use by a tunnel profile, AP, or venue. Please remove its activation before making changes.')).toBeInTheDocument()
     })
   })
 })

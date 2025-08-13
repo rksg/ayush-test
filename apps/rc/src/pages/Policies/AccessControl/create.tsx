@@ -58,10 +58,10 @@ export default function CreateAccessControl () {
       label={$t({ defaultMessage: 'Wi-Fi Access Control Profile' })}
       initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
-        <Space direction='vertical'>
+        <Space direction='vertical' style={{ gap: '4px' }}>
           {/* eslint-disable-next-line max-len */}
           { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
               {$t({ defaultMessage: 'Access Control Set' })}
             </Radio>
           }
@@ -96,10 +96,10 @@ export default function CreateAccessControl () {
       label={$t({ defaultMessage: 'Switch Access Control Profile' })}
       initialValue={PolicyType.ACCESS_CONTROL}>
       <Radio.Group>
-        <Space direction='vertical'>
+        <Space direction='vertical' style={{ gap: '4px' }}>
           {/* eslint-disable-next-line max-len */}
-          { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
-            <Radio value={PolicyType.ACCESS_CONTROL}>
+          { hasPolicyPermission({ type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
               {$t({ defaultMessage: 'Access Control Set' })}
             </Radio>
           }

@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/rc/edge/services/src",
+  "projectType": "library",
+  "tags": ["no-acx-lib-deps", "type:utils"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rc/edge/services/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/rc/edge/services"],
+      "options": {
+        "jestConfig": "libs/rc/edge/services/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
