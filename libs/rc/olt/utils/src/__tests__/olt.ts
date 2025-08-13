@@ -43,15 +43,6 @@ export const mockOltCageList = [{
 }, {
   cage: 'S1/4',
   state: OltCageStateEnum.DOWN
-}, {
-  cage: 'S1/5',
-  state: OltCageStateEnum.DOWN
-}, {
-  cage: 'S1/6',
-  state: OltCageStateEnum.DOWN
-}, {
-  cage: 'S1/7',
-  state: OltCageStateEnum.DOWN
 }]
 
 export const mockOntList = [{

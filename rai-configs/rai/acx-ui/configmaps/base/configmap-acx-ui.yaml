@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mlisa-core-rsa-mlisa-ui-config
+data:
+  ASK_MLISA_URL: /analytics/api/ask-mlisa
+  DEPLOYMENT_MODE: MLISA
+  DISABLE_PENDO: "true"
+  DRUID_COLD_TIER_DAYS: "31"
+  DRUID_RETAIN_PERIOD_DAYS: "90"
+  DRUID_ROLLUP_DAYS: "32"
+  ENABLED_FEATURES: ask_mlisa|channel_dist_incident|config_change|schedule_report|i_apinfra_poe_low|i_apinfra_wanthroughput_low|sci_kafka_indexing|occupancy|incident_config_changes|sv_ota|config_recommendation|superset|super_tenant|superset_schedule|sv_ota_3radios|pcap|gpt|druidgpt|new_crrm_statuses|icx_analytics|jwt|ap-service-anomaly
+  MLISA_BASE_URL_PREFIX: /analytics
+  MLISA_DATA_API_URL: /analytics/api/rsa-data-api/graphql
+  MLISA_DOCUMENTATION_URL: https://docs.cloud.ruckuswireless.com/CA/mapfile/index.html
+  MLISA_GPT_URL: /analytics/api/mlisa-gpt
+  MLISA_LICENSE_URL: /analytics/api/rsa-mlisa-licensing
+  MLISA_LOGOUT_URL: /analytics/api/auth/v1/user/logout
+  MLISA_NOTIFICATION_URL: /analytics/api/rsa-mlisa-notification
+  MLISA_OCCUPANCY_URL: /analytics/api/rsa-mlisa-presence-api/graphql
+  MLISA_RBAC_URL: /analytics/api/rsa-mlisa-rbac
+  MLISA_REGION: us-central1
+  MLISA_SERVICE_GUARD_URL: /analytics/api/rsa-mlisa-service-guard/graphql
+  MLISA_SMARTZONE_MGR_URL: /analytics/api/rsa-mlisa-smartzone/v1
+  MLISA_SUPERSET_URL: /analytics/explorer
+  MLISA_UI_USER_TRACKING: <required>
+  MLISA_VIDEO_CALL_QOE_URL: /analytics/api/rsa-mlisa-call-manager/graphql
+  NODE_OPTIONS: --max-old-space-size=2048 --max-http-header-size=262144
+  PENDO_API_KEY: <required>
+  SCI_REPORTS_FRAGMENT_URL: http://mlisa-core-rsa-ui-fragments.mlisa-core.svc.cluster.local:5100
+  STATIC_ASSETS: https://storage.googleapis.com/ruckus-web-1
