@@ -5,9 +5,9 @@ import { filter, find, isEmpty, take } from 'lodash'
 import { useIntl }                     from 'react-intl'
 import { useLocation, useParams }      from 'react-router-dom'
 
-import { Modal, SummaryCard }                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { ServiceConfigTemplateLinkSwitcher, useServicePolicyEnabledWithConfigTemplate } from '@acx-ui/rc/components'
+import { Modal, SummaryCard }                from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ServiceConfigTemplateLinkSwitcher } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
@@ -21,7 +21,7 @@ import {
   useGetVenueTemplateMeshQuery
 } from '@acx-ui/rc/services'
 import {
-  ConfigTemplateType, DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, LocationExtended, Mesh,
+  DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, LocationExtended, Mesh,
   ServiceOperation, ServiceType, VenueSettings,
   useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, convertToTemplateAllowedOperationIfNeeded
@@ -273,11 +273,8 @@ export function useIsDhcpEnabled (): boolean {
     [getOpsApi(DHCPUrls.bindVenueDhcpProfile)],
     isTemplate
   )
-  const hasBindVenueDhcpProfilePermission = hasPermission({
+  return hasPermission({
     scopes: [WifiScopes.UPDATE],
     rbacOpsIds: resolvedOpsApi
   })
-  // eslint-disable-next-line max-len
-  const isDhcpConfigTemplateEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.DHCP)
-  return isDhcpConfigTemplateEnabled && hasBindVenueDhcpProfilePermission
 }
