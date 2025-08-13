@@ -44,12 +44,12 @@ import {
 
 import {
   AccessControlSettingForm,
-  ApplicationDrawer,
+  ApplicationComponent,
   convertToPayload,
-  DeviceOSDrawer,
+  DeviceOSComponent,
   genAclPayloadObject,
-  Layer2Drawer,
-  Layer3Drawer
+  Layer2Component,
+  Layer3Component
 } from '../../policies/AccessControlForm'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -850,7 +850,7 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableLayer2 && <Layer2Drawer
+        {enableLayer2 && <Layer2Component
           inputName={['wlan', 'advancedCustomization']}
         />}
       </div>
@@ -867,7 +867,7 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableLayer3 && <Layer3Drawer
+        {enableLayer3 && <Layer3Component
           inputName={['wlan', 'advancedCustomization']}
         />}
       </div>
@@ -889,7 +889,7 @@ function AccessControlConfigForm () {
             }} />}
         />
 
-        {enableDeviceOs && <DeviceOSDrawer
+        {enableDeviceOs && <DeviceOSComponent
           inputName={['wlan', 'advancedCustomization']}
         />}
       </div>
@@ -906,7 +906,7 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableApplications && <ApplicationDrawer
+        {enableApplications && <ApplicationComponent
           inputName={['wlan', 'advancedCustomization']}
         />}
       </div>

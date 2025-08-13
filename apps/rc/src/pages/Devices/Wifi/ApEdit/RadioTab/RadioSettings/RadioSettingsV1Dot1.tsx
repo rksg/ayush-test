@@ -1265,7 +1265,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                       defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from <venueOrApGroupName></venueOrApGroupName>'}
                       values={{
                         venueOrApGroupName: () => {
-                          return apGroupData ? 'AP Group' : 'Venue'
+                          return apGroupData ? 'AP Group' : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                         },
                         radioTypeName: () => getRadioTypeDisplayName(currentTab)
                       }}

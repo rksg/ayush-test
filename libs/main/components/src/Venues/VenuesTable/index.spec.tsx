@@ -30,7 +30,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/config-template/utils', () => ({
   useEnforcedStatus: () => ({
     hasEnforcedItem: jest.fn(),
     getEnforcedActionMsg: jest.fn()

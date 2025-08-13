@@ -11,8 +11,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('@acx-ui/switch/components', () => ({
+  ...jest.requireActual('@acx-ui/switch/components'),
   SwitchClientsTable: () => <div data-testid='SwitchClientsTable' />
 }))
 

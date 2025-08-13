@@ -1,0 +1,802 @@
+import React, { ReactNode, SetStateAction, useEffect, useRef, useState } from 'react'
+
+import { Form, Input, Select, Tag } from 'antd'
+import TextArea                     from 'antd/lib/input/TextArea'
+import _                            from 'lodash'
+import { useIntl }                  from 'react-intl'
+import styled                       from 'styled-components/macro'
+
+import {
+  Button,
+  Drawer,
+  GridCol,
+  GridRow,
+  showToast,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
+import {
+  useAddL2AclPolicyMutation,
+  useAddL2AclPolicyTemplateMutation,
+  useGetEnhancedL2AclProfileListQuery,
+  useGetL2AclPolicyQuery,
+  useGetL2AclPolicyTemplateListQuery,
+  useGetL2AclPolicyTemplateQuery,
+  useUpdateL2AclPolicyMutation,
+  useUpdateL2AclPolicyTemplateMutation
+} from '@acx-ui/rc/services'
+import {
+  AccessStatus,
+  CommonResult,
+  defaultSort, formatMacAddress,
+  L2AclPolicy,
+  MacAddressFilterRegExp, MacRegistrationFilterRegExp,
+  PolicyOperation,
+  PolicyType,
+  sortProp, useAfterPolicySaveRedirectPath,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
+  useTemplateAwarePolicyPermission
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }         from '@acx-ui/user'
+import { TableResult }            from '@acx-ui/utils'
+
+
+import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'
+
+import { AddModeProps, editModeProps }                            from './AccessControlForm'
+import { ComponentModeForm }                                      from './ComponentModeForm'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import PolicyFormItem                                             from './PolicyFormItem'
+import { useScrollLock }                                          from './ScrollLock'
+
+
+const { useWatch } = Form
+const { Option } = Select
+
+export interface Layer2ComponentProps {
+  inputName?: string[]
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean,
+  isComponentMode?: boolean,
+  drawerViewModeId?: string,
+  onlyAddMode?: AddModeProps,
+  editMode?: editModeProps,
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
+}
+
+const RuleContentWrapper = styled.div`
+  border: 1px solid var(--acx-neutrals-50);
+  padding: 10px;
+  border-radius: 4px;
+`
+
+const AclGridCol = ({ children }: { children: ReactNode }) => {
+  return (
+    <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
+      {children}
+    </GridCol>
+  )
+}
+
+export const Layer2Component = (props: Layer2ComponentProps) => {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPath = useAfterPolicySaveRedirectPath(PolicyType.ACCESS_CONTROL)
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isComponentMode = false,
+    isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {},
+    callBack = () => {}
+  } = props
+  const inputRef = useRef(null)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
+  const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
+  const [addressTags, setAddressTags] = useState([] as string[])
+  const [inputValue, setInputValue] = useState('')
+  const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [queryPolicyName, setQueryPolicyName] = useState('')
+  const [requestId, setRequestId] = useState('')
+  const [skipFetch, setSkipFetch] = useState(true)
+  const form = Form.useFormInstance()
+  const [contentForm] = Form.useForm()
+  const [policyId, setPolicyId] = useState<string | null>(null)
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
+  const breadcrumb = usePoliciesBreadcrumb()
+  const pageTitle = usePolicyPageHeaderTitle(editMode.isEdit, PolicyType.LAYER_2_POLICY)
+
+  const { lockScroll, unlockScroll } = useScrollLock()
+
+  const [
+    accessStatus,
+    policyName,
+    description,
+    l2AclPolicyId
+  ] = [
+    useWatch<string>('layer2Access', contentForm),
+    useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
+    useWatch<string>([...inputName, 'l2AclPolicyId'])
+  ]
+
+  const [ createL2AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddL2AclPolicyMutation,
+    useTemplateMutationFn: useAddL2AclPolicyTemplateMutation
+  })
+
+  const [ updateL2AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateL2AclPolicyMutation,
+    useTemplateMutationFn: useUpdateL2AclPolicyTemplateMutation
+  })
+
+  const notForQueryList = (onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
+
+  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(
+    editMode.isEdit, resolvedRbacEnabled, notForQueryList
+  )
+
+  useEffect(() => {
+    if (isOnlyViewMode) {
+      setPolicyId(onlyViewMode.id)
+    }
+    if (isComponentMode) {
+      setPolicyId(params.policyId || null)
+    }
+  }, [isComponentMode, params, isOnlyViewMode, onlyViewMode.id])
+
+  const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetL2AclPolicyQuery,
+    useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
+    skip: !isComponentMode && (!visible || skipFetch),
+    extraParams: { l2AclPolicyId: policyId || l2AclPolicyId },
+    enableRbac: resolvedRbacEnabled
+  })
+
+  const isViewMode = () => {
+    if (queryPolicyId === '') {
+      return false
+    }
+
+    if (drawerViewModeId !== '') {
+      return !_.isNil(layer2PolicyInfo)
+    }
+
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
+    }
+
+    return !_.isNil(layer2PolicyInfo)
+  }
+
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
+  }
+
+
+  useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
+  }, [isOnlyViewMode, l2AclPolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
+
+  useEffect(() => {
+    if (editMode.isEdit && editMode.id !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (layer2PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+      contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
+      contentForm.setFieldValue('description', layer2PolicyInfo.description)
+      contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
+      setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
+        macAddress: address
+      })))
+    }
+  }, [layer2PolicyInfo, queryPolicyId])
+
+  // use policyName to find corresponding id before API return profile id
+  useEffect(() => {
+    if (requestId && queryPolicyName) {
+      layer2SelectOptions.forEach(option => {
+        if (option.props.children === queryPolicyName) {
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
+          }
+          setQueryPolicyId(option.key as string)
+          setQueryPolicyName('')
+          setRequestId('')
+        }
+      })
+    }
+  }, [layer2SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setDrawerVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
+
+  const [macAddressList, setMacAddressList] = useState([] as { macAddress: string }[])
+
+  const basicColumns: TableProps<{ macAddress: string }>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'macAddress',
+      key: 'macAddress',
+      searchable: true,
+      sorter: { compare: sortProp('macAddress', defaultSort) },
+      render: (_, row: { macAddress: string }) => {
+        return row.macAddress
+      }
+    },
+    {
+      dataIndex: 'macAddress',
+      key: 'macAddress',
+      align: 'right',
+      render: (_, row: { macAddress: string }) => {
+        return <div>
+          { !isViewMode() && <DeleteSolid
+            data-testid={row.macAddress}
+            height={21}
+            onClick={() => handleDelAction(row.macAddress)}
+          /> }
+        </div>
+      }
+    }
+  ]
+
+  const handleDelAction = (macAddress: string) => {
+    const updateAddressList = macAddressList
+      .filter((address: { macAddress: string }) => address.macAddress !== macAddress)
+    setMacAddressList(updateAddressList)
+  }
+
+  const clearFieldsValue = () => {
+    contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
+    contentForm.setFieldValue('layer2Access', undefined)
+    setMacAddressList([])
+  }
+
+  const handleAddAction = () => {
+    if (macAddressList.length === PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
+      showToast({
+        type: 'error',
+        duration: 10,
+        content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+      })
+    } else {
+      setRuleDrawerVisible(true)
+    }
+  }
+
+  const handleClearAction = () => {
+    setMacAddressList([])
+  }
+
+  const handleRuleDrawerClose = () => {
+    setRuleDrawerVisible(false)
+    setAddressTags([])
+  }
+
+  const handleContentClose = () => {
+    setQueryPolicyId('')
+    clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
+        id: '', isEdit: false
+      })
+    }
+    if (!isComponentMode) {
+      setDrawerVisible(false)
+    } else {
+      navigate(redirectPath, { replace: true })
+    }
+    callBack()
+  }
+
+  const handleContentFinish = async () => {
+    try {
+      await contentForm.validateFields()
+      if (!isViewMode()) {
+        await handleL2AclPolicy(editMode.isEdit || localEditMode.isEdit)
+      }
+      handleContentClose()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
+  }
+
+  const handleTagClose = (removedTag: string) => {
+    const updateAddressTags = addressTags.filter((tag) => tag !== removedTag)
+    setAddressTags(updateAddressTags)
+  }
+
+  const validateAccessStatus = () => {
+    if (accessStatus === undefined) {
+      return Promise.reject($t({ defaultMessage: 'Please select one of the status' }))
+    }
+    return Promise.resolve()
+  }
+
+  const validateMacAddressCount = () => {
+    if (!macAddressList.length) {
+      return Promise.reject($t({ defaultMessage: 'No MAC addresses were added yet' }))
+    }
+    return Promise.resolve()
+  }
+
+  const invalidateMacToast = () => {
+    showToast({
+      type: 'error',
+      duration: 10,
+      content: $t({ defaultMessage: 'invalided or existing MAC Address has been found' })
+    })
+  }
+
+  const handleInputChange = async (event: { target: { value: SetStateAction<string> } }) => {
+    const split = [',', ';']
+    let inputValue = event.target.value
+    for (const char of split) {
+      let inputValueString = inputValue.toString()
+      if (!inputValueString.includes(char)) {
+        continue
+      }
+
+      let inputValues = inputValueString.split(char).map(async (inputValue) => {
+        const trimValue = inputValue.trim()
+        const macAddressValidation = await MacAddressFilterRegExp(trimValue)
+        if (addressTags.indexOf(trimValue) === -1 && macAddressValidation === undefined) {
+          return Promise.resolve(trimValue)
+        }
+        return Promise.reject()
+      })
+      const results = await Promise.allSettled(inputValues)
+      const addAddressTags = results.filter(result => {
+        return result.status === 'fulfilled' && result.value !== ''
+      }).map(result=> (result as { status: 'fulfilled', value: string }).value)
+
+      if (results.findIndex(result => result.status === 'rejected') !== -1) {
+        invalidateMacToast()
+      }
+      setAddressTags([...addressTags, ...addAddressTags])
+      inputValue = ''
+    }
+
+    setInputValue(inputValue)
+  }
+
+  const handleInputConfirm = async (inputValue: string) => {
+    if (!inputValue || !ruleDrawerVisible) return
+
+    try {
+      const macAddressValidation = await MacRegistrationFilterRegExp(inputValue)
+      // eslint-disable-next-line max-len
+      if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressValidation === undefined) {
+        await new Promise((resolve) => {
+          setAddressTags([...addressTags, inputValue])
+          return resolve
+        })
+      } else {
+        invalidateMacToast()
+      }
+      setInputValue('')
+    } catch (e) {
+      console.log(e) // eslint-disable-line no-console
+    }
+  }
+
+  const actions = !isViewMode() ? [{
+    label: $t({ defaultMessage: 'Add' }),
+    onClick: handleAddAction
+  }, {
+    label: $t({ defaultMessage: 'Clear list' }),
+    onClick: handleClearAction
+  }] : []
+
+  const convertToPayload = (policyId?: string) => {
+    let id = {}
+    if (policyId) {
+      id = { id: policyId }
+    }
+    let payload = {
+      name: policyName,
+      access: accessStatus,
+      macAddresses: macAddressList.map((item: { macAddress: string }) =>
+        formatMacAddress(item.macAddress.trim())
+      ),
+      description: description
+    }
+
+    return {
+      ...id,
+      ...payload
+    }
+  }
+
+  const handleL2AclPolicy = async (edit: boolean) => {
+    try {
+      if (!edit) {
+        const l2AclRes: CommonResult = await createL2AclPolicy({
+          params: params,
+          payload: convertToPayload(),
+          enableRbac: resolvedRbacEnabled
+        }).unwrap()
+        setRequestId(l2AclRes.requestId)
+        setQueryPolicyName(policyName)
+      } else {
+        await updateL2AclPolicy({
+          params: { ...params, l2AclPolicyId: queryPolicyId },
+          payload: convertToPayload(queryPolicyId),
+          enableRbac: resolvedRbacEnabled
+        }).unwrap()
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const content = <>
+    <Form layout={isComponentMode ? 'vertical' : 'horizontal'} form={contentForm}>
+      <PolicyFormItem
+        name={'policyName'}
+        label={$t({ defaultMessage: 'Policy Name:' })}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 32 },
+          { validator: (_, value) => {
+            if (layer2List && layer2List
+              .filter(layer2 => editMode ? (layer2PolicyInfo?.name !== layer2) : true)
+              .findIndex(layer2 => layer2 === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
+          }
+        ]}
+        children={<Input disabled={isViewMode()}/>}
+      />
+      <PolicyFormItem
+        name='description'
+        label={$t({ defaultMessage: 'Description' })}
+        rules={[
+          { max: 255 }
+        ]}
+        children={<TextArea disabled={isViewMode()} />}
+      />
+      <PolicyFormItem
+        name='layer2Access'
+        label={$t({ defaultMessage: 'Access' })}
+        rules={[
+          { validator: () => validateAccessStatus() }
+        ]}
+      >
+        {/*TODO: use toggle bottom with subtitle when the component ready in DS */}
+        <div style={{ width: '100%' }}>
+          <Button
+            onClick={() => {
+              contentForm.setFieldValue('layer2Access', AccessStatus.ALLOW)
+            }}
+            disabled={isViewMode()}
+            style={{
+              height: '50px',
+              width: '50%',
+              borderRadius: '0',
+              // eslint-disable-next-line max-len
+              backgroundColor: accessStatus === AccessStatus.ALLOW
+                ? '#dff0f9'
+                : '#fff'
+            }}>
+            <DownloadOutlined height={50} style={{ width: '40px', height: '40px' }}/>
+            <div style={{
+              display: 'flex', flexDirection: 'column',
+              flexWrap: 'wrap', textAlign: 'left'
+            }}>
+              <span style={{ fontWeight: 600, fontSize: '12px' }}>
+                {$t({ defaultMessage: 'Allow connections' })}
+              </span>
+              <span style={{ width: '140px', whiteSpace: 'normal', fontSize: '9px' }}>
+                {$t({ defaultMessage: 'only from MAC addresses listed below' })}
+              </span>
+            </div>
+          </Button>
+          <Button
+            onClick={() => {
+              contentForm.setFieldValue('layer2Access', AccessStatus.BLOCK)
+            }}
+            disabled={isViewMode()}
+            style={{
+              height: '50px',
+              width: '50%',
+              borderRadius: '0',
+              // eslint-disable-next-line max-len
+              backgroundColor: accessStatus === AccessStatus.BLOCK
+                ? '#dff0f9'
+                : '#fff'
+            }}>
+            <DownloadOutlined height={50} style={{ width: '40px', height: '40px' }}/>
+            <div style={{
+              display: 'flex', flexDirection: 'column',
+              flexWrap: 'wrap', textAlign: 'left'
+            }}>
+              <span style={{ fontWeight: 600, fontSize: '12px' }}>
+                {$t({ defaultMessage: 'Block connections' })}
+              </span>
+              <span style={{ width: '140px', whiteSpace: 'normal', fontSize: '9px' }}>
+                {$t({ defaultMessage: 'from MAC addresses listed below' })}
+              </span>
+            </div>
+          </Button>
+        </div>
+      </PolicyFormItem>
+    </Form>
+    <Form layout='vertical' form={contentForm}>
+      <Form.Item
+        name='layer2AccessMacAddress'
+        label={$t(
+          { defaultMessage: 'MAC Address ( {count}/{count_limit} )' },
+          // eslint-disable-next-line max-len
+          { count: macAddressList.length, count_limit: PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT })
+        }
+        style={{ flexDirection: 'column' }}
+        rules={[
+          { validator: () => validateMacAddressCount() }
+        ]}
+      >
+        <Table
+          columns={basicColumns}
+          dataSource={macAddressList}
+          rowKey='macAddress'
+          actions={filterByAccess(actions)}
+        />
+      </Form.Item>
+    </Form>
+  </>
+
+
+  const tagChild = addressTags.map((tag: string) => {
+    return (
+      <span key={tag} style={{ display: 'inline-block', marginBottom: '7px' }}>
+        <Tag
+          data-testid={`${tag}_tag`}
+          closable
+          onClose={(e) => {
+            e.preventDefault()
+            handleTagClose(tag)
+          }}
+        >
+          {tag}
+        </Tag>
+      </span>
+    )
+  })
+
+  const ruleContent = <RuleContentWrapper>
+    {tagChild}
+    <Input
+      ref={inputRef}
+      style={{ width: '100%', border: 'none' }}
+      value={inputValue}
+      placeholder={$t({ defaultMessage: 'Enter MAC addresses, separated by comma or semicolon' })}
+      onChange={handleInputChange}
+      onBlur={() => handleInputConfirm(inputValue)}
+      onPressEnter={() => handleInputConfirm(inputValue)}
+    />
+  </RuleContentWrapper>
+
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE
+  )
+
+  const hasEditPermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT
+  )
+
+  const modeContent = () => {
+    if (isComponentMode || onlyAddMode.enable || drawerViewModeId !== '') {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setDrawerVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }}>
+        {onlyViewMode.viewText}
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l2AclPolicyId']}
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              disabled={visible}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer2SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        {hasEditPermission &&
+          <Button type='link'
+            disabled={visible || !l2AclPolicyId}
+            onClick={() => {
+              if (l2AclPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(l2AclPolicyId)
+                setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+              }
+            }
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
+      </AclGridCol>
+      <AclGridCol>
+        {hasCreatePermission &&
+          <Button type='link'
+            disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+              clearFieldsValue()
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modeContent()}
+      {isComponentMode && <ComponentModeForm
+        pageTitle={pageTitle}
+        breadcrumb={breadcrumb}
+        form={form}
+        editMode={editMode.isEdit || localEditMode.isEdit}
+        content={content}
+        handleContentClose={handleContentClose}
+        handleContentFinish={handleContentFinish} />
+      }
+      {!isComponentMode &&<Drawer
+        title={$t({ defaultMessage: 'Layer 2 Settings' })}
+        visible={visible}
+        onClose={() => handleContentClose()}
+        destroyOnClose={true}
+        children={content}
+        footer={
+          <Drawer.FormFooter
+            showAddAnother={false}
+            showSaveButton={!isViewMode()}
+            onCancel={handleContentClose}
+            onSave={handleContentFinish}
+          />
+        }
+        width={'730px'}
+      />}
+      <Drawer
+        title={$t({ defaultMessage: 'Add MAC Address' })}
+        visible={ruleDrawerVisible}
+        onClose={handleRuleDrawerClose}
+        destroyOnClose={true}
+        children={ruleContent}
+        footer={
+          <Drawer.FormFooter
+            showAddAnother={false}
+            onCancel={handleRuleDrawerClose}
+            onSave={async () => {
+              try {
+                if (!addressTags.length) {
+                  showToast({
+                    type: 'error',
+                    duration: 10,
+                    content: $t({ defaultMessage: 'No validate MAC Address could add' })
+                  })
+                } else {
+                  // eslint-disable-next-line max-len
+                  if (macAddressList.length + addressTags.length <= PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
+                    setMacAddressList([...macAddressList, ...addressTags.map(tag => {
+                      return {
+                        macAddress: tag
+                      }
+                    })])
+                  } else {
+                    showToast({
+                      type: 'error',
+                      duration: 10,
+                      content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+                    })
+                  }
+                }
+
+                handleRuleDrawerClose()
+              } catch (error) {
+                if (error instanceof Error) throw error
+              }
+            }}
+          />
+        }
+        width={'600px'}
+      />
+    </>
+  )
+}
+
+// eslint-disable-next-line max-len
+const useGetL2AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, notForQueryList: boolean): {
+  layer2SelectOptions: JSX.Element[], layer2List: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>({
+    useQueryFn: useGetEnhancedL2AclProfileListQuery,
+    useTemplateQueryFn: useGetL2AclPolicyTemplateListQuery,
+    skip: notForQueryList || isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
+  })
+
+  return {
+    layer2SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer2List: data?.data?.map(item => item.name) ?? []
+  }
+}

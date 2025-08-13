@@ -25,11 +25,13 @@ import {
   SwitchRbacUrlsInfo,
   SwitchClient,
   SwitchInformation,
-  ApWiredClientInfo
+  ApWiredClientInfo,
+  PersonaUrls,
+  Persona
 } from '@acx-ui/rc/utils'
-import { baseClientApi }                                                     from '@acx-ui/store'
-import { RequestPayload }                                                    from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal, TableResult, RequestFormData } from '@acx-ui/utils'
+import { baseClientApi }                                                                                                                    from '@acx-ui/store'
+import { RequestPayload }                                                                                                                   from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal, TableResult, RequestFormData, createNewTableHttpRequest, TableChangePayload, NewTableResult } from '@acx-ui/utils'
 
 import { isPayloadHasField, latestTimeFilter } from './utils'
 
@@ -103,7 +105,23 @@ export const clientApi = baseClientApi.injectEndpoints({
           })
         }
 
-        const aggregatedList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+        const identityMap = new Map<string, Persona>()
+        const identityClients = clientList.data.filter(c => c.identityId)
+        if (identityClients.length) {
+          const identityInfo = {
+            ...createNewTableHttpRequest({
+              apiInfo: PersonaUrls.searchPersonaList,
+              payload: { page: 1, pageSize: 10000 } as TableChangePayload
+            }),
+            body: JSON.stringify({
+              ids: identityClients.map(c=>c.identityId)
+            })
+          }
+          const identityQuery = await fetchWithBQ(identityInfo)
+          const identities = identityQuery.data as NewTableResult<Persona>
+          identities.content.forEach(identity => identityMap.set(identity.id, identity))
+        }
+        const aggregatedList = aggregatedRbacClientListData(clientList, apMacSwitchMap, identityMap)
 
         return clientListQuery.data
           ? { data: aggregatedList }
@@ -514,10 +532,10 @@ export const clientApi = baseClientApi.injectEndpoints({
 })
 
 export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>,
-  apSwitchInfoMap:Map<string, SwitchInformation>) => {
+  apSwitchInfoMap:Map<string, SwitchInformation>, identityInfoMap?: Map<string, Persona>) => {
   const data:ClientInfo[] = []
 
-  clientList?.data.forEach(client => {
+  clientList?.data?.forEach(client => {
     const apMac = client.apInformation?.macAddress ?? ''
     const switchInformation = apSwitchInfoMap.get(apMac)
 
@@ -531,6 +549,10 @@ export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>
       tmp.connectedTimeString =
         formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
       tmp.connectedTimeParssed = true
+    }
+
+    if (tmp.identityId) {
+      tmp.identityDisplayName = identityInfoMap?.get(tmp.identityId)?.displayName
     }
 
     data.push(tmp)

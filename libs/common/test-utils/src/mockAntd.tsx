@@ -22,6 +22,7 @@ export const MockSelect = ({
         {option.label}
       </option>
     ))}
+    {children}
   </select>
 )
 MockSelect.Option = 'option'

@@ -10,6 +10,7 @@ import { useIntl }                                                   from 'react
 
 import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
+import { usePathBasedOnConfigTemplate }                    from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useNavigate, useLocation, useParams }             from '@acx-ui/react-router-dom'
@@ -21,7 +22,6 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import {
   ApRadioTypeEnum,
@@ -95,7 +95,9 @@ export function RadioSettingsForm (props:{
   const [band320DrawerVisible, setBand320DrawerVisible] = useState(false)
 
   const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
-  const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
+  const aggressiveTxTooltip = context === 'ap' ?
+    $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' }) :
+    $t({ defaultMessage: 'Adjust the value based on the calibration TX power of each access point' })
   const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && (context === 'venue' || context ==='apGroup')) ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?

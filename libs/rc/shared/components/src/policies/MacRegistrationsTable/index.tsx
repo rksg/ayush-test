@@ -4,8 +4,9 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import {
   useDeleteMacRegistrationsMutation,
   useDeletePersonaDevicesMutation,
@@ -28,8 +29,7 @@ import {
 import { RequestPayload, type TableColumn }      from '@acx-ui/types'
 import { TableQuery, FILTER, SEARCH, getOpsApi } from '@acx-ui/utils'
 
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
-import { MacAddressDrawer }                                from '../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
+import { MacAddressDrawer } from '../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
 interface MacRegistrationTableProps {
   tableQuery: TableQuery<MacRegistration, RequestPayload, unknown>,
@@ -201,6 +201,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
           const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
           return (item ? <IdentityDetailsLink
             name={item.name}
+            displayName={item.displayName}
             personaId={item.id}
             personaGroupId={item.groupId}
             revoked={item.revoked}

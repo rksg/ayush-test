@@ -10,7 +10,8 @@ import {
   IpSecDhGroupEnum,
   IpSecAdvancedOptionEnum,
   IpSecRekeyTimeUnitEnum,
-  IpSecFailoverModeEnum
+  IpSecFailoverModeEnum,
+  IpSecTunnelUsageTypeEnum
 } from '../../models'
 
 import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
@@ -29,6 +30,7 @@ export interface Ipsec {
   espRekeyTime?: number
   espRekeyTimeUnit?: IpSecRekeyTimeUnitEnum
   advancedOption?: AdvancedOption
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
 }
 
 export interface IkeSecurityAssociation {
@@ -93,6 +95,8 @@ export interface IpsecViewData {
   activations: IpsecActivation[]
   venueActivations: IpsecWiredActivation[]
   apActivations: IpsecWiredApActivation[]
+  tunnelUsageType?: IpSecTunnelUsageTypeEnum
+  tunnelActivations?: IpsecTunnelActivation[]
 }
 
 export interface VenueTableUsageByIpsec extends IpsecActivation {
@@ -124,6 +128,10 @@ export interface IpsecWiredActivation extends ProfileLanVenueActivations {
 
 export interface IpsecWiredApActivation extends ProfileLanApActivations {
   softGreProfileId: string
+}
+
+export interface IpsecTunnelActivation {
+  tunnelProfileId: string
 }
 
 export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {

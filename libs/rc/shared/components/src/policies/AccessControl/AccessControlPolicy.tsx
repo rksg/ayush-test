@@ -9,7 +9,7 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 
-import { Layer2Drawer, Layer3Drawer, DeviceOSDrawer, ApplicationDrawer } from '../AccessControlForm'
+import { Layer2Component, Layer3Component, DeviceOSComponent, ApplicationComponent } from '../AccessControlForm'
 
 type AccessControlSubPolicyType =
   PolicyType.LAYER_2_POLICY |
@@ -79,19 +79,19 @@ export function AccessControlSubPolicyDrawers (
   }
 
   return <Form >
-    {accessControlSubPolicyVisible[PolicyType.LAYER_2_POLICY].visible && <Layer2Drawer
+    {accessControlSubPolicyVisible[PolicyType.LAYER_2_POLICY].visible && <Layer2Component
       {...convertProps(accessControlSubPolicyVisible[PolicyType.LAYER_2_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(ACCESS_CONTROL_SUB_POLICY_INIT_STATE)}
     />}
-    {accessControlSubPolicyVisible[PolicyType.LAYER_3_POLICY].visible && <Layer3Drawer
+    {accessControlSubPolicyVisible[PolicyType.LAYER_3_POLICY].visible && <Layer3Component
       {...convertProps(accessControlSubPolicyVisible[PolicyType.LAYER_3_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(ACCESS_CONTROL_SUB_POLICY_INIT_STATE)}
     />}
-    {accessControlSubPolicyVisible[PolicyType.DEVICE_POLICY].visible && <DeviceOSDrawer
+    {accessControlSubPolicyVisible[PolicyType.DEVICE_POLICY].visible && <DeviceOSComponent
       {...convertProps(accessControlSubPolicyVisible[PolicyType.DEVICE_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(ACCESS_CONTROL_SUB_POLICY_INIT_STATE)}
     />}
-    {accessControlSubPolicyVisible[PolicyType.APPLICATION_POLICY].visible && <ApplicationDrawer
+    {accessControlSubPolicyVisible[PolicyType.APPLICATION_POLICY].visible && <ApplicationComponent
       {...convertProps(accessControlSubPolicyVisible[PolicyType.APPLICATION_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(ACCESS_CONTROL_SUB_POLICY_INIT_STATE)}
     />}
@@ -104,13 +104,6 @@ export function useAccessControlSubPolicyVisible () {
 
 export function isAccessControlSubPolicy (type: ConfigTemplateType) {
   return type in AccessControlPolicyForTemplateCheckType
-}
-
-export function isNotAllowToApplyPolicy (type: ConfigTemplateType) {
-  return [
-    ...Object.values(AccessControlPolicyForTemplateCheckType),
-    ConfigTemplateType.AP_GROUP
-  ].includes(type)
 }
 
 export const subPolicyMappingType : Partial<Record<ConfigTemplateType, PolicyType>> = {
