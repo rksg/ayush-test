@@ -257,21 +257,19 @@ export function renderFilter <RecordType> (
         //value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
         onChange={(value: unknown | string) => {
           const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-          // eslint-disable-next-line max-len
-          const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
-          const filterValue = Array.isArray(value) ? value : filterArrayValue
-          let filters = {} as Filter
-
-          if (column.filterValueNullable === false &&
-              filterValue.filter(v => v != null).length === 0) {
-            filters = { ...filterValues, [key]: undefined } as Filter
-          } else {
-            filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
-          }
+          const filterValue = value
+          const filters = {
+            ...filterValues,
+            [key]: isValidValue ? filterValue : undefined
+          } as Filter
 
           column?.coordinatedKeys?.forEach(key => {
             delete filters[key]
           })
+
+          if(filterPersistence){
+            sessionStorage.setItem(`${settingsId}-filter`, JSON.stringify(filters))
+          }
 
           setFilterValues(filters)
         }}
