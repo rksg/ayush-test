@@ -95,6 +95,7 @@ COPY --from=acx-ui-lint /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 COPY --from=build /app/dist/apps ./dist/apps
  
 ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
  
 COPY run-tests-affected.sh /app/run-tests-affected.sh
 RUN chmod +x /app/run-tests-affected.sh
