@@ -121,7 +121,7 @@ const Message = (props:{
       {
         chat.role === MessageRole.AI && chat.sourceAgent === 'onboarding' &&
         <div className='onboarding-actions'>
-          <div onClick={goOnboardingAssistant}>Start Onboarding Assistant</div>
+          <div onClick={goOnboardingAssistant}>Start Onboarding Assistant!</div>
           <div>Maybe later</div>
         </div>
       }
