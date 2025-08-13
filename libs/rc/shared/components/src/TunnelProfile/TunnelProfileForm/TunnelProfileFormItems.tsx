@@ -27,7 +27,7 @@ import {
   serverIpAddressRegExp,
   servicePolicyNameRegExp,
   useIsEdgeFeatureReady,
-  TunnelProfileFormType
+  TunnelProfileViewData
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -75,7 +75,7 @@ async function validateMtuRequestTimeValue (value: number, mtuRequestUnit: strin
 }
 
 interface TunnelProfileFormItemsProps {
-  editData?: TunnelProfileFormType
+  editData?: TunnelProfileViewData
   isDefaultTunnelProfile?: boolean
   isTemplate?: boolean
 }
@@ -106,7 +106,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelType = useWatch('tunnelType')
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
-  const initialEdgeClusterId = editData?.edgeClusterId
+  const initialEdgeClusterId = editData?.destinationEdgeClusterId
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
