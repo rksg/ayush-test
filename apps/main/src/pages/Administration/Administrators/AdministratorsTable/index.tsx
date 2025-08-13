@@ -73,7 +73,6 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
-  // Conditional implementation based on feature flag
   const settingsId = 'administrators-table-column-settings'
 
   const defaultPayload = {

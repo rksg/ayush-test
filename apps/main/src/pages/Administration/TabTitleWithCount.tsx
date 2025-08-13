@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { transformDisplayNumber, Webhook } from '@acx-ui/rc/utils'
 import { useParams }                       from '@acx-ui/react-router-dom'
-import { useTableQuery }                   from '@acx-ui/utils'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, useTableQuery }                   from '@acx-ui/utils'
 
 export const AdminsTabTitleWithCount = () => {
   const { $t } = useIntl()
@@ -35,7 +35,7 @@ export const AdminsTabTitleWithCount = () => {
     params: { tenantId },
     payload: defaultPayload
   }, {
-    pollingInterval: 30_000,
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
     skip: !isPaginationEnabled
   })
 
@@ -43,7 +43,7 @@ export const AdminsTabTitleWithCount = () => {
     params: { tenantId },
     payload: { filters: defaultPayload.filters }
   }, {
-    pollingInterval: 30_000,
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
     skip: isPaginationEnabled
   })
 
