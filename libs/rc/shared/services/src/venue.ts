@@ -2434,6 +2434,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             const ipsecProfileQuery = await fetchWithBQ(
               { ...ipsecProfileReq,
                 body: JSON.stringify({
+                  fields: ['id', 'venueActivations'],
                   filters: {
                     'venueActivations.venueId': [venueId]
                   }

@@ -18,7 +18,7 @@ export function getPendoConfig (): PendoParameters {
       full_name: `${user.firstName} ${user.lastName}`,
       role: tenant.role,
       region: get('MLISA_REGION'),
-      version: get('MLISA_VERSION'),
+      version: 'ruckus-ai',
       varTenantId: user.accountId,
       support: tenant.support,
       delegated: user.accountId !== tenant.id,
