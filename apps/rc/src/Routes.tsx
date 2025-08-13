@@ -100,6 +100,9 @@ import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/O
 import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
+import { CageDetails }                              from './pages/Devices/Olt/CageDetails'
+import { OltDetails }                               from './pages/Devices/Olt/OltDetails'
+import OltForm                                      from './pages/Devices/Olt/OltForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -335,6 +338,7 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
+      {useOltRoutes()}
       {useEdgeOltRoutes()}
       <Route path='devices/edge' element={<Edges />} />
       <Route
@@ -502,10 +506,24 @@ function NetworkRoutes () {
   )
 }
 
+const useOltRoutes = () => {
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
+
+  return isNokiaOltEnabled ? <>
+    <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
+    <Route path='devices/optical/:action' element={<OltForm />} />
+    <Route path='devices/optical/:oltId/:action' element={<OltForm />} />
+    <Route path='devices/optical/:oltId/details' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/details/:activeTab' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/cages/:cageId' element={<CageDetails />} />
+  </> : null
+}
+
 const useEdgeOltRoutes = () => {
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
-  return isEdgeOltReady ? <>
+  return isEdgeOltReady && !isNokiaOltEnabled ? <>
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
     <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
   </> : null

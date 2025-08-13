@@ -3,9 +3,11 @@ import { defineMessage } from 'react-intl'
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecFailoverModeEnum,
+  IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum,
   IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum,
-  IpSecRetryDurationEnum } from '../../models/IpSecEnum'
+  IpSecRetryDurationEnum,
+  IpSecTunnelUsageTypeEnum } from '../../models/IpSecEnum'
+import { EspProposal, IkeProposal } from '../../types/policies/ipsec'
 
 
 export const defaultIpsecFields = [
@@ -67,7 +69,7 @@ export const getIpsecAuthTypeOptions = () => {
   ]
 }
 
-export  const getRekeyTimeUnitOptions = () => {
+export const getRekeyTimeUnitOptions = () => {
   const { $t } = getIntl()
 
   return [
@@ -75,6 +77,54 @@ export  const getRekeyTimeUnitOptions = () => {
     { label: $t({ defaultMessage: 'Hour(s)' }), value: IpSecRekeyTimeUnitEnum.HOUR },
     { label: $t({ defaultMessage: 'Minute(s)' }), value: IpSecRekeyTimeUnitEnum.MINUTE }
   ]
+}
+
+export const getTunnelUsageTypeOptions = () => {
+  const { $t } = getIntl()
+
+  return [
+    {
+      label: $t({ defaultMessage: 'For RUCKUS Devices(VxLAN GPE)' }),
+      value: IpSecTunnelUsageTypeEnum.VXLAN_GPE
+    },
+    {
+      label: $t({ defaultMessage: 'For 3rd Party Devices(SoftGRE)' }),
+      value: IpSecTunnelUsageTypeEnum.SOFT_GRE
+    }
+  ]
+}
+
+
+export const getTunnelUsageTypeDisplayName = (type: IpSecTunnelUsageTypeEnum | undefined) => {
+  if (!type) return ''
+
+  return getTunnelUsageTypeOptions().find(o => o.value === type)?.label
+}
+
+export const getIkeProposalsDisplayText = (proposals: IkeProposal[] | undefined) => {
+  if (!proposals?.length) {
+    return ['All']
+  }
+
+  const retArr: string[] = []
+  proposals.forEach((proposal: IkeProposal) => {
+    retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+      '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
+  })
+  return retArr
+}
+
+export const getEspProposalsDisplayText = (proposals: EspProposal[] | undefined) => {
+  if (!proposals?.length) {
+    return ['All']
+  }
+
+  const retArr: string[] = []
+  proposals.forEach((proposal: EspProposal) => {
+    retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+      '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.dhGroup}`)
+  })
+  return retArr
 }
 
 export const ipSecPskValidator = (value: string) => {

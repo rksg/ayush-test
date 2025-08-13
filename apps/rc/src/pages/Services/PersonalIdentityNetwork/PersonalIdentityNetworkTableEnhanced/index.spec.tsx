@@ -2,8 +2,8 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }                                         from '@acx-ui/feature-toggle'
-import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { Features }                                                                  from '@acx-ui/feature-toggle'
+import { edgeApi, networkApi, pinApi, switchApi, useWifiNetworkListQuery, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
@@ -61,6 +61,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useIsEdgeFeatureReady: (ff: string) => mockUseIsEdgeFeatureReady(ff)
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
+const mockNetworkOptions = useWifiNetworkListQuery as jest.Mock
+
 describe('PersonalIdentityNetworkTableEnhanced', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t' + getServiceRoutePath({
@@ -102,6 +108,8 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
         EdgeUrlsInfo.getPinEdgeCompatibilities.url,
         (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities)))
     )
+
+    mockNetworkOptions.mockReturnValue({ networkOptions: mockedNetworkOptions.data })
   })
 
   it('should create PersonalIdentityNetwork list successfully', async () => {

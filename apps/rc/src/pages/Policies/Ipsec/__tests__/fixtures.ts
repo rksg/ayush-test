@@ -210,7 +210,10 @@ export const mockIpSecDetailFromListQueryWithVxlan = {
           authAlg: IpSecIntegrityAlgorithmEnum.SHA384,
           dhGroup: IpSecDhGroupEnum.ECP384
         }] as EspProposal[],
-        activations: []
+        activations: [],
+        tunnelActivations: [{
+          tunnelProfileId: 'tunnelProfileId1'
+        }]
       }, {
         ...mockIpSecDetailFromListQueryById.data.data[0],
         name: 'ipsecSoftgreProfileName',

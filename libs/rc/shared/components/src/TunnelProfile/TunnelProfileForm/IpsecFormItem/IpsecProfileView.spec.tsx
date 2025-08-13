@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
-import { getEspProposalText, getIkeProposalText } from '@acx-ui/edge/components'
-import { IpsecViewData }                          from '@acx-ui/rc/utils'
-import { render, screen }                         from '@acx-ui/test-utils'
+import { getVxlanEspProposalText, getVxlanIkeProposalText } from '@acx-ui/edge/components'
+import { IpsecViewData }                                    from '@acx-ui/rc/utils'
+import { render, screen }                                   from '@acx-ui/test-utils'
 
 import { IpsecProfileView } from './IpsecProfileView'
 
 // Mock dependencies
 jest.mock('@acx-ui/edge/components', () => ({
-  getIkeProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048'),
-  getEspProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048')
+  getVxlanIkeProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048'),
+  getVxlanEspProposalText: jest.fn().mockReturnValue('AES128-SHA1-MODP2048')
 }))
 
 describe('IpsecProfileView', () => {
@@ -64,14 +64,14 @@ describe('IpsecProfileView', () => {
     })
 
     it('should display IKE proposal text', () => {
-      jest.mocked(getIkeProposalText).mockReturnValue('AES256-SHA256-MODP4096')
+      jest.mocked(getVxlanIkeProposalText).mockReturnValue('AES256-SHA256-MODP4096')
       render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
 
       expect(screen.getByText('AES256-SHA256-MODP4096')).toBeInTheDocument()
     })
 
     it('should display ESP proposal text', () => {
-      jest.mocked(getEspProposalText).mockReturnValue('AES256-SHA256-MOD3072')
+      jest.mocked(getVxlanEspProposalText).mockReturnValue('AES256-SHA256-MOD3072')
       render(<IpsecProfileView selectedIpsecProfile={mockIpsecProfile} />)
 
       expect(screen.getByText('AES256-SHA256-MOD3072')).toBeInTheDocument()

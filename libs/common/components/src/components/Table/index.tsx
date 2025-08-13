@@ -80,9 +80,12 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps
     filterableWidth?: number
     searchableWidth?: number
+    searchPlaceholder?: string
     stickyHeaders?: boolean
     stickyPagination?: boolean
     stickyOffsetY?: number
+    enableClearFilters?: boolean
+    enableSettingsColumn?: boolean
     enableResizableColumn?: boolean
     enablePagination?: boolean
     onDisplayRowChange?: (displayRows: RecordType[]) => void
@@ -160,6 +163,8 @@ function Table <RecordType extends Record<string, any>> ({
   onDisplayRowChange,
   stickyHeaders,
   stickyPagination,
+  enableClearFilters = true,
+  enableSettingsColumn = true,
   enablePagination = false,
   selectedFilters = {},
   filterPersistence = false,
@@ -167,6 +172,7 @@ function Table <RecordType extends Record<string, any>> ({
   preventRenderHeader,
   optionLabelProp,
   columnsToFilterChildrenRowBasedOnParentRow,
+  searchPlaceholder = undefined,
   ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
@@ -266,7 +272,7 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    const cols = type === 'tall'
+    const cols = type === 'tall' && enableSettingsColumn
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
@@ -566,7 +572,7 @@ function Table <RecordType extends Record<string, any>> ({
         {Boolean(searchables.length) && highLightValue === undefined &&
           renderSearch<RecordType>(
             intl, searchables, searchValue, setSearchValue, searchWidth,
-            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : undefined
+            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : searchPlaceholder
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
@@ -596,7 +602,7 @@ function Table <RecordType extends Record<string, any>> ({
         Boolean(activeFilters.length) ||
         (Boolean(searchValue) && searchValue.trim().length >= MIN_SEARCH_LENGTH &&
           highLightValue === undefined) ||
-        isGroupByActive) && type !== 'compactWidget'
+        isGroupByActive) && type !== 'compactWidget' && enableClearFilters
         && <Button
           style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
           onClick={() => {
