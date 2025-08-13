@@ -12,12 +12,13 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   useSoftGreProfileLimitedSelection,
-  useIpsecProfileLimitedSelection
+  useIpsecProfileLimitedSelection,
+  useIsConfigTemplateEnabledByType
 }
   from '@acx-ui/rc/components'
 import {
@@ -62,7 +63,8 @@ import {
   SoftGreDuplicationChangeState,
   Voter,
   mergeLanPortSettings,
-  IpsecOptionChangeState
+  IpsecOptionChangeState,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -161,7 +163,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   // template
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
-  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  const isEthernetPortTemplate = useIsConfigTemplateEnabledByType(ConfigTemplateType.ETHERNET_PORT_PROFILE)
 
   const { defaultLanPortsByModelMap, isDefaultPortsLoading } = useGetDefaultVenueLanPort(venueId)
 

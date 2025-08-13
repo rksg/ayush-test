@@ -8,6 +8,7 @@ import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/compone
 import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { useIsConfigTemplateEnabledByType }                from '@acx-ui/rc/components'
 import { useLazyApListQuery }                              from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
@@ -60,7 +61,8 @@ export function NetworkingTab () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSupportVenueRadiusCustom = useIsSplitOn(Features.WIFI_VENUE_RADIUS_CUSTOM_TOGGLE)
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
-  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEthernetPortTemplate = useIsConfigTemplateEnabledByType(ConfigTemplateType.ETHERNET_PORT_PROFILE)
   const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
