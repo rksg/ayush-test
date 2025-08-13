@@ -9,7 +9,7 @@ import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
-  useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetCustomRolesQuery,
   useGetDelegationsQuery,
   useGetPrivilegeGroupsQuery,
@@ -50,8 +50,18 @@ const UserPrivileges = () => {
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const adminList = useGetAdminListQuery(
-    { params }, { skip: !isGroupBasedLoginEnabled })
+
+  const countPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'username'],
+    searchString: '',
+    filters: {}
+  }
+  const adminList = useGetAdminListPaginatedQuery(
+    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled })
   const ssoGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
@@ -62,7 +72,7 @@ const UserPrivileges = () => {
   const customRoleList = useGetCustomRolesQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
 
-  const adminCount = adminList?.data?.length! || 0
+  const adminCount = adminList?.data?.totalCount || 0
   const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
   const privilegeGroupCount = privilegeGroupList.data?.length! || 0

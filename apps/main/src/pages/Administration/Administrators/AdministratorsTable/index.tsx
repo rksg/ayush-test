@@ -16,7 +16,7 @@ import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
 import { MSPUtils }                                 from '@acx-ui/msp/utils'
 import {
-  useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
@@ -32,7 +32,7 @@ import {
   useUserProfileContext,
   roleStringMap
 } from '@acx-ui/user'
-import { AccountType, getOpsApi } from '@acx-ui/utils'
+import { AccountType, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -71,7 +71,33 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
-  const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
+  const settingsId = 'administrators-table-column-settings'
+
+  const defaultPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetAdminListPaginatedQuery,
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields,
+      searchString: defaultPayload.searchString
+    },
+    pagination: { settingsId }
+  })
+
+  const adminList = tableQuery.data?.data || []
+
+  const privilegeGroupOption = (adminList && adminList.length > 0)
+    ? _.uniq(adminList.filter(item => !!item.role).map(c=>c.role))
+    : []
 
   const [deleteAdmin, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminMutation()
   const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
@@ -131,16 +157,16 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       searchable: true,
-      dataIndex: 'fullName',
+      dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('fullName', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
-      key: 'email',
+      key: 'username',
       searchable: true,
-      dataIndex: 'email',
-      sorter: { compare: sortProp('email', defaultSort) }
+      dataIndex: 'username',
+      sorter: { compare: sortProp('username', defaultSort) }
     },
     ...(idmDecouplngFF ?
       [
@@ -149,6 +175,16 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
           key: 'authenticationId',
           dataIndex: 'authenticationId',
           sorter: { compare: sortProp('authenticationId', defaultSort) },
+          filterable: [
+            {
+              key: null,
+              value: $t({ defaultMessage: 'RUCKUS' })
+            },
+            {
+              key: 'SSO',
+              value: $t({ defaultMessage: 'SSO with 3rd Party' })
+            }
+          ],
           render: function (_: unknown, row: Administrator) {
             return row.authenticationId
               ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
@@ -163,6 +199,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       key: 'role',
       dataIndex: 'role',
       sorter: { compare: sortProp('role', defaultSort) },
+      filterable: privilegeGroupOption?.map(role => ({
+        key: role as string,
+        value: roleStringMap[role as RolesEnum]
+          ? $t(roleStringMap[role as RolesEnum]) : role as string }))
+        ?.sort(sortProp('value', defaultSort)),
       render: function (_, row) {
         return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
       }
@@ -254,8 +295,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading || !userProfileData,
-        isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
+      { isLoading: tableQuery.isLoading || !userProfileData,
+        isFetching: tableQuery.isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
       {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
@@ -264,6 +305,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         </Subtitle>
       </UI.TableTitleWrapper>}
       <Table
+        settingsId={settingsId}
         columns={columns}
         dataSource={adminList}
         rowKey='id'
@@ -272,6 +314,9 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
             row: TooltipRow
           }
         }}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}

@@ -9,7 +9,7 @@ import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
-  useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetDelegationsQuery,
   useGetTenantAuthenticationsQuery,
   useGetTenantDetailsQuery
@@ -36,15 +36,26 @@ const Administrators = () => {
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const adminList = useGetAdminListQuery(
-    { params }, { skip: !isGroupBasedLoginEnabled })
+
+  const countPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const adminList = useGetAdminListPaginatedQuery(
+    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled })
   const adminGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled }
   )
 
-  const adminCount = adminList?.data?.length! || 0
+  const adminCount = adminList?.data?.totalCount || 0
   const adminGroupCount = adminGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
 

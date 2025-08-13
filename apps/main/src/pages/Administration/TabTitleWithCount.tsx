@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetDelegationsQuery,
   useGetNotificationRecipientsPaginatedQuery,
   useGetNotificationRecipientsQuery,
@@ -19,10 +19,19 @@ export const AdminsTabTitleWithCount = () => {
   const { tenantId, venueId, serialNumber } = params
 
   const defaultPayload = {
+    page: 0,
+    pageSize: 10,
+    sortField: '',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'email'],
+    searchString: '',
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
-  const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
+  const adminList = useGetAdminListPaginatedQuery({
+    params: { tenantId },
+    payload: defaultPayload
+  }, {
     pollingInterval: 30_000
   })
 
@@ -30,7 +39,7 @@ export const AdminsTabTitleWithCount = () => {
     { params }
   )
 
-  const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
+  const adminCount = (adminList?.data?.totalCount || 0) + (thirdPartyAdminList.data?.length || 0)
   return <>{$t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}</>
 }
 

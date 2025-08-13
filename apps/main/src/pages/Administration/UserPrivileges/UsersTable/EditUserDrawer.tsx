@@ -179,14 +179,14 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Name' })}
           >
-            {`${editData.name} ${editData.lastName}`}
+            {`${editData.firstName || ''} ${editData.lastName || ''}`.trim()}
           </Form.Item>
         )}
 
         <Form.Item
           label={$t({ defaultMessage: 'Email' })}
         >
-          {editData.email}
+          {editData.username}
         </Form.Item>
         <PrivilegeGroupSelector disabled={editNameOnly}/>
       </Form>

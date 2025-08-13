@@ -17,14 +17,14 @@ import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
 import { MSPUtils }                                 from '@acx-ui/msp/utils'
 import {
-  useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
 import { Administrator, sortProp, defaultSort, AdministrationUrlsInfo }                               from '@acx-ui/rc/utils'
 import { RolesEnum }                                                                                  from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, noDataDisplay }                                                      from '@acx-ui/utils'
+import { AccountType, getOpsApi, noDataDisplay, useTableQuery, FILTER, SEARCH }                       from '@acx-ui/utils'
 
 import * as UI from '../../Administrators/styledComponents'
 
@@ -66,7 +66,29 @@ const UsersTable = (props: UsersTableProps) => {
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
-  const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
+  const settingsId = 'users-table-column-settings'
+
+  const defaultPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name','username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetAdminListPaginatedQuery,
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields,
+      searchString: defaultPayload.searchString
+    },
+    pagination: { settingsId }
+  })
+
+  const adminList = tableQuery.data?.data || []
 
   const [deleteAdmin, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminMutation()
   const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
@@ -79,6 +101,15 @@ const UsersTable = (props: UsersTableProps) => {
     setEditMode(false)
     setEditData({} as Administrator)
     handleOpenDialog()
+  }
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const processedFilters = { ...customFilters }
+    if (processedFilters.authenticationType && Array.isArray(processedFilters.authenticationType)) {
+      processedFilters.authenticationType = processedFilters.authenticationType[0] as never
+    }
+
+    tableQuery.handleFilterChange(processedFilters, customSearch)
   }
 
   const isAllPrimeAdminSelected = (selectedRows: Administrator[]) => {
@@ -130,15 +161,15 @@ const UsersTable = (props: UsersTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       searchable: true,
-      dataIndex: 'fullName',
-      sorter: { compare: sortProp('fullName', defaultSort) }
+      dataIndex: 'name',
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
-      key: 'email',
+      key: 'username',
       searchable: true,
-      dataIndex: 'email',
-      sorter: { compare: sortProp('email', defaultSort) }
+      dataIndex: 'username',
+      sorter: { compare: sortProp('username', defaultSort) }
     },
     ...(notificationAdminContextualEnabled ?
       [
@@ -160,9 +191,21 @@ const UsersTable = (props: UsersTableProps) => {
       [
         {
           title: $t({ defaultMessage: 'Authentication Type' }),
-          key: 'authenticationId',
-          dataIndex: 'authenticationId',
-          sorter: { compare: sortProp('authenticationId', defaultSort) },
+          key: 'authenticationType',
+          dataIndex: 'authenticationType',
+          filterKey: 'authenticationType',
+          filterMultiple: false,
+          sorter: { compare: sortProp('authenticationType', defaultSort) },
+          filterable: [
+            {
+              key: 'Ruckus',
+              value: $t({ defaultMessage: 'RUCKUS' })
+            },
+            {
+              key: 'SSO',
+              value: $t({ defaultMessage: 'SSO with 3rd Party' })
+            }
+          ],
           render: function (_: unknown, row: Administrator) {
             return row.authenticationId
               ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
@@ -279,8 +322,8 @@ const UsersTable = (props: UsersTableProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading || !userProfileData,
-        isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
+      { isLoading: tableQuery.isLoading || !userProfileData,
+        isFetching: tableQuery.isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}
     style={{ minHeight: 45 }}
@@ -290,7 +333,7 @@ const UsersTable = (props: UsersTableProps) => {
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
       </UI.TableTitleWrapper>}
-      <Table settingsId='users-table-column-settings'
+      <Table settingsId={settingsId}
         columns={columns}
         dataSource={adminList}
         rowKey='id'
@@ -299,6 +342,9 @@ const UsersTable = (props: UsersTableProps) => {
             row: TooltipRow
           }
         }}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
         rowActions={hasRowPermissions
           ? filterByAccess(rowActions)
           : undefined}
