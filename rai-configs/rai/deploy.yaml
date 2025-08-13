@@ -1,0 +1,41 @@
+- configs_dir: acx-ui
+  enabled: true
+  chart:
+    name: rai_standard
+  values_configmaps:
+  - values-acx-ui
+  service:
+    name: acx-ui
+    namespace: mlisa-core
+    project: mlisa-core
+    shortName: rsa-mlisa-ui # keep same deployment as existing
+    image:
+      path: acx-ui
+
+- configs_dir: rsa-ui-fragments
+  enabled: true
+  chart:
+    name: rai_standard
+  values_configmaps:
+  - values-rsa-ui-fragments
+  service:
+    name: rsa-ui-fragments
+    namespace: mlisa-core
+    project: mlisa-core
+    shortName: rsa-ui-fragments
+    image:
+      path: acx-ui
+
+- configs_dir: rsa-ui-fragments-export
+  enabled: true
+  chart:
+    name: rai_standard
+  values_configmaps:
+  - values-rsa-ui-fragments-export
+  service:
+    name: rsa-ui-fragments-export
+    namespace: mlisa-core
+    project: mlisa-core
+    shortName: rsa-ui-fragments-export
+    image:
+      path: acx-ui
