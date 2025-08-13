@@ -132,8 +132,8 @@ const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
     }, skip: !isTemplate })
 
   return {
-    defaultLanPortsByModelMap: isTemplate? templateLanPortsMap : lanPortsMap,
-    isDefaultPortsLoading: isTemplate? isTemplateLoading : isLoading
+    defaultLanPortsByModelMap: isTemplate ? templateLanPortsMap : lanPortsMap,
+    isDefaultPortsLoading: isTemplate ? isTemplateLoading : isLoading
   }
 }
 
