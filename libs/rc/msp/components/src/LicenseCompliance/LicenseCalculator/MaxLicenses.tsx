@@ -189,11 +189,13 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
-      {licenseV2Data.map((item) => {
-        return <Row style={{
-          alignItems: 'center',
-          marginBottom: '5px'
-        }}>
+      {licenseV2Data.map((item, index) => {
+        return <Row
+          key={index}
+          style={{
+            alignItems: 'center',
+            marginBottom: '5px'
+          }}>
           <Col style={{
             width: '210px'
           }}>
