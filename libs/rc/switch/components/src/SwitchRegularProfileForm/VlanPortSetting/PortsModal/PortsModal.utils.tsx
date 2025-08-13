@@ -2,10 +2,9 @@ import { FormInstance }      from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import {
-  SwitchSlot2 as SwitchSlot,
-  ICX_MODELS_MODULES
-} from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES }        from '@acx-ui/rc/switch/utils'
+import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
+
 
 import { PortsType } from '../index.utils'
 

@@ -8,15 +8,15 @@ import { Button, cssStr, StepsForm, Tooltip, useStepFormContext }          from 
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery } from '@acx-ui/rc/services'
 import {
-  getSwitchModel
+  getSwitchModel,
+  ICX_MODELS_MODULES
 } from '@acx-ui/rc/switch/utils'
 import {
   checkObjectNotExists,
   CliTemplateVariable,
   SwitchProfileModel,
   useConfigTemplateQueryFnSwitcher,
-  whitespaceOnlyRegExp,
-  ICX_MODELS_MODULES
+  whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import { useParams }   from '@acx-ui/react-router-dom'
 import { TableResult } from '@acx-ui/utils'
