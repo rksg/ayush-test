@@ -33,9 +33,33 @@ export const QRCodeModalStyle = `
   .ant-modal-wrap .qr-code-modal .ant-btn-primary {
     width: 240px !important;
     margin: 0 auto !important;
-    display: block !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     background-color: white !important;
     color: black !important;
     border-color: black !important;
+  }
+
+  .qr-code-modal .ant-btn-primary .anticon,
+  div.qr-code-modal .ant-modal-footer .ant-btn-primary .anticon,
+  .ant-modal-wrap .qr-code-modal .ant-btn-primary .anticon {
+    color: black !important;
+  }
+
+  .qr-code-modal .ant-btn-primary svg,
+  div.qr-code-modal .ant-modal-footer .ant-btn-primary svg,
+  .ant-modal-wrap .qr-code-modal .ant-btn-primary svg {
+    fill: black !important;
+    color: black !important;
+    stroke: black !important;
+  }
+
+  .qr-code-modal .ant-btn-primary svg *,
+  div.qr-code-modal .ant-modal-footer .ant-btn-primary svg *,
+  .ant-modal-wrap .qr-code-modal .ant-btn-primary svg * {
+    fill: black !important;
+    color: black !important;
+    stroke: black !important;
   }
 `

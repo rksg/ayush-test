@@ -7,7 +7,7 @@ import { useIntl }    from 'react-intl'
 import { Button, Modal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { ChatbotLink }            from '@acx-ui/icons'
-import { CopyOutlined }           from '@acx-ui/icons-new'
+import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
 
 import { StyledChatbotLink, StyledQRLink, QRCodeModalStyle } from './styledComponents'
 
@@ -190,11 +190,14 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
           style: {
             width: '240px',
             margin: '0 auto',
-            display: 'block',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             backgroundColor: 'white',
             color: 'black',
             borderColor: 'black'
-          }
+          },
+          icon: <DownloadOutlined />
         }}
       >
         <div style={{ textAlign: 'center' }}>
