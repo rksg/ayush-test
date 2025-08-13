@@ -1,4 +1,5 @@
 import '@acx-ui/theme'
+
 async function initialize () {
   const [
     React,
