@@ -1,0 +1,13 @@
+- configs_dir: acx-ui
+  enabled: true
+  chart:
+    name: rai_standard
+  values_configmaps:
+  - values-acx-ui
+  service:
+    name: acx-ui
+    namespace: mlisa-core
+    project: mlisa-core
+    shortName: rsa-mlisa-ui # keep same deployment as existing
+    image:
+      path: acx-ui

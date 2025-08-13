@@ -4,8 +4,63 @@ import { storiesOf }                       from '@storybook/react'
 import { Button, Tag, type TransferProps } from 'antd'
 import { TransferItem }                    from 'antd/lib/transfer'
 
-import { Transfer } from '.'
+import { Transfer, TransferType } from '.'
 
+const mockData = [{
+  name: 'item1', key: 'item1'
+}, {
+  name: 'item2', key: 'item2'
+}, {
+  name: 'item3', key: 'item3'
+}, {
+  name: 'item4', key: 'item4'
+},{
+  name: 'item5', key: 'item5'
+}]
+
+const tableLeftColumns = [{
+  dataIndex: 'name',
+  title: 'Name'
+}, {
+  dataIndex: 'key',
+  title: 'key'
+}, {
+  dataIndex: 'key',
+  title: 'Tag',
+  render: (tag: string) => (
+    <Tag style={{ marginInlineEnd: 0 }} color='cyan'>
+      {tag.toUpperCase()}
+    </Tag>
+  )
+}]
+
+const tableRightColumns = [{
+  dataIndex: 'name',
+  title: 'Name'
+}]
+
+const treeData = [{
+  key: 'group-1',
+  name: 'Group 1',
+  isGroupLevel: true,
+  children: [
+    { key: 'group-1-item-1', name: 'Item 1' },
+    { key: 'group-1-item-2', name: 'Item 2' },
+    { key: 'group-1-item-3', name: 'Item 3' },
+    { key: 'group-1-item-4', name: 'Item 4' },
+    { key: 'group-1-item-5', name: 'Item 5' }
+  ]
+}, {
+  key: 'group-2',
+  name: 'Group 2',
+  isGroupLevel: true,
+  children: [
+    { key: 'group-2-item-1', name: 'Item 1' },
+    { key: 'group-2-item-2', name: 'Item 2' },
+    { key: 'group-2-item-3', name: 'Item 3' },
+    { key: 'group-2-item-4', name: 'Item 4' }
+  ]
+}]
 
 storiesOf('Transfer', module)
   .add('Basic', () => {
@@ -19,17 +74,7 @@ storiesOf('Transfer', module)
         listStyle={{ width: 250, height: 300 }}
         showSearch
         showSelectAll={false}
-        dataSource={[{
-          name: 'item1', key: 'item1'
-        }, {
-          name: 'item2', key: 'item2'
-        }, {
-          name: 'item3', key: 'item3'
-        }, {
-          name: 'item4', key: 'item4'
-        },{
-          name: 'item5', key: 'item5'
-        }]}
+        dataSource={mockData}
         render={item => item.name}
         operations={['Add', 'Remove']}
         titles={['Available Items', 'Selected Items']}
@@ -54,44 +99,9 @@ storiesOf('Transfer', module)
   })
   .add('Table', () => {
     const [targetKeys, setTargetKeys] = useState<string[]>([])
-    const itemOptions = [{
-      name: 'item1', key: 'item1'
-    }, {
-      name: 'item2', key: 'item2'
-    }, {
-      name: 'item3', key: 'item3'
-    }, {
-      name: 'item4', key: 'item4'
-    },{
-      name: 'item5', key: 'item5'
-    }] as TransferItem[]
-
-    const leftColumns = [
-      {
-        dataIndex: 'name',
-        title: 'Name'
-      },
-      {
-        dataIndex: 'key',
-        title: 'key'
-      },
-      {
-        dataIndex: 'key',
-        title: 'Tag',
-        render: (tag: string) => (
-          <Tag style={{ marginInlineEnd: 0 }} color='cyan'>
-            {tag.toUpperCase()}
-          </Tag>
-        )
-      }
-    ]
-
-    const rightColumns = [
-      {
-        dataIndex: 'name',
-        title: 'Name'
-      }
-    ]
+    const itemOptions = mockData as TransferItem[]
+    const leftColumns = tableLeftColumns
+    const rightColumns = tableRightColumns
 
     const handleChange = (newTargetKeys: string[]) => {
       setTargetKeys(newTargetKeys)
@@ -100,7 +110,7 @@ storiesOf('Transfer', module)
     return <div>
       <Transfer
         listStyle={{ width: 400, height: 400 }}
-        type={'table'}
+        type={TransferType.TABLE}
         tableData={itemOptions}
         leftColumns={leftColumns}
         rightColumns={rightColumns}
@@ -124,56 +134,11 @@ storiesOf('Transfer', module)
   .add('Table with footer', () => {
     const [targetKeys, setTargetKeys] = useState<string[]>([])
     const [isHide, setIsHide] = useState(false)
-    const [tableDataOption, setTableDataOption] = useState([{
-      name: 'item1', key: 'item1'
-    }, {
-      name: 'item2', key: 'item2'
-    }, {
-      name: 'item3', key: 'item3'
-    }, {
-      name: 'item4', key: 'item4'
-    },{
-      name: 'item5', key: 'item5'
-    }] as TransferItem[])
+    const [tableDataOption, setTableDataOption] = useState(mockData as TransferItem[])
 
-    const itemOptions = [{
-      name: 'item1', key: 'item1'
-    }, {
-      name: 'item2', key: 'item2'
-    }, {
-      name: 'item3', key: 'item3'
-    }, {
-      name: 'item4', key: 'item4'
-    },{
-      name: 'item5', key: 'item5'
-    }]
-
-    const leftColumns = [
-      {
-        dataIndex: 'name',
-        title: 'Name'
-      },
-      {
-        dataIndex: 'key',
-        title: 'key'
-      },
-      {
-        dataIndex: 'key',
-        title: 'Tag',
-        render: (tag: string) => (
-          <Tag style={{ marginInlineEnd: 0 }} color='cyan'>
-            {tag.toUpperCase()}
-          </Tag>
-        )
-      }
-    ]
-
-    const rightColumns = [
-      {
-        dataIndex: 'name',
-        title: 'Name'
-      }
-    ]
+    const itemOptions = mockData
+    const leftColumns = tableLeftColumns
+    const rightColumns = tableRightColumns
 
     const handleChange = (newTargetKeys: string[]) => {
       setTargetKeys(newTargetKeys)
@@ -204,13 +169,13 @@ storiesOf('Transfer', module)
           </Button>
         )
       }
-      return <></>
+      return <> </>
     }
 
     return <div>
       <Transfer
         listStyle={{ width: 400, height: 400 }}
-        type={'table'}
+        type={TransferType.TABLE}
         tableData={tableDataOption}
         leftColumns={leftColumns}
         rightColumns={rightColumns}
@@ -229,6 +194,69 @@ storiesOf('Transfer', module)
         footer={renderFooter}
         operations={['Add', 'Remove']}
         titles={['Available Items', 'Selected Items']}
+      />
+    </div>
+  })
+  .add('Grouped Tree Transfer (Single Selection)', () => {
+    const [targetKeys, setTargetKeys] = useState<string[]>([])
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+    return <div>
+      <Transfer
+        type={TransferType.GROUPED_TREE}
+        listStyle={{ width: 250, height: 300 }}
+        showSelectAll={false}
+        dataSource={treeData}
+        render={(item) => item.name}
+        operations={['Add', 'Remove']}
+        titles={['Available Items', 'Selected Items']}
+        targetKeys={targetKeys}
+        onChange={setTargetKeys}
+        selectedKeys={selectedKeys}
+        onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+        enableMultiselect={false}
+      />
+    </div>
+  })
+  .add('Grouped Tree Transfer (Multiple Selection)', () => {
+    const [targetKeys, setTargetKeys] = useState<string[]>([])
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+    return <div>
+      <Transfer
+        type={TransferType.GROUPED_TREE}
+        listStyle={{ width: 250, height: 300 }}
+        showSelectAll={false}
+        dataSource={treeData}
+        render={(item) => item.name}
+        operations={['Add', 'Remove']}
+        titles={['Available Items', 'Selected Items']}
+        targetKeys={targetKeys}
+        onChange={setTargetKeys}
+        selectedKeys={selectedKeys}
+        onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+      />
+    </div>
+  })
+  .add('Grouped Tree Transfer (Selectable Group Titles)', () => {
+    const [targetKeys, setTargetKeys] = useState<string[]>([])
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+
+    return <div>
+      <Transfer
+        type={TransferType.GROUPED_TREE}
+        listStyle={{ width: 250, height: 300 }}
+        showSelectAll={false}
+        dataSource={treeData}
+        render={(item) => item.name}
+        operations={['Add', 'Remove']}
+        titles={['Available Items', 'Selected Items']}
+        targetKeys={targetKeys}
+        onChange={setTargetKeys}
+        selectedKeys={selectedKeys}
+        onSelectChange={(source, target) => setSelectedKeys([...source, ...target])}
+        enableGroupSelect={true}
+        enableMultiselect={true}
       />
     </div>
   })
