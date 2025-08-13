@@ -59,8 +59,18 @@ export const getModelModules = (family: string, model: string): string[][] => {
   return familyList[modelIndex]
 }
 
-export const getSlots = (family: string, model: string): DefaultOptionType[][] => {
-  const modelModules = getModelModules(family, model)
+export const getSlots = (family: string, model: string,
+  isSupport8100Module3_4x25G?: boolean): DefaultOptionType[][] => {
+  const notSupportModel = ['24F', '48F', '24ZP', '48ZP']
+  const modelModules = getModelModules(family, model).map(item => {
+    return item.filter(subItem => {
+      if (!isSupport8100Module3_4x25G && family === 'ICX7550'
+        && notSupportModel.includes(model) && subItem === '4X25G') {
+        return false
+      }
+      return true
+    })
+  })
   const slotOptionLists = [
     createSlotOptions(modelModules, 1),
     createSlotOptions(modelModules, 2),

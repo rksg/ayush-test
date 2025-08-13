@@ -33,6 +33,7 @@ export function SelectModelStep (props: {
 
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport8100Module3_4x25G = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_MODULE3_4X25G)
 
   const data = form?.getFieldsValue(true)
 
@@ -115,7 +116,7 @@ export function SelectModelStep (props: {
 
     const values = form.getFieldsValue(true)
     const modelModules = getModelModules(family, model)
-    const slotOptionLists = getSlots(family, model)
+    const slotOptionLists = getSlots(family, model, isSupport8100Module3_4x25G)
     setOptionList(slotOptionLists)
     setModelModules(modelModules)
 
