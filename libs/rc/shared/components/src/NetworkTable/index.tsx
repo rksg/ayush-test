@@ -47,9 +47,6 @@ import {
 } from '@acx-ui/utils'
 
 
-
-const disabledType: NetworkTypeEnum[] = []
-
 // eslint-disable-next-line max-len
 function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filterables?: { [key: string]: ColumnType['filterable'] }) {
   const { $t } = intl
@@ -101,26 +98,22 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       defaultSortOrder: 'ascend',
       searchable: searchable,
       render: function (_, row, __, highlightFn) {
-        const networkName = searchable ? highlightFn(row.name) : row.name
-        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return networkName
-        }else{
-          return (row?.isOnBoarded
-            ? <span>
-              {networkName}
-            </span>
-            : <TenantLink to={
-              (row?.isOweMaster === false && row?.owePairNetworkId !== undefined) ?
-                `/networks/wireless/${row.id}/network-details/overview-no-config` :
-                `/networks/wireless/${row.id}/network-details/overview`}
-            >
-              {networkName}
-              {row.name !== row.ssid &&
-                <> {$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
-              }
-            </TenantLink>
-          )
-        }
+        const { isOnBoarded, isOweMaster, owePairNetworkId, id, name, ssid } = row
+        const networkName = searchable? highlightFn(name) : name
+
+        return (isOnBoarded
+          ? <span>{networkName}</span>
+          : <TenantLink to={
+            (isOweMaster === false && owePairNetworkId !== undefined) ?
+              `/networks/wireless/${id}/network-details/overview-no-config` :
+              `/networks/wireless/${id}/network-details/overview`}
+          >
+            {networkName}
+            {row.name !== row.ssid &&
+                <> {$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: ssid })}</>
+            }
+          </TenantLink>
+        )
       }
     },
     {
@@ -150,18 +143,15 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
-        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return row.venues?.count
-        }else{
-          return (
-            row?.isOnBoarded
-              ? <span>{row.venues?.count || noDataDisplay}</span>
-              : <TenantLink
-                to={`/networks/wireless/${row.id}/network-details/venues`}
-                children={row.venues?.count ? row.venues?.count : 0}
-              />
-          )
-        }
+        const { venues, isOnBoarded, id } = row
+        return (
+          isOnBoarded
+            ? <span>{venues?.count || noDataDisplay}</span>
+            : <TenantLink
+              to={`/networks/wireless/${id}/network-details/venues`}
+              children={venues?.count ?? 0}
+            />
+        )
       }
     },
     {
@@ -172,39 +162,34 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
-        const apCount = row.aps
-        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return apCount
-        }else{
-          return (
-            <>
-              {row?.isOnBoarded
-                ? <span>{apCount || noDataDisplay}</span>
-                : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
-                  {apCount}
-                </TenantLink>}
-              {row?.incompatible && row.incompatible > 0 ?
-                <Tooltip.Warning isFilled
-                  isTriangle
-                  title={$t({
-                    defaultMessage: 'Some access points may not be compatible with ' +
+        const { aps: apCount, isOnBoarded, id, incompatible } = row
+
+        return (<>
+          {isOnBoarded
+            ? <span>{apCount || noDataDisplay}</span>
+            : <TenantLink to={`/networks/wireless/${id}/network-details/aps`}
+              children={apCount}
+            />}
+          {incompatible && incompatible > 0 &&
+            <Tooltip.Warning isFilled
+              isTriangle
+              title={$t({
+                defaultMessage: 'Some access points may not be compatible with ' +
                     'certain features on this network.'
-                  })}
-                  placement='right'
-                  iconStyle={{
-                    position: 'absolute',
-                    height: '16px',
-                    width: '16px',
-                    marginBottom: '-3px',
-                    marginLeft: '4px',
-                    color: cssStr('--acx-semantics-yellow-50'),
-                    borderColor: cssStr('--acx-accents-orange-30')
-                  }}
-                /> : []
-              }
-            </>
-          )
-        }
+              })}
+              placement='right'
+              iconStyle={{
+                position: 'absolute',
+                height: '16px',
+                width: '16px',
+                marginBottom: '-3px',
+                marginLeft: '4px',
+                color: cssStr('--acx-semantics-yellow-50'),
+                borderColor: cssStr('--acx-accents-orange-30')
+              }}
+            />
+          }
+        </>)
       }
     },
     {
@@ -214,10 +199,9 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
-        const clientCount = row.clients
-
+        const { clients: clientCount, isOnBoarded } = row
         return (
-          row?.isOnBoarded
+          isOnBoarded
             ? <span>{clientCount || noDataDisplay}</span>
             : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
               {clientCount}
@@ -247,9 +231,11 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       title: $t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      render: (data, row) =>
-        getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
-        noDataDisplay
+      render: (_, row) => {
+        const { securityProtocol, isOweMaster } = row
+        return getSecurityProtocol(securityProtocol as WlanSecurityEnum, isOweMaster) ||
+          noDataDisplay
+      }
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
@@ -550,14 +536,15 @@ export function NetworkTable ({
         rowActions={filterByAccess(rowActions)}
         rowSelection={showRowSelection && {
           type: 'radio',
-          getCheckboxProps: (record: Network) => ({
-            disabled: !!record?.isOnBoarded
-              || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-              || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
-          }),
+          getCheckboxProps: (record: Network) => {
+            const { isOnBoarded, isOweMaster, owePairNetworkId } = record || {}
+            const isOweTransition = (isOweMaster === false && owePairNetworkId !== undefined)
+            return {
+              disabled: !!isOnBoarded || isOweTransition
+            }},
           renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
             if (record?.isOnBoarded) {
-              return <></>
+              return null
             }
             return node
           } }}
@@ -574,6 +561,7 @@ export function NetworkTable ({
 }
 
 function isSelectedGuestNetwork (networks: Network[]|WifiNetwork[]) {
+  /*
   const guestNetworks = networks.filter(network => {
     const { nwSubType, captiveType } = network
     return (nwSubType === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -581,9 +569,18 @@ function isSelectedGuestNetwork (networks: Network[]|WifiNetwork[]) {
   })
 
   return guestNetworks?.length > 0
+  */
+  const findGuestNetwork = networks.find(network => {
+    const { nwSubType, captiveType } = network
+    return (nwSubType === NetworkTypeEnum.CAPTIVEPORTAL &&
+      captiveType === GuestNetworkTypeEnum.GuestPass)
+  })
+  return !!findGuestNetwork
 }
 
 function isSelectedDpskNetwork (networks: Network[]|WifiNetwork[]) {
-  const dpskNetworks = networks.filter(network => network.nwSubType === NetworkTypeEnum.DPSK)
-  return dpskNetworks?.length > 0
+  //const dpskNetworks = networks.filter(network => network.nwSubType === NetworkTypeEnum.DPSK)
+  //return dpskNetworks?.length > 0
+  const findDpskNetwork = networks.find(network => network.nwSubType === NetworkTypeEnum.DPSK)
+  return !!findDpskNetwork
 }
