@@ -1,4 +1,4 @@
-import { OltStatusEnum, OltCageStateEnum } from '../types'
+import { OltStatusEnum, OltCageStateEnum, OltPortStatusEnum } from '../types'
 
 export const mockOlt = {
   name: 'TestOlt',
@@ -52,6 +52,23 @@ export const mockOltCageList = [{
 }, {
   cage: 'S1/7',
   state: OltCageStateEnum.DOWN
+}]
+
+export const mockOltPortList = [{
+  port: 'S1/1',
+  status: OltPortStatusEnum.DOWN,
+  speed: '1',
+  VLAN_ID: '200'
+}, {
+  port: 'S1/2',
+  status: OltPortStatusEnum.UP,
+  speed: '1',
+  VLAN_ID: '200'
+}, {
+  port: 'S1/3',
+  status: OltPortStatusEnum.DOWN,
+  speed: '1',
+  VLAN_ID: '200'
 }]
 
 export const mockOntList = [{

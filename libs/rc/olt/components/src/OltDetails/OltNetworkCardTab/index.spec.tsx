@@ -6,7 +6,7 @@ import { OltDetailsContext } from '../OltDetailsContext'
 
 import { OltNetworkCardTab } from './index'
 
-const { mockOlt } = OltFixtures
+const { mockOlt, mockOltPortList } = OltFixtures
 
 describe('OltNetworkCardTab', () => { //TODO
   const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
@@ -16,13 +16,18 @@ describe('OltNetworkCardTab', () => { //TODO
         <OltDetailsContext.Provider value={{
           oltDetailsContextData: mockOlt
         }}>
-          <OltNetworkCardTab />
+          <OltNetworkCardTab
+            oltDetails={mockOlt}
+            oltPorts={mockOltPortList}
+            isLoading={false}
+            isFetching={false}/>
         </OltDetailsContext.Provider>
       </Provider>, {
         route: { params }
       }
     )
 
-    expect(screen.getByText(/OltNetworkCardTab/)).toBeVisible()
+    expect(screen.getByText(/Uplink/)).toBeVisible()
+    expect(screen.getByText(/OOB/)).toBeVisible()
   })
 })

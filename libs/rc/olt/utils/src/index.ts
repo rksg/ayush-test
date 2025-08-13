@@ -12,3 +12,8 @@ export const oltLineCardOptions = [
   { label: 'PON LC 1', value: 'S1' },
   { label: 'PON LC 2', value: 'S2' }
 ]
+
+export const oltNetworkCardOptions = [
+  { label: 'Uplink', value: 'S1' },
+  { label: 'OOB', value: 'S2' }
+]
