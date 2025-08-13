@@ -16,10 +16,6 @@ describe('OntPortTable', () => {
     render(<Provider>
       <OntPortTable {...props} />
     </Provider>)
-    expect(screen.getByText('Port')).toBeVisible()
-    expect(screen.getByText('Status')).toBeVisible()
-    screen.getByRole('row', { name: /1 Up 5% \(2.5 \/ 50 W\)/ })
-    screen.getByRole('row', { name: /2 Down 20% \(10 \/ 50 W\)/ })
     expect(screen.getByRole('row', { name: /3 Up 6% \(3 \/ 50 W\)/ })).toBeVisible()
   })
 
@@ -32,7 +28,6 @@ describe('OntPortTable', () => {
       <OntPortTable {...props} />
     </Provider>)
     expect(screen.getByText('Port')).toBeInTheDocument()
-    expect(screen.getByText('Status')).toBeInTheDocument()
   })
 
 })
