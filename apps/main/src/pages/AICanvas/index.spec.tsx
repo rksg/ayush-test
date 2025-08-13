@@ -340,7 +340,7 @@ describe('AICanvas', () => {
     fireEvent.click(newChatBtn)
     // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
-    expect(await screen.findByText('Start Onboarding Assistant!')).toBeVisible()
+    expect(await screen.findByText('Start Onboarding Assistant')).toBeVisible()
     const draggableCharts = await screen.findAllByText('DraggableChart')
     expect(draggableCharts.length).toBe(2)
     expect(draggableCharts[0]).toBeVisible()
