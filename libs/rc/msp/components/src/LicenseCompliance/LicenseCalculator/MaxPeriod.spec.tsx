@@ -45,6 +45,8 @@ const v2Response = {
 
 describe('MaxPeriod Card', () => {
   it('should render Max Period Card with radio options', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     mockServer.use(
       rest.post(
         MspRbacUrlsInfo.getCalculatedLicences.url,
@@ -80,6 +82,54 @@ describe('MaxPeriod Card', () => {
     const date = await formatter(DateFormatEnum.DateFormat)(v1Response.data.expirationDate)
 
     await expect(await screen.findByText(date)).toBeVisible()
+  })
+
+  it('should render Empty Max Period Card', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MspRbacUrlsInfo.getCalculatedLicences.url,
+        (_req, res, ctx) => res(ctx.json({
+          message: 'error-message',
+          data: {
+            effectiveDate: '2024-10-21',
+            expirationDate: '2025-10-21',
+            quantity: 50,
+            licenseType: 'APSW',
+            isTrial: true
+          }
+        }))
+      )
+    )
+
+    render(<Provider><MaxPeriod showExtendedTrial={true} /></Provider>)
+
+    const radio = await screen.findAllByRole('radio')
+
+    expect(radio).toHaveLength(2)
+
+    const claculateBtn = await screen.findByRole('button', { name: 'CALCULATE' })
+
+    userEvent.click(claculateBtn)
+
+    expect(await screen.findByText('Please enter Start Date')).toBeVisible()
+    expect(await screen.findByText('Please enter # of Licenses')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('textbox', { name: 'Start Date' }))
+
+    const startDateCells = screen.getAllByRole('cell')
+
+    await userEvent.click(startDateCells[startDateCells.length - 7])
+
+    const input = screen.getByLabelText('# of Licenses')
+
+    await fireEvent.change(input, { target: { value: '50' } })
+
+    await userEvent.click(claculateBtn)
+
+    await expect(await screen.findByText('error-message')).toBeVisible()
   })
 
   it('should render Max Period Card with radio options with FF on', async () => {
@@ -124,7 +174,49 @@ describe('MaxPeriod Card', () => {
     await expect(await screen.findByText(date)).toBeVisible()
   })
 
+  it('should render Empty Max Period with FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE ||
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MspRbacUrlsInfo.getCalculatedLicences.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+
+    render(<Provider><MaxPeriod showExtendedTrial={true} /></Provider>)
+
+    const radio = await screen.findAllByRole('radio')
+
+    expect(radio).toHaveLength(3)
+
+    const claculateBtn = await screen.findByRole('button', { name: 'CALCULATE' })
+
+    userEvent.click(claculateBtn)
+
+    expect(await screen.findByText('Please enter Start Date')).toBeVisible()
+    expect(await screen.findByText('Please enter # of Licenses')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('textbox', { name: 'Start Date' }))
+
+    const startDateCells = screen.getAllByRole('cell')
+
+    await userEvent.click(startDateCells[startDateCells.length - 7])
+
+    const input = screen.getByLabelText('# of Licenses')
+
+    await fireEvent.change(input, { target: { value: '50' } })
+
+    await userEvent.click(claculateBtn)
+
+    await expect(await screen.findByText('--')).toBeVisible()
+  })
+
   it('should render Max Period Card with no radio options', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     mockServer.use(
       rest.post(
         MspRbacUrlsInfo.getCalculatedLicences.url,
@@ -133,8 +225,6 @@ describe('MaxPeriod Card', () => {
     )
 
     render(<Provider><MaxPeriod showExtendedTrial={false} /></Provider>)
-
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
-
   })
 })

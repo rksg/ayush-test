@@ -82,6 +82,8 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
                   quantity: 0
                 }])
               }
+            }).catch(error => {
+              console.log(error) // eslint-disable-line no-console
             })
         } else {
           await getCalculatedLicense({ payload })

@@ -75,9 +75,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
               }])
             }
           }).catch(error => {
-            if(error.data.message) {
-              showError(error.data.message)
-            }
+            console.log(error) // eslint-disable-line no-console
           })
       } else {
         await getCalculatedLicense({ payload })
