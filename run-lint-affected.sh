@@ -11,4 +11,4 @@ fi
 
 echo "Linting affected projects: $PROJECT_LIST"
 
-npx nx run-many --target=lint --projects="$PROJECT_LIST" --verbose
+node ./node_modules/.bin/nx run-many --target=lint --projects="$PROJECT_LIST" --verbose
