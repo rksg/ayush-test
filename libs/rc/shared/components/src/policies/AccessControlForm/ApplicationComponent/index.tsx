@@ -32,12 +32,13 @@ import {
   defaultSort,
   PolicyOperation,
   PolicyType,
-  sortProp,
+  sortProp, useAfterPolicySaveRedirectPath,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, usePoliciesBreadcrumb, usePolicyPageHeaderTitle,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
+import { useNavigate }               from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { TableResult }               from '@acx-ui/utils'
 
@@ -157,6 +158,8 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
 
 export const ApplicationComponent = (props: ApplicationComponentProps) => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const redirectPath = useAfterPolicySaveRedirectPath(PolicyType.ACCESS_CONTROL)
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
@@ -210,7 +213,7 @@ export const ApplicationComponent = (props: ApplicationComponentProps) => {
   const { data: librarySettings } = useApplicationLibrarySettingsQuery({
     enableRbac
   }, {
-    skip: !ruleDrawerVisible
+    skip: !ruleDrawerVisible && !editMode.isEdit
   })
 
   const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
@@ -471,6 +474,8 @@ export const ApplicationComponent = (props: ApplicationComponentProps) => {
     }
     if (!isComponentMode) {
       setDrawerVisible(false)
+    } else {
+      navigate(redirectPath, { replace: true })
     }
     callBack()
   }

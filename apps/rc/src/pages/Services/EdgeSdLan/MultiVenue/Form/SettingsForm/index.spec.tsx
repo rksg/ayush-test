@@ -4,7 +4,6 @@ import { cloneDeep, get } from 'lodash'
 import { rest }           from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
-import { Features }                  from '@acx-ui/feature-toggle'
 import { edgeApi }                   from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
@@ -295,67 +294,7 @@ describe('Edge SD-LAN form: settings', () => {
     expect(mockedSetFieldsValue).toBeCalledTimes(2)
   })
 
-  it('should filter out AA mode cluster as DMZ options', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFrom)
-    render(<MockedTargetComponent form={stepFormRef.current} />)
-
-    const formBody = await checkBasicSettings()
-    const dcSelector = await within(formBody).findByRole('combobox', { name: 'Cluster' })
-    // AA mode cluster can be DC cluster
-    expect(within(dcSelector)
-      .queryByRole('option', { name: 'Edge Cluster 1' })).toBeValid()
-
-    // turn on DMZ
-    await userEvent.click(await within(formBody).findByRole('switch'))
-
-    const dmzSelector = await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
-    // AA mode cluster should not be DMZ cluster
-    expect(within(dmzSelector)
-      .queryByRole('option', { name: 'Edge Cluster 1' })).toBeNull()
-
-    // select DMZ edge
-    await userEvent.selectOptions(dmzSelector, 'clusterId_5')
-    expect(mockedSetFieldsValue).toBeCalledWith({
-      guestEdgeClusterName: 'Edge Cluster 5',
-      guestEdgeClusterVenueId: '0000000005'
-    })
-  })
-
-  it('should block submit when HA AA mode cluster used to be DMZ cluster', async () => {
-    const expectedClusterId = 'clusterId_1'
-    const expectedSdLan = mockedMvSdLanDataList[0]
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldsValue({
-        ...expectedSdLan,
-        id: 'mocked-sd-lan-2',
-        edgeClusterId: 'clusterId_2',
-        guestEdgeClusterId: expectedClusterId
-      })
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-      editMode
-    />)
-
-    const formBody = await screen.findByTestId('steps-form-body')
-    await waitForElementToBeRemoved(await within(formBody)
-      .findAllByTestId('loadingIcon'))
-    const dmzCluster = await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
-    expect(dmzCluster).not.toBeDisabled()
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    const alerts = await within(formBody).findAllByRole('alert')
-    expect(alerts.length).toBe(1)
-    expect(alerts[0]).toHaveTextContent('DMZ cluster cannot be active-active mode.')
-  })
-
   it('should be able to use HA AA mode cluster as DMZ cluster when FF on', async () => {
-    // eslint-disable-next-line max-len
-    mockUseIsEdgeFeatureReady.mockImplementation(ff => ff === Features.EDGE_HA_AA_DMZ_TOGGLE)
-
     const expectedClusterId = 'clusterId_1'
     const expectedSdLan = mockedMvSdLanDataList[0]
     const { result: stepFormRef } = renderHook(() => {
