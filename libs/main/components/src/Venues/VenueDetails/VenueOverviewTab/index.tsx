@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { isEmpty }   from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { intersection, isEmpty } from 'lodash'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
 import {
   ConnectedClientsOverTime,
@@ -129,8 +129,8 @@ export function VenueOverviewTab () {
               .filter((value, index, array) => array.indexOf(value) === index)
 
             // filter out triband outdoor AP under the venue
-            const venueTriBandOutdoorApModels = venueTriBandApModels
-              .filter(apModel => triBanOutdoorApModels.includes(apModel))
+            // eslint-disable-next-line max-len
+            const venueTriBandOutdoorApModels = intersection(triBanOutdoorApModels, venueTriBandApModels)
 
             if (venueTriBandOutdoorApModels.length > 0) {
               setHasSupportAfcAp(true)
