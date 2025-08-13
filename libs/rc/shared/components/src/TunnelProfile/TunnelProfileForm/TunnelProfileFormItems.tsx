@@ -26,13 +26,13 @@ import {
   TunnelTypeEnum,
   serverIpAddressRegExp,
   servicePolicyNameRegExp,
+  useIsEdgeFeatureReady,
   TunnelProfileFormType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import { ApCompatibilityToolTip }                         from '../../ApCompatibility'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility'
-import { useIsEdgeFeatureReady }                          from '../../useEdgeActions'
 
 import { IpsecFormItem }                  from './IpsecFormItem'
 import { MessageMapping }                 from './MessageMapping'
@@ -381,7 +381,7 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                 {({ getFieldValue }) => {
                   const netSegType = getFieldValue('type')
                   // eslint-disable-next-line max-len
-                  const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady &&getFieldValue('tunnelEncryptionEnabled')
+                  const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady && getFieldValue('tunnelEncryptionEnabled')
 
                   return <Form.Item
                     name='natTraversalEnabled'

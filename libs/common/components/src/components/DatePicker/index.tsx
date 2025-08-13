@@ -113,7 +113,9 @@ export const RangePicker = ({
         : isReport ? dateRangeForLast(12, 'months') // Use 12 months to represent a full year, not fixed 365 days
           : dateRangeForLast(90, 'days')
       )
-
+  if (allowedMonthRange === Number.MAX_VALUE) {
+    allowedDateRange = dateRangeForLast(1000, 'years')
+  }
 
   if (isCoreTier(accountTier)) {
     allowedDateRange = dateRangeForLast(14, 'days')
