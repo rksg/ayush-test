@@ -4,7 +4,7 @@ import * as UI from './styledComponents'
 
 import type { CardProps as AntCardProps } from 'antd'
 
-export type CardTypes = 'default' | 'no-border' | 'solid-bg'
+export type CardTypes = 'default' | 'no-border' | 'solid-bg' | 'info-bg'
 
 export interface CardProps extends Pick<AntCardProps, 'children' | 'className' | 'style'> {
   type?: CardTypes

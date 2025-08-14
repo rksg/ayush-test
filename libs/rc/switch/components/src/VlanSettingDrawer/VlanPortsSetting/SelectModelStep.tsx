@@ -4,11 +4,11 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { is7550ZippySubModel, isBabyRodanXSubModel } from '@acx-ui/rc/switch/utils'
-import { ICX_MODELS_MODULES, SwitchModelPortData }   from '@acx-ui/rc/utils'
-import { getIntl }                                   from '@acx-ui/utils'
+import { Card, Tooltip }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { is7550ZippySubModel, isBabyRodanXSubModel, ICX_MODELS_MODULES } from '@acx-ui/rc/switch/utils'
+import { SwitchModelPortData }                                           from '@acx-ui/rc/utils'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -52,6 +52,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport7550Module3_4x25G = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G)
 
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({
@@ -181,6 +182,11 @@ export function SelectModelStep (props: { editMode: boolean }) {
     const slotOptions: ModelsType[] = []
     if (slots.length > slotIndex) {
       for (let value of slots?.[slotIndex]) {
+        if (!isSupport7550Module3_4x25G && family === 'ICX7550' &&
+          ['24F', '48F', '24ZP', '48ZP'].includes(model) &&
+          slotIndex === 2 && value === '4X25G') {
+          continue
+        }
         const name = value.toString().split('X').join(' X ')
         slotOptions.push({ label: name, value: value.toString() })
       }
