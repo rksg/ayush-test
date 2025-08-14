@@ -277,7 +277,7 @@ export function SwitchVeTable (props: {
   const isActionHidden = (data?: VeViewModel[]) => {
     return !isVenueLevel && switchDetail?.model?.startsWith('ICX8100') &&
       !isSupport8100StaticRouteMaxVe &&
-      !isFirmwareVersionAbove10010h(switchDetail?.firmwareVersion) && (data?.length || 0) > 0
+      !isFirmwareVersionAbove10010h(switchDetail?.firmware) && (data?.length || 0) > 0
   }
 
   return <Loader states={[tableQuery]}>
