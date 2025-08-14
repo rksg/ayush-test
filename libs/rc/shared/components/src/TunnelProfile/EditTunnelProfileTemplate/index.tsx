@@ -138,7 +138,7 @@ export const EditTunnelProfileTemplate = () => {
         onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
         initialValues={formInitValues}
-        editMode={true}
+        editData={tunnelProfileViewData}
         isTemplate
       />
     </Loader>

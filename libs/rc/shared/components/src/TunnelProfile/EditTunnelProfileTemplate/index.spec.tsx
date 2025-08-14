@@ -24,7 +24,8 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getTenantId: jest.fn().mockReturnValue(tenantId)
+  getTenantId: jest.fn().mockReturnValue(tenantId),
+  resolveTenantTypeFromPath: () => 'v'
 }))
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
@@ -113,7 +114,7 @@ describe('EditTunnelProfileTemplate', () => {
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    const policyNameField = screen.getByRole('textbox', { name: 'Template Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -169,9 +170,9 @@ describe('EditTunnelProfileTemplate', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(async () => {
-      expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+      expect(screen.getByRole('textbox', { name: 'Template Name' })).toBeDisabled()
     })
-    expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(screen.getByRole('textbox', { name: 'Template Name' })).toBeDisabled()
     expect(screen.getByRole('switch')).toBeDisabled()
     const radioButtons = await screen.findAllByRole('radio')
     radioButtons.forEach(item => {

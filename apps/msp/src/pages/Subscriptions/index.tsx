@@ -32,9 +32,9 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { MspSubscriptionUtilizationWidget }                                                                                     from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { MspSubscriptionUtilizationWidget }                                                                                                 from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                            from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,
   dateSort,
@@ -52,8 +52,6 @@ import { RolesEnum }                                                        from
 import type { Filter }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
-
-import HspContext from '../../HspContext'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -113,6 +111,8 @@ export function Subscriptions () {
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
   const isSubscriptionPagesizeToggleEnabled = useIsSplitOn(Features.SUBSCRIPTIONS_PAGESIZE_TOGGLE)
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isMultiLicensePoolToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
   const entitlementListPayload = {
     fields: [
@@ -127,7 +127,8 @@ export function Subscriptions () {
       'status',
       'isTrial',
       'graceEndDate',
-      'usageType'
+      'usageType',
+      ...(isMultiLicensePoolToggleEnabled ? ['skuTier'] : [])
     ],
     page: 1,
     pageSize: isSubscriptionPagesizeToggleEnabled ? 10000 : 1000,
@@ -192,13 +193,22 @@ export function Subscriptions () {
         dataIndex: 'deviceSubType',
         key: 'deviceSubType',
         sorter: { compare: sortProp('deviceSubType', defaultSort) },
-        render: function (data: React.ReactNode, row: MspEntitlement) {
+        render: function (_: React.ReactNode, row: MspEntitlement) {
           if (row.deviceType === EntitlementDeviceType.MSP_WIFI)
             return EntitlementUtil.tempLicenseToString(row.isTrial)
           return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
         }
       }
     ]),
+    ...(isMultiLicensePoolToggleEnabled ? [{
+      title: $t({ defaultMessage: 'License Tier' }),
+      dataIndex: 'skuTier',
+      key: 'skuTier',
+      sorter: { compare: sortProp('skuTier', defaultSort) },
+      render: function (_: React.ReactNode, row: MspEntitlement) {
+        return row?.skuTier || noDataDisplay
+      }
+    }]: []),
     {
       title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
         : $t({ defaultMessage: 'Device Count' }),

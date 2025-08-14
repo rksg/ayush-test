@@ -58,7 +58,7 @@ import {
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
-  Network,
+  Network, NetworkApGroup,
   NetworkSaveData,
   NetworkTunnelIpsecAction,
   NetworkTunnelSdLanAction,
@@ -77,8 +77,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useGetNetwork }         from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
+import { useIsConfigTemplateEnabledByType } from '../configTemplates'
+import { useGetNetwork }                    from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }            from '../useEdgeActions'
 
 import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
@@ -227,7 +228,8 @@ export function NetworkForm (props:{
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
   const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isMultipleCertificateTemplateEnabled = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
@@ -1398,7 +1400,10 @@ export function NetworkForm (props:{
                   title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                   onFinish={handleVenues}
                 >
-                  <Venues defaultActiveVenues={defaultValues?.defaultActiveVenues as string[]} />
+                  <Venues
+                    defaultActiveVenues={defaultValues?.defaultActiveVenues as string[]}
+                    defaultActiveApGroups={defaultValues?.defaultActiveApGroups as NetworkApGroup[]}
+                  />
                 </StepsFormLegacy.StepForm>}
 
               <StepsFormLegacy.StepForm

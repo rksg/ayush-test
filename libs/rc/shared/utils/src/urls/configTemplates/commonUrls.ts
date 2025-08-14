@@ -65,6 +65,16 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'POST:/templates/{id}/tenants/{id}',
     skipRecRewrite: true
   },
+  applyRecConfigTemplate: {
+    method: 'post',
+    url: '/rec/templates/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/rec/templates/{id}'
+  },
   addNetworkTemplate: {
     method: 'post',
     url: '/templates/networks',
@@ -416,6 +426,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       Accept: 'application/vnd.ruckus.v1+json'
     }
   },
+  queryDriftInstances: {
+    method: 'post',
+    url: '/rec/templates/:templateId/instances/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getDriftReport: {
     method: 'get',
     url: '/templates/:templateId/tenants/:tenantId/diffReports',
@@ -424,6 +443,14 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       Accept: 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'GET:/templates/{id}/tenants/{id}/diffReports'
+  },
+  getDriftReportByInstance: {
+    method: 'get',
+    url: '/rec/templates/:templateId/instances/:instanceId/diffReports',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   patchDriftReport: {
     method: 'PATCH',
@@ -434,6 +461,16 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReports'
+  },
+  patchDriftReportByInstance: {
+    method: 'PATCH',
+    url: '/templates/:templateId/instances/:instanceId/diffReports',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PATCH:/templates/{id}/instances/{id}/diffReports'
   },
   updateEnforcement: {
     method: 'put',

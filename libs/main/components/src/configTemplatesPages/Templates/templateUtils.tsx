@@ -1,4 +1,3 @@
-
 import moment                               from 'moment'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
@@ -6,6 +5,7 @@ import { Button }                                                               
 import { DateFormatEnum, userDateTimeFormat }                                                                                                                           from '@acx-ui/formatter'
 import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, renderConfigTemplateDetailsComponent, subPolicyMappingType } from '@acx-ui/rc/components'
 import {
+  AccessControlPolicyForTemplateCheckType,
   ConfigTemplate,
   ConfigTemplateDriftType,
   ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
@@ -16,8 +16,6 @@ import {
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { configTemplateDriftTypeLabelMap } from './driftDetails/contents'
-
-export const useEcFilters = useEcFiltersFromUtils
 
 const partialConfigTemplateTypeLabelMap: Partial<Record<ConfigTemplateType, MessageDescriptor>> = {
   [ConfigTemplateType.NETWORK]: defineMessage({ defaultMessage: 'Wi-Fi Network' }),
@@ -114,4 +112,13 @@ export function useFormatTemplateDate () {
   return (date?: number) => {
     return date ? moment(date).format(dateFormat) : noDataDisplay
   }
+}
+
+export function isTemplateTypeAllowed (type: ConfigTemplateType) {
+  const disallowedTypes = [
+    ...Object.values(AccessControlPolicyForTemplateCheckType),
+    ConfigTemplateType.AP_GROUP
+  ]
+
+  return !disallowedTypes.includes(type)
 }

@@ -34,7 +34,8 @@ import {
   transformDisplayOnOff,
   TunnelProfileViewData,
   TunnelTypeEnum,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  transformDisplayYesNo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TableColumn }                             from '@acx-ui/types'
@@ -46,8 +47,10 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeVxLanIpsecReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
@@ -159,6 +162,18 @@ const TunnelProfileTable = () => {
             return TunnelTypeEnum.VXLAN_GPE === row.tunnelType ?
               `${row.destinationEdgeClusterName || noDataDisplay}` :
               `${row.destinationIpAddress || noDataDisplay}`
+          }
+        }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      :[]),
+    ...((isEdgeVxLanIpsecReady)?
+      [
+        {
+          title: $t({ defaultMessage: 'Encryption' }),
+          key: 'encryption',
+          dataIndex: 'encryption',
+          sorter: false,
+          render: (_, row) => {
+            return transformDisplayYesNo(!!row.ipsecProfileId)
           }
         }] as TableColumn<TunnelProfileViewData, 'text'>[]
       :[]),

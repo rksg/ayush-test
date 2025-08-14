@@ -2,7 +2,7 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { edgeApi, networkApi, pinApi, switchApi, useWifiNetworkListQuery, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
@@ -49,6 +49,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
+const mockNetworkOptions = useWifiNetworkListQuery as jest.Mock
+
 describe('PersonalIdentityNetworkTable', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t' + getServiceRoutePath({
@@ -90,6 +96,8 @@ describe('PersonalIdentityNetworkTable', () => {
         EdgeUrlsInfo.getPinEdgeCompatibilities.url,
         (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities)))
     )
+
+    mockNetworkOptions.mockReturnValue({ networkOptions: mockedNetworkOptions.data })
   })
 
   it('should create PersonalIdentityNetwork list successfully', async () => {
