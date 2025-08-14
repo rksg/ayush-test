@@ -226,7 +226,7 @@ export function AssignMspLicense () {
       }
     }
     setSubscriptionStartDate(moment())
-  }, [licenseSummary, licenseAssignment])
+  }, [licenseSummary, licenseAssignment, calculatedLicencesList])
 
 
   const fieldValidator = async (value: string, remainingDevices: number) => {
