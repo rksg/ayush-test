@@ -36,9 +36,9 @@ describe('ApGroupDrawer', () => {
 
   it('renders with default props and handles all interactions when open is true', () => {
     render(
-        <Provider>
-          <ApGroupDrawer {...mockProps} />
-        </Provider>
+      <Provider>
+        <ApGroupDrawer {...mockProps} />
+      </Provider>
     )
 
     // Test basic rendering
@@ -67,9 +67,9 @@ describe('ApGroupDrawer', () => {
 
   it('does not render when open is false', () => {
     render(
-        <Provider>
-          <ApGroupDrawer {...mockProps} open={false} />
-        </Provider>
+      <Provider>
+        <ApGroupDrawer {...mockProps} open={false} />
+      </Provider>
     )
     expect(screen.queryByText('Add AP Group')).not.toBeInTheDocument()
     expect(screen.queryByTestId('ap-group-general-tab')).not.toBeInTheDocument()
@@ -77,9 +77,9 @@ describe('ApGroupDrawer', () => {
 
   it('handles mock component interactions correctly', () => {
     render(
-        <Provider>
-          <ApGroupDrawer {...mockProps} />
-        </Provider>
+      <Provider>
+        <ApGroupDrawer {...mockProps} />
+      </Provider>
     )
 
     // Test mock close button

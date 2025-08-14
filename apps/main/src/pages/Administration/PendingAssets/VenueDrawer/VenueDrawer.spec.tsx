@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { rest }         from 'msw'
+import { rest } from 'msw'
 
 import { VenueExtended } from '@acx-ui/rc/utils'
 import { Provider }      from '@acx-ui/store'
@@ -62,9 +62,9 @@ describe('VenueDrawer', () => {
 
   it('renders with default props and handles all interactions when open is true', async () => {
     render(
-        <Provider>
-          <VenueDrawer {...mockProps} />
-        </Provider>
+      <Provider>
+        <VenueDrawer {...mockProps} />
+      </Provider>
     )
 
     // Wait for the mock component to be rendered
@@ -95,18 +95,18 @@ describe('VenueDrawer', () => {
 
   it('does not render when open is false', () => {
     render(
-        <Provider>
-          <VenueDrawer {...mockProps} open={false} />
-        </Provider>
+      <Provider>
+        <VenueDrawer {...mockProps} open={false} />
+      </Provider>
     )
     expect(screen.queryByText('Add Venue')).not.toBeInTheDocument()
   })
 
   it('handles venue creation callbacks and interactions', async () => {
     render(
-        <Provider>
-          <VenueDrawer {...mockProps} />
-        </Provider>
+      <Provider>
+        <VenueDrawer {...mockProps} />
+      </Provider>
     )
 
     // Wait for the mock component to be rendered
