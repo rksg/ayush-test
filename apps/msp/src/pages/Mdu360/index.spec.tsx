@@ -39,6 +39,7 @@ const route = {
   path: '/:tenantId/v/mdu360/residentExperience'
 }
 
+
 describe('Mdu360', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
