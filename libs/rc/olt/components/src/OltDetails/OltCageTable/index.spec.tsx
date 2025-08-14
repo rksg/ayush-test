@@ -8,6 +8,10 @@ import { OltCageTable } from '.'
 
 const { mockOlt, mockOltCageList } = OltFixtures
 
+jest.mock('../../OltStatus', () => ({
+  OltStatus: () => <div data-testid='OltStatus' />
+}))
+
 jest.mock('../EditCageDrawer', () => ({
   EditCageDrawer: () => <div data-testid='EditCageDrawer' />
 }))
@@ -40,10 +44,10 @@ describe('OltCageTable', () => {
         isFetching={false}
       />
     </Provider>, { route: { params, path: mockPath } })
-    const row = screen.getByRole('row', { name: /S1\/2 Up/ })
+    const row = screen.getByRole('row', { name: /S1\/2/ })
     expect(row).toBeVisible()
 
-    const downCageRow = screen.getByRole('row', { name: /S1\/1 Down/ })
+    const downCageRow = screen.getByRole('row', { name: /S1\/1/ })
     expect(within(downCageRow).queryByRole('button', { name: 'S1/1' })).toBeNull()
   })
 
@@ -73,7 +77,7 @@ describe('OltCageTable', () => {
     const tab = screen.getByRole('tab', { name: 'PON LC 2' })
     expect(tab).toBeInTheDocument()
     await userEvent.click(tab)
-    expect(screen.queryByRole('row', { name: /S1\/2 Up/ })).toBeNull()
+    expect(screen.queryByRole('row', { name: /S1\/2/ })).toBeNull()
   })
 
   it('should open edit cage drawer correctly', async () => {
@@ -86,7 +90,7 @@ describe('OltCageTable', () => {
       />
     </Provider>, { route: { params, path: mockPath } })
 
-    const row = screen.getByRole('row', { name: /S1\/2 Up/ })
+    const row = screen.getByRole('row', { name: /S1\/2/ })
     await userEvent.click(row)
     const editCageButton = screen.getByRole('button', { name: 'Edit' })
     await userEvent.click(editCageButton)
@@ -103,7 +107,7 @@ describe('OltCageTable', () => {
       />
     </Provider>, { route: { params, path: mockPath } })
 
-    expect(screen.getByRole('row', { name: /S1\/2 Up/ })).toBeVisible()
+    expect(screen.getByRole('row', { name: /S1\/2/ })).toBeVisible()
     const manageOntsSnButton = screen.getByRole('button', { name: 'Manage ONT S/N' })
     await userEvent.click(manageOntsSnButton)
     expect(screen.getByTestId('ManageOntsSnDrawer')).toBeInTheDocument()
@@ -119,7 +123,7 @@ describe('OltCageTable', () => {
       />
     </Provider>, { route: { params, path: mockPath } })
 
-    expect(screen.getByRole('row', { name: /S1\/2 Up/ })).toBeVisible()
+    expect(screen.getByRole('row', { name: /S1\/2/ })).toBeVisible()
     const manageCageGroupButton = screen.getByRole('button', { name: 'Manage Cage Group' })
     await userEvent.click(manageCageGroupButton)
     expect(screen.getByTestId('ManageCageGroupDrawer')).toBeInTheDocument()
