@@ -55,6 +55,11 @@ export const Wrapper = styled.div<WrapperProps>`
       padding: 12px 16px;
       background-color: var(--acx-neutrals-10);
     ` : '')}
+    ${(props) => (props.type === 'info-bg' ? `
+      padding: 12px 16px;
+      background-color: var(--acx-accents-blue-10);
+      border: 1px solid var(--acx-accents-blue-25);
+    ` : '')}
   }
   .ant-card-head {
     ${(props) => (props.hasTitle ? '' : 'display: none;')}
