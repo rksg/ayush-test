@@ -68,8 +68,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 const getUserProfile = jest.mocked(require('@acx-ui/analytics/utils').getUserProfile)
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockImplementation((name: string) => ({
-    MLISA_REGION: 'test region',
-    MLISA_VERSION: 'test version'
+    MLISA_REGION: 'test region'
   })[name] as string)
 }))
 

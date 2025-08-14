@@ -59,5 +59,6 @@ export interface OltOntPort {
   status: OltCageStateEnum
   vlan: string[]
   poePower: number
+  clientCount?: number
 }
 

@@ -11,3 +11,6 @@ jobs:
       - build_type: cloud
         target: gar
         name: acx-ui
+      - build_type: artifactory
+        target: configs
+        directory: rai-configs
