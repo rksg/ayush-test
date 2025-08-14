@@ -218,7 +218,7 @@ describe('useEdgeSdLanActions', () => {
         networkId: 'network-t-1',
         tunnelProfileId: 'tunnel-t-1'
       }]
-      mockPayloadWithTemplates.customerTenantIds = ['tenant-2']
+      mockPayloadWithTemplates.ecTenantIds = ['tenant-2']
 
       // eslint-disable-next-line max-len
       it('should call activate with network template IDs', async () => {
