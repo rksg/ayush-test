@@ -281,7 +281,7 @@ describe('IpsecFormItem', () => {
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
       await userEvent.hover(switchElement)
-      expect(await screen.findByText('Default tunnel profile is not supported')).toBeInTheDocument()
+      expect(await screen.findByText('Default tunnel profile is not allowed to edit')).toBeInTheDocument()
     })
     it('should disable switch when its nsg type is VxLAN', async () => {
       const { result: { current: [formRef] } } = renderHook(() => Form.useForm())
@@ -294,7 +294,7 @@ describe('IpsecFormItem', () => {
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
       await userEvent.hover(switchElement)
-      expect(await screen.findByText('Network segment type VNI is not supported')).toBeInTheDocument()
+      expect(await screen.findByText('Network segment type VNI is not supported for tunnel encryption')).toBeInTheDocument()
     })
     it('should disable switch when destination cluster is HA/AB', async () => {
       render(<TestWrapper>
@@ -304,7 +304,7 @@ describe('IpsecFormItem', () => {
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
       await userEvent.hover(switchElement)
-      expect(await screen.findByText('Active/Standby cluster is not supported')).toBeInTheDocument()
+      expect(await screen.findByText('Active/Standby cluster is not supported for tunnel encryption')).toBeInTheDocument()
     })
     it('should disable switch when disabledFields includes tunnelEncryptionEnabled', () => {
       const { result: { current: [formRef] } } = renderHook(() => Form.useForm())

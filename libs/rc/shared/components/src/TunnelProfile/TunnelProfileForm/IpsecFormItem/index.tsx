@@ -69,13 +69,15 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
     if (!disabled) return undefined
 
     if (isDefaultTunnelProfile)
-      return $t({ defaultMessage: 'Default tunnel profile is not supported' })
+      return $t({ defaultMessage: 'Default tunnel profile is not allowed to edit' })
 
-    if (nsgType === NetworkSegmentTypeEnum.VXLAN)
-      return $t({ defaultMessage: 'Network segment type VNI is not supported' })
+    if (nsgType === NetworkSegmentTypeEnum.VXLAN) {
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: 'Network segment type VNI is not supported for tunnel encryption' })
+    }
 
     if(isHaAbCluster)
-      return $t({ defaultMessage: 'Active/Standby cluster is not supported' })
+      return $t({ defaultMessage: 'Active/Standby cluster is not supported for tunnel encryption' })
 
     return undefined
   }

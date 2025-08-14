@@ -10,7 +10,8 @@ import {
   Row,
   Select,
   Space,
-  Switch
+  Switch,
+  Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -276,9 +277,14 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                   <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
                     {$t({ defaultMessage: 'VLAN to VNI map' })}
                   </Radio>
-                  <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
-                    {$t({ defaultMessage: 'VNI' })}
-                  </Radio>
+                  <Tooltip title={isL2greType
+                    ? $t(MessageMapping.l2ogre_vni_not_supported_tooltip)
+                    : undefined}
+                  >
+                    <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
+                      {$t({ defaultMessage: 'VNI' })}
+                    </Radio>
+                  </Tooltip>
                 </Space>
               </Radio.Group>
             }
