@@ -140,4 +140,20 @@ describe('ApLldpNeighbors', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
 
   })
+
+  it('should render PSEAllocPower with unit', async () => {
+    mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
+      setTimeout(handler, 0) // Simulate receiving the message from websocket
+      return mockedSocket
+    })
+
+    render(<ApLldpNeighbors />, {
+      wrapper,
+      route: { params, path: tabPath }
+    })
+
+    await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
+
+    expect(await screen.findByText('26 W')).toBeInTheDocument()
+  })
 })

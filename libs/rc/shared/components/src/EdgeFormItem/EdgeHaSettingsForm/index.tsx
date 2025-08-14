@@ -3,10 +3,7 @@ import { Moment }                                                        from 'm
 import { defineMessage, useIntl }                                        from 'react-intl'
 
 import { Select, StepsForm, Tooltip, useStepFormContext }                                           from '@acx-ui/components'
-import { Features }                                                                                 from '@acx-ui/feature-toggle'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterNetworkSettings } from '@acx-ui/rc/utils'
-
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export type EdgeHaSettingsType =
   Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>
@@ -44,7 +41,6 @@ export const EdgeHaSettingsForm = () => {
   const isFallbackEnable = Form.useWatch(['fallbackSettings', 'enable'], form)
   const fallbackScheduleType = Form.useWatch(['fallbackSettings', 'schedule', 'type'], form)
   const intervalHours = Form.useWatch(['fallbackSettings', 'schedule', 'intervalHours'], form)
-  const isFallbackFeatureEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_FALLBACK_TOGGLE)
 
   const fallbackEnableTooltipMsg = $t({
     defaultMessage: `The first RUCKUS Edge in the list is assigned as
@@ -72,7 +68,6 @@ export const EdgeHaSettingsForm = () => {
   const content = <Row>
     <Col span={14}>
       {
-        isFallbackFeatureEnabled &&
         <div style={{ marginBottom: '30px' }}>
           <Row>
             <Col>

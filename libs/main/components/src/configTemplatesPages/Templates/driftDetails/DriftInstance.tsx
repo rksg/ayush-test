@@ -5,7 +5,6 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 import { Collapse, Loader }                 from '@acx-ui/components'
 import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
-import { useLazyGetDriftReportQuery }       from '@acx-ui/rc/services'
 import { ConfigTemplateDriftSet }           from '@acx-ui/rc/utils'
 
 import { DriftComparisonSet } from './DriftComparisonSet'
@@ -18,12 +17,23 @@ export interface DriftInstanceProps {
   updateSelection: (id: string, selected: boolean) => void
   selected?: boolean
   disalbed?: boolean
+  // eslint-disable-next-line max-len
+  getDriftReport: (params: { templateId: string; instanceId: string }) => Promise<{ data?: ConfigTemplateDriftSet[] }>
+  isLoading?: boolean
 }
 
 export function DriftInstance (props: DriftInstanceProps) {
   // eslint-disable-next-line max-len
-  const { templateId, instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
-  const [ getDriftReport, { isLoading: isLoadingDriftData } ] = useLazyGetDriftReportQuery()
+  const {
+    templateId,
+    instanceName,
+    instanceId,
+    selected = false,
+    updateSelection,
+    disalbed = false,
+    getDriftReport,
+    isLoading: isLoadingDriftData = false
+  } = props
   const [ checked, setChecked ] = useState(selected)
   const [ driftData, setDriftData ] = useState<ConfigTemplateDriftSet[]>([])
 
@@ -34,7 +44,7 @@ export function DriftInstance (props: DriftInstanceProps) {
 
   const onCollapseChange = (key: string | string[]) => {
     if (key && key.length > 0) {
-      getDriftReport({ params: { templateId, tenantId: instanceId } }).then(result => {
+      getDriftReport({ templateId, instanceId }).then(result => {
         setDriftData(result.data ?? [])
       })
     }

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { MspEc }                                                         from '@acx-ui/msp/utils'
 import { ApplyConfigTemplatePaylod, ConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { flattenObject }                                                 from '@acx-ui/utils'
 
@@ -8,12 +7,12 @@ import { OverrideEntitiyType } from './types'
 
 import { ConfigTemplateOverrideModalProps } from '.'
 
-export type OverrideValuesPerMspEcType = { [mspEcId in string]: OverrideEntitiyType }
+export type OverrideValuesPerTarget = { [id in string]: OverrideEntitiyType }
 
 // eslint-disable-next-line max-len
-export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, selectedMspEcs: MspEc[]) {
+export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, selectedTargets: Array<{ id: string }>) {
   const [ overrideModalVisible, setOverrideModalVisible ] = useState(false)
-  const [ overrideValues, setOverrideValues ] = useState<OverrideValuesPerMspEcType>()
+  const [ overrideValues, setOverrideValues ] = useState<OverrideValuesPerTarget>()
 
   const isOverridable = (selectedTemplate: ConfigTemplate): boolean => {
     return selectedTemplate.type === ConfigTemplateType.VENUE
@@ -24,24 +23,25 @@ export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, sel
   }
 
   const updateOverrideValue = (values: OverrideEntitiyType) => {
-    const resolvedValues = selectedMspEcs.reduce((acc, curr) => {
+    const resolvedValues = selectedTargets.reduce((acc, curr) => {
       acc[curr.id] = values
       return acc
-    }, {} as OverrideValuesPerMspEcType)
+    }, {} as OverrideValuesPerTarget)
 
     setOverrideValues(origin => ({ ...origin, ...resolvedValues }))
   }
 
   const createOverrideModalProps = (): ConfigTemplateOverrideModalProps => {
-    const mspEcWithOverrideValues = selectedMspEcs.find(mspEc => overrideValues?.[mspEc.id])
+    const targetWithOverrideValues = selectedTargets.find(mspEc => overrideValues?.[mspEc.id])
+    // eslint-disable-next-line max-len
+    const existingOverrideValues = targetWithOverrideValues ? overrideValues![targetWithOverrideValues.id] : {}
 
     return {
       templateId: selectedTemplate.id!,
       templateType: selectedTemplate.type,
-      // eslint-disable-next-line max-len
-      ...(mspEcWithOverrideValues ? { existingOverrideValues: overrideValues![mspEcWithOverrideValues.id] } : {}),
+      existingOverrideValues,
       onCancel: onOverrideModalClose,
-      updateOverrideValue: updateOverrideValue
+      updateOverrideValue
     }
   }
 

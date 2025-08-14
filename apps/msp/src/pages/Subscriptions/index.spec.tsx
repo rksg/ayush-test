@@ -26,7 +26,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 100,
       sku: 'CLD-MS76-1001',
-      status: 'VALID'
+      status: 'VALID',
+      skuType: 'Gold'
     },
     {
       name: 'Wi-Fi',
@@ -39,7 +40,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 80,
       sku: 'CLD-MW00-1001',
-      status: 'VALID'
+      status: 'VALID',
+      skuType: 'Gold'
     },
     {
       name: 'Wi-Fi',
@@ -52,7 +54,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 60,
       sku: 'CLD-MW00-1001',
-      status: 'EXPIRED'
+      status: 'EXPIRED',
+      skuType: 'Platinum'
     },
     {
       name: 'APSW',
@@ -65,7 +68,8 @@ const entitlement =
       lastNotificationDate: null,
       quantity: 60,
       sku: 'CLD-MW00-1001',
-      status: 'FUTURE'
+      status: 'FUTURE',
+      skuType: 'Platinum'
     }
   ]
 

@@ -33,7 +33,6 @@ const EditTunnelProfile = () => {
     { params: { id: policyId } }
   )
 
-
   const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileViewDataListQuery(
     { payload: { filters: { id: [policyId] } } },
     {
@@ -94,7 +93,7 @@ const EditTunnelProfile = () => {
   const isSdLanUsed = isSdLanHaUsed
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
   const formInitValues = useMemo(() => {
-    const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+    const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData, tunnelProfileViewData)
     initValues.disabledFields = []
     if (pinId || isSdLanUsed){
       initValues.disabledFields.push('type')
@@ -135,7 +134,7 @@ const EditTunnelProfile = () => {
         onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
         initialValues={formInitValues}
-        editMode={true}
+        editData={tunnelProfileViewData}
       />
     </Loader>
   )

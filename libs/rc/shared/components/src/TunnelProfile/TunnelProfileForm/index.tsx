@@ -1,7 +1,7 @@
 import { Col, FormInstance, Row } from 'antd'
 import { useNavigate }            from 'react-router-dom'
 
-import { PageHeader, StepsForm }      from '@acx-ui/components'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
   CommonResult,
   usePolicyListBreadcrumb,
@@ -11,7 +11,8 @@ import {
   useAfterPolicySaveRedirectPath,
   usePolicyPreviousPath,
   useConfigTemplateTenantLink,
-  generateConfigTemplateBreadcrumb
+  generateConfigTemplateBreadcrumb,
+  TunnelProfileViewData
 
 } from '@acx-ui/rc/utils'
 
@@ -24,7 +25,7 @@ interface TunnelProfileFormProps {
   form?: FormInstance
   isDefaultTunnel?: boolean
   initialValues?: TunnelProfileFormType
-  editMode?: boolean
+  editData?: TunnelProfileViewData
   isTemplate?: boolean
 }
 
@@ -34,7 +35,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     onFinish,
     form,
     isDefaultTunnel,
-    initialValues, editMode,
+    initialValues, editData,
     isTemplate
   } = props
 
@@ -45,6 +46,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const redirectPath = isTemplate ? templateFallbackPath : redirectPathAfterSave
   const policyBreadcrumb = usePolicyListBreadcrumb(PolicyType.TUNNEL_PROFILE)
   const breadcrumb = isTemplate ? generateConfigTemplateBreadcrumb() : policyBreadcrumb
+  const editMode = !!editData
 
   const handleFinish = async (data: TunnelProfileFormType) => {
     try{
@@ -76,7 +78,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <TunnelProfileFormItems isDefaultTunnelProfile={isDefaultTunnel} />
+              <TunnelProfileFormItems
+                editData={editData}
+                isDefaultTunnelProfile={isDefaultTunnel}
+                isTemplate={isTemplate}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>

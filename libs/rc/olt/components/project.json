@@ -1,0 +1,21 @@
+{
+  "sourceRoot": "libs/rc/olt/components/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rc/olt/components/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/rc/olt/components"],
+      "options": {
+        "jestConfig": "libs/rc/olt/components/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
