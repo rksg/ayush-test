@@ -110,7 +110,7 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
       title: $t({ defaultMessage: 'External Antenna Settings Change' }),
       content:
       // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
+        $t({ defaultMessage: 'Modifying the External Antenna settings will cause all Access Point (AP) devices in this AP Group to reboot. Are you sure you want to continue?' }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
