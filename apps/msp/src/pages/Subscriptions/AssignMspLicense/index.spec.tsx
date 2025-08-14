@@ -640,7 +640,8 @@ describe('AssignMspLicense', () => {
     })
   })
   it('trial expiration date dropdown should set correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesTrialAssignmentSummary }
     })
@@ -804,7 +805,8 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should save correctly for add assigned device', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })
@@ -840,9 +842,9 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should save correctly for assigned trial device', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
+      ff !== Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE
+      && ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesTrialAssignmentSummary }
     })
@@ -1052,9 +1054,9 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should save correctly for delete assigned trial device', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
+      ff !== Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE
+    && ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesTrialAssignmentSummary }
     })
@@ -1106,7 +1108,8 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should handle save server error correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })
@@ -1132,7 +1135,8 @@ describe('AssignMspLicense', () => {
     expect(await screen.findByText('Error has occurred. Backend returned code 400')).toBeVisible()
   })
   it('should handle save operation failed correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })
