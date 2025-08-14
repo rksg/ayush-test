@@ -57,11 +57,18 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
       }}
     />
 
-  const onTabChange = (tab: string) =>
+  const onTabChange = (tab: string) => {
+    // Clear infrastructure KPI tab persistence when clicking on infrastructure tab
+    // This ensures it always defaults to "System" when navigating to infrastructure
+    if (tab === 'infrastructure') {
+      localStorage.removeItem('health-infrastructure-kpi-content-switcher')
+    }
+
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+  }
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>

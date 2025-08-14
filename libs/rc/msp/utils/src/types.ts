@@ -689,6 +689,21 @@ export interface LicenseCalculatorDataResponse {
   data: LicenseCalculatorData,
   message: string
 }
+
+export interface LicenseCalculatorDataV2 {
+  effectiveDate: string,
+  expirationDate: string,
+  quantity: number,
+  licenseType: EntitlementDeviceType,
+  isTrial: boolean,
+  maxQuantity: number,
+  skuTier?: string
+}
+
+export interface LicenseCalculatorDataResponseV2 {
+  data: LicenseCalculatorDataV2[]
+}
+
 export interface SelectedMspMspAdmins {
   mspAdminId: string
   mspAdminRole: RolesEnum
