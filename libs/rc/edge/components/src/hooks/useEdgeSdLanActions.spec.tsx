@@ -244,7 +244,7 @@ describe('useEdgeSdLanActions', () => {
           wifiNetworkId: 'network-2',
           serviceId: mockServiceId
         }, {})
-        expect(mockApplyConfigTemplateReq).toBeCalledTimes(2)
+        expect(mockApplyConfigTemplateReq).toBeCalledTimes(1)
         expect(mockApplyConfigTemplateReq).toHaveBeenCalledWith({
           templateId: 'template-1',
           tenantId: 'tenant-2'

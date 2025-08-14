@@ -179,6 +179,12 @@ export const useEdgeSdLanActions = () => {
     venueTemplateIds?: string[],
     customerTenantIds?: string[]
   ) => {
+    if(
+      !venueTemplateIds || venueTemplateIds.length === 0 ||
+      !customerTenantIds || customerTenantIds.length === 0
+    ) {
+      return
+    }
     const venueTemplates = await getConfigTemplateList({
       payload: {
         page: 1,
@@ -202,18 +208,21 @@ export const useEdgeSdLanActions = () => {
     await Promise.all(actions)
   }
 
-  const applyNetworkTemplateIfNotApplied = async (
-    networkTemplateIds?: string[],
+  const applyTunnelTemplateIfNotApplied = async (
+    tunnelTemplateId?: string,
     customerTenantIds?: string[]
   ) => {
-    const networkTemplates = await getConfigTemplateList({
+    if(!tunnelTemplateId || !customerTenantIds || customerTenantIds.length === 0) {
+      return
+    }
+    const tunnelTemplates = await getConfigTemplateList({
       payload: {
         pageSize: 10000,
-        filters: { id: networkTemplateIds }
+        filters: { id: [tunnelTemplateId] }
       }
     }).unwrap()
     const actions: Promise<CommonResult>[] = []
-    networkTemplates.data?.forEach(template => {
+    tunnelTemplates.data?.forEach(template => {
       customerTenantIds?.forEach(tenantId => {
         if(!template.appliedOnTenants?.includes(tenantId)) {
           actions.push(applyConfigTemplate({
@@ -259,9 +268,8 @@ export const useEdgeSdLanActions = () => {
           const reqResults = await handleNetworkChanges(serviceId, payload.activeNetwork)
           if (isMsp){
             const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
-            const networkTemplateIds = payload.activeNetworkTemplate?.map(item => item.networkId)
             await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
-            await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.ecTenantIds)
+            await applyTunnelTemplateIfNotApplied(payload.tunnelTemplateId, payload.ecTenantIds)
             await handleNetworkChanges(serviceId, payload.activeNetworkTemplate, undefined, true)
             await handleCustomerChanges(serviceId, payload.ecTenantIds)
           }
@@ -307,9 +315,8 @@ export const useEdgeSdLanActions = () => {
 
       if (isMsp) {
         const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
-        const networkTemplateIds = payload.activeNetworkTemplate?.map(item => item.networkId)
         await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
-        await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.ecTenantIds)
+        await applyTunnelTemplateIfNotApplied(payload.tunnelTemplateId, payload.ecTenantIds)
         await handleNetworkChanges(
           originData.id || '',
           payload.activeNetworkTemplate,
