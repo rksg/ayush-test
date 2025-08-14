@@ -260,10 +260,10 @@ export const useEdgeSdLanActions = () => {
           if (isMsp){
             const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
             const networkTemplateIds = payload.activeNetworkTemplate?.map(item => item.networkId)
-            await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.customerTenantIds)
-            await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.customerTenantIds)
+            await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
+            await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.ecTenantIds)
             await handleNetworkChanges(serviceId, payload.activeNetworkTemplate, undefined, true)
-            await handleCustomerChanges(serviceId, payload.customerTenantIds)
+            await handleCustomerChanges(serviceId, payload.ecTenantIds)
           }
           callback?.(reqResults)
         } catch(error) {
@@ -308,8 +308,8 @@ export const useEdgeSdLanActions = () => {
       if (isMsp) {
         const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
         const networkTemplateIds = payload.activeNetworkTemplate?.map(item => item.networkId)
-        await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.customerTenantIds)
-        await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.customerTenantIds)
+        await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
+        await applyNetworkTemplateIfNotApplied(networkTemplateIds, payload.ecTenantIds)
         await handleNetworkChanges(
           originData.id || '',
           payload.activeNetworkTemplate,
@@ -318,8 +318,8 @@ export const useEdgeSdLanActions = () => {
         )
         await handleCustomerChanges(
           originData.id || '',
-          payload.customerTenantIds,
-          originData.customerTenantIds
+          payload.ecTenantIds,
+          originData.ecTenantIds
         )
       }
 
