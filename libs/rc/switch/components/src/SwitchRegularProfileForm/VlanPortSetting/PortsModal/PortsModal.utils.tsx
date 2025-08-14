@@ -2,10 +2,9 @@ import { FormInstance }      from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import {
-  SwitchSlot2 as SwitchSlot,
-  ICX_MODELS_MODULES
-} from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES }        from '@acx-ui/rc/switch/utils'
+import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
+
 
 import { PortsType } from '../index.utils'
 
@@ -59,8 +58,17 @@ export const getModelModules = (family: string, model: string): string[][] => {
   return familyList[modelIndex]
 }
 
-export const getSlots = (family: string, model: string): DefaultOptionType[][] => {
-  const modelModules = getModelModules(family, model)
+export const getSlots = (family: string, model: string,
+  isSupport7550Module3_4x25G?: boolean): DefaultOptionType[][] => {
+  const modelModules = getModelModules(family, model).map(item => {
+    return item.filter(subItem => {
+      if (!isSupport7550Module3_4x25G && family === 'ICX7550'
+        && ['24F', '48F', '24ZP', '48ZP'].includes(model) && subItem === '4X25G') {
+        return false
+      }
+      return true
+    })
+  })
   const slotOptionLists = [
     createSlotOptions(modelModules, 1),
     createSlotOptions(modelModules, 2),

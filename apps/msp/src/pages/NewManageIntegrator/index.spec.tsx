@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import userEvent      from '@testing-library/user-event'
-import { Path, rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
 import { AssignedEc, MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
@@ -8,13 +8,10 @@ import { AdministrationUrlsInfo, EntitlementDeviceType, LicenseUrlsInfo }       
 import { Provider }                                                                                    from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                   from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                   from '@acx-ui/types'
-import { UserUrlsInfo }                                                                                from '@acx-ui/user'
 import type { ToastProps }                                                                             from '@acx-ui/utils'
 import { AccountType }                                                                                 from '@acx-ui/utils'
 
 import { NewManageIntegrator } from '.'
-
-const user = require('@acx-ui/user')
 
 const assignmentSummary =
   [
@@ -78,24 +75,6 @@ const assignmentHistory =
       trialAssignment: false
     }
   ]
-
-const userProfile =
-    {
-      adminId: '9b85c591260542c188f6a12c62bb3912',
-      companyName: 'msp.eleu1658',
-      dateFormat: 'mm/dd/yyyy',
-      detailLevel: 'debug',
-      email: 'msp.eleu1658@mail.com',
-      externalId: '0032h00000gXuBNAA0',
-      firstName: 'msp',
-      lastName: 'eleu1658',
-      role: 'PRIME_ADMIN',
-      support: false,
-      tenantId: '3061bd56e37445a8993ac834c01e2710',
-      username: 'msp.eleu1658@rwbigdog.com',
-      var: true,
-      varTenantId: '3061bd56e37445a8993ac834c01e2710'
-    }
 
 const mspEcAccount: MspEcData =
     {
@@ -179,19 +158,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const settings = {
-  privacyFeatures: [
-    {
-      featureName: 'APP_VISIBILITY',
-      isEnabled: false
-    },
-    {
-      featureName: 'ARC',
-      isEnabled: true
-    }
-  ]
-}
-
 const privilegeGroupList =
   [
     {
@@ -238,10 +204,9 @@ describe('NewManageIntegrator', () => {
     type: AccountType.MSP_INTEGRATOR
   }
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
-  user.useUserProfileContext = jest.fn().mockImplementation(() => {
-    return { data: userProfile }
-  })
+  jest.mocked(useIsSplitOn).mockImplementation(ff =>
+    ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -249,17 +214,7 @@ describe('NewManageIntegrator', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(userProfile))
-      ),
-      rest.get(
-        AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({ global: {
-          mapRegion: 'TW'
-        } }))
-      ),
-      rest.get(
-        MspUrlsInfo.getAssignedMspEcToIntegrator.url.split('?')[0] as Path,
+        MspUrlsInfo.getAssignedMspEcToIntegrator.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json(assignedEc))
       ),
       rest.post(
@@ -270,14 +225,11 @@ describe('NewManageIntegrator', () => {
         }
       ),
       rest.put(
-        '/tenants/1576b79db6b549f3b1f3a7177d7d4ca5',
+        MspRbacUrlsInfo.updateMspEcAccount.url,
         (_req, res, ctx) => {
           updateCustomerMockFn()
           return res(ctx.json({ requestId: 'update' }))
         }
-      ),
-      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
-        (req, res, ctx) => res(ctx.json(settings))
       ),
       rest.post(LicenseUrlsInfo.getMspEntitlementSummary.url,
         (req, res, ctx) => {
@@ -308,13 +260,7 @@ describe('NewManageIntegrator', () => {
           mspEcAccountMockFn()
           return res(ctx.json(mspEcAccount))
         }
-      ),
-      rest.post(MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => {
-          return res(ctx.json(list))
-        }
       )
-
     )
   })
   afterEach(() => {
@@ -433,7 +379,8 @@ describe('NewManageIntegrator', () => {
     jest.mocked(useIsSplitOn)
       .mockImplementation(ff => ff !== Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE
         && ff !== Features.G_MAP
-      && ff !== Features.MSP_APP_MONITORING)
+      && ff !== Features.MSP_APP_MONITORING
+    && ff !== Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
     render(
       <Provider>
