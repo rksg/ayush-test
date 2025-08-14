@@ -136,7 +136,6 @@ export const useEdgeSdLanActions = () => {
           wifiNetworkId: network.networkId
         },
         payload: {
-          ...(isTemplate ? { isTemplate } : {}),
           ...(network.tunnelProfileId ? {
             forwardingTunnelProfileId: network.tunnelProfileId
           } : {})
@@ -188,7 +187,7 @@ export const useEdgeSdLanActions = () => {
       }
     }).unwrap()
     const actions: Promise<CommonResult>[] = []
-    venueTemplates.data.forEach(template => {
+    venueTemplates.data?.forEach(template => {
       customerTenantIds?.forEach(tenantId => {
         if(!template.appliedOnTenants?.includes(tenantId)) {
           actions.push(applyConfigTemplate({
@@ -214,7 +213,7 @@ export const useEdgeSdLanActions = () => {
       }
     }).unwrap()
     const actions: Promise<CommonResult>[] = []
-    networkTemplates.data.forEach(template => {
+    networkTemplates.data?.forEach(template => {
       customerTenantIds?.forEach(tenantId => {
         if(!template.appliedOnTenants?.includes(tenantId)) {
           actions.push(applyConfigTemplate({

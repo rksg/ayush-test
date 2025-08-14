@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import { EdgeSdLanFixtures, EdgeTunnelProfileFixtures, Network, NetworkTypeEnum, TunnelProfileViewData } from '@acx-ui/rc/utils'
 
+import { ApplyTo } from '../Msp/Form/GeneralForm'
+
 import { getFilteredTunnelProfileOptions, transformToApiData, transformToFormData } from './utils'
 
 const { mockedL2oGreSdLanDataList } = EdgeSdLanFixtures
@@ -27,7 +29,9 @@ describe('SD-LAN form utils', () => {
           tunnelProfileId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][1].tunnelProfileId
         }
       ],
-      activeNetworkTemplate: []
+      activeNetworkTemplate: [],
+      tunnelTemplateId: '',
+      customerTenantIds: undefined
     })
   })
 
@@ -52,7 +56,9 @@ describe('SD-LAN form utils', () => {
           }
         ]
       },
-      activatedNetworkTemplates: {}
+      activatedNetworkTemplates: {},
+      applyTo: [ApplyTo.MY_ACCOUNT],
+      tunnelTemplateId: ''
     })
   })
 
