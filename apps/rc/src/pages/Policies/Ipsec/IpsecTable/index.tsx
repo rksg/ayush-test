@@ -2,9 +2,12 @@ import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, SimpleListTooltip, Table, TableProps } from '@acx-ui/components'
+import { getVxlanEspProposalText, getVxlanIkeProposalText }                 from '@acx-ui/edge/components'
+import { Features }                                                         from '@acx-ui/feature-toggle'
 import {
   useDeleteIpsecMutation,
   useGetIpsecViewDataListQuery,
+  useGetTunnelProfileViewDataListQuery,
   useGetVenuesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -16,13 +19,15 @@ import {
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
-  IkeProposal,
-  EspProposal,
   IpSecAuthEnum,
   IpSecProposalTypeEnum,
   getPolicyAllowedOperation,
-  IpSecEncryptionAlgorithmEnum,
-  doProfileDelete
+  doProfileDelete,
+  useIsEdgeFeatureReady,
+  IpSecTunnelUsageTypeEnum,
+  getTunnelUsageTypeDisplayName,
+  getEspProposalsDisplayText,
+  getIkeProposalsDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { useTableQuery }             from '@acx-ui/utils'
@@ -47,6 +52,8 @@ const defaultPayload = {
 
 export default function IpsecTable () {
   const { $t } = useIntl()
+  const isEdgeVxLanIpsecReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
 
@@ -55,7 +62,12 @@ export default function IpsecTable () {
 
   const tableQuery = useTableQuery<IpsecViewData>({
     useQuery: useGetIpsecViewDataListQuery,
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      ...isEdgeVxLanIpsecReady ? {
+        fields: [...defaultPayload.fields, 'tunnelUsageType', 'tunnelActivations']
+      } : {}
+    },
     search: {
       searchString: '',
       searchTargetFields: ['name']
@@ -152,9 +164,11 @@ export default function IpsecTable () {
 }
 
 function useColumns () {
+  const isEdgeVxLanIpsecReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const { $t } = useIntl()
   const params = useParams()
-  const emptyVenues: { key: string, value: string }[] = []
+  const emptyNameMap: { key: string, value: string }[] = []
 
   const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },
@@ -169,27 +183,54 @@ function useColumns () {
     selectFromResult: ({ data }) => {
       return {
         venueNameMap: data?.data?.map(venue =>
-          ({ key: venue.id, value: venue.name })) ?? emptyVenues
+          ({ key: venue.id, value: venue.name })) ?? emptyNameMap
       }
     }
   })
 
-  const getIkeProposals = (proposals: IkeProposal[]) => {
-    const retArr: string[] = []
-    proposals.forEach((proposal: IkeProposal) => {
-      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
-        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
-    })
-    return retArr
+  const { tunnelProfileNameMap } = useGetTunnelProfileViewDataListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      page: 1,
+      pageSize: 10_000
+    }
+  }, {
+    skip: !isEdgeVxLanIpsecReady,
+    selectFromResult: ({ data }) => {
+      return {
+        tunnelProfileNameMap: data?.data?.map(tp =>
+          ({ key: tp.id, value: tp.name })) ?? emptyNameMap
+      }
+    }
+  })
+
+  const softGreInstancesRenderer = (data: IpsecViewData) => {
+    let venueIds: Set<string> = new Set()
+    data?.activations?.forEach(activation => venueIds.add(activation.venueId))
+    data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+    data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+    if (venueIds.size === 0) return 0
+
+    const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
+    return <SimpleListTooltip
+      title={isEdgeVxLanIpsecReady
+        ? $t({ defaultMessage: '<VenuePlural></VenuePlural>:' })
+        : undefined}
+      items={tooltipItems}
+      displayText={venueIds.size}
+    />
   }
 
-  const getEspProposals = (proposals: EspProposal[]) => {
-    const retArr: string[] = []
-    proposals.forEach((proposal: EspProposal) => {
-      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
-        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.dhGroup}`)
-    })
-    return retArr
+  const vxlanInstancesRenderer = (data: IpsecViewData) => {
+    const tunnelProfileIds = data.tunnelActivations?.map(ta => ta.tunnelProfileId)
+    if (!tunnelProfileIds?.length) return 0
+
+    // eslint-disable-next-line max-len
+    const tooltipItems = tunnelProfileNameMap?.filter(v => tunnelProfileIds.includes(v.key)).map(v => v.value)
+    return <SimpleListTooltip
+      title={$t({ defaultMessage: 'Tunnels:' })}
+      items={tooltipItems}
+      displayText={tunnelProfileIds.length} />
   }
 
   const columns: TableProps<IpsecViewData>['columns'] = [
@@ -213,18 +254,31 @@ function useColumns () {
         )
       }
     },
+    ...isEdgeVxLanIpsecReady ? [{
+      key: 'tunnelUsageType',
+      title: $t({ defaultMessage: 'Tunnel Usage Type' }),
+      dataIndex: 'tunnelUsageType',
+      sorter: true,
+      render: (_: React.ReactNode, row: IpsecViewData) => {
+        // eslint-disable-next-line max-len
+        return getTunnelUsageTypeDisplayName(row.tunnelUsageType ?? IpSecTunnelUsageTypeEnum.SOFT_GRE)
+      }
+    }] : [],
     {
       key: 'serverAddress',
       title: $t({ defaultMessage: 'Security Gateway' }),
       dataIndex: 'serverAddress',
-      fixed: 'left',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? $t({ defaultMessage: 'N/A' })
+          : row.serverAddress
+      }
     },
     {
       key: 'authenticationType',
       title: $t({ defaultMessage: 'Authentication' }),
       dataIndex: 'authenticationType',
-      fixed: 'left',
       sorter: true,
       render: (_, row) => {
         return row.authenticationType === IpSecAuthEnum.PSK ?
@@ -235,56 +289,61 @@ function useColumns () {
       title: $t({ defaultMessage: 'IKE Proposal' }),
       key: 'ikeProposalType',
       dataIndex: 'ikeProposalType',
-      sorter: true,
+      // when sorting by ikeProposalType, the sorting will be wrong due to VXLAN_GPE type is displayed in text
+      // so sorting need to be disabled when VXLAN_GPE FF is enabled
+      sorter: isEdgeVxLanIpsecReady ? false :true,
       align: 'left',
       render: (_, row) => {
-        const proposals = row.ikeProposals?.length === 0 ?
-          ['All'] : getIkeProposals(row.ikeProposals)
-        return <SimpleListTooltip
-          items={proposals}
-          displayText={
-            row.ikeProposalType === IpSecProposalTypeEnum.DEFAULT ?
-              $t({ defaultMessage: 'Default' }) :
-              $t({ defaultMessage: 'Custom' })} />
+        return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? getVxlanIkeProposalText(row)
+          : <SimpleListTooltip
+            items={getIkeProposalsDisplayText(row.ikeProposals)}
+            displayText={
+              row.ikeProposalType === IpSecProposalTypeEnum.DEFAULT ?
+                $t({ defaultMessage: 'Default' }) :
+                $t({ defaultMessage: 'Custom' })} />
       }
     },
     {
       title: $t({ defaultMessage: 'ESP Proposal' }),
       key: 'espProposalType',
       dataIndex: 'espProposalType',
-      sorter: true,
+      // when sorting by espProposalType, the sorting will be wrong due to VXLAN_GPE type is displayed in text
+      // so sorting need to be disabled when VXLAN_GPE FF is enabled
+      sorter: isEdgeVxLanIpsecReady ? false :true,
       align: 'left',
       render: (_, row) => {
-        const proposals = row.espProposals?.length === 0 ?
-          ['All'] : getEspProposals(row.espProposals)
-        return <SimpleListTooltip
-          items={proposals}
-          displayText={
-            row.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
-              $t({ defaultMessage: 'Default' }) :
-              $t({ defaultMessage: 'Custom' })} />
+        return isEdgeVxLanIpsecReady && row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? getVxlanEspProposalText(row)
+          : <SimpleListTooltip
+            items={getEspProposalsDisplayText(row.espProposals)}
+            displayText={
+              row.espProposalType === IpSecProposalTypeEnum.DEFAULT ?
+                $t({ defaultMessage: 'Default' }) :
+                $t({ defaultMessage: 'Custom' })} />
       }
     },
-    {
+    ...isEdgeVxLanIpsecReady ? [{
+      key: 'instances',
+      title: $t({ defaultMessage: 'Instances' }),
+      dataIndex: 'instances',
+      render: (_: React.ReactNode, row: IpsecViewData) => {
+        return row.tunnelUsageType === IpSecTunnelUsageTypeEnum.VXLAN_GPE
+          ? vxlanInstancesRenderer(row)
+          : softGreInstancesRenderer(row)
+      }
+    }] : [{
       key: 'venueCount',
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
-      align: 'center',
+      align: 'center' as const,
       filterKey: 'activations.venueId',
       filterable: venueNameMap,
       sorter: true,
-      render: function (_, row) {
-        let venueIds: Set<string> = new Set()
-        row?.activations?.forEach(activation => venueIds.add(activation.venueId))
-        row?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
-        row?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
-        if (venueIds.size === 0) return 0
-        // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
-        // eslint-disable-next-line max-len
-        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.size} />
+      render: function (_: React.ReactNode, row: IpsecViewData) {
+        return softGreInstancesRenderer(row)
       }
-    }
+    }]
   ]
   return columns
 }

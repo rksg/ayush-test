@@ -106,13 +106,6 @@ export function isAccessControlSubPolicy (type: ConfigTemplateType) {
   return type in AccessControlPolicyForTemplateCheckType
 }
 
-export function isNotAllowToApplyPolicy (type: ConfigTemplateType) {
-  return [
-    ...Object.values(AccessControlPolicyForTemplateCheckType),
-    ConfigTemplateType.AP_GROUP
-  ].includes(type)
-}
-
 export const subPolicyMappingType : Partial<Record<ConfigTemplateType, PolicyType>> = {
   [ConfigTemplateType.LAYER_2_POLICY]: PolicyType.LAYER_2_POLICY,
   [ConfigTemplateType.LAYER_3_POLICY]: PolicyType.LAYER_3_POLICY,

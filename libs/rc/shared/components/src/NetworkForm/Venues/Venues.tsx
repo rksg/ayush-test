@@ -26,7 +26,7 @@ import {
   ConfigTemplateType,
   EdgeMvSdLanViewData,
   generateDefaultNetworkVenue,
-  IsNetworkSupport6g,
+  IsNetworkSupport6g, NetworkApGroup,
   NetworkSaveData,
   NetworkTunnelSoftGreAction,
   NetworkVenue,
@@ -169,11 +169,12 @@ interface schedule {
 }
 
 interface VenuesProps {
-  defaultActiveVenues?: string[]
+  defaultActiveVenues?: string[],
+  defaultActiveApGroups?: NetworkApGroup[]
 }
 
 export function Venues (props: VenuesProps) {
-  const { defaultActiveVenues } = props
+  const { defaultActiveVenues, defaultActiveApGroups } = props
 
   const { isTemplate } = useConfigTemplate()
 
@@ -242,7 +243,7 @@ export function Venues (props: VenuesProps) {
     if(isDefaultVenueSetted.current || !defaultActiveVenues?.length || !data || !tableData?.length || editMode || cloneMode) return
 
     defaultActiveVenues.forEach(defaultVenueId => {
-      handleActivateVenue(true, [{ id: defaultVenueId } as Venue])
+      handleActivateVenue(true, [{ id: defaultVenueId } as Venue], defaultActiveApGroups)
     })
     isDefaultVenueSetted.current = true
 
@@ -253,12 +254,13 @@ export function Venues (props: VenuesProps) {
     form.setFieldsValue({ venues: newSelectedNetworkVenues })
   }
 
-  const handleActivateVenue = (isActivate: boolean, rows: Venue[]) => {
+  const handleActivateVenue = (isActivate: boolean, rows: Venue[], apGroups?: NetworkApGroup[]) => {
     let newSelectedNetworkVenues: NetworkVenue[] = [...(activatedNetworkVenues ?? [])]
     if (isActivate) {
       const newActivatedNetworkVenues: NetworkVenue[] =
         rows.map(row => {
-          const newNetworkVenue = generateDefaultNetworkVenue(row.id, row.networkId as string)
+          // eslint-disable-next-line max-len
+          const newNetworkVenue = generateDefaultNetworkVenue(row.id, row.networkId as string, apGroups)
           if (isWPA3security) {
             newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
           }

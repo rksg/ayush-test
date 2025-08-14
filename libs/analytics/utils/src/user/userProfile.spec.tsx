@@ -117,7 +117,7 @@ describe('User Profile', () => {
         role: '',
         support: false,
         varTenantId: '1',
-        version: ''
+        version: 'ruckus-ai'
       }
     })
   })

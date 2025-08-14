@@ -17,6 +17,12 @@ export function transformDisplayEnabledDisabled (value: boolean) {
     $t({ defaultMessage: 'Disabled' })
 }
 
+export function transformDisplayYesNo (value: boolean) {
+  const { $t } = getIntl()
+  return value ? $t({ defaultMessage: 'Yes' }) :
+    $t({ defaultMessage: 'No' })
+}
+
 export function transformDisplayNumber (value?: number) {
   return value ? value : 0
 }

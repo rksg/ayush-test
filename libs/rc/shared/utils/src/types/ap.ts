@@ -641,7 +641,7 @@ export interface ApUsbSettings {
 }
 
 export interface ApPassword {
-  apPasswords: string,
+  apPassword: string,
   expireTime: string,
   updatedTime: string
 }
@@ -1084,7 +1084,13 @@ export enum NewDhcpOption82SubOption151Enum {
 export enum DhcpOption82MacEnum {
   COLON = 'COLON',
   HYPHEN = 'HYPHEN',
-  NODELIMITER = 'NODELIMITER',
+  NODELIMITER = 'NODELIMITER'
+}
+
+export enum DhcpOption82MacDelimiterEnum {
+  COLON = 'COLON',
+  HYPHEN = 'HYPHEN',
+  NONE = 'NONE'
 }
 
 export interface DhcpOption82SubOption1CustomizationAttribute {
@@ -1119,7 +1125,7 @@ export interface DhcpOption82Settings {
   subOption151Format:	DhcpOption82SubOption151Enum
   subOption2Format:	DhcpOption82SubOption2Enum
   subOption1Format:	DhcpOption82SubOption1Enum
-  macFormat:	DhcpOption82MacEnum
+  macDelimiter:	DhcpOption82MacEnum
   subOption1Enabled:	boolean
   subOption2Enabled:	boolean
   subOption150Enabled:	boolean

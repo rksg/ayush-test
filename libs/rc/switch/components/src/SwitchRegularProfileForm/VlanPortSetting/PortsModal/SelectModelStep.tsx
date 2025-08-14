@@ -4,11 +4,10 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 import { DefaultOptionType }                                                            from 'antd/lib/select'
 
-import { Card, Tooltip, useStepFormContext }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { is7550ZippySubModel, isBabyRodanXSubModel } from '@acx-ui/rc/switch/utils'
-import { ICX_MODELS_MODULES }                        from '@acx-ui/rc/utils'
-import { getIntl }                                   from '@acx-ui/utils'
+import { Card, Tooltip, useStepFormContext }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { is7550ZippySubModel, isBabyRodanXSubModel, ICX_MODELS_MODULES } from '@acx-ui/rc/switch/utils'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 import { checkIfModuleFixed, PortSetting, ModulePorts } from '../index.utils'
 
@@ -33,6 +32,7 @@ export function SelectModelStep (props: {
 
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
+  const isSupport7550Module3_4x25G = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G)
 
   const data = form?.getFieldsValue(true)
 
@@ -115,7 +115,7 @@ export function SelectModelStep (props: {
 
     const values = form.getFieldsValue(true)
     const modelModules = getModelModules(family, model)
-    const slotOptionLists = getSlots(family, model)
+    const slotOptionLists = getSlots(family, model, isSupport7550Module3_4x25G)
     setOptionList(slotOptionLists)
     setModelModules(modelModules)
 

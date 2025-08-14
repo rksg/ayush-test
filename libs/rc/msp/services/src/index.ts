@@ -33,7 +33,8 @@ import {
   RecommendFirmwareUpgradeByApModel,
   LicenseCalculatorDataResponse,
   MileageReportsResponse,
-  SolutionTokenSettings
+  SolutionTokenSettings,
+  LicenseCalculatorDataResponseV2
 } from '@acx-ui/msp/utils'
 import {
   CommonResult,
@@ -53,6 +54,13 @@ import { createHttpRequest, ignoreErrorModal, TableResult } from '@acx-ui/utils'
 
 const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo
+}
+
+const customHeaders = {
+  v2: {
+    'Content-Type': 'application/vnd.ruckus.v2+json',
+    'Accept': 'application/vnd.ruckus.v2+json'
+  }
 }
 
 
@@ -287,6 +295,7 @@ export const mspApi = baseMspApi.injectEndpoints({
           : response as MspEntitlementSummary[]
       }
     }),
+
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
       query: ({ params }) => {
         const mspAssignmentSummaryReq =
@@ -1077,6 +1086,26 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getCalculatedLicencesV2: build.mutation<LicenseCalculatorDataResponseV2, RequestPayload>({
+      query: ({ payload }) => {
+        const header = customHeaders.v2
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, {}, header)
+        return {
+          ...request,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getCalculatedLicencesListV2: build.query<LicenseCalculatorDataResponseV2, RequestPayload>({
+      query: ({ payload }) => {
+        const header = customHeaders.v2
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences, {}, header)
+        return {
+          ...request,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     updateMspEcDelegations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspRbacUrlsInfo.updateMspEcDelegations, params)
@@ -1274,7 +1303,9 @@ export const {
   useGetLicenseMileageReportsQuery,
   useCustomerNamesFilterListQuery,
   useDeviceModelFilterListQuery,
-  useVenueNamesFilterListQuery
+  useVenueNamesFilterListQuery,
+  useGetCalculatedLicencesV2Mutation,
+  useGetCalculatedLicencesListV2Query
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

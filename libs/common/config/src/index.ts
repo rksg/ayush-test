@@ -40,7 +40,6 @@ type R1Environment = {
 type RAEnvironment = {
   IS_MLISA_SA: string
   MLISA_REGION: string
-  MLISA_VERSION: string
   MLISA_UI_USER_TRACKING: string
   MLISA_LOGOUT_URL: string
   ENABLED_FEATURES: string
