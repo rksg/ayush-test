@@ -153,10 +153,6 @@ describe('Property Unit Details', () => {
         (req, res, ctx) => {
           return res(ctx.json(mockPropertyUnitList))
         }
-      ),
-      rest.get(
-        WifiUrlsInfo.getVenueApCapabilities.url,
-        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
