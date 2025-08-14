@@ -10,8 +10,7 @@ import {
   ConfigTemplateDriftType,
   ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
-  serviceTypeLabelMapping,
-  useEcFilters as useEcFiltersFromUtils
+  serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
