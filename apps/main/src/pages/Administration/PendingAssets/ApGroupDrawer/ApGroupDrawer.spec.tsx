@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom'
-import { MemoryRouter } from 'react-router-dom'
 
 import { Provider } from '@acx-ui/store'
 import {
@@ -37,11 +36,9 @@ describe('ApGroupDrawer', () => {
 
   it('renders with default props and handles all interactions when open is true', () => {
     render(
-      <MemoryRouter>
         <Provider>
           <ApGroupDrawer {...mockProps} />
         </Provider>
-      </MemoryRouter>
     )
 
     // Test basic rendering
@@ -70,11 +67,9 @@ describe('ApGroupDrawer', () => {
 
   it('does not render when open is false', () => {
     render(
-      <MemoryRouter>
         <Provider>
           <ApGroupDrawer {...mockProps} open={false} />
         </Provider>
-      </MemoryRouter>
     )
     expect(screen.queryByText('Add AP Group')).not.toBeInTheDocument()
     expect(screen.queryByTestId('ap-group-general-tab')).not.toBeInTheDocument()
@@ -82,11 +77,9 @@ describe('ApGroupDrawer', () => {
 
   it('handles mock component interactions correctly', () => {
     render(
-      <MemoryRouter>
         <Provider>
           <ApGroupDrawer {...mockProps} />
         </Provider>
-      </MemoryRouter>
     )
 
     // Test mock close button

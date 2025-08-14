@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 import { rest }         from 'msw'
-import { MemoryRouter } from 'react-router-dom'
 
 import { VenueExtended } from '@acx-ui/rc/utils'
 import { Provider }      from '@acx-ui/store'
@@ -63,11 +62,9 @@ describe('VenueDrawer', () => {
 
   it('renders with default props and handles all interactions when open is true', async () => {
     render(
-      <MemoryRouter>
         <Provider>
           <VenueDrawer {...mockProps} />
         </Provider>
-      </MemoryRouter>
     )
 
     // Wait for the mock component to be rendered
@@ -98,22 +95,18 @@ describe('VenueDrawer', () => {
 
   it('does not render when open is false', () => {
     render(
-      <MemoryRouter>
         <Provider>
           <VenueDrawer {...mockProps} open={false} />
         </Provider>
-      </MemoryRouter>
     )
     expect(screen.queryByText('Add Venue')).not.toBeInTheDocument()
   })
 
   it('handles venue creation callbacks and interactions', async () => {
     render(
-      <MemoryRouter>
         <Provider>
           <VenueDrawer {...mockProps} />
         </Provider>
-      </MemoryRouter>
     )
 
     // Wait for the mock component to be rendered

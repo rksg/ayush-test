@@ -149,7 +149,7 @@ export const PendingAp = () => {
       sorter: true,
       filterable: true,
       filterKey: 'fromDate',
-      filterComponent: { type: 'rangepicker' },
+      filterComponent: { type: 'rangepicker', unlimitedRange: true },
       render: (_, row) => {
         return formatter(DateFormatEnum.DateFormat)(row.createdDate)
       }
