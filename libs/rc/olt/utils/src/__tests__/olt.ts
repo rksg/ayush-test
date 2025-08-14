@@ -49,17 +49,17 @@ export const mockOltPortList = [{
   port: 'S1/1',
   status: OltPortStatusEnum.DOWN,
   speed: '1',
-  VLAN_ID: '200'
+  vlanId: '200'
 }, {
   port: 'S1/2',
   status: OltPortStatusEnum.UP,
   speed: '1',
-  VLAN_ID: '200'
+  vlanId: '200'
 }, {
   port: 'S1/3',
   status: OltPortStatusEnum.DOWN,
   speed: '1',
-  VLAN_ID: '200'
+  vlanId: '200'
 }]
 
 export const mockOntList = [{

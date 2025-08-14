@@ -36,7 +36,7 @@ export interface OltPort {
   port: string
   status: OltPortStatusEnum
   speed?: string
-  VLAN_ID?: string
+  vlanId?: string
 }
 
 export interface OltOnt {

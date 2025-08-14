@@ -53,12 +53,7 @@ export const OltDetails = () => {
   }, {
     label: $t({ defaultMessage: 'Network Card' }),
     value: OverviewInfoType.NETWORK,
-    children: <OltNetworkCardTab
-      oltDetails={oltDetails}
-      oltPorts={oltPorts}
-      isLoading={false}
-      isFetching={false}
-    />
+    children: <OltNetworkCardTab />
   }, {
     label: $t({ defaultMessage: 'Line Card' }),
     value: OverviewInfoType.LINE,

@@ -14,6 +14,6 @@ export const oltLineCardOptions = [
 ]
 
 export const oltNetworkCardOptions = [
-  { label: 'Uplink', value: 'S1' },
-  { label: 'OOB', value: 'S2' }
+  { label: 'Uplink', value: 'uplink' },
+  { label: 'OOB', value: 'oob' }
 ]

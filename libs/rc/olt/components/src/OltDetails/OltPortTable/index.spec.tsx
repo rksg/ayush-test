@@ -1,24 +1,18 @@
 import userEvent from '@testing-library/user-event'
 
-import { OltPort, OltFixtures }               from '@acx-ui/olt/utils'
 import { Provider }                           from '@acx-ui/store'
 import { screen, render, within, mockServer } from '@acx-ui/test-utils'
 
 import { OltPortTable } from '.'
 
-const { mockOlt, mockOltPortList } = OltFixtures
 
 jest.mock('../EditPortDrawer', () => ({
   EditPortDrawer: () => <div data-testid='EditPortDrawer' />
 }))
 
-// jest.mock('../ManageOntsSnDrawer', () => ({
-//   ManageOntsSnDrawer: () => <div data-testid='ManageOntsSnDrawer' />
-// }))
-
-// jest.mock('../ManageCageGroupDrawer', () => ({
-//   ManageCageGroupDrawer: () => <div data-testid='ManageCageGroupDrawer' />
-// }))
+jest.mock('../ManageLacpLagDrawer', () => ({
+  ManageLacpLagDrawer: () => <div data-testid='ManageLacpLagDrawer' />
+}))
 
 describe('OltPortTable', () => {
   const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
@@ -33,12 +27,7 @@ describe('OltPortTable', () => {
 
   it('should render correctly', async () => {
     render(<Provider>
-      <OltPortTable
-        oltDetails={mockOlt}
-        oltPorts={mockOltPortList as OltPort[]}
-        isLoading={false}
-        isFetching={false}
-      />
+      <OltPortTable />
     </Provider>, { route: { params, path: mockPath } })
     const row = screen.getByRole('row', { name: /S1\/2 Up/ })
     expect(row).toBeVisible()
@@ -49,12 +38,7 @@ describe('OltPortTable', () => {
 
   it('should render loading icon correctly', async () => {
     render(<Provider>
-      <OltPortTable
-        oltDetails={mockOlt}
-        oltPorts={mockOltPortList as OltPort[]}
-        isLoading={true}
-        isFetching={true}
-      />
+      <OltPortTable />
     </Provider>, { route: { params, path: mockPath } })
 
     screen.getByRole('img', { name: 'loader' })
@@ -62,12 +46,7 @@ describe('OltPortTable', () => {
 
   it('should handle tab change correctly', async () => {
     render(<Provider>
-      <OltPortTable
-        oltDetails={mockOlt}
-        oltPorts={mockOltPortList as OltPort[]}
-        isLoading={false}
-        isFetching={false}
-      />
+      <OltPortTable />
     </Provider>, { route: { params, path: mockPath } })
 
     const tab = screen.getByRole('tab', { name: 'OOB' })
@@ -78,12 +57,7 @@ describe('OltPortTable', () => {
 
   it('should open edit port drawer correctly', async () => {
     render(<Provider>
-      <OltPortTable
-        oltDetails={mockOlt}
-        oltPorts={mockOltPortList as OltPort[]}
-        isLoading={false}
-        isFetching={false}
-      />
+      <OltPortTable />
     </Provider>, { route: { params, path: mockPath } })
 
     const row = screen.getByRole('row', { name: /S1\/2 Up/ })
@@ -93,36 +67,17 @@ describe('OltPortTable', () => {
     expect(screen.getByTestId('EditPortDrawer')).toBeInTheDocument()
   })
 
-  // it('should open manage onts sn drawer correctly', async () => {
-  //   render(<Provider>
-  //     <OltPortTable
-  //       oltDetails={mockOlt}
-  //       oltPorts={mockOltPortList as OltPort[]}
-  //       isLoading={false}
-  //       isFetching={false}
-  //     />
-  //   </Provider>, { route: { params, path: mockPath } })
+  it('should open manage LACP LAG drawer correctly', async () => {
+    render(<Provider>
+      <OltPortTable />
+    </Provider>, { route: { params, path: mockPath } })
 
-  //   expect(screen.getByRole('row', { name: /S1\/2 Up/ })).toBeVisible()
-  //   const manageOntsSnButton = screen.getByRole('button', { name: 'Manage ONT S/N' })
-  //   await userEvent.click(manageOntsSnButton)
-  //   expect(screen.getByTestId('ManageOntsSnDrawer')).toBeInTheDocument()
-  // })
+    expect(screen.getByRole('row', { name: /S1\/2 Up/ })).toBeVisible()
+    const manageLacpLagButton = screen.getByRole('button', { name: 'Manage LACP LAG' })
+    await userEvent.click(manageLacpLagButton)
+    expect(screen.getByTestId('ManageLacpLagDrawer')).toBeInTheDocument()
+  })
 
-  // it('should open manage cage group drawer correctly', async () => {
-  //   render(<Provider>
-  //     <OltPortTable
-  //       oltDetails={mockOlt}
-  //       oltPorts={mockOltPortList as OltPort[]}
-  //       isLoading={false}
-  //       isFetching={false}
-  //     />
-  //   </Provider>, { route: { params, path: mockPath } })
 
-  //   expect(screen.getByRole('row', { name: /S1\/2 Up/ })).toBeVisible()
-  //   const manageCageGroupButton = screen.getByRole('button', { name: 'Manage Cage Group' })
-  //   await userEvent.click(manageCageGroupButton)
-  //   expect(screen.getByTestId('ManageCageGroupDrawer')).toBeInTheDocument()
-  // })
 
 })
