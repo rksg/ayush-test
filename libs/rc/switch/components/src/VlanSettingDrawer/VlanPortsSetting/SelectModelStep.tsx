@@ -52,7 +52,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
-  const isSupport8100Module3_4x25G = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_MODULE3_4X25G)
+  const isSupport7550Module3_4x25G = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G)
 
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({
@@ -182,7 +182,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
     const slotOptions: ModelsType[] = []
     if (slots.length > slotIndex) {
       for (let value of slots?.[slotIndex]) {
-        if (!isSupport8100Module3_4x25G && family === 'ICX7550' &&
+        if (!isSupport7550Module3_4x25G && family === 'ICX7550' &&
           ['24F', '48F', '24ZP', '48ZP'].includes(model) &&
           slotIndex === 2 && value === '4X25G') {
           continue
