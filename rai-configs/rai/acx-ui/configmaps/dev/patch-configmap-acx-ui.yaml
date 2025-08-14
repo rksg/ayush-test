@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mlisa-core-rsa-mlisa-ui-config
+data:
+  MLISA_UI_USER_TRACKING: ga:UA-168090905-2
+  PENDO_API_KEY: ga:UA-168090905-2

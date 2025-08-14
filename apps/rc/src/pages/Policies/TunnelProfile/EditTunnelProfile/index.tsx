@@ -134,7 +134,7 @@ const EditTunnelProfile = () => {
         onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
         initialValues={formInitValues}
-        editMode={true}
+        editData={tunnelProfileViewData}
       />
     </Loader>
   )

@@ -451,7 +451,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         // flat endpoint into individual fields
         const tableResult = response?.content?.map((data: NotificationRecipientUIModel) => {
           const result = {
-            ...data
+            ...data,
+            name: data.description
           } as NotificationRecipientUIModel
 
           data?.endpoints?.forEach((endpoint: NotificationEndpoint) => {
