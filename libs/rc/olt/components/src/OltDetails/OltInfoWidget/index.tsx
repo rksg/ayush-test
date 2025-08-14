@@ -1,12 +1,22 @@
 import { useState, useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Card, GridRow,  GridCol, Button, cssStr, Subtitle } from '@acx-ui/components'
-import { EdgeOverviewDonutWidget }                           from '@acx-ui/edge/components'
-import { OltCage, OltCageStateEnum, Olt }                    from '@acx-ui/olt/utils'
+import {
+  Card,
+  GridRow,
+  GridCol,
+  Button,
+  cssStr,
+  Subtitle,
+  Loader
+} from '@acx-ui/components'
+import { OltCage, OltCageStateEnum, Olt } from '@acx-ui/olt/utils'
 
 import { OltDetailsDrawer } from '../OltDetailsDrawer'
+
+import * as UI from './styledComponents'
 
 interface OltInfoWidgetProps {
   oltDetails: Olt
@@ -17,6 +27,7 @@ interface OltInfoWidgetProps {
 
 export const OltInfoWidget = (props: OltInfoWidgetProps) => {
   const { $t } = useIntl()
+  const params = useParams()
   const {
     oltCages, oltDetails, isLoading: isCageListLoading, isFetching: isCageListFetching
   } = props
@@ -43,7 +54,14 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
         value: 2
       }],
       isLoading: false,
-      isFetching: false
+      isFetching: false,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onClick: (e: any) => {
+        e.event?.stop()
+        const event = new CustomEvent('showAlarmDrawer', //TODO
+          { detail: { data: { ...e.data, serialNumber: params.serialNumber } } })
+        window.dispatchEvent(event)
+      }
     },
     {
       title: $t({ defaultMessage: 'Incidents' }),
@@ -109,14 +127,19 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
             </GridCol>
           </GridRow>
           <GridRow style={{ flexGrow: '1', justifyContent: 'center' }}>
-            {infoWidgetConfig.map((item) => (
+            {infoWidgetConfig.map(({ isLoading, isFetching, ...item }) => (
               <GridCol col={{ span: 4 }} key={item.title}>
-                <EdgeOverviewDonutWidget
-                  title={item.title}
-                  data={item.data}
-                  isLoading={item.isLoading}
-                  isFetching={item.isFetching}
-                />
+                <Loader states={[{ isLoading, isFetching }]}>
+                  <div onClick={(e) => item.onClick?.(e)} style={{ width: 'fit-content' }}>
+                    <UI.DonutChartWidget
+                      title={item.title}
+                      data={item.data}
+                      style={{ width: 100, height: 100 }}
+                      legend={'name-value'}
+                      onClick={(e) => item.onClick?.(e)}
+                    />
+                  </div>
+                </Loader>
               </GridCol>
             ))}
           </GridRow>
