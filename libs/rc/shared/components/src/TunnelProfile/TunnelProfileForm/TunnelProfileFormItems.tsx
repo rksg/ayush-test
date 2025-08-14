@@ -336,12 +336,16 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
           isEdgeIpsecVxLanReady && (!isEdgeL2greReady || !isL2greType) &&
           <Col span={14}>
             <Form.Item noStyle dependencies={['type', 'edgeClusterId']}>
-              <IpsecFormItem
-                isDefaultTunnelProfile={isDefaultTunnelProfile}
-                // eslint-disable-next-line max-len
-                destinationCluster={availableClusterData?.find(item => item.clusterId === edgeClusterId)}
-                handleTunnelEncryptionChange={handleTunnelEncryptionChange}
-              />
+              {({ getFieldValue }) => {
+                const edgeClusterId = getFieldValue('edgeClusterId')
+
+                return <IpsecFormItem
+                  isDefaultTunnelProfile={isDefaultTunnelProfile}
+                  // eslint-disable-next-line max-len
+                  destinationCluster={availableClusterData?.find(item => item.clusterId === edgeClusterId)}
+                  handleTunnelEncryptionChange={handleTunnelEncryptionChange}
+                />
+              }}
             </Form.Item>
           </Col>
         }

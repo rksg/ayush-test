@@ -72,7 +72,7 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
       return $t({ defaultMessage: 'Default tunnel profile is not supported' })
 
     if (nsgType === NetworkSegmentTypeEnum.VXLAN)
-      return $t({ defaultMessage: 'Network segment type is VNI is not supported' })
+      return $t({ defaultMessage: 'Network segment type VNI is not supported' })
 
     if(isHaAbCluster)
       return $t({ defaultMessage: 'Active/Standby cluster is not supported' })

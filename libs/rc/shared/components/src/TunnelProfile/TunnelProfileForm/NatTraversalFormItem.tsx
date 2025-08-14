@@ -64,7 +64,7 @@ export const NatTraversalFormItem = (props: NatTraversalFormItemProps) => {
           }
 
           if(netSegType === NetworkSegmentTypeEnum.VXLAN)
-            return $t({ defaultMessage: 'Network segment type is VNI is not supported' })
+            return $t({ defaultMessage: 'Network segment type VNI is not supported' })
 
           return undefined
         }

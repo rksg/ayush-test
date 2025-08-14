@@ -273,15 +273,17 @@ describe('IpsecFormItem', () => {
   })
 
   describe('Disabled state', () => {
-    it('should disable switch when it is default tunnel profile', () => {
+    it('should disable switch when it is default tunnel profile', async () => {
       render(<TestWrapper>
         <IpsecFormItem isDefaultTunnelProfile={true} />
       </TestWrapper>)
 
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Default tunnel profile is not supported')).toBeInTheDocument()
     })
-    it('should disable switch when its nsg type is VxLAN', () => {
+    it('should disable switch when its nsg type is VxLAN', async () => {
       const { result: { current: [formRef] } } = renderHook(() => Form.useForm())
       formRef.setFieldValue('type', NetworkSegmentTypeEnum.VXLAN)
 
@@ -291,14 +293,18 @@ describe('IpsecFormItem', () => {
 
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Network segment type VNI is not supported')).toBeInTheDocument()
     })
-    it('should disable switch when destination cluster is HA/AB', () => {
+    it('should disable switch when destination cluster is HA/AB', async () => {
       render(<TestWrapper>
         <IpsecFormItem destinationCluster={mockEdgeClusterList.data[1] as EdgeClusterStatus}/>
       </TestWrapper>)
 
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Active/Standby cluster is not supported')).toBeInTheDocument()
     })
     it('should disable switch when disabledFields includes tunnelEncryptionEnabled', () => {
       const { result: { current: [formRef] } } = renderHook(() => Form.useForm())
