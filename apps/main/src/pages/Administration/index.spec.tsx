@@ -375,6 +375,20 @@ describe('Administration page', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE)
     params.activeTab = 'administrators'
 
+    setUserProfile({
+      profile: fakeUserProfile,
+      allowedOperations: [
+        'GET:/tenants/self',
+        'GET:/admins',
+        'POST:/admins/query',
+        'GET:/delegations',
+        'GET:/roleAuthentications/privilegeGroups',
+        'GET:/roleAuthentications/customRoles',
+        'GET:/notificationRecipients',
+        'POST:/notificationRecipients/query'
+      ]
+    })
+
     render(
       <Provider>
         <UserProfileContext.Provider
