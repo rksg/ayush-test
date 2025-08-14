@@ -1108,9 +1108,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
     }, fetchWithBQ)
     networkViewmodel = networkListResult.data?.data[0]
 
-    const activatedVenueIds: string[] = networkVenuesList.data?.filter(v => {
-      return v.networks?.names? v.networks.names.includes(networkViewmodel.name) : false
-    }).map(v => v.id) || []
+    const activatedVenueIds: string[] = uniq(networkViewmodel.venueApGroups?.map(v => v.venueId) || [])
 
     if (activatedVenueIds.length > 0) {
       // get "select All APs" settings
@@ -1266,7 +1264,7 @@ export const fetchEnhanceRbacNetworkVenueList = async (queryArgs: RequestPayload
     }, fetchWithBQ)
     networkViewmodel = networkListResult.data?.data[0]
 
-    const activatedVenueIds: string[] = networkViewmodel.venueApGroups?.map(v => v.venueId) || []
+    const activatedVenueIds: string[] = uniq(networkViewmodel.venueApGroups?.map(v => v.venueId) || [])
 
     if (activatedVenueIds.length > 0) {
       // get networkVeneus
