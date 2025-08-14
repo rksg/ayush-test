@@ -1,5 +1,5 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import _, { cloneDeep }      from 'lodash'
+import { DefaultOptionType }      from 'antd/lib/select'
+import _, { cloneDeep, get, set } from 'lodash'
 
 import {
   Ipsec,
@@ -17,7 +17,8 @@ import {
   IpSecOptionsData,
   IpsecActivation,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  IpSecTunnelUsageTypeEnum
 } from '@acx-ui/rc/utils'
 import { baseIpSecApi }                   from '@acx-ui/store'
 import { RequestPayload }                 from '@acx-ui/types'
@@ -230,16 +231,24 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       providesTags: [{ type: 'IpSec', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getIpsecOptions: build.query<IpSecOptionsData, RequestPayload>({
-      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+    getSoftGreIpsecOptions: build.query<IpSecOptionsData, RequestPayload>({
+      queryFn: async ( { params, payload, enableVxlanIpsec }, _api, _extraOptions, fetchWithBQ) => {
         const { venueId, networkId, softGreId } =
           params as { venueId: string, networkId?: string, softGreId?: string }
         const activationProfiles:string[] = []
+        const payloadCopied = cloneDeep(payload)
+
+        if (payload && enableVxlanIpsec) {
+          const originalFields = get(payloadCopied, 'fields') ?? []
+          originalFields.push('tunnelUsageType')
+          // eslint-disable-next-line max-len
+          set(payloadCopied as Record<string, unknown>, 'fields', originalFields)
+        }
 
         const ipsecListReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
         const ipsecListRes = await fetchWithBQ({
           ...ipsecListReq,
-          body: JSON.stringify(payload)
+          body: payloadCopied ? JSON.stringify(payloadCopied) : undefined
         })
         if (ipsecListRes.error) return {
           data: {
@@ -254,37 +263,40 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
         let venueTotal = 0
         let ipsecProfileId = ''
 
-        const options = listData?.map(item => {
-          let isSame = false
-          let isSameSoftGre = false
+        const options = listData
+          // need to use `not equal` to filter out VXLAN_GPE since tunnelUsageType might be undefined for old profiles
+          ?.filter(item => item.tunnelUsageType !== IpSecTunnelUsageTypeEnum.VXLAN_GPE)
+          .map(item => {
+            let isSame = false
+            let isSameSoftGre = false
 
-          const profileActivations = consolidateActivations(item, venueId)
+            const profileActivations = consolidateActivations(item, venueId)
 
-          profileActivations.forEach(activation => {
-            const isEqualVenue = activation.venueId === venueId
-            if (isEqualVenue) {
-              activationProfiles.push(item.id)
-              // let isOnlyAppliedCurrentNetwork = false
-              isSame = activation.venueId === venueId
-              isSameSoftGre = activation.softGreProfileId === softGreId
-              if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
-                ipsecProfileId = item.id
-                if (activation.wifiNetworkIds.length === 1) {
+            profileActivations.forEach(activation => {
+              const isEqualVenue = activation.venueId === venueId
+              if (isEqualVenue) {
+                activationProfiles.push(item.id)
+                // let isOnlyAppliedCurrentNetwork = false
+                isSame = activation.venueId === venueId
+                isSameSoftGre = activation.softGreProfileId === softGreId
+                if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
+                  ipsecProfileId = item.id
+                  if (activation.wifiNetworkIds.length === 1) {
                   // isOnlyAppliedCurrentNetwork = true
+                  } else {
+                    venueTotal += 1
+                  }
                 } else {
                   venueTotal += 1
                 }
-              } else {
-                venueTotal += 1
               }
-            }
+            })
+            return {
+              disabled: !isSame || !isSameSoftGre,
+              value: item.id,
+              label: item.name
+            } as DefaultOptionType
           })
-          return {
-            disabled: !isSame || !isSameSoftGre,
-            value: item.id,
-            label: item.name
-          } as DefaultOptionType
-        })
         const commonData = {
           activationProfiles
         }
@@ -432,8 +444,8 @@ export const {
   useGetIpsecByIdQuery,
   useUpdateIpsecMutation,
   useGetVenuesIpsecPolicyQuery,
-  useGetIpsecOptionsQuery,
-  useLazyGetIpsecOptionsQuery,
+  useGetSoftGreIpsecOptionsQuery,
+  useLazyGetSoftGreIpsecOptionsQuery,
   useActivateIpsecMutation,
   useDeactivateIpsecMutation,
   useActivateIpsecOnVenueLanPortMutation,

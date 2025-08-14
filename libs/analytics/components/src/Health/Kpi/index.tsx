@@ -256,6 +256,8 @@ export function KpiSection (props: {
             tabDetails={tabDetails}
             size='small'
             align='left'
+            tabId='health-infrastructure-kpi'
+            tabPersistence={true}
           />
         )
       })()}

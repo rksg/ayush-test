@@ -107,6 +107,7 @@ export enum Features {
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
+  NOKIA_INTEGRATION_CORE_TOGGLE = 'nokia-integration-core-features-toggle',
   PORTAL_PROFILE_CONSOLIDATION_TOGGLE = 'acx-ui-consolidated-portal-profile-toggle',
   NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
   NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
@@ -231,6 +232,7 @@ export enum Features {
   ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
   RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE = 'ruckus-ai-feature-related-events-suppression-toggle',
+  ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE='entitlement-mulitpool-mspec-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE = 'entitlement-adaptive-policy-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE = 'entitlement-pms-integration-toggle',
@@ -308,7 +310,8 @@ export enum Features {
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
   FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
-  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
+  SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
