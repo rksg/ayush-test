@@ -8,12 +8,12 @@ import { useGetEdgeMvSdLanViewDataListQuery }                                   
 import { getServiceRoutePath, isEdgeWlanTemplate, ServiceOperation, ServiceType, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                            from '@acx-ui/react-router-dom'
 
-import { EdgeSdLanFormType }                       from '../../Form'
-import { transformToApiData, transformToFormData } from '../../shared/utils'
-import { MspEdgeSdLanFormContainer }               from '../Form'
-import { CustomerSelectionForm }                   from '../Form/CustomerSelectionForm'
-import { GeneralForm }                             from '../Form/GeneralForm'
-import { NetworkSelectionForm }                    from '../Form/NetworkSelectionForm'
+import { MspEdgeSdLanFormType }                          from '../../shared/type'
+import { transformToMspApiData, transformToMspFormData } from '../../shared/utils'
+import { MspEdgeSdLanFormContainer }                     from '../Form'
+import { CustomerSelectionForm }                         from '../Form/CustomerSelectionForm'
+import { GeneralForm }                                   from '../Form/GeneralForm'
+import { NetworkSelectionForm }                          from '../Form/NetworkSelectionForm'
 
 
 
@@ -45,7 +45,7 @@ export const EditEdgeSdLan = () => {
       }
       return {
         ...rest,
-        data: transformToFormData(processedData)
+        data: transformToMspFormData(processedData)
       }
     }
   })
@@ -67,13 +67,13 @@ export const EditEdgeSdLan = () => {
     ] : [])
   ]
 
-  const handleFinish = async (formData: EdgeSdLanFormType) => {
+  const handleFinish = async (formData: MspEdgeSdLanFormType) => {
     try{
-      const payload = omit(transformToApiData(formData), 'id')
+      const payload = omit(transformToMspApiData(formData), 'id')
 
       await new Promise(async (resolve, reject) => {
         await updateEdgeSdLan(
-          transformToApiData(data),
+          transformToMspApiData(data),
           {
             payload,
             callback: (result) => {

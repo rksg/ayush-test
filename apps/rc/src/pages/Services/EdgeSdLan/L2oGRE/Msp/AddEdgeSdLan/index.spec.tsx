@@ -8,7 +8,7 @@ import { Provider }                                           from '@acx-ui/stor
 import { render, screen, waitFor }                            from '@acx-ui/test-utils'
 
 import { EdgeSdLanForm, EdgeSdLanFormProps } from '../../Form'
-import { ApplyTo }                           from '../Form/GeneralForm'
+import { ApplyTo }                           from '../../shared/type'
 
 import { AddEdgeSdLan } from '.'
 

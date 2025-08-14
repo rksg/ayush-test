@@ -15,10 +15,11 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 
-import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
+import { NetworkActivationType } from '../../../shared/type'
+import { useEdgeSdLanContext }   from '../../EdgeSdLanContextProvider'
 
-import { CompatibilityCheck }                    from './CompatibilityCheck'
-import { NetworkActivationType, NetworksDrawer } from './NetworksDrawer'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { NetworksDrawer }     from './NetworksDrawer'
 
 export interface VenueTableDataType {
   id: string

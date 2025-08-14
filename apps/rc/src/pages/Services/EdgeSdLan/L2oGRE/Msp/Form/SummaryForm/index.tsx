@@ -11,12 +11,11 @@ import {
   Subtitle,
   useStepFormContext
 } from '@acx-ui/components'
-import { EdgeMvSdLanFormNetwork } from '@acx-ui/rc/utils'
 
-import { useEdgeSdLanContext }    from '../../../Form/EdgeSdLanContextProvider'
-import { StyledAntdDescriptions } from '../../../styledComponents'
-import { ApplyTo }                from '../GeneralForm'
-import { useMspEdgeSdLanContext } from '../MspEdgeSdLanContextProvider'
+import { useEdgeSdLanContext }           from '../../../Form/EdgeSdLanContextProvider'
+import { ApplyTo, MspEdgeSdLanFormType } from '../../../shared/type'
+import { StyledAntdDescriptions }        from '../../../styledComponents'
+import { useMspEdgeSdLanContext }        from '../MspEdgeSdLanContextProvider'
 
 export const SummaryForm = () => {
   const { $t } = useIntl()
@@ -26,11 +25,12 @@ export const SummaryForm = () => {
   const formValues = form.getFieldsValue(true)
   const applyTo = formValues.applyTo
 
-  const activatedNetworks = (formValues.activatedNetworks ?? {}) as EdgeMvSdLanFormNetwork
+  // eslint-disable-next-line max-len
+  const activatedNetworks = formValues.activatedNetworks as MspEdgeSdLanFormType['activatedNetworks'] ?? {}
   const networkVenueIds = Object.keys(activatedNetworks)
   const venueCount = networkVenueIds?.length ?? 0
   // eslint-disable-next-line max-len
-  const activatedNetworkTemplates = (formValues.activatedNetworkTemplates ?? {}) as EdgeMvSdLanFormNetwork
+  const activatedNetworkTemplates = formValues.activatedNetworkTemplates as MspEdgeSdLanFormType['activatedNetworkTemplates'] ?? {}
   const networkTemplateVenueIds = Object.keys(activatedNetworkTemplates)
   const networkTemplateVenueCount = networkTemplateVenueIds?.length ?? 0
 

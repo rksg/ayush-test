@@ -159,6 +159,6 @@ describe('CustomerSelectionForm - MSP', () => {
 
     const customerA = await screen.findByRole('row', { name: /Customer A/i })
     await userEvent.click(customerA)
-    expect(result.current.getFieldValue('selectedCustomers')).toEqual(['customer-1'])
+    expect(result.current.getFieldValue('ecTenantIds')).toEqual(['customer-1'])
   })
 })

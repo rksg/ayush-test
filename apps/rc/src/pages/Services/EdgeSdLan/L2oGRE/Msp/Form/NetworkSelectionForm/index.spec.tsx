@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { StepsForm }                  from '@acx-ui/components'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { ApplyTo } from '../GeneralForm'
+import { ApplyTo } from '../../../shared/type'
 
 import { NetworkSelectionForm } from '.'
 

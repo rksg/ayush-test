@@ -32,7 +32,7 @@ export const CustomerSelectionForm = () => {
     <Row >
       <Col span={24}>
         <Form.Item
-          name='selectedCustomers'
+          name='ecTenantIds'
         >
           <CustomerSelectionTableFormItem />
         </Form.Item>

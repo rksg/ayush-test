@@ -26,9 +26,9 @@ import {
 import type { TableColumn }                        from '@acx-ui/types'
 import { compareVersions, getIntl, useTableQuery } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }               from '../../../../../Form'
 import { useEdgeSdLanContext }             from '../../../../../Form/EdgeSdLanContextProvider'
 import { messageMappings }                 from '../../../../../Form/messageMappings'
+import { MspEdgeSdLanFormType }            from '../../../../../shared/type'
 import { getFilteredTunnelProfileOptions } from '../../../../../shared/utils'
 import { ValidationMessageField }          from '../../../../../styledComponents'
 import { NetworkActivationType }           from '../NetworksDrawer'
@@ -123,7 +123,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   })
 
   const dcTunnelProfileId = form.getFieldValue('tunnelProfileId')
-  const allActivatedNetworks = form.getFieldValue('activatedNetworkTemplates') as EdgeSdLanFormType['activatedNetworkTemplates'] ?? []
+  const allActivatedNetworks = form.getFieldValue('activatedNetworkTemplates') as MspEdgeSdLanFormType['activatedNetworkTemplates'] ?? []
   const allActivatedTunnelProfileIds = Object.values(allActivatedNetworks).flatMap(item => item.map(item => item.tunnelProfileId ?? ''))
   const currentNetworkList = activated?.[venueId]
 

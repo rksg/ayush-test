@@ -4,8 +4,8 @@ import { useIntl }                    from 'react-intl'
 import { StepsForm, Tabs, useStepFormContext } from '@acx-ui/components'
 
 import { EdgeSdLanVenueNetworksTable } from '../../../Form/NetworkSelectionForm/VenueNetworkTable'
+import { ApplyTo }                     from '../../../shared/type'
 import { DescriptionWrapper }          from '../../../styledComponents'
-import { ApplyTo }                     from '../GeneralForm'
 
 import { EdgeSdLanVenueNetworksTemplateTable } from './VenueTemplateNetworkTable'
 

@@ -9,13 +9,9 @@ import { servicePolicyNameRegExp }       from '@acx-ui/rc/utils'
 import { useEdgeSdLanContext }                                                    from '../../../Form/EdgeSdLanContextProvider'
 import { ClusterFirmwareInfo }                                                    from '../../../shared/ClusterFirmwareInfo'
 import { tunnelProfileFieldName, TunnelProfileFormItem, tunnelTemplateFieldName } from '../../../shared/TunnelProfileFormItem'
+import { ApplyTo }                                                                from '../../../shared/type'
 import { StyledAntdDescriptions, VerticalSplitLine, Wrapper }                     from '../../../styledComponents'
 import { useMspEdgeSdLanContext }                                                 from '../MspEdgeSdLanContextProvider'
-
-export enum ApplyTo {
-  MY_ACCOUNT = 'myAccount',
-  MY_CUSTOMERS = 'myCustomers'
-}
 
 export const GeneralForm = () => {
   const { $t } = useIntl()

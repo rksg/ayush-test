@@ -1,4 +1,3 @@
-
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -7,13 +6,13 @@ import { useEdgeSdLanActions }                                                  
 import { ServiceType, useAfterServiceSaveRedirectPath, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
 import { useNavigate }                                                            from '@acx-ui/react-router-dom'
 
-import { EdgeSdLanFormType }         from '../../Form'
-import { transformToApiData }        from '../../shared/utils'
-import { MspEdgeSdLanFormContainer } from '../Form'
-import { CustomerSelectionForm }     from '../Form/CustomerSelectionForm'
-import { ApplyTo, GeneralForm }      from '../Form/GeneralForm'
-import { NetworkSelectionForm }      from '../Form/NetworkSelectionForm'
-import { SummaryForm }               from '../Form/SummaryForm'
+import { ApplyTo, MspEdgeSdLanFormType } from '../../shared/type'
+import { transformToMspApiData }         from '../../shared/utils'
+import { MspEdgeSdLanFormContainer }     from '../Form'
+import { CustomerSelectionForm }         from '../Form/CustomerSelectionForm'
+import { GeneralForm }                   from '../Form/GeneralForm'
+import { NetworkSelectionForm }          from '../Form/NetworkSelectionForm'
+import { SummaryForm }                   from '../Form/SummaryForm'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
@@ -21,7 +20,7 @@ export const AddEdgeSdLan = () => {
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const [form] = Form.useForm()
   Form.useWatch('applyTo', form) // for rerender
-  const applyTo = form.getFieldValue('applyTo') as EdgeSdLanFormType['applyTo']
+  const applyTo = form.getFieldValue('applyTo') as MspEdgeSdLanFormType['applyTo']
   const { createEdgeSdLan } = useEdgeSdLanActions()
 
   const steps = [
@@ -45,8 +44,8 @@ export const AddEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeSdLanFormType) => {
-    const payload = transformToApiData(formData)
+  const handleFinish = async (formData: MspEdgeSdLanFormType) => {
+    const payload = transformToMspApiData(formData)
 
     try {
       await new Promise(async (resolve, reject) => {

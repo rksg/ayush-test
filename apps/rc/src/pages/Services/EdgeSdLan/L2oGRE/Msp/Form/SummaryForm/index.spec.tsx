@@ -4,7 +4,7 @@ import { StepsForm }                  from '@acx-ui/components'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { EdgeSdLanContext, EdgeSdLanContextType }       from '../../../Form/EdgeSdLanContextProvider'
-import { ApplyTo }                                      from '../GeneralForm'
+import { ApplyTo }                                      from '../../../shared/type'
 import { MspEdgeSdLanContext, MspEdgeSdLanContextType } from '../MspEdgeSdLanContextProvider'
 
 import { SummaryForm } from '.'

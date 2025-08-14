@@ -29,12 +29,11 @@ import { WifiScopes, type TableColumn }                       from '@acx-ui/type
 import { filterByAccess }                                     from '@acx-ui/user'
 import { compareVersions, getIntl, getOpsApi, useTableQuery } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }               from '../../..'
-import { getFilteredTunnelProfileOptions } from '../../../../shared/utils'
-import { useEdgeSdLanContext }             from '../../../EdgeSdLanContextProvider'
-import { messageMappings }                 from '../../../messageMappings'
-import { ValidationMessageField }          from '../../styledComponents'
-import { NetworkActivationType }           from '../../VenueNetworkTable/NetworksDrawer'
+import { EdgeSdLanFormType, NetworkActivationType } from '../../../../shared/type'
+import { getFilteredTunnelProfileOptions }          from '../../../../shared/utils'
+import { useEdgeSdLanContext }                      from '../../../EdgeSdLanContextProvider'
+import { messageMappings }                          from '../../../messageMappings'
+import { ValidationMessageField }                   from '../../styledComponents'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
 
