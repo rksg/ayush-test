@@ -3,7 +3,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Subtitle }                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                          from '@acx-ui/utils'
 
@@ -28,7 +27,6 @@ export const HaDisplayForm = (props: HaDisplayFormProps) => {
     loadDistribution
   } = props
   const { $t } = useIntl()
-  const isEdgeHaAaFallbackOn = useIsSplitOn(Features.EDGE_HA_AA_FALLBACK_TOGGLE)
 
   return (
     <>
@@ -36,7 +34,6 @@ export const HaDisplayForm = (props: HaDisplayFormProps) => {
         { $t({ defaultMessage: 'HA Settings' }) }
       </Subtitle>
       {
-        isEdgeHaAaFallbackOn &&
         <>
           <Form.Item
             label={$t({ defaultMessage: 'RUCKUS Edge Fallback' })}

@@ -18,7 +18,7 @@ export const AdminSettings = () => {
 
   useEffect(() => {
     if (settingsQuery.data) {
-      const currentValue = settingsQuery.data?.['fetaure-related-events-suppression'] ?? 'false'
+      const currentValue = settingsQuery.data?.['feature-related-events-suppression'] ?? 'false'
       setIgnoreFailures(currentValue === 'true')
     }
   }, [settingsQuery.data])
@@ -26,7 +26,7 @@ export const AdminSettings = () => {
   const handleCheckboxChange = (checked: boolean) => {
     setIgnoreFailures(checked)
     updateSettings({
-      'fetaure-related-events-suppression': checked.toString()
+      'feature-related-events-suppression': checked.toString()
     })
   }
 

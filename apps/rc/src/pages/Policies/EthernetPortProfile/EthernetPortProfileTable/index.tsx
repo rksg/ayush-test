@@ -4,13 +4,14 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, SimpleListTooltip, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Loader, SimpleListTooltip, Table, TableProps, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetEthernetPortProfileViewDataListQuery,
-  useGetVenuesQuery
+  useGetVenuesQuery,
+  useApListQuery
 } from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
@@ -40,6 +41,10 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const defaultApPayload = {
+    fields: ['serialNumber', 'name'],
+    pageSize: 10000
+  }
 
   const tableQuery = useTableQuery({
     useQuery: useGetEthernetPortProfileViewDataListQuery,
@@ -81,6 +86,16 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   }, {
     selectFromResult: ({ data }) => ({
       venueNameMap: data?.data?.map(venue => ({ key: venue.id, value: venue.name }))
+    })
+  })
+
+  const { apNameMap =[] } = useApListQuery({
+    params: { tenantId: params.tenantId },
+    payload: defaultApPayload,
+    enableRbac: true
+  }, {
+    selectFromResult: ({ data }) => ({
+      apNameMap: data?.data?.map(ap => ({ key: ap.serialNumber, value: ap.name }))
     })
   })
 
@@ -186,11 +201,17 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
       key: 'apSerialNumbers',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'apSerialNumbers',
+      filterable: apNameMap,
       sorter: true,
       render: (_, row) =>{
         if (row.isDefault) return '-'
         if (!row.apSerialNumbers || row.apSerialNumbers.length === 0) return 0
-        return <Tooltip dottedUnderline>{row.apSerialNumbers.length}</Tooltip>
+        const apSerialNumbers = row.apSerialNumbers
+        const filterAps = apNameMap.filter(ap => apSerialNumbers!.includes(ap.key)).map(ap => ap)
+        const tooltipItems = filterAps.map(ap => {
+          return $t({ defaultMessage: '{value}' }, { value: ap.value })
+        })
+        return <SimpleListTooltip items={tooltipItems} displayText={apSerialNumbers.length} />
       }
     },
     {

@@ -1,6 +1,6 @@
-import { RbacOpsIds }           from '@acx-ui/types'
-import { hasAllowedOperations } from '@acx-ui/user'
-import { ApiInfo, getOpsApi }   from '@acx-ui/utils'
+import { RbacOpsIds }                    from '@acx-ui/types'
+import { hasAllowedOperations }          from '@acx-ui/user'
+import { ApiInfo, getOpsApi, isRecSite } from '@acx-ui/utils'
 
 import { useConfigTemplate }             from '../../configTemplate'
 import { ServiceType, ServiceOperation } from '../../constants'
@@ -13,19 +13,21 @@ const getAllowedOperation = <T extends SvcPcyAllowedType, O extends SvcPcyAllowe
   { map, type, oper, isTemplate = false }:
   { map: AllowedOperationMap<T, O>, type: T, oper: O, isTemplate?: boolean }
 ) => {
-  return applyTemplateIfNeeded(map[type]?.[oper], isTemplate)
+  return convertToTemplateAllowedOperationIfNeeded(map[type]?.[oper], isTemplate)
 }
 
-export const applyTemplateIfNeeded = (
+export const convertToTemplateAllowedOperationIfNeeded = (
   allowedOperation: RbacOpsIds | undefined, isTemplate: boolean
 ): RbacOpsIds | undefined => {
   if (!isTemplate) return allowedOperation
 
+  const target = isRecSite() ? ':/rec/templates/' : ':/templates/'
+
   return allowedOperation?.map(item => {
     if (typeof item === 'string') {
-      return item.replace(':/', ':/templates/')
+      return item.replace(':/', target)
     } else if (Array.isArray(item)) {
-      return item.map(str => str.replace(':/', ':/templates/'))
+      return item.map(str => str.replace(':/', target))
     }
     return item
   })

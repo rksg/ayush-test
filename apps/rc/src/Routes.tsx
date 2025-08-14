@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -15,8 +15,6 @@ import {
   CertificateForm,
   CertificateTemplateForm,
   ClientIsolationForm,
-  CliProfileForm,
-  CliTemplateForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
@@ -49,7 +47,8 @@ import {
   SamlIdpDetail,
   IdentityGroupForm,
   IdentityForm,
-  PersonaGroupDetails
+  PersonaGroupDetails,
+  Layer2Component, Layer3Component, DeviceOSComponent, ApplicationComponent
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -81,6 +80,8 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import {
+  CliProfileForm,
+  CliTemplateForm,
   ConfigurationProfileForm
 } from '@acx-ui/switch/components'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
@@ -99,6 +100,9 @@ import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/O
 import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
+import { CageDetails }                              from './pages/Devices/Olt/CageDetails'
+import { OltDetails }                               from './pages/Devices/Olt/OltDetails'
+import OltForm                                      from './pages/Devices/Olt/OltForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -334,6 +338,7 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
+      {useOltRoutes()}
       {useEdgeOltRoutes()}
       <Route path='devices/edge' element={<Edges />} />
       <Route
@@ -501,10 +506,24 @@ function NetworkRoutes () {
   )
 }
 
+const useOltRoutes = () => {
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
+
+  return isNokiaOltEnabled ? <>
+    <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
+    <Route path='devices/optical/:action' element={<OltForm />} />
+    <Route path='devices/optical/:oltId/:action' element={<OltForm />} />
+    <Route path='devices/optical/:oltId/details' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/details/:activeTab' element={<OltDetails />} />
+    <Route path='devices/optical/:oltId/cages/:cageId' element={<CageDetails />} />
+  </> : null
+}
+
 const useEdgeOltRoutes = () => {
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
-  return isEdgeOltReady ? <>
+  return isEdgeOltReady && !isNokiaOltEnabled ? <>
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
     <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
   </> : null
@@ -1194,6 +1213,42 @@ function PolicyRoutes () {
         element={
           <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
             <AccessControlForm editMode={false}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_2_POLICY} oper={PolicyOperation.CREATE}>
+            <Layer2Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.LAYER_3_POLICY} oper={PolicyOperation.CREATE}>
+            <Layer3Component editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.DEVICE_POLICY} oper={PolicyOperation.CREATE}>
+            <DeviceOSComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.APPLICATION_POLICY} oper={PolicyOperation.CREATE}>
+            <ApplicationComponent editMode={{ isEdit: false, id: '' }} isComponentMode={true}/>
           </PolicyAuthRoute>
         }
       />

@@ -38,6 +38,13 @@ export const mergeLanPortSettings = (
       lanPort.enabled = venueLanSetting.enabled
       lanPort.softGreEnabled = venueLanSetting.softGreEnabled
       lanPort.clientIsolationEnabled = venueLanSetting.clientIsolationEnabled
+
+      // When APLanPortSettings case insert overwrite untagged to lanPort
+      if ('overwriteUntagId' in venueLanSetting &&
+          venueLanSetting.overwriteUntagId !== undefined) {
+        lanPort.untagId = venueLanSetting.overwriteUntagId
+      }
+
       if (venueLanSetting.clientIsolationEnabled) {
         lanPort.clientIsolationSettings = venueLanSetting.clientIsolationSettings
       }

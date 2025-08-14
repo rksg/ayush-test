@@ -26,6 +26,7 @@ import {
   DownloadOutlined,
   InformationOutlined
 } from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
 import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -73,12 +74,11 @@ import {
   GROUPBY
 } from '@acx-ui/utils'
 
-import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { SwitchBlinkLEDsDrawer, SwitchInfo }               from '../SwitchBlinkLEDsDrawer'
-import { SwitchCliSession }                                from '../SwitchCliSession'
-import { useSwitchActions }                                from '../useSwitchActions'
-import { VenueSelector }                                   from '../VenueSelector'
+import { seriesSwitchStatusMapping }         from '../DevicesWidget/helper'
+import { SwitchBlinkLEDsDrawer, SwitchInfo } from '../SwitchBlinkLEDsDrawer'
+import { SwitchCliSession }                  from '../SwitchCliSession'
+import { useSwitchActions }                  from '../useSwitchActions'
+import { VenueSelector }                     from '../VenueSelector'
 
 import {
   getGroupableConfig

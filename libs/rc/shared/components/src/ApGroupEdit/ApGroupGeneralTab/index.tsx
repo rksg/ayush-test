@@ -6,9 +6,9 @@ import _                                              from 'lodash'
 import { useIntl }                                    from 'react-intl'
 import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
-import { usePathBasedOnConfigTemplate }                               from '@acx-ui/config-template/utils'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer, TransferType } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                                             from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
   useGetApGroupQuery,
@@ -61,7 +61,12 @@ interface ApGroupOptionType {
   apGroupName?: string
 }
 
-export function ApGroupGeneralTab () {
+interface ApGroupGeneralTabProps {
+  handleClose?: () => void
+  onFinish?: (values: AddApGroup) => Promise<boolean | void>
+}
+
+export function ApGroupGeneralTab ({ handleClose, onFinish }: ApGroupGeneralTabProps = {}) {
   const { $t } = useIntl()
   const { tenantId, apGroupId } = useParams()
   const { isTemplate } = useConfigTemplate()
@@ -280,7 +285,9 @@ export function ApGroupGeneralTab () {
         isDirty: false
       })
 
-      if (!isEditMode) {
+      if (handleClose) {
+        handleClose()
+      } else if (!isEditMode) {
         navigate(navigatePathName, { replace: true })
       }
     } catch (error) {
@@ -336,10 +343,29 @@ export function ApGroupGeneralTab () {
       isDirty: false
     })
 
-    navigate({
-      ...basePath,
-      pathname: (historyUrl)? historyUrl : navigatePathName
-    })
+    if (handleClose) {
+      handleClose()
+    } else {
+      navigate({
+        ...basePath,
+        pathname: (historyUrl)? historyUrl : navigatePathName
+      })
+    }
+  }
+
+  const handleFinishWrapper = async (values: AddApGroup) => {
+    try {
+      await handleAddApGroup()
+
+      if (onFinish) {
+        return await onFinish(values)
+      }
+
+      return true
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      return false
+    }
   }
 
   const leftColumns = [
@@ -408,7 +434,7 @@ export function ApGroupGeneralTab () {
     <StepsFormLegacy
       formRef={formRef}
       onFormChange={handleFormChanged}
-      onFinish={handleAddApGroup}
+      onFinish={onFinish ? handleFinishWrapper : handleAddApGroup}
       onCancel={() => handleDiscardChanges()}
       buttonLabel={{
         submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
@@ -470,7 +496,7 @@ export function ApGroupGeneralTab () {
                 { isApGroupMoreParameterPhase1Enabled
                   ? <Transfer
                     listStyle={{ width: 400, height: 400 }}
-                    type={'table'}
+                    type={TransferType.TABLE}
                     tableData={tableDataOption}
                     leftColumns={leftColumns}
                     rightColumns={rightColumns}

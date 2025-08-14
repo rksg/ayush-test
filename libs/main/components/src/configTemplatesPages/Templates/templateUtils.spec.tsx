@@ -1,54 +1,14 @@
 import userEvent from '@testing-library/user-event'
 
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { ConfigTemplateDriftType, ConfigTemplateType, PolicyType } from '@acx-ui/rc/utils'
-import { screen, render, renderHook }                              from '@acx-ui/test-utils'
-import { hasRoles }                                                from '@acx-ui/user'
-import { isDelegationMode }                                        from '@acx-ui/utils'
+import { screen, render }                                          from '@acx-ui/test-utils'
 
-import { mockedUserProfile }                                                                                                                     from './__tests__/fixtures'
-import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useEcFilters, ViewConfigTemplateDetailsLink } from './templateUtils'
-
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: mockedUserProfile }),
-  hasRoles: jest.fn()
-}))
-
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils'),
-  isDelegationMode: jest.fn()
-}))
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, ViewConfigTemplateDetailsLink } from './templateUtils'
 
 describe('TemplateUtils', () => {
-  beforeEach(() => {
-    jest.mocked(hasRoles).mockReturnValue(true)
-  })
 
   afterEach(() => {
     jest.restoreAllMocks()
-  })
-
-  it('should get the ecFilters correctly', async () => {
-    const { result } = renderHook(() => useEcFilters())
-
-    expect(result.current).toEqual({
-      tenantType: ['MSP_EC', 'MSP_REC']
-    })
-  })
-
-  it('should get the ecFilters correctly when the delegation mode is false', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE)
-    jest.mocked(isDelegationMode).mockReturnValue(false)
-    jest.mocked(hasRoles).mockReturnValue(false)
-
-    const { result } = renderHook(() => useEcFilters())
-
-    expect(result.current).toEqual({
-      mspAdmins: [mockedUserProfile.adminId],
-      tenantType: ['MSP_EC', 'MSP_REC']
-    })
   })
 
   describe('getConfigTemplateTypeLabel', () => {

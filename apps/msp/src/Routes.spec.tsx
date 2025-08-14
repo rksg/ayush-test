@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { HspContext }                               from '@acx-ui/msp/utils'
 import {
   ConfigTemplateType, PolicyOperation,
   PolicyType, ServiceOperation, ServiceType, getConfigTemplatePath,
@@ -11,7 +12,6 @@ import { NavigateProps }              from '@acx-ui/react-router-dom'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import HspContext                                 from './HspContext'
 import MspRoutes, { Init, ConfigTemplatesRoutes } from './Routes'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -19,8 +19,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   Navigate: (props: NavigateProps) => <div>{JSON.stringify(props)}</div>
 }))
 
-jest.mock('./pages/ConfigTemplates', () => ({
-  ...jest.requireActual('./pages/ConfigTemplates'),
+jest.mock('@acx-ui/config-template/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/config-template/msp/components'),
   ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
 }))
 
@@ -45,7 +45,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   DHCPForm: () => <div>DHCPForm</div>,
   PortalForm: () => <div>PortalForm</div>,
   VLANPoolForm: () => <div>VLANPoolForm</div>,
-  CliProfileForm: () => <div>CliProfileForm</div>,
   IdentityGroupForm: () => <div>IdentityGroupForm</div>,
   WifiCallingForm: () => <div>WifiCallingForm</div>,
   AddEthernetPortProfile: () => <div>AddEthernetPortProfile</div>,
@@ -66,7 +65,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   RogueAPDetectionDetailView: () => <div>RogueAPDetectionDetailView</div>,
   ApGroupDetails: () => <div>ApGroupDetails</div>,
   AddTunnelProfileTemplate: () => <div>AddTunnelProfileTemplate</div>,
-  EditTunnelProfileTemplate: () => <div>EditTunnelProfileTemplate</div>
+  EditTunnelProfileTemplate: () => <div>EditTunnelProfileTemplate</div>,
+  TunnelProfileTemplateDetail: () => <div>TunnelProfileTemplateDetail</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -86,6 +86,7 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 
 jest.mock('@acx-ui/switch/components', () => ({
+  CliProfileForm: () => <div>CliProfileForm</div>,
   ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>
 }))
 
@@ -491,5 +492,24 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('EditTunnelProfileTemplate')).toBeVisible()
+  })
+
+  it('should navigate to the Tunnel Profile Template Detail page', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.TUNNEL_SERVICE]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.DETAIL })
+        ),
+        params: { policyId: 'test-id' },
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('TunnelProfileTemplateDetail')).toBeVisible()
   })
 })

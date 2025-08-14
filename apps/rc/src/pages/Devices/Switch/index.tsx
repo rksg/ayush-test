@@ -2,11 +2,13 @@ import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
+import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
 import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
+import useOltTable          from '../Olt/OltTable'
 
 import useSwitchesTable from './SwitchesTable'
 
@@ -33,19 +35,27 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
+  const opticalPageTitle = isNokiaOltEnabled
+    ? $t({ defaultMessage: 'Optical Switches' }) : $t({ defaultMessage: 'Wired Devices' })
 
   const edgeOltTabInfo = useEdgeNokiaOltTable()
+  const oltTabInfo = useOltTable()
 
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
   },
-  ...(isNil(edgeOltTabInfo)
+  ...(isNil(edgeOltTabInfo) || isNokiaOltEnabled
     ? []
     : [{
       key: SwitchTabsEnum.OPTICAL,
       ...edgeOltTabInfo
     }]),
+  ...(isNokiaOltEnabled ? [{
+    key: SwitchTabsEnum.OPTICAL,
+    ...oltTabInfo
+  }]: []),
   {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
@@ -67,7 +77,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   return <>
     <PageHeader
       // eslint-disable-next-line max-len
-      title={tab === SwitchTabsEnum.OPTICAL ? $t({ defaultMessage: 'Wired Devices' }) : $t({ defaultMessage: 'Switches' })}
+      title={tab === SwitchTabsEnum.OPTICAL ? opticalPageTitle : $t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

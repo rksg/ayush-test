@@ -34,7 +34,7 @@ export enum InCompatibilityFeatures {
   SMART_MONITOR = 'Smart Monitor',
   VENUE_SOFT_GRE = 'SoftGRE (Venue)',
   NETWORK_SOFT_GRE = 'SoftGRE (Network)',
-  IPSEC_NEW_CONFIGURABLE = 'Rate Limit and NAT-T Control',
+  IPSEC_NEW_CONFIGURABLE = 'Rate Limit and NAT-T Control (Venue)',
   BAND_MANAGEMENT = 'Band Management',
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',

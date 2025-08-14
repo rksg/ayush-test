@@ -3,6 +3,7 @@ import { Form }                                  from 'antd'
 import { IntlProvider }                          from 'react-intl'
 
 import { IpSecEncryptionAlgorithmEnum, IpSecProposalTypeEnum } from '@acx-ui/rc/utils'
+import { MockSelect, MockSelectProps }                         from '@acx-ui/test-utils'
 
 import EspAssociationSettings from './EspAssociationSettings'
 
@@ -10,15 +11,7 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) => {
-    delete otherProps.dropdownClassName
-    return (<select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
-    </select>)
-  }
+  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>

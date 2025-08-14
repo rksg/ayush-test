@@ -48,7 +48,7 @@ export const mockNetworkViewmodelList = [
     id: 'network_7',
     nwSubType: NetworkTypeEnum.DPSK,
     dsaeOnboardNetwork: {
-      id: 'network_8',
+      id: 'network_7',
       name: 'MockedNetwork 7-dpsk3-wpa2',
       description: 'It is a DPSK3 onboard network and not configurable.',
       nwSubType: 'dpsk'

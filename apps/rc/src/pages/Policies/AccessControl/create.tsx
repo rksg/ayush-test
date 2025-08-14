@@ -1,27 +1,117 @@
 import { Form, Radio, Space } from 'antd'
+import { useWatch }           from 'antd/lib/form/Form'
 import { useIntl }            from 'react-intl'
+import { Path }               from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                                                                          from '@acx-ui/components'
-import { getSelectPolicyRoutePath, LocationExtended, NetworkTypeTabsEnum, PolicyType, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink }                                                                                        from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm } from '@acx-ui/components'
+import {
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  hasPolicyPermission,
+  LocationExtended,
+  NetworkTypeTabsEnum, PolicyOperation,
+  PolicyType,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle
+} from '@acx-ui/rc/utils'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 export default function CreateAccessControl () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const createWifiAccessControlPath = useTenantLink('/policies/accessControl/create')
-  const createSwitchAccessControlPath = useTenantLink('/policies/accessControl/switch/add')
   const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
   const fromPage = (useLocation() as LocationExtended)?.state?.from
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL_CONSOLIDATION)
   const pageTitle = usePolicyPageHeaderTitle(false, PolicyType.ACCESS_CONTROL_CONSOLIDATION)
 
+  const accessControlType = useWatch<string>('accessControlType', form)
+  const accessControlInstanceType = useWatch<string>('accessControlInstanceType', form)
+
   const handleCreatePortProfile = async () => {
-    const type = form.getFieldValue('accessControlType')
-    navigate(type === NetworkTypeTabsEnum.WIFI
-      ? createWifiAccessControlPath
-      : createSwitchAccessControlPath,
-    { state: { from: fromPage } })
+    // eslint-disable-next-line max-len
+    navigate(pathMapping[accessControlType as NetworkTypeTabsEnum][accessControlInstanceType as PolicyType]!,
+      { state: { from: fromPage } })
+  }
+
+  const pathMapping = {
+    [NetworkTypeTabsEnum.WIFI]: {
+      // eslint-disable-next-line max-len
+      [PolicyType.ACCESS_CONTROL]: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.LAYER_2_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.LAYER_3_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.DEVICE_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE })),
+      // eslint-disable-next-line max-len
+      [PolicyType.APPLICATION_POLICY]: useTenantLink(getPolicyRoutePath({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }))
+    },
+    [NetworkTypeTabsEnum.SWITCH]: {
+      [PolicyType.ACCESS_CONTROL]: useTenantLink('/policies/accessControl/switch/add'),
+      [PolicyType.LAYER_2_POLICY]: useTenantLink('/policies/accessControl/switch/layer2/add')
+    }
+  } as { [K in NetworkTypeTabsEnum]: Partial<Record<PolicyType, Path>> }
+
+  const accessControlInstance = {
+    [NetworkTypeTabsEnum.WIFI]: <Form.Item name='accessControlInstanceType'
+      label={$t({ defaultMessage: 'Wi-Fi Access Control Profile' })}
+      initialValue={PolicyType.ACCESS_CONTROL}>
+      <Radio.Group>
+        <Space direction='vertical' style={{ gap: '4px' }}>
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
+              {$t({ defaultMessage: 'Access Control Set' })}
+            </Radio>
+          }
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.LAYER_2_POLICY}>
+              {$t({ defaultMessage: 'Layer 2' })}
+            </Radio>
+          },
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.LAYER_3_POLICY}>
+              {$t({ defaultMessage: 'Layer 3' })}
+            </Radio>
+          },
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.DEVICE_POLICY}>
+              {$t({ defaultMessage: 'Device & OS' })}
+            </Radio>
+          },
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.APPLICATION_POLICY}>
+              {$t({ defaultMessage: 'Applications' })}
+            </Radio>
+          }
+        </Space>
+      </Radio.Group>
+    </Form.Item>,
+    [NetworkTypeTabsEnum.SWITCH]: <Form.Item name='accessControlInstanceType'
+      label={$t({ defaultMessage: 'Switch Access Control Profile' })}
+      initialValue={PolicyType.ACCESS_CONTROL}>
+      <Radio.Group>
+        <Space direction='vertical' style={{ gap: '4px' }}>
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.ACCESS_CONTROL} style={{ marginBottom: '4px' }}>
+              {$t({ defaultMessage: 'Access Control Set' })}
+            </Radio>
+          }
+          {/* eslint-disable-next-line max-len */}
+          { hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
+            <Radio value={PolicyType.LAYER_2_POLICY}>
+              {$t({ defaultMessage: 'Layer 2' })}
+            </Radio>
+          }
+        </Space>
+      </Radio.Group>
+    </Form.Item>
   }
 
   return (
@@ -50,6 +140,7 @@ export default function CreateAccessControl () {
               </Space>
             </Radio.Group>
           </Form.Item>
+          { accessControlInstance[accessControlType as NetworkTypeTabsEnum] }
         </StepsForm.StepForm>
       </StepsForm>
     </>

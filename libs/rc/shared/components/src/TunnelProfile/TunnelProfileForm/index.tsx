@@ -1,7 +1,7 @@
 import { Col, FormInstance, Row } from 'antd'
 import { useNavigate }            from 'react-router-dom'
 
-import { PageHeader, StepsForm }     from '@acx-ui/components'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
   CommonResult,
   usePolicyListBreadcrumb,
@@ -11,7 +11,9 @@ import {
   useAfterPolicySaveRedirectPath,
   usePolicyPreviousPath,
   useConfigTemplateTenantLink,
-  generateConfigTemplateBreadcrumb
+  generateConfigTemplateBreadcrumb,
+  TunnelProfileViewData
+
 } from '@acx-ui/rc/utils'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
@@ -23,13 +25,20 @@ interface TunnelProfileFormProps {
   form?: FormInstance
   isDefaultTunnel?: boolean
   initialValues?: TunnelProfileFormType
-  editMode?: boolean
+  editData?: TunnelProfileViewData
   isTemplate?: boolean
 }
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
-  // eslint-disable-next-line max-len
-  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode, isTemplate } = props
+  const {
+    title, submitButtonLabel,
+    onFinish,
+    form,
+    isDefaultTunnel,
+    initialValues, editData,
+    isTemplate
+  } = props
+
   const navigate = useNavigate()
   const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.TUNNEL_PROFILE)
   const templateFallbackPath = useConfigTemplateTenantLink('')
@@ -37,6 +46,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const redirectPath = isTemplate ? templateFallbackPath : redirectPathAfterSave
   const policyBreadcrumb = usePolicyListBreadcrumb(PolicyType.TUNNEL_PROFILE)
   const breadcrumb = isTemplate ? generateConfigTemplateBreadcrumb() : policyBreadcrumb
+  const editMode = !!editData
 
   const handleFinish = async (data: TunnelProfileFormType) => {
     try{
@@ -68,7 +78,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <TunnelProfileFormItems isDefaultTunnelProfile={isDefaultTunnel} />
+              <TunnelProfileFormItems
+                editData={editData}
+                isDefaultTunnelProfile={isDefaultTunnel}
+                isTemplate={isTemplate}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>
