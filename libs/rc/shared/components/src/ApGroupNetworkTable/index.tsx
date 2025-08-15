@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import React, { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Switch }         from 'antd'
-import { cloneDeep, get } from 'lodash'
-import { AlignType }      from 'rc-table/lib/interface'
-import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
+import { Switch }               from 'antd'
+import { cloneDeep, get, omit } from 'lodash'
+import { AlignType }            from 'rc-table/lib/interface'
+import { useIntl }              from 'react-intl'
+import { useParams }            from 'react-router-dom'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
@@ -35,12 +35,16 @@ import {
   WifiRbacUrlsInfo,
   generateDefaultNetworkVenue,
   IsNetworkSupport6g,
-  RadioTypeEnum, RadioEnum
+  RadioTypeEnum,
+  RadioEnum,
+  SupportGuestNetworkTypes,
+  captiveNetworkTypes,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink }                                                          from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                          from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasPermission } from '@acx-ui/user'
-import { getOpsApi, useTableQuery }                                            from '@acx-ui/utils'
+import { FILTER, getOpsApi, SEARCH, useTableQuery }                            from '@acx-ui/utils'
 
 import { useApGroupContext }                                                    from '../ApGroupDetails/ApGroupContextProvider'
 import { useGetVLANPoolPolicyInstance }                                         from '../ApGroupEdit/ApGroupVlanRadioTab'
@@ -424,6 +428,39 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
       : undefined
   ), [venueId])
 
+  const handleFilterChange = (
+    customFilters: FILTER,
+    customSearch: SEARCH
+  ) => {
+    let customGroupFilters: { field: string; value: string }[][] = []
+    let _customFilters = {
+      ...customFilters
+    }
+
+    if (customFilters?.nwSubType) {
+      const nwSubType = customFilters?.nwSubType
+      customGroupFilters = nwSubType.map((item: unknown) => {
+        const itemArray = item as string[]
+        if (itemArray.length === 2) {
+          return [{ field: 'captiveType', value: itemArray[1] }]
+        } else {
+          return [{ field: 'nwSubType', value: itemArray[0] }]
+        }
+      })
+
+      _customFilters = omit(customFilters, ['nwSubType'])
+    }
+
+    const customPayload = {
+      ...tableQuery.payload,
+      ...customSearch,
+      filters: _customFilters,
+      groupFilters: customGroupFilters
+    }
+
+    tableQuery.setPayload(customPayload)
+  }
+
   const isFetching = isTableUpdating || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
 
   return (
@@ -449,7 +486,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
               })
             }}
             onChange={tableQuery.handleTableChange}
-            onFilterChange={tableQuery.handleFilterChange}
+            onFilterChange={handleFilterChange}
             enableApiFilter={true}
           />
           <ApGroupNetworkVlanRadioDrawer updateData={handleUpdateAllApGroupVlanRadio} />
@@ -519,9 +556,23 @@ export function useApGroupNetworkColumns (
     return row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
-  const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
-    return { key: networkType, value: $t(networkTypes[networkType]) }
-  })
+  const networkTypeFilterOptions = useMemo(() => {
+    const guestNetworkTypesOptions = SupportGuestNetworkTypes.map((networkType: GuestNetworkTypeEnum) => {
+      return { key: networkType, value: $t(captiveNetworkTypes[networkType]) }
+    })
+
+    const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+      return {
+        key: networkType,
+        value: $t(networkTypes[networkType]),
+        ...(networkType === NetworkTypeEnum.CAPTIVEPORTAL && {
+          children: guestNetworkTypesOptions
+        })
+      }
+    })
+
+    return networkTypesOptions
+  }, [])
 
   const columns: TableProps<Network>['columns'] = [
     {
@@ -552,7 +603,9 @@ export function useApGroupNetworkColumns (
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: !isEditable,
-      filterable: !isEditable && networkTypesOptions,
+      filterable: !isEditable && networkTypeFilterOptions,
+      filterComponent: { type: 'cascader' },
+      filterMultiple: true,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
