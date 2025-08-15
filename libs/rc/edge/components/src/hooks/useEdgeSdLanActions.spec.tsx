@@ -219,6 +219,7 @@ describe('useEdgeSdLanActions', () => {
         tunnelProfileId: 'tunnel-t-1'
       }]
       mockPayloadWithTemplates.ecTenantIds = ['tenant-2']
+      mockPayloadWithTemplates.tunnelTemplateId = 'template-1'
 
       // eslint-disable-next-line max-len
       it('should call activate with network template IDs', async () => {
@@ -231,7 +232,9 @@ describe('useEdgeSdLanActions', () => {
           callback: mockCallback
         }, isMsp)
 
-        expect(mockAddReq).toHaveBeenCalledWith(pick(mockPayload, ['name', 'tunnelProfileId']))
+        expect(mockAddReq).toHaveBeenCalledWith(
+          pick(mockPayloadWithTemplates, ['name', 'tunnelProfileId', 'tunnelTemplateId'])
+        )
         await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
         expect(mockActivateNetworkReq).toBeCalledTimes(2)
         expect(mockActivateNetworkReq).toHaveBeenCalledWith({
@@ -244,7 +247,7 @@ describe('useEdgeSdLanActions', () => {
           wifiNetworkId: 'network-2',
           serviceId: mockServiceId
         }, {})
-        expect(mockApplyConfigTemplateReq).toBeCalledTimes(1)
+        await waitFor(() => expect(mockApplyConfigTemplateReq).toBeCalledTimes(2))
         expect(mockApplyConfigTemplateReq).toHaveBeenCalledWith({
           templateId: 'template-1',
           tenantId: 'tenant-2'

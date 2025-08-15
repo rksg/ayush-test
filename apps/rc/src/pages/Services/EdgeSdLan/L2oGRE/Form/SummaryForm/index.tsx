@@ -62,7 +62,7 @@ export const SummaryForm = () => {
                 .map(([venueId, networks]) => <React.Fragment key={venueId}>
                   {
                     // eslint-disable-next-line max-len
-                    $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network} other {{networkCount} network}})' }, {
+                    $t({ defaultMessage: '{venueName} ({ networkCount, plural, =0 {} one {{networkCount} network} other {{networkCount} networks}})' }, {
                       venueName: find(allVenues, { id: venueId })?.name ?? '',
                       networkCount: networks.length
                     })
