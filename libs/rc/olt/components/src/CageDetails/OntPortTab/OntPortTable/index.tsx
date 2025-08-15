@@ -1,12 +1,16 @@
+import { useState } from 'react'
+
 import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps }                                    from '@acx-ui/components'
 import { formatter }                                            from '@acx-ui/formatter'
 import { OltCageStateEnum, OltOntPort, OLT_PSE_SUPPLIED_POWER } from '@acx-ui/olt/utils'
+import { filterByAccess }                                       from '@acx-ui/user'
 import { noDataDisplay }                                        from '@acx-ui/utils'
 
-import { OltStatus } from '../../OltStatus'
+import { OltStatus }         from '../../../OltStatus'
+import { EditOntPortDrawer } from '../EditOntPortDrawer'
 
 interface OntPortTableProps {
   data?: OltOntPort[]
@@ -14,16 +18,32 @@ interface OntPortTableProps {
 
 export const OntPortTable = (props: OntPortTableProps) => {
   const { data } = props
+  const { $t } = useIntl()
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
-  return <Table
-    rowKey='portIdx'
-    columns={useColumns()}
-    dataSource={data}
-    stickyHeaders={false}
-    rowSelection={{
-      type: 'radio'
-    }}
-  />
+  const rowActions = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: () => setDrawerVisible(true)
+    }
+  ]
+
+  return <>
+    <Table
+      rowKey='portIdx'
+      columns={useColumns()}
+      rowActions={filterByAccess(rowActions)}
+      dataSource={data}
+      stickyHeaders={false}
+      rowSelection={{
+        type: 'radio'
+      }}
+    />
+    <EditOntPortDrawer
+      visible={drawerVisible}
+      setVisible={setDrawerVisible}
+    />
+  </>
 }
 
 function useColumns () {
@@ -33,14 +53,14 @@ function useColumns () {
       key: 'portIdx',
       title: $t({ defaultMessage: 'Port' }),
       dataIndex: 'portIdx',
-      fixed: 'left',
-      width: 40
+      width: 100,
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'stauts',
-      width: 60,
+      width: 80,
       render: (_, row) => {
         return <Row>
           <OltStatus type='cage' status={row.status} showText />
@@ -83,3 +103,4 @@ function useColumns () {
 
   return columns
 }
+

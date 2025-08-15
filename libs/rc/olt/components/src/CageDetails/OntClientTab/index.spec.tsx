@@ -11,7 +11,7 @@ describe('OntClientTab', () => {
       <OntClientTab />
     </Provider>, { route: { params } })
 
-    expect(screen.getByText('OntClientTab')).toBeInTheDocument()
+    expect(screen.getByText('Hostname')).toBeInTheDocument()
   })
 
 })

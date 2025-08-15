@@ -3,7 +3,7 @@ import { screen, render } from '@acx-ui/test-utils'
 
 import { OntPortTab } from '.'
 
-jest.mock('../OntPortTable', () => ({
+jest.mock('./OntPortTable', () => ({
   OntPortTable: () => <div>OntPortTable</div>
 }))
 

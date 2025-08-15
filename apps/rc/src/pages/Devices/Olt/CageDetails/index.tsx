@@ -34,6 +34,8 @@ const CageDetailsContent = () => {
   const { $t } = useIntl()
   const { activeSubTab } = useParams()
   const { state, dispatch } = useCageDetails()
+  const portDetails = state.selectedOnt?.portDetails
+  const clientDetails = state.selectedOnt?.clientDetails
 
   const handleTabChange = (val: string) => {
     dispatch({ type: 'SET_CURRENT_TAB', payload: val })
@@ -42,15 +44,15 @@ const CageDetailsContent = () => {
   const tabs = [{
     label: $t({ defaultMessage: 'Panel' }),
     value: OverviewInfoType.PANEL,
-    children: <OntOverviewTab data={state.selectedOnt?.portDetails} />
+    children: <OntOverviewTab data={portDetails} />
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: OverviewInfoType.PORTS,
-    children: <OntPortTab data={state.selectedOnt?.portDetails} />
+    children: <OntPortTab data={portDetails} />
   }, {
-    label: $t({ defaultMessage: 'Clients ({count})' }, { count: 10 }),
+    label: $t({ defaultMessage: 'Clients ({count})' }, { count: clientDetails?.length || 0 }),
     value: OverviewInfoType.CLIENTS,
-    children: <OntClientTab />
+    children: <OntClientTab data={clientDetails} />
   }]
 
   // TODO: check with UX

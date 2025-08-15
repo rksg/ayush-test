@@ -70,6 +70,13 @@ export const mockOntList = [{
       vlan: ['66'],
       poePower: 3
     }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_1_client',
+      port: '1'
+    }
   ]
 }, {
   id: 'ont-id-2',

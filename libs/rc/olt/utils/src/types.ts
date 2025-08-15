@@ -40,7 +40,7 @@ export interface OltOnt {
   ports: number
   usedPorts: number
   portDetails: OltOntPort[]
-
+  clientDetails: OltOntClient[]
   model?: string //TODO
   profileName?: string
   version?: string
@@ -58,3 +58,8 @@ export interface OltOntPort {
   untaggedVlan?: string[]
 }
 
+export interface OltOntClient {
+  macAddress: string
+  hostname: string
+  port: string
+}

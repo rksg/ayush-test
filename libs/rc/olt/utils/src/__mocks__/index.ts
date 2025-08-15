@@ -141,6 +141,18 @@ export const ontData = [{
       poePower: 3,
       taggedVlan: ['66']
     }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_1_client',
+      port: '1'
+    },
+    {
+      macAddress: '00:00:00:00:00:01',
+      hostname: 'ont_1_client_2',
+      port: '2'
+    }
   ]
 }, {
   id: 'ont-id-2',
@@ -154,6 +166,23 @@ export const ontData = [{
       status: 'down',
       vlan: [],
       poePower: 0
+    }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_1_client',
+      port: '1'
+    },
+    {
+      macAddress: '00:00:00:00:00:01',
+      hostname: 'ont_1_client_2',
+      port: '2'
+    },
+    {
+      macAddress: '00:00:00:00:00:02',
+      hostname: 'ont_1_client_3',
+      port: '3'
     }
   ]
 }, {
