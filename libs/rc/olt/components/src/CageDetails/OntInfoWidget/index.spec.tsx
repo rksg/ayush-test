@@ -18,7 +18,23 @@ describe('OntInfoWidget', () => {
       />
     </Provider>, { route: { params } })
 
-    expect(screen.getByText('OntInfoWidget')).toBeInTheDocument()
+    expect(screen.getByText('Clients')).toBeInTheDocument()
+    expect(screen.getByText('1')).toBeInTheDocument()
+    expect(screen.getByText('Uptime')).toBeInTheDocument()
+  })
+
+  it('should render with no data correctly', async () => {
+    render(<Provider>
+      <OntInfoWidget
+        ontDetails={{}}
+        isLoading={false}
+        isFetching={false}
+      />
+    </Provider>, { route: { params } })
+
+    expect(screen.getByText('Clients')).toBeInTheDocument()
+    expect(screen.getByText('0')).toBeInTheDocument()
+    expect(screen.getByText('Uptime')).toBeInTheDocument()
   })
 
 })
