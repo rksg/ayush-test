@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useReducer, useState } from 'react'
+import { MutableRefObject, useEffect, useReducer, useState, useMemo } from 'react'
 
 import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
@@ -16,7 +16,9 @@ import {
   SoftGreViewData,
   IpsecOptionChangeState,
   IpsecOptionChangeDispatcher,
-  Voter
+  Voter,
+  useIsEdgeFeatureReady,
+  IpSecTunnelUsageTypeEnum
 } from '@acx-ui/rc/utils'
 
 enum ActionLevelEnum {
@@ -46,6 +48,8 @@ export const useIpsecProfileLimitedSelection = (
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isWifiIpsecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isEdgeIpsecVxlanEnabled = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const {
     venueId,
     isVenueOperation,
@@ -82,11 +86,15 @@ export const useIpsecProfileLimitedSelection = (
     }
   })
 
-  const { ipsecData } = useGetIpsecViewDataListQuery({
+  const { ipsecData: rawIpsecData } = useGetIpsecViewDataListQuery({
     payload: {
       page: 1,
       pageSize: 10_000,
-      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
+      fields: [
+        'name', 'id',
+        'activations', 'venueActivations', 'apActivations',
+        ...(isEdgeIpsecVxlanEnabled ? ['tunnelUsageType'] : [])
+      ],
       filters: {}
     } }, {
     skip: !allowIpsecGetPorfiles && !softGreData,
@@ -94,6 +102,12 @@ export const useIpsecProfileLimitedSelection = (
       return { ipsecData: data?.data }
     }
   })
+
+  const ipsecData = useMemo(() => {
+    return rawIpsecData
+      // need to use `not equal` to filter out VXLAN_GPE since tunnelUsageType might be undefined for old profiles
+      ?.filter(item => item.tunnelUsageType !== IpSecTunnelUsageTypeEnum.VXLAN_GPE)
+  }, [rawIpsecData])
 
   const getUsedSoftGreProfiles = (softGreList: SoftGreViewData[]) => {
     const softGreIds = new Set<string>()

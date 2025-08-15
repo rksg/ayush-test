@@ -7,6 +7,20 @@ import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { renderFilter, filterOption, getFilteredData } from './filters'
 
+const networkTypeFilterOptions = [
+  { key: 'psk', value: 'PSK' },
+  { key: 'aaa', value: 'AAA' },
+  { key: 'dpsk', value: 'DPSK' },
+  { key: 'guest', value: 'Captive Portal',
+    children: [
+      { key: 'clickThrough', value: 'Click-Through' },
+      { key: 'cloudpath', value: 'Cloudpath Captive Portal' },
+      { key: 'guestPass', value: 'Guest Pass' },
+      { key: 'wispr', value: '3rd Party Captive Portal (WISPr)' }
+    ]
+  },
+  { key: 'open', value: 'Open' }
+]
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
 
@@ -255,6 +269,93 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
+    })
+
+    it('should render with cascader component with multiple', async () => {
+      const filterableCol = jest.fn()
+      render(renderFilter<{ name: string }>(
+        {
+          key: 'nwSubType',
+          dataIndex: 'nwSubType',
+          title: 'Network Type',
+          filterable: networkTypeFilterOptions,
+          filterComponent: { type: 'cascader' },
+          filterMultiple: true
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      ))
+
+      const cascader = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
+      fireEvent.mouseDown(cascader)
+      fireEvent.click((await screen.findByText('PSK')))
+      expect(filterableCol).toBeCalledWith({ nwSubType: [['psk']] })
+
+      fireEvent.click((await screen.findByText('Captive Portal')))
+      fireEvent.click((await screen.findByText('Click-Through')))
+      expect(filterableCol).toBeCalledWith({ nwSubType: [['psk'], ['guest', 'clickThrough']] })
+    })
+
+    it('should render with cascader component and uncheck checkbox with multiple', async () => {
+      const filterableCol = jest.fn()
+      render(renderFilter<{ name: string }>(
+        {
+          key: 'nwSubType',
+          dataIndex: 'nwSubType',
+          title: 'Network Type',
+          filterable: networkTypeFilterOptions,
+          filterComponent: { type: 'cascader' },
+          filterMultiple: true
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      ))
+      const cascader = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
+      fireEvent.mouseDown(cascader)
+      // check AAA
+      fireEvent.click((await screen.findByText('AAA')))
+      expect(filterableCol).toBeCalledWith({ nwSubType: [ ['aaa'] ] })
+
+      // uncheck AAA
+      fireEvent.click((await screen.findByText('AAA')))
+      expect(filterableCol).toBeCalledWith({ nwSubType: undefined })
+    })
+
+    it('should render with cascader component with filterMultiple is false', async () => {
+      const filterableCol = jest.fn()
+      render(renderFilter<{ name: string }>(
+        {
+          key: 'nwSubType',
+          dataIndex: 'nwSubType',
+          title: 'Network Type',
+          filterable: networkTypeFilterOptions,
+          filterComponent: { type: 'cascader' },
+          filterMultiple: false
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false,
+        200
+      ))
+      const cascader = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
+      fireEvent.mouseDown(cascader)
+      // check AAA
+      fireEvent.click(await screen.findByText('AAA'))
+      expect(filterableCol).toBeCalledWith({ nwSubType: ['aaa'] })
+
+      // uncheck AAA
+      fireEvent.click(await screen.findByText('PSK'))
+      expect(filterableCol).toBeCalledWith({ nwSubType: ['psk'] })
     })
   })
 

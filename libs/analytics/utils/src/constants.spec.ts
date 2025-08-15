@@ -18,11 +18,17 @@ describe('constants', () => {
     })
     it('returns values for R1', () => {
       mockGet.mockReturnValue(undefined)
-      expect(require('.').productNames).toEqual({ smartZone: 'RUCKUS One' })
+      expect(require('.').productNames).toEqual({
+        smartZone: 'RUCKUS One',
+        mlisaVersionSuffix: ' or above'
+      })
     })
     it('returns values for RA', () => {
       mockGet.mockReturnValue('true')
-      expect(require('.').productNames).toEqual({ smartZone: 'SmartZone' })
+      expect(require('.').productNames).toEqual({
+        smartZone: 'SmartZone',
+        mlisaVersionSuffix: ' and SmartZone version 7.x or above'
+      })
     })
   })
 
