@@ -21,7 +21,7 @@ enum UnitType {
 const formatNumber = (num: number) => String(num).padStart(2, '0')
 
 //TODO: wait for new icons
-const UnitIcon = ({ type }: { type?: string }) => {
+export const UnitIcon = ({ type }: { type?: string }) => {
   switch (type) {
     case UnitType.UPLINK:
       return <UplinkPortSolid size='sm' />
