@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mlisa-core-rsa-ui-fragments-config
+data:
+  DEPLOYMENT_MODE: ALTO
+  DRUID_ROLLUP_DAYS: "36500"
+  NODE_OPTIONS: --max-http-header-size=131072
+  RSA_API_PUBLIC_URL: /api/a4rc/api/rsa-api
