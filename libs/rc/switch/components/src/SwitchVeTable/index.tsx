@@ -42,8 +42,6 @@ export function SwitchVeTable (props: {
   const { isVenueLevel, switchInfo } = props
   const [cliApplied, setCliApplied] = useState(false)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSupport8100StaticRouteMaxVe =
-    useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100_STATIC_ROUTE_MAX_VE_TOGGLE)
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({
