@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 
 import { Form, Switch }                 from 'antd'
 import { assign, cloneDeep, get, omit } from 'lodash'
@@ -67,7 +67,10 @@ import {
   WifiRbacUrlsInfo,
   ConfigTemplateUrlsInfo,
   networkTypes,
-  SupportNetworkTypes
+  SupportNetworkTypes,
+  SupportGuestNetworkTypes,
+  captiveNetworkTypes,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                        from '@acx-ui/types'
@@ -356,19 +359,23 @@ export function VenueNetworksTab () {
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
   }
 
-  /*
-  const networkTypesOptions = [
-    { key: NetworkTypeEnum.PSK, value: $t(networkTypes[NetworkTypeEnum.PSK]) },
-    { key: NetworkTypeEnum.DPSK, value: $t(networkTypes[NetworkTypeEnum.DPSK]) },
-    { key: NetworkTypeEnum.AAA, value: $t(networkTypes[NetworkTypeEnum.AAA]) },
-    { key: NetworkTypeEnum.HOTSPOT20, value: $t(networkTypes[NetworkTypeEnum.HOTSPOT20]) },
-    { key: NetworkTypeEnum.CAPTIVEPORTAL, value: $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL]) },
-    { key: NetworkTypeEnum.OPEN, value: $t(networkTypes[NetworkTypeEnum.OPEN]) }
-  ]
-  */
-  const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
-    return { key: networkType, value: $t(networkTypes[networkType]) }
-  })
+  const networkTypeFilterOptions = useMemo(() => {
+    const guestNetworkTypesOptions = SupportGuestNetworkTypes.map((networkType: GuestNetworkTypeEnum) => {
+      return { key: networkType, value: $t(captiveNetworkTypes[networkType]) }
+    })
+
+    const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+      return {
+        key: networkType,
+        value: $t(networkTypes[networkType]),
+        ...(networkType === NetworkTypeEnum.CAPTIVEPORTAL && {
+          children: guestNetworkTypesOptions
+        })
+      }
+    })
+
+    return networkTypesOptions
+  }, [])
 
   const activatedOption = [
     { key: 'activated', value: $t({ defaultMessage: 'Activated' }) },
@@ -404,7 +411,9 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      filterable: networkTypesOptions,
+      filterable: networkTypeFilterOptions,
+      filterComponent: { type: 'cascader' },
+      filterMultiple: true,
       render: (_, row) => <NetworkType
         networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
@@ -686,6 +695,8 @@ export function VenueNetworksTab () {
     let _customFilters = {
       ...customFilters
     }
+    let customGroupFilters: { field: string; value: string }[][] = []
+
     const activatedFilters = customFilters['venueApGroups.venueId']
     if (activatedFilters) {
       const isActivated = activatedFilters[0] === 'activated'
@@ -695,18 +706,32 @@ export function VenueNetworksTab () {
           'venueApGroups.venueId': [venueId!]
         }
       } else {
-        _customFilters = omit(customFilters, ['venueApGroups.venueId'])
+        _customFilters = omit(_customFilters, ['venueApGroups.venueId'])
         excludeFilters = {
           'venueApGroups.venueId': [venueId!]
         }
       }
+    }
+    if (customFilters?.nwSubType) {
+      const nwSubType = customFilters?.nwSubType
+      customGroupFilters = nwSubType.map((item: unknown) => {
+        const itemArray = item as string[]
+        if (itemArray.length === 2) {
+          return [{ field: 'captiveType', value: itemArray[1] }]
+        } else {
+          return [{ field: 'nwSubType', value: itemArray[0] }]
+        }
+      })
+
+      _customFilters = omit(_customFilters, ['nwSubType'])
     }
 
     const customPayload = {
       ...tableQuery.payload,
       ...customSearch,
       filters: _customFilters,
-      excludeFilters: excludeFilters
+      excludeFilters: excludeFilters,
+      groupFilters: customGroupFilters
     }
 
     tableQuery.setPayload(customPayload)
