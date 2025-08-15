@@ -17,6 +17,7 @@ import {
 interface TableQueryPayload {
   page?: number
   size?: number
+  pageSize?: number
   searchString?: string
   sortField?: string
   sortOrder?: string
@@ -82,6 +83,8 @@ const createPostQuery = (urlInfo: ApiInfo) => {
       ...tablePayload,
       // Transform page to 0-based indexing
       ...(tablePayload?.page && { page: tablePayload.page - 1 }),
+      // Map pageSize to size if present, otherwise keep original size
+      ...(tablePayload?.pageSize && { size: tablePayload.pageSize }),
       // Rename searchString to searchText
       ...(tablePayload?.searchString && { searchText: tablePayload.searchString }),
       // Transform sortField to sortColumn with special handling for visibleStatus
@@ -113,6 +116,7 @@ const createPostQuery = (urlInfo: ApiInfo) => {
     delete newPayload.sortField
     delete newPayload.sortOrder
     delete newPayload.filters
+    delete newPayload.pageSize
 
     const req = createHttpRequest({
       ...urlInfo,
