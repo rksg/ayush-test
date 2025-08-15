@@ -11,16 +11,16 @@ import {
   OltNetworkCardTab,
   OltOverviewTab
 } from '@acx-ui/olt/components'
-import { Olt, OltCage }                          from '@acx-ui/olt/utils'
+import { Olt, OltCage, OltMockdata }             from '@acx-ui/olt/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-import { oltData, oltCageList } from '../mockdata'
 
 enum OverviewInfoType {
   OVERVIEW = 'overview',
   NETWORK = 'network',
   LINE = 'line'
 }
+
+const { oltData, oltCageList } = OltMockdata
 
 export const OltDetails = () => {
   const { $t } = useIntl()

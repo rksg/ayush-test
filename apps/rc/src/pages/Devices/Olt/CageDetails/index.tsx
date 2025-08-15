@@ -17,10 +17,8 @@ import {
   OntTable,
   useCageDetails
 }    from '@acx-ui/olt/components'
-import { Olt, OltCage, OltOnt } from '@acx-ui/olt/utils'
-import { noDataDisplay }        from '@acx-ui/utils'
-
-import { oltData, oltCageList, ontData } from '../mockdata'
+import { Olt, OltCage, OltOnt, OltMockdata } from '@acx-ui/olt/utils'
+import { noDataDisplay }                     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -29,6 +27,8 @@ enum OverviewInfoType {
   PORTS = 'Ports',
   CLIENTS = 'Clients'
 }
+
+const { oltData, oltCageList, ontData } = OltMockdata
 
 const CageDetailsContent = () => {
   const { $t } = useIntl()

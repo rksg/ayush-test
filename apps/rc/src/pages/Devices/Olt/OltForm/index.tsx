@@ -1,11 +1,10 @@
 import { Form } from 'antd'
 
 import { OltForm as OltBasicForm }               from '@acx-ui/olt/components'
-import { Olt }                                   from '@acx-ui/olt/utils'
+import { Olt, OltMockdata }                      from '@acx-ui/olt/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { oltData } from '../mockdata'
-
+const { oltData } = OltMockdata
 
 const OltForm = () => {
   const navigate = useNavigate()

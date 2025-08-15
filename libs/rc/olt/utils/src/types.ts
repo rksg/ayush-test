@@ -9,6 +9,12 @@ export enum OltCageStateEnum {
   DOWN = 'down',
 }
 
+export enum OltSlotType {
+  NT = 'NT',
+  LT = 'LT',
+  ONT = 'ONT'
+}
+
 export interface Olt {
   name: string
   status: OltStatusEnum

@@ -1,11 +1,12 @@
 import { useContext } from 'react'
 
 import { GridCol, GridRow } from '@acx-ui/components'
+import { OltMockdata }      from '@acx-ui/olt/utils'
 
-import { networkCardSlots, lineCardSlots } from '../../mockdata'
-import { OltFrontPanel }                   from '../../OltFrontPanel'
-import { OltDetailsContext }               from '../OltDetailsContext'
+import { OltFrontPanel }     from '../../OltFrontPanel'
+import { OltDetailsContext } from '../OltDetailsContext'
 
+const { networkCardSlots, lineCardSlots } = OltMockdata
 
 export const OltOverviewTab = () => {
   const { oltDetailsContextData } = useContext(OltDetailsContext)

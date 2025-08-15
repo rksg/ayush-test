@@ -2,12 +2,12 @@ import { useIntl } from 'react-intl'
 
 import { Button }                 from '@acx-ui/components'
 import { OltTable }               from '@acx-ui/olt/components'
-import { Olt }                    from '@acx-ui/olt/utils'
+import { Olt, OltMockdata }       from '@acx-ui/olt/utils'
 import { transformDisplayNumber } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { filterByAccess }         from '@acx-ui/user'
 
-import { oltList } from '../mockdata'
+const { oltList } = OltMockdata
 
 export default function useOltTable () {
   const { $t } = useIntl()
