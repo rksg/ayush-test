@@ -352,11 +352,11 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   const passwordRegenerationMessage = useMemo(() => {
-    const { lastSeenTime, deviceStatusSeverity } = currentAP ?? {}
+    const { deviceStatusSeverity } = currentAP ?? {}
     const isConnected = deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
     const expireTime = apPasswordParam?.expireTime
 
-    if (!lastSeenTime || !expireTime) {
+    if (!expireTime) {
       return null
     }
 
@@ -383,11 +383,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       )
     }
 
-    // For disconnected devices, check if it's been more than 24 hours
-    const lastSeenDate = new Date(lastSeenTime)
-    const timeDiffHours = (now.getTime() - lastSeenDate.getTime()) / (1000 * 60 * 60)
-
-    if (timeDiffHours > 24) {
+    // For disconnected devices, check if current time has exceeded expireTime
+    if (now.getTime() > expireDate.getTime()) {
       return $t({ defaultMessage: 'AP Password will regenerate upon cloud reconnection.' })
     } else {
       return (
@@ -398,7 +395,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       )
     }
 
-  }, [currentAP?.lastSeenTime, currentAP?.lastSeenTime, apPasswordParam?.expireTime])
+  }, [currentAP?.deviceStatusSeverity, apPasswordParam?.expireTime])
 
   const PropertiesTab = () => {
     return (<>

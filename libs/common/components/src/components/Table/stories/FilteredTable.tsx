@@ -19,6 +19,12 @@ export type RecordType = {
   hiredate?: string
 }
 
+export type RecordNetworkType = {
+  name: string,
+  networkType: string,
+  description: string
+}
+
 export const columns: TableProps<RecordType>['columns'] = [
   {
     title: 'Name',
@@ -186,6 +192,58 @@ const columnsWithRangepickerOnly: TableProps<RecordType>['columns'] = [
   }
 ]
 
+const networkTypeFilterOptions = [{
+  key: 'psk',
+  value: 'PSK'
+}, {
+  key: 'aaa',
+  value: 'AAA'
+}, {
+  key: 'dpsk',
+  value: 'DPSK'
+}, {
+  key: 'guest',
+  value: 'Captive Portal',
+  children: [{
+    key: 'clickThrough',
+    value: 'Click-Through'
+  }, {
+    key: 'cloudpath',
+    value: 'Cloudpath Captive Portal'
+  }, {
+    key: 'guestPass',
+    value: 'Guest Pass'
+  }, {
+    key: 'wispr',
+    value: '3rd Party Captive Portal (WISPr)'
+  }]
+}, {
+  key: 'open',
+  value: 'Open'
+}]
+
+const columnsWithCascaderOnly: TableProps<RecordNetworkType>['columns'] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description'
+  },
+  {
+    title: 'Network Type',
+    dataIndex: 'networkType',
+    key: 'networkType',
+    align: 'center',
+    filterable: networkTypeFilterOptions,
+    filterComponent: { type: 'cascader' },
+    filterMultiple: true
+  }
+]
+
 export const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '1',
@@ -333,6 +391,29 @@ export const dataWithStatus: TableProps<RecordType>['dataSource'] = [
   }
 ]
 
+export const dataWithNetworkType: TableProps<RecordNetworkType>['dataSource'] = [
+  {
+    name: 'network-open',
+    networkType: 'open',
+    description: 'Open network'
+  },
+  {
+    name: 'network-wispr',
+    networkType: 'wispr',
+    description: '3rd Party Captive Portal (WISPr)'
+  },
+  {
+    name: 'network-psk',
+    networkType: 'psk',
+    description: 'PSK network'
+  },
+  {
+    name: 'network-aaa',
+    networkType: 'aaa',
+    description: 'AAA network'
+  }
+]
+
 const rowActions: TableProps<(typeof data)[0]>['rowActions'] = [
   {
     label: 'Edit',
@@ -401,6 +482,13 @@ export function FilteredTable () {
       <Table<RecordType>
         columns={columnsWithRangepickerOnly}
         dataSource={dataWithStatus}
+      />
+    </Router>
+    with cascader only:
+    <Router>
+      <Table<RecordNetworkType>
+        columns={columnsWithCascaderOnly}
+        dataSource={dataWithNetworkType}
       />
     </Router>
     with persistent filter only:
