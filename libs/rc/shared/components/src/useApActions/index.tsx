@@ -51,10 +51,9 @@ export function useApActions () {
   const [ getApJwtToken ] = useLazyGetApJwtTokenQuery()
 
   const showRebootAp = (
-    serialNumber: string,
+    items: { serialNumber: string, venueId?: string }[],
     tenantId?: string,
-    venueId?: string,
-    callBack?: ()=>void
+    opts?: { sendingToast?: (serialNumber: string) => void, clearSelection?: () => void }
   ) => {
 
     showActionModal({
@@ -70,19 +69,43 @@ export function useApActions () {
           type: 'primary',
           key: 'ok',
           closeAfterAction: true,
-          handler: () => {
-            rebootAp({
-              params: { tenantId: tenantId, serialNumber, venueId },
-              payload: {
-                ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT } : { action: 'reboot' }) },
-              enableRbac: isUseWifiRbacApi
-            })
-            callBack && callBack()
+          handler: async () => {
+            for (const { serialNumber, venueId } of items) {
+              try {
+                await rebootAp({
+                  params: { tenantId: tenantId, serialNumber, venueId },
+                  payload: {
+                    ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT }
+                      : { action: 'reboot' }) },
+                  enableRbac: isUseWifiRbacApi
+                }).unwrap()
+                if (opts?.sendingToast) {
+                  opts.sendingToast(serialNumber)
+                } else {
+                  showToast({
+                    type: 'success',
+                    content: $t(
+                      { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
+                      { ap: serialNumber }
+                    )
+                  })
+                }
+              } catch (err) {
+                showToast({
+                  type: 'error',
+                  content: $t(
+                    { defaultMessage: 'Failed to send [reboot] to AP: {ap}' },
+                    { ap: serialNumber }
+                  )
+                })
+              }
+            }
+            opts?.clearSelection && opts.clearSelection()
           }
         }]
       },
-      title: $t({ defaultMessage: 'Reboot Access Point?' }),
-      content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
+      title: $t({ defaultMessage: 'Reboot Access Point(s)?' }),
+      content: $t({ defaultMessage: `Rebooting the AP(s) will disconnect all connected clients.
         Are you sure you want to reboot?` })
     })
   }

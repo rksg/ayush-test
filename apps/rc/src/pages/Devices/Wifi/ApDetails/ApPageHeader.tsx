@@ -115,8 +115,9 @@ function ApPageHeader () {
           }, 1000)
         })
     } else {
-      // eslint-disable-next-line max-len
-      (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
+      if (e.key === 'reboot') {
+        apAction.showRebootAp([{ serialNumber, venueId }], tenantId)
+      }
     }
   }
 
