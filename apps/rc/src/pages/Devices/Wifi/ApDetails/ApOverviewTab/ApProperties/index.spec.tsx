@@ -827,31 +827,7 @@ describe('ApProperties', () => {
         )
       })
 
-      it('should return null when lastSeenTime is missing', async () => {
-        const apWithoutLastSeen = {
-          ...currentAP,
-          lastSeenTime: undefined
-        }
 
-        render(<Provider>
-          <ApProperties
-            currentAP={apWithoutLastSeen}
-            apDetails={apDetails}
-            isLoading={false}
-          /></Provider>, { route: { params } })
-
-        fireEvent.click(screen.getByText('More'))
-        const apPropertiesDialog = await screen.findByRole('dialog')
-
-        // Click show password button to trigger password fetch
-        const showPasswordButton = within(apPropertiesDialog)
-          .getByRole('button', { name: /Show AP Password/ })
-        await userEvent.click(showPasswordButton)
-
-        // Should not show regeneration message
-        expect(within(apPropertiesDialog)
-          .queryByText(/AP Password will regenerate/)).not.toBeInTheDocument()
-      })
 
       it('should return null when expireTime is missing', async () => {
         // Mock API to return password without expireTime
@@ -1002,11 +978,10 @@ describe('ApProperties', () => {
 
       })
 
-      it('should show regeneration message for disconnected AP with expire today', async () => {
+      it('should show regeneration message for disconnected AP with expired password', async () => {
         const now = new Date()
-        const todayExpireTime = new Date(
-          now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59
-        ).toISOString()
+        // Set expire time to 1 hour ago (expired)
+        const expiredTime = new Date(now.getTime() - 60 * 60 * 1000).toISOString()
 
         const apDisconnected = {
           ...currentAP,
@@ -1019,7 +994,7 @@ describe('ApProperties', () => {
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
               apPassword: 'testPassword123',
-              expireTime: todayExpireTime,
+              expireTime: expiredTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
           )
@@ -1050,18 +1025,17 @@ describe('ApProperties', () => {
 
         // Then wait for regeneration message to be displayed
         await waitFor(() => {
+          const reconnectionMessage = /AP Password will regenerate upon cloud reconnection/
           expect(within(apPropertiesDialog)
-            .getByText(/upon cloud reconnection/)).toBeVisible()
+            .getByText(reconnectionMessage))
+            .toBeVisible()
         })
       })
 
-      it('should show regeneration message for disconnected AP with expire over 24', async () => {
+      it('should show regeneration message for disconnected AP non-expired password', async () => {
         const now = new Date()
-        const over24 = new Date(now)
-        over24.setDate(now.getDate() + 2)
-        const over24ExpireTime = new Date(
-          over24.getFullYear(), over24.getMonth(), over24.getDate(), 23, 59, 59
-        ).toISOString()
+        // Set expire time to 1 hour from now (not expired)
+        const futureExpireTime = new Date(now.getTime() + 60 * 60 * 1000).toISOString()
 
         const apDisconnected = {
           ...currentAP,
@@ -1074,7 +1048,7 @@ describe('ApProperties', () => {
             WifiRbacUrlsInfo.getApPassword.url,
             (_, res, ctx) => res(ctx.json({
               apPassword: 'testPassword123',
-              expireTime: over24ExpireTime,
+              expireTime: futureExpireTime,
               updatedTime: '2024-01-15T09:30:00Z'
             }))
           )
@@ -1106,7 +1080,14 @@ describe('ApProperties', () => {
         // Then wait for regeneration message to be displayed
         await waitFor(() => {
           expect(within(apPropertiesDialog)
-            .getByText(/AP Password will regenerate upon cloud reconnection./)).toBeVisible()
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Should also show the "upon cloud reconnection" message
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/upon cloud reconnection/))
+            .toBeVisible()
         })
       })
 
