@@ -80,9 +80,12 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps
     filterableWidth?: number
     searchableWidth?: number
+    searchPlaceholder?: string
     stickyHeaders?: boolean
     stickyPagination?: boolean
     stickyOffsetY?: number
+    enableClearFilters?: boolean
+    enableSettingsColumn?: boolean
     enableResizableColumn?: boolean
     enablePagination?: boolean
     onDisplayRowChange?: (displayRows: RecordType[]) => void
@@ -160,6 +163,8 @@ function Table <RecordType extends Record<string, any>> ({
   onDisplayRowChange,
   stickyHeaders,
   stickyPagination,
+  enableClearFilters = true,
+  enableSettingsColumn = true,
   enablePagination = false,
   selectedFilters = {},
   filterPersistence = false,
@@ -167,6 +172,7 @@ function Table <RecordType extends Record<string, any>> ({
   preventRenderHeader,
   optionLabelProp,
   columnsToFilterChildrenRowBasedOnParentRow,
+  searchPlaceholder = undefined,
   ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
@@ -198,7 +204,7 @@ function Table <RecordType extends Record<string, any>> ({
   }
   const allKeys = dataSource?.map(row => getRowKey(row))
   const updateSearch = _.debounce(() => {
-    onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
+    onFilter.current?.(filterValues, { searchString: searchValue.trim() }, groupByValue)
   }, 1000)
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
@@ -215,7 +221,8 @@ function Table <RecordType extends Record<string, any>> ({
   }, [onFilterChange])
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
+    const trimmedSearch = searchValue.trim()
+    if(trimmedSearch.length === 0 || trimmedSearch.length >= MIN_SEARCH_LENGTH) {
       updateSearch()
     }
     return () => updateSearch.cancel()
@@ -224,7 +231,7 @@ function Table <RecordType extends Record<string, any>> ({
   useEffect(() => setSearchValue(highLightValue ?? ''), [highLightValue])
 
   useEffect(() => {
-    onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
+    onFilter.current?.(filterValues, { searchString: searchValue.trim() }, groupByValue)
   }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -236,7 +243,7 @@ function Table <RecordType extends Record<string, any>> ({
           filterValues,
           activeFilters,
           searchables,
-          searchValue,
+          searchValue.trim(),
           columnsToFilterChildrenRowBasedOnParentRow
         )) ?? []
     )
@@ -265,7 +272,7 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    const cols = type === 'tall'
+    const cols = type === 'tall' && enableSettingsColumn
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
@@ -533,14 +540,14 @@ function Table <RecordType extends Record<string, any>> ({
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
         const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
-          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+          (searchValue && searchValue.trim().length >= MIN_SEARCH_LENGTH && textToHighlight)
             ? formatFn
               ? textToHighlight.replace(
-                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+                new RegExp(escapeStringRegexp(searchValue.trim()), 'ig'), formatFn('$&') as string)
               : <Highlighter
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
-                searchWords={[searchValue]}
+                searchWords={[searchValue.trim()]}
                 textToHighlight={textToHighlight.toString()}
                 autoEscape
               />
@@ -565,7 +572,7 @@ function Table <RecordType extends Record<string, any>> ({
         {Boolean(searchables.length) && highLightValue === undefined &&
           renderSearch<RecordType>(
             intl, searchables, searchValue, setSearchValue, searchWidth,
-            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : undefined
+            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : searchPlaceholder
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
@@ -593,9 +600,9 @@ function Table <RecordType extends Record<string, any>> ({
     <UI.HeaderComps>
       {(
         Boolean(activeFilters.length) ||
-        (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH &&
+        (Boolean(searchValue) && searchValue.trim().length >= MIN_SEARCH_LENGTH &&
           highLightValue === undefined) ||
-        isGroupByActive) && type !== 'compactWidget'
+        isGroupByActive) && type !== 'compactWidget' && enableClearFilters
         && <Button
           style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
           onClick={() => {
@@ -615,7 +622,7 @@ function Table <RecordType extends Record<string, any>> ({
               filterValues,
               activeFilters,
               searchables,
-              searchValue,
+              searchValue.trim(),
               columnsToFilterChildrenRowBasedOnParentRow
             )?.length
           }
@@ -687,7 +694,7 @@ function Table <RecordType extends Record<string, any>> ({
             filterValues,
             activeFilters,
             searchables,
-            searchValue,
+            searchValue.trim(),
             columnsToFilterChildrenRowBasedOnParentRow
           )
       }

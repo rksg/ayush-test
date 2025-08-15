@@ -18,9 +18,15 @@ jest.mock('../policies/SoftGre/SoftGreForm/SoftGreDrawer', () => ({
   default: () => <div data-testid={'rc-SoftGreDrawer'} title='SoftGreDrawer' />
 }))
 
-jest.mock('../policies/Ipsec/IpsecForm/IpsecDrawer', () => ({
-  ...jest.requireActual('../policies/Ipsec/IpsecForm/IpsecDrawer'),
+jest.mock('../policies/Ipsec/IpsecForm/IpsecAddDrawer', () => ({
+  ...jest.requireActual('../policies/Ipsec/IpsecForm/IpsecAddDrawer'),
   default: () => <div data-testid={'rc-IpsecDrawer'} title='IpsecDrawer' />
+}))
+
+jest.mock('../policies/Ipsec/IpsecForm/IpsecDetailsDrawer', () => ({
+  ...jest.requireActual('../policies/Ipsec/IpsecForm/IpsecDetailsDrawer'),
+  // eslint-disable-next-line max-len
+  IpsecDetailsDrawer: () => <div data-testid={'rc-IpsecDetailsDrawer'} title='IpsecDetailsDrawercDrawer' />
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -47,7 +53,7 @@ jest.mock('antd', () => {
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useLazyGetIpsecOptionsQuery: jest.fn().mockReturnValue([
+  useLazyGetSoftGreIpsecOptionsQuery: jest.fn().mockReturnValue([
     () => ({ unwrap: jest.fn().mockResolvedValue({ options: mockIpSecTable.data.data }) })
   ]),
   useLazyGetSoftGreOptionsQuery: jest.fn().mockReturnValue([

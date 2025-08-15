@@ -4,16 +4,18 @@ import {  Form, Space, Select, Switch, Row, Alert } from 'antd'
 import { DefaultOptionType }                        from 'antd/lib/select'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
+import { Features }                    from '@acx-ui/feature-toggle'
 import {
   useGetSoftGreOptionsQuery,
   useLazyGetSoftGreOptionsQuery,
-  useGetIpsecOptionsQuery,
-  useLazyGetIpsecOptionsQuery
+  useGetSoftGreIpsecOptionsQuery,
+  useLazyGetSoftGreIpsecOptionsQuery
 } from '@acx-ui/rc/services'
-import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { hasPolicyPermission, PolicyOperation, PolicyType, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
-import IpsecDrawer   from '../policies/Ipsec/IpsecForm/IpsecDrawer'
-import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
+import IpsecAddDrawer         from '../policies/Ipsec/IpsecForm/IpsecAddDrawer'
+import { IpsecDetailsDrawer } from '../policies/Ipsec/IpsecForm/IpsecDetailsDrawer'
+import SoftGreDrawer          from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                         from './styledComponents'
 import { NetworkTunnelTypeEnum }       from './types'
@@ -38,6 +40,8 @@ const defaultIpsecPayload = {
 }
 
 export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionProps) {
+  const isEdgeIpsecVxlanEnabled = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
   const { currentTunnelType, venueId, networkId, cachedSoftGre, disabledInfo } = props
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -51,7 +55,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ ipsecOption, setIpsecOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
   const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
-  const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
+  const [ getIpsecOptions ] = useLazyGetSoftGreIpsecOptionsQuery()
   const [ enableIpsec, setEnableIpsec ] = useState<boolean>(false)
   const [ enableOption, setEnableOption ] = useState<boolean>(true)
   const [ softGreDisabled, setSoftGreDisabled ] = useState<boolean>(false)
@@ -69,9 +73,10 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
     { skip: !venueId || !networkId }
   )
 
-  const ipsecOptionsDataQuery = useGetIpsecOptionsQuery(
+  const ipsecOptionsDataQuery = useGetSoftGreIpsecOptionsQuery(
     { params: { venueId, networkId, softGreProfileId },
-      payload: { ...defaultIpsecPayload }
+      payload: defaultIpsecPayload,
+      enableVxlanIpsec: isEdgeIpsecVxlanEnabled
     },
     { skip: !venueId || !networkId }
   )
@@ -153,13 +158,14 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   }, [ipsecOption, softGreOption])
 
   const reloadIpsecOptions = async (value: string) => {
-    const queryData = await getIpsecOptions(
-      { params: {
+    const queryData = await getIpsecOptions({
+      params: {
         venueId,
         networkId,
         softGreId: value },
-      payload: { ...defaultIpsecPayload } }
-    ).unwrap()
+      payload: { ...defaultIpsecPayload },
+      enableVxlanIpsec: isEdgeIpsecVxlanEnabled
+    }).unwrap()
 
     if (queryData) {
       const { options } = queryData
@@ -372,14 +378,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         setVisible={setAddDrawerVisible}
         callbackFn={addOption}
       />
-      <IpsecDrawer
+      <IpsecDetailsDrawer
         visible={detailIpsecDrawerVisible}
         setVisible={setDetailIpsecDrawerVisible}
-        policyId={ipsecProfileId}
-        policyName={ipsecOption.find(item => item.value === ipsecProfileId)?.label as string}
-        readMode
+        ipsecId={ipsecProfileId}
       />
-      <IpsecDrawer
+      <IpsecAddDrawer
         visible={addIpsecDrawerVisible}
         setVisible={setAddIpsecDrawerVisible}
         callbackFn={addIpsecOption}

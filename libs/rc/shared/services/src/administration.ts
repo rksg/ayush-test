@@ -451,7 +451,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         // flat endpoint into individual fields
         const tableResult = response?.content?.map((data: NotificationRecipientUIModel) => {
           const result = {
-            ...data
+            ...data,
+            name: data.description
           } as NotificationRecipientUIModel
 
           data?.endpoints?.forEach((endpoint: NotificationEndpoint) => {
@@ -972,7 +973,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if(msg.steps?.find((step) =>
-            (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
+            (step.id === 'UpdateSMSProvider')) && (msg.status === 'SUCCESS')) {
             if (typeof requestArgs.callback === 'function') {
               requestArgs.callback()
             }

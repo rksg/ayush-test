@@ -38,8 +38,8 @@ import {
   useDisableMspEcSupportMutation,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  usePatchCustomerMutation,
-  useMspRbacEcAssignmentHistoryQuery
+  useMspRbacEcAssignmentHistoryQuery,
+  useGetCalculatedLicencesListV2Query
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -52,9 +52,9 @@ import {
   MspIntegratorDelegated,
   AssignActionEnum,
   MspEcTierEnum,
-  MspEcTierPayload,
   defaultAddress,
-  addressParser
+  addressParser,
+  LicenseCalculatorDataV2
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                                                   from '@acx-ui/rc/generic-features/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
@@ -115,7 +115,6 @@ export function NewManageCustomer () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
-  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
@@ -123,6 +122,7 @@ export function NewManageCustomer () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
   const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
+  const multiLicenseFFToggle = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -162,8 +162,10 @@ export function NewManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
-  const [patchCustomer] = usePatchCustomerMutation()
   const params = useParams()
+
+  const [licenseCalcData, setLicenseCalcData] = useState({
+    apswLic: 0, apswTrialLic: 0, solutionTokenLic: 0, solutionTokenTrialLic: 0 })
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -189,7 +191,21 @@ export function NewManageCustomer () {
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
-    { params: useParams(), payload: entitlementSummaryPayload })
+    { params: useParams(), payload: entitlementSummaryPayload }, { skip: multiLicenseFFToggle })
+
+  const { data: calculatedLicencesList } = useGetCalculatedLicencesListV2Query(
+    { payload: {
+      operator: 'MAX_QUANTITY',
+      effectiveDate: moment().format('YYYY-MM-DD'),
+      expirationDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+      filters: {
+        usageType: 'ASSIGNED',
+        licenseType: ['APSW', 'SLTN_TOKEN']
+      }
+    } }, { skip: !multiLicenseFFToggle })
+
+
+
   const { data: rbacAssignment } = useTableQuery({
     useQuery: useMspRbacEcAssignmentHistoryQuery,
     apiParams: { tenantId: mspEcTenantId as string },
@@ -265,9 +281,15 @@ export function NewManageCustomer () {
     }
   }, [ecSupport])
 
+
+
   useEffect(() => {
-    if (licenseSummaryResults) {
-      checkAvailableLicense(licenseSummaryResults)
+    if (licenseSummaryResults || calculatedLicencesList) {
+      if(multiLicenseFFToggle && calculatedLicencesList) {
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else if (licenseSummaryResults) {
+        checkAvailableLicense(licenseSummaryResults)
+      }
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
@@ -299,9 +321,18 @@ export function NewManageCustomer () {
         )
         const solutionTokenTrialLic = solutionTokenTrial.length > 0 ?
           solutionTokenTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
-          : checkAvailableLicense(licenseSummaryResults, apswLic,
-            apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
+
+        if(multiLicenseFFToggle && calculatedLicencesList) {
+          setLicenseCalcData({ apswLic, apswTrialLic, solutionTokenLic, solutionTokenTrialLic })
+          isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data)
+            : checkAvailableLicenseV2(calculatedLicencesList.data, apswLic,
+              apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
+
+        } else if (licenseSummaryResults) {
+          isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
+            : checkAvailableLicense(licenseSummaryResults, apswLic,
+              apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
+        }
 
         setSolutionTokenTrialLicense(solutionTokenTrialLic)
         formRef.current?.setFieldValue('solutionTokenTrialLicense', solutionTokenTrialLic)
@@ -364,7 +395,7 @@ export function NewManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummaryResults,
+  }, [data, licenseSummaryResults, calculatedLicencesList,
     licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
@@ -648,7 +679,7 @@ export function NewManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -664,14 +695,6 @@ export function NewManageCustomer () {
       await updateCustomer({
         params: { mspEcTenantId: mspEcTenantId }, payload: customer,
         enableRbac: isRbacEnabled }).unwrap()
-
-      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
-        const patchTier: MspEcTierPayload = {
-          type: 'serviceTierStatus',
-          serviceTierStatus: ecFormData.tier
-        }
-        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
-      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {
@@ -783,6 +806,52 @@ export function NewManageCustomer () {
     }
   }
 
+  const sumLicenses = (
+    entitlements: LicenseCalculatorDataV2[],
+    type: EntitlementDeviceType,
+    isTrial: boolean,
+    currentTier: MspEcTierEnum,
+    extraLic = 0
+  ) => {
+    let licenses = entitlements.filter(
+      p => p.quantity > 0 && p.licenseType === type && p.isTrial === isTrial
+    )
+
+    const hasSkuTier = licenses.some(item => item.skuTier != null)
+    if (hasSkuTier) {
+      licenses = licenses.filter(p => p.skuTier === currentTier)
+    }
+
+    const remaining = licenses.reduce((sum, lic) => sum + lic.quantity, 0)
+    return remaining + extraLic
+  }
+
+  const checkAvailableLicenseV2 = (
+    entitlements: LicenseCalculatorDataV2[],
+    apswLic?: number,
+    apswTrialLic?: number,
+    solutionTokenLic?: number,
+    solutionTokenTrialLic?: number
+  ) => {
+    const currentTier =
+      formRef.current?.getFieldValue('tier') || data?.tier
+
+    setAvailableApswLicense(
+      sumLicenses(entitlements, EntitlementDeviceType.APSW, false, currentTier, apswLic)
+    )
+    setAvailableApswTrialLicense(
+      sumLicenses(entitlements, EntitlementDeviceType.APSW, true, currentTier, apswTrialLic)
+    )
+    setAvailableSolutionTokenLicense(
+      // eslint-disable-next-line max-len
+      sumLicenses(entitlements, EntitlementDeviceType.SLTN_TOKEN, false, currentTier, solutionTokenLic)
+    )
+    setAvailableSolutionTokenTrialLicense(
+      // eslint-disable-next-line max-len
+      sumLicenses(entitlements, EntitlementDeviceType.SLTN_TOKEN, true, currentTier, solutionTokenTrialLic)
+    )
+  }
+
   const checkAvailableLicense =
   (entitlements: EntitlementSummaries[], apswLic?: number,
     apswTrialLic?: number, solutionTokenLic?: number,
@@ -890,6 +959,20 @@ export function NewManageCustomer () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(multiLicenseFFToggle && calculatedLicencesList) {
+      if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
+        checkAvailableLicenseV2(calculatedLicencesList.data)
+      } else { // Edit Mode (not TrailEditMode)
+        checkAvailableLicenseV2(
+          calculatedLicencesList.data,
+          licenseCalcData.apswLic,
+          licenseCalcData.apswTrialLic,
+          licenseCalcData.solutionTokenLic,
+          licenseCalcData.solutionTokenTrialLic)
+      }
+    }
+
+
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>

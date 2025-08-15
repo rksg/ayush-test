@@ -45,6 +45,7 @@ export interface NetworkingSettingContext {
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
   updateRadiusService?: (() => void),
+  discardRadiusService?: (() => void),
   updateRadiusOptions?: (() => void),
   updateSmartMonitor?: (() => void)
 }
@@ -274,7 +275,7 @@ export function NetworkingTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm name='networkingTab'>
         <AnchorLayout items={items} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

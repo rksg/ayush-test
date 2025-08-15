@@ -207,6 +207,10 @@ export const stagesErrorMappings: Record<string,errorMapValue>= {
 }
 
 export const errorMappings : Record<string, errorMapValue> = {
+  AP_POWS_MODE: {
+    id: -7,
+    text: defineMessage({ defaultMessage: 'AP is in Energy Saving mode with limited functionality' })
+  },
   AP_6GHZ_NOT_SUPPORT: {
     id: -6,
     text: defineMessage({ defaultMessage: '6 GHz is not supported by target AP' })

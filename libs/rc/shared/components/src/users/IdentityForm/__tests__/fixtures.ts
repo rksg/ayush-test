@@ -63,6 +63,7 @@ export const mockPersonaList = {
       parentId: '65084816-db1f-43ee-8ab5-4fbbd5100302',
       description: null,
       name: 'Identity Fake Name',
+      displayName: 'Identity Display Name',
       email: null,
       dpskGuid: '2267e4fb554a4ea88ff94129636408da',
       dpskPassphrase: "eGjB'7YRn,o[*_@'W4",

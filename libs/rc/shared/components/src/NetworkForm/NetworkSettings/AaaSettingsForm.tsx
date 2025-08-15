@@ -39,7 +39,8 @@ import {
   useConfigTemplate,
   SecurityOptionsDescription,
   CertificateUrls,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
@@ -51,6 +52,7 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../../ApCompatibility'
+import { useIsConfigTemplateEnabledByType }                                                          from '../../configTemplates'
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT, MAX_CERTIFICATE_TEMPLATE_PER_NETWORK } from '../../policies'
 import { AAAInstance }                                                                               from '../AAAInstance'
 import { NetworkDiagram }                                                                            from '../NetworkDiagram/NetworkDiagram'
@@ -154,7 +156,8 @@ function SettingsForm () {
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isIdentityGroupTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.IDENTITY_GROUP)
   // eslint-disable-next-line max-len
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
   const wpa2Description = <>
@@ -164,6 +167,7 @@ function SettingsForm () {
       {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
     </Space>
   </>
+  const isMacRegistrationEnabled = useIsSplitOn(Features.WIFI_DOT1X_WITH_MAC_REGISTRATION_ENABLED)
 
   const wpa3Description = $t(SecurityOptionsDescription.WPA3)
 
@@ -185,6 +189,13 @@ function SettingsForm () {
 
 
   }, [cloneMode, editMode, form, wlanSecurity])
+
+  // Reset identityGroupId when switching to MAC Registration List
+  useEffect(() => {
+    if (isMacRegistrationList) {
+      form.setFieldValue('identityGroupId', undefined)
+    }
+  }, [isMacRegistrationList])
 
   const handleWlanSecurityChanged = (v: WlanSecurityEnum) => {
     const managementFrameProtection = (v === WlanSecurityEnum.WPA3)
@@ -230,7 +241,8 @@ function SettingsForm () {
           </Form.Item>
         </div>
         {
-          (!useCertificateTemplate
+          ( !isMacRegistrationEnabled
+            && !useCertificateTemplate
             && isWifiIdentityManagementEnable
             && !isMacRegistrationList
             && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
@@ -248,6 +260,16 @@ function SettingsForm () {
             />
           }
         </div>
+        {
+          ( isMacRegistrationEnabled
+            && !useCertificateTemplate
+            && isWifiIdentityManagementEnable
+            && !isMacRegistrationList
+            && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
+          <Form.Item>
+            <IdentityGroup comboWidth='210px' />
+          </Form.Item>
+        }
       </> : <AaaService />}
     </Space>
   )
@@ -407,7 +429,27 @@ function AaaService () {
   const labelWidth = '250px'
 
   const onProxyChange = (value: boolean, fieldName: string) => {
-    setData && setData({ ...data, [fieldName]: value })
+    // Update top-level field
+    let nextData = { ...(data ?? {}), [fieldName]: value }
+
+    // When disabling Authentication Proxy, clear MAC Registration selection and flag
+    if (fieldName === 'enableAuthProxy' && !value) {
+      // Reset form fields for MAC Registration
+      form.setFieldValue(['wlan', 'macRegistrationListId'], null)
+      form.setFieldValue(['wlan', 'isMacRegistrationList'], false)
+
+      // Also reflect the reset in data state if present
+      nextData = {
+        ...nextData,
+        wlan: {
+          ...(data?.wlan ?? {}),
+          macRegistrationListId: undefined,
+          isMacRegistrationList: false
+        }
+      }
+    }
+
+    setData && setData(nextData)
   }
 
   const onMacAuthChange = (checked: boolean) => {
@@ -476,7 +518,8 @@ function AaaService () {
             initialValue={false}
             children={<Switch
               onChange={(value) => onProxyChange(value,'enableAuthProxy')}
-              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}/>}
+              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}
+              data-testid='enableAuthProxy'/>}
           />
         </UI.FieldLabel>
       </div>
@@ -521,7 +564,7 @@ function AaaService () {
             data-testid='macAuth8021x'/>}
         />
       </UI.FieldLabel>
-      {enableMacAuthentication && supportMacRegistration && (
+      {enableMacAuthentication && supportMacRegistration && data?.enableAuthProxy && (
         <Form.Item
           name={['wlan', 'isMacRegistrationList']}
           initialValue={!!macRegistrationListId}
@@ -541,7 +584,7 @@ function AaaService () {
         </Form.Item>
       )}
       { enableMacAuthentication &&
-        (isMacRegistrationList ? (
+        ((isMacRegistrationList && data?.enableAuthProxy) ? (
           <MacRegistrationListComponent inputName={['wlan']} />
         ) : (
           <Form.Item

@@ -16,13 +16,13 @@ import {
 import { messageMapping } from './messageMapping'
 
 interface EspAssociationSettingsFormProps {
-  initIpSecData?: Ipsec
-  loadEspSettings: boolean
-  setLoadEspSettings: (state: boolean) => void
+  editData?: Ipsec
 }
 
 export default function EspAssociationSettings (props: EspAssociationSettingsFormProps) {
-  const { initIpSecData, loadEspSettings, setLoadEspSettings } = props
+  const { editData } = props
+
+  const [loadEspSettings, setLoadEspSettings] = useState(true)
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -40,6 +40,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
     let isValid = true
     let proposalType = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
     let proposals = form.getFieldValue(['espSecurityAssociation', 'espProposals'])
+
     if (proposalType === IpSecProposalTypeEnum.SPECIFIC) {
       if (proposals.length === MAX_PROPOSALS) {
         if (proposals[0].encAlg === proposals[1].encAlg &&
@@ -61,15 +62,15 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
     let espProposalSelection = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
     setEspProposalType(espProposalSelection ? espProposalSelection : IpSecProposalTypeEnum.DEFAULT)
 
-    if (loadEspSettings && initIpSecData) {
-      if (initIpSecData?.espSecurityAssociation?.espProposalType) {
-        setEspProposalType(initIpSecData.espSecurityAssociation.espProposalType)
+    if (loadEspSettings && editData) {
+      if (editData?.espSecurityAssociation?.espProposalType) {
+        setEspProposalType(editData.espSecurityAssociation.espProposalType)
       } else {
         setEspProposalType(IpSecProposalTypeEnum.DEFAULT)
       }
     }
     setLoadEspSettings(false)
-  }, [initIpSecData, form])
+  }, [editData, form])
 
   const onProposalTypeChange = (value: IpSecProposalTypeEnum) => {
     setEspProposalType(value)
@@ -154,7 +155,6 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
-                    initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                     children={
                       <Select style={{ minWidth: 150 }}
                         data-testid={`select_encryption_${index}`}
@@ -170,7 +170,6 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
-                    initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
                     children={
                       <Select style={{ minWidth: 150 }}
                         data-testid={`select_integrity_${index}`}
@@ -182,11 +181,10 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     name={[field.name, 'dhGroup']}
                     label={$t({ defaultMessage: 'DH Group' })}
                     rules={[{ required: true }]}
-                    initialValue={IpSecDhGroupEnum.MODP2048}
                     children={
-                      <Select style={{ minWidth: 150 }}
+                      <Select
+                        style={{ minWidth: 150 }}
                         data-testid={`select_dh_${index}`}
-                        placeholder={$t({ defaultMessage: 'Select...' })}
                         options={dhGroupOptions}
                       />}
                   />

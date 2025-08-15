@@ -15,8 +15,13 @@ export function useEncodedParameter<ValueType> (name: string) {
       }
     },
     write: (value: ValueType) => {
-      search.set(name, fixedEncodeURIComponent(JSON.stringify(value)))
-      setSearch(search, { replace: true })
+      const currentValue = search.get(name)
+      const newValue = fixedEncodeURIComponent(JSON.stringify(value))
+      const hasChanged = currentValue !== newValue
+      if (hasChanged) {
+        search.set(name, newValue)
+        setSearch(search, { replace: true })
+      }
     }
   }), [name, search, setSearch])
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
   Col,
@@ -14,29 +14,30 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { getTitleWithBetaIndicator }                                     from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled }                      from '@acx-ui/feature-toggle'
-import { useGetEdgeClusterListQuery, useGetEdgeClusterServiceListQuery } from '@acx-ui/rc/services'
+import { getTitleWithBetaIndicator }                from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled } from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
-  EdgeClusterProfileTypeEnum,
-  EdgeServiceTypeEnum,
+  ClusterHighAvailabilityModeEnum,
   IncompatibilityFeatures,
   MtuRequestTimeoutUnit,
   MtuTypeEnum,
   NetworkSegmentTypeEnum,
   TunnelTypeEnum,
   serverIpAddressRegExp,
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  useIsEdgeFeatureReady,
+  TunnelProfileViewData
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import { ApCompatibilityToolTip }                         from '../../ApCompatibility'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility'
-import { useIsEdgeFeatureReady }                          from '../../useEdgeActions'
 
-import { MessageMapping } from './MessageMapping'
-import * as UI            from './styledComponents'
+import { IpsecFormItem }                  from './IpsecFormItem'
+import { MessageMapping }                 from './MessageMapping'
+import * as UI                            from './styledComponents'
+import { useGetAvailableEdgeClusterData } from './useGetAvailableEdgeClusterData'
 
 const { useWatch } = Form
 
@@ -74,7 +75,9 @@ async function validateMtuRequestTimeValue (value: number, mtuRequestUnit: strin
 }
 
 interface TunnelProfileFormItemsProps {
+  editData?: TunnelProfileViewData
   isDefaultTunnelProfile?: boolean
+  isTemplate?: boolean
 }
 
 const MtuSizeFormItem = (props: { value?: number,
@@ -88,19 +91,23 @@ const MtuSizeFormItem = (props: { value?: number,
 }
 
 export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
-  const { isDefaultTunnelProfile = false } = props
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const formId = form.getFieldValue('id')
+
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeIpsecVxLanReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
+
+  const { editData, isDefaultTunnelProfile = false, isTemplate = false } = props
+  const form = Form.useFormInstance()
+
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelType = useWatch('tunnelType')
-  const edgeClusterId = useWatch('edgeClusterId')
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
+  const initialEdgeClusterId = editData?.destinationEdgeClusterId
+
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
@@ -119,59 +126,20 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     { label: $t({ defaultMessage: 'Milliseconds' }), value: MtuRequestTimeoutUnit.MILLISECONDS }
   ]
 
-  // eslint-disable-next-line max-len
-  const { clusterServiceData, isLoading: isClusterServiceOptsLoading } = useGetEdgeClusterServiceListQuery(
-    { payload: {
-      fields: [
-        'serviceId',
-        'edgeClusterId',
-        'serviceType'
-      ],
-      pageSize: 10000
-    } },
-    {
-      skip: !isEdgeL2greReady,
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          clusterServiceData: data?.data,
-          isLoading
-        }
-      }
-    })
+  const {
+    availableClusterData,
+    isLoading: isClusterOptionsLoading
+  } = useGetAvailableEdgeClusterData({
+    isTemplate,
+    currentBoundEdgeClusterId: initialEdgeClusterId
+  })
 
-  const inValidClusterIds = clusterServiceData
-    ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
-      item.serviceType === EdgeServiceTypeEnum.SD_LAN ||
-    // eslint-disable-next-line max-len
-    (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE))
-    .map(item => item.edgeClusterId)
-    .filter(item => item !== edgeClusterId)
-
-  const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
-    { payload: {
-      fields: [
-        'name',
-        'venueId',
-        'clusterId',
-        'firmwareVersion'
-      ],
-      pageSize: 10000
-    } },
-    {
-      skip: !isEdgeL2greReady,
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          clusterData: data?.data
-            .filter(item => !inValidClusterIds?.includes(item.clusterId!))
-          ,isLoading
-        }
-      }
-    })
-
-  const clusterOptions = clusterData?.map(item => ({
-    label: item.name,
-    value: item.clusterId
-  }))
+  const clusterOptions = useMemo(() => {
+    return availableClusterData?.map(item => ({
+      label: item.name,
+      value: item.clusterId
+    }))
+  }, [availableClusterData])
 
   const handelMtuRequestTimeUnitChange = () => {
     form.validateFields(['mtuRequestTimeout'])
@@ -182,6 +150,10 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
       if (isEdgeNatTraversalP1Ready) {
         form.setFieldsValue({ natTraversalEnabled: false })
       }
+
+      if (isEdgeIpsecVxLanReady) {
+        form.setFieldValue('tunnelEncryptionEnabled', false)
+      }
     }
   }
 
@@ -189,36 +161,66 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     if (e.target.value === TunnelTypeEnum.L2GRE) {
       form.setFieldsValue({
         mtuType: MtuTypeEnum.MANUAL,
-        type: NetworkSegmentTypeEnum.VLAN_VXLAN
+        type: NetworkSegmentTypeEnum.VLAN_VXLAN,
+        natTraversalEnabled: false,
+        tunnelEncryptionEnabled: false
       })
     }
   }
 
-  const onEdgeClusterChange = useCallback((val: string) => {
-    const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
+  const handleEdgeClusterChange = useCallback((val: string) => {
+    const edgeData = availableClusterData?.filter(i => i.clusterId === val)[0]
+    // eslint-disable-next-line max-len
+    const isHaAbCluster = edgeData?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
     form.setFieldsValue({
       venueId: edgeData?.venueId
     })
-  }, [clusterData, form])
+
+    if (isEdgeIpsecVxLanReady && isHaAbCluster) {
+      form.setFieldValue('tunnelEncryptionEnabled', false)
+    }
+
+  }, [availableClusterData, form])
+
+  const handleTunnelEncryptionChange = (checked: boolean) => {
+    // if tunnel encryption is enabled, force enabled nat traversal and grey out
+    if (checked) {
+      form.setFieldValue('natTraversalEnabled', true)
+    }
+  }
 
   const isNatTraversalBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_NAT_T)
 
   useEffect(() => {
-    if (form.getFieldValue('edgeClusterId') && clusterData?.length) {
-      onEdgeClusterChange(form.getFieldValue('edgeClusterId'))
+    if (form.getFieldValue('edgeClusterId') && availableClusterData?.length) {
+      handleEdgeClusterChange(form.getFieldValue('edgeClusterId'))
     }
-  }, [form, clusterData, onEdgeClusterChange])
+  }, [form, availableClusterData, handleEdgeClusterChange])
 
   return (
     <>
-      {<Row>
+      <Row>
         <Col span={14}>
           <Form.Item
             name='name'
-            label={$t({ defaultMessage: 'Profile Name' })}
+            label={$t({
+              defaultMessage: '{entityType} Name'
+            }, {
+              entityType: isTemplate ?
+                $t({ defaultMessage: 'Template' }) :
+                $t({ defaultMessage: 'Profile' })
+            })}
             rules={[
-              { required: true,
-                message: $t({ defaultMessage: 'Please enter Profile Name' })
+              {
+                required: true,
+                message: $t({
+                  defaultMessage: 'Please enter {entityType} Name'
+                }, {
+                  entityType: isTemplate ?
+                    $t({ defaultMessage: 'Template' }) :
+                    $t({ defaultMessage: 'Profile' })
+                })
               },
               { min: 2 },
               { max: 32 },
@@ -229,7 +231,8 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             validateFirst
           />
         </Col>
-        { isEdgeL2greReady &&
+        {
+          isEdgeL2greReady &&
           <Col span={24}>
             <Form.Item
               name='tunnelType'
@@ -283,7 +286,8 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             }
           />
         </Col>
-        { isEdgeL2greReady && isL2greType &&
+        {
+          isEdgeL2greReady && isL2greType &&
           <Col span={14}>
             <Form.Item
               name='destinationIpAddress'
@@ -302,7 +306,8 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             />
           </Col>
         }
-        { isEdgeL2greReady && !!!isL2greType &&
+        {
+          isEdgeL2greReady && !isL2greType &&
           <Col span={14}>
             <Row>
               <Col>
@@ -318,30 +323,44 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                   ]}
                 >
                   <Select
-                    loading={isClusterServiceOptsLoading && isClusterOptsLoading}
+                    loading={isClusterOptionsLoading}
                     options={clusterOptions}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
-                    onChange={onEdgeClusterChange}
+                    onChange={handleEdgeClusterChange}
                     disabled={!!disabledFields?.includes('edgeClusterId')}
                   />
                 </Form.Item>
               </Col>
-              {/* {edgeClusterId &&
-            <Col span={24}>
-              <ClusterFirmwareInfo
-                clusterId={edgeClusterId}
-              />
-            </Col>
-              } */}
             </Row>
           </Col>
         }
-        { isEdgeNatTraversalP1Ready &&
-        (!isEdgeL2greReady || !!!isL2greType) &&
-        <Col span={14}>
-          <UI.StyledSpace align='center'>
-            <UI.FormItemWrapper>
-              <Form.Item
+        {
+          isEdgeIpsecVxLanReady && (!isEdgeL2greReady || !isL2greType) &&
+          <Col span={14}>
+            <Form.Item noStyle dependencies={['type', 'edgeClusterId']}>
+              {({ getFieldValue }) => {
+                const nsgType = getFieldValue('type')
+                const edgeClusterId = getFieldValue('edgeClusterId')
+                // eslint-disable-next-line max-len
+                const isHaAbCluster = availableClusterData?.find(item => item.clusterId === edgeClusterId)?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
+                return <IpsecFormItem
+                  disabled={isDefaultTunnelProfile ||
+                  !!disabledFields?.includes('tunnelEncryptionEnabled') ||
+                  nsgType === NetworkSegmentTypeEnum.VXLAN ||
+                  isHaAbCluster
+                  }
+                  handleTunnelEncryptionChange={handleTunnelEncryptionChange}
+                />
+              }}
+            </Form.Item>
+          </Col>
+        }
+        {
+          isEdgeNatTraversalP1Ready && (!isEdgeL2greReady || !isL2greType) &&
+          <Col span={14}>
+            <UI.StyledSpace align='center'>
+              <UI.FormItemWrapper
                 label={<>
                   {$t({ defaultMessage: 'Enable NAT-T Support' })}
                   { isNatTraversalBetaEnabled ? getTitleWithBetaIndicator('') : null }
@@ -353,27 +372,31 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                     onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.NAT_TRAVERSAL)}
                   />}
                 </>}
-              />
-            </UI.FormItemWrapper>
-            <Form.Item
-              noStyle
-              dependencies={['type']}
-            >
-              {({ getFieldValue }) => {
-                const netSegType = getFieldValue('type')
-                return <Form.Item
-                  name='natTraversalEnabled'
-                  valuePropName='checked'
-                  children={
-                    <Switch disabled={isDefaultTunnelProfile ||
-                      !!disabledFields?.includes('natTraversalEnabled') ||
-                      netSegType === NetworkSegmentTypeEnum.VXLAN}/>
-                  }
-                />
-              }}
-            </Form.Item>
-          </UI.StyledSpace>
-        </Col>
+              >
+              </UI.FormItemWrapper>
+              <Form.Item
+                noStyle
+                dependencies={['type', 'tunnelEncryptionEnabled']}
+              >
+                {({ getFieldValue }) => {
+                  const netSegType = getFieldValue('type')
+                  // eslint-disable-next-line max-len
+                  const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady && getFieldValue('tunnelEncryptionEnabled')
+
+                  return <Form.Item
+                    name='natTraversalEnabled'
+                    valuePropName='checked'
+                    children={
+                      <Switch disabled={isDefaultTunnelProfile ||
+                        !!disabledFields?.includes('natTraversalEnabled') ||
+                        tunnelEncryptionEnabled ||
+                        netSegType === NetworkSegmentTypeEnum.VXLAN}/>
+                    }
+                  />
+                }}
+              </Form.Item>
+            </UI.StyledSpace>
+          </Col>
         }
         <Col span={24}>
           <Form.Item noStyle dependencies={['tunnelType']}>
@@ -464,87 +487,86 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
           </Form.Item>
         </Col>
         {
-          mtuType === MtuTypeEnum.AUTO && !!!isL2greType &&
-        <Col span={24}>
-          <Form.Item
-            label={$t({ defaultMessage: 'Path MTU Request Timeout' })}
-            tooltip={$t(MessageMapping.mtu_request_timeout_tooltip)}
-          >
-            <Space>
+          mtuType === MtuTypeEnum.AUTO && !isL2greType &&
+          <>
+            <Col span={24}>
               <Form.Item
-                name='mtuRequestTimeout'
-                rules={[
-                  { required: true,
-                    message: $t({ defaultMessage: 'Please enter Path MTU Request Timeout' })
-                  },
-                  { validator: (_, value) =>
-                    validateMtuRequestTimeValue(value, mtuRequestTimeoutUnit)
-                  }
-                ]}
-                children={<InputNumber disabled={isDefaultTunnelProfile ||
-                  !!disabledFields?.includes('mtuRequestTimeout')}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              <Form.Item
-                name='mtuRequestTimeoutUnit'
-                children={
-                  <Select
-                    options={mtuRequestTimeoutUnitOptions}
-                    disabled={isDefaultTunnelProfile ||
-                      !!disabledFields?.includes('mtuRequestTimeoutUnit')}
-                    onChange={handelMtuRequestTimeUnitChange}
+                label={$t({ defaultMessage: 'Path MTU Request Timeout' })}
+                tooltip={$t(MessageMapping.mtu_request_timeout_tooltip)}
+              >
+                <Space>
+                  <Form.Item
+                    name='mtuRequestTimeout'
+                    rules={[
+                      { required: true,
+                        message: $t({ defaultMessage: 'Please enter Path MTU Request Timeout' })
+                      },
+                      { validator: (_, value) =>
+                        validateMtuRequestTimeValue(value, mtuRequestTimeoutUnit)
+                      }
+                    ]}
+                    children={<InputNumber disabled={isDefaultTunnelProfile ||
+                      !!disabledFields?.includes('mtuRequestTimeout')}/>}
+                    validateFirst
+                    noStyle
+                    hasFeedback
                   />
-                }
-                noStyle
-              />
-            </Space>
-          </Form.Item>
-        </Col>
-        }
-        {mtuType === MtuTypeEnum.AUTO && !!!isL2greType &&
-        <Col span={24}>
-          <Form.Item
-            label={$t({ defaultMessage: 'Path MTU Request Retries' })}
-            tooltip={$t(MessageMapping.mtu_request_retry_tooltip)}
-          >
-            <Space>
+                  <Form.Item
+                    name='mtuRequestTimeoutUnit'
+                    children={
+                      <Select
+                        options={mtuRequestTimeoutUnitOptions}
+                        disabled={isDefaultTunnelProfile ||
+                          !!disabledFields?.includes('mtuRequestTimeoutUnit')}
+                        onChange={handelMtuRequestTimeUnitChange}
+                      />
+                    }
+                    noStyle
+                  />
+                </Space>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
               <Form.Item
-                name='mtuRequestRetry'
-                rules={[
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please enter Path MTU Request Retries' })
-                  },
-                  {
-                    type: 'number',
-                    min: 3,
-                    max: 64,
-                    message: $t({
-                      defaultMessage: 'Path MTU Request Retries must be between 3 and 64'
-                    })
-                  }
-                ]}
-                children={<InputNumber
-                  disabled={isDefaultTunnelProfile ||
-                    !!disabledFields?.includes('mtuRequestRetry')}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              <div>{$t({ defaultMessage: 'retries' })}</div>
-            </Space>
-          </Form.Item>
-        </Col>
+                label={$t({ defaultMessage: 'Path MTU Request Retries' })}
+                tooltip={$t(MessageMapping.mtu_request_retry_tooltip)}
+              >
+                <Space>
+                  <Form.Item
+                    name='mtuRequestRetry'
+                    rules={[
+                      {
+                        required: true,
+                        message: $t({ defaultMessage: 'Please enter Path MTU Request Retries' })
+                      },
+                      {
+                        type: 'number',
+                        min: 3,
+                        max: 64,
+                        message: $t({
+                          defaultMessage: 'Path MTU Request Retries must be between 3 and 64'
+                        })
+                      }
+                    ]}
+                    children={<InputNumber
+                      disabled={isDefaultTunnelProfile ||
+                        !!disabledFields?.includes('mtuRequestRetry')}/>}
+                    validateFirst
+                    noStyle
+                    hasFeedback
+                  />
+                  <div>{$t({ defaultMessage: 'retries' })}</div>
+                </Space>
+              </Form.Item>
+            </Col>
+          </>
         }
         <Col span={14}>
           <UI.StyledSpace align='center'>
-            <UI.FormItemWrapper>
-              <Form.Item
-                label={$t({ defaultMessage: 'Force Fragmentation' })}
-                tooltip={$t(MessageMapping.force_fragment_tooltip)}
-              />
+            <UI.FormItemWrapper
+              label={$t({ defaultMessage: 'Force Fragmentation' })}
+              tooltip={$t(MessageMapping.force_fragment_tooltip)}
+            >
             </UI.FormItemWrapper>
             <Form.Item
               name='forceFragmentation'
@@ -555,121 +577,120 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
             />
           </UI.StyledSpace>
         </Col>
-        {!!!isL2greType &&
-          <Col span={24}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tunnel Idle Timeout' })}
-              tooltip={$t(MessageMapping.idle_timeout_tooltip)}
-            >
-              <Space>
-                <Form.Item
-                  name='ageTimeMinutes'
-                  rules={[
-                    { required: true,
-                      message: $t({ defaultMessage: 'Please enter Tunnel Idle Timeout' })
-                    },
-                    { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
-                  ]}
-                  children={<InputNumber
-                    // eslint-disable-next-line max-len
-                    disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
-                  validateFirst
-                  noStyle
-                  hasFeedback
-                />
-                <Form.Item
-                  name='ageTimeUnit'
-                  children={
-                    <Select
-                      options={ageTimeOptions}
-                      disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')}
-                      onChange={handelAgeTimeUnitChange}
-                    />
-                  }
-                  noStyle
-                />
-              </Space>
-            </Form.Item>
-          </Col>
-        }
         {
-          !!!isL2greType &&
-          <Col span={24}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
-              tooltip={$t(MessageMapping.keep_alive_interval_tooltip)}
-            >
-              <Space>
-                <Form.Item
-                  name='keepAliveInterval'
-                  rules={[
-                    {
-                      required: true,
-                      message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Interval' })
-                    },
-                    {
-                      type: 'number',
-                      min: 1,
-                      max: 5,
-                      message: $t({
-                        defaultMessage: 'Tunnel Keep Alive Interval must be between 1 and 5'
-                      })
+          !isL2greType &&
+          <>
+            <Col span={24}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Tunnel Idle Timeout' })}
+                tooltip={$t(MessageMapping.idle_timeout_tooltip)}
+              >
+                <Space>
+                  <Form.Item
+                    name='ageTimeMinutes'
+                    rules={[
+                      { required: true,
+                        message: $t({ defaultMessage: 'Please enter Tunnel Idle Timeout' })
+                      },
+                      { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
+                    ]}
+                    children={<InputNumber
+                      // eslint-disable-next-line max-len
+                      disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
+                    validateFirst
+                    noStyle
+                    hasFeedback
+                  />
+                  <Form.Item
+                    name='ageTimeUnit'
+                    children={
+                      <Select
+                        options={ageTimeOptions}
+                        disabled={
+                          isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')
+                        }
+                        onChange={handelAgeTimeUnitChange}
+                      />
                     }
-                  ]}
-                  children={<InputNumber disabled={isDefaultTunnelProfile ||
-                    !!disabledFields?.includes('keepAliveInterval')}/>}
-                  validateFirst
-                  noStyle
-                  hasFeedback
-                />
-                <div>{$t({ defaultMessage: 'seconds' })}</div>
-              </Space>
-            </Form.Item>
-          </Col>
+                    noStyle
+                  />
+                </Space>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
+                tooltip={$t(MessageMapping.keep_alive_interval_tooltip)}
+              >
+                <Space>
+                  <Form.Item
+                    name='keepAliveInterval'
+                    rules={[
+                      {
+                        required: true,
+                        message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Interval' })
+                      },
+                      {
+                        type: 'number',
+                        min: 1,
+                        max: 5,
+                        message: $t({
+                          defaultMessage: 'Tunnel Keep Alive Interval must be between 1 and 5'
+                        })
+                      }
+                    ]}
+                    children={<InputNumber disabled={isDefaultTunnelProfile ||
+                      !!disabledFields?.includes('keepAliveInterval')}/>}
+                    validateFirst
+                    noStyle
+                    hasFeedback
+                  />
+                  <div>{$t({ defaultMessage: 'seconds' })}</div>
+                </Space>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
+                tooltip={$t(MessageMapping.keep_alive_retry_tooltip)}
+              >
+                <Space>
+                  <Form.Item
+                    name='keepAliveRetry'
+                    rules={[
+                      {
+                        required: true,
+                        message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Retries' })
+                      },
+                      {
+                        type: 'number',
+                        min: 3,
+                        max: 10,
+                        message: $t({
+                          defaultMessage: 'Tunnel Keep Alive Retries must be between 3 and 10'
+                        })
+                      }
+                    ]}
+                    children={<InputNumber disabled={isDefaultTunnelProfile ||
+                      !!disabledFields?.includes('keepAliveRetry')}/>}
+                    validateFirst
+                    noStyle
+                    hasFeedback
+                  />
+                  <div>{$t({ defaultMessage: 'retries' })}</div>
+                </Space>
+              </Form.Item>
+            </Col>
+          </>
         }
-        {
-          !!!isL2greType &&
-          <Col span={24}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
-              tooltip={$t(MessageMapping.keep_alive_retry_tooltip)}
-            >
-              <Space>
-                <Form.Item
-                  name='keepAliveRetry'
-                  rules={[
-                    {
-                      required: true,
-                      message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Retries' })
-                    },
-                    {
-                      type: 'number',
-                      min: 3,
-                      max: 10,
-                      message: $t({
-                        defaultMessage: 'Tunnel Keep Alive Retries must be between 3 and 10'
-                      })
-                    }
-                  ]}
-                  children={<InputNumber disabled={isDefaultTunnelProfile ||
-                    !!disabledFields?.includes('keepAliveRetry')}/>}
-                  validateFirst
-                  noStyle
-                  hasFeedback
-                />
-                <div>{$t({ defaultMessage: 'retries' })}</div>
-              </Space>
-            </Form.Item>
-          </Col>
-        }
-      </Row>}
-      {<EdgeCompatibilityDrawer
+      </Row>
+      <EdgeCompatibilityDrawer
         visible={!!edgeCompatibilityFeature}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeCompatibilityFeature}
         onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
+      />
     </>
   )
 }

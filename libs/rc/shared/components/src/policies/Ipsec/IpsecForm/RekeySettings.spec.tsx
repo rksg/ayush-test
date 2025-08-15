@@ -1,8 +1,8 @@
 import { Form }         from 'antd'
 import { IntlProvider } from 'react-intl'
 
-import { IpSecAuthEnum, IpSecRekeyTimeUnitEnum } from '@acx-ui/rc/utils'
-import { render, fireEvent, screen, renderHook } from '@acx-ui/test-utils'
+import { defaultIpsecFormData, IpSecAuthEnum, IpSecRekeyTimeUnitEnum } from '@acx-ui/rc/utils'
+import { render, fireEvent, screen, renderHook }                       from '@acx-ui/test-utils'
 
 import RekeySettings from './RekeySettings'
 
@@ -19,7 +19,7 @@ describe('RekeySettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form>
-          <RekeySettings loadReKeySettings setLoadReKeySettings={jest.fn()}/>
+          <RekeySettings />
         </Form>
       </IntlProvider>
     )
@@ -32,9 +32,8 @@ describe('RekeySettings', () => {
     })
     render(<Form form={formRef.current}>
       <RekeySettings
-        initIpSecData={initialFormValue}
-        loadReKeySettings
-        setLoadReKeySettings={jest.fn()} /></Form>)
+        editData={initialFormValue}
+      /></Form>)
     expect(screen.getByText('Internet Key Exchange (IKE)')).toBeInTheDocument()
     expect(screen.getByText('Encapsulating Security Payload (ESP)')).toBeInTheDocument()
 
@@ -59,11 +58,10 @@ describe('RekeySettings', () => {
       espRekeyTime: 0,
       espRekeyTimeEnabledCheckbox: false
     }
-    render(<Form form={formRef.current}>
+    render(<Form form={formRef.current} initialValues={defaultIpsecFormData}>
       <RekeySettings
-        initIpSecData={customizedValue}
-        loadReKeySettings
-        setLoadReKeySettings={jest.fn()} /></Form>)
+        editData={customizedValue}
+      /></Form>)
     expect(screen.getByText('Internet Key Exchange (IKE)')).toBeInTheDocument()
     expect(screen.getByText('Encapsulating Security Payload (ESP)')).toBeInTheDocument()
 

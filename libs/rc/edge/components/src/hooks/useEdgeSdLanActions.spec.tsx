@@ -2,11 +2,11 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { cloneDeep, pick }     from 'lodash'
 import { rest }                from 'msw'
 
-import { CommonErrorsResult, EdgeSdLanServiceProfile, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { mockServer }                                                 from '@acx-ui/test-utils'
-import { RequestPayload }                                             from '@acx-ui/types'
-import { CatchErrorDetails }                                          from '@acx-ui/utils'
+import { CommonErrorsResult, ConfigTemplateUrlsInfo, EdgeConfigTemplateUrlsInfo, EdgeSdLanServiceProfile, EdgeSdLanUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                       from '@acx-ui/store'
+import { mockServer }                                                                                                     from '@acx-ui/test-utils'
+import { RequestPayload }                                                                                                 from '@acx-ui/types'
+import { CatchErrorDetails }                                                                                              from '@acx-ui/utils'
 
 import { useEdgeSdLanActions } from './useEdgeSdLanActions'
 
@@ -14,8 +14,23 @@ const mockAddReq = jest.fn()
 const mockUpdateReq = jest.fn()
 const mockActivateNetworkReq = jest.fn()
 const mockDeactivateNetworkReq = jest.fn()
+const mockActivateNetworkTemplateReq = jest.fn()
+const mockDeactivateNetworkTemplateReq = jest.fn()
+const mockApplyConfigTemplateReq = jest.fn()
+const mockActivateEcTenantInSdLanReq = jest.fn()
+const mockDeactivateEcTenantInSdLanReq = jest.fn()
 
 const mockServiceId = 'mocked_service_id'
+const mockVenueId = 'mocked_venue_id'
+const mockNetworkId = 'mocked_network_id'
+const mockTunnelProfileId = 'mocked_tunnel_profile_id'
+const mockTemplateData = [
+  {
+    id: 'template-1',
+    appliedOnTenants: []
+  }
+]
+
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useAddEdgeMvSdLanMutation: () => {
@@ -55,6 +70,11 @@ describe('useEdgeSdLanActions', () => {
     mockUpdateReq.mockClear()
     mockActivateNetworkReq.mockClear()
     mockDeactivateNetworkReq.mockClear()
+    mockActivateNetworkTemplateReq.mockClear()
+    mockDeactivateNetworkTemplateReq.mockClear()
+    mockApplyConfigTemplateReq.mockClear()
+    mockActivateEcTenantInSdLanReq.mockClear()
+    mockDeactivateEcTenantInSdLanReq.mockClear()
 
     mockServer.use(
       rest.put(
@@ -75,6 +95,47 @@ describe('useEdgeSdLanActions', () => {
         EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork.url,
         (req, res, ctx) => {
           mockDeactivateNetworkReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.put(
+        EdgeConfigTemplateUrlsInfo.activateSdLanNetworkTemplate.url,
+        (req, res, ctx) => {
+          mockActivateNetworkTemplateReq(req.params, req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeConfigTemplateUrlsInfo.deactivateSdLanNetworkTemplate.url,
+        (req, res, ctx) => {
+          mockDeactivateNetworkTemplateReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbacSkipRecRewrite.url,
+        (req, res, ctx) => {
+          return res(ctx.status(200), ctx.json({ data: mockTemplateData }))
+        }
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbacSkipRecRewrite.url,
+        (req, res, ctx) => {
+          mockApplyConfigTemplateReq(req.params, req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.put(
+        EdgeSdLanUrls.activateEcTenantInSdLan.url,
+        (req, res, ctx) => {
+          mockActivateEcTenantInSdLanReq(req.params, req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeSdLanUrls.deactivateEcTenantInSdLan.url,
+        (req, res, ctx) => {
+          mockDeactivateEcTenantInSdLanReq(req.params, req.body)
           return res(ctx.status(202))
         }
       )
@@ -157,6 +218,8 @@ describe('useEdgeSdLanActions', () => {
         networkId: 'network-t-1',
         tunnelProfileId: 'tunnel-t-1'
       }]
+      mockPayloadWithTemplates.ecTenantIds = ['tenant-2']
+      mockPayloadWithTemplates.tunnelTemplateId = 'template-1'
 
       // eslint-disable-next-line max-len
       it('should call activate with network template IDs', async () => {
@@ -169,9 +232,11 @@ describe('useEdgeSdLanActions', () => {
           callback: mockCallback
         }, isMsp)
 
-        expect(mockAddReq).toHaveBeenCalledWith(pick(mockPayload, ['name', 'tunnelProfileId']))
+        expect(mockAddReq).toHaveBeenCalledWith(
+          pick(mockPayloadWithTemplates, ['name', 'tunnelProfileId', 'tunnelTemplateId'])
+        )
         await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
-        expect(mockActivateNetworkReq).toBeCalledTimes(3)
+        expect(mockActivateNetworkReq).toBeCalledTimes(2)
         expect(mockActivateNetworkReq).toHaveBeenCalledWith({
           venueId: 'venue-1',
           wifiNetworkId: 'network-1',
@@ -182,11 +247,17 @@ describe('useEdgeSdLanActions', () => {
           wifiNetworkId: 'network-2',
           serviceId: mockServiceId
         }, {})
-        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+        await waitFor(() => expect(mockApplyConfigTemplateReq).toBeCalledTimes(2))
+        expect(mockApplyConfigTemplateReq).toHaveBeenCalledWith({
+          templateId: 'template-1',
+          tenantId: 'tenant-2'
+        }, { overrides: [] })
+        expect(mockActivateNetworkTemplateReq).toBeCalledTimes(1)
+        expect(mockActivateNetworkTemplateReq).toHaveBeenCalledWith({
           venueId: 'venue-t-1',
           wifiNetworkId: 'network-t-1',
           serviceId: mockServiceId
-        }, { forwardingTunnelProfileId: 'tunnel-t-1', isTemplate: true })
+        }, { forwardingTunnelProfileId: 'tunnel-t-1' })
       })
     })
   })
@@ -275,9 +346,8 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: mockPayload,
-        callback: mockCallback,
-        isMsp
-      })
+        callback: mockCallback
+      }, isMsp)
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
       expect(mockCallback).toBeCalledWith(expect.objectContaining({
@@ -298,9 +368,8 @@ describe('useEdgeSdLanActions', () => {
 
       await result.current.updateEdgeSdLan(mockOriginData, {
         payload: sameNamePayload,
-        callback: mockCallback,
-        isMsp
-      })
+        callback: mockCallback
+      }, isMsp)
 
       await waitFor(() => expect(mockCallback).toBeCalledTimes(1))
       expect(mockUpdateReq).not.toHaveBeenCalled()
@@ -336,37 +405,35 @@ describe('useEdgeSdLanActions', () => {
         // eslint-disable-next-line max-len
         expect(mockUpdateReq).toHaveBeenCalledWith({ serviceId: mockServiceId }, pick(mockPayload, ['name']))
         expect(mockCallback).toBeCalledTimes(1)
-        expect(mockDeactivateNetworkReq).toBeCalledTimes(2)
+        expect(mockDeactivateNetworkReq).toBeCalledTimes(1)
         expect(mockDeactivateNetworkReq).toHaveBeenCalledWith({
           venueId: 'venue-1',
           wifiNetworkId: 'network-1',
           serviceId: mockServiceId
         })
-        expect(mockDeactivateNetworkReq).toHaveBeenCalledWith({
+        expect(mockDeactivateNetworkTemplateReq).toBeCalledTimes(1)
+        expect(mockDeactivateNetworkTemplateReq).toHaveBeenCalledWith({
           venueId: 'venue-t-1',
           wifiNetworkId: 'network-t-1',
           serviceId: mockServiceId
         })
-        expect(mockActivateNetworkReq).toBeCalledTimes(2)
+        expect(mockActivateNetworkReq).toBeCalledTimes(1)
         expect(mockActivateNetworkReq).toHaveBeenCalledWith({
           venueId: 'venue-1',
           wifiNetworkId: 'network-2',
           serviceId: mockServiceId
         }, { forwardingTunnelProfileId: 'tunnel-2' })
-        expect(mockActivateNetworkReq).toHaveBeenCalledWith({
+        expect(mockActivateNetworkTemplateReq).toBeCalledTimes(1)
+        expect(mockActivateNetworkTemplateReq).toHaveBeenCalledWith({
           venueId: 'venue-t-2',
           wifiNetworkId: 'network-t-2',
           serviceId: mockServiceId
-        }, { forwardingTunnelProfileId: 'tunnel-t-2', isTemplate: true })
+        }, { forwardingTunnelProfileId: 'tunnel-t-2' })
       })
     })
   })
 
   describe('toggleNetworkChange', () => {
-    const mockServiceId = 'service-123'
-    const mockVenueId = 'venue-123'
-    const mockNetworkId = 'network-123'
-
     it('should not call when tunnel IDs are the same', async () => {
       const mockCallback = jest.fn()
       const { result } = renderHook(() => useEdgeSdLanActions(), {
@@ -416,6 +483,37 @@ describe('useEdgeSdLanActions', () => {
         wifiNetworkId: mockNetworkId,
         serviceId: mockServiceId
       }, { forwardingTunnelProfileId: currentTunnelProfileId })
+    })
+  })
+
+  it('should activate SD-LAN for network successfully', async () => {
+    const { result } = renderHook(() => useEdgeSdLanActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    // eslint-disable-next-line max-len
+    await result.current.activateSdLanForNetwork(mockServiceId, mockVenueId, mockNetworkId, mockTunnelProfileId)
+
+    expect(mockActivateNetworkReq).toBeCalledTimes(1)
+    expect(mockActivateNetworkReq).toBeCalledWith({
+      venueId: mockVenueId,
+      wifiNetworkId: mockNetworkId,
+      serviceId: mockServiceId
+    }, { forwardingTunnelProfileId: mockTunnelProfileId })
+  })
+
+  it('should deactivate SD-LAN from network successfully', async () => {
+    const { result } = renderHook(() => useEdgeSdLanActions(), {
+      wrapper: ({ children }) => <Provider>{children}</Provider>
+    })
+
+    await result.current.removeSdLanFromNetwork(mockServiceId, mockVenueId, mockNetworkId)
+
+    expect(mockDeactivateNetworkReq).toBeCalledTimes(1)
+    expect(mockDeactivateNetworkReq).toBeCalledWith({
+      venueId: mockVenueId,
+      wifiNetworkId: mockNetworkId,
+      serviceId: mockServiceId
     })
   })
 })

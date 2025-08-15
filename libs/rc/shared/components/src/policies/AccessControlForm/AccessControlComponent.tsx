@@ -7,11 +7,11 @@ import styled                          from 'styled-components/macro'
 import { AccessControlProfile }       from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
-import { ApplicationDrawer } from './ApplicationDrawer'
-import { ClientRateLimit }   from './ClientRateLimit'
-import { DeviceOSDrawer }    from './DeviceOSDrawer'
-import { Layer2Drawer }      from './Layer2Drawer'
-import { Layer3Drawer }      from './Layer3Drawer'
+import { ApplicationComponent } from './ApplicationComponent'
+import { ClientRateLimit }      from './ClientRateLimit'
+import { DeviceOSComponent }    from './DeviceOSComponent'
+import { Layer2Component }      from './Layer2Component'
+import { Layer3Component }      from './Layer3Component'
 const { useWatch } = Form
 
 const AccessComponentWrapper = styled.div`
@@ -62,7 +62,7 @@ const AccessControlComponent = () => {
         {$t({ defaultMessage: 'Layer 2' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableLayer2'} />
-          {enableLayer2 && <Layer2Drawer />}
+          {enableLayer2 && <Layer2Component />}
         </AccessComponentWrapper>
       </FieldLabel>
 
@@ -70,7 +70,7 @@ const AccessControlComponent = () => {
         {$t({ defaultMessage: 'Layer 3' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableLayer3'} />
-          {enableLayer3 && <Layer3Drawer />}
+          {enableLayer3 && <Layer3Component />}
         </AccessComponentWrapper>
       </FieldLabel>
 
@@ -78,7 +78,7 @@ const AccessControlComponent = () => {
         {$t({ defaultMessage: 'Device & OS' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableDeviceOs'} />
-          {enableDeviceOs && <DeviceOSDrawer />}
+          {enableDeviceOs && <DeviceOSComponent />}
         </AccessComponentWrapper>
       </FieldLabel>
 
@@ -86,7 +86,7 @@ const AccessControlComponent = () => {
         {$t({ defaultMessage: 'Applications' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableApplications'} />
-          {enableApplications && <ApplicationDrawer />}
+          {enableApplications && <ApplicationComponent />}
         </AccessComponentWrapper>
       </FieldLabel>
       )}

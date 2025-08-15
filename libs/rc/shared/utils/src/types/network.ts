@@ -47,7 +47,7 @@ export interface BaseNetwork {
   captiveType?: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail // non-RBAC only
   vlanPool?: { name: string } // non-RBAC only
-  activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  activated?: { isActivated?: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean,
   incompatible?: number
 }

@@ -39,6 +39,7 @@ export const mockAPList = {
       uptime: 355845,
       status: '2_00_Operational',
       meshRole: 'DISABLED',
+      poeUnderPowered: true,
       networkStatus: {
         ipAddress: '10.206.78.138',
         externalIpAddress: '210.58.90.254',
@@ -119,6 +120,7 @@ export const mockAPList = {
       uptime: 2669683,
       status: '1_01_NeverContactedCloud',
       meshRole: 'DISABLED',
+      poeUnderPowered: false,
       networkStatus: {
         ipAddress: '192.168.5.103',
         externalIpAddress: '210.58.90.254',

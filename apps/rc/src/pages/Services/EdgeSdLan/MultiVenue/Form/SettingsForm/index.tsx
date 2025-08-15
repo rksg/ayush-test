@@ -1,12 +1,11 @@
 import { useEffect } from 'react'
 
 import { Select,Col, Form, Input, Row, Switch, Space, Typography } from 'antd'
-import { findIndex, find }                                         from 'lodash'
+import { findIndex }                                               from 'lodash'
 import { useIntl }                                                 from 'react-intl'
 import { useParams }                                               from 'react-router-dom'
 
 import {  StepsForm, Tooltip, useStepFormContext, Loader, SpaceWrapper } from '@acx-ui/components'
-import { Features }                                                      from '@acx-ui/feature-toggle'
 import { InformationSolid }                                              from '@acx-ui/icons'
 import { CompatibilityWarningTriangleIcon }                              from '@acx-ui/rc/components'
 import {
@@ -18,9 +17,8 @@ import {
   servicePolicyNameRegExp,
   useHelpPageLink,
   EdgeMvSdLanFormModel,
-  ClusterHighAvailabilityModeEnum,
-  IncompatibilityFeatures,
-  useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+  IncompatibilityFeatures
+} from '@acx-ui/rc/utils'
 import { TenantLink }      from '@acx-ui/react-router-dom'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -32,7 +30,6 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isHaAaDmzEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_DMZ_TOGGLE)
 
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans, allPins } = useEdgeSdLanContext()
@@ -130,25 +127,7 @@ export const SettingsForm = () => {
       </UI.ClusterSelectorHelper>)
   }
 
-  const dmzHaModeCheck = (dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
-    const isDmzClusterAAMode = find(clusterData, { clusterId: dmzClusterId })
-      ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
-
-    if (clusterData && isGuestTunnelOn && dmzClusterId && isDmzClusterAAMode) {
-      return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
-    } else {
-      return Promise.resolve()
-    }
-  }
-
-  const getDmzClusterOpts = () => clusterOptions?.filter(item => {
-    // eslint-disable-next-line max-len
-    const isNonAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
-
-    return item.value !== edgeClusterId &&
-          // eslint-disable-next-line max-len
-          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isNonAAMode || (editMode && item.value === guestEdgeClusterId))))
-  })
+  const getDmzClusterOpts = () => clusterOptions?.filter(item => item.value !== edgeClusterId)
 
   return (
     <UI.Wrapper>
@@ -245,10 +224,7 @@ export const SettingsForm = () => {
                     required: true,
                     message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
                   },
-                  { validator: (_, value) => checkCorePortConfigured(value) },
-                  { validator: (_, value) => isHaAaDmzEnabled
-                    ? Promise.resolve()
-                    : dmzHaModeCheck(value, isGuestTunnelEnabled) }
+                  { validator: (_, value) => checkCorePortConfigured(value) }
                   ]}
                 >
                   <Select

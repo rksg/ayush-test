@@ -242,6 +242,15 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   })
 }))
 
+jest.mock('./pages/Devices/Olt/OltTable', () => ({
+  __esModule: true,
+  default: () => ({
+    title: 'OltTab',
+    headerExtra: [],
+    component: <div data-testid='OltTable' />
+  })
+}))
+
 jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
 }))
@@ -330,8 +339,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   CertificateForm: () => <div data-testid='CertificateForm' />,
   CertificateTemplateForm: () => <div data-testid='CertificateTemplateForm' />,
   ClientIsolationForm: () => <div data-testid='ClientIsolationForm' />,
-  CliProfileForm: () => <div data-testid='CliProfileForm' />,
-  CliTemplateForm: () => <div data-testid='CliTemplateForm' />,
   DHCPDetail: () => <div data-testid='DHCPDetail' />,
   DHCPForm: () => <div data-testid='DHCPForm' />,
   DpskForm: () => <div data-testid='DpskForm' />,
@@ -364,10 +371,16 @@ jest.mock('@acx-ui/rc/components', () => ({
   ConnectionMeteringFormMode: {},
   IdentityForm: () => <div data-testid='IdentityForm' />,
   IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />,
-  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />
+  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />,
+  DeviceOSComponent: () => <div data-testid='DeviceOSComponent' />,
+  ApplicationComponent: () => <div data-testid='ApplicationComponent' />,
+  Layer2Component: () => <div data-testid='Layer2Component' />,
+  Layer3Component: () => <div data-testid='Layer3Component' />
 }))
 
 jest.mock('@acx-ui/switch/components', () => ({
+  CliProfileForm: () => <div data-testid='CliProfileForm' />,
+  CliTemplateForm: () => <div data-testid='CliTemplateForm' />,
   ConfigurationProfileForm: () => <div data-testid='ConfigurationProfileForm' />
 }))
 
@@ -642,6 +655,7 @@ describe('RcRoutes: Devices', () => {
 
   describe('RcRoutes: Devices > Edge Optical', () => {
     test('should navigate to devices edge optical list', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_INTEGRATION_CORE_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/devices/optical',
@@ -652,6 +666,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should navigate to devices edge optical details', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOKIA_INTEGRATION_CORE_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/devices/optical/mockOltId/details',

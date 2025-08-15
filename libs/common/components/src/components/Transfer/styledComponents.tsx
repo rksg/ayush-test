@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Space, Tree } from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 export const Title = styled.div`
   line-height: var(--acx-subtitle-4-line-height);
@@ -125,6 +125,7 @@ export const TransferLayout = styled(Space)`
     border: 1px solid var(--acx-neutrals-40);
     border-radius: 4px;
     height: 100%;
+    overflow-y: auto;
     .ant-table-wrapper {
       height: 100%;
 
@@ -181,4 +182,58 @@ export const TransferLayout = styled(Space)`
     left: 275px;
     border-top: none;
   }
+`
+
+export const GroupedTree = styled(Tree)`
+  padding: 8px 0;
+  .ant-tree-switcher {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--acx-accents-blue-50);
+  }
+  .ant-tree-treenode {
+    padding: 0 8px;
+    height: 32px;
+    align-items: center;
+    &:hover {
+      background-color: transparent;
+    }
+    .ant-tree-node-content-wrapper {
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+      &:hover,
+      &.ant-tree-node-selected {
+        background-color: transparent;
+      }
+    }
+    .ant-checkbox-wrapper {
+      margin-right: 8px;
+    }
+  }
+  .ant-tree-title {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    color: var(--acx-primary-black);
+  }
+
+  &.disable-group-select {
+    .ant-tree-switcher-noop {
+      display: none;
+    }
+  }
+`
+
+export const TreeItem = styled.div<{ disabled?: boolean, selectable?: boolean }>`
+  display: flex;
+  align-items: center;
+  cursor: default;
+
+  ${({ selectable = true }) => selectable && css`
+    cursor: pointer;
+  `}
+  ${({ disabled }) => disabled && css`
+    cursor: not-allowed;
+  `}
 `
