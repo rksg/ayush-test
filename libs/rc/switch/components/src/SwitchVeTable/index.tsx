@@ -18,7 +18,7 @@ import {
   useSwitchDetailHeaderQuery,
   useVenueSwitchSettingQuery
 } from '@acx-ui/rc/services'
-import { isFirmwareVersionAbove10010h, isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   VenueMessages,
   VeViewModel,
