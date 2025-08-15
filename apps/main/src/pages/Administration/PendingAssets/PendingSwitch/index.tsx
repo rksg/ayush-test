@@ -39,7 +39,7 @@ export const PendingSwitch = () => {
     useQuery: useGetSwitchProvisionsQuery,
     defaultPayload: {
       page: 0,
-      size: 10,
+      pageSize: 10,
       filters: {}
     },
     search: {
@@ -135,7 +135,7 @@ export const PendingSwitch = () => {
       sorter: true,
       filterable: true,
       filterKey: 'fromDate',
-      filterComponent: { type: 'rangepicker' },
+      filterComponent: { type: 'rangepicker', unlimitedRange: true },
       render: (_, row) => {
         return formatter(DateFormatEnum.DateFormat)(row.createdDate)
       }
