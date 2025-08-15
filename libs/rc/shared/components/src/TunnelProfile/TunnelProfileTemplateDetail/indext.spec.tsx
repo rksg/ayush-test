@@ -21,7 +21,7 @@ describe('TunnelProfileTemplateDetail', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataList.url,
+        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataListSkipRecRewrite.url,
         (req, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       )
     )

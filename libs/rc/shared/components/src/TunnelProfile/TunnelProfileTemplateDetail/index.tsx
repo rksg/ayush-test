@@ -2,9 +2,9 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features }                                      from '@acx-ui/feature-toggle'
-import { useGetTunnelProfileTemplateViewDataListQuery }  from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard }              from '@acx-ui/components'
+import { Features }                                                   from '@acx-ui/feature-toggle'
+import { useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery } from '@acx-ui/rc/services'
 import {
   ageTimeUnitConversion,
   filterByAccessForServicePolicyMutation,
@@ -38,7 +38,10 @@ export const TunnelProfileTemplateDetail = () => {
     PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT
   )
 
-  const { tunnelProfileData, isLoading } = useGetTunnelProfileTemplateViewDataListQuery(
+  const {
+    tunnelProfileData,
+    isLoading
+  } = useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery(
     {
       payload: {
         filters: { id: [params.policyId] }

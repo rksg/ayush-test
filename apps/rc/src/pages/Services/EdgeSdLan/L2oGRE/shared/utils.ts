@@ -1,13 +1,23 @@
 import { DefaultOptionType } from 'antd/lib/select'
 import { isNil }             from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanServiceProfile, MtuTypeEnum, Network, NetworkSegmentTypeEnum, NetworkTypeEnum, TunnelProfileViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                                                                            from '@acx-ui/utils'
+import {
+  EdgeMvSdLanViewData,
+  EdgeSdLanServiceProfile,
+  MtuTypeEnum,
+  Network,
+  NetworkSegmentTypeEnum,
+  NetworkTypeEnum,
+  TunnelProfileViewData,
+  TunnelTypeEnum
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType } from '.'
+import { ApplyTo, EdgeSdLanFormType, MspEdgeSdLanFormType } from './type'
 
-
-export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServiceProfile => {
+export const transformToApiData = (
+  formData: EdgeSdLanFormType
+): EdgeSdLanServiceProfile => {
   return {
     id: formData.id,
     name: formData.name,
@@ -17,13 +27,21 @@ export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServic
         .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
           venueId, networkId, tunnelProfileId
         }))).flat()
-      : [],
+      : []
+  }
+}
+
+export const transformToMspApiData = (formData: MspEdgeSdLanFormType): EdgeSdLanServiceProfile => {
+  return {
+    ...transformToApiData(formData),
+    tunnelTemplateId: formData.tunnelTemplateId,
     activeNetworkTemplate: formData.activatedNetworkTemplates
       ? Object.entries(formData.activatedNetworkTemplates)
         .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
           venueId, networkId, tunnelProfileId
         }))).flat()
-      : undefined
+      : undefined,
+    ecTenantIds: formData.ecTenantIds
   }
 }
 
@@ -40,7 +58,18 @@ export const transformToFormData = (viewData?: EdgeMvSdLanViewData): EdgeSdLanFo
           tunnelProfileId: curr.forwardingTunnelProfileId ?? ''
         }]
         return acc
-      }, {} as EdgeSdLanFormType['activatedNetworks']) ?? {},
+      }, {} as EdgeSdLanFormType['activatedNetworks']) ?? {}
+  } : {} as EdgeSdLanFormType
+}
+
+export const transformToMspFormData = (viewData?: EdgeMvSdLanViewData): MspEdgeSdLanFormType => {
+  return viewData ? {
+    ...transformToFormData(viewData),
+    tunnelTemplateId: viewData.tunnelTemplateId ?? '',
+    applyTo: [
+      ...(!!viewData.tunnelProfileId ? [ApplyTo.MY_ACCOUNT] : []),
+      ...(!!viewData.tunnelTemplateId ? [ApplyTo.MY_CUSTOMERS] : [])
+    ],
     activatedNetworkTemplates: viewData.tunneledWlanTemplates
       ?.reduce((acc, curr) => {
         acc![curr.venueId] = [...(acc![curr.venueId] || []), {
@@ -49,8 +78,9 @@ export const transformToFormData = (viewData?: EdgeMvSdLanViewData): EdgeSdLanFo
           tunnelProfileId: curr.forwardingTunnelProfileId ?? ''
         }]
         return acc
-      }, {} as EdgeSdLanFormType['activatedNetworkTemplates']) ?? {}
-  } : {} as EdgeSdLanFormType
+      }, {} as MspEdgeSdLanFormType['activatedNetworkTemplates']) ?? {},
+    ecTenantIds: viewData.ecTenantIds ?? []
+  } : {} as MspEdgeSdLanFormType
 }
 
 export const getFilteredTunnelProfileOptions = (

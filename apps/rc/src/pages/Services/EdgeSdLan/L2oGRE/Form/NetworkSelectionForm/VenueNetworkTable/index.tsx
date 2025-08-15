@@ -5,10 +5,9 @@ import { get, pick } from 'lodash'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { EditOutlined }                                                   from '@acx-ui/icons-new'
-import { transformSdLanScopedVenueMap }                                   from '@acx-ui/rc/components'
-import { useVenuesListQuery }                                             from '@acx-ui/rc/services'
+import { Button, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { EditOutlined }                                           from '@acx-ui/icons-new'
+import { transformSdLanScopedVenueMap }                           from '@acx-ui/rc/components'
 import {
   arraySizeSort,
   defaultSort,
@@ -16,10 +15,11 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 
-import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
+import { NetworkActivationType } from '../../../shared/type'
+import { useEdgeSdLanContext }   from '../../EdgeSdLanContextProvider'
 
-import { CompatibilityCheck }                    from './CompatibilityCheck'
-import { NetworkActivationType, NetworksDrawer } from './NetworksDrawer'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { NetworksDrawer }     from './NetworksDrawer'
 
 export interface VenueTableDataType {
   id: string
@@ -36,7 +36,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans, allPins, allSoftGreVenueMap } = useEdgeSdLanContext()
+  const { allSdLans, allPins, allSoftGreVenueMap, allVenues } = useEdgeSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
@@ -55,27 +55,13 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     return [...sdlanVenueIds, ...pinVenueIds]
   }, [allPins, allSdLans, serviceId])
 
-  const { availableVenues, isLoading, isFetching } = useVenuesListQuery({
-    payload: {
-      fields: ['name', 'country', 'city', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
-  }, {
-    selectFromResult: ({ data, isLoading, isFetching }) => ({
-      isLoading,
-      isFetching,
-      availableVenues: data?.data.filter(venue => {
-        return !usedVenueIds.includes(venue.id)
-      }).map(item => ({
-        ...pick(item, ['id', 'name']),
-        address: `${item.country}, ${item.city}`,
-        selectedNetworks: get(activated, item.id)
-      } as VenueTableDataType)) ?? []
-    })
-  })
-
+  const availableVenues = allVenues?.filter(venue => {
+    return !usedVenueIds.includes(venue.id)
+  }).map(item => ({
+    ...pick(item, ['id', 'name']),
+    address: `${item.country}, ${item.city}`,
+    selectedNetworks: get(activated, item.id)
+  } as VenueTableDataType)) ?? []
 
   const columns: TableProps<VenueTableDataType>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -147,13 +133,11 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
 
   return (
     <>
-      <Loader states={[ { isLoading, isFetching } ]}>
-        <Table
-          rowKey='id'
-          columns={columns}
-          dataSource={availableVenues}
-        />
-      </Loader>
+      <Table
+        rowKey='id'
+        columns={columns}
+        dataSource={availableVenues}
+      />
       {networkDrawerVenueId && <NetworksDrawer
         visible={true}
         onClose={closeNetworkModal}

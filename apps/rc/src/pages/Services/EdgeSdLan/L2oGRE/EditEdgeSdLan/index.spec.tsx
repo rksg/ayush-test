@@ -19,7 +19,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { EdgeSdLanFormType } from '../Form'
+import { EdgeSdLanFormType } from '../shared/type'
 
 import { EditEdgeSdLan } from '.'
 
@@ -37,7 +37,7 @@ jest.mock('../Form', () => ({
   __esModule: true,
   ...jest.requireActual('../Form'),
   EdgeSdLanFormContainer: (props: {
-    editData: EdgeSdLanFormType | undefined,
+    editData?: EdgeSdLanFormType
     onFinish: (values: unknown) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
