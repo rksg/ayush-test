@@ -1,5 +1,5 @@
-import { NetworkTypeEnum, WlanSecurityEnum }                    from './constants'
-import { Network, NetworkDetail, NetworkSaveData, WifiNetwork } from './types/network'
+import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from './constants'
+import { Network, NetworkDetail, NetworkSaveData, WifiNetwork }    from './types/network'
 
 export const SupportNetworkTypes = [
   NetworkTypeEnum.PSK,
@@ -8,6 +8,18 @@ export const SupportNetworkTypes = [
   NetworkTypeEnum.HOTSPOT20,
   NetworkTypeEnum.CAPTIVEPORTAL,
   NetworkTypeEnum.OPEN
+]
+
+export const SupportGuestNetworkTypes = [
+  GuestNetworkTypeEnum.ClickThrough,
+  GuestNetworkTypeEnum.SelfSignIn,
+  GuestNetworkTypeEnum.Cloudpath,
+  GuestNetworkTypeEnum.HostApproval,
+  GuestNetworkTypeEnum.GuestPass,
+  GuestNetworkTypeEnum.WISPr,
+  GuestNetworkTypeEnum.Directory,
+  GuestNetworkTypeEnum.SAML,
+  GuestNetworkTypeEnum.Workflow
 ]
 
 const SupportRadio6gSecurityList = [
