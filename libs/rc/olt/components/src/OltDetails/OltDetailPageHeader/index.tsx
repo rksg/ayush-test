@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Menu, MenuProps, Space } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import moment                     from 'moment-timezone'
@@ -11,7 +9,6 @@ import {
   CaretDownSolidIcon,
   PageHeader,
   RangePicker,
-  Tooltip,
   getDefaultEarliestStart
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -47,16 +44,10 @@ export function OltDetailPageHeader (props: {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/devices/optical/${oltId}/`)
-  // const linkToOlt = useTenantLink('/devices/optical/')
 
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const oltActions = useOltActions()
-
-  const [isSyncing, setIsSyncing] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [syncDataEndTime, setSyncDataEndTime] = useState('')
-
   const isOnline = oltDetails?.status === OltStatusEnum.ONLINE
 
   const { startDate, endDate, setDateFilter, range } =
@@ -64,12 +55,6 @@ export function OltDetailPageHeader (props: {
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {
-      case MoreActions.SYNC_DATA:
-        setIsSyncing(true)
-        oltActions.doSyncData({ rows: [oltDetails], callBack: () => {
-          setIsSyncing(false)
-        } })
-        break
       case MoreActions.REBOOT_OLT:
         oltActions.showRebootOlt({ rows: [oltDetails] })
         break
@@ -103,18 +88,6 @@ export function OltDetailPageHeader (props: {
     <Menu
       onClick={handleMenuClick}
       items={[
-        ...(hasUpdatePermission &&
-            // hasAllowedOperations([getOpsApi()]) ? [{
-            true ? [{
-            key: MoreActions.SYNC_DATA,
-            disabled: isSyncing || !isOnline,
-            label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
-              {$t({ defaultMessage: 'Sync Data' })}
-            </Tooltip>
-          }, {
-            type: 'divider'
-          }] : []),
-
         ...(isOnline && hasUpdatePermission &&
           // hasAllowedOperations([getOpsApi()]) ? [{
           true ? [{
@@ -134,9 +107,7 @@ export function OltDetailPageHeader (props: {
 
         ...(hasDeletPermission ? [{
           key: MoreActions.DELETE,
-          label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
-            { $t({ defaultMessage: 'Delete OLT' }) }
-          </Tooltip>
+          label: $t({ defaultMessage: 'Delete OLT' })
         }] : [])
       ] as ItemType[]
       }/>

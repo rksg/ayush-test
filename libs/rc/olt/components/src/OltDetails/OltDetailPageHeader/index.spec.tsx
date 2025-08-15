@@ -63,18 +63,6 @@ describe('OltDetailPageHeader', () => { //TODO
     })
   })
 
-  it('should sync data correctly', async () => {
-    render(<Provider>
-      <OltDetailPageHeader oltDetails={mockOlt as Olt} />
-    </Provider>, {
-      route: { params }
-    })
-    expect(screen.getByText('TestOlt')).toBeInTheDocument()
-    await userEvent.click(screen.getByText(/More/))
-    await userEvent.click(screen.getByText(/Sync Data/))
-    expect(mockOltActions.doSyncData).toHaveBeenCalled()
-  })
-
   it('should reboot olt correctly', async () => {
     render(<Provider>
       <OltDetailPageHeader oltDetails={mockOlt as Olt} />

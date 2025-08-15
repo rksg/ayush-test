@@ -35,13 +35,6 @@ export const OltTable = (props: OltTableProps) => {
       // scopeKey:
     },
     {
-      label: $t({ defaultMessage: 'Reboot Chassis' }),
-      onClick: (rows, clearSelection) => {
-        oltActions.showRebootOlt({ rows, callBack: clearSelection })
-      }
-      // scopeKey:
-    },
-    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         oltActions.showDeleteOlt({ rows, callBack: clearSelection })

@@ -136,7 +136,6 @@ export const OltInfoWidget = (props: OltInfoWidgetProps) => {
                       data={item.data}
                       style={{ width: 100, height: 100 }}
                       legend={'name-value'}
-                      onClick={(e) => item.onClick?.(e)}
                     />
                   </div>
                 </Loader>

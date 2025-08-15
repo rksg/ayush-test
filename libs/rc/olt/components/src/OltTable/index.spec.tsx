@@ -67,17 +67,6 @@ describe('OltTable', () => {
     expect(mockOltActions.showDeleteOlt).toHaveBeenCalled()
   })
 
-  it('should reboot OLT correctly', async () => {
-    render(<Provider>
-      <OltTable data={mockOltList} />
-    </Provider>, { route: { params, path: mockPath } })
-
-    const row = await screen.findByRole('row', { name: /TestOlt/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Reboot Chassis' }))
-    expect(mockOltActions.showRebootOlt).toHaveBeenCalled()
-  })
-
   describe('OLT with empty serial number', () => {
     it('should delete OLT with IP and display status with UNKNOWN', async () => {
       render(<Provider>
