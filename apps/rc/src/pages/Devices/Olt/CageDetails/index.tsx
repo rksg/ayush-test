@@ -1,3 +1,5 @@
+// import { useEffect } from 'react'
+
 import { Button, Col, Row } from 'antd'
 import { useIntl }          from 'react-intl'
 import { useParams }        from 'react-router-dom'
@@ -40,7 +42,7 @@ const CageDetailsContent = () => {
   const tabs = [{
     label: $t({ defaultMessage: 'Panel' }),
     value: OverviewInfoType.PANEL,
-    children: <OntOverviewTab />
+    children: <OntOverviewTab data={state.selectedOnt?.portDetails} />
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: OverviewInfoType.PORTS,
@@ -50,6 +52,13 @@ const CageDetailsContent = () => {
     value: OverviewInfoType.CLIENTS,
     children: <OntClientTab />
   }]
+
+  // TODO: check with UX
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch({ type: 'CLOSE_ALL_DRAWERS' })
+  //   }
+  // }, [state.selectedOnt])
 
   return (
     <Row wrap={false}>

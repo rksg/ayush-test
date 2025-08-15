@@ -3,7 +3,8 @@ export * from './types'
 
 export enum OltSlotType {
   NT = 'NT',
-  LT = 'LT'
+  LT = 'LT',
+  ONT = 'ONT'
 }
 
 export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment

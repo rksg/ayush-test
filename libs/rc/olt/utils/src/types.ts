@@ -48,5 +48,7 @@ export interface OltOntPort {
   vlan: string[]
   poePower: number
   clientCount?: number
+  taggedVlan?: string[]
+  untaggedVlan?: string[]
 }
 

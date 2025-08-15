@@ -2,16 +2,27 @@ import { useContext } from 'react'
 
 import { GridCol, GridRow } from '@acx-ui/components'
 
-import { OltFrontPanel }     from '../../OltFrontPanel'
-import { OltDetailsContext } from '../OltDetailsContext'
+import { networkCardSlots, lineCardSlots } from '../../mockdata'
+import { OltFrontPanel }                   from '../../OltFrontPanel'
+import { OltDetailsContext }               from '../OltDetailsContext'
+
 
 export const OltOverviewTab = () => {
   const { oltDetailsContextData } = useContext(OltDetailsContext)
 
+  const data = [
+    ...networkCardSlots,
+    ...networkCardSlots,
+    ...lineCardSlots
+  ]
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ marginTop: '24px' }}>
-        <OltFrontPanel oltDetails={oltDetailsContextData} />
+        <OltFrontPanel
+          title={oltDetailsContextData.model}
+          data={data}
+        />
       </GridCol>
     </GridRow>
     <GridRow>

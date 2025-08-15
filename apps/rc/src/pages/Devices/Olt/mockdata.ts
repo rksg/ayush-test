@@ -123,19 +123,23 @@ export const ontData = [{
       portIdx: '1',
       status: 'up',
       vlan: ['30'],
-      poePower: 2.5
+      poePower: 2.5,
+      taggedVlan: ['30'],
+      untaggedVlan: ['12']
     },
     {
       portIdx: '2',
       status: 'down',
       vlan: ['11'],
-      poePower: 10
+      poePower: 10,
+      taggedVlan: ['11']
     },
     {
       portIdx: '3',
       status: 'up',
       vlan: ['66'],
-      poePower: 3
+      poePower: 3,
+      taggedVlan: ['66']
     }
   ]
 }, {

@@ -25,18 +25,20 @@ export const networkCardSlots = [
       portSpeed: '1 Gb/sec'
     }, {
       label: 'UPLINK',
+      type: 'uplink',
       status: OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec',
       taggedVlan: '2,3,4',
-      unTaggedVlan: '1'
+      untaggedVlan: '1'
     }, {
       label: 'UPLINK',
+      type: 'uplink',
       status: OltCageStateEnum.UP,
       info: '%info%',
       portSpeed: '1 Gb/sec',
       taggedVlan: '2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17',
-      unTaggedVlan: '1'
+      untaggedVlan: '1'
     }]
   }
 ]
@@ -46,7 +48,8 @@ export const lineCardSlots = [
     type: OltSlotType.LT,
     slots: Array.from({ length: 32 }, (_, index) => ({
       label: `S1/${index + 1}`,
-      status: OltCageStateEnum.UP,
+      type: index === 12 ? 'lag' : '',
+      status: index % 10 === 0 ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }))
@@ -55,7 +58,8 @@ export const lineCardSlots = [
     type: OltSlotType.LT,
     slots: Array.from({ length: 16 }, (_, index) => ({
       label: `S2/${index + 1}`,
-      status: OltCageStateEnum.UP,
+      type: index === 2 ? 'lag' : '',
+      status: index === 9 ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }))

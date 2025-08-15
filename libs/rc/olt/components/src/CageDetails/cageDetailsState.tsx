@@ -17,6 +17,7 @@ export type CageDetailsAction =
   | { type: 'SET_CURRENT_TAB'; payload: string }
   | { type: 'OPEN_DRAWER'; payload: DrawerKey }
   | { type: 'CLOSE_DRAWER'; payload: DrawerKey }
+  // | { type: 'CLOSE_ALL_DRAWERS' }
 
 export const initialCageDetailsState: CageDetailsState = {
   cageDetails: {} as OltCage,
@@ -47,6 +48,14 @@ export function cageDetailsReducer (
           [action.payload]: action.type === 'OPEN_DRAWER'
         }
       }
+    // case 'CLOSE_ALL_DRAWERS':
+    //   return {
+    //     ...state,
+    //     drawers: {
+    //       ...state.drawers,
+    //       ...initialCageDetailsState.drawers
+    //     }
+    //   }
     default:
       return state
   }
