@@ -131,6 +131,9 @@ export function ExternalAntennaSettings () {
         setIsUseVenueSettings(venueOrApGroupSettings)
         isUseVenueSettingsRef.current = venueOrApGroupSettings
 
+        if (venueOrApGroupSettings && findSettings) {
+          setExtAntenna(venueExtAntennaRef.current!)
+        }
 
         setFormInitializing(false)
         setReadyToScroll?.(r => [...(new Set(r.concat('External-Antenna')))])
