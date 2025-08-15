@@ -93,7 +93,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
 
   const toolBarRender = () => [
     isSupport8100 && switchDetail?.model?.startsWith('ICX8100') &&
-      !isSupport8100StaticRouteMaxVe && !isFirmwareVersionAbove10010h(switchDetail?.firmware)
+      (!isSupport8100StaticRouteMaxVe || !isFirmwareVersionAbove10010h(switchDetail?.firmware))
       ? []
       : <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
         {$t({ defaultMessage: 'Add Route' })}
