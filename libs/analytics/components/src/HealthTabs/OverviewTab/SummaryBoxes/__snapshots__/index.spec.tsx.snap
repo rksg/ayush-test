@@ -306,7 +306,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    /14.2K
+                    /14.23K
                   </span>
                 </div>
               </div>

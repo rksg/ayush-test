@@ -263,12 +263,12 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
                   <span
                     class="ant-statistic-content-value"
                   >
-                    50.8K
+                    50.76K
                   </span>
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    /107K
+                    /107.23K
                   </span>
                 </div>
               </div>
@@ -309,12 +309,12 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
                   <span
                     class="ant-statistic-content-value"
                   >
-                    56.5K
+                    56.47K
                   </span>
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    /107K
+                    /107.23K
                   </span>
                 </div>
               </div>
@@ -677,12 +677,12 @@ exports[`Health Page should match snapshot 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    50.8K
+                    50.76K
                   </span>
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    /107K
+                    /107.23K
                   </span>
                 </div>
               </div>
@@ -723,12 +723,12 @@ exports[`Health Page should match snapshot 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    56.5K
+                    56.47K
                   </span>
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    /107K
+                    /107.23K
                   </span>
                 </div>
               </div>

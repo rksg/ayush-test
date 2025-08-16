@@ -3,16 +3,17 @@ import { useState } from 'react'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Loader, Tabs }                   from '@acx-ui/components'
-import { OltPort, OltPortStatusEnum, oltNetworkCardOptions } from '@acx-ui/olt/utils'
-import { sortProp, defaultSort }                             from '@acx-ui/rc/utils'
+import { Loader }                     from '@acx-ui/components'
+import { Table, TableProps }          from '@acx-ui/components'
+import { OltPort, OltPortStatusEnum } from '@acx-ui/olt/utils'
+import { sortProp, defaultSort }      from '@acx-ui/rc/utils'
 // import { TenantLink }                                             from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { OltStatus }           from '../../OltStatus'
-import { EditPortDrawer }      from '../EditPortDrawer'
-import { ManageLacpLagDrawer } from '../ManageLacpLagDrawer'
+import { OltStatus }            from '../../OltStatus'
+import { EditUplinkPortDrawer } from '../EditUplinkPortDrawer'
+import { ManageLacpLagDrawer }  from '../ManageLacpLagDrawer'
 
 
 export const data = [
@@ -36,7 +37,7 @@ export const data = [
   }
 ] as OltPort[]
 
-export const OltPortTable = () => {
+export const OltUplinkPortTable = () => {
   const { $t } = useIntl()
   const isLoading = false // TODO
   const isFetching = false // TODO
@@ -44,13 +45,12 @@ export const OltPortTable = () => {
   //   { params: { serviceId } },
   //   { skip: !serviceId || !visible }
   // )
-  const [activeKey, setActiveKey] = useState<string>(oltNetworkCardOptions[0].value)
   const [editPortData, setEditPortData] = useState<OltPort | null>(null)
-  const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [editUplinkPortDrawerVisible, setEditUplinkPortDrawerVisible] = useState(false)
   const [manageLacpLagDrawerVisible, setManageLacpLagDrawerVisible] = useState(false)
 
 
-  const uplinkColumns: TableProps<OltPort>['columns'] = [
+  const columns: TableProps<OltPort>['columns'] = [
     {
       key: 'port',
       title: $t({ defaultMessage: 'Port' }),
@@ -89,27 +89,7 @@ export const OltPortTable = () => {
     }
   ]
 
-  const oobColumns: TableProps<OltPort>['columns'] = [
-    {
-      key: 'port',
-      title: $t({ defaultMessage: 'Port' }),
-      dataIndex: 'port',
-      sorter: { compare: sortProp('port', defaultSort) } ,
-      width: 80,
-      fixed: 'left',
-      render: (_, row) => row.port
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status',
-      defaultSortOrder: 'descend',
-      sorter: { compare: sortProp('status', defaultSort) },
-      width: 80,
-      render: (_, row) =>
-        <OltStatus type='port' status={row.status} showText />
-    }
-  ]
+
 
   const rowActions: TableProps<OltPort>['rowActions'] = [
     {
@@ -119,60 +99,38 @@ export const OltPortTable = () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: (rows) => { // TODO: edit cage
         setEditPortData(rows[0])
-        setEditPortDrawerVisible(true)
+        setEditUplinkPortDrawerVisible(true)
       }
     }
   ]
 
-  const handleTabChange = (val: string) => {
-    setActiveKey(val)
-  }
+
 
   return <Loader
     states={[{ isLoading, isFetching }]}
     style={{ minHeight: '100px', backgroundColor: 'transparent' }}
   >
-    <Tabs
-      type='third'
-      activeKey={activeKey}
-      onChange={handleTabChange}>
-      <Tabs.TabPane tab='Uplink' key='uplink' >
-        <Table
-          rowKey='port'
-          columns={uplinkColumns}
-          // for resolving flashing issue while doing tab switch
-          style={{ minHeight: '300px' }}
-          dataSource={data}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
-          actions={filterByAccess([{
-            label: $t({ defaultMessage: 'Manage LACP LAG' }),
-            onClick: () => { setManageLacpLagDrawerVisible(true) }
-          }])}
-        />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab='OOB' key='oob' >
-        <Table
-          rowKey='port'
-          columns={oobColumns}
-          // for resolving flashing issue while doing tab switch
-          style={{ minHeight: '300px' }}
-          dataSource={data}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
-
-        />
-      </Tabs.TabPane>
-    </Tabs>
-    <EditPortDrawer
+    <Table
+      rowKey='port'
+      columns={columns}
+      // for resolving flashing issue while doing tab switch
+      style={{ minHeight: '300px' }}
+      dataSource={data}
+      rowActions={filterByAccess(rowActions)}
+      rowSelection={{ type: 'checkbox' }}
+      actions={filterByAccess([{
+        label: $t({ defaultMessage: 'Manage LACP LAG' }),
+        onClick: () => { setManageLacpLagDrawerVisible(true) }
+      }])}
+    />
+    <EditUplinkPortDrawer
       data={editPortData}
-      visible={editPortDrawerVisible}
-      setVisible={setEditPortDrawerVisible}
+      visible={editUplinkPortDrawerVisible}
+      setVisible={setEditUplinkPortDrawerVisible}
     />
     <ManageLacpLagDrawer
       visible={manageLacpLagDrawerVisible}
       setVisible={setManageLacpLagDrawerVisible}
     />
-
   </Loader>
 }

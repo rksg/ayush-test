@@ -945,7 +945,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="11.3K of 26.5K attempts"
+                                              data-tooltip="11.29K of 26.52K attempts"
                                             >
                                               43%
                                             </span>

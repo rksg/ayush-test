@@ -11,10 +11,10 @@ import {
   OltNetworkCardTab,
   OltOverviewTab
 } from '@acx-ui/olt/components'
-import { Olt, OltCage, OltPort }                 from '@acx-ui/olt/utils'
+import { Olt, OltCage }                          from '@acx-ui/olt/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { oltData, oltCageList, oltPortList } from '../mockdata'
+import { oltData, oltCageList } from '../mockdata'
 
 enum OverviewInfoType {
   OVERVIEW = 'overview',
@@ -30,7 +30,6 @@ export const OltDetails = () => {
 
   const oltDetails = oltData as Olt //TODO: temp, remove when api is ready
   const oltCages = oltCageList as OltCage[] //TODO: temp, remove when api is ready
-  const oltPorts = oltPortList as OltPort[] //TODO: temp, remove when api is ready
 
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
 

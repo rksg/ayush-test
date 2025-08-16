@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Drawer }  from '@acx-ui/components'
 import { OltPort } from '@acx-ui/olt/utils'
 
-export const EditPortDrawer = (props: {
+export const EditOobPortDrawer = (props: {
   data: OltPort | null,
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -13,7 +13,7 @@ export const EditPortDrawer = (props: {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Edit Port' })}
+      title={$t({ defaultMessage: 'Edit OOB' })}
       visible={visible}
       onClose={() => setVisible(false)}
       width={610}

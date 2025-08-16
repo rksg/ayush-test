@@ -5,7 +5,7 @@ import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
 
-import { EditPortDrawer } from './'
+import { EditUplinkPortDrawer } from '.'
 
 const { mockOltPortList } = OltFixtures
 
@@ -19,14 +19,14 @@ describe('EditPortDrawer', () => {
 
   it('should render correctly', async () => {
     render(<Provider>
-      <EditPortDrawer
+      <EditUplinkPortDrawer
         data={mockOltPortList[0]}
         visible={true}
         setVisible={setVisible}
       />
     </Provider>, { route: { params } })
 
-    expect(screen.getByText('Edit Port')).toBeInTheDocument()
+    expect(screen.getByText('Edit Uplink')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(setVisible).toHaveBeenCalledWith(false)
   })
