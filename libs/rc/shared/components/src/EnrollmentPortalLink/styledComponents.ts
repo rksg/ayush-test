@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
-import { ChatbotLink, QrCodeSmallIcon } from '@acx-ui/icons'
 import { Modal }                        from '@acx-ui/components'
+import { ChatbotLink, QrCodeSmallIcon } from '@acx-ui/icons'
 
 
 export const StyledChatbotLink = styled(ChatbotLink)`

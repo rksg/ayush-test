@@ -4,7 +4,7 @@ import { Typography } from 'antd'
 import { QRCodeSVG }  from 'qrcode.react'
 import { useIntl }    from 'react-intl'
 
-import { Button, Tooltip }         from '@acx-ui/components'
+import { Button, Tooltip }                from '@acx-ui/components'
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { ChatbotLink }                    from '@acx-ui/icons'
 import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
