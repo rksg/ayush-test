@@ -168,7 +168,6 @@ export const SelectUsers = (props: SelectUsersProps) => {
     <Table
       columns={columns}
       dataSource={usersData}
-      // Made the changes for Old Component as well
       enableFilterHeader={true}
       tableAlertRender={false}
       rowKey='email'

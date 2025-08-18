@@ -66,6 +66,7 @@ export const SelectPGs = (props: SelectPGsProps) => {
       <Table
         columns={columns}
         dataSource={data}
+        // Made the changes for Old Component as well
         enableFilterHeader={true}
         tableAlertRender={false}
         rowKey='id'
