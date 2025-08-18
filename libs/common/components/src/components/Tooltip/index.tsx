@@ -75,6 +75,17 @@ const CustomWarningTriangleSolid = styled(WarningTriangleSolid)<{ $fillColor?: s
   }
 `
 
+// eslint-disable-next-line max-len
+const CustomWarningCircleSolid = styled(WarningCircleSolid)<{ $fillColor?: string, $strokeColor?: string }>`
+  path:nth-child(1) {
+    fill: ${props => props.$fillColor || '#333333'};
+  }
+
+  path:nth-child(2) {
+    stroke: ${props => props.$strokeColor || '#333333'};
+  }
+`
+
 Tooltip.Warning = function WarningTooltip (props: PredefinedTooltipProps) {
   const { iconStyle, isFilled=false, isTriangle=false, ...tooltipProps } = props
   const { color, borderColor } = iconStyle || {}
@@ -85,7 +96,9 @@ Tooltip.Warning = function WarningTooltip (props: PredefinedTooltipProps) {
         {...(iconStyle && { style: iconStyle })}/>
       : <WarningTriangleOutlined {...(iconStyle && { style: iconStyle })}/>
     : (isFilled)
-      ? <WarningCircleSolid {...(iconStyle && { style: iconStyle })}/>
+      ? <CustomWarningCircleSolid $fillColor={color}
+        $strokeColor={borderColor || color}
+        {...(iconStyle && { style: iconStyle })}/>
       : <WarningCircleOutlined {...(iconStyle && { style: iconStyle })}/>
 
   return <Tooltip {...tooltipProps}>
