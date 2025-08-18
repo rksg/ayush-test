@@ -408,7 +408,9 @@ function Table <RecordType extends Record<string, any>> ({
     const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
-
+  if (enableFilterHeader) {
+    props.tableAlertRender = false
+  }
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasRowActionsOffset = !preventRenderHeader && [
     props.rowSelection?.type

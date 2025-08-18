@@ -7,6 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MspAdministrator,
   MspEcDelegatedAdmins
@@ -34,6 +35,8 @@ export const SelectUsers = (props: SelectUsersProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const mspManageMspDelegationsSearchToggle =
+    useIsSplitOn(Features.MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE)
 
   const isSkip = tenantId === undefined
 
@@ -168,8 +171,7 @@ export const SelectUsers = (props: SelectUsersProps) => {
     <Table
       columns={columns}
       dataSource={usersData}
-      enableFilterHeader={true}
-      tableAlertRender={false}
+      enableFilterHeader={mspManageMspDelegationsSearchToggle}
       rowKey='email'
       rowSelection={{
         type: 'checkbox',
