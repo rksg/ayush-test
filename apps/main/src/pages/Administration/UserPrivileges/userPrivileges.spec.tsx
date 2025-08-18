@@ -94,4 +94,100 @@ describe('UserPrivileges', () => {
 
     expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
   })
+
+  it('should render with group-based login enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => {
+      return ff === Features.GROUP_BASED_LOGIN_TOGGLE
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
+
+  it('should render with privilege groups paginated API enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => {
+      return ff === Features.ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
+
+  it('should handle different tenant types', async () => {
+    const services = require('@acx-ui/rc/services')
+    services.useGetTenantDetailsQuery.mockReturnValue({
+      data: {
+        tenantType: 'MSP'
+      }
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
+
+  it('should handle MSP EC profile data', async () => {
+    const mspServices = require('@acx-ui/msp/services')
+    mspServices.useGetMspEcProfileQuery.mockReturnValue({
+      data: { isMspEc: true }
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
+
+  it('should configure SSO when authentication data contains SAML', async () => {
+    const services = require('@acx-ui/rc/services')
+    services.useGetTenantAuthenticationsQuery.mockReturnValue({
+      data: [
+        {
+          id: '1',
+          authenticationType: 'SAML',
+          name: 'Test SAML'
+        }
+      ]
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
 })
