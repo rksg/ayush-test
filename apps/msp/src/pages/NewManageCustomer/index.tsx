@@ -288,7 +288,8 @@ export function NewManageCustomer () {
   useEffect(() => {
     if (licenseSummaryResults || calculatedLicencesList) {
       if(multiLicenseFFToggle && calculatedLicencesList) {
-        checkAvailableLicenseV2(calculatedLicencesList.data)
+        checkAvailableLicenseV2(calculatedLicencesList.data, 
+          formRef.current?.getFieldValue('tier'))
       } else if (licenseSummaryResults) {
         checkAvailableLicense(licenseSummaryResults)
       }
@@ -324,10 +325,12 @@ export function NewManageCustomer () {
         const solutionTokenTrialLic = solutionTokenTrial.length > 0 ?
           solutionTokenTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
+        const tierValue = setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
+
         if(multiLicenseFFToggle && calculatedLicencesList) {
           setLicenseCalcData({ apswLic, apswTrialLic, solutionTokenLic, solutionTokenTrialLic })
-          isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data)
-            : checkAvailableLicenseV2(calculatedLicencesList.data, apswLic,
+          isTrialEditMode ? checkAvailableLicenseV2(calculatedLicencesList.data, tierValue)
+            : checkAvailableLicenseV2(calculatedLicencesList.data, tierValue, apswLic,
               apswTrialLic, solutionTokenLic, solutionTokenTrialLic)
 
         } else if (licenseSummaryResults) {
@@ -347,7 +350,7 @@ export function NewManageCustomer () {
           solutionTokenLicense: solutionTokenLic,
           solutionTokenTrialLicense: solutionTokenTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional,
+          tier: tierValue,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -834,14 +837,12 @@ export function NewManageCustomer () {
 
   const checkAvailableLicenseV2 = (
     entitlements: LicenseCalculatorDataV2[],
+    currentTier: MspEcTierEnum,
     apswLic?: number,
     apswTrialLic?: number,
     solutionTokenLic?: number,
     solutionTokenTrialLic?: number
   ) => {
-    const currentTier =
-      formRef.current?.getFieldValue('tier') || data?.tier
-
     setAvailableApswLicense(
       sumLicenses(entitlements, EntitlementDeviceType.APSW, false, currentTier, apswLic)
     )
@@ -964,21 +965,26 @@ export function NewManageCustomer () {
     </>
   }
 
-  const handleServiceTierChange = function (tier: RadioChangeEvent) {
-    const prevTier = formRef.current?.getFieldValue('tier')
+  const checkTierLicense = function (tier: MspEcTierEnum) {
     if(multiLicenseFFToggle && calculatedLicencesList) {
       if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
-        checkAvailableLicenseV2(calculatedLicencesList.data)
+        checkAvailableLicenseV2(calculatedLicencesList.data, 
+          tier)
       } else { // Edit Mode (not TrailEditMode)
         checkAvailableLicenseV2(
           calculatedLicencesList.data,
+          tier,
           licenseCalcData.apswLic,
           licenseCalcData.apswTrialLic,
           licenseCalcData.solutionTokenLic,
           licenseCalcData.solutionTokenTrialLic)
       }
     }
+  }
 
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    const prevTier = formRef.current?.getFieldValue('tier')
+    checkTierLicense(tier.target.value)
 
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
@@ -997,6 +1003,7 @@ export function NewManageCustomer () {
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
           formRef.current?.setFieldValue('tier', prevTier)
+          checkTierLicense(prevTier)
         }
       })
     }

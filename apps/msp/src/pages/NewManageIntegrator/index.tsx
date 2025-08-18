@@ -778,16 +778,20 @@ export function NewManageIntegrator () {
     />
   }
 
-  const handleServiceTierChange = function (tier: RadioChangeEvent) {
-    const prevTier = formRef.current?.getFieldValue('tier')
+  const checkTierLicense = function (tier: MspEcTierEnum) {
     if(multiLicenseFFToggle && calculatedLicencesList) {
       checkAvailableLicenseV2(
         calculatedLicencesList.data,
-        tier.target.value,
+        tier,
         ...(isEditMode ? [licenseCalcData.apswLic, licenseCalcData.solutionTokenLic] : [])
       )
     }
+  }
 
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    const prevTier = formRef.current?.getFieldValue('tier')
+    checkTierLicense(tier.target.value)
+   
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>
@@ -805,6 +809,7 @@ export function NewManageIntegrator () {
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
           formRef.current?.setFieldValue('tier', prevTier)
+          checkTierLicense(prevTier)
         }
       })
     }
