@@ -79,8 +79,8 @@ import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { getServiceTierOptions }     from '../NewManageCustomer/NewManageCustomer.util'
 import * as UI                       from '../styledComponents'
-import { useServiceTierOptions } from '../NewManageCustomer/NewManageCustomer.util'
 
 interface EcFormData {
     name: string,
@@ -119,7 +119,7 @@ export function NewManageIntegrator () {
   const createEcWithTierFFToggle = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const createEcWithTierEnabled = multiLicenseFFToggle &&
     // ACX-94742 Note: This FR only supports techpartner tiers MDU/HSP; default MSP is out of scope.
-    createEcWithTierFFToggle && (isMDU || isHospitality) 
+    createEcWithTierFFToggle && (isMDU || isHospitality)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -212,14 +212,14 @@ export function NewManageIntegrator () {
    useGetPrivacySettingsQuery({ params: useParams() },
      { skip: isEditMode || !isAppMonitoringEnabled })
 
-    const setServiceTier = (serviceTier: MspEcTierEnum) => {
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
     if (multiLicenseFFToggle) {
       return serviceTier
     } else {
       return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
-      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+        : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
     }
-    }
+  }
 
   useEffect(() => {
     if (privacySettingsData) {
@@ -234,7 +234,7 @@ export function NewManageIntegrator () {
     if (licenseSummaryResults || hasCalculatedLicencesList) {
       if(hasCalculatedLicencesList) {
         checkAvailableLicenseV2(
-          calculatedLicencesList.data, 
+          calculatedLicencesList.data,
           formRef.current?.getFieldValue('tier'))
       } else if (licenseSummaryResults) {
         checkAvailableLicense(licenseSummaryResults)
@@ -762,7 +762,7 @@ export function NewManageIntegrator () {
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
                 return (
-                  useServiceTierOptions(value)
+                  getServiceTierOptions(value, { mspServiceTierFFtoggle, multiLicenseFFToggle })
                 ) &&
                 <Radio
                   onChange={handleServiceTierChange}

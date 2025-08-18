@@ -8,7 +8,7 @@ import { AdministrationUrlsInfo }                                               
 import { Provider }                                                                                                   from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                                from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                                  from '@acx-ui/types'
-import { AccountVertical, getJwtTokenPayload, ToastProps }                                                                                            from '@acx-ui/utils'
+import { AccountVertical, getJwtTokenPayload, ToastProps }                                                            from '@acx-ui/utils'
 import { AccountType }                                                                                                from '@acx-ui/utils'
 
 import { NewManageIntegrator } from '.'

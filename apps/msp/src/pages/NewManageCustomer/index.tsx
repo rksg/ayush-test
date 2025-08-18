@@ -84,7 +84,8 @@ import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 import { StartSubscriptionModal }    from '../StartSubscriptionModal'
 import * as UI                       from '../styledComponents'
-import { useServiceTierOptions } from './NewManageCustomer.util'
+
+import { getServiceTierOptions } from './NewManageCustomer.util'
 
 interface EcFormData {
     name: string,
@@ -433,7 +434,7 @@ export function NewManageCustomer () {
       return serviceTier
     } else {
       return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
-      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+        : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
     }
   }
 
@@ -1017,7 +1018,7 @@ export function NewManageCustomer () {
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
                 return (
-                  useServiceTierOptions(value)
+                  getServiceTierOptions(value, { mspServiceTierFFtoggle, multiLicenseFFToggle })
                 ) &&
                 <Radio
                   onChange={handleServiceTierChange}
