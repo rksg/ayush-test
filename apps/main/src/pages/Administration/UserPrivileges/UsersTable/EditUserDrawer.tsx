@@ -19,8 +19,8 @@ import {
 import {
   Administrator
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { noDataDisplay }      from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import PrivilegeGroupSelector from '../PrivilegeGroups/PrivilegeGroupSelector'
 
