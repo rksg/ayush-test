@@ -37,7 +37,6 @@ export const SelectUsers = (props: SelectUsersProps) => {
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
   const mspManageMspDelegationsSearchToggle =
     useIsSplitOn(Features.MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE)
-
   const isSkip = tenantId === undefined
 
   function getSelectedKeys (mspAdmins: MspAdministrator[], admins: string[]) {
