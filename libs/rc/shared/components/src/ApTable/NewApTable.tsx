@@ -376,7 +376,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
             <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
               {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
             {isFlagUnderPoweredEnabled && row?.poeUnderPowered?
-              <Tooltip.Info
+              <Tooltip.Warning
                 isFilled
                 placement='right'
                 title={$t({

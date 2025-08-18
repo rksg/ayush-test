@@ -12,5 +12,6 @@ export const MessageMapping = {
   keep_alive_interval_tooltip: defineMessage({ defaultMessage: 'The interval at which AP sends keep-alive requests to RUCKUS Edge.' }),
   keep_alive_retry_tooltip: defineMessage({ defaultMessage: 'The consecutive number of keep-alive requests that can be lost before disconnecting from RUCKUS Edge.' }),
   nat_traversal_support_tooltip: defineMessage({ defaultMessage: 'Facilitates VxLAN-GPE tunnel traffic through NAT devices for seamless connectivity and interoperability.' }),
-  tunnel_type_l2ogre_tooltip: defineMessage({ defaultMessage: 'Forward the AP Traffic to a 3rd party device over L2GRE tunnel for SD-LAN service tunneling.' })
+  tunnel_type_l2ogre_tooltip: defineMessage({ defaultMessage: 'Forward the AP Traffic to a 3rd party device over L2GRE tunnel for SD-LAN service tunneling.' }),
+  l2ogre_vni_not_supported_tooltip: defineMessage({ defaultMessage: 'The VNI is not supported for tunnel type L2GRE.' })
 }
