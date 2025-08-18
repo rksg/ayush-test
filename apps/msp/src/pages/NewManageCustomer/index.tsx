@@ -84,6 +84,7 @@ import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
 import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
 import { StartSubscriptionModal }    from '../StartSubscriptionModal'
 import * as UI                       from '../styledComponents'
+import { useServiceTierOptions } from './NewManageCustomer.util'
 
 interface EcFormData {
     name: string,
@@ -428,8 +429,12 @@ export function NewManageCustomer () {
   }, [techPartners])
 
   const setServiceTier = (serviceTier: MspEcTierEnum) => {
-    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+    if (multiLicenseFFToggle) {
+      return serviceTier
+    } else {
+      return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
       : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+    }
   }
 
   const [sameCountry, setSameCountry] = useState(true)
@@ -959,6 +964,7 @@ export function NewManageCustomer () {
   }
 
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    const prevTier = formRef.current?.getFieldValue('tier')
     if(multiLicenseFFToggle && calculatedLicencesList) {
       if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
         checkAvailableLicenseV2(calculatedLicencesList.data)
@@ -989,15 +995,13 @@ export function NewManageCustomer () {
         content: modalContent,
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
-          if (tier.target.value === MspEcTierEnum.Essentials) {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
-          } else {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
-          }
+          formRef.current?.setFieldValue('tier', prevTier)
         }
       })
     }
   }
+
+
 
   const EcTierForm = () => {
     return <Form.Item
@@ -1012,15 +1016,8 @@ export function NewManageCustomer () {
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
-                // isMDU : show only Core
-                // isHospitality: show only Professional
-                // everything else: show both Professional and Essentials
                 return (
-                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
-                  (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
-                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
-                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                  useServiceTierOptions(value)
                 ) &&
                 <Radio
                   onChange={handleServiceTierChange}

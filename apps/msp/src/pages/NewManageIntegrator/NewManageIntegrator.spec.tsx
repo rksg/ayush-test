@@ -8,7 +8,7 @@ import { AdministrationUrlsInfo }                                               
 import { Provider }                                                                                                   from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                                from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                                  from '@acx-ui/types'
-import type { ToastProps }                                                                                            from '@acx-ui/utils'
+import { AccountVertical, getJwtTokenPayload, ToastProps }                                                                                            from '@acx-ui/utils'
 import { AccountType }                                                                                                from '@acx-ui/utils'
 
 import { NewManageIntegrator } from '.'
@@ -185,6 +185,11 @@ jest.mock('@acx-ui/rc/generic-features/components', () => ({
   usePlacesAutocomplete: () => jest.fn()
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: jest.fn()
+}))
+
 describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string, type?: string }
   params = {
@@ -249,6 +254,14 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
     jest.clearAllMocks()
   })
   it('should render correctly for edit', async () => {
+    jest.mocked(getJwtTokenPayload).mockReturnValue({
+      acx_account_vertical: AccountVertical.HOSPITALITY,
+      lastName: '',
+      exp: 0,
+      userName: '',
+      firstName: '',
+      tenantId: ''
+    })
     render(
       <Provider>
         <NewManageIntegrator />
@@ -266,14 +279,14 @@ describe('NewManageIntegrator when multipool-mspec ff is enabled', () => {
       await expect(mspEcAccountMockFn).toBeCalled()
       await expect(screen.getByRole('textbox', { name: 'Account Name' })).toHaveValue('mspeleu')
     })
-    await userEvent.click(screen.getByRole('radio', { name: 'Essentials' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Core' }))
     const dialog = await screen.findByRole('dialog')
     await expect(
       within(dialog).getByText('Are you sure you want to save the changes?')).toBeVisible()
     await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeInTheDocument())
 
-    await userEvent.click(screen.getByRole('radio', { name: 'Essentials' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Core' }))
     const dialog2 = await screen.findByRole('dialog')
     await expect(
       within(dialog2).getByText('Are you sure you want to save the changes?')).toBeVisible()
