@@ -278,10 +278,10 @@ export function SwitchVeTable (props: {
     if(!isVenueLevel && switchDetail?.model?.startsWith('ICX8100')){
       if(isFirmwareVersionAbove10010h(switchDetail?.firmware)){
         return !isSupport8100StaticRouteMaxVe
-      } else {
-        return (data?.length || 0) > 0
       }
+      return (data?.length || 0) > 0
     }
+    return false
   }
 
   return <Loader states={[tableQuery]}>
