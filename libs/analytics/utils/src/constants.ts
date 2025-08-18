@@ -5,8 +5,8 @@ import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const productNames = get('IS_MLISA_SA')
-  ? { smartZone: 'SmartZone' }
-  : { smartZone: 'RUCKUS One' }
+  ? { smartZone: 'SmartZone', mlisaVersionSuffix: ' and SmartZone version 7.x or above' }
+  : { smartZone: 'RUCKUS One', mlisaVersionSuffix: ' or above' }
 
 export enum IncidentToggle {
   SwitchDDoSIncidents = 'switch-ddos-incidents',

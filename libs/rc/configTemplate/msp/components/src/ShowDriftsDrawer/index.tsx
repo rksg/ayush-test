@@ -11,13 +11,12 @@ import {
 } from '@acx-ui/components'
 import { ConfigTemplatePageUI, DriftInstance }                                                from '@acx-ui/main/components'
 import { useGetDriftInstancesQuery, useLazyGetDriftReportQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }                         from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo, useEcFilters }           from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                                                               from '@acx-ui/user'
 import { getOpsApi }                                                                          from '@acx-ui/utils'
 
 import { MAX_SYNC_EC_TENANTS }      from '../constants'
 import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
-import { useEcFilters }             from '../utils'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
