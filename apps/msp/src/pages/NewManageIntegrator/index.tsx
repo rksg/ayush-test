@@ -271,9 +271,7 @@ export function NewManageIntegrator () {
         apswLicense: apswLic,
         solutionTokenLicense: solutionTokenLic,
         service_expiration_date: moment(data?.service_expiration_date),
-        ...(multiLicenseFFToggle && {
-          tier: tierValue
-        })
+        ...(multiLicenseFFToggle ? { tier: tierValue } : {})
       })
       setOriginalTier(data?.tier ?? '')
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -412,9 +410,8 @@ export function NewManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations,
-        ...(createEcWithTierEnabled && {
-          tier: ecFormData.tier
-        }),
+        ...(createEcWithTierEnabled ?
+          { tier: ecFormData.tier } : {}),
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -489,9 +486,7 @@ export function NewManageIntegrator () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        ...(createEcWithTierEnabled && {
-          tier: ecFormData.tier
-        }),
+        ...(createEcWithTierEnabled ? { tier: ecFormData.tier } : {}),
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
