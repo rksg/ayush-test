@@ -1,10 +1,12 @@
+import { useMemo } from 'react'
+
 import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { Params, TenantType, useParams }                              from '@acx-ui/react-router-dom'
-import { RequestPayload, RolesEnum, UseQuery }                        from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles, isCoreTier } from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi, resolveTenantTypeFromPath } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { Params, TenantType, useParams }                                                     from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, UseQuery }                                               from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles, isCoreTier, useUserProfileContext } from '@acx-ui/user'
+import { AccountType, getIntl, getOpsApi, isDelegationMode, resolveTenantTypeFromPath }      from '@acx-ui/utils'
 
 import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
@@ -151,4 +153,19 @@ export function hasConfigTemplateAllowedOperation (type: ConfigTemplateType, ope
   }
 
   return false
+}
+
+export const useEcFilters = () => {
+  const { data: userProfile } = useUserProfileContext()
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+
+  const ecFilters = useMemo(() => {
+    return isPrimeAdmin || isSupportToMspDashboardAllowed
+      ? { tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
+      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
+  }, [isPrimeAdmin, isSupportToMspDashboardAllowed])
+
+  return ecFilters
 }

@@ -2,9 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { DetailsItemList, useConfigTemplateListContext } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                       from '@acx-ui/msp/services'
-import { ConfigTemplate }                                from '@acx-ui/rc/utils'
-
-import { useEcFilters } from '../utils'
+import { ConfigTemplate, useEcFilters }                  from '@acx-ui/rc/utils'
 
 export function AppliedToTenantList ({ selectedTemplate }: { selectedTemplate: ConfigTemplate }) {
   const { $t } = useIntl()

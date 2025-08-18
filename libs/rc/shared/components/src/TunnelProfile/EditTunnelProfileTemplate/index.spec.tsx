@@ -71,7 +71,7 @@ describe('EditTunnelProfileTemplate', () => {
         (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       ),
       rest.post(
-        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataList.url,
+        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataListSkipRecRewrite.url,
         (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       ),
       rest.post(

@@ -1,11 +1,16 @@
 import { isEqual, pick } from 'lodash'
 
 import {
+  useActivateEcTenantInSdLanMutation,
   useActivateEdgeMvSdLanNetworkMutation,
+  useActivateSdLanNetworkTemplateMutation,
   useAddEdgeMvSdLanMutation,
+  useApplyConfigTemplateSkipRecRewriteMutation,
+  useDeactivateEcTenantInSdLanMutation,
   useDeactivateEdgeMvSdLanNetworkMutation,
-  useUpdateEdgeMvSdLanPartialMutation,
-  useActivateSdLanNetworkTemplateMutation
+  useDeactivateSdLanNetworkTemplateMutation,
+  useLazyGetConfigTemplateListSkipRecRewriteQuery,
+  useUpdateEdgeMvSdLanPartialMutation
 } from '@acx-ui/rc/services'
 import { CommonErrorsResult, EdgeSdLanServiceProfile } from '@acx-ui/rc/utils'
 import { CommonResult }                                from '@acx-ui/user'
@@ -17,6 +22,11 @@ export const useEdgeSdLanActions = () => {
   const [activateNetwork] = useActivateEdgeMvSdLanNetworkMutation()
   const [deactivateNetwork] = useDeactivateEdgeMvSdLanNetworkMutation()
   const [activateNetworkTemplate] = useActivateSdLanNetworkTemplateMutation()
+  const [deactivateNetworkTemplate] = useDeactivateSdLanNetworkTemplateMutation()
+  const [activateEcTenantInSdLan] = useActivateEcTenantInSdLanMutation()
+  const [deactivateEcTenantInSdLan] = useDeactivateEcTenantInSdLanMutation()
+  const [getConfigTemplateList] = useLazyGetConfigTemplateListSkipRecRewriteQuery()
+  const [applyConfigTemplate] = useApplyConfigTemplateSkipRecRewriteMutation()
 
   const diffVenueNetworks = (
     currentData: EdgeSdLanServiceProfile['activeNetwork'],
@@ -101,7 +111,8 @@ export const useEdgeSdLanActions = () => {
       activateList = []
     } = diffVenueNetworks(currentData ?? [], originData)
     if (deactivateList.length > 0) {
-      actions.push(...deactivateList.map(network => deactivateNetwork({
+      const deactivateFn = isTemplate ? deactivateNetworkTemplate : deactivateNetwork
+      actions.push(...deactivateList.map(network => deactivateFn({
         customHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1.1+json'
         },
@@ -125,7 +136,6 @@ export const useEdgeSdLanActions = () => {
           wifiNetworkId: network.networkId
         },
         payload: {
-          ...(isTemplate ? { isTemplate } : {}),
           ...(network.tunnelProfileId ? {
             forwardingTunnelProfileId: network.tunnelProfileId
           } : {})
@@ -133,6 +143,98 @@ export const useEdgeSdLanActions = () => {
       }).unwrap()))
     }
     return Promise.all(actions)
+  }
+
+  const handleCustomerChanges = async (
+    serviceId: string,
+    customerTenantIds?: string[],
+    originCustomerTenantIds?: string[]
+  ) => {
+    const actions = []
+    const activateList = customerTenantIds?.filter(tenantId =>
+      !originCustomerTenantIds?.includes(tenantId)) ?? []
+    const deactivateList = originCustomerTenantIds?.filter(tenantId =>
+      !customerTenantIds?.includes(tenantId)) ?? []
+
+    if(activateList.length > 0) {
+      actions.push(...activateList.map(tenantId => activateEcTenantInSdLan({
+        params: {
+          serviceId,
+          tenantId
+        }
+      }).unwrap()))
+    }
+    if(deactivateList.length > 0) {
+      actions.push(...deactivateList.map(tenantId => deactivateEcTenantInSdLan({
+        params: {
+          serviceId,
+          tenantId
+        }
+      }).unwrap()))
+    }
+    return Promise.all(actions)
+  }
+
+  const applyVenueTemplateIfNotApplied = async (
+    venueTemplateIds?: string[],
+    customerTenantIds?: string[]
+  ) => {
+    if(
+      !venueTemplateIds || venueTemplateIds.length === 0 ||
+      !customerTenantIds || customerTenantIds.length === 0
+    ) {
+      return
+    }
+    const venueTemplates = await getConfigTemplateList({
+      payload: {
+        page: 1,
+        pageSize: 10000,
+        filters: { id: venueTemplateIds }
+      }
+    }).unwrap()
+    const actions: Promise<CommonResult>[] = []
+    venueTemplates.data?.forEach(template => {
+      customerTenantIds?.forEach(tenantId => {
+        if(!template.appliedOnTenants?.includes(tenantId)) {
+          actions.push(applyConfigTemplate({
+            params: { templateId: template.id, tenantId },
+            payload: { overrides: [] },
+            enableRbac: true
+          }).unwrap())
+        }
+      })
+    })
+
+    await Promise.all(actions)
+  }
+
+  const applyTunnelTemplateIfNotApplied = async (
+    tunnelTemplateId?: string,
+    customerTenantIds?: string[]
+  ) => {
+    if(!tunnelTemplateId || !customerTenantIds || customerTenantIds.length === 0) {
+      return
+    }
+    const tunnelTemplates = await getConfigTemplateList({
+      payload: {
+        pageSize: 10000,
+        filters: { id: [tunnelTemplateId] }
+      }
+    }).unwrap()
+    const actions: Promise<CommonResult>[] = []
+    tunnelTemplates.data?.forEach(template => {
+      customerTenantIds?.forEach(tenantId => {
+        if(!template.appliedOnTenants?.includes(tenantId)) {
+          actions.push(applyConfigTemplate({
+            params: { templateId: template.id, tenantId },
+            payload: { overrides: [] },
+            enableRbac: true
+          }).unwrap())
+        }
+      })
+    })
+
+    await Promise.all(actions)
   }
 
   const createEdgeSdLan = async (
@@ -147,7 +249,12 @@ export const useEdgeSdLanActions = () => {
       customHeaders: {
         'Content-Type': 'application/vnd.ruckus.v1.1+json'
       },
-      payload: pick(payload, ['name', 'tunnelProfileId']),
+      payload: pick(
+        payload,
+        isMsp ?
+          ['name', 'tunnelProfileId', 'tunnelTemplateId'] :
+          ['name', 'tunnelProfileId']
+      ),
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
         if (!serviceId) {
@@ -159,8 +266,13 @@ export const useEdgeSdLanActions = () => {
 
         try {
           const reqResults = await handleNetworkChanges(serviceId, payload.activeNetwork)
-          if (isMsp)
+          if (isMsp){
+            const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
+            await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
+            await applyTunnelTemplateIfNotApplied(payload.tunnelTemplateId, payload.ecTenantIds)
             await handleNetworkChanges(serviceId, payload.activeNetworkTemplate, undefined, true)
+            await handleCustomerChanges(serviceId, payload.ecTenantIds)
+          }
           callback?.(reqResults)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
@@ -202,11 +314,19 @@ export const useEdgeSdLanActions = () => {
       )
 
       if (isMsp) {
+        const venueTemplateIds = payload.activeNetworkTemplate?.map(item => item.venueId)
+        await applyVenueTemplateIfNotApplied(venueTemplateIds, payload.ecTenantIds)
+        await applyTunnelTemplateIfNotApplied(payload.tunnelTemplateId, payload.ecTenantIds)
         await handleNetworkChanges(
           originData.id || '',
           payload.activeNetworkTemplate,
           originData.activeNetworkTemplate,
           isMsp
+        )
+        await handleCustomerChanges(
+          originData.id || '',
+          payload.ecTenantIds,
+          originData.ecTenantIds
         )
       }
 

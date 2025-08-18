@@ -10,12 +10,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
-import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
-import { GeneralForm }                               from '../Form/GeneralForm'
-import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
-import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
-import { SummaryForm }                               from '../Form/SummaryForm'
-import { transformToApiData }                        from '../Form/utils'
+import { EdgeSdLanFormContainer }       from '../Form'
+import { GeneralForm }                  from '../Form/GeneralForm'
+import { NetworkSelectionForm }         from '../Form/NetworkSelectionForm'
+import { NetworkTemplateSelectionForm } from '../Form/NetworkTemplateSelectionForm'
+import { SummaryForm }                  from '../Form/SummaryForm'
+import { EdgeSdLanFormType }            from '../shared/type'
+import { transformToApiData }           from '../shared/utils'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
