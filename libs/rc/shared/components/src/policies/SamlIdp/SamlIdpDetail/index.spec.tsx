@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { hasPermission }                       from '@acx-ui/user'
 
 import {
   certList,
@@ -25,6 +26,11 @@ import {
 } from '../__tests__/fixtures'
 
 import {  SamlIdpDetail } from '.'
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  hasPermission: jest.fn()
+}))
 
 
 const mockedUsedNavigate = jest.fn()
@@ -156,5 +162,23 @@ describe('SAML IdP Detail', () => {
 
     await waitFor(() => expect(mockedQueryViewDataList).toBeCalledTimes(2))
     await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
+  })
+
+  it('should not show refresh button when no permission', async () => {
+    jest.mocked(hasPermission).mockReturnValue(false)
+    render(
+      <Provider>
+        <SamlIdpDetail />
+      </Provider>
+      , { route: {
+        path: detailViewPath,
+        params: { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', policyId: mockSamlIdpProfileId2 }
+      } }
+    )
+
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
+
+    expect(await screen.findByText(mockSamlIdpProfileName2)).toBeInTheDocument()
+    expect(screen.queryByTestId('sync-metadata-button')).not.toBeInTheDocument()
   })
 })

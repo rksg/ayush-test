@@ -23,15 +23,18 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   usePolicyListBreadcrumb,
-  useTemplateAwarePolicyAllowedOperation
+  useTemplateAwarePolicyAllowedOperation,
+  SamlIdpProfileUrls
 } from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { hasPermission }            from '@acx-ui/user'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { CertificateInfoItem }              from '../CertificateInfoItem'
 import { SamlIdpMetadataModal }             from '../SamlIdpMetadataModal'
 
 import { SamlIdpInstanceTable } from './SamlIdpInstanceTable'
+
 
 export const SamlIdpDetail = () => {
   const { $t } = useIntl()
@@ -65,6 +68,8 @@ export const SamlIdpDetail = () => {
 
   const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
 
+  // eslint-disable-next-line max-len
+  const shouldShowRefreshButton = hasPermission({ rbacOpsIds: [getOpsApi(SamlIdpProfileUrls.refreshSamlServiceProviderMetadata)] })
   const handleSyncMetadata = async () => {
     setIsSyncingMetadata(true)
     await refreshSamlServiceProviderMetadata({
@@ -93,7 +98,8 @@ export const SamlIdpDetail = () => {
               >
                 {$t({ defaultMessage: 'View Metadata' })}
               </Button>
-              {(samlIdpData?.metadataUrl) && (
+              {shouldShowRefreshButton &&
+              (samlIdpData?.metadataUrl) && (
                 <Button
                   data-testid='sync-metadata-button'
                   style={{ borderStyle: 'none', width: '14px', height: '14px' }}
