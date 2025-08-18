@@ -11,30 +11,26 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
+import { EdgeSdLanFormType, MspEdgeSdLanFormType } from '../shared/type'
+
 import { EdgeSdLanContextProvider } from './EdgeSdLanContextProvider'
-import { NetworkActivationType }    from './NetworkSelectionForm/VenueNetworkTable/NetworksDrawer'
 
 interface EdgeSdLanFormStep {
   title: string
   content: React.FC
 }
 
-export interface EdgeSdLanFormType {
-  id?: string
-  name: string
-  tunnelProfileId: string
-  activatedNetworks: NetworkActivationType
-  activatedNetworkTemplates?: NetworkActivationType
-}
-
-export interface EdgeSdLanFormProps {
+export interface EdgeSdLanFormProps<T = EdgeSdLanFormType | MspEdgeSdLanFormType> {
   form: FormInstance,
   steps: EdgeSdLanFormStep[]
-  editData?: EdgeSdLanFormType
-  onFinish: (values: EdgeSdLanFormType, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
+  editData?: T
+  onFinish: (values: T, gotoStep: StepsFormGotoStepFn) =>
+    Promise<boolean | void>
 }
 
-const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
+export const EdgeSdLanForm = <T extends EdgeSdLanFormType | MspEdgeSdLanFormType>(
+  props: EdgeSdLanFormProps<T>
+) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
   const isEditMode = Boolean(editData)
@@ -47,7 +43,10 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
     }
   }, [isEditMode])
 
-  const handleFinish = async (formData: EdgeSdLanFormType, gotoStep: StepsFormGotoStepFn) => {
+  const handleFinish = async (
+    formData: T,
+    gotoStep: StepsFormGotoStepFn
+  ) => {
     await onFinish(formData, gotoStep)
   }
 
@@ -71,7 +70,9 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   )
 }
 
-export const EdgeSdLanFormContainer = (props: EdgeSdLanFormProps) => {
+export const EdgeSdLanFormContainer = <T extends EdgeSdLanFormType>(
+  props: EdgeSdLanFormProps<T>
+) => {
   return <EdgeSdLanContextProvider serviceId={props.editData?.id}>
     <EdgeSdLanForm {...props}/>
   </EdgeSdLanContextProvider>

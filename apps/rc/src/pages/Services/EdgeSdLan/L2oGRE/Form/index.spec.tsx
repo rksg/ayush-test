@@ -5,6 +5,7 @@ import { rest }        from 'msw'
 import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
 import { edgeSdLanApi }                 from '@acx-ui/rc/services'
 import {
+  CommonUrlsInfo,
   EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
   EdgePinFixtures,
@@ -31,7 +32,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { transformToFormData } from './utils'
+import { transformToFormData } from '../shared/utils'
 
 import { EdgeSdLanFormContainer, EdgeSdLanFormProps } from '.'
 
@@ -116,7 +117,12 @@ describe('SD-LAN form', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 

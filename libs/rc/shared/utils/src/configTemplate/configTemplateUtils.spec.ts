@@ -1,5 +1,8 @@
-import { renderHook }     from '@acx-ui/test-utils'
-import { UseQueryResult } from '@acx-ui/types'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { renderHook }             from '@acx-ui/test-utils'
+import { UseQueryResult }         from '@acx-ui/types'
+import { hasRoles }               from '@acx-ui/user'
+import { isDelegationMode }       from '@acx-ui/utils'
 
 import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
 import {
@@ -7,7 +10,8 @@ import {
   hasConfigTemplateAccess,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useEcFilters
 } from './configTemplateUtils'
 
 const mockedUseConfigTemplate = jest.fn()
@@ -24,7 +28,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  resolveTenantTypeFromPath: () => 'v'
+  resolveTenantTypeFromPath: () => 'v',
+  isDelegationMode: jest.fn()
+}))
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { adminId: 'adminId' } }),
+  hasRoles: jest.fn()
 }))
 
 describe('config-template-utils', () => {
@@ -40,6 +51,7 @@ describe('config-template-utils', () => {
   })
 
   it('should return correct access for config template', () => {
+    jest.mocked(hasRoles).mockReturnValue(true)
     expect(hasConfigTemplateAccess(true, 'MSP')).toBe(true)
     expect(hasConfigTemplateAccess(false, 'MSP')).toBe(false)
     expect(hasConfigTemplateAccess(true, 'MSP_NON_VAR')).toBe(true)
@@ -191,6 +203,29 @@ describe('config-template-utils', () => {
       expect(result.current).toEqual('regular')
       expect(mutationFn).toHaveBeenCalled()
       expect(templateMutationFn).toHaveBeenCalled()
+    })
+  })
+})
+
+describe('useEcFilters', () => {
+  it('should return correct ecFilters', () => {
+    const { result } = renderHook(() => useEcFilters())
+    expect(result.current).toEqual({
+      tenantType: ['MSP_EC', 'MSP_REC']
+    })
+  })
+
+  it('should get the ecFilters correctly when the delegation mode is false', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE)
+    jest.mocked(isDelegationMode).mockReturnValue(false)
+    jest.mocked(hasRoles).mockReturnValue(false)
+
+    const { result } = renderHook(() => useEcFilters())
+
+    expect(result.current).toEqual({
+      mspAdmins: ['adminId'],
+      tenantType: ['MSP_EC', 'MSP_REC']
     })
   })
 })

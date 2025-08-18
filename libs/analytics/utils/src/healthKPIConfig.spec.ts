@@ -331,4 +331,24 @@ describe('Health KPI', () => {
       })
     })
   })
+
+  it('should have correct mlisaVersionSuffix in productNames for MLISA', () => {
+    jest.resetModules()
+    jest.doMock('@acx-ui/config', () => ({
+      get: jest.fn().mockReturnValue(true) // IS_MLISA_SA = true
+    }))
+    const { productNames } = require('./constants')
+    expect(productNames.mlisaVersionSuffix).toBe(' and SmartZone version 7.x or above')
+    expect(productNames.smartZone).toBe('SmartZone')
+  })
+
+  it('should have correct mlisaVersionSuffix in productNames for non-MLISA', () => {
+    jest.resetModules()
+    jest.doMock('@acx-ui/config', () => ({
+      get: jest.fn().mockReturnValue(false) // IS_MLISA_SA = false
+    }))
+    const { productNames } = require('./constants')
+    expect(productNames.mlisaVersionSuffix).toBe(' or above')
+    expect(productNames.smartZone).toBe('RUCKUS One')
+  })
 })

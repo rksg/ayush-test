@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { intersection, isEmpty } from 'lodash'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
 import {
   ConnectedClientsOverTime,
@@ -23,18 +24,30 @@ import {
   GridCol,
   ContentSwitcherProps,
   ContentSwitcher,
-  getDefaultEarliestStart
+  getDefaultEarliestStart,
+  Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
+  LowPowerBannerAndModal,
+  TopologyFloorPlanWidget,
+  VenueAlarmWidget, VenueDevicesWidget
+} from '@acx-ui/rc/components'
+import {
+  useGetVenueApCapabilitiesQuery,
   useGetVenueRadioCustomizationQuery,
-  useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
-import { ShowTopologyFloorplanOn }                             from '@acx-ui/rc/utils'
-import { useNavigateToPath }                                   from '@acx-ui/react-router-dom'
-import { getUserProfile, isCoreTier }                          from '@acx-ui/user'
-import { generateVenueFilter, useDateFilter, LoadTimeContext } from '@acx-ui/utils'
-import type { AnalyticsFilter }                                from '@acx-ui/utils'
+  useGetVenueTemplateApCapabilitiesQuery,
+  useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+  useLazyApListQuery,
+  useVenueDefaultRegulatoryChannelsQuery
+} from '@acx-ui/rc/services'
+import { APExtended, Capabilities, ShowTopologyFloorplanOn, VenueDefaultRegulatoryChannels } from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                                                 from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                                                        from '@acx-ui/user'
+import { generateVenueFilter, useDateFilter, LoadTimeContext }                               from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                              from '@acx-ui/utils'
+
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../venueConfigTemplateApiSwitcher'
 
 import * as UI from './styledComponents'
 
@@ -43,9 +56,12 @@ export function VenueOverviewTab () {
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { dateFilter } = useDateFilter({ showResetMsg,
     earliestStart: getDefaultEarliestStart() })
-  const { venueId } = useParams()
+  const { venueId, tenantId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { onPageFilterChange } = useContext(LoadTimeContext)
+  const [hasSupportAfcAp, setHasSupportAfcAp] = useState(false)
+
+  const [ getApList ] = useLazyApListQuery()
 
   const venueFilter = {
     ...dateFilter,
@@ -57,7 +73,78 @@ export function VenueOverviewTab () {
     enableRbac: isUseRbacApi
   })
 
-  const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
+  // available channels from this venue country code
+  const { data: supportChannelsData, isLoading: isLoadingSupportChannelsData } =
+    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
+      useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
+      useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+      enableRbac: isUseRbacApi
+    })
+
+  // get venue capabilities
+  const { data: venueApCaps, isLoading: isLoadingVenueApCaps } =
+    useVenueConfigTemplateQueryFnSwitcher<Capabilities>({
+      useQueryFn: useGetVenueApCapabilitiesQuery,
+      useTemplateQueryFn: useGetVenueTemplateApCapabilitiesQuery,
+      enableRbac: isUseRbacApi
+    })
+
+  // filter out support tri-band AP model in venue capabilities
+  const { triBandApModels, triBanOutdoorApModels } = useMemo(() => {
+    if (venueApCaps) {
+      const apModels = venueApCaps.apModels
+      const triBandApModels = apModels?.filter(
+        apCapability => apCapability.supportTriRadio === true)
+        .map(triBandApCapability => triBandApCapability.model) as string[]
+      const triBanOutdoorApModels = apModels?.filter(
+        apCapability => apCapability.supportTriRadio === true && apCapability.isOutdoor === true)
+        .map(triBandApCapability => triBandApCapability.model) as string[]
+      return { triBandApModels, triBanOutdoorApModels }
+    }
+    return {
+      triBandApModels: [],
+      triBanOutdoorApModels: []
+    }
+  }, [venueApCaps])
+
+  // Get AP List filter by the current venue ID and triBandApModelNames model.
+  useEffect(() => {
+    if (!venueRadio || isEmpty(triBandApModels)) {
+      return
+    }
+    let filters = { model: triBandApModels, venueId: [venueId] }
+    const payload = {
+      fields: ['serialNumber', 'model', 'name'],
+      pageSize: 10000,
+      filters
+    }
+    if (getApList) {
+      getApList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res) => {
+          const { data } = res || {}
+          if (data.length > 0) {
+            // distinct triband AP model list under the venue
+            const venueTriBandApModels = data
+              .map((ap: APExtended) => ap.model)
+              .filter((value, index, array) => array.indexOf(value) === index)
+
+            // filter out triband outdoor AP under the venue
+            // eslint-disable-next-line max-len
+            const venueTriBandOutdoorApModels = intersection(triBanOutdoorApModels, venueTriBandApModels)
+
+            if (venueTriBandOutdoorApModels.length > 0) {
+              setHasSupportAfcAp(true)
+            } else if (venueRadio.radioParams6G?.enableAfc) {
+              setHasSupportAfcAp(true)
+            }
+          } else {
+            setHasSupportAfcAp(false)
+          }
+        })
+    }
+
+    //setHasSupportAfcAp(true)
+  }, [venueRadio, triBandApModels, triBanOutdoorApModels])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -80,28 +167,31 @@ export function VenueOverviewTab () {
     onPageFilterChange?.(venueFilter)
   }, [venueFilter])
 
-  return (<>
-    {
-      (
-        (tripleBand?.enabled === true) &&
-        (venueRadio?.radioParams6G?.enableAfc === true) &&
+  return (
+    <Loader states={[{
+      isLoading: isLoadingSupportChannelsData || isLoadingVenueApCaps
+    }]}>
+      {
         (
-          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
-          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
-        )
-      ) &&
-      <LowPowerBannerAndModal from={'venue'} />
-    }
-    <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher
-      tabDetails={tabDetails}
-      size='large'
-      defaultValue={localStorage.getItem('venue-tab') || tabDetails[0].value}
-      onChange={(value: string): void => {
-        localStorage.setItem('venue-tab', value)
-      }}
-    />
-  </>)
+          supportChannelsData?.afcEnabled &&
+          hasSupportAfcAp &&
+          (
+            (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+            (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+          )
+        ) &&
+        <LowPowerBannerAndModal from={'venue'} />
+      }
+      <CommonDashboardWidgets filters={venueFilter}/>
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='large'
+        defaultValue={localStorage.getItem('venue-tab') || tabDetails[0].value}
+        onChange={(value: string): void => {
+          localStorage.setItem('venue-tab', value)
+        }}
+      />
+    </Loader>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
