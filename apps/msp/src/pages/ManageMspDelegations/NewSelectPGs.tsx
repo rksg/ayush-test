@@ -89,6 +89,8 @@ export const NewSelectPGs = (props: SelectPGsProps) => {
         <Table
           columns={columns}
           dataSource={tableQuery?.data?.data}
+          enableFilterHeader={true}
+          tableAlertRender={false}
           rowKey='id'
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

@@ -66,6 +66,8 @@ export const SelectPGs = (props: SelectPGsProps) => {
       <Table
         columns={columns}
         dataSource={data}
+        enableFilterHeader={true}
+        tableAlertRender={false}
         rowKey='id'
         rowSelection={{
           type: 'checkbox',
