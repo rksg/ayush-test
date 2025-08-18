@@ -69,7 +69,7 @@ exports[`getStatusTooltip returns correct tooltip for active 1`] = `
 exports[`getStatusTooltip returns correct tooltip for applyscheduled 1`] = `
 <DocumentFragment>
   <p>
-    The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.
+    The change recommendation has been automatically scheduled by IntentAI.
   </p>
 </DocumentFragment>
 `;

@@ -69,8 +69,7 @@ describe('StatusTrail', () => {
     const scheduleStatusTrail = await screen.findAllByText('Scheduled')
     await userEvent.hover(scheduleStatusTrail[0])
     expect(await screen.findByRole('tooltip', { hidden: true }))
-      // eslint-disable-next-line max-len
-      .toHaveTextContent('The change recommendation has been automatically scheduled for 06/27/2023 06:00, by IntentAI.')
+      .toHaveTextContent('The change recommendation has been automatically scheduled by IntentAI.')
   })
 
   it('should show hover content correctly for active status', async () => {
