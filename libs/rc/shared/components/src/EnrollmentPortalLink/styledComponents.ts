@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { ChatbotLink, QrCodeSmallIcon } from '@acx-ui/icons'
+import { Modal }                        from '@acx-ui/components'
 
 
 export const StyledChatbotLink = styled(ChatbotLink)`
@@ -21,16 +22,20 @@ path {
   }
 `
 
-export const QRCodeModalStyle = `
-  .qr-code-modal .ant-modal-title,
-  div.qr-code-modal .ant-modal-header .ant-modal-title,
-  .ant-modal-wrap .qr-code-modal .ant-modal-title {
+export const StyledQRCodeModal = styled(Modal)`
+  .ant-modal-title {
     font-size: 16px !important;
   }
 
-  .qr-code-modal .ant-btn-primary,
-  div.qr-code-modal .ant-modal-footer .ant-btn-primary,
-  .ant-modal-wrap .qr-code-modal .ant-btn-primary {
+  .ant-modal-footer {
+    background-color: white !important;
+  }
+
+  .ant-modal-content {
+    border-radius: 4px;
+  }
+
+  .ant-btn-primary {
     width: 240px !important;
     margin: 0 auto !important;
     display: flex !important;
@@ -41,23 +46,17 @@ export const QRCodeModalStyle = `
     border-color: black !important;
   }
 
-  .qr-code-modal .ant-btn-primary .anticon,
-  div.qr-code-modal .ant-modal-footer .ant-btn-primary .anticon,
-  .ant-modal-wrap .qr-code-modal .ant-btn-primary .anticon {
+  .ant-btn-primary .anticon {
     color: black !important;
   }
 
-  .qr-code-modal .ant-btn-primary svg,
-  div.qr-code-modal .ant-modal-footer .ant-btn-primary svg,
-  .ant-modal-wrap .qr-code-modal .ant-btn-primary svg {
+  .ant-btn-primary svg {
     fill: black !important;
     color: black !important;
     stroke: black !important;
   }
 
-  .qr-code-modal .ant-btn-primary svg *,
-  div.qr-code-modal .ant-modal-footer .ant-btn-primary svg *,
-  .ant-modal-wrap .qr-code-modal .ant-btn-primary svg * {
+  .ant-btn-primary svg * {
     fill: black !important;
     color: black !important;
     stroke: black !important;

@@ -4,12 +4,12 @@ import { Typography } from 'antd'
 import { QRCodeSVG }  from 'qrcode.react'
 import { useIntl }    from 'react-intl'
 
-import { Button, Modal, Tooltip }         from '@acx-ui/components'
+import { Button, Tooltip }         from '@acx-ui/components'
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { ChatbotLink }                    from '@acx-ui/icons'
 import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
 
-import { StyledChatbotLink, StyledQRLink, QRCodeModalStyle } from './styledComponents'
+import { StyledChatbotLink, StyledQRLink, StyledQRCodeModal } from './styledComponents';
 
 export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const { Link } = Typography
@@ -87,7 +87,6 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: QRCodeModalStyle }} />
       <div style={{ display: 'flex' }}>
         {!workFlowQrCodeGenerate && (
           <>
@@ -176,28 +175,20 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
           </div>
         )}
       </div>
-      <Modal
+      <StyledQRCodeModal
         title={truncatedWorkflowName}
-        width={400}
+        width={300}
         visible={qrModalVisible}
         okText={$t({ defaultMessage: 'Download' })}
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={handleModalCancel}
         onOk={handleDownloadQr}
         maskClosable={false}
-        className='qr-code-modal'
         okButtonProps={{
-          style: {
-            width: '240px',
-            margin: '0 auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'white',
+          icon: <DownloadOutlined style={{
             color: 'black',
-            borderColor: 'black'
-          },
-          icon: <DownloadOutlined />
+            marginRight: '12px'
+          }} />
         }}
       >
         <div style={{ textAlign: 'center' }}>
@@ -210,7 +201,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
             includeMargin={false}
           />
         </div>
-      </Modal>
+      </StyledQRCodeModal>
     </>
   )
 }
