@@ -372,22 +372,8 @@ describe('Administration page', () => {
   })
 
   it('should render administrator title with count for group login disabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE && ff !== Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
     params.activeTab = 'administrators'
-
-    setUserProfile({
-      profile: fakeUserProfile,
-      allowedOperations: [
-        'GET:/tenants/self',
-        'GET:/admins',
-        'POST:/admins/query',
-        'GET:/delegations',
-        'GET:/roleAuthentications/privilegeGroups',
-        'GET:/roleAuthentications/customRoles',
-        'GET:/notificationRecipients',
-        'POST:/notificationRecipients/query'
-      ]
-    })
 
     render(
       <Provider>
