@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { EdgeSdLanFixtures, EdgeTunnelProfileFixtures, Network, NetworkTypeEnum, TunnelProfileViewData } from '@acx-ui/rc/utils'
 
-import { getFilteredTunnelProfileOptions, transformToApiData, transformToFormData } from './utils'
+import { ApplyTo }                                                                                                                 from './type'
+import { getFilteredTunnelProfileOptions, transformToApiData, transformToFormData, transformToMspApiData, transformToMspFormData } from './utils'
 
 const { mockedL2oGreSdLanDataList } = EdgeSdLanFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
@@ -26,8 +27,33 @@ describe('SD-LAN form utils', () => {
           networkId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][1].networkId,
           tunnelProfileId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][1].tunnelProfileId
         }
+      ]
+    })
+  })
+
+  it('test transformToMspApiData', () => {
+    const data = mockedL2oGreSdLanDataList[0]
+    const formData = transformToMspFormData(data)
+    const apiData = transformToMspApiData(formData)
+    expect(apiData).toStrictEqual({
+      id: formData.id,
+      name: formData.name,
+      tunnelProfileId: formData.tunnelProfileId,
+      activeNetwork: [
+        {
+          venueId: Object.keys(formData.activatedNetworks)[0],
+          networkId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][0].networkId,
+          tunnelProfileId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][0].tunnelProfileId
+        },
+        {
+          venueId: Object.keys(formData.activatedNetworks)[0],
+          networkId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][1].networkId,
+          tunnelProfileId: formData.activatedNetworks[Object.keys(formData.activatedNetworks)[0]][1].tunnelProfileId
+        }
       ],
-      activeNetworkTemplate: []
+      activeNetworkTemplate: [],
+      tunnelTemplateId: '',
+      ecTenantIds: formData.ecTenantIds
     })
   })
 
@@ -51,8 +77,35 @@ describe('SD-LAN form utils', () => {
             tunnelProfileId: data.tunneledWlans?.[1].forwardingTunnelProfileId
           }
         ]
+      }
+    })
+  })
+
+  it('test transformToMspFormData', () => {
+    const data = mockedL2oGreSdLanDataList[0]
+    const result = transformToMspFormData(data)
+    expect(result).toStrictEqual({
+      id: data.id,
+      name: data.name,
+      tunnelProfileId: data.tunnelProfileId,
+      activatedNetworks: {
+        [data.tunneledWlans?.[0].venueId]: [
+          {
+            networkId: data.tunneledWlans?.[0].networkId,
+            networkName: data.tunneledWlans?.[0].networkName,
+            tunnelProfileId: data.tunneledWlans?.[0].forwardingTunnelProfileId
+          },
+          {
+            networkId: data.tunneledWlans?.[1].networkId,
+            networkName: data.tunneledWlans?.[1].networkName,
+            tunnelProfileId: data.tunneledWlans?.[1].forwardingTunnelProfileId
+          }
+        ]
       },
-      activatedNetworkTemplates: {}
+      activatedNetworkTemplates: {},
+      applyTo: [ApplyTo.MY_ACCOUNT],
+      tunnelTemplateId: '',
+      ecTenantIds: data.ecTenantIds ?? []
     })
   })
 

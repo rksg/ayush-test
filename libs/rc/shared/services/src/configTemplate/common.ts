@@ -68,10 +68,33 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    getConfigTemplateListSkipRecRewrite: build.query<TableResult<ConfigTemplate>, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getConfigTemplatesSkipRecRewrite,
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbacSkipRecRewrite
+      ),
+      providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const useCases = isRecSite() ? useCasesToRefreshRecTemplateList : useCasesToRefreshTemplateList
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
       query: commonQueryFn(
         ConfigTemplateUrlsInfo.applyConfigTemplate,
         ConfigTemplateUrlsInfo.applyConfigTemplateRbac
+      ),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    applyConfigTemplateSkipRecRewrite: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.applyConfigTemplateSkipRecRewrite,
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbacSkipRecRewrite
       ),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
@@ -626,5 +649,7 @@ export const {
   usePatchDriftReportByInstanceMutation,
   useCloneTemplateMutation,
   useUpdateEnforcementStatusMutation,
-  useBindingPersonaGroupTemplateWithNetworkMutation
+  useBindingPersonaGroupTemplateWithNetworkMutation,
+  useLazyGetConfigTemplateListSkipRecRewriteQuery,
+  useApplyConfigTemplateSkipRecRewriteMutation
 } = configTemplateApi

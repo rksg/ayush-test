@@ -6,8 +6,8 @@ import { Features }                                  from '@acx-ui/feature-toggl
 import {
   SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap
 } from '@acx-ui/rc/components'
-import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery }                      from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeMvSdLanViewData, IncompatibilityFeatures, PersonalIdentityNetworksViewData, TunnelProfileViewData, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgePinViewDataListQuery, useVenuesListQuery }         from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeMvSdLanViewData, IncompatibilityFeatures, PersonalIdentityNetworksViewData, TunnelProfileViewData, useIsEdgeFeatureReady, Venue } from '@acx-ui/rc/utils'
 
 export interface EdgeSdLanContextType {
   allSdLans: Pick<EdgeMvSdLanViewData, 'id' | 'venueId' | 'edgeClusterId' | 'guestEdgeClusterId'
@@ -18,6 +18,7 @@ export interface EdgeSdLanContextType {
   availableTunnelProfiles: TunnelProfileViewData[]
   associatedEdgeClusters?: EdgeClusterStatus[]
   requiredFwMap?: { [key: string]: string|undefined }
+  allVenues?: Venue[]
 }
 
 export const EdgeSdLanContext = createContext({} as EdgeSdLanContextType)
@@ -92,8 +93,23 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
     }
   })
 
+  const { allVenues, isVenueLoading } = useVenuesListQuery({
+    payload: {
+      fields: ['name', 'country', 'city', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data, isLoading }) => ({
+      isVenueLoading: isLoading,
+      allVenues: data?.data
+    })
+  })
+
   const loadingStates = [{
-    isLoading: isDataLoading || isSdLansLoading || isPinsLoading || isAssociatedEdgeClustersLoading
+    isLoading: isDataLoading || isSdLansLoading || isPinsLoading ||
+      isAssociatedEdgeClustersLoading || isVenueLoading
   }]
 
   return <EdgeSdLanContext.Provider value={{
@@ -102,7 +118,8 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
     allSoftGreVenueMap,
     availableTunnelProfiles,
     associatedEdgeClusters,
-    requiredFwMap
+    requiredFwMap,
+    allVenues
   }}>
     <Loader states={loadingStates}>
       {props.children}

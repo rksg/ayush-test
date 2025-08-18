@@ -210,7 +210,7 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
     description: 'Guest network type - 3rd Party Captive Portal (WISPr)'
   }),
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
-    defaultMessage: 'Captive Portal',
+    defaultMessage: 'Cloudpath Captive Portal',
     description: 'Guest network type - Captive Portal'
   }),
   [GuestNetworkTypeEnum.Directory]: defineMessage({
