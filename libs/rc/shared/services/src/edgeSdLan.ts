@@ -3,16 +3,15 @@ import { groupBy }             from 'lodash'
 
 import {
   CommonResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  EdgeSdLanUrls,
-  EdgeSdLanActivateNetworkPayload,
-  EdgeSdLanToggleDmzPayload,
   EdgeMvSdLanExtended,
-  EdgeMvSdLanViewData,
   EdgeMvSdLanNetworks,
   EdgeMvSdLanResponseType,
-  isEdgeWlanTemplate
+  EdgeMvSdLanViewData,
+  EdgeSdLanActivateNetworkPayload,
+  EdgeSdLanToggleDmzPayload,
+  EdgeSdLanUrls,
+  onActivityMessageReceived,
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }               from '@acx-ui/store'
 import { RequestPayload }                 from '@acx-ui/types'
@@ -49,16 +48,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
          }
        },
        providesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
-       transformResponse: (result: TableResult<EdgeMvSdLanViewData>) => {
-         result.data.forEach(d => {
-           d.tunneledWlanTemplates = d.tunneledWlans
-             ?.filter(w => isEdgeWlanTemplate(w.wlanId))
-
-           d.tunneledWlans = d.tunneledWlans
-             ?.filter(w => !isEdgeWlanTemplate(w.wlanId))
-         })
-         return result
-       },
        async onCacheEntryAdded (requestArgs, api) {
          await onSocketActivityChanged(requestArgs, api, (msg) => {
            onActivityMessageReceived(msg, [
@@ -345,6 +334,19 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           )
         })
       }
+    }),
+    activateEcTenantInSdLan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.activateEcTenantInSdLan, params, versionHeader)
+        return req
+      }
+    }),
+    deactivateEcTenantInSdLan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(EdgeSdLanUrls.deactivateEcTenantInSdLan, params, versionHeader)
+        return req
+      }
     })
   })
 })
@@ -390,5 +392,7 @@ export const {
   useAddEdgeMvSdLanMutation,
   useUpdateEdgeMvSdLanPartialMutation,
   useActivateEdgeMvSdLanNetworkMutation,
-  useDeactivateEdgeMvSdLanNetworkMutation
+  useDeactivateEdgeMvSdLanNetworkMutation,
+  useActivateEcTenantInSdLanMutation,
+  useDeactivateEcTenantInSdLanMutation
 } = edgeSdLanApi

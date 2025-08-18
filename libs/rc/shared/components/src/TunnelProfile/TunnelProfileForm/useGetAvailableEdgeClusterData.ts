@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { Features }                      from '@acx-ui/feature-toggle'
 import {
   useGetEdgeClusterListQuery,
-  useGetTunnelProfileTemplateViewDataListQuery,
+  useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery,
   useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import { useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
@@ -82,7 +82,7 @@ export const useGetAvailableEdgeClusterData = (props: useGetAvailableEdgeCluster
   const {
     invalidEdgeClusterIds: invalidEdgeClusterIdsForTemplate,
     isLoading: isTunnelProfileTemplateLoading
-  } = useGetTunnelProfileTemplateViewDataListQuery(
+  } = useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery(
     { payload: tunnelQueryPayload },
     {
       skip: !isTemplate || !!!clusterIds?.length,

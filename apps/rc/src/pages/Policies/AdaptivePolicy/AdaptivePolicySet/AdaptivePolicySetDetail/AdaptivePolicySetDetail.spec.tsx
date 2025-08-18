@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   CertificateUrls,
-  CommonUrlsInfo,
   DpskUrls,
   MacRegListUrlsInfo,
   PersonaUrls,
@@ -24,8 +24,15 @@ import {
 } from './__tests__/fixtures'
 import AdaptivePolicySetDetail from './AdaptivePolicySetDetail'
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
+const mockNetworkList = useWifiNetworkListQuery as jest.Mock
 describe('AdaptivePolicySetDetail', () => {
   beforeEach(() => {
+    mockNetworkList.mockReturnValue({ data: networkList })
+
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicySet.url.split('?')[0],
@@ -38,10 +45,6 @@ describe('AdaptivePolicySetDetail', () => {
       rest.get(
         DpskUrls.getDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(networkList))
       ),
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
