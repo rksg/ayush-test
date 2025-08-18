@@ -6,9 +6,11 @@ import { FormattedMessage, useIntl }                                            
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { useSwitchPortlistQuery }   from '@acx-ui/rc/services'
 import {
   isFirmwareVersionAbove10010f,
-  isL3FunctionSupported
+  isL3FunctionSupported,
+  SwitchPortViewModelQueryFields
 } from '@acx-ui/rc/switch/utils'
 import {
   FlexAuthMessages,
@@ -25,6 +27,7 @@ import {
 import {
   checkVlanDiffFromTargetVlan
 } from '@acx-ui/switch/components'
+import { useTenantId } from '@acx-ui/utils'
 
 import StaticRoutes      from './StaticRoutes'
 import { JumboModeSpan } from './styledComponents'
@@ -65,6 +68,7 @@ export function SwitchStackSetting (props: {
   const defaultVlan
     = Object.keys(vlanMapping).find(key => vlanMapping[key] === SWITCH_DEFAULT_VLAN_NAME) ?? ''
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
@@ -78,6 +82,7 @@ export function SwitchStackSetting (props: {
   const [isL3ConfigAllowed, setIsL3ConfigAllowed] = useState(false)
   const [ipAddressInterfaceType, setIpAddressInterfaceType] = useState('VE')
   const [ipAddressInterface, setIpAddressInterface] = useState('1')
+  const [authVlanDisabled, setAuthVlanDisabled] = useState(readOnly ?? false)
 
   const onIpAddressTypeChange = (e: RadioChangeEvent) => {
     if (e.target.value === IP_ADDRESS_TYPE.DYNAMIC && form.getFieldValue('dhcpServerEnabled')) {
@@ -93,6 +98,19 @@ export function SwitchStackSetting (props: {
     }
     setEnableDhcp(e.target.value === IP_ADDRESS_TYPE.DYNAMIC)
   }
+
+  const { data: portsData } = useSwitchPortlistQuery({
+    params: { tenantId: useTenantId(), switchId: switchDetail?.id },
+    enableRbac: isSwitchRbacEnabled,
+    payload: {
+      filters: { switchId: [switchDetail?.id] },
+      sortField: 'portIdentifierFormatted',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000,
+      fields: SwitchPortViewModelQueryFields
+    }
+  })
 
   useEffect(()=>{
     if(form.getFieldValue('ipAddressType')) {
@@ -110,11 +128,18 @@ export function SwitchStackSetting (props: {
     if(form.getFieldValue('ipAddressInterface')){
       setIpAddressInterface(form.getFieldValue('ipAddressInterface'))
     }
+
+    if(portsData){
+      const authDefaultVlanExist = portsData?.data?.some(
+        item => item?.authDefaultVlan !== undefined && item?.authDefaultVlan.toString() !== '')
+      setAuthVlanDisabled(authDefaultVlanExist)
+    }
   }, [
     form.getFieldValue('ipAddressType'),
     form.getFieldValue('switchType'),
     form.getFieldValue('ipAddressInterfaceType'),
-    form.getFieldValue('ipAddressInterface')
+    form.getFieldValue('ipAddressInterface'),
+    portsData
   ])
 
   const onEditJumboMode = (checked: boolean) => {
@@ -339,10 +364,19 @@ export function SwitchStackSetting (props: {
                   )
                 }
               ]}
-              children={
-                <Input disabled={readOnly} />
+            >
+              {authVlanDisabled ?
+                <Tooltip
+                  // eslint-disable-next-line max-len
+                  title={$t({ defaultMessage: 'The "Auth Default VLAN" cannot be changed when "Port Authentication" is enabled at the port level.' })}
+                >
+                  <span>
+                    <Input disabled={true} value={authDefaultVlan} />
+                  </span>
+                </Tooltip>
+                : <Input disabled={readOnly} />
               }
-            />
+            </Form.Item>
             <Form.Item
               name='guestVlan'
               label={$t({ defaultMessage: 'Guest VLAN' })}
