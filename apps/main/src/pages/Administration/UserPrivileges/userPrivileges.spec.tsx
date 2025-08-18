@@ -28,6 +28,11 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetAdminListQuery: jest.fn().mockReturnValue({
     data: []
   }),
+  useGetAdminListPaginatedQuery: jest.fn().mockReturnValue({
+    data: { totalCount: 0, content: [] },
+    isLoading: false,
+    isFetching: false
+  }),
   useGetAdminGroupsQuery: jest.fn().mockReturnValue({
     data: []
   }),
