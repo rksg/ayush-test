@@ -12,7 +12,10 @@ import { GeneralForm } from '.'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
-  const Select = (props: MockSelectProps) => <MockSelect {...props}/>
+  const Select = (props: MockSelectProps) => {
+    const { allowClear, ...rest } = props as MockSelectProps & { allowClear?: boolean }
+    return <MockSelect {...rest}/>
+  }
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
     <option role='option' {...otherProps}>{children}</option>

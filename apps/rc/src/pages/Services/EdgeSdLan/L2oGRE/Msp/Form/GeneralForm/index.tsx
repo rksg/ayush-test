@@ -1,4 +1,6 @@
 
+import { useMemo } from 'react'
+
 import { Checkbox, Col, Form, Input, Row, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
@@ -24,6 +26,28 @@ export const GeneralForm = () => {
   const applyTo = Form.useWatch('applyTo', form)
   const tunnelProfileId = Form.useWatch('tunnelProfileId', form)
   const tunnelTemplateId = Form.useWatch('tunnelTemplateId', form)
+
+  const filteredAvailableTunnelProfiles = useMemo(() => {
+    const targetTunnelTemplate = availableTunnelTemplates.find(tunnelTemplate =>
+      tunnelTemplate.id === tunnelTemplateId)
+    return availableTunnelProfiles.filter(tunnelProfile =>
+      tunnelProfile.id === tunnelProfileId ||
+      (
+        !targetTunnelTemplate?.destinationEdgeClusterId ||
+        tunnelProfile.destinationEdgeClusterId === targetTunnelTemplate?.destinationEdgeClusterId
+      ))
+  }, [availableTunnelProfiles, tunnelProfileId, tunnelTemplateId, availableTunnelTemplates])
+
+  const filteredAvailableTunnelTemplates = useMemo(() => {
+    const targetTunnelProfile = availableTunnelProfiles.find(tunnelProfile =>
+      tunnelProfile.id === tunnelProfileId)
+    return availableTunnelTemplates.filter(tunnelTemplate =>
+      tunnelTemplate.id === tunnelTemplateId ||
+      (
+        !targetTunnelProfile?.destinationEdgeClusterId ||
+        tunnelTemplate.destinationEdgeClusterId === targetTunnelProfile?.destinationEdgeClusterId
+      ))
+  }, [availableTunnelTemplates, tunnelProfileId, tunnelTemplateId, availableTunnelProfiles])
 
   const currentTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
     tunnelProfile.id === tunnelProfileId)
@@ -100,7 +124,7 @@ export const GeneralForm = () => {
                                   label={$t({ defaultMessage: 'Tunnel Profile (AP to Cluster)' })}
                                   onChange={onTunnelProfileChange}
                                   disabled={editMode}
-                                  tunnelProfiles={availableTunnelProfiles}
+                                  tunnelProfiles={filteredAvailableTunnelProfiles}
                                   associatedEdgeClusters={associatedEdgeClusters}
                                 />
                               </Col>
@@ -144,7 +168,7 @@ export const GeneralForm = () => {
                                   label={$t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })}
                                   onChange={onTunnelTemplateChange}
                                   disabled={editMode}
-                                  tunnelProfiles={availableTunnelTemplates}
+                                  tunnelProfiles={filteredAvailableTunnelTemplates}
                                   associatedEdgeClusters={templateAssociatedEdgeClusters}
                                 />
                               </Col>

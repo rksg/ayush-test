@@ -89,6 +89,7 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
       placeholder={$t({ defaultMessage: 'Select ...' })}
       onChange={onChange}
       disabled={disabled}
+      allowClear
     />
   </Form.Item>
 }
