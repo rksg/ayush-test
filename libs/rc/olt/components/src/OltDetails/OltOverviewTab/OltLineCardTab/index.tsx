@@ -1,6 +1,6 @@
 import { Olt, OltCage } from '@acx-ui/olt/utils'
 
-import { OltCageTable } from '../OltCageTable'
+import { OltCageTable } from '../../OltCageTable'
 
 export const OltLineCardTab = ({ oltDetails, oltCages, isLoading, isFetching }: {
   oltDetails: Olt,

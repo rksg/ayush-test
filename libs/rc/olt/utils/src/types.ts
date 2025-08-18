@@ -40,7 +40,7 @@ export interface OltOnt {
   ports: number
   usedPorts: number
   portDetails: OltOntPort[]
-  clientDetails: OltOntClient[]
+  clientDetails?: OltOntClient[]
   model?: string //TODO
   profileName?: string
   version?: string

@@ -1,68 +1,28 @@
-import { useEffect, useState } from 'react'
-
-import { useIntl } from 'react-intl'
-
-import { Tabs, Loader } from '@acx-ui/components'
 import {
-  OltDetailsContext,
+  OltConfigurationTab,
   OltDetailPageHeader,
-  OltInfoWidget,
-  OltLineCardTab,
-  OltNetworkCardTab,
-  OltOverviewTab
+  OltDetailsContext,
+  OltOverviewTab,
+  OltOntTab
 } from '@acx-ui/olt/components'
-import { Olt, OltCage, OltMockdata }             from '@acx-ui/olt/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Olt, OltMockdata } from '@acx-ui/olt/utils'
+import { useParams }        from '@acx-ui/react-router-dom'
+import { goToNotFound }     from '@acx-ui/user'
 
-enum OverviewInfoType {
-  OVERVIEW = 'overview',
-  NETWORK = 'network',
-  LINE = 'line'
-}
 
-const { oltData, oltCageList } = OltMockdata
+const { oltData } = OltMockdata
 
 export const OltDetails = () => {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const { activeTab, oltId } = useParams()
-  const basePath = useTenantLink(`/devices/optical/${oltId}/details/`)
+  const { activeTab } = useParams()
 
   const oltDetails = oltData as Olt //TODO: temp, remove when api is ready
-  const oltCages = oltCageList as OltCage[] //TODO: temp, remove when api is ready
 
-  const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
-
-  const handleTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
+  const tabs = {
+    overview: OltOverviewTab,
+    onts: OltOntTab,
+    configuration: OltConfigurationTab
   }
-
-  useEffect(() => {
-    if (activeTab && Object.values(OverviewInfoType).includes(activeTab as OverviewInfoType))
-      setCurrentTab(activeTab)
-  }, [activeTab])
-
-  const tabs = [{
-    label: $t({ defaultMessage: 'Overview' }),
-    value: OverviewInfoType.OVERVIEW,
-    children: <OltOverviewTab />
-  }, {
-    label: $t({ defaultMessage: 'Network Card' }),
-    value: OverviewInfoType.NETWORK,
-    children: <OltNetworkCardTab />
-  }, {
-    label: $t({ defaultMessage: 'Line Card' }),
-    value: OverviewInfoType.LINE,
-    children: <OltLineCardTab
-      oltDetails={oltDetails}
-      oltCages={oltCages}
-      isLoading={false}
-      isFetching={false}
-    />
-  }]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return <OltDetailsContext.Provider value={{
     oltDetailsContextData: oltDetails
@@ -70,30 +30,6 @@ export const OltDetails = () => {
     <OltDetailPageHeader
       oltDetails={oltDetails}
     />
-    <OltInfoWidget
-      oltDetails={oltDetails}
-      oltCages={oltCages}
-      isLoading={false}
-      isFetching={false}
-    />
-    <Tabs type='card'
-      activeKey={currentTab}
-      defaultActiveKey={currentTab || tabs[0].value}
-      onChange={handleTabChange}
-    >
-      {tabs.map((tab) => (
-        <Tabs.TabPane
-          tab={tab.label}
-          key={tab.value}
-        >
-          <Loader
-            // states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
-            style={{ minHeight: '100px' }}
-          >
-            {tab.children}
-          </Loader>
-        </Tabs.TabPane>
-      ))}
-    </Tabs>
+    { Tab && <Tab /> }
   </OltDetailsContext.Provider>
 }

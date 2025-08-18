@@ -15,7 +15,7 @@ export function CageDetailPageHeader (props: {
   cageDetails: OltCage
 }) {
   const { $t } = useIntl()
-  const { oltId } = useParams()
+  const { oltId, venueId } = useParams()
   const { oltDetails, cageDetails } = props
   const { state } = useCageDetails()
   const { closeManageOnts, openManageOnts, openEditOnt } = useDrawerActions()
@@ -34,8 +34,8 @@ export function CageDetailPageHeader (props: {
         { text: 'Wired' },
         { text: 'Switches' },
         { text: 'Optical List', link: '/devices/optical' },
-        { text: 'Cage List', link: '/devices/optical' },
-        { text: oltDetails?.name, link: `/devices/optical/${oltId}/details` }
+        { text: 'Cage List', link: `/devices/optical/${venueId}/${oltId}/details/overview/line` }, //TODO: check with UX
+        { text: oltDetails?.name, link: `/devices/optical/${venueId}/${oltId}/details/overview` }
       ]}
       extra={[
         ...filterByAccess([

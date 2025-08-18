@@ -26,6 +26,7 @@ import { getOpsApi, useDateFilter } from '@acx-ui/utils'
 
 import { OltStatus }     from '../../OltStatus'
 import { useOltActions } from '../../useOltActions'
+import { OltTabs }       from '../OltTabs'
 
 enum MoreActions {
   SYNC_DATA = 'SYNC_DATA',
@@ -40,10 +41,10 @@ export function OltDetailPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { oltDetails } = props
-  const { oltId } = useParams()
+  const { oltId, venueId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/devices/optical/${oltId}/`)
+  const basePath = useTenantLink(`/devices/optical/${venueId}/${oltId}/`)
 
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
@@ -166,6 +167,7 @@ export function OltDetailPageHeader (props: {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
+      footer={<OltTabs oltDetails={oltDetails} />}
     />
   )
 }

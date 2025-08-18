@@ -8,7 +8,7 @@ export const mockOlt = {
   model: 'MF-2',
   firmware: '22.649',
   ip: '134.242.136.112',
-  venueId: 'mock_venue_1',
+  venueId: 'venue-id',
   venueName: 'Mock Venue 1'
 }
 
@@ -90,6 +90,13 @@ export const mockOntList = [{
       status: OltCageStateEnum.DOWN,
       vlan: [],
       poePower: 0
+    }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_2_client',
+      port: '1'
     }
   ]
 }, {

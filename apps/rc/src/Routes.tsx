@@ -512,10 +512,11 @@ const useOltRoutes = () => {
   return isNokiaOltEnabled ? <>
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
     <Route path='devices/optical/:action' element={<OltForm />} />
-    <Route path='devices/optical/:oltId/:action' element={<OltForm />} />
-    <Route path='devices/optical/:oltId/details' element={<OltDetails />} />
-    <Route path='devices/optical/:oltId/details/:activeTab' element={<OltDetails />} />
-    <Route path='devices/optical/:oltId/cages/:cageId' element={<CageDetails />} />
+    <Route path='devices/optical/:venueId/:oltId/:action' element={<OltForm />} />
+    <Route path='devices/optical/:venueId/:oltId/details' element={<OltDetails />} />
+    <Route path='devices/optical/:venueId/:oltId/details/:activeTab' element={<OltDetails />} />
+    <Route path='devices/optical/:venueId/:oltId/details/:activeTab/:activeSubTab' element={<OltDetails />} />
+    <Route path='devices/optical/:venueId/:oltId/cages/:cageId' element={<CageDetails />} />
   </> : null
 }
 

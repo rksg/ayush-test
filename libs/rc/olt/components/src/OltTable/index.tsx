@@ -30,7 +30,8 @@ export const OltTable = (props: OltTableProps) => {
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows) => {
         const oltId = rows[0].serialNumber
-        navigate(`${linkToOLT.pathname}/${oltId}/edit`, { replace: false })
+        const venueId = rows[0].venueId
+        navigate(`${linkToOLT.pathname}/${venueId}/${oltId}/edit`, { replace: false })
       }
       // scopeKey:
     },
@@ -69,7 +70,7 @@ function useColumns () {
     fixed: 'left',
     render: (_, row) => {
       return <TenantLink
-        to={`/devices/optical/${row.serialNumber}/details/overview`}
+        to={`/devices/optical/${row.venueId}/${row.serialNumber}/details/overview`}
         style={{ lineHeight: '20px' }}
       >
         {row.name}

@@ -23,9 +23,9 @@ import { noDataDisplay }                     from '@acx-ui/utils'
 import * as UI from './styledComponents'
 
 enum OverviewInfoType {
-  PANEL = 'Panel',
-  PORTS = 'Ports',
-  CLIENTS = 'Clients'
+  PANEL = 'panel',
+  PORTS = 'ports',
+  CLIENTS = 'clients'
 }
 
 const { oltData, oltCageList, ontData } = OltMockdata

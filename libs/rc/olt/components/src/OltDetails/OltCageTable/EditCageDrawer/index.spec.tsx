@@ -4,7 +4,6 @@ import { OltFixtures }    from '@acx-ui/olt/utils'
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
-
 import { EditCageDrawer } from './'
 
 const { mockOltCageList } = OltFixtures

@@ -23,10 +23,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('../useOltActions', () => ({
   useOltActions: () => mockOltActions
 }))
+jest.mock('../OltTabs', () => ({
+  OltTabs: () => <div data-testid='OltTabs' />
+}))
 
 describe('OltDetailPageHeader', () => { //TODO
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
-  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id' }
+  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details'
 
   it('should render correctly', async () => {
     render(<Provider>
@@ -35,6 +38,7 @@ describe('OltDetailPageHeader', () => { //TODO
 
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'More Actions' })).toBeInTheDocument()
+    expect(screen.getByTestId('OltTabs')).toBeInTheDocument()
   })
 
   it('should render without data correctly', async () => {
@@ -53,7 +57,7 @@ describe('OltDetailPageHeader', () => { //TODO
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: /Configure/ }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/tenant-id/t/devices/optical/olt-id/edit',
+      pathname: '/tenant-id/t/devices/optical/venue-id/olt-id/edit',
       search: '',
       hash: ''
     }, {
