@@ -371,14 +371,10 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
     ...(_.omitBy(payload ?? {}, _.isNil))
   }
 
-  const result: Record<string, string> = {
+  return {
     pageSize: pagination.pageSize.toString(),
-    page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString()
+    page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
+    sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 
-  if (pagination.sortField && pagination.sortField.trim() !== '') {
-    result.sort = pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
-  }
-
-  return result
 }

@@ -19,8 +19,8 @@ import {
 import {
   Administrator
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-
+import { useParams }          from '@acx-ui/react-router-dom'
+import { noDataDisplay }      from '@acx-ui/utils'
 import PrivilegeGroupSelector from '../PrivilegeGroups/PrivilegeGroupSelector'
 
 interface EditUserDrawerProps {
@@ -180,7 +180,8 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Name' })}
           >
-            {`${editData.firstName || ''} ${editData.lastName || ''}`.trim()}
+            {!isPaginationEnabled ? `${editData.name} ${editData.lastName}` :
+              `${editData.firstName || noDataDisplay} ${editData.lastName || noDataDisplay}`.trim()}
           </Form.Item>
         )}
 

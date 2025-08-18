@@ -183,7 +183,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
           sorter: { compare: sortProp('authenticationId', defaultSort) },
           filterable: [
             {
-              key: null,
+              key: 'RUCKUS',
               value: $t({ defaultMessage: 'RUCKUS' })
             },
             {
@@ -205,13 +205,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       key: 'role',
       dataIndex: 'role',
       sorter: { compare: sortProp('role', defaultSort) },
-      ...(isPaginationEnabled ? {
-        filterable: privilegeGroupOption?.map(role => ({
-          key: role as string,
-          value: roleStringMap[role as RolesEnum]
-            ? $t(roleStringMap[role as RolesEnum]) : role as string }))
-          ?.sort(sortProp('value', defaultSort))
-      } : {}),
+      filterable: isPaginationEnabled ? privilegeGroupOption?.map(role => ({
+        key: role as string,
+        value: roleStringMap[role as RolesEnum]
+          ? $t(roleStringMap[role as RolesEnum]) : role as string }))
+        ?.sort(sortProp('value', defaultSort)) : [],
       render: function (_, row) {
         return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
       }
