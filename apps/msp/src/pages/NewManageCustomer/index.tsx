@@ -288,7 +288,7 @@ export function NewManageCustomer () {
   useEffect(() => {
     if (licenseSummaryResults || calculatedLicencesList) {
       if(multiLicenseFFToggle && calculatedLicencesList) {
-        checkAvailableLicenseV2(calculatedLicencesList.data, 
+        checkAvailableLicenseV2(calculatedLicencesList.data,
           formRef.current?.getFieldValue('tier'))
       } else if (licenseSummaryResults) {
         checkAvailableLicense(licenseSummaryResults)
@@ -968,7 +968,7 @@ export function NewManageCustomer () {
   const checkTierLicense = function (tier: MspEcTierEnum) {
     if(multiLicenseFFToggle && calculatedLicencesList) {
       if(!isEditMode || isTrialEditMode) { // AddMode || TrailEditMode
-        checkAvailableLicenseV2(calculatedLicencesList.data, 
+        checkAvailableLicenseV2(calculatedLicencesList.data,
           tier)
       } else { // Edit Mode (not TrailEditMode)
         checkAvailableLicenseV2(

@@ -791,7 +791,7 @@ export function NewManageIntegrator () {
   const handleServiceTierChange = function (tier: RadioChangeEvent) {
     const prevTier = formRef.current?.getFieldValue('tier')
     checkTierLicense(tier.target.value)
-   
+
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
         <>
