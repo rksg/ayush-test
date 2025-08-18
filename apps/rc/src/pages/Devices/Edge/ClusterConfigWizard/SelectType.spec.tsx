@@ -224,9 +224,6 @@ describe('SelectType', () => {
     mockedIncompatibleData.data[0].edgeList[0].memoryTotalKb = 26156250
     mockedIncompatibleData.data[0].edgeList[1].memoryTotalKb = 22250000
 
-    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
-      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
-
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
@@ -275,9 +272,6 @@ describe('SelectType', () => {
   it('cluster interface card should be disabled when there is no gateway', async () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
-
-    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
-      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(
       <Provider>
@@ -331,9 +325,6 @@ describe('SelectType', () => {
   it('cluster interface card should be available when there is a gateway on sub-interface', async () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
-
-    mockUseIsEdgeFeatureReady.mockImplementation((feature) =>
-      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(
       <Provider>

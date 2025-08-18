@@ -53,7 +53,7 @@ jest.mock('antd', () => {
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useLazyGetIpsecOptionsQuery: jest.fn().mockReturnValue([
+  useLazyGetSoftGreIpsecOptionsQuery: jest.fn().mockReturnValue([
     () => ({ unwrap: jest.fn().mockResolvedValue({ options: mockIpSecTable.data.data }) })
   ]),
   useLazyGetSoftGreOptionsQuery: jest.fn().mockReturnValue([

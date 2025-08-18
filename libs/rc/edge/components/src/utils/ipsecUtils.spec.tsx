@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { IpsecViewData } from '@acx-ui/rc/utils'
 
-import { getIkeProposalText, getEspProposalText, getIpSecIkeAlgorithmOptions, getIpSecEspAlgorithmOptions } from './ipsecUtils'
+import { getIpSecIkeAlgorithmOptions, getIpSecEspAlgorithmOptions, getVxlanIkeProposalText, getVxlanEspProposalText } from './ipsecUtils'
 
 describe('ipSecUtils', () => {
   afterEach(() => {
@@ -42,10 +42,10 @@ describe('ipSecUtils', () => {
     })
   })
 
-  describe('getIkeProposalText', () => {
+  describe('getVxlanIkeProposalText', () => {
     it('returns default proposal text for default proposal type', () => {
       const profile = { ikeProposalType: 'DEFAULT' } as IpsecViewData
-      expect(getIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns formatted proposal text for specific proposal type with valid first proposal', () => {
@@ -59,29 +59,29 @@ describe('ipSecUtils', () => {
           }
         ]
       } as IpsecViewData
-      expect(getIkeProposalText(profile)).toBe('AES256-SHA256-MODP4096')
+      expect(getVxlanIkeProposalText(profile)).toBe('AES256-SHA256-MODP4096')
     })
 
     it('returns default proposal text for specific proposal type with no proposals', () => {
       const profile = { ikeProposalType: 'SPECIFIC', ikeProposals: [] } as unknown as IpsecViewData
-      expect(getIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns default proposal text for specific proposal type with null proposals', () => {
       const profile = { ikeProposalType: 'SPECIFIC', ikeProposals: null } as unknown as IpsecViewData
-      expect(getIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns default proposal text for specific proposal type with undefined proposals', () => {
       const profile = { ikeProposalType: 'SPECIFIC' } as IpsecViewData
-      expect(getIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanIkeProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
   })
 
-  describe('getEspProposalText', () => {
+  describe('getVxlanEspProposalText', () => {
     it('returns default proposal text for default proposal type', () => {
       const profile = { espProposalType: 'DEFAULT' } as IpsecViewData
-      expect(getEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns formatted proposal text for specific proposal type with valid first proposal', () => {
@@ -95,22 +95,22 @@ describe('ipSecUtils', () => {
           }
         ]
       } as IpsecViewData
-      expect(getEspProposalText(profile)).toBe('AES256-SHA256-MODP4096')
+      expect(getVxlanEspProposalText(profile)).toBe('AES256-SHA256-MODP4096')
     })
 
     it('returns default proposal text for specific proposal type with no proposals', () => {
       const profile = { espProposalType: 'SPECIFIC', espProposals: [] } as unknown as IpsecViewData
-      expect(getEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns default proposal text for specific proposal type with null proposals', () => {
       const profile = { espProposalType: 'SPECIFIC', espProposals: null } as unknown as IpsecViewData
-      expect(getEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
 
     it('returns default proposal text for specific proposal type with undefined proposals', () => {
       const profile = { espProposalType: 'SPECIFIC' } as IpsecViewData
-      expect(getEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
+      expect(getVxlanEspProposalText(profile)).toBe('AES128-SHA1-MODP2048')
     })
   })
 })

@@ -199,5 +199,15 @@ describe('useIsConfigTemplateOnByType', () => {
 
       expect(result.current).toBe(true)
     })
+
+    it('should return false if it is a config template and policy is disabled', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL))
+
+      expect(result.current).toBe(false)
+    })
   })
 })

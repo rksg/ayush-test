@@ -15,8 +15,8 @@ import { IpsecFormItem } from './index'
 jest.mock('@acx-ui/rc/services')
 jest.mock('../../../policies/Ipsec/IpsecForm/IpsecAddDrawer')
 jest.mock('@acx-ui/edge/components', () => ({
-  getIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
-  getEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
+  getVxlanIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
+  getVxlanEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
 }))
 
 const mockUseGetIpsecViewDataListQuery = useGetIpsecViewDataListQuery as jest.MockedFunction<typeof useGetIpsecViewDataListQuery>

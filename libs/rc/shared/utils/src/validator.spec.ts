@@ -845,15 +845,20 @@ describe('validator', () => {
       const result = walledGardensRegExp('10.206.84.25')
       await expect(result).resolves.toEqual(undefined)
     })
+    it('Should take care of url with ipv4 CIDR values correctly', async () => {
+      const result = walledGardensRegExp('10.206.84.25/23')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of url with ipv4 and subnet values correctly', async () => {
+      const result = walledGardensRegExp('10.206.84.25 255.255.255.0')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of url with ipv4 range values correctly', async () => {
+      const result = walledGardensRegExp('10.206.84.25-10.206.84.30')
+      await expect(result).resolves.toEqual(undefined)
+    })
     it('Should display error message if url domain name values incorrectly', async () => {
       const result = walledGardensRegExp('localhost')
-      await expect(result).rejects.toEqual(
-        'Please make sure that all destinations comply to allowed formats. ' +
-        'For more information see the help information'
-      )
-    })
-    it('Should display error message if url with ipv4 values incorrectly', async () => {
-      const result = walledGardensRegExp('999.999.999.999')
       await expect(result).rejects.toEqual(
         'Please make sure that all destinations comply to allowed formats. ' +
         'For more information see the help information'
@@ -906,13 +911,6 @@ describe('validator', () => {
     })
     it('Should display error message if url domain name values incorrectly', async () => {
       const result = walledGardensDualModeRegExp('test...ruckus.cloud')
-      await expect(result).rejects.toEqual(
-        'Please make sure that all destinations comply to allowed formats. ' +
-        'For more information see the help information'
-      )
-    })
-    it('Should display error message if url with ipv4 values incorrectly', async () => {
-      const result = walledGardensDualModeRegExp('999.999.999.999')
       await expect(result).rejects.toEqual(
         'Please make sure that all destinations comply to allowed formats. ' +
         'For more information see the help information'

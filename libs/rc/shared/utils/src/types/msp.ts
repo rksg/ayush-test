@@ -1,6 +1,7 @@
 import { defineMessage } from 'react-intl'
 
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }   from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 export enum LicenseBannerTypeEnum {
   initial = 'INITIAL',
@@ -71,4 +72,5 @@ export interface MspEntitlement {
   tenantId: string;
   isTrial: boolean;
   status?: string;
+  skuTier?: AccountTier;
 }
