@@ -212,4 +212,26 @@ describe('Administrators', () => {
 
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
+
+  it('should render correctly with pagination enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReset()
+    jest.mocked(useIsSplitOn).mockImplementation((ff: string) => {
+      return ff === Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
+    })
+
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    const { container } = render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administrators />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(container).toBeInTheDocument()
+  })
 })

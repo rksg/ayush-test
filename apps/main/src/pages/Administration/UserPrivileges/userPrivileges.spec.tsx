@@ -1,4 +1,5 @@
 
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { Provider }                                                    from '@acx-ui/store'
 import { render, screen }                                              from '@acx-ui/test-utils'
 import { UserProfileContext, setUserProfile, UserProfileContextProps } from '@acx-ui/user'
@@ -74,6 +75,23 @@ describe('UserPrivileges', () => {
       })
 
     await screen.findByTestId('mocked-UsersTable')
+    expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
+  })
+
+  it('should render with pagination enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => {
+      return ff === Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <UserPrivileges />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
     expect(screen.getByTestId('mocked-UsersTable')).toBeInTheDocument()
   })
 })
