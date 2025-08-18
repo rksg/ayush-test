@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { ChatbotLink }                    from '@acx-ui/icons'
 import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
 
-import { StyledChatbotLink, StyledQRLink, StyledQRCodeModal } from './styledComponents';
+import { StyledChatbotLink, StyledQRLink, StyledQRCodeModal } from './styledComponents'
 
 export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const { Link } = Typography

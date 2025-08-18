@@ -118,7 +118,7 @@ describe('Enrollment Portal Link', () => {
     const originalRemoveChild = document.body.removeChild
     document.body.appendChild = jest.fn()
     document.body.removeChild = jest.fn()
-    // Find and click download button
+    // Find and click the download button
     const downloadButton = await screen.findByRole('button', { name: 'Download' })
     await userEvent.click(downloadButton)
     // Properly cast onload to a function
