@@ -44,7 +44,7 @@ export const Unit = (props: {
     data: SlotCage
   }) => {
   const { num, showLabel, data } = props
-  return <UI.UnitWrapper>
+  return <UI.UnitWrapper data-testid='unit'>
     <Tooltip title={getTooltip(data)}>
       <UI.Unit status={data.status}>
         <UnitIcon type={data.type?.toLowerCase()} />

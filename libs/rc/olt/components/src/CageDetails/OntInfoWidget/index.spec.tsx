@@ -23,7 +23,7 @@ describe('OntInfoWidget', () => {
     expect(screen.getByText('Uptime')).toBeInTheDocument()
   })
 
-  it('should render with no data correctly', async () => {
+  it('should render without data correctly', async () => {
     render(<Provider>
       <OntInfoWidget
         ontDetails={{}}

@@ -23,6 +23,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('../useOltActions', () => ({
   useOltActions: () => mockOltActions
 }))
+jest.mock('../../OltStatus', () => ({
+  OltStatus: () => <div data-testid='OltStatus' />
+}))
 jest.mock('../OltTabs', () => ({
   OltTabs: () => <div data-testid='OltTabs' />
 }))

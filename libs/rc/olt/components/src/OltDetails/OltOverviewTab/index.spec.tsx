@@ -14,6 +14,9 @@ jest.mock('./OltLineCardTab', () => ({
 jest.mock('./OltNetworkCardTab', () => ({
   OltNetworkCardTab: () => <div data-testid='OltNetworkCardTab' />
 }))
+jest.mock('../OltInfoWidget', () => ({
+  OltInfoWidget: () => <div data-testid='OltInfoWidget' />
+}))
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -31,6 +34,7 @@ describe('OltOverviewTab', () => {
 
     expect(screen.getAllByRole('tab')).toHaveLength(3)
     expect(screen.getByText('Panel')).toBeInTheDocument()
+    expect(screen.getByTestId('OltInfoWidget')).toBeInTheDocument()
     expect(screen.getByTestId('OltPanelTab')).toBeInTheDocument()
   })
 

@@ -3,6 +3,7 @@ import { OltFixtures } from '@acx-ui/olt/utils'
 import { cageDetailsReducer } from './cageDetailsState'
 
 const { mockOltCageList, mockOntList } = OltFixtures
+
 describe('cageDetailsReducer', () => {
   const initState = {
     cageDetails: mockOltCageList[0],

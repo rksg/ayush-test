@@ -8,5 +8,5 @@ export const oltLineCardOptions = [
   { label: 'PON LC 2', value: 'S2' }
 ]
 
-//TODO: temporary mock data
+//TODO: remove temporary mock data
 export * as OltMockdata from './__mocks__'

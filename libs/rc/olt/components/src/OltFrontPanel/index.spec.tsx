@@ -28,7 +28,7 @@ describe('OltFrontPanel', () => { //TODO
     expect(screen.getByText('PON LC 2')).toBeInTheDocument()
   })
 
-  it('should render ONU front panel correctly', async () => {
+  it('should render ONT front panel correctly', async () => {
     render(<Provider>
       <OltFrontPanel
         data={[{
