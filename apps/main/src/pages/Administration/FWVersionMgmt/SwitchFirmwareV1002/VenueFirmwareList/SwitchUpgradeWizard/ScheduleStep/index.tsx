@@ -7,7 +7,6 @@ import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext }            from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }                  from '@acx-ui/rc/components'
 import { useBatchGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
@@ -26,6 +25,7 @@ import {
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
 
 import * as UI                   from '../../styledComponents'
 import { NotesEnum, SwitchNote } from '../SwitchNote'
