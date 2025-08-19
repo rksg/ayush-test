@@ -51,7 +51,7 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: data, editMode: false, cloneMode: false, setData: () => {}
+          data: data, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
@@ -78,7 +78,7 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: network, editMode: false, cloneMode: false, setData: () => {}
+          data: network, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
@@ -108,7 +108,7 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: network, editMode: false, cloneMode: false, setData: () => {}
+          data: network, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
@@ -136,7 +136,7 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: data, editMode: false, cloneMode: false, setData: () => {}
+          data: data, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
@@ -163,7 +163,7 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: network, editMode: false, cloneMode: false, setData: () => {}
+          data: network, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
