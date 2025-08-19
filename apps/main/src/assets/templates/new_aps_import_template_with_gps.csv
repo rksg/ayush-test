@@ -1,12 +1,11 @@
-"# AP name is mandatory. The name can only contain between 2 and 32 characters. Only the following characters are allowed: 'a-z', 'A-Z', '0-9', space and other special characters (!""#$%'()*+,-./:;<=>?@[]^_{|}~) except &,` or $(",,,,,,,,,
-# Description - maximal length is 180 characters,,,,,,,,,
-"# Serial number is mandatory	",,,,,,,,,
-# AP Group - must match an existing AP group,,,,,,,,,
-# Tags - separated by semicolon ';',,,,,,,,,
-"# Latitude - between -90 and 90, and contains a maximum of 6-digit decimal",,,,,,,,,
-"# Longitude - between -180 and 180, and contains a maximum of 6-digit decimal",,,,,,,,,
-,,,,,,,,,
-AP Name,Description,Serial Number,AP Group,Tags,Latitude,Longitude
-AP-1,,"123456700000",group-1,tag1,12.23,23.34
-AP-2,,"123456700001",,tag1,,
-AP-3,,"123456700002",,tag1,,
+#Mandatory field,,,,,,
+,#AP Name,"The name can only contain between 2 and 32 characters. Only the following characters are allowed: 'a-z', 'A-Z', '0-9', space and other special characters (!""#$%'()*+,-./:;<=>?@[]^_{|}~) except &,` or $(",,,,
+,#Serial Number,"It must be a 12-digit number, cannot start with 0, and should contain only numbers. ",,,,
+#Optional field,,,,,,
+,# Description,The maximal length is 180 characters,,,,
+,# AP Group,It must match an existing AP group,,,,
+,# Tags,Separating by semicolon ';',,,,
+,# Latitude,"Between -90 and 90, and contains a maximum of 6-digit decimal",,,,
+,# Longitude,"Between -180 and 180, and contains a maximum of 6-digit decimal",,,,
+,,,,,,
+AP Name,Serial Number,Description,AP Group,Tags,Latitude,Longitude

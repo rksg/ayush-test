@@ -137,7 +137,7 @@ export const states = {
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.</p>
+      <p>The change recommendation has been automatically scheduled{isEcoFlex, select, true {} other { for {scheduledAt},}} by IntentAI.</p>
     ` })
   },
   [DisplayStates.applyScheduleInProgress]: {
