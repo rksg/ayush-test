@@ -18,7 +18,7 @@ import {
   useSwitchDetailHeaderQuery,
   useVenueSwitchSettingQuery
 } from '@acx-ui/rc/services'
-import { isFirmwareVersionAbove10010h, isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isFirmwareVersionAbove10010hLower10020b, isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   VenueMessages,
   VeViewModel,
@@ -276,7 +276,7 @@ export function SwitchVeTable (props: {
 
   const isActionHidden = (data?: VeViewModel[]) => {
     if(!isVenueLevel && switchDetail?.model?.startsWith('ICX8100')){
-      if(isFirmwareVersionAbove10010h(switchDetail?.firmware)){
+      if(isFirmwareVersionAbove10010hLower10020b(switchDetail?.firmware)){
         return !isSupport8100StaticRouteMaxVe
       }
       return (data?.length || 0) > 0
