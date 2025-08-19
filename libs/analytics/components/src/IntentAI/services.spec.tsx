@@ -15,7 +15,7 @@ import {
   filterOptions,
   intentListWithAllStatus
 } from './__tests__/fixtures'
-import { mockedIntentAps }                 from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentAps }                             from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { AiFeatures, codes, IntentListItem, Metadata } from './config'
 import {
   api,
