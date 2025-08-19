@@ -12,6 +12,7 @@ import {
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
+  ConfigTemplateType,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   IpsecOptionChangeDispatcher,
@@ -24,6 +25,7 @@ import {
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
+import { useIsConfigTemplateEnabledByType } from '..'
 import {
   ApCompatibilityDrawer,
   ApCompatibilityToolTip,
@@ -126,7 +128,8 @@ export function LanPortSettings (props: {
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
 
   // template
-  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEthernetPortTemplate = useIsConfigTemplateEnabledByType(ConfigTemplateType.ETHERNET_PORT_PROFILE)
 
   const isShowEthPortProfile = (isTemplate)
     ? isEthernetPortTemplate : isEthernetPortProfileEnabled
