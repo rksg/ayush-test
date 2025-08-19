@@ -41,8 +41,11 @@ const mockProps = {
   onSuccess: jest.fn()
 }
 
-xdescribe('VenueDrawer', () => {
+describe('VenueDrawer', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
+    mockVenuesForm.mockClear()
+
     // Mock unhandled requests
     mockServer.use(
       rest.get('*/tenants/preferences', (req, res, ctx) => {
@@ -56,7 +59,6 @@ xdescribe('VenueDrawer', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-    mockVenuesForm.mockClear()
   })
 
   it('renders with default props and handles all interactions when open is true', async () => {
