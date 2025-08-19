@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   CertificateUrls,
-  CommonUrlsInfo,
   PolicyOperation,
   PolicyType,
   SamlIdpProfileUrls,
@@ -13,7 +13,6 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummyNetworksResult } from '../__tests__/fixtures'
 
 import { certList, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedSamlIpdProfileList } from './__tests__/fixtures'
 
@@ -35,7 +34,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
 
+const mockNetworkNameMap = useWifiNetworkListQuery as jest.Mock
 const mockedSingleDeleteApi = jest.fn()
 
 
@@ -51,6 +55,8 @@ describe('SAML IdP Profile Table', ()=>{
     params = {
       tenantId: tenantId
     }
+
+    mockNetworkNameMap.mockReturnValue({ networkNameMap: [] })
 
     mockServer.use(
       rest.get(
@@ -74,10 +80,10 @@ describe('SAML IdP Profile Table', ()=>{
           return res(ctx.json(202))
         }
       ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(dummyNetworksResult))
-      ),
+      // rest.post(
+      //   CommonUrlsInfo.getVMNetworksList.url,
+      //   (_, res, ctx) => res(ctx.json(dummyNetworksResult))
+      // ),
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (_, res, ctx) => res(ctx.json(certList))

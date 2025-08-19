@@ -13,7 +13,6 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { WarningCircleOutlined }                    from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }                   from '@acx-ui/rc/components'
 import {
   useBatchUpdateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchDefaultFirmwareListV1001Query,
@@ -32,7 +31,8 @@ import {
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
 
 import * as UI from '../styledComponents'
 
