@@ -49,7 +49,7 @@ describe('DirectoryServerInstancesTable', () => {
     expect(within(targetRow!).getByText('Enterprise AAA (802.1X)')).toBeVisible()
     const targetRow2 = (await screen.findByText('test-network2')).closest('tr')
     expect(targetRow2).toBeVisible()
-    expect(within(targetRow2!).getByText('Captive Portal - Captive Portal')).toBeVisible()
+    expect(within(targetRow2!).getByText('Captive Portal - Cloudpath Captive Portal')).toBeVisible()
     const targetRow3 = (await screen.findByText('test-network3')).closest('tr')
     expect(targetRow3).toBeVisible()
     // eslint-disable-next-line max-len

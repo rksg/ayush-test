@@ -9,9 +9,8 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
-import { toUserDate }                               from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
+import { toUserDate }                              from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareStatus,
@@ -20,6 +19,8 @@ import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils }                           from '@acx-ui/switch/components'
+import { useSwitchActions }                                 from '@acx-ui/switch/components'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'

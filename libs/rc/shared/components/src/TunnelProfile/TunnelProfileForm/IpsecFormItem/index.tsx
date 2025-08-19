@@ -5,7 +5,10 @@ import { DefaultOptionType }      from 'antd/lib/select'
 import { find }                   from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import { Tooltip }                                                                                              from '@acx-ui/components'
+import { useGetIpsecViewDataListQuery }                                                                         from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, EdgeClusterStatus, IpSecTunnelUsageTypeEnum, NetworkSegmentTypeEnum } from '@acx-ui/rc/utils'
+
 
 import IpsecAddDrawer      from '../../../policies/Ipsec/IpsecForm/IpsecAddDrawer'
 import { FormItemWrapper } from '../styledComponents'
@@ -15,7 +18,8 @@ import { IpsecProfileView }     from './IpsecProfileView'
 import * as UI                  from './styledComponents'
 
 interface IpsecFormItemProps {
-  disabled?: boolean
+  isDefaultTunnelProfile?: boolean
+  destinationCluster?: EdgeClusterStatus
   checked?: boolean
   onChange?: (checked: boolean) => void
   handleTunnelEncryptionChange?: (checked: boolean) => void
@@ -23,10 +27,12 @@ interface IpsecFormItemProps {
 
 export const IpsecFormItem = (props: IpsecFormItemProps) => {
   const { $t } = useIntl()
-  const { disabled = false, handleTunnelEncryptionChange } = props
+  const { isDefaultTunnelProfile, destinationCluster, handleTunnelEncryptionChange } = props
   const [ipsecDrawerVisible, setIpsecDrawerVisible] = useState(false)
   const form = Form.useFormInstance()
   const tunnelEncryptionEnabled = Form.useWatch('tunnelEncryptionEnabled', form)
+  const disabledFields = form.getFieldValue('disabledFields')
+  const nsgType = form.getFieldValue('type')
 
   const { data: ipsecData, isLoading: isIpsecLoading } = useGetIpsecViewDataListQuery({
     payload: {
@@ -36,8 +42,7 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
         'espProposalType', 'ikeProposals', 'espProposals', 'tunnelUsageType'
       ],
       filters: {
-        // TODO: remove this after the ipsec profile is ready
-        // tunnelUsageType: [IpSecTunnelUsageTypeEnum.VXLAN_GPE]
+        tunnelUsageType: [IpSecTunnelUsageTypeEnum.VXLAN_GPE]
       }
     }
   }, {
@@ -53,6 +58,30 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
   })) || [], [ipsecData])
 
 
+  // eslint-disable-next-line max-len
+  const isHaAbCluster = destinationCluster?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const disabled = isDefaultTunnelProfile ||
+                  !!disabledFields?.includes('tunnelEncryptionEnabled') ||
+                  nsgType === NetworkSegmentTypeEnum.VXLAN ||
+                  isHaAbCluster
+
+  const getDisableReason = () => {
+    if (!disabled) return undefined
+
+    if (isDefaultTunnelProfile)
+      return $t({ defaultMessage: 'Default tunnel profile is not allowed to edit' })
+
+    if (nsgType === NetworkSegmentTypeEnum.VXLAN) {
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: 'Network segment type VNI is not supported for tunnel encryption' })
+    }
+
+    if(isHaAbCluster)
+      return $t({ defaultMessage: 'Active/Standby cluster is not supported for tunnel encryption' })
+
+    return undefined
+  }
+
   const handleAddIpsecProfile = () => {
     // open drawer to create ipsec profile
     setIpsecDrawerVisible(true)
@@ -66,14 +95,16 @@ export const IpsecFormItem = (props: IpsecFormItemProps) => {
           <FormItemWrapper
             label={$t({ defaultMessage: 'Tunnel Encryption' })}
           />
-          <Form.Item
-            name='tunnelEncryptionEnabled'
-            valuePropName='checked'
-            children={<Switch
-              disabled={disabled}
-              onChange={(checked) => handleTunnelEncryptionChange?.(checked)}
-            />}
-          />
+          <Tooltip title={disabled ? getDisableReason() : undefined}>
+            <Form.Item
+              name='tunnelEncryptionEnabled'
+              valuePropName='checked'
+              children={<Switch
+                disabled={disabled}
+                onChange={(checked) => handleTunnelEncryptionChange?.(checked)}
+              />}
+            />
+          </Tooltip>
         </UI.StyledSpace>
       </UI.StyledTunnelEncryptionWrapper>
 

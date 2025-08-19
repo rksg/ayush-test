@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -8,8 +8,14 @@ import { Features, useIsSplitOn }                                     from '@acx
 import { NetworkTabContext, NetworkTable, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
 import { useEnhanceWifiNetworkTableQuery, useWifiNetworkTableQuery }  from '@acx-ui/rc/services'
 import {
+  captiveNetworkTypes,
   ConfigTemplateUrlsInfo,
+  GuestNetworkTypeEnum,
   Network,
+  NetworkTypeEnum,
+  networkTypes,
+  SupportGuestNetworkTypes,
+  SupportNetworkTypes,
   useConfigTemplate,
   WifiNetwork,
   WifiRbacUrlsInfo
@@ -38,6 +44,24 @@ export default function useNetworksTable () {
     pagination: { settingsId }
   })
 
+  const networkTypeFilterOptions = useMemo(() => {
+    const guestNetworkTypesOptions = SupportGuestNetworkTypes.map((networkType: GuestNetworkTypeEnum) => {
+      return { key: networkType, value: $t(captiveNetworkTypes[networkType]) }
+    })
+
+    const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+      return {
+        key: networkType,
+        value: $t(networkTypes[networkType]),
+        ...(networkType === NetworkTypeEnum.CAPTIVEPORTAL && {
+          children: guestNetworkTypesOptions
+        })
+      }
+    })
+
+    return networkTypesOptions
+  }, [])
+
   useEffect(() => {
     setNetworkCount(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
@@ -63,7 +87,12 @@ export default function useNetworksTable () {
   ] : []
 
   const component = <NetworkTabContext.Provider value={{ setNetworkCount }}>
-    <NetworkTable tableQuery={tableQuery} selectable={true} settingsId={settingsId} />
+    <NetworkTable
+      tableQuery={tableQuery}
+      selectable={true}
+      searchable={true}
+      settingsId={settingsId}
+      filterables={{ nwSubType: networkTypeFilterOptions }} />
   </NetworkTabContext.Provider>
 
   return {

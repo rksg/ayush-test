@@ -409,6 +409,16 @@ describe('Network utils test', () => {
 
       expect(result.current).toBe(true)
     })
+
+    it('should return false if it is a config template and policy is disabled', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedUseIsConfigTemplateEnabledByType.mockReturnValue(false)
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL))
+
+      expect(result.current).toBe(false)
+    })
   })
 
   describe('useClientIsolationActivations', () => {
@@ -482,8 +492,8 @@ describe('Network utils test', () => {
   })
 
   describe('useRadiusServer hook', () => {
-    const spyQueryFn = jest.fn()
-    const spyRadiusSettingsFn = jest.fn()
+    const spyQueryAAAListFn = jest.fn()
+    const spyGetRadiusSettingsFn = jest.fn()
     const spyGetAaaFn = jest.fn()
 
     beforeEach(() => {
@@ -497,7 +507,7 @@ describe('Network utils test', () => {
         rest.post(
           AaaUrls.queryAAAPolicyList.url,
           (_, res, ctx) => {
-            spyQueryFn()
+            spyQueryAAAListFn()
             return res(ctx.json({
               data: [
                 {
@@ -514,7 +524,7 @@ describe('Network utils test', () => {
         rest.get(
           WifiRbacUrlsInfo.getRadiusServerSettings.url,
           (_, res, ctx) => {
-            spyRadiusSettingsFn()
+            spyGetRadiusSettingsFn()
             return res(ctx.json({
               enableAccountingProxy: false,
               enableAuthProxy: false
@@ -549,8 +559,8 @@ describe('Network utils test', () => {
         { wrapper: Provider, route: { params: { networkId: 'mock-network-id' } } }
       )
 
-      await waitFor(() => expect(spyQueryFn).toHaveBeenCalledTimes(0))
-      await waitFor(() => expect(spyRadiusSettingsFn).toHaveBeenCalledTimes(0))
+      await waitFor(() => expect(spyQueryAAAListFn).toHaveBeenCalledTimes(0))
+      await waitFor(() => expect(spyGetRadiusSettingsFn).toHaveBeenCalledTimes(0))
       await waitFor(() => expect(spyGetAaaFn).toHaveBeenCalledTimes(0))
       expect(result.current.radiusServerConfigurations).toBeUndefined()
     })
@@ -561,11 +571,40 @@ describe('Network utils test', () => {
         { wrapper: Provider, route: { params: { networkId: 'mock-network-id' } } }
       )
 
-      await waitFor(() => expect(spyQueryFn).toHaveBeenCalledTimes(1))
-      await waitFor(() => expect(spyRadiusSettingsFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyQueryAAAListFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyGetRadiusSettingsFn).toHaveBeenCalledTimes(1))
       await waitFor(() => expect(spyGetAaaFn).toHaveBeenCalledTimes(2))
 
       await waitFor(() => expect(result.current.radiusServerConfigurations).toBeDefined())
+    })
+
+    it('updateRadiusServer should early return when Radius Server is not enabled', async () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedUseIsConfigTemplateEnabledByType.mockReturnValue(false)
+
+      const spyUpdateRadiusSettingsFn = jest.fn()
+
+      mockServer.use(
+        rest.put(
+          WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+          (_, res, ctx) => {
+            spyUpdateRadiusSettingsFn()
+            return res(ctx.json({}))
+          }
+        )
+      )
+
+      const { result } = renderHook(
+        () => useRadiusServer(),
+        { wrapper: Provider, route: { params: { networkId: 'mock-network-id' } } }
+      )
+
+      await waitFor(() => expect(spyQueryAAAListFn).toHaveBeenCalledTimes(0))
+      await waitFor(() => expect(spyGetRadiusSettingsFn).toHaveBeenCalledTimes(0))
+      await waitFor(() => expect(spyGetAaaFn).toHaveBeenCalledTimes(0))
+      expect(result.current.radiusServerConfigurations).toBeUndefined()
+
+      await waitFor(() => expect(spyUpdateRadiusSettingsFn).toHaveBeenCalledTimes(0))
     })
 
     it('should updateRadiusServer successfully while RBAC enabled', async () => {
@@ -621,7 +660,7 @@ describe('Network utils test', () => {
       await waitFor(() => expect(spyDeactivateRadiusFn).toHaveBeenCalledTimes(0))
     })
 
-    it('should not update RADIUS settings while there is no MAC Authentication value', async () => {
+    it('should not update RADIUS settings while the network type is not supported', async () => {
       const spyUpdateRadiusSettingsFn = jest.fn()
 
       mockServer.use(
@@ -647,6 +686,7 @@ describe('Network utils test', () => {
 
       await result.current.updateRadiusServer(
         {
+          type: NetworkTypeEnum.HOTSPOT20,
           enableAccountingProxy: false,
           enableAuthProxy: false
         },
@@ -679,6 +719,10 @@ describe('Network utils test', () => {
             spyDeactivateRadiusFn()
             return res(ctx.json({}))
           }
+        ),
+        rest.put(
+          WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+          (_, res, ctx) => res(ctx.json({}))
         )
       )
 
@@ -691,6 +735,7 @@ describe('Network utils test', () => {
 
       await result.current.updateRadiusServer(
         {
+          type: NetworkTypeEnum.AAA,
           enableAccountingProxy: false,
           enableAuthProxy: false
         },

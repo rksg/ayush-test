@@ -495,6 +495,16 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getVlanPoolPolicyListSkipRecRewrite: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    skipRecRewrite: true
+  },
   getEnhancedVlanPools: {
     method: 'post',
     url: '/templates/enhancedVlanPoolProfiles/query',

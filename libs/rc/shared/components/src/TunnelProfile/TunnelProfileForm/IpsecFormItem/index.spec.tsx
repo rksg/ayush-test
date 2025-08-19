@@ -3,9 +3,9 @@
 import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 
-import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
-import { IpsecViewData }                from '@acx-ui/rc/utils'
-import { render, screen, renderHook }   from '@acx-ui/test-utils'
+import { useGetIpsecViewDataListQuery }                                                  from '@acx-ui/rc/services'
+import { IpsecViewData, NetworkSegmentTypeEnum, EdgeGeneralFixtures, EdgeClusterStatus } from '@acx-ui/rc/utils'
+import { render, screen, renderHook }                                                    from '@acx-ui/test-utils'
 
 import IpsecDrawer from '../../../policies/Ipsec/IpsecForm/IpsecAddDrawer'
 
@@ -15,10 +15,11 @@ import { IpsecFormItem } from './index'
 jest.mock('@acx-ui/rc/services')
 jest.mock('../../../policies/Ipsec/IpsecForm/IpsecAddDrawer')
 jest.mock('@acx-ui/edge/components', () => ({
-  getIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
-  getEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
+  getVxlanIkeProposalText: jest.fn(() => 'AES128-SHA1-MODP2048'),
+  getVxlanEspProposalText: jest.fn(() => 'AES128-SHA1-MODP2048')
 }))
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 const mockUseGetIpsecViewDataListQuery = useGetIpsecViewDataListQuery as jest.MockedFunction<typeof useGetIpsecViewDataListQuery>
 const mockIpsecDrawer = IpsecDrawer as jest.MockedFunction<typeof IpsecDrawer>
 const mockIpsecData: IpsecViewData[] = [
@@ -77,21 +78,24 @@ const TestWrapper = ({ formRef, children }: { formRef?: FormInstance, children: 
 
 describe('IpsecFormItem', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
     mockIpsecDrawer.mockReturnValue(<div data-testid='ipsec-drawer' />)
+
+    mockUseGetIpsecViewDataListQuery.mockReturnValue({
+      data: mockIpsecData,
+      isLoading: false,
+      refetch: jest.fn(),
+      isFetching: false,
+      isError: false,
+      error: null
+    } as any)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   describe('Rendering', () => {
     it('should render tunnel encryption switch when tunnel encryption is disabled', () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -104,15 +108,6 @@ describe('IpsecFormItem', () => {
     })
 
     it('should render tunnel encryption switch when tunnel encryption is enabled', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -127,15 +122,6 @@ describe('IpsecFormItem', () => {
     })
 
     it('should render IPSec profile selector when tunnel encryption is enabled', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -198,14 +184,6 @@ describe('IpsecFormItem', () => {
   describe('Interactions', () => {
     it('should call handleTunnelEncryptionChange when switch is toggled', async () => {
       const mockHandleTunnelEncryptionChange = jest.fn()
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
 
       render(
         <TestWrapper>
@@ -220,15 +198,6 @@ describe('IpsecFormItem', () => {
     })
 
     it('should open IPSec drawer when Add button is clicked', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -250,15 +219,6 @@ describe('IpsecFormItem', () => {
     })
 
     it('should close IPSec drawer when setVisible is called', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -313,21 +273,46 @@ describe('IpsecFormItem', () => {
   })
 
   describe('Disabled state', () => {
-    it('should disable switch when disabled prop is true', () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
+    it('should disable switch when it is default tunnel profile', async () => {
+      render(<TestWrapper>
+        <IpsecFormItem isDefaultTunnelProfile={true} />
+      </TestWrapper>)
 
-      render(
-        <TestWrapper>
-          <IpsecFormItem disabled={true} />
-        </TestWrapper>
-      )
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Default tunnel profile is not allowed to edit')).toBeInTheDocument()
+    })
+    it('should disable switch when its nsg type is VxLAN', async () => {
+      const { result: { current: [formRef] } } = renderHook(() => Form.useForm())
+      formRef.setFieldValue('type', NetworkSegmentTypeEnum.VXLAN)
+
+      render(<TestWrapper formRef={formRef}>
+        <IpsecFormItem />
+      </TestWrapper>)
+
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Network segment type VNI is not supported for tunnel encryption')).toBeInTheDocument()
+    })
+    it('should disable switch when destination cluster is HA/AB', async () => {
+      render(<TestWrapper>
+        <IpsecFormItem destinationCluster={mockEdgeClusterList.data[1] as EdgeClusterStatus}/>
+      </TestWrapper>)
+
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeDisabled()
+      await userEvent.hover(switchElement)
+      expect(await screen.findByText('Active/Standby cluster is not supported for tunnel encryption')).toBeInTheDocument()
+    })
+    it('should disable switch when disabledFields includes tunnelEncryptionEnabled', () => {
+      const { result: { current: [formRef] } } = renderHook(() => Form.useForm())
+      formRef.setFieldValue('disabledFields', ['tunnelEncryptionEnabled'])
+
+      render(<TestWrapper formRef={formRef}>
+        <IpsecFormItem />
+      </TestWrapper>)
 
       const switchElement = screen.getByRole('switch')
       expect(switchElement).toBeDisabled()
@@ -336,15 +321,6 @@ describe('IpsecFormItem', () => {
 
   describe('Form validation', () => {
     it('should show validation error when IPSec profile is required but not selected', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -360,15 +336,6 @@ describe('IpsecFormItem', () => {
 
   describe('Profile selection', () => {
     it('should display selected IPSec profile details', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />
@@ -382,15 +349,6 @@ describe('IpsecFormItem', () => {
     })
 
     it('should show placeholder text when no profile is selected', async () => {
-      mockUseGetIpsecViewDataListQuery.mockReturnValue({
-        data: mockIpsecData,
-        isLoading: false,
-        refetch: jest.fn(),
-        isFetching: false,
-        isError: false,
-        error: null
-      } as any)
-
       render(
         <TestWrapper>
           <IpsecFormItem />

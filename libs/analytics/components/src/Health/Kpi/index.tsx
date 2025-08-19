@@ -114,7 +114,18 @@ export function KpiSection (props: {
   const { isSwitch, kpis, thresholds, mutationAllowed, filters } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
-  const [ loadMoreState, setLoadMoreState ] = useState<{ [key: string]: boolean }>({})
+  const [ loadMoreState, setLoadMoreState ] = useState<{ [key: string]: boolean }>(() => {
+    // Initialize loadMoreState based on KPI structure to prevent showing all KPIs before useEffect runs
+    if (isArray(kpis)) {
+      return { default: kpis.length > 1 }
+    } else {
+      return Object.keys(kpis).reduce((acc, key) => {
+        const subTabKpis = (kpis as { [subTab: string]: string[] })[key]
+        acc[key] = subTabKpis.length > 1
+        return acc
+      }, {} as { [key: string]: boolean })
+    }
+  })
   const { $t } = useIntl()
   const kpiList = useMemo(() => isArray(kpis) ? kpis : Object.values(kpis)[0], [kpis])
 
@@ -256,6 +267,8 @@ export function KpiSection (props: {
             tabDetails={tabDetails}
             size='small'
             align='left'
+            tabId='health-infrastructure-kpi'
+            tabPersistence={true}
           />
         )
       })()}

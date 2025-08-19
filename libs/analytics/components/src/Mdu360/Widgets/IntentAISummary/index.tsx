@@ -3,8 +3,8 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { DonutChart, HistoricalCard, Loader, NoData } from '@acx-ui/components'
-import type { DonutChartData }                        from '@acx-ui/components'
+import { DonutChart, Card, Loader, NoData } from '@acx-ui/components'
+import type { DonutChartData }              from '@acx-ui/components'
 
 import { IntentSummary, useIntentAISummaryQuery } from './services'
 
@@ -59,10 +59,10 @@ export function IntentAISummary () {
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'IntentAI Summary' })}>
+      <Card title={$t({ defaultMessage: 'IntentAI Summary' })}>
         {chartData.length ?
           <IntentAISummaryChart data={chartData}/> : <NoData/>}
-      </HistoricalCard>
+      </Card>
     </Loader>
   )
 }

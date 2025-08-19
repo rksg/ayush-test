@@ -3,9 +3,15 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -25,7 +31,11 @@ import {
   mockApModelFamilies,
   apGroupTripleBandMode,
   apGroupClientAdmissionControl,
-  venueClientAdmissionControl
+  venueClientAdmissionControl,
+  mockVenueExternalAntennas,
+  mockApGroupExternalAntennas,
+  mockAntennaTypeSettings,
+  mockApGroupAntennaTypeSettings
 } from '../__tests__/fixtures'
 import { ApGroupEditContext } from '../context'
 
@@ -181,6 +191,32 @@ describe('AP Group Edit Radio', () => {
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json(venueClientAdmissionControl))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(mockVenueExternalAntennas))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockVenueExternalAntennas))
+        }
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupExternalAntenna.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockApGroupExternalAntennas))
+        }
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueAntennaType.url,
+        (_, res, ctx) => res(ctx.json(mockAntennaTypeSettings))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupAntennaType.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockApGroupAntennaTypeSettings))
+        }
       )
     )
   })

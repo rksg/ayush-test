@@ -9,10 +9,10 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getFamilyAndModel,
   is7550ZippySubModel,
-  isBabyRodanXSubModel
+  isBabyRodanXSubModel,
+  ICX_MODELS_MODULES
 } from '@acx-ui/rc/switch/utils'
 import {
-  ICX_MODELS_MODULES,
   TrustedPort,
   TrustedPortTypeEnum
 } from '@acx-ui/rc/utils'

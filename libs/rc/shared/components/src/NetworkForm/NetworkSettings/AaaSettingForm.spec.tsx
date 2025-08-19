@@ -328,11 +328,25 @@ describe('NetworkForm', () => {
           isDisableMLO: true,
           disableMLO: jest.fn
         }}>
-          <Form>
-            <AaaSettingsForm />
-          </Form>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: {
+              enableAuthProxy: true
+            },
+            setData: jest.fn()
+          }}>
+            <Form>
+              <AaaSettingsForm />
+            </Form>
+          </NetworkFormContext.Provider>
         </MLOContext.Provider>
       </Provider>, { route: { params } })
+
+      // Enable Proxy Service first
+      const authProxySwitch = await screen.findByTestId('enableAuthProxy')
+      await userEvent.click(authProxySwitch)
 
       const macAuthSwitch = await screen.findByTestId('macAuth8021x')
       await userEvent.click(macAuthSwitch)
@@ -399,9 +413,19 @@ describe('NetworkForm', () => {
           isDisableMLO: true,
           disableMLO: jest.fn
         }}>
-          <Form>
-            <AaaSettingsForm />
-          </Form>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: {
+              enableAuthProxy: true
+            },
+            setData: jest.fn()
+          }}>
+            <Form>
+              <AaaSettingsForm />
+            </Form>
+          </NetworkFormContext.Provider>
         </MLOContext.Provider>
       </Provider>, { route: { params } })
 
@@ -462,7 +486,9 @@ describe('NetworkForm', () => {
             editMode: false,
             cloneMode: false,
             isRuckusAiMode: false,
-            data: null,
+            data: {
+              enableAuthProxy: true
+            },
             setData: jest.fn()
           }}>
             <Form>
@@ -494,6 +520,7 @@ describe('NetworkForm', () => {
       )
 
       const mockData = {
+        enableAuthProxy: true,
         wlan: {
           macAddressAuthentication: true,
           macRegistrationListId: 'test-mac-registration-list-id',

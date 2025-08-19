@@ -30,12 +30,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedUseIsConfigTemplateGA = jest.fn()
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
-}))
-
 const mockedResolveTenantTypeFromPath = jest.fn()
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -64,7 +58,6 @@ describe('VenueEdit', () => {
 
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-    mockedUseIsConfigTemplateGA.mockReturnValue(false)
     mockedResolveTenantTypeFromPath.mockReturnValue('t')
   })
 
@@ -84,7 +77,6 @@ describe('VenueEdit', () => {
 
   it('should render correctly when it is a config template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    mockedUseIsConfigTemplateGA.mockReturnValue(true)
     mockedResolveTenantTypeFromPath.mockReturnValue('v')
 
     render(<Provider><VenueEdit /></Provider>, { route: { params } })

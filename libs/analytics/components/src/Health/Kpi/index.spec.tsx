@@ -294,6 +294,88 @@ describe('Kpi Section', () => {
     expect(screen.queryByText(/CPU Compliance/i)).not.toBeInTheDocument()
   })
 
+  it('should render ContentSwitcher with persistence attributes', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+
+    // Mock sub-tab KPIs structure
+    const subTabKpis = {
+      System: ['switchMemoryUtilization'],
+      Table: ['switchIpv4UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Verify that ContentSwitcher tabs are rendered (indicating it's working)
+    expect(await screen.findByText('System')).toBeInTheDocument()
+    expect(await screen.findByText('Table')).toBeInTheDocument()
+
+    // Verify localStorage functionality by checking if switching tabs works
+    const tableTab = screen.getByText('Table')
+    await userEvent.click(tableTab)
+
+    // After clicking Table, it should show Table-related KPIs
+    expect(await screen.findByText(/IPv4 Unicast Table Compliance/i)).toBeInTheDocument()
+  })
+
+  it('should persist tab selection in localStorage', async () => {
+    // Clear localStorage before test
+    localStorage.clear()
+
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+
+    // Mock sub-tab KPIs structure
+    const subTabKpis = {
+      System: ['switchMemoryUtilization'],
+      Table: ['switchIpv4UnicastUtilization']
+    }
+
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection
+          isSwitch={true}
+          kpis={subTabKpis}
+          thresholds={defaultThreshold}
+          mutationAllowed={true}
+          filters={{ ...filters, filter }}
+        />
+      </HealthPageContext.Provider>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // Initially localStorage should be empty
+    expect(localStorage.getItem('health-infrastructure-kpi-content-switcher')).toBeFalsy()
+
+    // Click on Table tab
+    const tableTab = screen.getByText('Table')
+    await userEvent.click(tableTab)
+
+    // Verify localStorage now contains the selection
+    expect(localStorage.getItem('health-infrastructure-kpi-content-switcher')).toBe('Table')
+  })
+
   it('should switch between sub-tabs and show correct KPIs', async () => {
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: { mutationAllowed: true }
