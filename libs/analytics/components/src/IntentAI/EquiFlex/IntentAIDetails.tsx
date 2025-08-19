@@ -147,7 +147,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                       displayStatus,
                       sliceValue,
                       { ...metadata, updatedAt },
-                      AiFeatures.EcoFlex
+                      AiFeatures.EquiFlex
                     )}
                   </Card>} />
               </DetailsSection>
