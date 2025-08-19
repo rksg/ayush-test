@@ -17,16 +17,16 @@ import {
   OntTable,
   useCageDetails
 }    from '@acx-ui/olt/components'
-import { Olt, OltCage, OltOnt, OltMockdata } from '@acx-ui/olt/utils'
-import { noDataDisplay }                     from '@acx-ui/utils'
+import {
+  CageDetailsTabType,
+  Olt,
+  OltCage,
+  OltOnt,
+  OltMockdata
+} from '@acx-ui/olt/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-enum OverviewInfoType {
-  PANEL = 'panel',
-  PORTS = 'ports',
-  CLIENTS = 'clients'
-}
 
 const { oltData, oltCageList, ontData } = OltMockdata
 
@@ -43,15 +43,15 @@ const CageDetailsContent = () => {
 
   const tabs = [{
     label: $t({ defaultMessage: 'Panel' }),
-    value: OverviewInfoType.PANEL,
+    value: CageDetailsTabType.PANEL,
     children: <OntOverviewTab data={portDetails} />
   }, {
     label: $t({ defaultMessage: 'Ports' }),
-    value: OverviewInfoType.PORTS,
+    value: CageDetailsTabType.PORTS,
     children: <OntPortTab data={portDetails} />
   }, {
     label: $t({ defaultMessage: 'Clients ({count})' }, { count: clientDetails?.length || 0 }),
-    value: OverviewInfoType.CLIENTS,
+    value: CageDetailsTabType.CLIENTS,
     children: <OntClientTab data={clientDetails} />
   }]
 

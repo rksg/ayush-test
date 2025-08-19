@@ -15,6 +15,12 @@ export enum OltSlotType {
   ONT = 'ONT'
 }
 
+export enum CageDetailsTabType {
+  PANEL = 'panel',
+  PORTS = 'ports',
+  CLIENTS = 'clients'
+}
+
 export interface Olt {
   name: string
   status: OltStatusEnum

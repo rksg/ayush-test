@@ -1,7 +1,7 @@
 import { createContext, useReducer, useContext, useMemo } from 'react'
 import type { ReactNode, Dispatch }                       from 'react'
 
-import { OltCage, OltOnt } from '@acx-ui/olt/utils'
+import { CageDetailsTabType, OltCage, OltOnt } from '@acx-ui/olt/utils'
 
 export type DrawerKey = 'ontDetails' | 'editOnt' | 'manageOnts'
 
@@ -86,7 +86,7 @@ export const CageDetailsProvider = ({
   const [state, dispatch] = useReducer(cageDetailsReducer, {
     ...initialCageDetailsState,
     cageDetails,
-    currentTab: initialTab ?? 'Panel'
+    currentTab: initialTab ?? CageDetailsTabType.PANEL
   })
 
   return (
