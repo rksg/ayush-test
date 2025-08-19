@@ -16,15 +16,16 @@ import { getIntentStatus } from './getIntentStatus'
 export const useCommonFields = (intent: IntentDetail) => {
   const { $t } = useIntl()
   const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
+  const codeInfo = codes[code]
 
   return [
     {
       label: $t({ defaultMessage: 'Intent' }),
-      children: $t(codes[code].intent)
+      children: $t(codeInfo.intent)
     },
     {
       label: $t({ defaultMessage: 'Category' }),
-      children: $t(codes[code].category)
+      children: $t(codeInfo.category)
     },
     {
       label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -35,7 +36,12 @@ export const useCommonFields = (intent: IntentDetail) => {
     {
       label: $t({ defaultMessage: 'Status' }),
       children: getIntentStatus(displayStatus),
-      tooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt }),
+      tooltip: getStatusTooltip(
+        displayStatus,
+        sliceValue,
+        { ...metadata, updatedAt },
+        codeInfo.aiFeature
+      ),
       tooltipPlacement: 'right' as TooltipPlacement
     },
     {
