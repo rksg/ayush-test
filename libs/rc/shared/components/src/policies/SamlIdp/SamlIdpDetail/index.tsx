@@ -24,10 +24,9 @@ import {
   getScopeKeyByPolicy,
   usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation,
-  SamlIdpProfileUrls
+  hasPolicyPermission
 } from '@acx-ui/rc/utils'
-import { hasPermission }            from '@acx-ui/user'
-import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { CertificateInfoItem }              from '../CertificateInfoItem'
@@ -69,7 +68,7 @@ export const SamlIdpDetail = () => {
   const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
 
   // eslint-disable-next-line max-len
-  const shouldShowRefreshButton = hasPermission({ rbacOpsIds: [getOpsApi(SamlIdpProfileUrls.refreshSamlServiceProviderMetadata)] })
+  const shouldShowRefreshButton = hasPolicyPermission({ type: PolicyType.SAML_IDP, oper: PolicyOperation.EDIT })
   const handleSyncMetadata = async () => {
     setIsSyncingMetadata(true)
     await refreshSamlServiceProviderMetadata({
