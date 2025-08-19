@@ -1,11 +1,12 @@
-import { isNaN, isNull } from 'lodash'
-import { useIntl }       from 'react-intl'
+import { isNaN, isNull }                                        from 'lodash'
+import { IntlShape, useIntl, MessageDescriptor, defineMessage } from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter, FormatterType }         from '@acx-ui/formatter'
+import { MspEcTierEnum }                    from '@acx-ui/msp/utils'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
@@ -25,6 +26,17 @@ interface BrandTableProps {
   isLSP?: boolean
   lspLabel: string
   propertyLabel: string
+}
+
+const mspEcTierToLabelsMap: Record<MspEcTierEnum, MessageDescriptor> = {
+  [MspEcTierEnum.Essentials]: defineMessage({ defaultMessage: 'Essentials' }),
+  [MspEcTierEnum.Professional]: defineMessage({ defaultMessage: 'Professional' }),
+  [MspEcTierEnum.Core]: defineMessage({ defaultMessage: 'Core' })
+}
+
+const getAccountTierLabel = (accountTier: String | undefined, $t: IntlShape['$t']) => {
+  if (!accountTier) return noDataDisplay
+  return $t(mspEcTierToLabelsMap[accountTier as MspEcTierEnum])
 }
 
 export function BrandTable ({
@@ -149,7 +161,7 @@ export function BrandTable ({
     }
   ]
   const propertyCols: TableProps<Pick<Property,
-    'property' | 'propertyCode' | 'lsp'>>['columns'] =
+    'property' | 'accountTier' | 'propertyCode' | 'lsp'>>['columns'] =
     [
       {
         title: propertyLabel,
@@ -160,7 +172,8 @@ export function BrandTable ({
         sorter: { compare: sortProp('property', defaultSort) },
         render: (_, row: Pick<Property, 'property'>, __, highlightFn) =>
           <span>{highlightFn(row?.property)}</span>
-      }, {
+      },
+      {
         title: $t({ defaultMessage: 'Property ID' }),
         dataIndex: 'propertyCode',
         key: 'propertyCode',
@@ -169,7 +182,31 @@ export function BrandTable ({
         sorter: { compare: sortProp('propertyCode', defaultSort) },
         render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
           <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
-      }, {
+      },
+      {
+        title: $t({ defaultMessage: 'Service Tier' }),
+        dataIndex: 'accountTier',
+        key: 'accountTier',
+        fixed: 'left',
+        filterable: true,
+        filterCustomOptions: (() => {
+          const uniqueAccountTiers = [...new Set(
+            tableData.map(item => item.accountTier)
+          )].filter(Boolean)
+          return uniqueAccountTiers.map(tier => {
+            return {
+              key: tier,
+              value: tier,
+              label: getAccountTierLabel(tier, $t)
+            }
+          })
+        })(),
+        sorter: { compare: sortProp('accountTier', defaultSort) },
+        render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
+          return getAccountTierLabel(row.accountTier, $t)
+        }
+      },
+      {
         title: lspLabel,
         dataIndex: 'lsp',
         key: 'lsp',
