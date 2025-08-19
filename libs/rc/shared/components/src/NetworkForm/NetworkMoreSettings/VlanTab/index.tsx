@@ -7,11 +7,11 @@ import { Features, useIsSplitOn }                                               
 import { ConfigTemplateType, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                         from '@acx-ui/utils'
 
-import NetworkFormContext                     from '../../NetworkFormContext'
+import { useServicePolicyEnabledWithConfigTemplate } from '../../../configTemplates'
+import NetworkFormContext                            from '../../NetworkFormContext'
 import {
   isShowDynamicVlan,
-  useNetworkVxLanTunnelProfileInfo,
-  useServicePolicyEnabledWithConfigTemplate
+  useNetworkVxLanTunnelProfileInfo
 } from '../../utils'
 import VLANPoolInstance from '../../VLANPoolInstance'
 import * as UI          from '../styledComponents'

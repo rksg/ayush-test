@@ -6,9 +6,10 @@ import { useIntl }              from 'react-intl'
 
 import { ConfigTemplateType, IsolatePacketsTypeEnum, getIsolatePacketsTypeOptions } from '@acx-ui/rc/utils'
 
-import NetworkFormContext                                                              from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
-import * as UI                                                                         from '../styledComponents'
+import { useServicePolicyEnabledWithConfigTemplate } from '../../../configTemplates'
+import NetworkFormContext                            from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo }          from '../../utils'
+import * as UI                                       from '../styledComponents'
 
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 

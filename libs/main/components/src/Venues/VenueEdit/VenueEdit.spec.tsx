@@ -85,12 +85,16 @@ jest.mock('./WifiConfigTab/AdvancedTab/ApManagementVlan', () => ({
   ApManagementVlan: () => <div data-testid='ApManagementVlan' />
 }))
 
-
-
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
 }))
 
 let dialog = null
@@ -190,6 +194,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     )
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedIsRecSite.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -214,11 +219,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
 
     it('should display Switch Configuration tab for config template', async () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedIsRecSite.mockReturnValue(false)
 
       render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
-      // eslint-disable-next-line max-len
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
     })
   })
