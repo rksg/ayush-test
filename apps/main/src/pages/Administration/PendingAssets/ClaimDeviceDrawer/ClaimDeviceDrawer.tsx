@@ -140,11 +140,13 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
     const updatedDevices = devices.map((device: DeviceFormData) => {
       let customApName = device.customApName
 
-      // Only update customApName when checkbox is checked
       if (checked) {
+        // If checked, use serial number as custom name
         customApName = device.serialNumber
+      } else {
+        // If unchecked, clear the custom name
+        customApName = undefined
       }
-      // If unchecked, keep the existing customApName value
 
       return {
         ...device,
@@ -152,6 +154,17 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       }
     })
     form.setFieldValue('devices', updatedDevices)
+    
+    // Clear validation errors when checkbox is checked
+    if (checked) {
+      const devices = form.getFieldValue('devices') || []
+      devices.forEach((_: any, index: number) => {
+        form.setFields([{
+          name: ['devices', index, 'customApName'],
+          errors: []
+        }])
+      })
+    }
   }
 
   // Handle checkbox change for using prefix.suffix pattern
@@ -576,7 +589,9 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                           : $t({ defaultMessage: 'Custom Switch Name is required' })
                       }]}
                     >
-                      <Input />
+                      <Input 
+                        disabled={form.getFieldValue('useSerialAsName')}
+                      />
                     </Form.Item>
                   </Col>
                   {deviceType === 'ap' && (
