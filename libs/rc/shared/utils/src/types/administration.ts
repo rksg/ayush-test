@@ -92,6 +92,8 @@ export interface Administrator {
   fullName?: string;
   authenticationId?: string;
   phoneNumber?: string;
+  username?:string;
+  firstName?:string;
 }
 
 export interface TenantMspEc {
