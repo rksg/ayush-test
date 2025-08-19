@@ -24,6 +24,42 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetAdminListPaginatedQuery: jest.fn(() => ({
+    data: { totalCount: 1 },
+    isLoading: false,
+    isFetching: false
+  })),
+  useGetAdminListQuery: jest.fn(() => ({
+    data: [
+      {
+        id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+        email: 'efg.cheng@email.com',
+        role: 'PRIME_ADMIN',
+        delegateToAllECs: true,
+        detailLevel: 'debug'
+      }
+    ],
+    isLoading: false,
+    isFetching: false
+  })),
+  useGetDelegationsQuery: jest.fn(() => ({
+    data: [{
+      id: 'ffc2146b0f9041fa85caec2537a57d09',
+      createdDate: '2023-02-13T11:51:07.793+00:00',
+      updatedDate: '2023-02-13T11:51:07.793+00:00',
+      delegatedTo: '3fde9aa0ef9a4d2181394095725d27a5',
+      type: 'VAR',
+      status: 'INVITED',
+      delegatedBy: 'dog1551@email.com',
+      delegatedToName: 'RUCKUS NETWORKS, INC',
+      delegatedToAdmin: 'amy.cheng@ruckuswireless.com'
+    }],
+    isLoading: false,
+    isFetching: false
+  }))
+}))
 const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
 
 const fakeSupportUser = { ...fakeUserProfile, dogfood: true }
@@ -89,6 +125,25 @@ describe('Administration page', () => {
               detailLevel: 'debug'
             }
           ]))
+        }
+      ),
+      rest.post(
+        AdministrationUrlsInfo.getAdministratorsPaginated.url,
+        (req, res, ctx) => {
+          return res(ctx.json({
+            content: [
+              {
+                id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+                email: 'efg.cheng@email.com',
+                role: 'PRIME_ADMIN',
+                delegateToAllECs: true,
+                detailLevel: 'debug'
+              }
+            ],
+            totalCount: 1,
+            totalPages: 1,
+            currentPage: 0
+          }))
         }
       ),
       rest.get(
@@ -372,7 +427,7 @@ describe('Administration page', () => {
   })
 
   it('should render administrator title with count for group login disabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE && ff !== Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
     params.activeTab = 'administrators'
 
     render(

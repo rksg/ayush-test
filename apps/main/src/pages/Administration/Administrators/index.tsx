@@ -10,6 +10,7 @@ import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
   useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetDelegationsQuery,
   useGetTenantAuthenticationsQuery,
   useGetTenantDetailsQuery
@@ -31,20 +32,36 @@ const Administrators = () => {
   const mspUtils = MSPUtils()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
 
   const { data: userProfileData, isPrimeAdmin } = useUserProfileContext()
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const adminList = useGetAdminListQuery(
-    { params }, { skip: !isGroupBasedLoginEnabled })
+
+  const countPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const adminList = useGetAdminListPaginatedQuery(
+    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled || !isPaginationEnabled })
+  const adminListOriginal = useGetAdminListQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled || isPaginationEnabled })
   const adminGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled }
   )
 
-  const adminCount = adminList?.data?.length! || 0
+  const adminCount = isPaginationEnabled
+    ? (adminList?.data?.totalCount || 0)
+    : (adminListOriginal?.data?.length || 0)
   const adminGroupCount = adminGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
 
