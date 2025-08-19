@@ -32,7 +32,7 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEcTierEnum, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 import { MspSubscriptionUtilizationWidget }                                                                                                 from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                            from '@acx-ui/rc/services'
 import {
@@ -51,7 +51,7 @@ import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from
 import { RolesEnum }                                                        from '@acx-ui/types'
 import type { Filter }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
+import { AccountTier, getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -172,6 +172,11 @@ export function Subscriptions () {
       { purchased, courtesy })
   }
 
+  const typeFilterOptions = Object.entries(MspEcTierEnum).map(([key, text]) => ({
+    key: text,
+    value: key
+  }))
+
   const columns: TableProps<MspEntitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
@@ -204,9 +209,18 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'License Tier' }),
       dataIndex: 'skuTier',
       key: 'skuTier',
+      filterable: typeFilterOptions,
+      filterMultiple: false,
       sorter: { compare: sortProp('skuTier', defaultSort) },
       render: function (_: React.ReactNode, row: MspEntitlement) {
-        return row?.skuTier || noDataDisplay
+        if (row.skuTier) {
+         return row.skuTier === AccountTier.GOLD
+            ? $t({ defaultMessage: 'Essentials' })
+            : row.skuTier === AccountTier.CORE
+              ? $t({ defaultMessage: 'Core' })
+              : $t({ defaultMessage: 'Professional' })
+        }
+        return noDataDisplay
       }
     }]: []),
     {

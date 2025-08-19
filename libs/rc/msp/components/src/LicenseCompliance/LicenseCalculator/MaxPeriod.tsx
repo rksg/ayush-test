@@ -11,7 +11,7 @@ import { DateFormatEnum, formatter }                                            
 import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
 import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                        from '@acx-ui/utils'
+import { AccountTier, noDataDisplay }                                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -174,6 +174,11 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
 
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item, index) => {
+        const tier = item.skuTier === AccountTier.GOLD
+        ? $t({ defaultMessage: 'Essentials' })
+        : item.skuTier === AccountTier.CORE
+          ? $t({ defaultMessage: 'Core' })
+          : $t({ defaultMessage: 'Professional' })
         return <Row
           key={index}
           style={{
@@ -181,11 +186,11 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
             marginBottom: '5px'
           }}>
           <Col style={{
-            width: '155px'
+            width: item.skuTier ? '175px': '135px'
           }}>
             {item.skuTier ? <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date for {skuTier} Tier:' },
-                { skuTier: item.skuTier }) }
+                { skuTier: tier }) }
             </UI.LicenseLabel> : <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date:' }) }
             </UI.LicenseLabel>

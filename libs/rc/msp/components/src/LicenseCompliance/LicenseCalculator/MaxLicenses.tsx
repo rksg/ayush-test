@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }                                               
 import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
 import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                        from '@acx-ui/utils'
+import { AccountTier, noDataDisplay }                                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -190,6 +190,11 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
     </Form>
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item, index) => {
+        const tier = item.skuTier === AccountTier.GOLD
+        ? $t({ defaultMessage: 'Essentials' })
+        : item.skuTier === AccountTier.CORE
+          ? $t({ defaultMessage: 'Core' })
+          : $t({ defaultMessage: 'Professional' })
         return <Row
           key={index}
           style={{
@@ -197,11 +202,11 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
             marginBottom: '5px'
           }}>
           <Col style={{
-            width: '210px'
+            width: item.skuTier ? '230px' : '180px'
           }}>
             {item.skuTier ? <UI.LicenseLabel>
               { $t({ defaultMessage: 'Available Licenses for {skuTier} Tier:' },
-                { skuTier: item.skuTier }) }
+                { skuTier: tier }) }
             </UI.LicenseLabel> : <UI.LicenseLabel>
               { $t({ defaultMessage: 'Available Licenses:' }) }
             </UI.LicenseLabel>
