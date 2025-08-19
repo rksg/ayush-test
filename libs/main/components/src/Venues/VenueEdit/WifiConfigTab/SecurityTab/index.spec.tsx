@@ -57,8 +57,16 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
+}))
+
 describe('SecurityTab', () => {
   beforeEach(() => {
+    mockedIsRecSite.mockReturnValue(true)
+
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
@@ -275,9 +283,9 @@ describe('SecurityTab', () => {
 
   })
 
-  // eslint-disable-next-line max-len
-  it('should render correctly with RogueApProfile settings with RBAC_CONFIG_TEMPLATE_TOGGLE turned on', async () => {
+  it('should render RogueApProfile with template RBAC enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    mockedIsRecSite.mockReturnValue(false)
 
     const mockGetRoguePolicyTemplate = jest.fn()
     mockServer.use(
