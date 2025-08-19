@@ -1,5 +1,5 @@
-import { isNaN, isNull } from 'lodash'
-import { useIntl }       from 'react-intl'
+import { isNaN, isNull }                                        from 'lodash'
+import { IntlShape, useIntl, MessageDescriptor, defineMessage } from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
@@ -26,6 +26,17 @@ interface BrandTableProps {
   isLSP?: boolean
   lspLabel: string
   propertyLabel: string
+}
+
+const mspEcTierToLabelsMap: Record<MspEcTierEnum, MessageDescriptor> = {
+  [MspEcTierEnum.Essentials]: defineMessage({ defaultMessage: 'Essentials' }),
+  [MspEcTierEnum.Professional]: defineMessage({ defaultMessage: 'Professional' }),
+  [MspEcTierEnum.Core]: defineMessage({ defaultMessage: 'Core' })
+}
+
+const getAccountTierLabel = (accountTier: String | undefined, $t: IntlShape['$t']) => {
+  if (!accountTier) return noDataDisplay
+  return $t(mspEcTierToLabelsMap[accountTier as MspEcTierEnum])
 }
 
 export function BrandTable ({
@@ -173,27 +184,16 @@ export function BrandTable ({
             tableData.map(item => item.accountTier)
           )].filter(Boolean)
           return uniqueAccountTiers.map(tier => {
-            const label = tier === MspEcTierEnum.Essentials
-              ? $t({ defaultMessage: 'Essentials' })
-              : tier === MspEcTierEnum.Professional
-                ? $t({ defaultMessage: 'Professional' })
-                : $t({ defaultMessage: 'Core' })
             return {
               key: tier,
               value: tier,
-              label
+              label: getAccountTierLabel(tier, $t)
             }
           })
         })(),
         sorter: { compare: sortProp('accountTier', defaultSort) },
         render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
-          return row.accountTier === MspEcTierEnum.Essentials
-            ? $t({ defaultMessage: 'Essentials' })
-            : row.accountTier === MspEcTierEnum.Professional
-              ? $t({ defaultMessage: 'Professional' })
-              : row.accountTier === MspEcTierEnum.Core
-                ? $t({ defaultMessage: 'Core' })
-                : noDataDisplay
+          return getAccountTierLabel(row.accountTier, $t)
         }
       },
       {
