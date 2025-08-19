@@ -14,8 +14,7 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }                 from '@acx-ui/rc/components'
-import {  getNextScheduleTplV1002 }               from '@acx-ui/rc/components'
+import { getNextScheduleTplV1002 }                from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
@@ -23,6 +22,7 @@ import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils }            from '@acx-ui/switch/components'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import * as UI               from '../../../styledComponents'
