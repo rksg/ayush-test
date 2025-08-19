@@ -37,7 +37,6 @@ import {
   useGetMspEcDelegatedAdminsQuery,
   useMspCustomerListQuery,
   useGetAssignedMspEcToIntegratorQuery,
-  usePatchCustomerMutation,
   useGetCalculatedLicencesListV2Query
 } from '@acx-ui/msp/services'
 import {
@@ -52,7 +51,6 @@ import {
   defaultAddress,
   addressParser,
   MspEcTierEnum,
-  MspEcTierPayload,
   LicenseCalculatorDataV2
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete }                                         from '@acx-ui/rc/generic-features/components'
@@ -81,6 +79,7 @@ import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { getServiceTierOptions }     from '../NewManageCustomer/NewManageCustomer.util'
 import * as UI                       from '../styledComponents'
 
 interface EcFormData {
@@ -102,7 +101,11 @@ interface EcFormData {
 }
 
 export function NewManageIntegrator () {
+  const { acx_account_vertical } = getJwtTokenPayload()
   const intl = useIntl()
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
+
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
@@ -111,11 +114,12 @@ export function NewManageIntegrator () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
-  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
   const multiLicenseFFToggle = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
   const createEcWithTierFFToggle = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
-  const createEcWithTierEnabled = multiLicenseFFToggle && createEcWithTierFFToggle
+  const createEcWithTierEnabled = multiLicenseFFToggle &&
+    // ACX-94742 Note: This FR only supports techpartner tiers MDU/HSP; default MSP is out of scope.
+    createEcWithTierFFToggle && (isMDU || isHospitality)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -145,12 +149,6 @@ export function NewManageIntegrator () {
 
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
-  const [patchCustomer] = usePatchCustomerMutation()
-
-  const { acx_account_vertical } = getJwtTokenPayload()
-
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
-  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -215,8 +213,12 @@ export function NewManageIntegrator () {
      { skip: isEditMode || !isAppMonitoringEnabled })
 
   const setServiceTier = (serviceTier: MspEcTierEnum) => {
-    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
-      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+    if (multiLicenseFFToggle) {
+      return serviceTier
+    } else {
+      return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+        : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+    }
   }
 
   useEffect(() => {
@@ -231,7 +233,9 @@ export function NewManageIntegrator () {
     const hasCalculatedLicencesList = multiLicenseFFToggle && calculatedLicencesList
     if (licenseSummaryResults || hasCalculatedLicencesList) {
       if(hasCalculatedLicencesList) {
-        checkAvailableLicenseV2(calculatedLicencesList.data)
+        checkAvailableLicenseV2(
+          calculatedLicencesList.data,
+          formRef.current?.getFieldValue('tier'))
       } else if (licenseSummaryResults) {
         checkAvailableLicense(licenseSummaryResults)
       }
@@ -252,10 +256,11 @@ export function NewManageIntegrator () {
         en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN && en.status === 'VALID')
       const solutionTokenLic = solutionToken.length > 0
         ? solutionToken.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+      const tierValue = setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
 
       if(hasCalculatedLicencesList) {
         setLicenseCalcData({ apswLic, solutionTokenLic })
-        checkAvailableLicenseV2(calculatedLicencesList.data, apswLic, solutionTokenLic)
+        checkAvailableLicenseV2(calculatedLicencesList.data, tierValue, apswLic, solutionTokenLic)
       } else if (licenseSummaryResults) {
         checkAvailableLicense(licenseSummaryResults, apswLic, solutionTokenLic)
       }
@@ -266,9 +271,7 @@ export function NewManageIntegrator () {
         apswLicense: apswLic,
         solutionTokenLicense: solutionTokenLic,
         service_expiration_date: moment(data?.service_expiration_date),
-        ...(multiLicenseFFToggle && {
-          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional
-        })
+        ...(multiLicenseFFToggle ? { tier: tierValue } : {})
       })
       setOriginalTier(data?.tier ?? '')
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -407,9 +410,8 @@ export function NewManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations,
-        ...(createEcWithTierEnabled && {
-          tier: ecFormData.tier
-        }),
+        ...(createEcWithTierEnabled ?
+          { tier: ecFormData.tier } : {}),
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -484,7 +486,7 @@ export function NewManageIntegrator () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
+        ...(createEcWithTierEnabled ? { tier: ecFormData.tier } : {}),
         privacyFeatures: isAppMonitoringEnabled
           ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
           : undefined
@@ -527,13 +529,6 @@ export function NewManageIntegrator () {
       await updateIntegrator({
         params: { mspEcTenantId: mspEcTenantId },
         payload: customer, enableRbac: isRbacEnabled }).unwrap()
-      if (isPatchTierEnabled && multiLicenseFFToggle && originalTier !== ecFormData.tier) {
-        const patchTier: MspEcTierPayload = {
-          type: 'serviceTierStatus',
-          serviceTierStatus: ecFormData.tier
-        }
-        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
-      }
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
@@ -683,11 +678,10 @@ export function NewManageIntegrator () {
 
   const checkAvailableLicenseV2 = (
     entitlements: LicenseCalculatorDataV2[],
+    currentTier: MspEcTierEnum,
     apswLic?: number,
     solutionTokenLic?: number
   ) => {
-    const currentTier = formRef.current?.getFieldValue('tier') || data?.tier
-
     setAvailableApswLicense(
       sumLicenses(entitlements, EntitlementDeviceType.APSW, false, currentTier, apswLic)
     )
@@ -762,15 +756,8 @@ export function NewManageIntegrator () {
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
-                // isMDU : show only Core
-                // isHospitality: show only Professional
-                // everything else: show both Professional and Essentials
                 return (
-                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
-                  (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
-                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
-                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                  getServiceTierOptions(value, { mspServiceTierFFtoggle, multiLicenseFFToggle })
                 ) &&
                 <Radio
                   onChange={handleServiceTierChange}
@@ -786,13 +773,19 @@ export function NewManageIntegrator () {
     />
   }
 
-  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+  const checkTierLicense = function (tier: MspEcTierEnum) {
     if(multiLicenseFFToggle && calculatedLicencesList) {
       checkAvailableLicenseV2(
         calculatedLicencesList.data,
+        tier,
         ...(isEditMode ? [licenseCalcData.apswLic, licenseCalcData.solutionTokenLic] : [])
       )
     }
+  }
+
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    const prevTier = formRef.current?.getFieldValue('tier')
+    checkTierLicense(tier.target.value)
 
     if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
       const modalContent = (
@@ -810,11 +803,8 @@ export function NewManageIntegrator () {
         content: modalContent,
         okText: intl.$t({ defaultMessage: 'Save' }),
         onCancel: () => {
-          if (tier.target.value === MspEcTierEnum.Essentials) {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
-          } else {
-            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
-          }
+          formRef.current?.setFieldValue('tier', prevTier)
+          checkTierLicense(prevTier)
         }
       })
     }
