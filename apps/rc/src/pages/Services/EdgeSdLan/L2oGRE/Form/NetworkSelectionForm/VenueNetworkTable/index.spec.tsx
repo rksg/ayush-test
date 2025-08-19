@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
-import { waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                             from '@testing-library/user-event'
-import { Form }                              from 'antd'
-import { cloneDeep }                         from 'lodash'
-import { rest }                              from 'msw'
+import { within }    from '@testing-library/react'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { StepsForm, StepsFormProps }                                                                                                         from '@acx-ui/components'
-import { venueApi }                                                                                                                          from '@acx-ui/rc/services'
-import { APCompatibilityFixtures, CommonUrlsInfo, EdgePinFixtures, EdgeSdLanFixtures, IncompatibilityFeatures, VenueFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                   from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                                                                from '@acx-ui/components'
+import { venueApi }                                                                                                                 from '@acx-ui/rc/services'
+import { APCompatibilityFixtures, EdgePinFixtures, EdgeSdLanFixtures, IncompatibilityFeatures, Venue, VenueFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -37,7 +37,8 @@ const edgeMvSdlanContextValues = {
   allSdLans: mockedMvSdLanDataList,
   allPins: [],
   allSoftGreVenueMap: {},
-  availableTunnelProfiles: []
+  availableTunnelProfiles: [],
+  allVenues: mockVenueList.data as unknown as Venue[]
 } as EdgeSdLanContextType
 
 jest.mock('@acx-ui/utils', () => ({
@@ -83,10 +84,6 @@ describe('Tunneled Venue Networks Table', () => {
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json(mockVenueList))
-      ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,
         (_, res, ctx) => res(ctx.json(APCompatibilityFixtures.mockApCompatibilitiesVenue)))
@@ -162,7 +159,8 @@ describe('Tunneled Venue Networks Table', () => {
       allSdLans: mockedOverlapSdLans,
       allPins: [],
       allSoftGreVenueMap: {},
-      availableTunnelProfiles: []
+      availableTunnelProfiles: [],
+      allVenues: mockVenueList.data as unknown as Venue[]
     }} />,
     { route: { params: { tenantId: 't-id' } } })
 
@@ -194,7 +192,9 @@ describe('Tunneled Venue Networks Table', () => {
         allSdLans: mockedOverlapSdLansForEdit,
         allPins: [],
         allSoftGreVenueMap: {},
-        availableTunnelProfiles: [] }}
+        availableTunnelProfiles: [],
+        allVenues: mockVenueList.data as unknown as Venue[]
+      }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
@@ -211,7 +211,8 @@ describe('Tunneled Venue Networks Table', () => {
       allSdLans: [],
       allPins: [mockPinListForMutullyExclusive.data[0]],
       allSoftGreVenueMap: {},
-      availableTunnelProfiles: []
+      availableTunnelProfiles: [],
+      allVenues: mockVenueList.data as unknown as Venue[]
     }} />,
     { route: { params: { tenantId: 't-id' } } })
 
@@ -239,7 +240,8 @@ describe('Tunneled Venue Networks Table', () => {
         allSdLans: [],
         allPins: [mockPinListForMutullyExclusive.data[0]],
         allSoftGreVenueMap: {},
-        availableTunnelProfiles: []
+        availableTunnelProfiles: [],
+        allVenues: mockVenueList.data as unknown as Venue[]
       }}
       form={stepFormRef.current}
       editMode={true}
@@ -263,15 +265,16 @@ describe('Tunneled Venue Networks Table', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json({ data: mockVenueList.data.slice(1, 2) }))
-      ),
-      rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,
         (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue)))
     )
 
-    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent
+      ctxValues={{
+        ...edgeMvSdlanContextValues,
+        allVenues: mockVenueList.data.slice(1, 2) as unknown as Venue[]
+      }}
+    />, { route: { params: { tenantId: 't-id' } } })
     const row = await screen.findByRole('row', { name: /Mocked-Venue-2 .* Select Networks/i })
     const fwWarningIcon = await within(row).findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
@@ -284,7 +287,6 @@ describe('Tunneled Venue Networks Table', () => {
 })
 
 const basicCheck = async () => {
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   const rows = await screen.findAllByRole('row', { name: /Mocked-Venue/i })
   expect(rows.length).toBe(2)
 }

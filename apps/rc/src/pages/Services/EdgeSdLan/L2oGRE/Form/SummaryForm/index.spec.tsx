@@ -1,28 +1,21 @@
 import { Form } from 'antd'
-import { rest } from 'msw'
 
-import { StepsForm }                                            from '@acx-ui/components'
-import {  CommonUrlsInfo, EdgeMvSdLanFormModel, VenueFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
+import { StepsForm }                                  from '@acx-ui/components'
+import { EdgeMvSdLanFormModel, Venue, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                   from '@acx-ui/store'
 import {
-  mockServer,
   render,
   renderHook,
   screen
 } from '@acx-ui/test-utils'
+
+import { EdgeSdLanContext, EdgeSdLanContextType } from '../EdgeSdLanContextProvider'
 
 import { SummaryForm } from '.'
 
 const { mockVenueList } = VenueFixtures
 
 describe('Summary form', () => {
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueList)))
-    )
-  })
-
   it('should correctly display', async () => {
     const mockedData = {
       id: '',
@@ -45,9 +38,13 @@ describe('Summary form', () => {
     })
 
     render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SummaryForm />
-      </StepsForm>
+      <EdgeSdLanContext.Provider value={{
+        allVenues: mockVenueList.data as unknown as Venue[]
+      } as unknown as EdgeSdLanContextType}>
+        <StepsForm form={stepFormRef.current}>
+          <SummaryForm />
+        </StepsForm>
+      </EdgeSdLanContext.Provider>
     </Provider>)
     await screen.findByRole('cell', { name: /testSdLanData/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
@@ -76,9 +73,13 @@ describe('Summary form', () => {
     })
 
     render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SummaryForm />
-      </StepsForm>
+      <EdgeSdLanContext.Provider value={{
+        allVenues: mockVenueList.data as unknown as Venue[]
+      } as unknown as EdgeSdLanContextType}>
+        <StepsForm form={stepFormRef.current}>
+          <SummaryForm />
+        </StepsForm>
+      </EdgeSdLanContext.Provider>
     </Provider>)
     await screen.findByRole('cell', { name: /testSdLanData2/i })
     await screen.findByRole('cell', { name: /Smart Edge 2/i })

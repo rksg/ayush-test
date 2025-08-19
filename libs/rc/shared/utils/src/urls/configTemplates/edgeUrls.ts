@@ -3,11 +3,20 @@ import { ApiInfo } from '@acx-ui/utils'
 export const EdgeConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   activateSdLanNetworkTemplate: {
     method: 'put',
-    url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
+    url: '/edgeSdLanServices/:serviceId/templates/venues/:venueId/wifiNetworks/:wifiNetworkId',
     newApi: true,
     defaultHeaders: {
-      'Content-Type': 'application/vnd.ruckus.v1.1+json',
-      'Accept': 'application/vnd.ruckus.v1.1+json'
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateSdLanNetworkTemplate: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/templates/venues/:venueId/wifiNetworks/:wifiNetworkId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
     }
   },
   addTunnelProfileTemplate: {
@@ -33,9 +42,10 @@ export const EdgeConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'DELETE:/templates/tunnelServiceProfiles/{id}'
   },
-  getTunnelProfileTemplateViewDataList: {
+  getTunnelProfileTemplateViewDataListSkipRecRewrite: {
     method: 'post',
     url: '/templates/tunnelServiceProfiles/query',
-    newApi: true
+    newApi: true,
+    skipRecRewrite: true
   }
 }

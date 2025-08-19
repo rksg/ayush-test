@@ -94,6 +94,8 @@ type AdditionalColumnType <RecordType, ValueType> = {
   } | {
     type: 'rangepicker',
     unlimitedRange?: boolean
+  } | {
+    type: 'cascader'
   })
   /**
    * Overwrite filterableWidth of table attribute

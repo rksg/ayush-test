@@ -20,6 +20,7 @@ export interface ApiInfo {
     'Content-Type'?: string;
     'Accept'?: string
   };
+  skipRecRewrite?: boolean;
 }
 
 export const isDelegationMode = () => {
@@ -209,10 +210,10 @@ export function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
     return apiInfo
   }
 
-  const { url, ...rest } = apiInfo
+  const { url, skipRecRewrite, ...rest } = apiInfo
 
   return {
     ...rest,
-    url: isRecSite() ? url.replace(/^\/templates/, '/rec/templates') : url
+    url: isRecSite() && !skipRecRewrite ? url.replace(/^\/templates/, '/rec/templates') : url
   }
 }

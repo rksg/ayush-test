@@ -50,4 +50,9 @@ describe('Card component', () => {
     const { asFragment } = render(<Card type='solid-bg'>test</Card>)
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should render card with blue info background', () => {
+    const { asFragment } = render(<Card type='info-bg'>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })

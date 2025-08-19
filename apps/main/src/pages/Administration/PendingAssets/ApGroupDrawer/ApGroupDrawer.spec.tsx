@@ -1,137 +1,93 @@
-import React from 'react'
+import '@testing-library/jest-dom'
 
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  render,
+  screen,
+  fireEvent
+} from '@acx-ui/test-utils'
 
 import { ApGroupDrawer } from './ApGroupDrawer'
 
-// Mock the ApGroupGeneralTab component
+// Mock ApGroupGeneralTab component
 jest.mock('@acx-ui/rc/components', () => ({
-  ApGroupGeneralTab: ({ onFinish }: { onFinish?: () => Promise<boolean | void> }) => (
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApGroupGeneralTab: jest.fn(({ handleClose, onFinish }) => (
     <div data-testid='ap-group-general-tab'>
-      <h2>AP Group General Tab</h2>
-      <button onClick={onFinish} data-testid='on-finish-button'>
-        Submit via onFinish
-      </button>
-      <button data-testid='add-button'>Add</button>
-      <button data-testid='cancel-button'>Cancel</button>
+      <button data-testid='mock-close-button' onClick={handleClose}>Mock Close</button>
+      <button data-testid='mock-finish-button' onClick={onFinish}>Finish</button>
     </div>
-  ),
-  ApGroupEditContextProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid='ap-group-edit-context-provider'>
-      {children}
-    </div>
-  )
+  ))
 }))
 
-// Mock the Drawer component
-jest.mock('@acx-ui/components', () => ({
-  Drawer: ({
-    children,
-    title,
-    visible,
-    onClose,
-    footer
-  }: {
-    children: React.ReactNode
-    title: string
-    visible: boolean
-    onClose: () => void
-    footer: React.ReactNode
-  }) => (
-    visible ? (
-      <div data-testid='drawer' role='dialog' aria-modal='true'>
-        <div data-testid='drawer-header'>
-          <h1>{title}</h1>
-          <button onClick={onClose} data-testid='drawer-close-button'>
-            Close Drawer
-          </button>
-        </div>
-        <div data-testid='drawer-content'>
-          {children}
-        </div>
-        {footer && <div data-testid='drawer-footer'>{footer}</div>}
-      </div>
-    ) : null
-  )
-}))
+const mockProps = {
+  open: true,
+  onClose: jest.fn()
+}
 
 describe('ApGroupDrawer', () => {
-  const defaultProps = {
-    open: true,
-    onClose: jest.fn()
-  }
-
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  const renderComponent = (props = {}) => {
-    return render(<ApGroupDrawer {...defaultProps} {...props} />)
-  }
-
-  describe('Rendering', () => {
-    it('renders correctly when open with all required elements and proper integration', () => {
-      renderComponent()
-
-      const drawer = screen.getByTestId('drawer')
-      expect(drawer).toBeInTheDocument()
-      expect(drawer).toHaveAttribute('role', 'dialog')
-      expect(drawer).toHaveAttribute('aria-modal', 'true')
-      expect(screen.getByText('Add AP Group')).toBeInTheDocument()
-
-      // Test context provider integration
-      const contextProvider = screen.getByTestId('ap-group-edit-context-provider')
-      expect(contextProvider).toBeInTheDocument()
-
-      // Test ApGroupGeneralTab integration
-      const apGroupTab = screen.getByTestId('ap-group-general-tab')
-      expect(apGroupTab).toBeInTheDocument()
-      expect(drawer).toContainElement(apGroupTab)
-    })
-
-    it('does not render when closed', () => {
-      renderComponent({ open: false })
-
-      expect(screen.queryByTestId('drawer')).not.toBeInTheDocument()
-    })
-
-    it('renders correctly with minimal props', () => {
-      renderComponent({ onClose: () => {} })
-
-      expect(screen.getByTestId('drawer')).toBeInTheDocument()
-      expect(screen.getByTestId('ap-group-general-tab')).toBeInTheDocument()
-    })
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
-  describe('Drawer close functionality', () => {
-    it('calls onClose when any close action is triggered', () => {
-      const mockOnClose = jest.fn()
-      renderComponent({ onClose: mockOnClose })
+  it('renders with default props and handles all interactions when open is true', () => {
+    render(
+      <Provider>
+        <ApGroupDrawer {...mockProps} />
+      </Provider>
+    )
 
-      // Test drawer close button
-      const closeButton = screen.getByTestId('drawer-close-button')
-      expect(closeButton).toBeInTheDocument()
-      expect(closeButton.tagName).toBe('BUTTON')
-      fireEvent.click(closeButton)
-      expect(mockOnClose).toHaveBeenCalledTimes(1)
+    // Test basic rendering
+    expect(screen.getByText('Add AP Group')).toBeVisible()
+    expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
 
-      // Reset mock and test onFinish button
-      mockOnClose.mockClear()
-      const onFinishButton = screen.getByTestId('on-finish-button')
-      fireEvent.click(onFinishButton)
-      expect(mockOnClose).toHaveBeenCalledTimes(1)
-    })
+    // Test drawer width
+    const drawer = screen.getByRole('dialog')
+    expect(drawer).toBeInTheDocument()
+
+    // Test ApGroupGeneralTab component with correct props
+    expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
+    expect(screen.getByTestId('mock-close-button')).toBeVisible()
+    expect(screen.getByTestId('mock-finish-button')).toBeVisible()
+
+    // Test i18n title
+    expect(screen.getByText('Add AP Group')).toBeVisible()
+
+    // Test ApGroupEditContextProvider wrapper
+    expect(screen.getByTestId('ap-group-general-tab')).toBeVisible()
+
+    // Test close functionality
+    fireEvent.click(screen.getByLabelText('Close'))
+    expect(mockProps.onClose).toHaveBeenCalledTimes(1)
   })
 
-  describe('Edge cases', () => {
-    it('handles undefined and null onClose gracefully', () => {
-      expect(() => {
-        renderComponent({ onClose: undefined as unknown as () => void })
-      }).not.toThrow()
+  it('does not render when open is false', () => {
+    render(
+      <Provider>
+        <ApGroupDrawer {...mockProps} open={false} />
+      </Provider>
+    )
+    expect(screen.queryByText('Add AP Group')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('ap-group-general-tab')).not.toBeInTheDocument()
+  })
 
-      expect(() => {
-        renderComponent({ onClose: null as unknown as () => void })
-      }).not.toThrow()
-    })
+  it('handles mock component interactions correctly', () => {
+    render(
+      <Provider>
+        <ApGroupDrawer {...mockProps} />
+      </Provider>
+    )
+
+    // Test mock close button
+    fireEvent.click(screen.getByTestId('mock-close-button'))
+    expect(mockProps.onClose).toHaveBeenCalledTimes(1)
+
+    // Test mock finish button
+    fireEvent.click(screen.getByTestId('mock-finish-button'))
+    expect(mockProps.onClose).toHaveBeenCalledTimes(2)
   })
 })

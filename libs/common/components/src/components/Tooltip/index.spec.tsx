@@ -1,5 +1,9 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@acx-ui/test-utils'
+import 'jest-styled-components'
+import {
+  render,
+  screen
+} from '@acx-ui/test-utils'
 
 import { Tooltip } from '.'
 
@@ -45,6 +49,48 @@ describe('Tooltip', () => {
     render(<Tooltip.Warning title='question tooltip' isFilled iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('WarningCircleSolid')
     expect(icon).toBeVisible()
+  })
+
+  it('renders Tooltip.Warning filled circle defaults', async () => {
+    render(
+      <Tooltip.Warning
+        title='warning tooltip'
+        isFilled
+        iconStyle={{ width: '16px' }}
+      />
+    )
+    const icon = await screen.findByTestId('WarningCircleSolid')
+    expect(icon).toBeVisible()
+    expect(icon).toHaveStyleRule('fill', '#333333', { modifier: 'path:nth-child(1)' })
+    expect(icon).toHaveStyleRule('stroke', '#333333', { modifier: 'path:nth-child(2)' })
+  })
+
+  it('renders Tooltip.Warning filled circle uses icon color when no borderColor', async () => {
+    render(
+      <Tooltip.Warning
+        title='warning tooltip'
+        isFilled
+        iconStyle={{ width: '16px', color: '#ff0000' }}
+      />
+    )
+    const icon = await screen.findByTestId('WarningCircleSolid')
+    expect(icon).toBeVisible()
+    expect(icon).toHaveStyleRule('fill', '#ff0000', { modifier: 'path:nth-child(1)' })
+    expect(icon).toHaveStyleRule('stroke', '#ff0000', { modifier: 'path:nth-child(2)' })
+  })
+
+  it('renders Tooltip.Warning filled circle uses borderColor for stroke', async () => {
+    render(
+      <Tooltip.Warning
+        title='warning tooltip'
+        isFilled
+        iconStyle={{ width: '16px', color: '#0000ff', borderColor: '#00ff00' }}
+      />
+    )
+    const icon = await screen.findByTestId('WarningCircleSolid')
+    expect(icon).toBeVisible()
+    expect(icon).toHaveStyleRule('fill', '#0000ff', { modifier: 'path:nth-child(1)' })
+    expect(icon).toHaveStyleRule('stroke', '#00ff00', { modifier: 'path:nth-child(2)' })
   })
 
   it('renders Tooltip.Warning with triangle', async () => {

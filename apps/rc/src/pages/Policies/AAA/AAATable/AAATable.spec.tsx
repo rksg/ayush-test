@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CertificateUrls,
-  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   IdentityProviderUrls,
@@ -76,6 +76,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useWifiNetworkListQuery: jest.fn()
+}))
+const mockNetworkNameMap = useWifiNetworkListQuery as jest.Mock
 describe('AAATable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -85,16 +90,12 @@ describe('AAATable', () => {
   const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    mockNetworkNameMap.mockReturnValue({ networkNameMap: [] })
+
     mockServer.use(
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json({ ...mockTableResult }))
-      ),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json({
-          data: [],
-          totalCount: 0
-        }))
       ),
       rest.post(
         IdentityProviderUrls.getIdentityProviderList.url,
