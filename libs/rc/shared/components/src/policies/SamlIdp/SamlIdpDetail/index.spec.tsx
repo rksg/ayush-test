@@ -143,6 +143,7 @@ describe('SAML IdP Detail', () => {
 
   it('Should call sync metadata api when click sync metadata button', async () => {
     const user = userEvent.setup()
+    jest.mocked(hasPermission).mockReturnValue(true)
     render(
       <Provider>
         <SamlIdpDetail />
