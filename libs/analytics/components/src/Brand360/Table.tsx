@@ -174,6 +174,16 @@ export function BrandTable ({
           <span>{highlightFn(row?.property)}</span>
       },
       {
+        title: $t({ defaultMessage: 'Property ID' }),
+        dataIndex: 'propertyCode',
+        key: 'propertyCode',
+        fixed: 'left',
+        searchable: true,
+        sorter: { compare: sortProp('propertyCode', defaultSort) },
+        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
+          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
+      },
+      {
         title: $t({ defaultMessage: 'Service Tier' }),
         dataIndex: 'accountTier',
         key: 'accountTier',
@@ -195,16 +205,6 @@ export function BrandTable ({
         render: function (_: React.ReactNode, row: Pick<Property, 'accountTier'>) {
           return getAccountTierLabel(row.accountTier, $t)
         }
-      },
-      {
-        title: $t({ defaultMessage: 'Property ID' }),
-        dataIndex: 'propertyCode',
-        key: 'propertyCode',
-        fixed: 'left',
-        searchable: true,
-        sorter: { compare: sortProp('propertyCode', defaultSort) },
-        render: (_, row: Pick<PropertyCode, 'propertyCode'>, __, highlightFn) =>
-          <span>{row?.propertyCode ? highlightFn(row?.propertyCode) : noDataDisplay}</span>
       },
       {
         title: lspLabel,
