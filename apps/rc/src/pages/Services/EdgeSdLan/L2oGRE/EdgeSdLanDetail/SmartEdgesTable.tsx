@@ -7,8 +7,9 @@ import { Button, Table, TableProps, Tooltip }         from '@acx-ui/components'
 import { EdgeMvSdLanViewData, sortProp, defaultSort } from '@acx-ui/rc/utils'
 
 
+import * as UI from '../styledComponents'
+
 import { CurrentEdgeInfo, EdgeInfoDrawer } from './EdgeInfoDrawer'
-import * as UI                             from './styledComponents'
 
 interface SmartEdgesTableProps {
   sdLanData?: EdgeMvSdLanViewData
