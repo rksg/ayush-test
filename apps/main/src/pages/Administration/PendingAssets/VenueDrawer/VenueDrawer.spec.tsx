@@ -15,7 +15,7 @@ import { VenueDrawer } from './VenueDrawer'
 
 // Mock VenuesForm component
 const mockVenuesForm = jest.fn(
-  ({ modalCallBack, modalMode, specifiedAction, dataFromParent }: { 
+  ({ modalCallBack }: {
     modalCallBack?: (venue?: VenueExtended) => void
     modalMode?: boolean
     specifiedAction?: 'override'
@@ -40,7 +40,7 @@ const mockVenuesForm = jest.fn(
 
 // Mock the entire Venues module to avoid any real component rendering
 jest.mock('../../../Venues', () => ({
-  VenuesForm: jest.fn((props: { 
+  VenuesForm: jest.fn((props: {
     modalCallBack?: (venue?: VenueExtended) => void
     modalMode?: boolean
     specifiedAction?: 'override'

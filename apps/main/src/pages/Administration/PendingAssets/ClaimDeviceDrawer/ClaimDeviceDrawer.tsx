@@ -154,11 +154,11 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       }
     })
     form.setFieldValue('devices', updatedDevices)
-    
+
     // Clear validation errors when checkbox is checked
     if (checked) {
       const devices = form.getFieldValue('devices') || []
-      devices.forEach((_: any, index: number) => {
+      devices.forEach((_: DeviceFormData, index: number) => {
         form.setFields([{
           name: ['devices', index, 'customApName'],
           errors: []
@@ -589,7 +589,7 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                           : $t({ defaultMessage: 'Custom Switch Name is required' })
                       }]}
                     >
-                      <Input 
+                      <Input
                         disabled={form.getFieldValue('useSerialAsName')}
                       />
                     </Form.Item>
@@ -629,22 +629,23 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                         </div>
                       }
                     >
-                                              <div style={{
-                          backgroundColor: '#f5f5f5',
-                          padding: '4px 11px',
-                          borderRadius: '6px',
-                          minHeight: '32px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          width: '100%'
-                        }}>
-                          <div style={{ flex: deviceType === 'ap' ? '0 0 66.67%' : '0 0 50%' }}>
-                            <Text>{form.getFieldValue(['devices', name, 'serialNumber'])}</Text>
-                          </div>
-                          <div style={{ flex: deviceType === 'ap' ? '0 0 33.33%' : '0 0 50%', textAlign: 'left' }}>
-                            <Text>{form.getFieldValue(['devices', name, 'model'])}</Text>
-                          </div>
+                      <div style={{
+                        backgroundColor: '#f5f5f5',
+                        padding: '4px 11px',
+                        borderRadius: '6px',
+                        minHeight: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '100%'
+                      }}>
+                        <div style={{ flex: deviceType === 'ap' ? '0 0 66.67%' : '0 0 50%' }}>
+                          <Text>{form.getFieldValue(['devices', name, 'serialNumber'])}</Text>
                         </div>
+                        <div style={{ flex: deviceType === 'ap' ?
+                          '0 0 33.33%' : '0 0 50%', textAlign: 'left' }}>
+                          <Text>{form.getFieldValue(['devices', name, 'model'])}</Text>
+                        </div>
+                      </div>
                     </Form.Item>
                   </Col>
                 </Row>
