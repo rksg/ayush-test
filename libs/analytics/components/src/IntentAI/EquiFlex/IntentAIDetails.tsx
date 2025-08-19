@@ -8,19 +8,19 @@ import { Card, GridCol, GridRow }  from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 
-import { DescriptionSection }   from '../../DescriptionSection'
-import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
-import { ConfigurationCard }    from '../AIOperations/ConfigurationCard'
-import { useCommonFields }      from '../common/commonFields'
-import { DetailsSection }       from '../common/DetailsSection'
-import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
-import { IntentIcon }           from '../common/IntentIcon'
-import { KPIGrid }              from '../common/KPIs'
-import { richTextFormatValues } from '../common/richTextFormatValues'
-import { StatusTrail }          from '../common/StatusTrail'
-import { IntentWlan }           from '../config'
-import { useIntentContext }     from '../IntentContext'
-import { getStatusTooltip }     from '../services'
+import { DescriptionSection }     from '../../DescriptionSection'
+import { FixedAutoSizer }         from '../../DescriptionSection/styledComponents'
+import { ConfigurationCard }      from '../AIOperations/ConfigurationCard'
+import { useCommonFields }        from '../common/commonFields'
+import { DetailsSection }         from '../common/DetailsSection'
+import { IntentDetailsHeader }    from '../common/IntentDetailsHeader'
+import { IntentIcon }             from '../common/IntentIcon'
+import { KPIGrid }                from '../common/KPIs'
+import { richTextFormatValues }   from '../common/richTextFormatValues'
+import { StatusTrail }            from '../common/StatusTrail'
+import { AiFeatures, IntentWlan } from '../config'
+import { useIntentContext }       from '../IntentContext'
+import { getStatusTooltip }       from '../services'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
@@ -142,8 +142,14 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <DetailsSection data-testid='Current Status'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                 <DetailsSection.Details children={
-                  <Card>{getStatusTooltip(
-                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
+                  <Card>
+                    {getStatusTooltip(
+                      displayStatus,
+                      sliceValue,
+                      { ...metadata, updatedAt },
+                      AiFeatures.EquiFlex
+                    )}
+                  </Card>} />
               </DetailsSection>
             </GridCol>
           </GridRow>}
