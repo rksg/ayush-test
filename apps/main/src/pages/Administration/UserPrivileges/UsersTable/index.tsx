@@ -18,13 +18,14 @@ import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
 import { MSPUtils }                                 from '@acx-ui/msp/utils'
 import {
   useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
 import { Administrator, sortProp, defaultSort, AdministrationUrlsInfo }                               from '@acx-ui/rc/utils'
 import { RolesEnum }                                                                                  from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
-import { AccountType, getOpsApi, noDataDisplay }                                                      from '@acx-ui/utils'
+import { AccountType, getOpsApi, noDataDisplay, useTableQuery, FILTER, SEARCH }                       from '@acx-ui/utils'
 
 import * as UI from '../../Administrators/styledComponents'
 
@@ -60,13 +61,40 @@ const UsersTable = (props: UsersTableProps) => {
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
   const notificationAdminContextualEnabled =
     useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
-  const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
+  const settingsId = 'users-table-column-settings'
+
+  const defaultPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name','username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetAdminListPaginatedQuery,
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields,
+      searchString: defaultPayload.searchString
+    },
+    pagination: { settingsId },
+    option: { skip: !isPaginationEnabled }
+  })
+
+  const { data: adminListOriginal, isLoading: isLoadingOriginal, isFetching: isFetchingOriginal } =
+    useGetAdminListQuery({ params }, { skip: isPaginationEnabled })
+
+  const adminList = isPaginationEnabled ? (tableQuery?.data?.data || []) : (adminListOriginal || [])
 
   const [deleteAdmin, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminMutation()
   const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
@@ -79,6 +107,15 @@ const UsersTable = (props: UsersTableProps) => {
     setEditMode(false)
     setEditData({} as Administrator)
     handleOpenDialog()
+  }
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const processedFilters = { ...customFilters }
+    if (processedFilters.authenticationType && Array.isArray(processedFilters.authenticationType)) {
+      processedFilters.authenticationType = processedFilters.authenticationType[0] as never
+    }
+
+    tableQuery.handleFilterChange(processedFilters, customSearch)
   }
 
   const isAllPrimeAdminSelected = (selectedRows: Administrator[]) => {
@@ -130,15 +167,15 @@ const UsersTable = (props: UsersTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       searchable: true,
-      dataIndex: 'fullName',
-      sorter: { compare: sortProp('fullName', defaultSort) }
+      dataIndex: isPaginationEnabled ? 'name' : 'fullName',
+      sorter: { compare: sortProp(isPaginationEnabled ? 'name' : 'fullName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
-      key: 'email',
+      key: isPaginationEnabled ? 'username' : 'email',
       searchable: true,
-      dataIndex: 'email',
-      sorter: { compare: sortProp('email', defaultSort) }
+      dataIndex: isPaginationEnabled ? 'username' : 'email',
+      sorter: { compare: sortProp(isPaginationEnabled ? 'username' : 'email', defaultSort) }
     },
     ...(notificationAdminContextualEnabled ?
       [
@@ -160,9 +197,23 @@ const UsersTable = (props: UsersTableProps) => {
       [
         {
           title: $t({ defaultMessage: 'Authentication Type' }),
-          key: 'authenticationId',
-          dataIndex: 'authenticationId',
-          sorter: { compare: sortProp('authenticationId', defaultSort) },
+          key: 'authenticationType',
+          dataIndex: 'authenticationType',
+          ...(isPaginationEnabled ? {
+            filterKey: 'authenticationType',
+            filterMultiple: false,
+            filterable: [
+              {
+                key: 'Ruckus',
+                value: $t({ defaultMessage: 'RUCKUS' })
+              },
+              {
+                key: 'SSO',
+                value: $t({ defaultMessage: 'SSO with 3rd Party' })
+              }
+            ]
+          } : {}),
+          sorter: { compare: sortProp('authenticationType', defaultSort) },
           render: function (_: unknown, row: Administrator) {
             return row.authenticationId
               ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
@@ -176,11 +227,13 @@ const UsersTable = (props: UsersTableProps) => {
       title: $t({ defaultMessage: 'Privilege Group' }),
       key: 'role',
       dataIndex: 'role',
-      filterable: privilegeGroupOption?.map(role => ({
-        key: role as string,
-        value: roleStringMap[role as RolesEnum]
-          ? $t(roleStringMap[role as RolesEnum]) : role as string }))
-        ?.sort(sortProp('value', defaultSort)),
+      ...(isPaginationEnabled ? {
+        filterable: privilegeGroupOption?.map(role => ({
+          key: role as string,
+          value: roleStringMap[role as RolesEnum]
+            ? $t(roleStringMap[role as RolesEnum]) : role as string }))
+          ?.sort(sortProp('value', defaultSort))
+      } : {}),
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : row.role
@@ -279,8 +332,13 @@ const UsersTable = (props: UsersTableProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading || !userProfileData,
-        isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
+      {
+        isLoading: isPaginationEnabled
+          ? (tableQuery.isLoading || !userProfileData)
+          : (isLoadingOriginal || !userProfileData),
+        isFetching: isPaginationEnabled
+          ? (tableQuery.isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating)
+          : (isFetchingOriginal || isDeleteAdminUpdating || isDeleteAdminsUpdating)
       }
     ]}
     style={{ minHeight: 45 }}
@@ -290,7 +348,7 @@ const UsersTable = (props: UsersTableProps) => {
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
       </UI.TableTitleWrapper>}
-      <Table settingsId='users-table-column-settings'
+      <Table settingsId={isPaginationEnabled ? settingsId : undefined}
         columns={columns}
         dataSource={adminList}
         rowKey='id'
@@ -299,6 +357,11 @@ const UsersTable = (props: UsersTableProps) => {
             row: TooltipRow
           }
         }}
+        {...(isPaginationEnabled ? {
+          pagination: tableQuery.pagination,
+          onChange: tableQuery.handleTableChange,
+          onFilterChange: handleFilterChange
+        } : {})}
         rowActions={hasRowPermissions
           ? filterByAccess(rowActions)
           : undefined}

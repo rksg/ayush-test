@@ -4,33 +4,56 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetDelegationsQuery,
   useGetNotificationRecipientsPaginatedQuery,
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { transformDisplayNumber, Webhook } from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
-import { useTableQuery }                   from '@acx-ui/utils'
+import { transformDisplayNumber, Webhook }                  from '@acx-ui/rc/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, useTableQuery } from '@acx-ui/utils'
 
 export const AdminsTabTitleWithCount = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId, serialNumber } = params
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
 
   const defaultPayload = {
+    page: 0,
+    pageSize: 10,
+    sortField: '',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'email'],
+    searchString: '',
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
-  const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
-    pollingInterval: 30_000
+
+  const adminList = useGetAdminListPaginatedQuery({
+    params: { tenantId },
+    payload: defaultPayload
+  }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
+    skip: !isPaginationEnabled
+  })
+
+  const adminListOriginal = useGetAdminListQuery({
+    params: { tenantId },
+    payload: { filters: defaultPayload.filters }
+  }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
+    skip: isPaginationEnabled
   })
 
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params }
   )
 
-  const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
+  const adminCount = isPaginationEnabled
+    ? ((adminList?.data?.totalCount || 0) + (thirdPartyAdminList.data?.length || 0))
+    : ((adminListOriginal?.data?.length || 0) + (thirdPartyAdminList.data?.length || 0))
   return <>{$t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}</>
 }
 
