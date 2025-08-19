@@ -16,6 +16,7 @@ export interface Response {
   propertyCode?: string
   tenantId: string
   hasValidData?: boolean
+  accountTier?: string
 }
 export interface BrandTimeseriesPayload {
   start: string,
