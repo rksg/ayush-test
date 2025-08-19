@@ -56,11 +56,17 @@ jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),
   get: jest.fn()
 }))
+const mockedIsRecSite = jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isRecSite: () => mockedIsRecSite()
+}))
 
 describe('VenueDetails', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedIsRecSite.mockReturnValue(true)
 
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -73,10 +79,6 @@ describe('VenueDetails', () => {
         (req, res, ctx) => res(ctx.json({ response: { data: [] } }))
       )
     )
-  })
-
-  afterEach(() => {
-    mockedUseConfigTemplate.mockRestore()
   })
 
   it('should render correctly', async () => {
@@ -193,18 +195,23 @@ describe('VenueDetails', () => {
     expect(screen.queryByTestId('rc-VenueAnalyticsTab')).toBeNull()
   })
 
-  it('should navigate to network tab correctly with isTemplate equal to true', async () => {
+  it('should render the correct tabs when isTemplate is true', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedIsRecSite.mockReturnValue(false)
 
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'networks'
     }
-    render(<Provider><VenueDetails /></Provider>, {
+    const { rerender } = render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/v/:venueId/venue-details/:activeTab' }
     })
     expect(screen.getAllByRole('tab')).toHaveLength(2)
+
+    mockedIsRecSite.mockReturnValue(true)
+    rerender(<Provider><VenueDetails /></Provider>)
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 
 })
