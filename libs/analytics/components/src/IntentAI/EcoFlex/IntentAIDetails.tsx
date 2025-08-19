@@ -11,6 +11,7 @@ import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentIcon }           from '../common/IntentIcon'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
+import { AiFeatures }           from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 
@@ -109,8 +110,14 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <DetailsSection data-testid='Current Status'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                 <DetailsSection.Details children={
-                  <Card>{getStatusTooltip(
-                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
+                  <Card>
+                    {getStatusTooltip(
+                      displayStatus,
+                      sliceValue,
+                      { ...metadata, updatedAt },
+                      AiFeatures.EcoFlex
+                    )}
+                  </Card>} />
               </DetailsSection>
             </GridCol>
           </GridRow>}

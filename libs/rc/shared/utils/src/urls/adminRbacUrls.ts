@@ -92,6 +92,24 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'POST:/tenants/delegations/support',
     newApi: true
   },
+  putDelegationSupport: {
+    method: 'PUT',
+    url: '/tenants/delegations/support',
+    opsApi: 'PUT:/tenants/delegations/support',
+    newApi: true
+  },
+  deleteDelegationSupport: {
+    method: 'delete',
+    url: '/tenants/delegations/support',
+    opsApi: 'DELETE:/tenants/delegations/support',
+    newApi: true
+  },
+  patchDelegationSupport: {
+    method: 'post',
+    url: '/tenants/delegations/support',
+    opsApi: 'POST:/tenants/delegations/support',
+    newApi: true
+  },
   disableAccessSupport: {
     method: 'delete',
     url: '/tenants/delegations/support',
