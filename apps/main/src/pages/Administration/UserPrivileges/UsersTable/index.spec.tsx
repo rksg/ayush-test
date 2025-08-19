@@ -462,3 +462,106 @@ describe('User table with MSP-EC FF enabled', () => {
     expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
   })
 })
+
+describe('User table with pagination enabled (adminpaginatedquery API)', () => {
+  let params: { tenantId: string }
+  const mockReqPaginatedAdminsData = jest.fn()
+
+  beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    params = {
+      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
+    }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
+
+    mockReqPaginatedAdminsData.mockReset()
+
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.getAdministratorsPaginated.url,
+        (req, res, ctx) => {
+          mockReqPaginatedAdminsData(req.body)
+          return res(ctx.json({
+            content: fakedAdminLsit.map(admin => ({
+              ...admin,
+              name: admin.name || admin.email.split('@')[0],
+              username: admin.email
+            })),
+            totalCount: fakedAdminLsit.length,
+            totalPages: 1,
+            pageNumber: 1,
+            pageSize: 10
+          }))
+        }
+      ),
+      rest.delete(
+        AdministrationUrlsInfo.deleteAdmin.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.delete(
+        AdministrationUrlsInfo.deleteAdmins.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
+      )
+    )
+  })
+
+  it('should handle empty paginated results', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE ? true : false
+    })
+
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.getAdministratorsPaginated.url,
+        (req, res, ctx) => {
+          mockReqPaginatedAdminsData(req.body)
+          return res(ctx.json({
+            content: [],
+            totalCount: 0,
+            totalPages: 0,
+            pageNumber: 1,
+            pageSize: 10
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <UsersTable
+            currentUserMail='dog1551@email.com'
+            isPrimeAdminUser={true}
+            isMspEc={false}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockReqPaginatedAdminsData).toBeCalled()
+    })
+
+    // Verify table handles empty results gracefully
+    const table = screen.getByRole('table')
+    expect(table).toBeInTheDocument()
+  })
+})

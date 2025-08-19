@@ -25,7 +25,9 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [10,100] as [number, number],
       avgTTC: [1,10] as [number, number],
-      avgClientThroughput: [1,10] as [number, number]
+      avgClientThroughput: [1,10] as [number, number],
+      tenantId: 't-id',
+      accountTier: 'Gold'
     }]
     render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
@@ -46,7 +48,9 @@ describe('Brand 360 Table', () => {
       deviceCount: NaN,
       avgConnSuccess: '--' as unknown as [number, number],
       avgTTC: '--' as unknown as [number, number],
-      avgClientThroughput: '--' as unknown as [number, number]
+      avgClientThroughput: '--' as unknown as [number, number],
+      tenantId: 't-id',
+      accountTier: 'Platinum'
     }]
     render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
@@ -73,7 +77,8 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [50,100] as [number, number],
       avgTTC: [5,10] as [number, number],
-      avgClientThroughput: [5,10] as [number, number]
+      avgClientThroughput: [5,10] as [number, number],
+      tenantId: 't-id'
     }]
     render(<BrandTable
       sliceType='lsp'
@@ -103,7 +108,9 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [50,100] as [number, number],
       avgTTC: [5,10] as [number, number],
-      avgClientThroughput: [5,10] as [number, number]
+      avgClientThroughput: [5,10] as [number, number],
+      tenantId: 't-id',
+      accountTier: 'Platinum'
     }]
     render(<BrandTable
       sliceType='property'
@@ -136,7 +143,8 @@ describe('Brand 360 Table', () => {
       deviceCount: 0,
       avgConnSuccess: '--' as unknown as [number, number],
       avgTTC: '--' as unknown as [number, number],
-      avgClientThroughput: '--' as unknown as [number, number]
+      avgClientThroughput: '--' as unknown as [number, number],
+      tenantId: 't-id'
     }]
     render(<BrandTable
       sliceType='lsp'
@@ -162,7 +170,8 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [10,100] as [number, number],
       avgTTC: [1,10] as [number, number],
-      avgClientThroughput: [1,10] as [number, number]
+      avgClientThroughput: [1,10] as [number, number],
+      tenantId: 't-id'
     }]
     render(<BrandTable
       sliceType='property'
@@ -194,7 +203,9 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [10,100] as [number, number],
       avgTTC: [1,10] as [number, number],
-      avgClientThroughput: [1,10] as [number, number]
+      avgClientThroughput: [1,10] as [number, number],
+      tenantId: 't-id',
+      accountTier: 'Platinum'
     }]
     await render(<BrandTable
       sliceType='property'
@@ -227,7 +238,9 @@ describe('Brand 360 Table', () => {
       deviceCount: 2,
       avgConnSuccess: [10,100] as [number, number],
       avgTTC: [1,10] as [number, number],
-      avgClientThroughput: [1,10] as [number, number]
+      avgClientThroughput: [1,10] as [number, number],
+      tenantId: 't-id',
+      accountTier: 'Silver'
     }]
     render(<BrandTable
       sliceType='property'

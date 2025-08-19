@@ -21,6 +21,7 @@ export interface Common {
   avgConnSuccess: number | null,
   avgTTC: number | null,
   avgClientThroughput: number | null
+  accountTier?: string
 }
 export interface Property extends PropertyCode, Common {
   property: string
@@ -38,6 +39,7 @@ interface TransformedItem {
   content: object[]
   integrators?: string[]
   propertyCode?: string
+  accountTier?: string
 }
 
 export interface TransformedMap {
@@ -219,7 +221,8 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
         ? [groupedById[key][0]?.integrator as string]
         : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
       content: groupedById[key],
-      propertyCode: groupedById[key][0].propertyCode
+      propertyCode: groupedById[key][0].propertyCode,
+      accountTier: groupedById[key][0].accountTier
     }
     return newObj
   }, {} as TransformedMap)
@@ -264,6 +267,7 @@ export const transformVenuesData = (
         tenantData?.map(v => v.clientThroughputSLA), [0, 0]
       ) as [number, number],
       tenantId,
+      accountTier: mappingData?.accountTier,
       hasValidData: !!tenantData
     })
     return newObj

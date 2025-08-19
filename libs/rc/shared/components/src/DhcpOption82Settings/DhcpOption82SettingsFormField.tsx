@@ -226,6 +226,11 @@ export const DhcpOption82SettingsFormField = (props: {
   useEffect(() => {
     if(isLanPortSettings) {
       if (dhcpOption82SubOption1Customization) {
+        // eslint-disable-next-line max-len
+        if (dhcpOption82SubOption1Customization.attributes.length === form.getFieldValue(customizationFieldName)?.length) {
+          return
+        }
+
         const transformedTags =
         dhcpOption82SubOption1Customization.attributes.map(
           (attribute: DhcpOption82SubOption1CustomizationAttribute) => {
