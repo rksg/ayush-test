@@ -3,11 +3,10 @@ import { useIntl } from 'react-intl'
 
 import { Tabs, Tooltip }                          from '@acx-ui/components'
 import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
-import { SwitchTable }                            from '@acx-ui/rc/components'
 import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
 import { EmbeddedReport,ReportType }              from '@acx-ui/reports/components'
-import { SwitchPortTable }                        from '@acx-ui/switch/components'
+import { SwitchPortTable, SwitchTable }           from '@acx-ui/switch/components'
 
 import { IconThirdTab } from '../VenueWifi/styledComponents'
 
