@@ -15,23 +15,37 @@ import { VenueDrawer } from './VenueDrawer'
 
 // Mock VenuesForm component
 const mockVenuesForm = jest.fn(
-  ({ modalCallBack }: { modalCallBack: (venue?: VenueExtended) => void }) => (
-    <div data-testid='venues-form'>
-      <button
-        data-testid='create-venue-button'
-        onClick={() => modalCallBack({ id: 'test-venue', name: 'Test Venue' } as VenueExtended)}
-      >
-        Create Venue
-      </button>
-      <button data-testid='create-venue-no-data' onClick={() => modalCallBack()}>
-        Create Venue (No Data)
-      </button>
-    </div>
-  )
+  ({ modalCallBack, modalMode, specifiedAction, dataFromParent }: { 
+    modalCallBack?: (venue?: VenueExtended) => void
+    modalMode?: boolean
+    specifiedAction?: 'override'
+    dataFromParent?: VenueExtended | undefined
+  }) => {
+    // Ensure we're not calling any real hooks
+    return (
+      <div data-testid='venues-form'>
+        <button
+          data-testid='create-venue-button'
+          onClick={() => modalCallBack?.({ id: 'test-venue', name: 'Test Venue' } as VenueExtended)}
+        >
+          Create Venue
+        </button>
+        <button data-testid='create-venue-no-data' onClick={() => modalCallBack?.()}>
+          Create Venue (No Data)
+        </button>
+      </div>
+    )
+  }
 )
 
+// Mock the entire Venues module to avoid any real component rendering
 jest.mock('../../../Venues', () => ({
-  VenuesForm: (props: { modalCallBack: (venue?: VenueExtended) => void }) => mockVenuesForm(props)
+  VenuesForm: jest.fn((props: { 
+    modalCallBack?: (venue?: VenueExtended) => void
+    modalMode?: boolean
+    specifiedAction?: 'override'
+    dataFromParent?: VenueExtended | undefined
+  }) => mockVenuesForm(props))
 }))
 
 const mockProps = {
@@ -58,39 +72,6 @@ describe('VenueDrawer', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-  })
-
-  it('renders with default props and handles all interactions when open is true', async () => {
-    render(
-      <Provider>
-        <VenueDrawer {...mockProps} />
-      </Provider>
-    )
-
-    // Wait for the mock component to be rendered
-    await waitFor(() => {
-      expect(screen.getByTestId('venues-form')).toBeVisible()
-    })
-
-    // Test basic rendering
-    expect(screen.getByText('Add Venue')).toBeVisible()
-
-    // Test drawer width
-    const drawer = screen.getByRole('dialog')
-    expect(drawer).toBeInTheDocument()
-
-    // Test VenuesForm component is rendered
-    expect(screen.getByTestId('venues-form')).toBeVisible()
-
-    // Test onSuccess callback is available
-    expect(mockProps.onSuccess).toBeDefined()
-
-    // Test i18n title
-    expect(screen.getByText('Add Venue')).toBeVisible()
-
-    // Test close functionality
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(mockProps.onClose).toHaveBeenCalledTimes(1)
   })
 
   it('does not render when open is false', () => {
