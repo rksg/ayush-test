@@ -19,7 +19,8 @@ import {
 import {
   Administrator
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import PrivilegeGroupSelector from '../PrivilegeGroups/PrivilegeGroupSelector'
 
@@ -44,6 +45,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
 
   const [updateAdmin] = useUpdateAdminMutation()
   const [updateMspEcAdmin] = useUpdateMspEcAdminMutation()
@@ -179,14 +181,15 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Name' })}
           >
-            {`${editData.name} ${editData.lastName}`}
+            {!isPaginationEnabled ? `${editData.name} ${editData.lastName}` :
+              `${editData.firstName || noDataDisplay} ${editData.lastName || noDataDisplay}`.trim()}
           </Form.Item>
         )}
 
         <Form.Item
           label={$t({ defaultMessage: 'Email' })}
         >
-          {editData.email}
+          {isPaginationEnabled ? editData.username : editData.email}
         </Form.Item>
         <PrivilegeGroupSelector disabled={editNameOnly}/>
       </Form>

@@ -280,6 +280,42 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
+    getAdminListPaginated: build.query<TableResult<Administrator>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdministratorsPaginated, params)
+        return {
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse: (response: NewTableResult<Administrator>) => {
+        const tableResult = response?.content?.map((data: Administrator) => {
+          return transformAdministratorList([data])[0]
+        })
+
+        return transferToTableResult<Administrator>({ ...response,
+          content: tableResult })
+      },
+      providesTags: [{ type: 'Administration', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'InviteAdmin',
+            'UpdateAdmin',
+            'DeleteAdmin',
+            'DeleteAdmins'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
     addAdmin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.addAdmin, params)
@@ -1170,6 +1206,7 @@ export const {
   useGetPreferencesQuery,
   useUpdatePreferenceMutation,
   useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useAddAdminMutation,
   useUpdateAdminMutation,
   useDeleteAdminMutation,
