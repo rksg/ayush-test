@@ -4,15 +4,15 @@ import { useMemo } from 'react'
 import { Checkbox, Col, Form, Input, Row, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
-import { SdLanTopologyVertical }         from '@acx-ui/edge/components'
-import { servicePolicyNameRegExp }       from '@acx-ui/rc/utils'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { SdLanTopologyVertical }                  from '@acx-ui/edge/components'
+import { servicePolicyNameRegExp }                from '@acx-ui/rc/utils'
 
 import { useEdgeSdLanContext }                                                    from '../../../Form/EdgeSdLanContextProvider'
 import { ClusterFirmwareInfo }                                                    from '../../../shared/ClusterFirmwareInfo'
 import { tunnelProfileFieldName, TunnelProfileFormItem, tunnelTemplateFieldName } from '../../../shared/TunnelProfileFormItem'
 import { ApplyTo }                                                                from '../../../shared/type'
-import { StyledAntdDescriptions, VerticalSplitLine, Wrapper }                     from '../../../styledComponents'
+import { StyledAntdDescriptions, StyledTooltip, VerticalSplitLine, Wrapper }      from '../../../styledComponents'
 import { useMspEdgeSdLanContext }                                                 from '../MspEdgeSdLanContextProvider'
 
 export const GeneralForm = () => {
@@ -113,7 +113,13 @@ export const GeneralForm = () => {
                     <Col span={24}>
                       <Space direction='vertical' style={{ width: '100%' }}>
                         <Checkbox value={ApplyTo.MY_ACCOUNT}>
-                          {$t({ defaultMessage: 'My Account' })}
+                          <Space>
+                            {$t({ defaultMessage: 'My Account' })}
+                            <StyledTooltip
+                              // eslint-disable-next-line max-len
+                              title={$t({ defaultMessage: 'Create a tunnel profile for your account to enable SD-LAN connectivity within your tenant environment.' })}
+                            />
+                          </Space>
                         </Checkbox>
                         {
                           applyTo?.includes(ApplyTo.MY_ACCOUNT) && <>
@@ -156,7 +162,13 @@ export const GeneralForm = () => {
                     <Col span={24}>
                       <Space direction='vertical' style={{ width: '100%' }}>
                         <Checkbox value={ApplyTo.MY_CUSTOMERS}>
-                          {$t({ defaultMessage: 'My Customers' })}
+                          <Space>
+                            {$t({ defaultMessage: 'My Customers' })}
+                            <StyledTooltip
+                              // eslint-disable-next-line max-len
+                              title={$t({ defaultMessage: 'Sets up an SD-LAN tunnel profile template to be applied and activated across managed customer deployments.' })}
+                            />
+                          </Space>
                         </Checkbox>
                         {
                           applyTo?.includes(ApplyTo.MY_CUSTOMERS) && <>
@@ -165,7 +177,17 @@ export const GeneralForm = () => {
                                 <TunnelProfileFormItem
                                   name={tunnelTemplateFieldName}
                                   // eslint-disable-next-line max-len
-                                  label={$t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })}
+                                  label={<>
+                                    {
+                                      // eslint-disable-next-line max-len
+                                      $t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })
+                                    }
+                                    <Tooltip.Question
+                                      // eslint-disable-next-line max-len
+                                      title={$t({ defaultMessage: 'Only tunnel templates that use the same edge cluster and have identical configuration parameters are shown.' })}
+                                    />
+                                  </>
+                                  }
                                   onChange={onTunnelTemplateChange}
                                   disabled={editMode}
                                   tunnelProfiles={filteredAvailableTunnelTemplates}
