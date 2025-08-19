@@ -11,7 +11,8 @@ import {
   WifiRbacUrlsInfo,
   type LocationExtended,
   PropertyUrlsInfo,
-  ConfigTemplateType
+  ConfigTemplateType,
+  convertToTemplateAllowedOperationIfNeeded
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -27,7 +28,7 @@ import {
   hasRoles,
   isCoreTier
 }             from '@acx-ui/user'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi, isRecSite } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -43,6 +44,7 @@ function VenueEditTabs () {
   const { editContextData, setEditContextData } = venueEditTabContext
   const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
   const enablePropertyManagement = usePropertyManagementEnabled()
+  const isSwitchEnabled = useSwitchEnabled()
 
 
   const onTabChange = (tab: string) => {
@@ -116,10 +118,7 @@ function VenueEditTabs () {
         }) &&
         <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       }
-      {hasPermission({
-        scopes: [SwitchScopes.UPDATE],
-        rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
-      }) &&
+      {isSwitchEnabled &&
         <Tabs.TabPane
           key='switch'
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
@@ -151,4 +150,20 @@ export function usePropertyManagementEnabled () {
       : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission && !isCore
+}
+
+function useSwitchEnabled (): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const resolvedOpsApi = convertToTemplateAllowedOperationIfNeeded(
+    [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)],
+    isTemplate
+  )
+  const hasSwitchPermission = hasPermission({
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: resolvedOpsApi
+  })
+
+  const isRecConfigTemplate = isTemplate && isRecSite()
+
+  return hasSwitchPermission && !isRecConfigTemplate
 }

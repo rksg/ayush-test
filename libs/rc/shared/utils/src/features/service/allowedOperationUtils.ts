@@ -22,12 +22,23 @@ export const convertToTemplateAllowedOperationIfNeeded = (
   if (!isTemplate) return allowedOperation
 
   const target = isRecSite() ? ':/rec/templates/' : ':/templates/'
+  const templatePrefixes = [':/templates/', ':/rec/templates/']
 
   return allowedOperation?.map(item => {
     if (typeof item === 'string') {
+      // Check if the string already contains template prefix
+      if (templatePrefixes.some(prefix => item.includes(prefix))) {
+        return item
+      }
       return item.replace(':/', target)
     } else if (Array.isArray(item)) {
-      return item.map(str => str.replace(':/', target))
+      return item.map(str => {
+        // Check if the string already contains template prefix
+        if (templatePrefixes.some(prefix => str.includes(prefix))) {
+          return str
+        }
+        return str.replace(':/', target)
+      })
     }
     return item
   })

@@ -8,6 +8,7 @@ import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/compone
 import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { useIsConfigTemplateEnabledByType }                from '@acx-ui/rc/components'
 import { useLazyApListQuery }                              from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
@@ -21,7 +22,8 @@ import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 import {
   directedMulticastInfo,
-  getOpsApi
+  getOpsApi,
+  isRecSite
 } from '@acx-ui/utils'
 
 import { VenueUtilityContext }                  from '..'
@@ -55,13 +57,10 @@ export function NetworkingTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
-  const { isTemplate } = useConfigTemplate()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSupportVenueRadiusCustom = useIsSplitOn(Features.WIFI_VENUE_RADIUS_CUSTOM_TOGGLE)
-  const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
-  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
-  const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
+  const isShowLanPortSettings = useIsLanPortEnabled()
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
@@ -280,4 +279,18 @@ export function NetworkingTab () {
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
+}
+
+function useIsLanPortEnabled () {
+  const { isTemplate } = useConfigTemplate()
+  const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEthernetPortTemplate = useIsConfigTemplateEnabledByType(ConfigTemplateType.ETHERNET_PORT_PROFILE)
+
+  if (!isTemplate) return true
+
+  // REC Config Template doesn't support ethernet port template in stage 1
+  if (isRecSite()) return false
+
+  return isEthernetPortTemplate || isLegacyLanPortEnabled
 }
