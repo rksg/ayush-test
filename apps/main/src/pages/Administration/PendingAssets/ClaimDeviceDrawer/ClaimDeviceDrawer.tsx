@@ -560,7 +560,7 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                       <Text>{name + 1}.</Text>
                     </Form.Item>
                   </Col>
-                  <Col span={6}>
+                  <Col span={deviceType === 'ap' ? 6 : 8}>
                     <Form.Item
                       style={{ marginLeft: '-18px' }}
                       {...restField}
@@ -579,55 +579,57 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col span={5}>
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'tags']}
-                      label={$t({ defaultMessage: 'Tags' })}
-                      rules={[{
-                        validator: (_, value) => validateTags(value)
-                      }]}
-                    >
-                      <Select mode='tags' maxLength={24} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={11} style={{ paddingRight: 0 }}>
+                  {deviceType === 'ap' && (
+                    <Col span={5}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'tags']}
+                        label={$t({ defaultMessage: 'Tags' })}
+                        rules={[{
+                          validator: (_, value) => validateTags(value)
+                        }]}
+                      >
+                        <Select mode='tags' maxLength={24} />
+                      </Form.Item>
+                    </Col>
+                  )}
+                  <Col span={deviceType === 'ap' ? 11 : 14} style={{ paddingRight: 0 }}>
                     <Form.Item
                       {...restField}
                       name={[name, 'serialNumber']}
                       label={
                         <div style={{ display: 'flex' }}>
                           <div style={{
-                            flex: '0 0 66.67%',
+                            flex: deviceType === 'ap' ? '0 0 66.67%' : '0 0 60%',
                             paddingLeft: '8px' }}>
                             {$t({ defaultMessage: 'Serial #' })}
                           </div>
                           <div style={{
-                            flex: '0 0 33.33%',
+                            flex: deviceType === 'ap' ? '0 0 33.33%' : '0 0 40%',
                             textAlign: 'left',
-                            paddingLeft: '65px'
+                            paddingLeft: deviceType === 'ap' ? '65px' : '67px'
                           }}>
                             {$t({ defaultMessage: 'Model' })}
                           </div>
                         </div>
                       }
                     >
-                      <div style={{
-                        backgroundColor: '#f5f5f5',
-                        padding: '4px 11px',
-                        borderRadius: '6px',
-                        minHeight: '32px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: '100%'
-                      }}>
-                        <div style={{ flex: '0 0 66.67%' }}>
-                          <Text>{form.getFieldValue(['devices', name, 'serialNumber'])}</Text>
+                                              <div style={{
+                          backgroundColor: '#f5f5f5',
+                          padding: '4px 11px',
+                          borderRadius: '6px',
+                          minHeight: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '100%'
+                        }}>
+                          <div style={{ flex: deviceType === 'ap' ? '0 0 66.67%' : '0 0 50%' }}>
+                            <Text>{form.getFieldValue(['devices', name, 'serialNumber'])}</Text>
+                          </div>
+                          <div style={{ flex: deviceType === 'ap' ? '0 0 33.33%' : '0 0 50%', textAlign: 'left' }}>
+                            <Text>{form.getFieldValue(['devices', name, 'model'])}</Text>
+                          </div>
                         </div>
-                        <div style={{ flex: '0 0 33.33%', textAlign: 'left' }}>
-                          <Text>{form.getFieldValue(['devices', name, 'model'])}</Text>
-                        </div>
-                      </div>
                     </Form.Item>
                   </Col>
                 </Row>
