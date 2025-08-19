@@ -69,38 +69,49 @@ export function useApActions () {
           type: 'primary',
           key: 'ok',
           closeAfterAction: true,
-          handler: async () => {
-            for (const { serialNumber, venueId } of items) {
-              try {
-                await rebootAp({
-                  params: { tenantId: tenantId, serialNumber, venueId },
-                  payload: {
-                    ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT }
-                      : { action: 'reboot' }) },
-                  enableRbac: isUseWifiRbacApi
-                }).unwrap()
-                if (opts?.sendingToast) {
-                  opts.sendingToast(serialNumber)
-                } else {
+          handler: () => {
+            // Close modal immediately and process reboot in background
+            const processReboot = async () => {
+              for (const { serialNumber, venueId } of items) {
+                try {
+                  // Check if venueId is defined, if not, throw an error
+                  if (!venueId) {
+                    throw new Error('VenueId is required for AP operations')
+                  }
+
+                  await rebootAp({
+                    params: { tenantId: tenantId, serialNumber, venueId },
+                    payload: {
+                      ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT }
+                        : { action: 'reboot' }) },
+                    enableRbac: isUseWifiRbacApi
+                  }).unwrap()
+                  if (opts?.sendingToast) {
+                    opts.sendingToast(serialNumber)
+                  } else {
+                    showToast({
+                      type: 'success',
+                      content: $t(
+                        { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
+                        { ap: serialNumber }
+                      )
+                    })
+                  }
+                } catch (err) {
                   showToast({
-                    type: 'success',
+                    type: 'error',
                     content: $t(
-                      { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
+                      { defaultMessage: 'Failed to send [reboot] to AP: {ap}' },
                       { ap: serialNumber }
                     )
                   })
                 }
-              } catch (err) {
-                showToast({
-                  type: 'error',
-                  content: $t(
-                    { defaultMessage: 'Failed to send [reboot] to AP: {ap}' },
-                    { ap: serialNumber }
-                  )
-                })
               }
+              opts?.clearSelection && opts.clearSelection()
             }
-            opts?.clearSelection && opts.clearSelection()
+
+            // Start processing in background
+            processReboot()
           }
         }]
       },
