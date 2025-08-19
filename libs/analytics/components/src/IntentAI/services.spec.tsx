@@ -15,8 +15,8 @@ import {
   filterOptions,
   intentListWithAllStatus
 } from './__tests__/fixtures'
-import { mockedIntentAps }          from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { IntentListItem, Metadata } from './config'
+import { mockedIntentAps }                 from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { AiFeatures, codes, IntentListItem, Metadata } from './config'
 import {
   api,
   useIntentAITableQuery,
@@ -36,10 +36,22 @@ describe('getStatusTooltip', () => {
     (intent) => {
       const state = intent.displayStatus as DisplayStates
       const metadata = intent.metadata as Metadata
-      const { asFragment } = render(getStatusTooltip(state, intent.sliceValue, metadata))
+      const { asFragment } = render(getStatusTooltip(state, intent.sliceValue, metadata, codes[intent.code].aiFeature))
       expect(asFragment()).toMatchSnapshot()
     }
   )
+
+  it('returns correct tooltip for scheduled for ecoflex', () => {
+    const state = DisplayStates.applyScheduled
+    const metadata = {
+      scheduledAt: '2023-06-17T00:00:00.000Z',
+      changedByName: 'fakeUserWithOptimize lastName5566'
+    } as Metadata
+    const { asFragment } = render(getStatusTooltip(state, 'zoneName', metadata, AiFeatures.EcoFlex))
+    expect(asFragment()).toHaveTextContent(
+      'The change recommendation has been automatically scheduled by IntentAI.'
+    )
+  })
 })
 
 describe('formatValues', () => {
