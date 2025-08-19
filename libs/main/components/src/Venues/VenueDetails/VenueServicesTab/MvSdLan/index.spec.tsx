@@ -1,5 +1,6 @@
-import { EdgeMvSdLanViewData, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { Features }                                                      from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanViewData, EdgeSdLanFixtures, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { Provider }                                                      from '@acx-ui/store'
 import {
   render,
   screen
@@ -15,6 +16,11 @@ jest.mock('./NetworkTable', () => ({
   NetworkTable: () => {
     return <div data-testid='rc-sdlan-NetworkTable' />
   }
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const renderTestComponent = ({ params, sdLan }:
@@ -51,5 +57,23 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
     expect(screen.getByRole('link', { name: 'SE_Cluster 0' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
     screen.getByTestId('rc-sdlan-NetworkTable')
+  })
+
+  describe('when L2GRE is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+        ff === Features.EDGE_L2OGRE_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render correctly', async () => {
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDmz })
+      expect(screen.getByText('Destination RUCKUS Edge cluster')).toBeVisible()
+      expect(screen.getByText('Tunnel Profile (AP to Cluster)')).toBeVisible()
+      expect(screen.getByText('Tunnel Profile (Cluster to DMZ)')).toBeVisible()
+    })
   })
 })

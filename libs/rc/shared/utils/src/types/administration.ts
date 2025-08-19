@@ -178,13 +178,14 @@ export interface RegisteredUserSelectOption {
 }
 
 export enum NotificationRecipientType {
-  GLOBAL = 'GLOBAL',
-  PRIVILEGEGROUP = 'PRIVILEGEGROUP'
+  GLOBAL = 'Global',
+  PRIVILEGEGROUP = 'Privilege_Group'
 }
 
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
+  name?: string;
   recipientType: NotificationRecipientType;
   emailPreferences?: boolean;
   smsPreferences?: boolean,
@@ -194,6 +195,7 @@ export interface NotificationRecipientUIModel {
   emailEnabled: boolean;
   mobile: string;
   mobileEnabled: boolean;
+  privilegeGroupId: string,
 }
 
 export interface NotificationEndpoint {

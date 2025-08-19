@@ -3,16 +3,14 @@ import { useState } from 'react'
 import { Divider, Space, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { cssStr, Descriptions, Loader }                                from '@acx-ui/components'
+import { Button, cssStr, Descriptions, Loader }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                                     from '@acx-ui/msp/services'
 import { AccessControlSubPolicyVisibility }                            from '@acx-ui/rc/components'
 import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                               from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps }                                                                                                                        from '../..'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
-import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
 import { ProtectedActivationViewer, ApGroupVenueViewer } from './ActivationViewer'
 
@@ -21,11 +19,12 @@ interface DetailsContentProps {
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
   ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
+  AppliedToListView?: ConfigTemplateViewProps['AppliedToListView']
 }
 
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
-  const { template, setAccessControlSubPolicyVisible, ShowDriftsView } = props
+  const { template, setAccessControlSubPolicyVisible, ShowDriftsView, AppliedToListView } = props
   const dateFormatter = useFormatTemplateDate()
   const [ showDriftsViewVisible, setShowDriftsViewVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
@@ -92,8 +91,10 @@ export function DetailsContent (props: DetailsContentProps) {
       templateId={template.id!}
       upperSplit={<Divider/>}
     />
-    <Divider/>
-    <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
+    {AppliedToListView && <>
+      <Divider/>
+      <AppliedToListView selectedTemplate={template} />
+    </>}
     {showDriftsViewVisible &&
       <ShowDriftsView
         setVisible={setShowDriftsViewVisible}
@@ -102,37 +103,19 @@ export function DetailsContent (props: DetailsContentProps) {
   </>
 }
 
-function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[] }) {
-  const { $t } = useIntl()
-
-  const mspEcTenantsPayload = {
-    filters: {
-      ...useEcFilters(),
-      id: appliedOnTenants
-    },
-    fields: ['id', 'name']
-  }
-
-  const { data, isLoading } = useMspCustomerListQuery(
-    { params: {}, payload: mspEcTenantsPayload },
-    { skip: !appliedOnTenants?.length }
-  )
-
-  return <DetailsItemList
-    title={$t({ defaultMessage: 'Applied to' })}
-    items={data?.data.map(mspEcTenant => mspEcTenant.name) || []}
-    isLoading={isLoading}
-  />
-}
-
 export interface DetailsItemListProps {
   title: string
   items: string[]
   isLoading?: boolean
+  showMore?: boolean
+  showMoreCallback?: () => void
 }
 
-export function DetailsItemList ({ title, items = [], isLoading = false }: DetailsItemListProps) {
+export function DetailsItemList (
+  { title, items = [], isLoading = false, showMore = false, showMoreCallback }: DetailsItemListProps
+) {
   const sortedItems = [...items].sort((a, b) => a.localeCompare(b))
+  const { $t } = useIntl()
 
   return <Space direction='vertical' size={6}>
     <span style={{ fontWeight: 700, color: cssStr('--acx-neutrals-60') }}>
@@ -145,5 +128,12 @@ export function DetailsItemList ({ title, items = [], isLoading = false }: Detai
         )) : noDataDisplay}
       </Space>
     </Loader>
+    {showMore && showMoreCallback &&
+      <Button
+        type='link'
+        size='small'
+        onClick={showMoreCallback}
+      >{$t({ defaultMessage: 'Show More' })}</Button>
+    }
   </Space>
 }

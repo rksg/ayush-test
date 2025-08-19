@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import {
   Button,
   Divider as AntDivider,
@@ -45,7 +47,18 @@ export const FilterSelect = styled(Select)`
     }` : ''
 }
 `
-
+export const FilterCascaderGlobalOverride = createGlobalStyle<{
+  $optionsCount?: number
+}>`
+  .ant-cascader {
+      &-menu {
+        // show minimum 9 options + partial of 10th to indicate scrollable
+        // 4px for top padding
+        max-height: calc(32px * 9.5 + 4px);
+        height: ${props => props.$optionsCount? `calc(32px * (${props.$optionsCount} + 0.5) + 4px)`: 'auto'};
+      }
+  }
+`
 export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;

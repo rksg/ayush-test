@@ -1,17 +1,18 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Form, Space, Typography }                         from 'antd'
-import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
-import { FormattedMessage, useIntl }                       from 'react-intl'
+import { Form, Space, Typography }           from 'antd'
+import { cloneDeep, remove, unionBy, unset } from 'lodash'
+import { FormattedMessage, useIntl }         from 'react-intl'
 
-import { Drawer }                                          from '@acx-ui/components'
-import { showSdLanNetworksTunnelConflictModal }            from '@acx-ui/edge/components'
-import { EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Drawer, useStepFormContext }                           from '@acx-ui/components'
+import { showSdLanNetworksTunnelConflictModal }                 from '@acx-ui/edge/components'
+import { NetworkSelectTable }                                   from '@acx-ui/rc/components'
+import { EdgeMvSdLanFormModel, EdgeSdLanTunneledWlan, Network } from '@acx-ui/rc/utils'
 
-import { messageMappings } from '../../messageMappings'
-
-import { ActivatedNetworksTable } from './NetworkTable'
+import { NetworkActivationType } from '../../../shared/type'
+import { useEdgeSdLanContext }   from '../../EdgeSdLanContextProvider'
+import { messageMappings }       from '../../messageMappings'
 
 const toggleItemFromSelected = (
   checked: boolean,
@@ -21,11 +22,8 @@ const toggleItemFromSelected = (
 ) => {
   let newSelected: NetworkActivationType = cloneDeep(selectedNetworks)
   if (checked) {
-    let tunnelProfileIdDefaultValue = ''
-    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
-      tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
-        .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
-    }
+    const tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
+      .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
     newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
       [{ networkId: data.id, networkName: data.name, tunnelProfileId: tunnelProfileIdDefaultValue }], 'networkId')
   } else {
@@ -49,14 +47,6 @@ export interface NetworksDrawerProps {
   softGreNetworkIds?: string[]
 }
 
-export interface NetworkActivationType {
-  [venueId: string]: {
-    networkId: string
-    networkName: string
-    tunnelProfileId?: string
-  }[]
-}
-
 export const NetworksDrawer = (props: NetworksDrawerProps) => {
   const { $t } = useIntl()
   const {
@@ -70,8 +60,15 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     softGreNetworkIds
   } = props
 
+  const {
+    availableTunnelProfiles = [],
+    associatedEdgeClusters = [],
+    requiredFwMap = {}
+  } = useEdgeSdLanContext()
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
+  const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
   const [validationForm] = Form.useForm()
+  const dcTunnelProfileId = form.getFieldValue('tunnelProfileId')
 
   const handleActivateChange = (
     data: Network,
@@ -89,7 +86,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
       currentNetworkId: networkData.id,
       currentNetworkName: networkData.name,
       tunnelProfileId: tunnelProfileId,
-      tunneledWlans: Object.entries(activatedNetworks).flatMap(([venueId, networks]) => networks.map(network => ({
+      tunneledWlans: Object.entries(updateContent).flatMap(([venueId, networks]) => networks.map(network => ({
         venueId,
         networkId: network.networkId,
         networkName: network.networkName,
@@ -117,15 +114,12 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           })
         }
         setUpdateContent(newUpdateContent)
+        validationForm.validateFields()
       }
     })
   }
 
   const handelTunnelProfileChange = (data: Network, tunnelProfileId: string) => {
-    const cloneUpdateContent = cloneDeep(updateContent ?? {})
-    const targetVenueData = cloneUpdateContent[venueId]
-    const targetNetworkData = find(targetVenueData, { networkId: data.id })
-    assign(targetNetworkData, { tunnelProfileId })
     checkNetworksTunnelConflict(data, tunnelProfileId)
   }
 
@@ -168,7 +162,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           </Typography.Paragraph>
         </div>
         <Form form={validationForm}>
-          <ActivatedNetworksTable
+          <NetworkSelectTable
             venueId={venueId}
             activated={updateContent}
             onActivateChange={handleActivateChange}
@@ -176,6 +170,10 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             pinNetworkIds={pinNetworkIds}
             softGreNetworkIds={softGreNetworkIds}
             validationFormRef={validationForm}
+            dcTunnelProfileId={dcTunnelProfileId}
+            availableTunnelProfiles={availableTunnelProfiles}
+            requiredFwMap={requiredFwMap}
+            edgeClusters={associatedEdgeClusters}
           />
         </Form>
       </Space>

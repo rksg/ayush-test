@@ -48,7 +48,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   SwitchInfoWidget: () =>
-    <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />,
+    <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />
+}))
+
+jest.mock('@acx-ui/switch/components', () => ({
+  MacACLs: () => <div data-testid={'rc-MacACLs'} title='MacACLs' />,
   SwitchVeTable: () =>
     <div data-testid={'rc-SwitchVeTable'} title='SwitchVeTable' />
 }))
@@ -203,11 +207,6 @@ describe('SwitchOverviewTab', () => {
       if (feature === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE) return true
       return false
     })
-
-    jest.mock('@acx-ui/rc/utils', () => ({
-      ...jest.requireActual('@acx-ui/rc/utils'),
-      isFirmwareVersionAbove10010gCd1Or10020bCd1: jest.fn(() => true)
-    }))
 
     const params = {
       tenantId: 'tenant-id',

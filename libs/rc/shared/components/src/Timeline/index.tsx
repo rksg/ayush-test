@@ -134,6 +134,38 @@ export const Timeline = (props: TimelineProps) => {
       </AntTimeline.Item>
     )}
 
+  const renderTimelineItems = (items: TimelineItem[]) => {
+    if (items.length <= 1) {
+      return items.map((item, index) => [
+        StartDot(item, index),
+        EndDot(item, index)
+      ])
+    }
+
+    // Check if any item has Port Configuration
+    const hasPortConfiguration = items.some(item =>
+      item.status === 'SUCCESS' &&
+        /Update Switch .* Port Configuration/.test(item.description)
+    )
+
+    let filteredItems: TimelineItem[]
+    if (hasPortConfiguration) {
+      // If Port Configuration exists, hide all Port Status items
+      filteredItems = items.filter(item => !(
+        item.status === 'SUCCESS' &&
+          /Update Switch .* Port Status/.test(item.description)
+      ))
+    } else {
+      // If no Port Configuration, keep at least 1 Port Status item
+      filteredItems = items
+    }
+
+    return filteredItems.map((item, index) => [
+      StartDot(item, index),
+      EndDot(item, index)
+    ])
+  }
+
   return <Wrapper>
     <Descriptions>
       <Descriptions.Item label={$t({ defaultMessage: 'Current Status' })}>
@@ -141,10 +173,7 @@ export const Timeline = (props: TimelineProps) => {
       </Descriptions.Item>
     </Descriptions>
     <AntTimeline>
-      {modifiedProps.map((item, index)=>[
-        StartDot(item, index),
-        EndDot(item, index)
-      ])}
+      {renderTimelineItems(modifiedProps)}
     </AntTimeline>
   </Wrapper>
 }

@@ -15,8 +15,8 @@ import {
   Tabs,
   Tooltip,
   showActionModal } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { get }                            from '@acx-ui/config'
+import { useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   CorrectRadioChannels,
   GetSupportBandwidth,
@@ -245,8 +245,6 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const supportWifi7_320MHz = useIsTierAllowed(TierFeatures.AP_70)
 
-  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
-
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
   const params = {
@@ -309,6 +307,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean>()
   const [apGroupData, setApGroupData] = useState('')
+  const [apGroupRadioData, setApGroupRadioData] = useState({} as ApGroupRadioCustomization)
 
   const { data: apRadioSavedData } =
     useGetApRadioCustomizationV1Dot1Query({ params }, { skip: !venueId })
@@ -332,6 +331,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       filters: { venueId: [venueData?.id] },
       pageSize: 10000
     },
+    enableRbac: true,
     skip: !venueData?.id
   })
 
@@ -523,7 +523,10 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             channelBandwidth,
             method,
             scanInterval,
-            txPower
+            txPower,
+            ...(method === 'MANUAL' && {
+              manualChannel: (apModelType === 'indoor')? radioParams.indoorChannel : radioParams.outdoorChannel
+            })
           }
         }
 
@@ -543,16 +546,27 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             bssMinRate6G,
             mgmtTxRate6G,
             channelBandwidth320MhzGroup,
-            enableAfc
+            enableAfc,
+            ...(method === 'MANUAL' && {
+              manualChannel: (apModelType === 'indoor')? radioParams.indoorChannel : radioParams.outdoorChannel
+            })
+          }
+        }
+
+        const getVenue24GRadioSetting = (radioParams: any) => {
+          return {
+            ...radioParams,
+            ...(radioParams.method === 'MANUAL' && { manualChannel: radioParams.channel })
           }
         }
 
         const {
-          radioParams24G: venueRadioParams24G,
+          radioParams24G,
           radioParams50G,
           radioParamsDual5G,
           radioParams6G } = data
 
+        const venueRadioParams24G = getVenue24GRadioSetting(radioParams24G)
         const venueRadioParams50G = getVenue5GRadioSetting(radioParams50G)
         const venueRadioParamsUpper5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsUpper5G)
         const venueRadioParamsLower5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsLower5G)
@@ -615,7 +629,10 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             channelBandwidth,
             method,
             scanInterval,
-            txPower
+            txPower,
+            ...(method === 'MANUAL' && {
+              manualChannel: (apModelType === 'indoor')? radioParams.indoorChannel : radioParams.outdoorChannel
+            })
           }
         }
 
@@ -635,16 +652,27 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             bssMinRate6G,
             mgmtTxRate6G,
             channelBandwidth320MhzGroup,
-            enableAfc
+            enableAfc,
+            ...(method === 'MANUAL' && {
+              manualChannel: (apModelType === 'indoor')? radioParams.indoorChannel : radioParams.outdoorChannel
+            })
+          }
+        }
+
+        const getApGroup24GRadioSetting = (radioParams: any) => {
+          return {
+            ...radioParams,
+            ...(radioParams.method === 'MANUAL' && { manualChannel: radioParams.channel })
           }
         }
 
         const {
-          radioParams24G: apGroupRadioParams24G,
+          radioParams24G,
           radioParams50G,
           radioParamsDual5G,
           radioParams6G } = data
 
+        const apGroupRadioParams24G = getApGroup24GRadioSetting(radioParams24G)
         const apGroupRadioParams50G = getApGroup5GRadioSetting(radioParams50G)
         const apGroupRadioParamsUpper5G = getApGroup5GRadioSetting(radioParamsDual5G?.radioParamsUpper5G)
         const apGroupRadioParamsLower5G = getApGroup5GRadioSetting(radioParamsDual5G?.radioParamsLower5G)
@@ -671,12 +699,14 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       }
 
       const apGroupId = apDetails?.apGroupId
-      const apGroupRadioData = (await getApGroupCustomization({
+      const apGroupRadioDataObject = (await getApGroupCustomization({
         params: { venueId, apGroupId },
         enableRbac: true
       }, true).unwrap())
 
-      const apGroupApData = convertApGroupRadioSetingsToApRadioSettings(apGroupRadioData)
+      setApGroupRadioData(apGroupRadioDataObject)
+
+      const apGroupApData = convertApGroupRadioSetingsToApRadioSettings(apGroupRadioDataObject)
       apGroupRef.current = apGroupApData
 
       if (isSupportBandManagementAp && isSupportDual5GAp) {
@@ -739,20 +769,24 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         return data
       }
 
-      const updateRadioFormData = (radioParams: any) => {
+      const updateRadioFormData = (radioParams: any, radioKey: string) => {
         if (!radioParams) {
           return
         }
 
-        const { method, manualChannel } = radioParams
+        const { method } = radioParams
         if (method === 'MANUAL') {
-          if (isVenueChannelSelectionManualEnabled) {
-            // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
-            if (!radioParams.useVenueOrApGroupSettings) {
-              radioParams.allowedChannels = [manualChannel.toString()]
+          if (radioParams.useVenueOrApGroupSettings) {
+            // @ts-ignore
+            if (apGroupRef.current && apGroupRef.current[radioKey]?.manualChannel) {
+              // @ts-ignore
+              radioParams.allowedChannels = [apGroupRef.current[radioKey]?.manualChannel.toString()]
+            } else { // @ts-ignore
+              if (venueRef.current && venueRef.current[radioKey]?.manualChannel) {
+                // @ts-ignore
+                radioParams.allowedChannels = [venueRef.current[radioKey]?.manualChannel.toString()]
+              }
             }
-          } else {
-            radioParams.allowedChannels = [manualChannel.toString()]
           }
         }
       }
@@ -766,16 +800,16 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         apRadioParamsDual5G
       } = apRadioData
 
-      updateRadioFormData(apRadioParams24G)
-      updateRadioFormData(apRadioParams50G)
-      updateRadioFormData(apRadioParams6G)
+      updateRadioFormData(apRadioParams24G, 'apRadioParams24G')
+      updateRadioFormData(apRadioParams50G, 'apRadioParams50G')
+      updateRadioFormData(apRadioParams6G, 'apRadioParams6G')
 
       const {
         radioParamsLower5G,
         radioParamsUpper5G } = apRadioParamsDual5G || {}
 
-      updateRadioFormData(radioParamsLower5G)
-      updateRadioFormData(radioParamsUpper5G)
+      updateRadioFormData(radioParamsLower5G, 'radioParamsLower5G')
+      updateRadioFormData(radioParamsUpper5G, 'radioParamsUpper5G')
 
       cachedDataRef.current = apRadioData
 
@@ -792,7 +826,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [apRadioSavedData, isSupportBandManagementAp, isSupportDual5GAp, setReadyToScroll, supportRadioChannels])
+  }, [apRadioSavedData, isSupportBandManagementAp, isSupportDual5GAp, setReadyToScroll, supportRadioChannels, apGroupRadioData, venueRadioData])
 
   useEffect(() => {
     if (apBandModeSavedData) {
@@ -1231,7 +1265,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                       defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from <venueOrApGroupName></venueOrApGroupName>'}
                       values={{
                         venueOrApGroupName: () => {
-                          return apGroupData ? 'AP Group' : 'Venue'
+                          return apGroupData ? 'AP Group' : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                         },
                         radioTypeName: () => getRadioTypeDisplayName(currentTab)
                       }}

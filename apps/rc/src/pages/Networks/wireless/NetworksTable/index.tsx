@@ -1,15 +1,21 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button }                                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { NetworkTabContext, NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
-import { useEnhanceWifiNetworkTableQuery, useNetworkTableQuery, useWifiNetworkTableQuery }   from '@acx-ui/rc/services'
+import { Button }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { NetworkTabContext, NetworkTable, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
+import { useEnhanceWifiNetworkTableQuery, useWifiNetworkTableQuery }  from '@acx-ui/rc/services'
 import {
+  captiveNetworkTypes,
   ConfigTemplateUrlsInfo,
+  GuestNetworkTypeEnum,
   Network,
+  NetworkTypeEnum,
+  networkTypes,
+  SupportGuestNetworkTypes,
+  SupportNetworkTypes,
   useConfigTemplate,
   WifiNetwork,
   WifiRbacUrlsInfo
@@ -20,7 +26,6 @@ import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '
 import { getOpsApi, usePollingTableQuery }                                from '@acx-ui/utils'
 
 export default function useNetworksTable () {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const { $t } = useIntl()
@@ -31,13 +36,31 @@ export default function useNetworksTable () {
 
   const settingsId = 'network-table'
   const tableQuery = usePollingTableQuery<Network|WifiNetwork>({
-    useQuery: isApCompatibilitiesByModel? useEnhanceWifiNetworkTableQuery : (isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery),
-    defaultPayload: (isApCompatibilitiesByModel || isWifiRbacEnabled)? defaultRbacNetworkPayload : defaultNetworkPayload,
+    useQuery: isApCompatibilitiesByModel? useEnhanceWifiNetworkTableQuery : useWifiNetworkTableQuery,
+    defaultPayload: defaultRbacNetworkPayload,
     search: {
       searchTargetFields: defaultRbacNetworkPayload.searchTargetFields as string[]
     },
     pagination: { settingsId }
   })
+
+  const networkTypeFilterOptions = useMemo(() => {
+    const guestNetworkTypesOptions = SupportGuestNetworkTypes.map((networkType: GuestNetworkTypeEnum) => {
+      return { key: networkType, value: $t(captiveNetworkTypes[networkType]) }
+    })
+
+    const networkTypesOptions = SupportNetworkTypes.map((networkType: NetworkTypeEnum) => {
+      return {
+        key: networkType,
+        value: $t(networkTypes[networkType]),
+        ...(networkType === NetworkTypeEnum.CAPTIVEPORTAL && {
+          children: guestNetworkTypesOptions
+        })
+      }
+    })
+
+    return networkTypesOptions
+  }, [])
 
   useEffect(() => {
     setNetworkCount(tableQuery.data?.totalCount || 0)
@@ -64,7 +87,12 @@ export default function useNetworksTable () {
   ] : []
 
   const component = <NetworkTabContext.Provider value={{ setNetworkCount }}>
-    <NetworkTable tableQuery={tableQuery} selectable={true} settingsId={settingsId} />
+    <NetworkTable
+      tableQuery={tableQuery}
+      selectable={true}
+      searchable={true}
+      settingsId={settingsId}
+      filterables={{ nwSubType: networkTypeFilterOptions }} />
   </NetworkTabContext.Provider>
 
   return {

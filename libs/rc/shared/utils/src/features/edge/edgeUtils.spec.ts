@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
 import _, { cloneDeep } from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
+import { CatchErrorDetails } from '@acx-ui/utils'
+
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                 from '../../models/EdgeEnum'
+import { CommonErrorsResult, EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface } from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures }                from './__tests__/fixtures'
 import { mockedEdgeLagList, createMockLag, createMockLagMember } from './__tests__/fixtures/lag'
@@ -12,6 +14,7 @@ import {
   allowResetForStatus,
   convertEdgeNetworkIfConfigToApiPayload,
   convertEdgeSubInterfaceToApiPayload,
+  executeWithCallback,
   genExpireTimeString,
   getEdgeAppCurrentVersions,
   getEdgeModelDisplayText,
@@ -1053,5 +1056,26 @@ describe('getLagGateways', () => {
       // Assert
       expect(result).toHaveLength(0)
     })
+  })
+})
+
+describe('executeWithCallback', () => {
+  it('should resolve with result when operation is successful', async () => {
+    const result = await executeWithCallback(async (callback) => {
+      callback({ response: { id: '123' } })
+    })
+    expect(result).toEqual({ response: { id: '123' } })
+  })
+
+  it('should reject with error when operation fails', async () => {
+    await expect(executeWithCallback(async (callback) => {
+      callback({ data: { errors: [{ code: '123' }] } })
+    })).rejects.toEqual({ data: { errors: [{ code: '123' }] } })
+  })
+
+  it('should reject with error when operation fails with CommonErrorsResult', async () => {
+    await expect(executeWithCallback(async (callback) => {
+      callback({ data: { errors: [{ code: '123' }] } } as CommonErrorsResult<CatchErrorDetails>)
+    })).rejects.toEqual({ data: { errors: [{ code: '123' }] } })
   })
 })

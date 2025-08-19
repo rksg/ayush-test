@@ -87,4 +87,58 @@ describe('WiredTab', () => {
       search: ''
     })
   })
+
+  describe('Infrastructure tab persistence', () => {
+    beforeEach(() => {
+      // Clear localStorage before each test
+      localStorage.clear()
+      mockedUseNavigate.mockClear()
+    })
+
+    it('should clear localStorage when clicking on infrastructure tab', async () => {
+      // Set some value in localStorage to simulate previous selection
+      localStorage.setItem('health-infrastructure-kpi-content-switcher', 'Table')
+
+      render(<Provider><WiredTab /></Provider>, { route: { params } })
+
+      // Click on Infrastructure tab
+      fireEvent.click(await screen.findByText('Infrastructure'))
+
+      // Verify localStorage is cleared
+      expect(localStorage.getItem('health-infrastructure-kpi-content-switcher')).toBeFalsy()
+
+      // Verify navigation happens
+      expect(mockedUseNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/analytics/health/wired/tab/infrastructure`,
+        hash: '',
+        search: ''
+      })
+    })
+
+    it('should not clear localStorage when clicking on other tabs', async () => {
+      // Set some value in localStorage
+      localStorage.setItem('health-infrastructure-kpi-content-switcher', 'Table')
+
+      render(<Provider><WiredTab /></Provider>, { route: { params } })
+
+      // Click on Overview tab (not infrastructure)
+      fireEvent.click(await screen.findByText('Overview'))
+
+      // Verify localStorage is NOT cleared
+      expect(localStorage.getItem('health-infrastructure-kpi-content-switcher')).toBe('Table')
+    })
+
+    it('should preserve localStorage value if infrastructure tab is not clicked', async () => {
+      // Set some value in localStorage
+      localStorage.setItem('health-infrastructure-kpi-content-switcher', 'Table')
+
+      render(<Provider><WiredTab /></Provider>, { route: { params } })
+
+      // Click on Performance tab
+      fireEvent.click(await screen.findByText('Performance'))
+
+      // Verify localStorage is preserved
+      expect(localStorage.getItem('health-infrastructure-kpi-content-switcher')).toBe('Table')
+    })
+  })
 })

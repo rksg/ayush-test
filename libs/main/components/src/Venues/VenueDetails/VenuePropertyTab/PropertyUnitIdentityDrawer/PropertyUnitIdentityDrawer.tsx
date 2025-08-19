@@ -94,7 +94,14 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       dataIndex: 'name',
       searchable: true,
       disable: true
-    },{
+    },
+    {
+      key: 'displayName',
+      title: $t({ defaultMessage: 'Display Name' }),
+      dataIndex: 'displayName',
+      searchable: true
+    }
+    ,{
       key: 'email',
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',

@@ -14,8 +14,7 @@ import {
   ClientStatusEnum
 } from '@acx-ui/rc/utils'
 import {
-  useParams,
-  useSearchParams
+  useParams
 } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 import { useDateFilter }              from '@acx-ui/utils'
@@ -40,9 +39,7 @@ export function ClientOverviewTab () {
   const clientMac = clientId?.toUpperCase()
 
   const { accountTier } = getUserProfile()
-  const [searchParams] = useSearchParams()
   const isCore = isCoreTier(accountTier)
-  const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const clientStats = useClientStatisticsQuery({ ...filters, clientMac: clientId!.toUpperCase() })
 
   // connect client
@@ -51,8 +48,10 @@ export function ClientOverviewTab () {
       filters: {
         macAddress: [clientId]
       }
-    } }, { skip: clientStatus === ClientStatusEnum.HISTORICAL })
+    } })
   const connectClientInfo = clientInfo?.data?.data[0] ?? {} as ClientInfo
+  const clientStatus = (Object.keys(connectClientInfo).length !== 0) ?
+    ClientStatusEnum.CONNECTED : ClientStatusEnum.HISTORICAL
 
   // historical client
   const clientResult = useGetHistoryClientDetailQuery({

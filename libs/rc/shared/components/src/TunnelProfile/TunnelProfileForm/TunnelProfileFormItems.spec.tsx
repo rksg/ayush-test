@@ -3,35 +3,17 @@ import { Form }  from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsBetaEnabled }                                               from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }                                   from '@acx-ui/test-utils'
-
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-
+import { Features, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { Provider }                                                                                        from '@acx-ui/store'
+import { fireEvent, MockSelect, MockSelectProps, mockServer, render, renderHook, screen }                  from '@acx-ui/test-utils'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown }>
-  loading?: boolean
-}>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Select: (props: MockSelectProps) => <MockSelect {...props}/>
+}))
 
 jest.mock('../../ApCompatibility/ApCompatibilityToolTip', () => ({
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
@@ -49,8 +31,8 @@ jest.mock('../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
     </div>
 }))
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
@@ -59,22 +41,16 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('./useGetAvailableEdgeClusterData', () => ({
+  useGetAvailableEdgeClusterData: jest.fn().mockReturnValue({
+    availableClusterData: [],
+    isLoading: false
+  })
+}))
+
 
 describe('TunnelProfileForm', () => {
   const defaultValues = getTunnelProfileFormDefaultValues()
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterServiceList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
-    )
-  })
 
   it('should render TunnelProfileForm successfully', () => {
     render(
@@ -323,6 +299,9 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: 'VNI' }))
       expect(natTraversalSwitch).not.toBeChecked()
       expect(natTraversalSwitch).toBeDisabled()
+      await user.hover(natTraversalSwitch!)
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('Network segment type VNI is not supported for NAT-T')).toBeInTheDocument()
     })
 
     it('should show "NAT Traversal" compatibility component', async () => {
@@ -440,6 +419,9 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
       expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeChecked()
       expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
+      fireEvent.mouseOver(screen.getByRole('radio', { name: 'VNI' }))
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('The VNI is not supported for tunnel type L2GRE.')).toBeInTheDocument()
     })
 
     it('should lock disabled fields L2GRE ff enabled', async () => {

@@ -6,20 +6,25 @@ import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi }        from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
-  CommonUrlsInfo,
   SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo,
   AFCStatus,
-  AFCPowerMode
+  AFCPowerMode,
+  ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store  }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
+import { apDetails, apLanPorts, apRadio, currentAP, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
 
 import { ApProperties } from '.'
+
+// Mock useUserProfileContext
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: jest.fn()
+}))
 
 const params = {
   venueId: 'venue-id',
@@ -260,18 +265,26 @@ const mockedSocket = {
   }
 }
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({ venueId: 'mockVenueId', serialNumber: '422039000034' })
-}))
-
 describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
+
+    // Mock userProfile to show Admin Password field
+    const { useUserProfileContext } = require('@acx-ui/user')
+    useUserProfileContext.mockReturnValue({
+      data: {
+        support: true,
+        var: false,
+        dogfood: false
+      }
+    })
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenue.url,
+        CommonRbacUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({
+          id: 'venue-id',
+          name: 'venue-1',
           address: {
             latitude: 37.4112751,
             longitude: -122.0191908
@@ -279,23 +292,20 @@ describe('ApProperties', () => {
         }))
       ),
       rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (req, res, ctx) => res(ctx.json({
-          apPassword: 'admin!234'
-        }))
-      ),
-      rest.get(
         WifiRbacUrlsInfo.getApOperational.url.replace('?operational=true', ''),
         (_, res, ctx) => res(ctx.json({
-          loginPassword: 'admin!234'
+          apPassword: 'admin!234'
         }))
       ),
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({
-          serialNumber: '422039000034',
-          apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
-          name: 'fake_AP'
+          date: [{
+            serialNumber: '422039000034',
+            apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+            name: 'fake_AP',
+            venueId: 'venue-id'
+          }]
         }))
       ),
       rest.post(
@@ -310,24 +320,8 @@ describe('ApProperties', () => {
         }))
       ),
       rest.get(
-        WifiUrlsInfo.getApLanPorts.url,
-        (req, res, ctx) => res(ctx.json(apLanPorts))
-      ),
-      rest.get(
         WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApRadioCustomization.url,
-        (req, res, ctx) => res(ctx.json(apRadio))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(wifiCapabilities))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApValidChannel.url,
-        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         WifiRbacUrlsInfo.getApRadioCustomization.url,
@@ -343,10 +337,6 @@ describe('ApProperties', () => {
         WifiRbacUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json(portData))
-      ),
       rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portData))
       ),
@@ -357,15 +347,15 @@ describe('ApProperties', () => {
       rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
         (req, res, ctx) => res(ctx.json(switchData))
       ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(lagList))
-      ),
       rest.get(SwitchRbacUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(lagList))
       ),
       rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       ),
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
@@ -382,18 +372,8 @@ describe('ApProperties', () => {
         (req, res, ctx) => {
           return res(ctx.json({ requestId: '123456789' }))
         }
-      ),
-      rest.patch(
-        WifiUrlsInfo.detectApNeighbors.url,
-        (req, res, ctx) => {
-          return res(ctx.json({ requestId: '123456789' }))
-        }
       )
     )
-  })
-
-  beforeEach(() => {
-    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
   })
 
   afterEach(() => {
@@ -582,6 +562,535 @@ describe('ApProperties', () => {
     await userEvent.click(button)
     await waitFor(() => {
       expect(apPropertiesDialog).not.toBeVisible()
+    })
+  })
+
+  describe('Admin Password field', () => {
+    beforeEach(() => {
+      // Reset mocks before each test
+      jest.mocked(useIsSplitOn).mockClear()
+    })
+
+    it('should show Admin Password with per-AP password enabled', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should show Admin Password field for var user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: true,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should show Admin Password field for dogfood user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: true
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    it('should not show Admin Password field for regular user', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
+    })
+
+
+
+    it('should show the "Show AP Password" button when per-AP password is enabled', async () => {
+      // Mock feature flags to enable per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+      // Verify the button element exists and contains the text
+      const showPasswordButton = within(apPropertiesDialog)
+        .getByRole('button', { name: /Show AP Password/ })
+      expect(showPasswordButton).toBeInTheDocument()
+      expect(showPasswordButton).toBeVisible()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should hide Admin Password field when no feature flags are enabled and user without permission', async () => {
+      // Mock feature flags to disable both per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: false,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).queryByText('Admin Password')).not.toBeInTheDocument()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should show Admin Password field with legacy password when feature flags are disabled', async () => {
+      // Mock feature flags to disable both per-AP password and visibility
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return false
+        if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return false
+        return true
+      })
+
+      const { useUserProfileContext } = require('@acx-ui/user')
+      useUserProfileContext.mockReturnValue({
+        data: {
+          support: true,
+          var: false,
+          dogfood: false
+        }
+      })
+
+      render(<Provider>
+        <ApProperties
+          currentAP={currentAP}
+          apDetails={apDetails}
+          isLoading={false}
+        /></Provider>, { route: { params } })
+
+      fireEvent.click(screen.getByText('More'))
+      const apPropertiesDialog = await screen.findByRole('dialog')
+
+      expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+      expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+    })
+
+    describe('Password Regeneration Message', () => {
+      beforeEach(() => {
+        // Mock feature flags to enable per-AP password and visibility
+        jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+          if (feature === 'WIFI_AP_PASSWORD_PER_AP_TOGGLE') return true
+          if (feature === 'WIFI_AP_PASSWORD_VISIBILITY_TOGGLE') return true
+          return true
+        })
+
+        const { useUserProfileContext } = require('@acx-ui/user')
+        useUserProfileContext.mockReturnValue({
+          data: {
+            support: true,
+            var: false,
+            dogfood: false
+          }
+        })
+
+        // Mock the getApPassword API response
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: '2024-01-15T10:30:00Z',
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+      })
+
+
+
+      it('should return null when expireTime is missing', async () => {
+        // Mock API to return password without expireTime
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: undefined,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        // Click show password button to trigger password fetch
+        const showPasswordButton = within(apPropertiesDialog)
+          .getByRole('button', { name: /Show AP Password/ })
+        await userEvent.click(showPasswordButton)
+
+        // Should not show regeneration message
+        expect(within(apPropertiesDialog)
+          .queryByText(/AP Password will regenerate/)).not.toBeInTheDocument()
+      })
+
+      it('should show regeneration message for connected AP with expire today', async () => {
+        const now = new Date()
+        const todayExpireTime = new Date(
+          now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59
+        ).toISOString()
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: todayExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Check for the time and day label
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/23:59/)).toBeVisible()
+        })
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/today/)).toBeVisible()
+        })
+
+      })
+
+      it('should show regeneration message for connected AP with expire tomorrow', async () => {
+        const now = new Date()
+        const tomorrow = new Date(now)
+        tomorrow.setDate(now.getDate() + 1)
+        const tomorrowExpireTime = new Date(
+          tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59
+        ).toISOString()
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: tomorrowExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={currentAP}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Check for the time and day label
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/23:59/)).toBeVisible()
+        })
+        await waitFor(() => {
+          expect(within(apPropertiesDialog).getByText(/tomorrow/)).toBeVisible()
+        })
+
+      })
+
+      it('should show regeneration message for disconnected AP with expired password', async () => {
+        const now = new Date()
+        // Set expire time to 1 hour ago (expired)
+        const expiredTime = new Date(now.getTime() - 60 * 60 * 1000).toISOString()
+
+        const apDisconnected = {
+          ...currentAP,
+          deviceStatusSeverity: ApVenueStatusEnum.OFFLINE
+        }
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: expiredTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={apDisconnected}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          const reconnectionMessage = /AP Password will regenerate upon cloud reconnection/
+          expect(within(apPropertiesDialog)
+            .getByText(reconnectionMessage))
+            .toBeVisible()
+        })
+      })
+
+      it('should show regeneration message for disconnected AP non-expired password', async () => {
+        const now = new Date()
+        // Set expire time to 1 hour from now (not expired)
+        const futureExpireTime = new Date(now.getTime() + 60 * 60 * 1000).toISOString()
+
+        const apDisconnected = {
+          ...currentAP,
+          deviceStatusSeverity: ApVenueStatusEnum.OFFLINE
+        }
+
+        // Override the mock for this specific test
+        mockServer.use(
+          rest.get(
+            WifiRbacUrlsInfo.getApPassword.url,
+            (_, res, ctx) => res(ctx.json({
+              apPassword: 'testPassword123',
+              expireTime: futureExpireTime,
+              updatedTime: '2024-01-15T09:30:00Z'
+            }))
+          )
+        )
+
+        render(<Provider>
+          <ApProperties
+            currentAP={apDisconnected}
+            apDetails={apDetails}
+            isLoading={false}
+          /></Provider>, { route: { params } })
+
+        fireEvent.click(screen.getByText('More'))
+        const apPropertiesDialog = await screen.findByRole('dialog')
+
+        expect(within(apPropertiesDialog).getByText('Admin Password')).toBeVisible()
+        expect(within(apPropertiesDialog).getByText('Show AP Password')).toBeVisible()
+
+        expect(screen.getByText('Show AP Password')).toBeVisible()
+        fireEvent.click(screen.getByText('Show AP Password'))
+
+        // Wait for password to be displayed first
+        await waitFor(() => {
+          // Check if any password is displayed
+          const passwordElement = within(apPropertiesDialog).getByText(/testPassword123/)
+          expect(passwordElement).toBeVisible()
+        })
+
+        // Then wait for regeneration message to be displayed
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/AP Password will regenerate at/)).toBeVisible()
+        })
+
+        // Should also show the "upon cloud reconnection" message
+        await waitFor(() => {
+          expect(within(apPropertiesDialog)
+            .getByText(/upon cloud reconnection/))
+            .toBeVisible()
+        })
+      })
+
     })
   })
 })

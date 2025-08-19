@@ -1,13 +1,19 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Loader,
+  PageHeader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgePinViewDataListQuery,
   useGetEdgeMvSdLanViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
-  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -28,7 +34,8 @@ import {
   transformDisplayOnOff,
   TunnelProfileViewData,
   TunnelTypeEnum,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  transformDisplayYesNo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TableColumn }                             from '@acx-ui/types'
@@ -37,13 +44,13 @@ import { noDataDisplay, useTableQuery }                 from '@acx-ui/utils'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeVxLanIpsecReady = useIsEdgeFeatureReady(Features.EDGE_IPSEC_VXLAN_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
@@ -72,8 +79,7 @@ const TunnelProfileTable = () => {
     })
   })
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
-  const { networkOptions } = getNetworkListQuery({
+  const { networkOptions } = useWifiNetworkListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -156,6 +162,18 @@ const TunnelProfileTable = () => {
             return TunnelTypeEnum.VXLAN_GPE === row.tunnelType ?
               `${row.destinationEdgeClusterName || noDataDisplay}` :
               `${row.destinationIpAddress || noDataDisplay}`
+          }
+        }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      :[]),
+    ...((isEdgeVxLanIpsecReady)?
+      [
+        {
+          title: $t({ defaultMessage: 'Encryption' }),
+          key: 'encryption',
+          dataIndex: 'encryption',
+          sorter: false,
+          render: (_, row) => {
+            return transformDisplayYesNo(!!row.ipsecProfileId)
           }
         }] as TableColumn<TunnelProfileViewData, 'text'>[]
       :[]),

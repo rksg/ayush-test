@@ -22,11 +22,15 @@ import {
   transformWifiNetwork,
   ConfigTemplateCloneUrlsInfo,
   AllowedCloneTemplateTypes,
-  VlanPool
+  VlanPool,
+  CommonUrlsInfo,
+  GetApiVersionHeader,
+  ApiVersionEnum,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi }                    from '@acx-ui/store'
-import { RequestPayload }                           from '@acx-ui/types'
-import { TableResult, batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseConfigTemplateApi }                               from '@acx-ui/store'
+import { RequestPayload }                                      from '@acx-ui/types'
+import { TableResult, batchApi, createHttpRequest, isRecSite } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
@@ -42,7 +46,8 @@ import { handleCallbackWhenActivityDone } from '../utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
-  useCasesToRefreshNetworkTemplateList
+  useCasesToRefreshNetworkTemplateList,
+  useCasesToRefreshRecTemplateList
 } from './constants'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
@@ -55,7 +60,24 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
+          const useCases = isRecSite() ? useCasesToRefreshRecTemplateList : useCasesToRefreshTemplateList
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getConfigTemplateListSkipRecRewrite: build.query<TableResult<ConfigTemplate>, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getConfigTemplatesSkipRecRewrite,
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbacSkipRecRewrite
+      ),
+      providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const useCases = isRecSite() ? useCasesToRefreshRecTemplateList : useCasesToRefreshTemplateList
+          onActivityMessageReceived(msg, useCases, () => {
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
         })
@@ -67,6 +89,22 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.applyConfigTemplate,
         ConfigTemplateUrlsInfo.applyConfigTemplateRbac
       ),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    applyConfigTemplateSkipRecRewrite: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.applyConfigTemplateSkipRecRewrite,
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbacSkipRecRewrite
+      ),
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    applyRecConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
+      query: ({ params, payload }: RequestPayload) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.applyRecConfigTemplate, params),
+          body: JSON.stringify(payload)
+        }
+      },
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -482,8 +520,52 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return { data: (driftInstancesRes.data as TableResult<MspEc>).data }
       }
     }),
+    queryDriftInstances: build.query<Array<{ id: string, name: string }>, RequestPayload<{ type: ConfigTemplateType }>>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const driftInstanceIdsRes = await fetchWithBQ({
+          ...createHttpRequest(ConfigTemplateUrlsInfo.queryDriftInstances, params),
+          body: JSON.stringify({
+            filter: { status: 'DRIFT' }
+          })
+        })
+
+        if (driftInstanceIdsRes.error) {
+          return { error: driftInstanceIdsRes.error as FetchBaseQueryError }
+        }
+
+        const instanceIds = (driftInstanceIdsRes.data as TableResult<{ tenantId: string, instanceId: string }>).data.map(item => item.instanceId)
+
+        if (payload?.type !== ConfigTemplateType.VENUE) {
+          return { data: instanceIds.map(i => ({ id: i, name: '' })) }
+        }
+
+        if (instanceIds.length === 0) {
+          return { data: [] }
+        }
+
+        const driftInstancesRes = await fetchWithBQ({
+          ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify({
+            fields: ['id', 'name'],
+            filters: { id: instanceIds },
+            page: 1,
+            pageSize: 100
+          })
+        })
+
+        if (driftInstancesRes.error) {
+          return { error: driftInstancesRes.error as FetchBaseQueryError }
+        }
+
+        return { data: (driftInstancesRes.data as TableResult<{ id: string, name: string }>).data }
+      }
+    }),
     getDriftReport: build.query<ConfigTemplateDriftsResponse, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReport)
+    }),
+    getDriftReportByInstance: build.query<ConfigTemplateDriftsResponse, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReportByInstance)
     }),
     patchDriftReport: build.mutation<CommonResult, RequestPayload<{ templateId: string, tenantIds: string[] }>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
@@ -492,6 +574,14 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           params: { templateId: payload!.templateId, tenantId }
         }))
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
+      }
+    }),
+    patchDriftReportByInstance: build.mutation<CommonResult, RequestPayload<{ templateId: string, instanceIds: string[] }>>({
+      async queryFn ({ payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const requests = payload!.instanceIds.map(instanceId => ({
+          params: { templateId: payload!.templateId, instanceId }
+        }))
+        return batchApi(ConfigTemplateUrlsInfo.patchDriftReportByInstance, requests, fetchWithBQ)
       }
     }),
     cloneTemplate: build.mutation<CommonResult, RequestPayload<{ type: AllowedCloneTemplateTypes, templateId: string, name: string }>>({
@@ -527,6 +617,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 export const {
   useGetConfigTemplateListQuery,
   useApplyConfigTemplateMutation,
+  useApplyRecConfigTemplateMutation,
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkDeepTemplateQuery,
@@ -550,9 +641,15 @@ export const {
   useUpdateNetworkVenueTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useGetDriftInstancesQuery,
+  useQueryDriftInstancesQuery,
   useLazyGetDriftReportQuery,
+  useGetDriftReportByInstanceQuery,
+  useLazyGetDriftReportByInstanceQuery,
   usePatchDriftReportMutation,
+  usePatchDriftReportByInstanceMutation,
   useCloneTemplateMutation,
   useUpdateEnforcementStatusMutation,
-  useBindingPersonaGroupTemplateWithNetworkMutation
+  useBindingPersonaGroupTemplateWithNetworkMutation,
+  useLazyGetConfigTemplateListSkipRecRewriteQuery,
+  useApplyConfigTemplateSkipRecRewriteMutation
 } = configTemplateApi

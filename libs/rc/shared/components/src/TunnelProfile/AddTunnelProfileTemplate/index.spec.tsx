@@ -16,6 +16,16 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
+jest.mock('../TunnelProfileForm/useTunnelProfileActions', () => ({
+  useTunnelProfileActions: jest.fn().mockReturnValue({
+    createTunnelProfileTemplateOperation: jest.fn().mockResolvedValue({})
+  })
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  resolveTenantTypeFromPath: () => 'v'
+}))
 
 const createViewPath = '/:tenantId/t/policies/tunnelProfile/create'
 
@@ -42,7 +52,7 @@ describe('AddTunnelProfileTemplate', () => {
       </Provider>
       , { route: { path: createViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    const policyNameField = screen.getByRole('textbox', { name: 'Template Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({

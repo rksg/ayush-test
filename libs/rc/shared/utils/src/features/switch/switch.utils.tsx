@@ -3,16 +3,14 @@ import _ from 'lodash'
 
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
+import { DeviceConnectionStatus }                from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
-  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
   SWITCH_SERIAL_8100,
@@ -21,9 +19,6 @@ import {
   SWITCH_SERIAL_SUFFIX,
   SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL
 } from '../../types'
-import { FlexibleAuthentication } from '../../types'
-
-import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -106,76 +101,6 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FPG', 'ICX8200-24PV'],
   ['FPF', 'ICX8200-C08PFV']
 ])
-
-export const ICX_MODELS_MODULES = {
-  ICX7150: {
-    'C12P': [['12X1G'], ['2X1G'], ['2X1/10G']],
-    'C08P': [['8X1G'], ['2X1G']],
-    'C08PT': [['8X1G'], ['2X1G']],
-    'C10ZP': [['8X2.5G'], ['2X10G'], ['2X1/10G']],
-    '24': [['24X1G'], ['2X1G'], ['4X1/10G']],
-    '24P': [['24X1G'], ['2X1G'], ['4X1/10G']],
-    '24F': [['24X1G'], ['2X1G'], ['4X1/10G']],
-    '48': [['48X1G'], ['2X1G'], ['4X1/10G']],
-    '48P': [['48X1G'], ['2X1G'], ['4X1/10G']],
-    '48PF': [['48X1G'], ['2X1G'], ['4X1/10G']],
-    '48ZP': [['48X1/2.5G'], ['8X1/10G']]
-  },
-  ICX7550: {
-    '24': [['24X1G'], ['2X40G'], ['2X40G', '4X10GF']],
-    '24P': [['24X1G'], ['2X40G'], ['2X40G', '4X10GF']],
-    '48': [['48X1G'], ['2X40G'], ['2X40G', '4X10GF']],
-    '48P': [['48X1G'], ['2X40G'], ['2X40G', '4X10GF']],
-    '24ZP': [['24X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
-    '48ZP': [['48X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
-    '24F': [['24X10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
-    '48F': [['48X1/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
-    '24XZP': [['24X10G'], ['2X40G','2X100G'], ['1X100G', '2X40G', '4X10G', '4X25G']]
-  },
-  ICX7650: {
-    '48P': [['48X1G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']],
-    '48ZP': [['48X1/2.5/5/10G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']],
-    '48F': [['48X10G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']]
-  },
-  ICX7850: {
-    '32Q': [['12X40/100G'], ['12X40/100G'], ['8X40/100G']],
-    '48FS': [['48X1/10G'], ['8X40/100G']],
-    '48F': [['48X1/10G'], ['8X40/100G']],
-    '48C': [['48X1/10G'], ['8X40/100G']]
-  },
-  ICX8100: {
-    '24': [['24X10/100/1000Mbps'], ['4X100M/1G']],
-    '24P': [['24X10/100/1000Mbps'], ['4X100M/1G']],
-    '48': [['48X10/100/1000Mbps'], ['4X100M/1G']],
-    '48P': [['48X10/100/1000Mbps'], ['4X100M/1G']],
-    'C08PF': [['8X10/100/1000Mbps'], ['2X100M/1G']],
-    '24-X': [['24X10/100/1000Mbps'], ['4X100M/1G/10G']],
-    '24P-X': [['24X10/100/1000Mbps'], ['4X100M/1G/10G']],
-    '48-X': [['48X10/100/1000Mbps'], ['4X100M/1G/10G']],
-    '48P-X': [['48X10/100/1000Mbps'], ['4X100M/1G/10G']],
-    'C08PF-X': [['8X10/100/1000Mbps'], ['2X100M/1G/10G']]
-  },
-  ICX8200: { //TODO: Need more information
-    '24': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
-    '24P': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
-    '48': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
-    '48P': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
-    '48PF': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
-    '48PF2': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
-    // 'C08P': [['8X10/100/1000Mbps'], ['2X1G']],
-    'C08PF': [['8X10/100/1000Mbps'], ['2X1/10G']],
-    '24ZP': [['24X100/1000/2500Mbps'], ['4X1/10/25G']],
-    '48ZP2': [['48X10/100/1000/2500Mbps'], ['4X1/10/25G']],
-    '24FX': [['16X1/10G'], ['8X1/10/25G']],
-    '24F': [['24X1G'], ['4X1/10/25G']],
-    '48F': [['48X1G'], ['4X1/10/25G']],
-    'C08ZP': [['8X100/1000/2500Mbps/1/2.5/5/10G'], ['2X1/10/25G']],
-    // 'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
-    // 'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
-    '24PV': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
-    'C08PFV': [['8X10/100/1000Mbps'], ['2X1/10G']]
-  }
-}
 
 export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady: boolean, syncedSwitchConfig: boolean) => {
   const isStrictOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
@@ -323,50 +248,6 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
-}
-
-export const getSwitchModelInfo = (switchModel: string) => {
-  const [ family, model ] = getFamilyAndModel(switchModel)
-
-  const modelFamilyInfo = ICX_MODELS_INFORMATION[family]
-  if (!modelFamilyInfo) {
-    return null
-  }
-
-  const subModelInfo = modelFamilyInfo[model]
-  if (!subModelInfo) {
-    return null
-  }
-
-  return subModelInfo
-}
-
-export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
-  if (!slotNumber || !switchModel || slotNumber < 1) {
-    return ''
-  }
-
-  const modelInfo = getSwitchModelInfo(switchModel)
-  if (!modelInfo) {
-    return ''
-  }
-  if (modelInfo.portModuleSlots && !modelInfo.portModuleSlots[slotNumber - 1]) {
-    return ''
-  }
-  return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
-}
-
-export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string }) => {
-  const splitA = portIdA.id.split('/')
-  const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
-
-  const splitB = portIdB.id.split('/')
-  const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
-  return valueA - valueB
-}
-
-export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
-  return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
 
 export const getDhcpOptionList = () => {
@@ -675,6 +556,13 @@ export const createSwitchSerialPatternForSpecific8100Model = () => {
   return new RegExp(`^(${SWITCH_SERIAL_8100})${SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL}$`, 'i')
 }
 
+const isSpecific8100Model = (serialNumber: string) => {
+  return serialNumber && (serialNumber?.startsWith('FNX') ||
+    serialNumber?.startsWith('FNY') ||
+    serialNumber?.startsWith('FNZ') ||
+    serialNumber?.startsWith('FPA'))
+}
+
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
   supportModels: SupportModels,
@@ -699,213 +587,3 @@ export const getAdminPassword = (
       : $t({ defaultMessage: 'Custom' })
     )
 }
-
-export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20, title: string = '') => {
-  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
-  let ranges = []
-
-  for (let i = 0; i < numbers.length; i++) {
-    let start = numbers[i]
-    while (numbers[i + 1] - numbers[i] === 1) {
-      i++
-    }
-    let end = numbers[i]
-    ranges.push(start === end ? `${start}` : `${start}-${end}`)
-  }
-
-  if (ranges.length > maxRangesToShow) {
-    const remainingCount = ranges.length - maxRangesToShow
-    ranges = ranges.slice(0, maxRangesToShow)
-    return `${ranges.join(', ')}, and ${remainingCount} ${title} more...`
-  }
-
-  return ranges.join(', ')
-}
-
-export const isFirmwareVersionAbove10 = (
-  firmwareVersion: string
-) => {
-  return firmwareVersion.slice(3,6) === '100'
-}
-
-export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010f < 10020
-  2. > 10020b
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010f', false) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
-  } else {
-    return false
-  }
-}
-
-
-export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10020a
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10020b', false)
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10010gOr10020b = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g < 10020
-  2. > 10020b
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010g', false) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g_cd1 < 10020
-  2. > 10020b_cd1
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010g_cd1', true) &&
-    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b_cd1', true))
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareVersionAbove10020bCd2 = function (firmwareVersion?: string) {
-  /*
-  Only support the firmware versions listed below:
-  1. > 10010g_cd1 < 10020
-  2. > 10020b_cd1
-  */
-  if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10020b_cd2', true)
-  } else {
-    return false
-  }
-}
-
-export const isFirmwareSupportAdminPassword = (
-  firmwareVersion: string
-) => {
-  if (isFirmwareVersionAbove10(firmwareVersion)) {
-    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
-  }
-  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
-}
-
-export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
-  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
-}
-
-export const checkSwitchUpdateFields = function (
-  values: Switch,
-  switchDetail?: SwitchViewModel,
-  switchData?: Switch,
-  switchAuth?: FlexibleAuthentication
-) {
-  const fields = Object.keys(values ?? {})
-  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-  const originalValues = _.pick({ ...switchDetail, ...switchData, ...switchAuth }, fields) as Switch
-
-  return Object.keys(values ?? {}).reduce((result: string[], key) => {
-    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
-      return [ ...result, key ]
-    }
-    return result
-  }, [])
-}
-
-export const isRodanAv = (model: string) => {
-  switch(model) {
-    case 'ICX8200-24PV':
-    case 'ICX8200-C08PFV':
-      return true
-    default:
-      return false
-  }
-}
-
-export const isBabyRodanX = (model: string) => {
-  switch(model) {
-    case 'ICX8100-24-X':
-    case 'ICX8100-24P-X':
-    case 'ICX8100-48-X':
-    case 'ICX8100-48P-X':
-    case 'ICX8100-C08PF-X':
-      return true
-    default:
-      return false
-  }
-}
-
-export const is7550Zippy = (model: string) => {
-  return model === 'ICX7550-24XZP'
-}
-
-export const isBabyRodanXSubModel = (model: string) => {
-  switch(model) {
-    case '24-X':
-    case '24P-X':
-    case '48-X':
-    case '48P-X':
-    case 'C08PF-X':
-      return true
-    default:
-      return false
-  }
-}
-
-export const is7550ZippySubModel = (model: string) => {
-  return model === '24XZP'
-}
-
-export const getFamilyAndModel = function (switchModel: string) {
-  const family = switchModel.split('-')[0]
-  const model = switchModel.substring(switchModel.indexOf('-')+1)
-  return [family, model]
-}
-
-export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
-  if (!macAclRules || macAclRules.length === 0) {
-    return { permit: 0, deny: 0 }
-  }
-
-  return macAclRules.reduce((acc, rule) => {
-    if (rule.action === 'permit') {
-      acc.permit += 1
-    } else if (rule.action === 'deny') {
-      acc.deny += 1
-    }
-    return acc
-  }, { permit: 0, deny: 0 })
-}
-
-export const isSpecific8100Model = (serialNumber: string) => {
-  return serialNumber && (serialNumber?.startsWith('FNX') ||
-    serialNumber?.startsWith('FNY') ||
-    serialNumber?.startsWith('FNZ') ||
-    serialNumber?.startsWith('FPA'))
-}
-
-export const allMultipleEditableFields = [
-  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
-  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
-  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
-  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
-]

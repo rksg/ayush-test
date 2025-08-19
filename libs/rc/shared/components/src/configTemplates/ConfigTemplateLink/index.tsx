@@ -17,11 +17,11 @@ import {
   ServiceDetailsLinkProps,
   ServiceOperation,
   ServiceRoutePathProps,
-  useConfigTemplate,
-  useConfigTemplateTenantLink
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RbacOpsIds, ScopeKeys }                                                  from '@acx-ui/types'
+import { LinkProps, TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { RbacOpsIds, ScopeKeys }              from '@acx-ui/types'
+import { resolveTenantTypeFromPath }          from '@acx-ui/utils'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
@@ -40,12 +40,14 @@ export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
   const location = useLocation()
   // eslint-disable-next-line max-len
   const currentPathState: LocationExtended['state'] | {} = attachCurrentPathToState ? { from: location } : {}
+  const toPath = getConfigTemplatePath(to)
   const finalState = { ...state, ...currentPathState }
+  const tenantType = resolveTenantTypeFromPath()
 
   return (
-    <MspTenantLink to={getConfigTemplatePath(to)} state={finalState} {...rest}>
+    <TenantLink to={toPath} state={finalState} tenantType={tenantType} {...rest}>
       {props.children}
-    </MspTenantLink>
+    </TenantLink>
   )
 }
 
@@ -167,13 +169,4 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
   }
 
   return <span>{name}</span>
-}
-
-// eslint-disable-next-line max-len
-export function usePathBasedOnConfigTemplate (regularPath: string, configTemplatePath?: string): Path {
-  const { isTemplate } = useConfigTemplate()
-  const baseEditPath = useTenantLink(regularPath)
-  const baseConfigTemplateEditPath = useConfigTemplateTenantLink(configTemplatePath ?? regularPath)
-
-  return isTemplate ? baseConfigTemplateEditPath : baseEditPath
 }

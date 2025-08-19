@@ -1,9 +1,17 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { AaaUrls, AccessControlUrls, DHCPUrls, DpskUrls, PolicyType, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                         from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  AaaUrls,
+  AccessControlUrls,
+  DHCPUrls,
+  DpskUrls,
+  IdentityProviderUrls,
+  PolicyType,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
+import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { mockedAvailableUnifiedServicesList }  from './__tests__/fixtures'
 import { useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
@@ -53,6 +61,10 @@ describe('useUnifiedServiceListWithTotalCount', () => {
       rest.post(
         AccessControlUrls.getApplicationPolicyListQuery.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 5, data: [] }))
+      ),
+      rest.post(
+        IdentityProviderUrls.getIdentityProviderList.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         DHCPUrls.queryDhcpProfiles.url,

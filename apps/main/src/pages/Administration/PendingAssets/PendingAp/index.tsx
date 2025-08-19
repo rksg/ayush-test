@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -11,14 +11,27 @@ import { DeviceProvision, HideProvisionsPayload }                               
 import { TimeStamp }                                                                                                                  from '@acx-ui/types'
 import { useTableQuery }                                                                                                              from '@acx-ui/utils'
 
-import { MessageMapping } from '../messageMapping'
+import { ApGroupDrawer }     from '../ApGroupDrawer'
+import { ClaimDeviceDrawer } from '../ClaimDeviceDrawer'
+import { MessageMapping }    from '../messageMapping'
+import { VenueDrawer }       from '../VenueDrawer'
+
 
 export const PendingAp = () => {
   const { $t } = useIntl()
   const params = useParams()
+
+  const tenantId = params.tenantId
+
   const [ refreshAt, setRefreshAt ] = useState<TimeStamp | null>(null)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ hasAutoRefreshed, setHasAutoRefreshed ] = useState(false)
+  const [ claimDrawerVisible, setClaimDrawerVisible ] = useState(false)
+  const [ selectedDevices, setSelectedDevices ] = useState<{ serial: string; model: string }[]>([])
+  const [ venueDrawerVisible, setVenueDrawerVisible ] = useState(false)
+  const [ apGroupDrawerVisible, setApGroupDrawerVisible ] = useState(false)
+
+  const clearSelectionRef = useRef<(() => void) | null>(null)
 
   const { data: apStatus, refetch: refetchApStatus } = useGetApStatusQuery(
     { params },
@@ -27,25 +40,6 @@ export const PendingAp = () => {
   const [ refreshApStatus ] = useRefreshApStatusMutation()
 
   const [ hideApProvisions ] = useHideApProvisionsMutation()
-
-  const emptyModelFilterMap: { key: string, value: string }[] = []
-  const { modelFilterMap } = useGetApModelsQuery({
-    params: { tenantId: params.tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10_000
-    }
-  }, {
-    selectFromResult: ({ data }) => {
-      return {
-        modelFilterMap: data?.map(model =>
-          ({ key: model, value: model })) ?? emptyModelFilterMap
-      }
-    }
-  })
 
   const tableQuery = useTableQuery<DeviceProvision>({
     useQuery: useGetApProvisionsQuery,
@@ -64,6 +58,24 @@ export const PendingAp = () => {
     }
   })
 
+  const emptyModelFilterMap: { key: string, value: string }[] = []
+  const tableFilters = tableQuery.payload.filters as { includeHidden?: boolean[] }
+  const { modelFilterMap } = useGetApModelsQuery({
+    params: { tenantId },
+    payload: {
+      filters: {
+        includeHidden: tableFilters?.includeHidden || [false]
+      }
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        modelFilterMap: data?.map((model: string) =>
+          ({ key: model, value: model })) ?? emptyModelFilterMap
+      }
+    }
+  })
+
   useEffect(() => {
     setRefreshAt(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(apStatus?.refreshedAt) ?? null)
 
@@ -77,17 +89,45 @@ export const PendingAp = () => {
     autoRefresh()
   }, [apStatus, hasAutoRefreshed])
 
+  // Handle add venue button click
+  const handleAddVenue = () => {
+    setVenueDrawerVisible(true)
+  }
+
+  // Handle venue drawer close
+  const handleVenueDrawerClose = () => {
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle venue creation success
+  const handleVenueCreated = async () => {
+    setVenueDrawerVisible(false)
+  }
+
+  // Handle add AP group button click
+  const handleAddApGroup = () => {
+    setApGroupDrawerVisible(true)
+  }
+
+  // Handle AP group drawer close
+  const handleApGroupDrawerClose = () => {
+    setApGroupDrawerVisible(false)
+  }
+
+
+
   const columns: TableProps<DeviceProvision>['columns'] = [
     {
       key: 'serialNumber',
-      title: 'Serial #',
+      title: $t({ defaultMessage: 'Serial #' }),
       dataIndex: 'serialNumber',
       sorter: true,
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       key: 'model',
-      title: 'Model',
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true,
       searchable: true,
@@ -95,7 +135,7 @@ export const PendingAp = () => {
     },
     {
       key: 'shipDate',
-      title: 'Ship Date',
+      title: $t({ defaultMessage: 'Ship Date' }),
       dataIndex: 'shipDate',
       sorter: true,
       render: (_, row) => {
@@ -104,19 +144,19 @@ export const PendingAp = () => {
     },
     {
       key: 'createdDate',
-      title: 'Created Date',
+      title: $t({ defaultMessage: 'Created Date' }),
       dataIndex: 'createdDate',
       sorter: true,
       filterable: true,
       filterKey: 'fromDate',
-      filterComponent: { type: 'rangepicker' },
+      filterComponent: { type: 'rangepicker', unlimitedRange: true },
       render: (_, row) => {
         return formatter(DateFormatEnum.DateFormat)(row.createdDate)
       }
     },
     {
       key: 'visibleStatus',
-      title: 'Visibility',
+      title: $t({ defaultMessage: 'Visibility' }),
       dataIndex: 'visibleStatus',
       sorter: true,
       filterKey: 'includeHidden',
@@ -129,7 +169,14 @@ export const PendingAp = () => {
   const rowActions: TableProps<DeviceProvision>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Claim Device' }),
-      onClick: () => {
+      onClick: (selectedRows, clearSelection) => {
+        const devices = selectedRows.map(row => ({
+          serial: row.serialNumber,
+          model: row.model
+        }))
+        setSelectedDevices(devices)
+        clearSelectionRef.current = clearSelection
+        setClaimDrawerVisible(true)
       }
     },
     {
@@ -179,6 +226,7 @@ export const PendingAp = () => {
       </div>
 
       <Table<DeviceProvision>
+        key={refreshAt}
         settingsId={'pending-aps-tab'}
         loading={tableQuery.isLoading || tableQuery.isFetching}
         columns={columns}
@@ -192,6 +240,35 @@ export const PendingAp = () => {
           rowActions?.length > 0 && { type: 'checkbox' }
         }
         rowKey='serialNumber'
+      />
+
+      <ClaimDeviceDrawer
+        visible={claimDrawerVisible}
+        devices={selectedDevices}
+        onClose={() => {
+          setClaimDrawerVisible(false)
+          // Clear selection when drawer closes
+          if (clearSelectionRef.current) {
+            clearSelectionRef.current()
+            clearSelectionRef.current = null
+          }
+          setSelectedDevices([])
+        }}
+        onAddVenue={handleAddVenue}
+        onAddApGroup={handleAddApGroup}
+      />
+
+      {/* Venue Drawer */}
+      <VenueDrawer
+        open={venueDrawerVisible}
+        onClose={handleVenueDrawerClose}
+        onSuccess={handleVenueCreated}
+      />
+
+      {/* Ap Group Drawer */}
+      <ApGroupDrawer
+        open={apGroupDrawerVisible}
+        onClose={handleApGroupDrawerClose}
       />
     </Loader>
   )

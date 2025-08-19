@@ -3,7 +3,6 @@ import { ReactNode, useState } from 'react'
 import { TypedMutationTrigger } from '@reduxjs/toolkit/query/react'
 import { useIntl }              from 'react-intl'
 
-
 import {
   Table,
   TableProps,
@@ -11,8 +10,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                           from '@acx-ui/feature-toggle'
-import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, isNotAllowToApplyPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                  from '@acx-ui/feature-toggle'
+import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible, useConfigTemplateVisibilityMap } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
@@ -45,24 +44,38 @@ import {
   hasConfigTemplateAllowedOperation,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                          from '@acx-ui/user'
-import { useTableQuery, getOpsApi }                from '@acx-ui/utils'
+import { useLocation, useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
+import { getOpsApi, resolveTenantTypeFromPath, useTableQuery } from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
 
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
+import { ConfigTemplateListContext }                        from './ConfigTemplateListContext'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
 import {
   ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
   getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel,
-  ViewConfigTemplateDetailsLink, useFormatTemplateDate
+  ViewConfigTemplateDetailsLink, useFormatTemplateDate,
+  isTemplateTypeAllowed
 } from './templateUtils'
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
+const defaultActionRbacOpsIds: ConfigTemplateViewProps['actionRbacOpsIds'] = {
+  apply: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)]
+}
+
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
-  const { ApplyTemplateView, AppliedToView, ShowDriftsView, appliedToColumn } = props
+  const {
+    ApplyTemplateView,
+    canApplyTemplate = (t: ConfigTemplate) => isTemplateTypeAllowed(t.type),
+    AppliedToView,
+    AppliedToListView,
+    ShowDriftsView,
+    appliedToColumn,
+    actionRbacOpsIds = { ...defaultActionRbacOpsIds, ...(props.actionRbacOpsIds || {}) }
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -74,13 +87,13 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const deleteMutationMap = useDeleteMutation()
-  const mspTenantLink = useTenantLink('', 'v')
+  const tenantLink = useTenantLink('', resolveTenantTypeFromPath())
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<ConfigTemplate>({
     useQuery: useGetConfigTemplateListQuery,
     defaultPayload: {},
     search: {
@@ -116,7 +129,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
           })
         } else {
           const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+          navigate(`${tenantLink.pathname}/${editPath}`, { state: { from: location } })
         }
       }
     },
@@ -129,9 +142,9 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
       }
     },
     {
-      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
+      rbacOpsIds: actionRbacOpsIds.apply,
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
+      disabled: (selectedRows) => !selectedRows[0] || !canApplyTemplate(selectedRows[0]),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateViewVisible(true)
@@ -140,7 +153,6 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     ...(driftsEnabled ? [{
       // eslint-disable-next-line max-len
       visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
-      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.getDriftReport)],
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
@@ -179,7 +191,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
   const allowedRowActions = filterByAccess(rowActions)
 
   return (
-    <>
+    <ConfigTemplateListContext.Provider value={{ setAppliedToViewVisible }}>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
@@ -211,7 +223,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         setVisible={setShowDriftsViewVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
-      {appliedToViewVisible &&
+      {appliedToViewVisible && AppliedToView &&
       <AppliedToView
         setVisible={setAppliedToViewVisible}
         selectedTemplate={selectedTemplates[0]}
@@ -231,8 +243,9 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         selectedTemplate={selectedTemplates[0]}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
         ShowDriftsView={ShowDriftsView}
+        AppliedToListView={AppliedToListView}
       />}
-    </>
+    </ConfigTemplateListContext.Provider>
   )
 }
 
@@ -260,8 +273,9 @@ function useColumns (props: TemplateColumnProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType)
-    .map((type => ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })))
+  const typeFilterOptions = Object.entries(useConfigTemplateVisibilityMap())
+    .filter(([, visible]) => visible)
+    .map(([type]) => ({ key: type, value: getConfigTemplateTypeLabel(type as ConfigTemplateType) }))
     .sort((a, b) => a.value.localeCompare(b.value))
 
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
@@ -443,6 +457,6 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
     [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate,
     [ConfigTemplateType.IDENTITY_GROUP]: deleteIdentityGroupTemplate,
-    [ConfigTemplateType.TUNNEL_PROFILE]: deleteTunnelProfileTemplate
+    [ConfigTemplateType.TUNNEL_SERVICE]: deleteTunnelProfileTemplate
   }
 }

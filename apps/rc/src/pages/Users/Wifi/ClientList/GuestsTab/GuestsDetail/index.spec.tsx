@@ -42,7 +42,10 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   NetworkForm: () => <div data-testid='network-form' />,
-  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />,
+  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />
+}))
+
+jest.mock('@acx-ui/rc/common/components', () => ({
   ImportFileDrawer: () => <div data-testid='ImportFileDrawer' />,
   CsvSize: {},
   ImportFileDrawerType: {}

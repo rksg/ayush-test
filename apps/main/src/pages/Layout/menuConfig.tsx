@@ -72,8 +72,10 @@ export function useMenuConfig () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isNokiaOltEnabled = useIsSplitOn(Features.NOKIA_INTEGRATION_CORE_TOGGLE)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
+    && tenantType === TenantType.REC
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -288,10 +290,11 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Switch List' }),
               isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
             },
-            ...(isEdgeOltMgmtEnabled ? [{
+            ...((isEdgeOltMgmtEnabled || isNokiaOltEnabled) ? [{
               uri: '/devices/optical',
               isActiveCheck: new RegExp('^/devices/optical'),
-              label: $t({ defaultMessage: 'Optical' })
+              label: isNokiaOltEnabled
+                ? $t({ defaultMessage: 'Optical List' }) : $t({ defaultMessage: 'Optical' })
             }] : []),
             {
               uri: '/devices/switch/reports/wired',
@@ -470,7 +473,8 @@ export function useMenuConfig () {
               !isCustomRoleCheck ? [
                 ...(
                   hasAllowedOperations([
-                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ?
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients),
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipientsPaginated)]) ?
                     [{
                       uri: '/administration/notifications',
                       label: $t({ defaultMessage: 'Notifications' })

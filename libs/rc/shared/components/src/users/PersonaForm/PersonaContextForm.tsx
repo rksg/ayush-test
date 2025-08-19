@@ -63,6 +63,18 @@ export function PersonaContextForm (props: {
         children={<Input />}
       />
       <Form.Item
+        name='displayName'
+        label={$t({ defaultMessage: 'Display Name' })}
+        hasFeedback
+        validateFirst
+        validateTrigger={['onBlur']}
+        rules={[
+          { max: 255 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
         name='email'
         label={$t({ defaultMessage: 'Email' })}
         rules={[

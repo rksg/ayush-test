@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { apApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { apApi }                                                    from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, SwitchRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                          from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -13,10 +13,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { deviceAps } from '../../__tests__/fixtures'
+import { rbacDeviceAps } from '../../__tests__/fixtures'
 
-import { apDetailData } from './__tests__/fixtures'
-import ApPageHeader     from './ApPageHeader'
+import ApPageHeader from './ApPageHeader'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -31,22 +30,25 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 describe('ApPageHeader', () => {
-  beforeEach(() => store.dispatch(apApi.util.resetApiState()))
-
-  it('navigate to edit when configure clicked', async () => {
-
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(rbacDeviceAps))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'network-1' }], totalCount: 1 }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
+  })
+
+  it('navigate to edit when configure clicked', async () => {
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
@@ -60,17 +62,21 @@ describe('ApPageHeader', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_CLI_SESSION_TOGGLE)
     mockServer.resetHandlers()
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(rbacDeviceAps))
       ),
       rest.get(
         WifiRbacUrlsInfo.getApJwtToken.url,
         (_, res, ctx) => res(ctx.json({ id_token: 'token' }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'network-1' }], totalCount: 1 }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
@@ -84,19 +90,6 @@ describe('ApPageHeader', () => {
   })
 
   it('click to action button', async () => {
-
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))
-      )
-    )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     await userEvent.click(await screen.findByText('More Actions'))
@@ -109,14 +102,8 @@ describe('ApPageHeader', () => {
 
   it('should render correct breadcrumb', async () => {
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
-    mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(deviceAps))
       )
     )

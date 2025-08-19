@@ -28,7 +28,7 @@ import {
   useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery, useGetCertificatesQuery,
   useAdaptivePolicySetListByQueryQuery, useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
-import { ExtendedUnifiedService, PolicyType, ServiceType, TotalCountQueryResult, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
+import { ExtendedUnifiedService, PolicyType, ServiceType, TotalCountQueryResult, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 const defaultPayload = { fields: ['id'] }
 
@@ -72,7 +72,6 @@ function useUnifiedServiceTotalCountMap (
   isFetching: boolean
 } {
   const params = useParams()
-  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const defaultQueryArgs = { params, payload: defaultPayload, enableRbac }
@@ -89,7 +88,7 @@ function useUnifiedServiceTotalCountMap (
     [PolicyType.ROGUE_AP_DETECTION]: useEnhancedRoguePoliciesQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.ROGUE_AP_DETECTION) }),
     [PolicyType.SYSLOG]: useSyslogPolicyListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.SYSLOG) }),
     [PolicyType.VLAN_POOL]: useGetVLANPoolPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.VLAN_POOL) }),
-    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
+    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: true }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }),
     [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: !typeSet.has(PolicyType.TUNNEL_PROFILE) }),
     [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: !typeSet.has(PolicyType.CONNECTION_METERING) }),
     [PolicyType.ADAPTIVE_POLICY_PROFILE]: useAdaptivePolicyTotalCount( { ...params, excludeContent: 'true' }, !typeSet.has(PolicyType.ADAPTIVE_POLICY_PROFILE)),
@@ -128,11 +127,9 @@ function useUnifiedServiceTotalCountMap (
 }
 
 function useSamlTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
-  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
 
   const { data: identityProviderData, isFetching: identityProviderIsFetching } = useGetIdentityProviderListQuery(
-    { params, payload: { tenantId: params.tenantId } },
-    { skip: !supportHotspot20R1 }
+    { params, payload: { tenantId: params.tenantId } }
   )
 
   const { data: samlData, isFetching: samlIsFetching } = useGetSamlIdpProfileViewDataListQuery(
@@ -175,7 +172,7 @@ function useGetEdgeTnmServiceTotalCount (isDisabled?: boolean): TotalCountQueryR
 function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const { data: guestPortal, isFetching: guestPortalIsFetching } =
     useGetEnhancedPortalProfileListQuery(

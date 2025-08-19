@@ -3,9 +3,15 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -25,7 +31,11 @@ import {
   mockApModelFamilies,
   apGroupTripleBandMode,
   apGroupClientAdmissionControl,
-  venueClientAdmissionControl
+  venueClientAdmissionControl,
+  mockVenueExternalAntennas,
+  mockApGroupExternalAntennas,
+  mockAntennaTypeSettings,
+  mockApGroupAntennaTypeSettings
 } from '../__tests__/fixtures'
 import { ApGroupEditContext } from '../context'
 
@@ -100,15 +110,15 @@ describe('AP Group Edit Radio', () => {
         id: 'ap-1',
         name: 'AP-1',
         model: 'R760',
-        apGroupId: params.apGroupId,
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN001'
       },
       {
         id: 'ap-2',
         name: 'AP-2',
-        model: 'R560', // Fixed: Changed from 'R670' to 'R560'
-        apGroupId: params.apGroupId,
+        model: 'R560',
+        deviceGroupId: params.apGroupId,
         venueId: venueId,
         serialNumber: 'SN002'
       }
@@ -181,6 +191,32 @@ describe('AP Group Edit Radio', () => {
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json(venueClientAdmissionControl))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(mockVenueExternalAntennas))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockVenueExternalAntennas))
+        }
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupExternalAntenna.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockApGroupExternalAntennas))
+        }
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueAntennaType.url,
+        (_, res, ctx) => res(ctx.json(mockAntennaTypeSettings))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupAntennaType.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockApGroupAntennaTypeSettings))
+        }
       )
     )
   })
@@ -199,7 +235,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -240,7 +276,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -324,7 +360,7 @@ describe('AP Group Edit Radio', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
@@ -359,7 +395,7 @@ describe('AP Group Edit Radio', () => {
         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
 
     // eslint-disable-next-line max-len
     const customizeClientAdmissionControl = screen.getByTestId('client-admission-control-customizeSettings')

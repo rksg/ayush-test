@@ -18,6 +18,8 @@ import { ContentSwitcherWrapper } from '../../styledComponents'
 import { Mdu360TabProps }         from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
+
+
 interface DistributionData {
   apCount: number
   clientDistribution: Record<string, number>
@@ -113,10 +115,10 @@ export const WifiGeneration: React.FC<Mdu360TabProps> = ({ startDate, endDate })
     {({ height, width }) => (
       isDistributionDataAvailable ?
         <DonutChart
-          style={{ width, height }}
+          style={{ width, height: height - 10 }}
           data={data.distribution}
           legend='name-bold-value'
-          size='small'
+          size='large'
           showLegend
           showTotal
           showLabel

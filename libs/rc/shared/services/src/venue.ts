@@ -2348,7 +2348,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    getVenueAntennaType: build.query< VenueApAntennaTypeSettings[], RequestPayload>({
+    getVenueAntennaType: build.query<VenueApAntennaTypeSettings[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
@@ -2381,7 +2381,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     }),
-
     getVenueLanPortWithEthernetSettings: build.query<VenueLanPorts[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
@@ -2435,6 +2434,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             const ipsecProfileQuery = await fetchWithBQ(
               { ...ipsecProfileReq,
                 body: JSON.stringify({
+                  fields: ['id', 'venueActivations'],
                   filters: {
                     'venueActivations.venueId': [venueId]
                   }

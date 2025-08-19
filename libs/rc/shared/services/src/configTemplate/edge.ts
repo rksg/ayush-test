@@ -13,6 +13,10 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(EdgeConfigTemplateUrlsInfo.activateSdLanNetworkTemplate),
       invalidatesTags: [{ type: 'EdgeSdLanTemplate', id: 'LIST' }]
     }),
+    deactivateSdLanNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(EdgeConfigTemplateUrlsInfo.deactivateSdLanNetworkTemplate),
+      invalidatesTags: [{ type: 'EdgeSdLanTemplate', id: 'LIST' }]
+    }),
     createTunnelProfileTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeConfigTemplateUrlsInfo.addTunnelProfileTemplate, params)
@@ -27,7 +31,7 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           await handleCallbackWhenActivityDone({
             api,
             activityData: msg,
-            useCase: 'AddTunnelServiceProfile',
+            useCase: 'AddTunnelServiceProfileTemplate',
             callback: requestArgs.callback,
             failedCallback: requestArgs.failedCallback
           })
@@ -65,8 +69,8 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'TunnelProfileTemplate', id: 'LIST' }, { type: 'ConfigTemplate', id: 'LIST' }]
     }),
-    getTunnelProfileTemplateViewDataList: build.query<TableResult<TunnelProfileViewData>, RequestPayload>({
-      query: commonQueryFn(EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataList),
+    getTunnelProfileTemplateViewDataListSkipRecRewrite: build.query<TableResult<TunnelProfileViewData>, RequestPayload>({
+      query: commonQueryFn(EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataListSkipRecRewrite),
       providesTags: [{ type: 'TunnelProfileTemplate', id: 'DETAIL' }]
     })
   })
@@ -74,9 +78,10 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
 export const {
   useActivateSdLanNetworkTemplateMutation,
+  useDeactivateSdLanNetworkTemplateMutation,
   useCreateTunnelProfileTemplateMutation,
   useGetTunnelProfileTemplateQuery,
   useUpdateTunnelProfileTemplateMutation,
   useDeleteTunnelProfileTemplateMutation,
-  useGetTunnelProfileTemplateViewDataListQuery
+  useGetTunnelProfileTemplateViewDataListSkipRecRewriteQuery
 } = EdgeConfigTemplateApi

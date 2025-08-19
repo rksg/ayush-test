@@ -1,9 +1,13 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { CustomButtonProps, Loader, showActionModal }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { ApDeep,
+import { CustomButtonProps, Loader, showActionModal } from '@acx-ui/components'
+import {
+  useApViewModelQuery,
+  useGetApQuery,
+  useGetVenueQuery
+} from '@acx-ui/rc/services'
+import {
+  ApDeep,
   ApViewModel,
   CapabilitiesApModel,
   VenueExtended
@@ -79,16 +83,7 @@ const apViewModelRbacPayloadFields = [
   'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus']
 
-const apViewModelPayloadFields = [
-  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-  'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-  'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
-  'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy']
-
 export function ApEdit () {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { serialNumber, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
@@ -109,21 +104,21 @@ export function ApEdit () {
   const [isLoaded, setIsLoaded] = useState(false)
 
   const apViewModelPayload = {
-    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
+    fields: apViewModelRbacPayloadFields,
     filters: { serialNumber: [serialNumber] }
   }
   const { data: apViewmodel } = useApViewModelQuery({
     payload: apViewModelPayload,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 
   const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
     params: { serialNumber, venueId: apViewmodel?.venueId },
-    enableRbac: isUseWifiRbacApi
-  }, { skip: isUseWifiRbacApi && !apViewmodel?.venueId })
+    enableRbac: true
+  }, { skip: !apViewmodel?.venueId })
 
   // venueId is not exist in RBAC version AP data
-  const targetVenueId = isUseWifiRbacApi ? apViewmodel?.venueId : getedApData?.venueId
+  const targetVenueId = apViewmodel?.venueId
 
   const params = {
     venueId: targetVenueId,
@@ -134,7 +129,7 @@ export function ApEdit () {
     params,
     modelName: getedApData?.model,
     skip: isLoaded,
-    enableRbac: isUseWifiRbacApi
+    enableRbac: true
   })
 
   // fetch venueName
