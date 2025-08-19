@@ -26,7 +26,7 @@ import {
   DownloadOutlined,
   InformationOutlined
 } from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/common/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType, VenueSelector } from '@acx-ui/rc/common/components'
 import { useAcknowledgeSwitchMutation, useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -74,18 +74,17 @@ import {
   GROUPBY
 } from '@acx-ui/utils'
 
-import { seriesSwitchStatusMapping }         from '../DevicesWidget/helper'
 import { SwitchBlinkLEDsDrawer, SwitchInfo } from '../SwitchBlinkLEDsDrawer'
 import { SwitchCliSession }                  from '../SwitchCliSession'
 import { useSwitchActions }                  from '../useSwitchActions'
-import { VenueSelector }                     from '../VenueSelector'
 
 import {
   getGroupableConfig
 } from './config'
-import { SwitchTabContext } from './context'
-import * as UI              from './styledComponents'
-import { useExportCsv }     from './useExportCsv'
+import { SwitchTabContext }          from './context'
+import { seriesSwitchStatusMapping } from './index.utils'
+import * as UI                       from './styledComponents'
+import { useExportCsv }              from './useExportCsv'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }

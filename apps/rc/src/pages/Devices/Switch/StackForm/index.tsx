@@ -38,7 +38,6 @@ import {
 import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
 import { Drag }                           from '@acx-ui/icons'
 import { DeleteOutlined }                 from '@acx-ui/icons-new'
-import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   switchApi,
   useGetSwitchQuery,
@@ -87,8 +86,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { store }   from '@acx-ui/store'
-import { getIntl } from '@acx-ui/utils'
+import { store }                  from '@acx-ui/store'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
+import { getIntl }                from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
