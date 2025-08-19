@@ -101,6 +101,7 @@ export const Unit = styled.div<{ status?: OltCageStateEnum }>`
 
   ${({ status }) => status === OltCageStateEnum.UP && `
     background-color: var(--acx-semantics-green-50);
+    color: var(--acx-primary-white);
   `}
 
 `

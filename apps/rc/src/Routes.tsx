@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { PageNotFound }                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { CageDetails, OltDetails, OltForm }                                   from '@acx-ui/olt/components'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -100,9 +101,6 @@ import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/O
 import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
-import { CageDetails }                              from './pages/Devices/Olt/CageDetails'
-import { OltDetails }                               from './pages/Devices/Olt/OltDetails'
-import OltForm                                      from './pages/Devices/Olt/OltForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'

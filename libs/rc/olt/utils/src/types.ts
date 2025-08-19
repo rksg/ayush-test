@@ -15,6 +15,12 @@ export enum OltSlotType {
   ONT = 'ONT'
 }
 
+export enum OltDetailsTabType {
+  OVERVIEW = 'overview',
+  ONTS = 'onts',
+  CONFIGURATION = 'configuration'
+}
+
 export enum CageDetailsTabType {
   PANEL = 'panel',
   PORTS = 'ports',

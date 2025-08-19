@@ -1,15 +1,16 @@
 import { useIntl } from 'react-intl'
 
 import { Button }                 from '@acx-ui/components'
-import { OltTable }               from '@acx-ui/olt/components'
 import { Olt, OltMockdata }       from '@acx-ui/olt/utils'
 import { transformDisplayNumber } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { filterByAccess }         from '@acx-ui/user'
 
+import { OltTable } from './'
+
 const { oltList } = OltMockdata
 
-export default function useOltTable () {
+export const useOltTable = () => {
   const { $t } = useIntl()
   const data = oltList as Olt[] //TODO: temp, remove when api is ready
 

@@ -20,6 +20,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  RangePicker: () => <div data-testid='RangePicker' />
+}))
 jest.mock('../useOltActions', () => ({
   useOltActions: () => mockOltActions
 }))
@@ -31,8 +35,11 @@ jest.mock('../OltTabs', () => ({
 }))
 
 describe('OltDetailPageHeader', () => { //TODO
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id' }
-  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details'
+  const params = {
+    tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id',
+    activeTab: 'overview', activeSubTab: 'panel'
+  }
+  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details/:activeTab/:activeSubTab'
 
   it('should render correctly', async () => {
     render(<Provider>
@@ -42,22 +49,25 @@ describe('OltDetailPageHeader', () => { //TODO
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'More Actions' })).toBeInTheDocument()
     expect(screen.getByTestId('OltTabs')).toBeInTheDocument()
+    expect(screen.getByTestId('RangePicker')).toBeInTheDocument()
   })
 
   it('should render without data correctly', async () => {
     render(<Provider>
       <OltDetailPageHeader oltDetails={{} as Olt} />
-    </Provider>, { route: { params, path: mockPath } })
+    </Provider>, { route: { params: { ...params, activeTab: 'onts' }, path: mockPath } })
 
     expect(screen.queryByRole('button', { name: 'More Actions' })).toBeNull()
+    expect(screen.queryByTestId('RangePicker')).toBeNull()
   })
   it('should navigate to config page correctly', async () => {
     render(<Provider>
       <OltDetailPageHeader oltDetails={mockOlt as Olt} />
     </Provider>, {
-      route: { params }
+      route: { params, path: '/:tenantId/devices/optical/:venueId/:oltId/details/:activeTab' }
     })
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
+    expect(screen.getByTestId('RangePicker')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: /Configure/ }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/devices/optical/venue-id/olt-id/edit',
@@ -74,9 +84,10 @@ describe('OltDetailPageHeader', () => { //TODO
     render(<Provider>
       <OltDetailPageHeader oltDetails={mockOlt as Olt} />
     </Provider>, {
-      route: { params }
+      route: { params, path: '/:tenantId/devices/optical/:venueId/:oltId/details' }
     })
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
+    expect(screen.getByTestId('RangePicker')).toBeInTheDocument()
     await userEvent.click(screen.getByText(/More/))
     await userEvent.click(screen.getByText(/Reboot OLT/))
     expect(mockOltActions.showRebootOlt).toHaveBeenCalled()

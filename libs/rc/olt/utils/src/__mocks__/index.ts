@@ -386,7 +386,7 @@ export const lineCardSlots = [
     slots: Array.from({ length: 16 }, (_, index) => ({
       label: `S2/${index + 1}`,
       type: index === 2 ? 'lag' : '',
-      status: index === 9 ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
+      status: (index === 2 || index === 9) ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
       info: '%info%',
       portSpeed: '1 Gb/sec'
     }))

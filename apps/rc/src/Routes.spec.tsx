@@ -242,15 +242,6 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   })
 }))
 
-jest.mock('./pages/Devices/Olt/OltTable', () => ({
-  __esModule: true,
-  default: () => ({
-    title: 'OltTab',
-    headerExtra: [],
-    component: <div data-testid='OltTable' />
-  })
-}))
-
 jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
 }))
@@ -392,6 +383,17 @@ jest.mock('@acx-ui/reports/components', () => ({
     WIRELESS_REPORT: 'wireless/reports/wireless'
   },
   usePageHeaderExtra: () => [<div data-testid='PageHeaderExtra' />]
+}))
+
+jest.mock('@acx-ui/olt/components', () => ({
+  CageDetails: () => <div data-testid='CageDetails' />,
+  OltDetails: () => <div data-testid='OltDetails' />,
+  OltForm: () => <div data-testid='OltForm' />,
+  useOltTable: () => ({
+    title: 'OltTab',
+    headerExtra: [],
+    component: <div data-testid='OltTable' />
+  })
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {

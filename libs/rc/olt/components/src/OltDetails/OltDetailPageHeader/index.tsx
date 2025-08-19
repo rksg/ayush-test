@@ -11,8 +11,8 @@ import {
   RangePicker,
   getDefaultEarliestStart
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Olt, OltStatusEnum }     from '@acx-ui/olt/utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { Olt, OltStatusEnum, OltDetailsTabType } from '@acx-ui/olt/utils'
 import {
   useLocation,
   useNavigate,
@@ -41,7 +41,7 @@ export function OltDetailPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { oltDetails } = props
-  const { oltId, venueId } = useParams()
+  const { activeTab, activeSubTab, oltId, venueId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/devices/optical/${venueId}/${oltId}/`)
@@ -68,6 +68,21 @@ export function OltDetailPageHeader (props: {
       case MoreActions.DELETE:
         oltActions.showDeleteOlt({ rows: [oltDetails] })
         break
+    }
+  }
+
+  const hideRangePicker = (activeTab?: string) => {
+    switch(activeTab){
+      case OltDetailsTabType.OVERVIEW:
+        if(typeof activeSubTab === 'undefined'){
+          return false
+        }
+        return activeSubTab !== 'panel'
+      case OltDetailsTabType.ONTS:
+      case OltDetailsTabType.CONFIGURATION:
+        return true
+      default:
+        return false
     }
   }
 
@@ -129,7 +144,7 @@ export function OltDetailPageHeader (props: {
         { text: 'Optical List', link: '/devices/optical' }
       ]}
       extra={[
-        <RangePicker
+        !hideRangePicker(activeTab) && <RangePicker
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker

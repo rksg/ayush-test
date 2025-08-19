@@ -5,20 +5,29 @@ import { screen, render } from '@acx-ui/test-utils'
 
 import { CageDetails } from './index'
 
-jest.mock('@acx-ui/olt/components', () => {
-  return {
-    ...jest.requireActual('@acx-ui/olt/components'),
-    OntOverviewTab: () => <div data-testid='OntOverviewTab' />,
-    OntPortTab: () => <div data-testid='OntPortTab' />,
-    OntClientTab: () => <div data-testid='OntClientTab' />,
-    CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />,
-    OntInfoWidget: () => <div data-testid='OntInfoWidget' />,
-    EditOntDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-      visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null,
-    OntDetailsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-      visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null
-  }
-})
+jest.mock('./OntOverviewTab', () => ({
+  OntOverviewTab: () => <div data-testid='OntOverviewTab' />
+}))
+jest.mock('./OntPortTab', () => ({
+  OntPortTab: () => <div data-testid='OntPortTab' />
+}))
+jest.mock('./OntClientTab', () => ({
+  OntClientTab: () => <div data-testid='OntClientTab' />
+}))
+jest.mock('./CageDetailPageHeader', () => ({
+  CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />
+}))
+jest.mock('./OntInfoWidget', () => ({
+  OntInfoWidget: () => <div data-testid='OntInfoWidget' />
+}))
+jest.mock('./EditOntDrawer', () => ({
+  EditOntDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
+    visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null
+}))
+jest.mock('./OntDetailsDrawer', () => ({
+  OntDetailsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
+    visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null
+}))
 
 const mockOntTableProps = {
   data: [],
