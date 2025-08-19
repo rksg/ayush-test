@@ -11,7 +11,6 @@ import {
   EventTable,
   NetworkTable,
   newDefaultApPayload,
-  SwitchTable,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
 import {
@@ -39,7 +38,8 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   defaultSwitchClientPayload,
-  ClientsTable as SwitchClientTable
+  ClientsTable as SwitchClientTable,
+  SwitchTable
 } from '@acx-ui/switch/components'
 import { RequestPayload } from '@acx-ui/types'
 import {

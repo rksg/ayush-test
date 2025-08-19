@@ -3,8 +3,8 @@ import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { rest }         from 'msw'
 
-import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization, NetworkSegmentTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                   from '@acx-ui/store'
+import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -87,7 +87,8 @@ describe('ClientIsolationForm', () => {
         <NetworkFormContext.Provider value={{
           editMode: false,
           cloneMode: false,
-          data: null
+          data: null,
+          isRuckusAiMode: false
         }}>
           <Form form={formRef.current}>
             <ClientIsolationForm />
@@ -114,7 +115,8 @@ describe('ClientIsolationForm', () => {
           cloneMode: false,
           data: {
             venues: mockedNetworkVenue
-          }
+          },
+          isRuckusAiMode: false
         }}>
           <Form form={formRef.current}>
             <ClientIsolationForm />
@@ -145,7 +147,8 @@ describe('ClientIsolationForm', () => {
 
     jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
       enableVxLan: true,
-      type: NetworkSegmentTypeEnum.VXLAN
+      enableTunnel: true,
+      vxLanTunnels: []
     })
 
     render(
@@ -160,7 +163,8 @@ describe('ClientIsolationForm', () => {
                 tunnelProfileId: 'mockedTunnel'
               } as DpskWlanAdvancedCustomization
             }
-          }
+          },
+          isRuckusAiMode: false
         }}>
           <Form form={formRef.current}>
             <ClientIsolationForm />
