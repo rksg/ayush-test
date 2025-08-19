@@ -1,7 +1,8 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { FirmwareCategory,
+import {
+  FirmwareCategory,
   FirmwareRbacUrlsInfo,
   FirmwareSwitchV1002,
   FirmwareSwitchVenueV1002,

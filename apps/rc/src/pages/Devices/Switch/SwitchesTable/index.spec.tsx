@@ -10,10 +10,10 @@ import {
 
 import useSwitchesTable from '.'
 
-jest.mock('@acx-ui/rc/components', () => {
+jest.mock('@acx-ui/switch/components', () => {
   const { forwardRef } = jest.requireActual('react')
   return {
-    ...jest.requireActual('@acx-ui/rc/components'),
+    ...jest.requireActual('@acx-ui/switch/components'),
     SwitchTable: forwardRef(() => <div data-testid={'SwitchTable'}></div>)
   }
 })

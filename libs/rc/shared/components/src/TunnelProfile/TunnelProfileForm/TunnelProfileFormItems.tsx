@@ -10,12 +10,12 @@ import {
   Row,
   Select,
   Space,
-  Switch
+  Switch,
+  Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { getTitleWithBetaIndicator }                from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled } from '@acx-ui/feature-toggle'
+import { Features }       from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   ClusterHighAvailabilityModeEnum,
@@ -36,6 +36,7 @@ import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibil
 
 import { IpsecFormItem }                  from './IpsecFormItem'
 import { MessageMapping }                 from './MessageMapping'
+import { NatTraversalFormItem }           from './NatTraversalFormItem'
 import * as UI                            from './styledComponents'
 import { useGetAvailableEdgeClusterData } from './useGetAvailableEdgeClusterData'
 
@@ -190,8 +191,6 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
     }
   }
 
-  const isNatTraversalBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_NAT_T)
-
   useEffect(() => {
     if (form.getFieldValue('edgeClusterId') && availableClusterData?.length) {
       handleEdgeClusterChange(form.getFieldValue('edgeClusterId'))
@@ -278,9 +277,14 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                   <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
                     {$t({ defaultMessage: 'VLAN to VNI map' })}
                   </Radio>
-                  <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
-                    {$t({ defaultMessage: 'VNI' })}
-                  </Radio>
+                  <Tooltip title={isL2greType
+                    ? $t(MessageMapping.l2ogre_vni_not_supported_tooltip)
+                    : undefined}
+                  >
+                    <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
+                      {$t({ defaultMessage: 'VNI' })}
+                    </Radio>
+                  </Tooltip>
                 </Space>
               </Radio.Group>
             }
@@ -339,17 +343,12 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
           <Col span={14}>
             <Form.Item noStyle dependencies={['type', 'edgeClusterId']}>
               {({ getFieldValue }) => {
-                const nsgType = getFieldValue('type')
                 const edgeClusterId = getFieldValue('edgeClusterId')
-                // eslint-disable-next-line max-len
-                const isHaAbCluster = availableClusterData?.find(item => item.clusterId === edgeClusterId)?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
                 return <IpsecFormItem
-                  disabled={isDefaultTunnelProfile ||
-                  !!disabledFields?.includes('tunnelEncryptionEnabled') ||
-                  nsgType === NetworkSegmentTypeEnum.VXLAN ||
-                  isHaAbCluster
-                  }
+                  isDefaultTunnelProfile={isDefaultTunnelProfile}
+                  // eslint-disable-next-line max-len
+                  destinationCluster={availableClusterData?.find(item => item.clusterId === edgeClusterId)}
                   handleTunnelEncryptionChange={handleTunnelEncryptionChange}
                 />
               }}
@@ -359,43 +358,10 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
         {
           isEdgeNatTraversalP1Ready && (!isEdgeL2greReady || !isL2greType) &&
           <Col span={14}>
-            <UI.StyledSpace align='center'>
-              <UI.FormItemWrapper
-                label={<>
-                  {$t({ defaultMessage: 'Enable NAT-T Support' })}
-                  { isNatTraversalBetaEnabled ? getTitleWithBetaIndicator('') : null }
-                  {<ApCompatibilityToolTip
-                    title={$t(MessageMapping.nat_traversal_support_tooltip)}
-                    placement='bottom'
-                    showDetailButton
-                    // eslint-disable-next-line max-len
-                    onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.NAT_TRAVERSAL)}
-                  />}
-                </>}
-              >
-              </UI.FormItemWrapper>
-              <Form.Item
-                noStyle
-                dependencies={['type', 'tunnelEncryptionEnabled']}
-              >
-                {({ getFieldValue }) => {
-                  const netSegType = getFieldValue('type')
-                  // eslint-disable-next-line max-len
-                  const tunnelEncryptionEnabled = isEdgeIpsecVxLanReady && getFieldValue('tunnelEncryptionEnabled')
-
-                  return <Form.Item
-                    name='natTraversalEnabled'
-                    valuePropName='checked'
-                    children={
-                      <Switch disabled={isDefaultTunnelProfile ||
-                        !!disabledFields?.includes('natTraversalEnabled') ||
-                        tunnelEncryptionEnabled ||
-                        netSegType === NetworkSegmentTypeEnum.VXLAN}/>
-                    }
-                  />
-                }}
-              </Form.Item>
-            </UI.StyledSpace>
+            <NatTraversalFormItem
+              isDefaultTunnelProfile={isDefaultTunnelProfile}
+              setEdgeCompatibilityFeature={setEdgeCompatibilityFeature}
+            />
           </Col>
         }
         <Col span={24}>
@@ -452,30 +418,31 @@ export const TunnelProfileFormItems = (props: TunnelProfileFormItemsProps) => {
                             </div>
                             {
                               mtuType === MtuTypeEnum.MANUAL &&
-                      <Space>
-                        <Form.Item
-                          name='mtuSize'
-                          rules={[
-                            {
-                              required: mtuType === MtuTypeEnum.MANUAL,
-                              message: 'Please enter Path MTU size'
-                            },
-                            {
-                              type: 'number',
-                              min: 576,
-                              max: 1450,
-                              message: $t({
-                                defaultMessage: 'Path MTU size must be between 576 and 1450'
-                              })
-                            }
-                          ]}
-                          children={<InputNumber
-                            disabled={!!disabledFields?.includes('mtuSize')}/>}
-                          validateFirst
-                          noStyle
-                        />
-                        <div>{$t({ defaultMessage: 'bytes' })}</div>
-                      </Space>
+                                <Space>
+                                  <Form.Item
+                                    name='mtuSize'
+                                    rules={[
+                                      {
+                                        required: mtuType === MtuTypeEnum.MANUAL,
+                                        message: 'Please enter Path MTU size'
+                                      },
+                                      {
+                                        type: 'number',
+                                        min: 576,
+                                        max: 1450,
+                                        message: $t({
+                                          // eslint-disable-next-line max-len
+                                          defaultMessage: 'Path MTU size must be between 576 and 1450'
+                                        })
+                                      }
+                                    ]}
+                                    children={<InputNumber
+                                      disabled={!!disabledFields?.includes('mtuSize')}/>}
+                                    validateFirst
+                                    noStyle
+                                  />
+                                  <div>{$t({ defaultMessage: 'bytes' })}</div>
+                                </Space>
                             }
                           </Space>
                         </Radio>
