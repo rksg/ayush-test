@@ -2,12 +2,12 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import {
   useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchLatestFirmwareListV1001Query
 } from '@acx-ui/rc/services'
 import { FirmwareCategory, SwitchFirmwareModelGroup } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils }                     from '@acx-ui/switch/components'
 
 import { SwitchFirmwareBanner } from '../../SwitchFirmwareBanner'
 

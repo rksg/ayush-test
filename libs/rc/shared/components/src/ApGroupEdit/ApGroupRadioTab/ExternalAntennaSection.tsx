@@ -65,6 +65,7 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
   const [antennaTypeModels, setAntennaTypeModels] = useState([] as VenueApAntennaTypeSettings[])
   const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VenueApAntennaTypeSettings | null)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
+  const useVenueSettingsRef = useRef<boolean>(true)
   const venueRef = useRef<ExternalAntenna[]>()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -104,52 +105,62 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
   const [updateApGroupAntennaType, { isLoading: isUpdateApGroupAntennaType }] = useUpdateApGroupAntennaTypeMutation()
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
-    showActionModal({
-      type: 'confirm',
-      width: 450,
-      title: $t({ defaultMessage: 'External Antenna Settings Change' }),
-      content:
-      // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
-      okText: $t({ defaultMessage: 'Continue' }),
-      onOk: async () => {
-        try {
-          await updateApGroupExternalAntenna({
-            params: { ...params, venueId },
-            payload: {
-              externalAntennaSettings: [ ...data ],
-              useVenueSettings
-            }
-          })
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
-        }
-      }
+    return await new Promise<void>((resolve) => {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'External Antenna Settings Change' }),
+        content:
+        // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          try {
+            await updateApGroupExternalAntenna({
+              params: { ...params, venueId },
+              payload: {
+                externalAntennaSettings: [ ...data ],
+                useVenueSettings: useVenueSettingsRef.current
+              }
+            })
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          } finally {
+            resolve()
+          }
+        },
+        onCancel: () => resolve()
+      })
     })
   }
 
   const handleUpdateAntennaType = async (data: VenueApAntennaTypeSettings[]) => {
-    showActionModal({
-      type: 'confirm',
-      width: 450,
-      title: $t({ defaultMessage: 'Antenna Type Change' }),
-      content:
-      // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Modifying the Antenna type will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
-      okText: $t({ defaultMessage: 'Continue' }),
-      onOk: async () => {
-        try {
-          await updateApGroupAntennaType({
-            params: { ...params, venueId },
-            payload: {
-              antennaTypeSettings: [...data ],
-              useVenueSettings
-            }
-          })
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
-        }
-      }
+    return await new Promise<void>((resolve) => {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'Antenna Type Change' }),
+        content:
+        // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'Modifying the Antenna type will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          try {
+            await updateApGroupAntennaType({
+              params: { ...params, venueId },
+              payload: {
+                antennaTypeSettings: [...data ],
+                useVenueSettings: useVenueSettingsRef.current
+              }
+            })
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          } finally {
+            resolve()
+          }
+        },
+        onCancel: () => resolve()
+      })
     })
   }
 
@@ -230,6 +241,7 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
   useEffect(() => {
     if (allApGroupApExternalAntennas) {
       setUseVenueSettings(allApGroupApExternalAntennas.useVenueSettings)
+      useVenueSettingsRef.current = allApGroupApExternalAntennas.useVenueSettings
       form.setFieldValue('useVenueOrApGroupSettingsExternalAntenna', allApGroupApExternalAntennas.useVenueSettings)
     }
   }, [allApGroupApExternalAntennas])
@@ -268,9 +280,11 @@ export function ExternalAntennaSection (props: ApGroupWifiConfigItemProps) {
                   disabled={!allApGroupApExternalAntennas}
                   onChange={(e) => {
                     setUseVenueSettings(e.target.value)
+                    useVenueSettingsRef.current = e.target.value
                     const allApExternalAntennas = e.target.value ? allVenueApExternalAntennas : allApGroupApExternalAntennas?.externalAntennaSettings
                     const apExternalAntennas = JSON.parse(JSON.stringify(allApExternalAntennas))
                     handleAntennaSettingsChange(apExternalAntennas)
+                    handleExternalAntennasChanged(apExternalAntennas)
                   }}
                 >
                   <Space direction='vertical'>

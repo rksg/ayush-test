@@ -12,7 +12,6 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
   getNextScheduleTplV1002
 } from '@acx-ui/rc/components'
@@ -23,9 +22,10 @@ import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { RequestPayload } from '@acx-ui/types'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
+import { RequestPayload }         from '@acx-ui/types'
+import { noDataDisplay }          from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
 import * as UI                      from '../../styledComponents'
