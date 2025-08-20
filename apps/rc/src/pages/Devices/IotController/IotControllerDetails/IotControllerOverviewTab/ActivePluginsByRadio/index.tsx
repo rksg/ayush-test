@@ -9,9 +9,13 @@ import {
   qualitativeColorSet
 } from '@acx-ui/components'
 import type { DonutChartData }            from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { useIotControllerDashboardQuery } from '@acx-ui/rc/services'
-import { IotControllerDashboard }         from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
+import {
+  IotControllerDashboard,
+  IotControllerDashboardV2
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -34,12 +38,14 @@ export const getActivePluginsByRadioDonutChartData = (overviewData?: IotControll
 
 export function ActivePluginsByRadio () {
   const { $t } = useIntl()
+  const isIotDashboardApi = useIsSplitOn(Features.IOT_DASHBOARD_API)
 
   const overviewQuery = useIotControllerDashboardQuery({
     params: useParams()
   }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getActivePluginsByRadioDonutChartData(data),
+      // eslint-disable-next-line max-len
+      data: getActivePluginsByRadioDonutChartData((isIotDashboardApi && (data as IotControllerDashboardV2)?.ok) ? (data as IotControllerDashboardV2).data : data),
       ...rest
     })
   })

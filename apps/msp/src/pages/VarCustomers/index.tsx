@@ -86,7 +86,10 @@ export function VarCustomers () {
   // backend will fix this later
   const isAdmin = isRbacPhase3ToggleEnabled
     ? hasAllowedOperations([
-      getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)])
+      getOpsApi(AdminRbacUrlsInfo.enableAccessSupport),
+      getOpsApi(AdminRbacUrlsInfo.putDelegationSupport),
+      getOpsApi(AdminRbacUrlsInfo.deleteDelegationSupport),
+      getOpsApi(AdminRbacUrlsInfo.patchDelegationSupport)])
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
   const showPendingInvitations = isRbacPhase3ToggleEnabled
     ? hasAllowedOperations([
