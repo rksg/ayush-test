@@ -109,14 +109,10 @@ export const getStackUnitsMinLimitationV1002 = (
   } else if (switchModel?.match(/ICX8100-.*-[xX]/)) {
     if(currentFirmware.includes('10020')){
       if (checkVersionAtLeast10020c(currentFirmware)) {
-        return 8
-      }
-    } else {
-      if (checkVersionAtLeast10010h(currentFirmware)) {
-        return 8
+        return 4
       }
     }
-    return 4
+    return (checkVersionAtLeast10010h(currentFirmware) ? 4 : 0)
   } else { // 7550, 7650, 7850
     if (checkVersionAtLeast10010c(currentFirmware)) {
       // For the switch's own firmware, this field contains the value '10010'.
