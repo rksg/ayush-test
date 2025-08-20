@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { Provider }       from '@acx-ui/store'
@@ -55,7 +56,7 @@ describe('CageDetails', () => {
 
     expect(screen.getByTestId('CageDetailPageHeader')).toBeInTheDocument()
 
-    const editButton = screen.getByText(/Edit ONT/)
+    const editButton = screen.getByText('Edit ONT')
     expect(editButton).toBeInTheDocument()
     await userEvent.click(editButton)
     expect(screen.getByTestId('EditOntDrawer')).toBeInTheDocument()

@@ -16,7 +16,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('../OltStatus', () => ({
+jest.mock('../../OltStatus', () => ({
   OltStatus: () => <div data-testid='OltStatus' />
 }))
 jest.mock('../../ManageOntsDrawer', () => ({
