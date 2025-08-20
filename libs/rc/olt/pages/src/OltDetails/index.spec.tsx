@@ -8,19 +8,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mock('./OltConfigurationTab', () => ({
-  OltConfigurationTab: () => <div data-testid='OltConfigurationTab' />
-}))
-jest.mock('./OltDetailPageHeader', () => ({
-  OltDetailPageHeader: () => <div data-testid='OltDetailPageHeader' />
-}))
-jest.mock('./OltInfoWidget', () => ({
-  OltInfoWidget: () => <div data-testid='OltInfoWidget' />
-}))
-jest.mock('./OltOverviewTab', () => ({
-  OltOverviewTab: () => <div data-testid='OltOverviewTab' />
-}))
-jest.mock('./OltOntTab', () => ({
+jest.mock('@acx-ui/olt/components', () => ({
+  ...jest.requireActual('@acx-ui/olt/components'),
+  OltConfigurationTab: () => <div data-testid='OltConfigurationTab' />,
+  OltDetailPageHeader: () => <div data-testid='OltDetailPageHeader' />,
+  OltInfoWidget: () => <div data-testid='OltInfoWidget' />,
+  OltOverviewTab: () => <div data-testid='OltOverviewTab' />,
   OltOntTab: () => <div data-testid='OltOntTab' />
 }))
 jest.mock('@acx-ui/user', () => ({

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { PageNotFound }                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { CageDetails, OltDetails, OltForm }                                   from '@acx-ui/olt/components'
+import { CageDetails, OltDetails, OltForm }                                   from '@acx-ui/olt'
 import {
   AAAForm,
   AAAPolicyDetail,

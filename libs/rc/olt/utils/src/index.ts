@@ -3,7 +3,7 @@ export * from './types'
 
 export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment
 
-export const oltLineCardOptions = [
+export const oltLineCardOptions = [ //TODO: remove
   { label: 'PON LC 1', value: 'S1' },
   { label: 'PON LC 2', value: 'S2' }
 ]

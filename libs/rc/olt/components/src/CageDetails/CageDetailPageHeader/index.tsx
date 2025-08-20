@@ -6,9 +6,9 @@ import { useParams }          from '@acx-ui/react-router-dom'
 import { filterByAccess }     from '@acx-ui/user'
 import { noDataDisplay }      from '@acx-ui/utils'
 
+import { ManageOntsDrawer }                 from '../../ManageOntsDrawer'
 import { OltStatus }                        from '../../OltStatus'
 import { useCageDetails, useDrawerActions } from '../cageDetailsState'
-import { ManageOntsDrawer }                 from '../ManageOntsDrawer'
 
 export function CageDetailPageHeader (props: {
   oltDetails: Olt

@@ -19,7 +19,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('../OltStatus', () => ({
   OltStatus: () => <div data-testid='OltStatus' />
 }))
-jest.mock('./ManageOntsDrawer', () => ({
+jest.mock('../../ManageOntsDrawer', () => ({
   ManageOntsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
     visible ? <div data-testid='ManageOntsDrawer' onClick={onClose} /> : null
 }))

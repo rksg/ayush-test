@@ -5,28 +5,17 @@ import { screen, render } from '@acx-ui/test-utils'
 
 import { CageDetails } from './index'
 
-jest.mock('./OntOverviewTab', () => ({
-  OntOverviewTab: () => <div data-testid='OntOverviewTab' />
-}))
-jest.mock('./OntPortTab', () => ({
-  OntPortTab: () => <div data-testid='OntPortTab' />
-}))
-jest.mock('./OntClientTab', () => ({
-  OntClientTab: () => <div data-testid='OntClientTab' />
-}))
-jest.mock('./CageDetailPageHeader', () => ({
-  CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />
-}))
-jest.mock('./OntInfoWidget', () => ({
-  OntInfoWidget: () => <div data-testid='OntInfoWidget' />
-}))
-jest.mock('./EditOntDrawer', () => ({
+jest.mock('@acx-ui/olt/components', () => ({
+  ...jest.requireActual('@acx-ui/olt/components'),
+  CageDetailPageHeader: () => <div data-testid='CageDetailPageHeader' />,
   EditOntDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-    visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null
-}))
-jest.mock('./OntDetailsDrawer', () => ({
+    visible ? <div data-testid='EditOntDrawer' onClick={onClose} /> : null,
+  OntClientTab: () => <div data-testid='OntClientTab' />,
   OntDetailsDrawer: ({ visible, onClose }: { visible: boolean, onClose: () => void }) =>
-    visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null
+    visible ? <div data-testid='OntDetailsDrawer' onClick={onClose} /> : null,
+  OntInfoWidget: () => <div data-testid='OntInfoWidget' />,
+  OntOverviewTab: () => <div data-testid='OntOverviewTab' />,
+  OntPortTab: () => <div data-testid='OntPortTab' />
 }))
 
 const mockOntTableProps = {
@@ -66,7 +55,7 @@ describe('CageDetails', () => {
 
     expect(screen.getByTestId('CageDetailPageHeader')).toBeInTheDocument()
 
-    const editButton = screen.getByText('Edit ONT')
+    const editButton = screen.getByText(/Edit ONT/)
     expect(editButton).toBeInTheDocument()
     await userEvent.click(editButton)
     expect(screen.getByTestId('EditOntDrawer')).toBeInTheDocument()

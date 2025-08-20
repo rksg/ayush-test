@@ -385,10 +385,12 @@ jest.mock('@acx-ui/reports/components', () => ({
   usePageHeaderExtra: () => [<div data-testid='PageHeaderExtra' />]
 }))
 
-jest.mock('@acx-ui/olt/components', () => ({
+jest.mock('@acx-ui/olt', () => ({
   CageDetails: () => <div data-testid='CageDetails' />,
   OltDetails: () => <div data-testid='OltDetails' />,
-  OltForm: () => <div data-testid='OltForm' />,
+  OltForm: () => <div data-testid='OltForm' />
+}))
+jest.mock('@acx-ui/olt/components', () => ({
   useOltTable: () => ({
     title: 'OltTab',
     headerExtra: [],

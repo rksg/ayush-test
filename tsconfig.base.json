@@ -38,6 +38,7 @@
       "@acx-ui/msp/services": ["libs/rc/msp/services/src/index.ts"],
       "@acx-ui/msp/utils": ["libs/rc/msp/utils/src/index.ts"],
       "@acx-ui/olt/components": ["libs/rc/olt/components/src/index.ts"],
+      "@acx-ui/olt": ["libs/rc/olt/pages/src/index.ts"],
       "@acx-ui/olt/services": ["libs/rc/olt/services/src/index.ts"],
       "@acx-ui/olt/utils": ["libs/rc/olt/utils/src/index.ts"],
       "@acx-ui/rc/components": ["libs/rc/shared/components/src/index.ts"],

@@ -1,10 +1,16 @@
-import userEvent        from '@testing-library/user-event'
-import { FormInstance } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Provider }       from '@acx-ui/store'
-import { screen, render } from '@acx-ui/test-utils'
+import { OltFixtures }                                                                from '@acx-ui/olt/utils'
+import { venueApi }                                                                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                             from '@acx-ui/rc/utils'
+import { Provider, store }                                                            from '@acx-ui/store'
+import { render, renderHook, mockServer, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { OltForm } from './index'
+import { OltForm } from './'
+
+const { mockOlt } = OltFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -12,52 +18,79 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('./OltBasicForm', () => ({
-  OltBasicForm: (props: {
-    form: FormInstance,
-    onFinish: jest.Mock,
-    data?: unknown,
-    editMode?: boolean
-  }) =>
-    <div data-testid='OltBasicForm'>
-      <button onClick={() => props.onFinish({ test: 'data' })}>
-        {props.editMode ? 'Apply' : 'Add'}
-      </button>
-    </div>
-}))
+describe('OltForm', () => { //TODO
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
 
-describe('AddOlt', () => {
-  const params = { tenantId: 'tenant-id', action: 'add' }
-
-  it('should render correctly', async () => {
-    render(
-      <Provider>
-        <OltForm />
-      </Provider>, {
-        route: { params }
-      }
+  beforeEach(() => {
+    mockedUsedNavigate.mockClear()
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(OltFixtures.mockVenuelist))
+      )
     )
-
-    expect(screen.getByTestId('OltBasicForm')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    expect(mockedUsedNavigate).toHaveBeenCalled()
   })
-})
 
-describe('EditOlt', () => {
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id', action: 'edit' }
+  it('should render with add mode correctly', async () => {
+    const mockPath = '/:tenantId/devices/optical/add'
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    render(<Provider>
+      <OltForm
+        data={{}}
+        form={formRef.current}
+        editMode={false}
+        onFinish={jest.fn()}
+      />
+    </Provider>, { route: { params, path: mockPath } })
 
-  it('should render correctly', async () => {
-    render(
-      <Provider>
-        <OltForm />
-      </Provider>, {
-        route: { params }
-      }
-    )
-
-    expect(screen.getByTestId('OltBasicForm')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockedUsedNavigate).toHaveBeenCalled()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByLabelText(/Serial Number/)).toBeVisible()
   })
+
+  it('should render with edit mode correctly', async () => {
+    const mockPath = '/:tenantId/devices/optical/:oltId/edit'
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    render(<Provider>
+      <OltForm
+        data={mockOlt}
+        form={formRef.current}
+        editMode={true}
+        onFinish={jest.fn()}
+      />
+    </Provider>, { route: { params, path: mockPath } })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByLabelText(/OLT Name/)).toHaveValue('TestOlt')
+  })
+
+  it('should redirect to olt list page after clicking cancel button', async () => {
+    const mockPath = '/:tenantId/devices/optical/:oltId/edit'
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    render(<Provider>
+      <OltForm
+        data={mockOlt}
+        form={formRef.current}
+        editMode={true}
+        onFinish={jest.fn()}
+      />
+    </Provider>, { route: { params, path: mockPath } })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByLabelText(/OLT Name/)).toHaveValue('TestOlt')
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      '/tenant-id/t/devices/optical'
+    ))
+  })
+
 })
