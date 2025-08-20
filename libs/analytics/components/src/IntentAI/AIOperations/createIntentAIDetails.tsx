@@ -12,6 +12,7 @@ import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
 import { KPIGrid }              from '../common/KPIs'
 import { StatusTrail }          from '../common/StatusTrail'
+import { AiFeatures }           from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 
@@ -78,8 +79,15 @@ export function createIntentAIDetails (
               <DetailsSection data-testid='Current Status'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                 <DetailsSection.Details
-                  children={<Card>{getStatusTooltip(
-                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>}
+                  children={
+                    <Card>
+                      {getStatusTooltip(
+                        displayStatus,
+                        sliceValue,
+                        { ...metadata, updatedAt },
+                        AiFeatures.AIOps
+                      )}
+                    </Card>}
                 />
               </DetailsSection>
             </GridCol>
