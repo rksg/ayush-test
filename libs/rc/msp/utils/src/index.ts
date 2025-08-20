@@ -3,7 +3,7 @@ import { defineMessage } from 'react-intl'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
-import { AccountType }                  from '@acx-ui/utils'
+import { AccountTier, AccountType }     from '@acx-ui/utils'
 
 import {
   DelegationEntitlementRecord,
@@ -261,6 +261,16 @@ export const MSPUtils = () => {
         ? 'Integrator Admin Count' : 'MSP Admin Count')
   }
 
+  const transformTier = (skuTier: AccountTier) => {
+    const tierMap = {
+      [AccountTier.GOLD]: 'Essentials',
+      [AccountTier.CORE]: 'Core',
+      [AccountTier.PLATINUM]: 'Professional'
+    }
+
+    return tierMap[skuTier] ?? 'Professional'
+  }
+
   const getConfiguredDevices = (deviceType: ComplianceMspCustomersDevicesTypes,
     entitlements: DelegationEntitlementRecord[]) => {
     entitlements = entitlements ?? []
@@ -321,6 +331,7 @@ export const MSPUtils = () => {
     transformTechPartnerCount,
     transformAdminCount,
     transformAdminCountHeader,
+    transformTier,
     getConfiguredDevices
   }
 }

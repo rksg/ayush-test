@@ -9,17 +9,18 @@ import { Button, DatePicker, Loader, showToast }                                
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
 import { useGetCalculatedLicencesMutation, useGetCalculatedLicencesV2Mutation } from '@acx-ui/msp/services'
-import { LicenseCalculatorData, LicenseCalculatorDataV2 }                       from '@acx-ui/msp/utils'
+import { LicenseCalculatorData, LicenseCalculatorDataV2, MSPUtils }             from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                                                from '@acx-ui/rc/utils'
-import { AccountTier, noDataDisplay }                                                        from '@acx-ui/utils'
+import { AccountTier, noDataDisplay }                                           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const [ maxPeriod, setMaxPeriod ] = useState<string>()
+  const [maxPeriod, setMaxPeriod] = useState<string>()
   const [licenseV2Data, setLicenseV2Data] = useState<LicenseCalculatorDataV2[]>([])
+  const mspUtils = MSPUtils()
 
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   const multiLicenseFFToggled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
@@ -174,11 +175,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
 
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item, index) => {
-        const tier = item.skuTier === AccountTier.GOLD
-        ? $t({ defaultMessage: 'Essentials' })
-        : item.skuTier === AccountTier.CORE
-          ? $t({ defaultMessage: 'Core' })
-          : $t({ defaultMessage: 'Professional' })
+        const tierText = mspUtils.transformTier(item.skuTier as AccountTier)
         return <Row
           key={index}
           style={{
@@ -190,7 +187,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
           }}>
             {item.skuTier ? <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date for {skuTier} Tier:' },
-                { skuTier: tier }) }
+                { skuTier: tierText }) }
             </UI.LicenseLabel> : <UI.LicenseLabel>
               { $t({ defaultMessage: 'End Date:' }) }
             </UI.LicenseLabel>

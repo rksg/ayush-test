@@ -32,9 +32,9 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEcTierEnum, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { MspSubscriptionUtilizationWidget }                                                                                                 from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                            from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo, MSPUtils } from '@acx-ui/msp/utils'
+import { MspSubscriptionUtilizationWidget }                                                                                                           from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                                      from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,
   dateSort,
@@ -51,7 +51,7 @@ import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from
 import { RolesEnum }                                                        from '@acx-ui/types'
 import type { Filter }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
-import { AccountTier, getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
+import { AccountVertical, getJwtTokenPayload, getOpsApi, noDataDisplay }    from '@acx-ui/utils'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -85,11 +85,23 @@ const entitlementRefreshPayload = {
   usageType: 'ASSIGNED'
 }
 
+
+enum HspMduTierEnum {
+  Core = 'Silver',
+  Professional = 'Platinum'
+}
+enum DefaultMspTierEnum {
+  Essentials = 'Gold',
+  Professional = 'Platinum'
+}
+
 export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/mspLicenses', 'v')
   const { rbacOpsApiEnabled } = getUserProfile()
+  const { acx_account_vertical } = getJwtTokenPayload()
+  const mspUtils = MSPUtils()
   const hasPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([
       [getOpsApi(MspRbacUrlsInfo.addMspAssignment), getOpsApi(MspRbacUrlsInfo.updateMspAssignment),
@@ -113,6 +125,8 @@ export function Subscriptions () {
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   // eslint-disable-next-line max-len
   const isMultiLicensePoolToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const entitlementListPayload = {
     fields: [
@@ -172,7 +186,10 @@ export function Subscriptions () {
       { purchased, courtesy })
   }
 
-  const typeFilterOptions = Object.entries(MspEcTierEnum).map(([key, text]) => ({
+  const typeFilterOptionsEnum = (isHospitality || isMDU) ?
+    HspMduTierEnum : DefaultMspTierEnum
+
+  const typeFilterOptions = Object.entries(typeFilterOptionsEnum).map(([key, text]) => ({
     key: text,
     value: key
   }))
@@ -214,11 +231,9 @@ export function Subscriptions () {
       sorter: { compare: sortProp('skuTier', defaultSort) },
       render: function (_: React.ReactNode, row: MspEntitlement) {
         if (row.skuTier) {
-         return row.skuTier === AccountTier.GOLD
-            ? $t({ defaultMessage: 'Essentials' })
-            : row.skuTier === AccountTier.CORE
-              ? $t({ defaultMessage: 'Core' })
-              : $t({ defaultMessage: 'Professional' })
+          const tierText = mspUtils.transformTier(row.skuTier)
+          return $t({ defaultMessage: '{skuTier}' },
+            { skuTier: tierText })
         }
         return noDataDisplay
       }
