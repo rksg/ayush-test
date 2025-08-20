@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps, Button }                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation }      from '@acx-ui/rc/services'
-import { isFirmwareVersionAbove10010hLower10020b }                                 from '@acx-ui/rc/switch/utils'
+import { isFirmwareVersionAbove10010hLower10020 }                                  from '@acx-ui/rc/switch/utils'
 import { defaultSort, sortProp, StaticRoute, SwitchRbacUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 import { SwitchScopes }                                                            from '@acx-ui/types'
 import { filterByAccess }                                                          from '@acx-ui/user'
@@ -96,7 +96,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
 
     const shouldShowButton = isICX8100Device ? (isSupport8100 &&
       isSupport8100StaticRouteMaxVe &&
-        isFirmwareVersionAbove10010hLower10020b(switchDetail?.firmware))
+        isFirmwareVersionAbove10010hLower10020(switchDetail?.firmware))
       : true
 
     return shouldShowButton ? [

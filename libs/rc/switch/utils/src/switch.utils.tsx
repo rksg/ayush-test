@@ -816,13 +816,13 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
   }
 }
 
-export const isFirmwareVersionAbove10010hLower10020b = function (firmwareVersion?: string) {
+export const isFirmwareVersionAbove10010hLower10020 = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
   1. > 10010h
   */
   if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010h', false) && !isVerGEVer(firmwareVersion, '10020b', false)
+    return isVerGEVer(firmwareVersion, '10010h', false) && !isVerGEVer(firmwareVersion, '10020', false)
   } else {
     return false
   }
