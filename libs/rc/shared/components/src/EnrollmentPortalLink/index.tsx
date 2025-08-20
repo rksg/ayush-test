@@ -164,7 +164,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
               <label style={{ display: 'block', textAlign: 'center', marginBottom: 8 }}>
                 {truncatedWorkflowName}</label>
               <QRCodeSVG
-                value={JSON.stringify({ name, url })}
+                value={url}
                 size={240}
                 bgColor={'#ffffff'}
                 fgColor={'#000000'}
@@ -193,7 +193,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
       >
         <div style={{ textAlign: 'center' }}>
           <QRCodeSVG
-            value={JSON.stringify({ name, url })}
+            value={url}
             size={240}
             bgColor={'#ffffff'}
             fgColor={'#000000'}

@@ -162,7 +162,7 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
-        const { aps: apCount, isOnBoarded, id, incompatible } = row
+        const { aps: apCount, isOnBoarded, id, incompatible=0 } = row
 
         return (<>
           {isOnBoarded
@@ -170,7 +170,7 @@ function getCols (intl: ReturnType<typeof useIntl>, searchable?: boolean, filter
             : <TenantLink to={`/networks/wireless/${id}/network-details/aps`}
               children={apCount}
             />}
-          {incompatible && incompatible > 0 &&
+          {(incompatible > 0) &&
             <Tooltip.Warning isFilled
               isTriangle
               title={$t({

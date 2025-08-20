@@ -5,7 +5,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { Metadata }             from '../../config'
+import { codes, Metadata }      from '../../config'
 import { useIntentContext }     from '../../IntentContext'
 import { getStatusTooltip }     from '../../services'
 import { useIntentParams }      from '../../useIntentDetailsQuery'
@@ -18,7 +18,7 @@ import * as UI                       from './styledComponents'
 
 export const StatusTrail = () => {
   const { $t } = useIntl()
-  const { intent: { sliceValue } } = useIntentContext()
+  const { intent: { sliceValue, code } } = useIntentContext()
 
   const preventColdTier = [
     useIsSplitOn(Features.RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE),
@@ -37,6 +37,7 @@ export const StatusTrail = () => {
 
   const shouldShowLimitedText = preventColdTier && query.data &&
     query.data?.total > query.data?.data.length
+  const aiFeature = codes[code].aiFeature
 
   return <DetailsSection data-testid='Status Trail'>
     <DetailsSection.Title>
@@ -50,7 +51,9 @@ export const StatusTrail = () => {
             <div key={index}>
               <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
               {preventColdTier ? <Tooltip
-                title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
+                title={getStatusTooltip(
+                  displayStatus, sliceValue, (metadata || {}) as Metadata, aiFeature
+                )}
                 placement='right'
                 dottedUnderline
               >
