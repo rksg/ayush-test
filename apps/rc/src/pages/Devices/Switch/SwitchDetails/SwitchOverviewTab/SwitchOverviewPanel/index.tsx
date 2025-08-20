@@ -8,8 +8,6 @@ import { SwitchesTrafficByVolume }  from '@acx-ui/analytics/components'
 import { SwitchStatusByTime }       from '@acx-ui/analytics/components'
 import { Button, GridCol, GridRow } from '@acx-ui/components'
 import {
-  SwitchBlinkLEDsDrawer,
-  SwitchInfo,
   TopologyFloorPlanWidget
 } from '@acx-ui/rc/components'
 import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
@@ -26,7 +24,11 @@ import {
   SwitchStatusEnum,
   SwitchPortViewModelQueryFields,
   SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
+import {
+  SwitchBlinkLEDsDrawer,
+  SwitchInfo
+} from '@acx-ui/switch/components'
 import { isLAGMemberPort }                              from '@acx-ui/switch/components'
 import { RolesEnum }                                    from '@acx-ui/types'
 import { hasPermission, hasRoles }                      from '@acx-ui/user'

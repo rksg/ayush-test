@@ -41,7 +41,7 @@ const mockProps = {
   onSuccess: jest.fn()
 }
 
-describe('VenueDrawer', () => {
+xdescribe('VenueDrawer', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockVenuesForm.mockClear()

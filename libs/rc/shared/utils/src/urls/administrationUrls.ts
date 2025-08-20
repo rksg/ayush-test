@@ -27,6 +27,12 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/admins',
     newApi: true
   },
+  getAdministratorsPaginated: {
+    method: 'post',
+    url: '/admins/query',
+    opsApi: 'POST:/admins/query',
+    newApi: true
+  },
   updateAdmin: {
     method: 'put',
     url: '/admins',

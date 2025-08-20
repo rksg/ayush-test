@@ -211,22 +211,26 @@ type MockDrawerProps = React.PropsWithChildren<{
   importRequest: () => void
   onClose: () => void
 }>
-jest.mock('@acx-ui/rc/common/components', () => ({
-  ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
-    visible && <div data-testid={'ImportFileDrawer'}>
-      <FormComponent>{children}</FormComponent>
-      <button onClick={(e)=>{
-        e.preventDefault()
-        importRequest()
-      }}>Import</button>
-      <button onClick={(e)=>{
-        e.preventDefault()
-        onClose()
-      }}>Cancel</button>
-    </div>,
-  CsvSize: {},
-  ImportFileDrawerType: {}
-}))
+jest.mock('@acx-ui/rc/common/components', () => {
+  const original = jest.requireActual('@acx-ui/rc/common/components')
+  return {
+    VenueSelector: original.VenueSelector,
+    ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
+      visible && <div data-testid={'ImportFileDrawer'}>
+        <FormComponent>{children}</FormComponent>
+        <button onClick={(e)=>{
+          e.preventDefault()
+          importRequest()
+        }}>Import</button>
+        <button onClick={(e)=>{
+          e.preventDefault()
+          onClose()
+        }}>Cancel</button>
+      </div>,
+    CsvSize: {},
+    ImportFileDrawerType: {}
+  }
+})
 
 jest.mock('../SwitchCliSession', () => ({
   SwitchCliSession: ({ modalState }: { modalState: boolean }) =>

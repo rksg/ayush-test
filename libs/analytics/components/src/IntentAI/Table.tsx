@@ -310,7 +310,7 @@ export function IntentAITable (
         return <Tooltip
           placement='top'
           title={getStatusTooltip(
-            displayStatus, sliceValue, { ...metadata, updatedAt })}
+            displayStatus, sliceValue, { ...metadata, updatedAt }, codes[row.code].aiFeature)}
           dottedUnderline={true}
         >
           {statusLabel}

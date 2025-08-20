@@ -16,6 +16,7 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
+import { AiFeatures }           from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
@@ -155,7 +156,7 @@ export function IntentAIDetails () {
               <DetailsSection.Details children={
                 <Card>
                   {getStatusTooltip(
-                    displayStatus, sliceValue, { ...metadata, updatedAt })}
+                    displayStatus, sliceValue, { ...metadata, updatedAt }, AiFeatures.RRM)}
                 </Card>} />
             </DetailsSection>
           </GridCol>
