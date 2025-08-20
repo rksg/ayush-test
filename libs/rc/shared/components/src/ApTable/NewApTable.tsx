@@ -145,6 +145,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isFlagUnderPoweredEnabled =
     useIsSplitOn(Features.FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY)
 
+  // Limit for maximum number of APs per reboot action
+  const maxActionLimit = 100
+
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
@@ -764,6 +767,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
+    disabled: (rows) => rows.length > maxActionLimit,
+    tooltip: (rows) => rows.length > maxActionLimit
+      ? $t({ defaultMessage: 'Up to {maxActionLimit} items per delete' }, { maxActionLimit })
+      : '',
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -779,6 +786,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
     visible: (rows) => isActionVisible(rows, { selectOne: !isMultiApRebootRelocateActionsEnabled, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
+    disabled: (rows) => rows.length > maxActionLimit,
+    tooltip: (rows) => rows.length > maxActionLimit
+      ? $t({ defaultMessage: 'Up to {maxActionLimit} items per reboot' }, { maxActionLimit })
+      : '',
     onClick: (rows, clearSelection) => {
       const items = rows.map(r => ({ serialNumber: r.serialNumber, venueId: r.venueId }))
       const sendingToast = (serialNumber: string) => {
