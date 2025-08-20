@@ -187,6 +187,7 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
+  IOT_DASHBOARD_API = 'iot-dashboard-api',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
   WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
