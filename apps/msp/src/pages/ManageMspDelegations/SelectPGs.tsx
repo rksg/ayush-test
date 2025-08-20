@@ -7,6 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   defaultSort,
   PrivilegeGroup,
@@ -29,7 +30,8 @@ export const SelectPGs = (props: SelectPGsProps) => {
   const { setSelected, selected, data } = props
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<PrivilegeGroup[]>([])
-
+  const mspManageMspDelegationsSearchToggle =
+    useIsSplitOn(Features.MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE)
   useEffect(() => {
     if (selected) {
       setSelectedRows(selected)
@@ -66,6 +68,8 @@ export const SelectPGs = (props: SelectPGsProps) => {
       <Table
         columns={columns}
         dataSource={data}
+        // Made the changes for Old Component as well
+        enableFilterHeader={mspManageMspDelegationsSearchToggle}
         rowKey='id'
         rowSelection={{
           type: 'checkbox',

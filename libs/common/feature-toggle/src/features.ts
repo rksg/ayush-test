@@ -100,6 +100,7 @@ export enum Features {
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_SORT_ON_TP_COUNT_TOGGLE = 'mspservice-sort-on-tp-count-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE = 'mspservice-manage-msp-delegations-search-toggle',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
