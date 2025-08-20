@@ -27,7 +27,8 @@ import {
   Intent,
   failureCodes,
   Metadata,
-  IntentWlan
+  IntentWlan,
+  AiFeatures
 } from './config'
 import { DisplayStates } from './states'
 import {
@@ -76,7 +77,7 @@ const crrmRevertErrorDetail = defineMessage({
 })
 
 export const getStatusTooltip = (
-  state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+  state: DisplayStates, sliceValue: string, metadata: Metadata, aiFeature: AiFeatures) => {
   const { $t } = getIntl()
   const stateConfig = states[state] ?? { tooltip: defineMessage({ defaultMessage: 'Unknown' }) }
 
@@ -102,7 +103,8 @@ export const getStatusTooltip = (
     zoneName: sliceValue,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     errorMessage: errMsg,
-    changedByName: metadata.changedByName
+    changedByName: metadata.changedByName,
+    isEcoFlex: aiFeature === AiFeatures.EcoFlex
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   }
 

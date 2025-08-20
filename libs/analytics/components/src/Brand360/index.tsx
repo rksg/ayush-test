@@ -66,7 +66,7 @@ const mspPayloadTenantsQuery = {
     tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
     status: ['Active']
   },
-  fields: ['id', 'name', 'tenantType', 'status', 'propertyCode'],
+  fields: ['id', 'name', 'tenantType', 'status', 'propertyCode', 'accountTier'],
   page: 1,
   pageSize: 10000,
   defaultPageSize: 10000,
