@@ -2,9 +2,12 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   ActivePluginsData,
+  ActivePluginsDataV2,
   CommonResult,
   RcapLicenseUtilizationData,
+  RcapLicenseUtilizationDataV2,
   IotControllerDashboard,
+  IotControllerDashboardV2,
   IotControllerSetting,
   IotControllerStatus,
   IotControllerVenues,
@@ -136,7 +139,8 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
-    iotControllerLicenseStatus: build.query<RcapLicenseUtilizationData, RequestPayload>({
+    // eslint-disable-next-line max-len
+    iotControllerLicenseStatus: build.query<RcapLicenseUtilizationData | RcapLicenseUtilizationDataV2, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerLicenseStatus, params),
@@ -145,7 +149,8 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       providesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
-    iotControllerDashboard: build.query<IotControllerDashboard, RequestPayload>({
+    // eslint-disable-next-line max-len
+    iotControllerDashboard: build.query<IotControllerDashboard | IotControllerDashboardV2, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerDashboard, params),
@@ -154,7 +159,7 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       providesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
-    iotControllerPlugins: build.query<ActivePluginsData, RequestPayload>({
+    iotControllerPlugins: build.query<ActivePluginsData | ActivePluginsDataV2, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerPlugins, params),
