@@ -1,6 +1,7 @@
 import { useConfigTemplate }              from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
 import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
+import { isRecSite }                      from '@acx-ui/utils'
 
 import { VenueAnalyticsTab } from './VenueAnalyticsTab'
 import { VenueClientsTab }   from './VenueClientsTab'
@@ -18,10 +19,12 @@ export function VenueDetails () {
   const GenTabs = () => {
     const { isTemplate } = useConfigTemplate()
     if (isTemplate) {
-      return {
-        networks: VenueNetworksTab,
-        services: VenueServicesTab
-      }
+      return isRecSite()
+        ? { networks: VenueNetworksTab }
+        : {
+          networks: VenueNetworksTab,
+          services: VenueServicesTab
+        }
     }
 
     return {

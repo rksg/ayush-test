@@ -7,8 +7,7 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { SwitchTable, SwitchTabContext, SwitchTableRefType } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetSwitchModelListQuery,
   useVenuesListQuery
@@ -16,10 +15,11 @@ import {
 import {
   SwitchRbacUrlsInfo
 }      from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { SwitchScopes }          from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
-import { getOpsApi }             from '@acx-ui/utils'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { SwitchTable, SwitchTabContext, SwitchTableRefType } from '@acx-ui/switch/components'
+import { SwitchScopes }                                      from '@acx-ui/types'
+import { filterByAccess }                                    from '@acx-ui/user'
+import { getOpsApi }                                         from '@acx-ui/utils'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
