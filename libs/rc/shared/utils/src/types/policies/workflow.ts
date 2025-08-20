@@ -11,7 +11,8 @@ export interface Workflow {
   disallowedIps?: string[]
   startStepId?: string
   links?: { rel: string, href: string }[],
-  statusReasons?: StatusReason[]
+  statusReasons?: StatusReason[],
+  restrictByNetwork?: boolean
 }
 
 export interface WorkflowAssignment {

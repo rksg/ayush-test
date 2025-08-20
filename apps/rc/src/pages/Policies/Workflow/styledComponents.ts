@@ -26,3 +26,15 @@ export const PublishReadinessBox = styled('div')<{ ready: boolean }>`
     
   }
 `
+
+export const RestrictedUrl = styled('div')`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 160px;
+
+    span {
+       font-size: var(--acx-body-3-font-size);
+       color: var(--acx-neutrals-60);
+    }
+`

@@ -13,6 +13,8 @@ import {
   Loader, showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { LockSolidIcon }                                                    from '@acx-ui/icons'
+import { QuestionMarkCircleOutlined }                                       from '@acx-ui/icons-new'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowsMutation,
@@ -41,12 +43,15 @@ import {
 import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
+import { RestrictedUrl }        from '../styledComponents'
 
 
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
+  const restrictWorkflowUrlToggle = useIsSplitOn(Features.WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE)
 
   const publicationStatusFilterOptions = [{ key: 'DRAFT', label: $t({ defaultMessage: 'Draft' }) },
     { key: 'PUBLISHED', value: 'Published' }]
@@ -139,11 +144,27 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'URL' }),
       dataIndex: 'url',
       render: (_, row) => {
-        if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
-          const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
-          if (link) return <EnrollmentPortalLink url={link.href} name={row?.name || 'qr-code'}/>
+        return {
+          props: { style: {
+            padding: '0px'
+          } },
+          children: (() => {
+            const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
+            if (restrictWorkflowUrlToggle && row.restrictByNetwork && link) {
+              return <RestrictedUrl><LockSolidIcon />
+                <span>{$t({ defaultMessage: 'Restricted URL' })}</span>
+                <QuestionMarkCircleOutlined />
+              </RestrictedUrl>
+            } else {
+              if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
+                if (link) return <EnrollmentPortalLink
+                  url={link.href}
+                  name={row?.name || 'qr-code'}/>
+              }
+            }
+            return undefined
+          })()
         }
-        return undefined
       }
     }
   ]

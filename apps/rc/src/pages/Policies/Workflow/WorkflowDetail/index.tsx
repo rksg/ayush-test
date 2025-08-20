@@ -35,6 +35,7 @@ export default function WorkflowDetails () {
 
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+  const restrictWorkflowUrlToggle = useIsSplitOn(Features.WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE)
 
   const workflowQuery = useGetWorkflowByIdQuery({ params: { id: policyId } })
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
@@ -165,6 +166,14 @@ export default function WorkflowDetails () {
       visible: workflowValidationEnhancementFFToggle,
       content: <PublishReadinessProgress variant='text'
         reasons={data?.statusReasons as StatusReason[]} />,
+      colSpan: 4
+    },
+    {
+      title: $t({ defaultMessage: 'Workflow URL Acccess' }),
+      visible: restrictWorkflowUrlToggle,
+      content: published?.restrictByNetwork
+        ? $t({ defaultMessage: 'Private' })
+        : $t({ defaultMessage: 'Public' }),
       colSpan: 4
     },
     {

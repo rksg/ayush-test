@@ -313,7 +313,8 @@ export enum Features {
   FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
   ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
-  SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g'
+  SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g',
+  WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE = 'workflow-acl-for-enrollment-url-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
