@@ -223,7 +223,6 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
 
   const handleApply = async () => {
     try {
-      await form.validateFields()
       const useSerialAsName = form.getFieldValue('useSerialAsName')
       const usePrefixSuffix = form.getFieldValue('usePrefixSuffix')
       const prefix = form.getFieldValue('prefix') || ''
@@ -231,15 +230,15 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       const venueId = form.getFieldValue('venueId')
       let apGroupId = form.getFieldValue('apGroupId')
 
-      // Validate required fields
+      // Collect all validation errors
+      const allErrors: Array<{ name: (string | number)[], errors: string[] }> = []
+
+      // Validate required fields first
       if (!venueId) {
-        form.setFields([
-          {
-            name: 'venueId',
-            errors: [$t({ defaultMessage: 'Please select a <venueSingular></venueSingular>' })]
-          }
-        ])
-        return
+        allErrors.push({
+          name: ['venueId'],
+          errors: [$t({ defaultMessage: 'Please select a <venueSingular></venueSingular>' })]
+        })
       }
 
       // For AP devices, ensure we have a valid apGroupId
@@ -252,13 +251,10 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
           if (defaultApGroup) {
             apGroupId = defaultApGroup.id
           } else {
-            form.setFields([
-              {
-                name: 'apGroupId',
-                errors: [$t({ defaultMessage: 'No default AP group found' })]
-              }
-            ])
-            return
+            allErrors.push({
+              name: ['apGroupId'],
+              errors: [$t({ defaultMessage: 'No default AP group found' })]
+            })
           }
         }
       }
@@ -268,7 +264,6 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       const devices = formData.devices || []
 
       // Validate device names and generate final names
-      const nameErrors: Array<{ name: string[], errors: string[] }> = []
       const finalNames: string[] = []
 
       devices.forEach((device: DeviceFormData, index: number) => {
@@ -286,35 +281,67 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
 
         finalNames.push(finalName)
 
-        // Validate final name (additional validations beyond required field)
-        if (finalName.length > 32) {
-          nameErrors.push({
-            name: ['devices', String(index), 'customApName'],
-            errors: [$t({ defaultMessage: 'Device name must be 32 characters or less' })]
+        // Check if final combined name is required (when not using serial as name)
+        if (!useSerialAsName && !finalName) {
+          allErrors.push({
+            name: ['devices', index, 'customApName'],
+            errors: [deviceType === 'ap'
+              ? $t({ defaultMessage: 'Custom AP Name is required' })
+              : $t({ defaultMessage: 'Custom Switch Name is required' })
+            ]
           })
-        } else if (!/^[a-zA-Z0-9\-_]+$/.test(finalName)) {
-          nameErrors.push({
-            name: ['devices', String(index), 'customApName'],
-            errors: [$t({ defaultMessage: 'Invalid device name format' })]
-          })
+          return
+        }
+
+        // Validate final name based on device type
+        if (deviceType === 'ap') {
+          // AP validation: 2-32 chars, specific format (same as apNameRegExp)
+          const apNameRegex = new RegExp('(?=^((?!`|\\$\\()[ -_a-~]){2,32}$)^(\\S.*\\S)$')
+          if (finalName !== '' && !apNameRegex.test(finalName)) {
+            allErrors.push({
+              name: ['devices', index, 'customApName'],
+              errors: [$t({ defaultMessage: 'Invalid AP name format' })]
+            })
+          }
+        } else {
+          // Switch validation: 1-255 characters
+          const trimmedName = finalName.trim()
+          if (trimmedName.length < 1) {
+            allErrors.push({
+              name: ['devices', index, 'customApName'],
+              errors: [$t({ defaultMessage: 'Switch name must be at least 1 character' })]
+            })
+          } else if (trimmedName.length > 255) {
+            allErrors.push({
+              name: ['devices', index, 'customApName'],
+              errors: [$t({ defaultMessage: 'Switch name must be 255 characters or less' })]
+            })
+          }
         }
 
         // Check for duplicate names
         const duplicateIndex = finalNames.findIndex((name, i) => i !== index && name === finalName)
         if (duplicateIndex !== -1) {
-          nameErrors.push({
-            name: ['devices', String(index), 'customApName'],
+          allErrors.push({
+            name: ['devices', index, 'customApName'],
             errors: [$t({ defaultMessage: 'Device name must be unique' })]
           })
         }
       })
 
-      // Set validation errors if any
-      if (nameErrors.length > 0) {
-        // Set errors directly
-        form.setFields(nameErrors)
+      // Set all validation errors at once
+      if (allErrors.length > 0) {
+        // Set all errors at once
+        form.setFields(allErrors)
+        // Force form to re-validate to show errors
+        form.validateFields(['devices']).catch(() => {
+          // Ignore validation errors, just trigger re-render
+        })
         return
       }
+
+      // Now validate the form fields after custom validation passes
+      await form.validateFields()
 
       // Create new payload with final names
       const payload = {
@@ -355,7 +382,10 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       setPrefix('')
       setSuffix('')
     } catch (error) {
-      // Silently handle error without console output
+      // Handle validation errors - they will be automatically displayed by Ant Design Form
+      // The error object contains validation information that Ant Design will display
+      // eslint-disable-next-line no-console
+      console.log('Form validation error:', error)
     }
   }
 
@@ -445,6 +475,10 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}
                 initialValue={null}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select an AP Group' })
+                }]}
               >
                 <Select
                   options={selectedVenueId ? apGroupOptions : []}
@@ -582,12 +616,6 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
                         ? $t({ defaultMessage: 'Custom AP Name' })
                         : $t({ defaultMessage: 'Custom Switch Name' })
                       }
-                      rules={[{
-                        required: true,
-                        message: deviceType === 'ap'
-                          ? $t({ defaultMessage: 'Custom AP Name is required' })
-                          : $t({ defaultMessage: 'Custom Switch Name is required' })
-                      }]}
                     >
                       <Input
                         disabled={form.getFieldValue('useSerialAsName')}
