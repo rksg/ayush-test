@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 import { Typography } from 'antd'
 import { QRCodeSVG }  from 'qrcode.react'
@@ -77,13 +77,54 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
     img.src = url
   }
 
-  const showQrCodeModal = () => {
-    setQrModalVisible(true)
-  }
+  useEffect(() => {
+    const handleGlobalClick = (event: MouseEvent) => {
+      if (qrModalVisible) {
+        const modalContent = document.querySelector('.ant-modal-content')
+        const closeButton = document.querySelector('.ant-modal-close')
+        const target = event.target as Node
+        // If clicking on close button, allow it and close modal
+        if (closeButton && closeButton.contains(target)) {
+          event.stopPropagation()
+          handleModalCancel()
+          return
+        }
+        // If clicking outside modal content, prevent propagation
+        if (modalContent && !modalContent.contains(target)) {
+          event.stopPropagation()
+          event.preventDefault()
+        }
+      }
+    }
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (qrModalVisible && event.key === 'Escape') {
+        event.stopPropagation()
+        handleModalCancel()
+      }
+    }
+    if (qrModalVisible) {
+      document.addEventListener('click', handleGlobalClick, true)
+      document.addEventListener('keydown', handleGlobalKeyDown, true)
+    }
+    return () => {
+      document.removeEventListener('click', handleGlobalClick, true)
+      document.removeEventListener('keydown', handleGlobalKeyDown, true)
+    }
+  }, [qrModalVisible])
 
   const handleModalCancel = () => {
     setQrModalVisible(false)
   }
+
+  const handleDownloadAndClose = () => {
+    handleDownloadQr()
+    setQrModalVisible(false)
+  }
+
+  const showQrCodeModal = () => {
+    setQrModalVisible(true)
+  }
+
 
   return (
     <>
@@ -165,7 +206,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
                 {truncatedWorkflowName}</label>
               <QRCodeSVG
                 value={url}
-                size={240}
+                size={290}
                 bgColor={'#ffffff'}
                 fgColor={'#000000'}
                 level={'L'}
@@ -177,13 +218,15 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
       </div>
       <StyledQRCodeModal
         title={truncatedWorkflowName}
-        width={300}
+        width={340}
         visible={qrModalVisible}
         okText={$t({ defaultMessage: 'Download' })}
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={handleModalCancel}
-        onOk={handleDownloadQr}
+        onOk={handleDownloadAndClose}
         maskClosable={false}
+        keyboard={true}
+        closable={true}
         okButtonProps={{
           icon: <DownloadOutlined style={{
             color: 'black',
@@ -194,7 +237,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
         <div style={{ textAlign: 'center' }}>
           <QRCodeSVG
             value={url}
-            size={240}
+            size={290}
             bgColor={'#ffffff'}
             fgColor={'#000000'}
             level={'L'}
