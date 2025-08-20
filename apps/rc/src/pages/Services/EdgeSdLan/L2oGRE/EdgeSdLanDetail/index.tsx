@@ -16,7 +16,8 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { useTableQuery }         from '@acx-ui/utils'
 
-import { CompatibilityCheck }    from './CompatibilityCheck'
+import { CompatibilityCheck } from '../shared/CompatibilityCheck'
+
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 import { VenueTableDataType }    from './VenueTable'
