@@ -28,7 +28,6 @@ import { VenueOrApGroupSettingsHeader } from '../../VenueOrApGroupSettingsHeader
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 import { paramsType } from './AntennaSection'
-import ApDetails from "../../../ApDetails";
 
 
 
@@ -218,8 +217,6 @@ export function ExternalAntennaSettings () {
       })
     }
   }
-
-  console.log(apDetails)
 
   return (<Loader states={[{
     isLoading: formInitializing,

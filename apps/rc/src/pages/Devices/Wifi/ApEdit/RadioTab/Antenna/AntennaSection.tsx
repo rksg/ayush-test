@@ -197,8 +197,6 @@ export function AntennaSection () {
     })
   }
 
-  console.log(apDetails)
-
   return (<Loader states={[{
     isLoading: formInitializing,
     isFetching: isUpdatingAntTypeSettings || isUpdatingAntTypeSettingsV1001
