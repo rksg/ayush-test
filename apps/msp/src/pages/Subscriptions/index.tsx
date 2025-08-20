@@ -231,9 +231,7 @@ export function Subscriptions () {
       sorter: { compare: sortProp('skuTier', defaultSort) },
       render: function (_: React.ReactNode, row: MspEntitlement) {
         if (row.skuTier) {
-          const tierText = $t(mspUtils.transformTier(row.skuTier))
-          return $t({ defaultMessage: '{skuTier}' },
-            { skuTier: tierText })
+          return $t(mspUtils.transformTier(row.skuTier))
         }
         return noDataDisplay
       }
