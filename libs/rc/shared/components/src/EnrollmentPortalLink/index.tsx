@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 
 import { Typography } from 'antd'
 import { QRCodeSVG }  from 'qrcode.react'
@@ -25,14 +25,19 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const openUrlTooltipDefaultText = $t({ defaultMessage: 'Open the URL in a new tab or window' })
   const [openUrlTooltip, setOpenUrlTooltip] = useState(openUrlTooltipDefaultText)
   const qrRef = useRef<HTMLDivElement | null>(null)
+  const modalQrRef = useRef<HTMLDivElement | null>(null)
   const maxLabelLength = 25
   const truncatedWorkflowName =
     name.length > maxLabelLength ? name.slice(0, maxLabelLength) + '...' : name
   const [qrModalVisible, setQrModalVisible] = useState(false)
 
   const handleDownloadQr = () => {
-    const svg = qrRef.current?.querySelector('svg')
-    if (!svg) return
+    const svg = modalQrRef.current?.querySelector('svg')
+
+    if (!svg) {
+      return
+    }
+
     const serializer = new XMLSerializer()
     let source = serializer.serializeToString(svg)
     if (!source.startsWith('<?xml')) {
@@ -52,7 +57,6 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
       if (ctx) {
         ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
-        // Use truncatedWorkflowName for the label
         ctx.fillStyle = '#000'
         ctx.font = '20px sans-serif'
         ctx.textAlign = 'center'
@@ -77,55 +81,26 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
     img.src = url
   }
 
-  useEffect(() => {
-    const handleGlobalClick = (event: MouseEvent) => {
-      if (qrModalVisible) {
-        const modalContent = document.querySelector('.ant-modal-content')
-        const closeButton = document.querySelector('.ant-modal-close')
-        const target = event.target as Node
-        // If clicking on close button, allow it and close modal
-        if (closeButton && closeButton.contains(target)) {
-          event.stopPropagation()
-          handleModalCancel()
-          return
-        }
-        // If clicking outside modal content, prevent propagation
-        if (modalContent && !modalContent.contains(target)) {
-          event.stopPropagation()
-          event.preventDefault()
-        }
-      }
-    }
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (qrModalVisible && event.key === 'Escape') {
-        event.stopPropagation()
-        handleModalCancel()
-      }
-    }
-    if (qrModalVisible) {
-      document.addEventListener('click', handleGlobalClick, true)
-      document.addEventListener('keydown', handleGlobalKeyDown, true)
-    }
-    return () => {
-      document.removeEventListener('click', handleGlobalClick, true)
-      document.removeEventListener('keydown', handleGlobalKeyDown, true)
-    }
-  }, [qrModalVisible])
+  const handleModalMaskClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    event.preventDefault()
+  }
+
+  const handleModalContentClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+  }
 
   const handleModalCancel = () => {
     setQrModalVisible(false)
   }
 
-  const handleDownloadAndClose = () => {
+  const handleDownloadOnly = () => {
     handleDownloadQr()
-    setQrModalVisible(false)
   }
 
   const showQrCodeModal = () => {
     setQrModalVisible(true)
   }
-
-
   return (
     <>
       <div style={{ display: 'flex' }}>
@@ -223,10 +198,15 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
         okText={$t({ defaultMessage: 'Download' })}
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={handleModalCancel}
-        onOk={handleDownloadAndClose}
+        onOk={handleDownloadOnly}
         maskClosable={false}
         keyboard={true}
         closable={true}
+        destroyOnClose={true}
+        getContainer={() => document.body}
+        wrapProps={{
+          onClick: handleModalMaskClick
+        }}
         okButtonProps={{
           icon: <DownloadOutlined style={{
             color: 'black',
@@ -234,7 +214,11 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
           }} />
         }}
       >
-        <div style={{ textAlign: 'center' }}>
+        <div
+          ref={modalQrRef}
+          style={{ textAlign: 'center' }}
+          onClick={handleModalContentClick}
+        >
           <QRCodeSVG
             value={url}
             size={290}
