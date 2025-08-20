@@ -10,7 +10,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { MspAdministrator }                         from '@acx-ui/msp/utils'
 import { useGetMspEcPrivilegeGroupsPaginatedQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -95,7 +94,7 @@ export const NewSelectPGs = (props: SelectPGsProps) => {
           dataSource={tableQuery?.data?.data}
           alwaysShowFilters={mspManageMspDelegationsSearchToggle}
           tableAlertRender={mspManageMspDelegationsSearchToggle
-            ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
+            ? false : undefined as (AlertRenderType<PrivilegeGroup> | undefined)}
           rowKey='id'
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

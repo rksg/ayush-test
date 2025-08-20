@@ -9,7 +9,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MspAdministrator }       from '@acx-ui/msp/utils'
 import {
   defaultSort,
   PrivilegeGroup,
@@ -70,11 +69,11 @@ export const SelectPGs = (props: SelectPGsProps) => {
       <Table
         columns={columns}
         dataSource={data}
+        rowKey='id'
         // Made the changes for Old Component as well
         alwaysShowFilters={mspManageMspDelegationsSearchToggle}
         tableAlertRender={mspManageMspDelegationsSearchToggle
-          ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
-        rowKey='id'
+          ? false : undefined as (AlertRenderType<PrivilegeGroup> | undefined)}
         rowSelection={{
           type: 'checkbox',
           selectedRowKeys: selectedKeys,
