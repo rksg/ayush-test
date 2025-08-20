@@ -188,7 +188,10 @@ export function ApEdit () {
 
   useEffect(() => {
     if (apGroupInfo?.data && apDetails) {
-      const filteredApGroup = apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)
+      const filteredApGroup = apGroupInfo.data.filter((group) =>
+        group.id === apDetails.apGroupId && group.name !== ''
+      )
+
       if (filteredApGroup.length > 0) {
         setApGroupData(filteredApGroup[0])
       }

@@ -27,19 +27,26 @@ function ApEditPageHeader () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
 
-  // eslint-disable-next-line max-len
   const titleWithVenueApGroup = isApGroupMoreParameterPhase1Enabled ?
     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
       <div>{apData?.name || ''}</div>
       <Space direction='horizontal' size={0} style={{ height: '15px' }}>
-        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Venue: <TenantLink
-          to={`venues/${venueData?.id}/venue-details/overview`}>{venueData?.name}
-        </TenantLink></div>
+        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>
+          {$t({ defaultMessage: '<VenueSingular></VenueSingular> :' })}{' '}
+          <TenantLink
+            to={`venues/${venueData?.id}/venue-details/overview`}>{venueData?.name}
+          </TenantLink>
+        </div>
         <Divider type='vertical'/>
         {/* eslint-disable-next-line max-len */}
-        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Ap Group: {apData?.apGroupId ? <TenantLink
-          to={`/devices/apgroups/${apData?.apGroupId}/details/members`}>{apGroupData?.name}
-        </TenantLink> : 'None'}</div>
+        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>
+          {$t({ defaultMessage: 'Ap Group :' })}{' '}
+          {(apData?.apGroupId && apGroupData?.name)
+            ? <TenantLink
+              to={`/devices/apgroups/${apData?.apGroupId}/details/members`}>{apGroupData?.name}
+            </TenantLink>
+            : $t({ defaultMessage: 'None' }) }
+        </div>
       </Space>
     </div>
     : apData?.name || ''
