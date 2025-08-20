@@ -191,7 +191,7 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
     </Form>
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item, index) => {
-        const tierText = mspUtils.transformTier(item.skuTier as AccountTier)
+        const tierText = $t(mspUtils.transformTier(item.skuTier as AccountTier))
         return <Row
           key={index}
           style={{

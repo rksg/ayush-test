@@ -263,12 +263,12 @@ export const MSPUtils = () => {
 
   const transformTier = (skuTier: AccountTier) => {
     const tierMap = {
-      [AccountTier.GOLD]: 'Essentials',
-      [AccountTier.CORE]: 'Core',
-      [AccountTier.PLATINUM]: 'Professional'
+      [AccountTier.GOLD]: defineMessage({ defaultMessage: 'Essentials' }),
+      [AccountTier.CORE]: defineMessage({ defaultMessage: 'Core' }),
+      [AccountTier.PLATINUM]: defineMessage({ defaultMessage: 'Professional' })
     }
 
-    return tierMap[skuTier] ?? 'Professional'
+    return tierMap[skuTier] ?? defineMessage({ defaultMessage: 'Professional' })
   }
 
   const getConfiguredDevices = (deviceType: ComplianceMspCustomersDevicesTypes,

@@ -175,7 +175,7 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
 
     {multiLicenseFFToggled && <Loader states={[{ isLoading: isLoadingV2 }]}>
       {licenseV2Data.map((item, index) => {
-        const tierText = mspUtils.transformTier(item.skuTier as AccountTier)
+        const tierText = $t(mspUtils.transformTier(item.skuTier as AccountTier))
         return <Row
           key={index}
           style={{
