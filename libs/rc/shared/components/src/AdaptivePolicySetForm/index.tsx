@@ -65,7 +65,8 @@ export function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
       setIsUpdating(true)
       const policyPayload = {
         name: data.name,
-        description: data.name
+        description: data.name,
+        policyOverrideEnabled: data.policyOverrideEnabled
       }
 
       if(editMode){
