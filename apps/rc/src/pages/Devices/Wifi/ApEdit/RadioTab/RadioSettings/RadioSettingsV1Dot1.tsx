@@ -787,6 +787,8 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                 radioParams.allowedChannels = [venueRef.current[radioKey]?.manualChannel.toString()]
               }
             }
+          } else {
+            radioParams.allowedChannels = [radioParams.manualChannel.toString()]
           }
         }
       }
