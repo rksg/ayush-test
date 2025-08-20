@@ -39,6 +39,7 @@ describe('AdaptivePolicySetSettingForm', () => {
 
     expect(screen.getByRole('textbox', { name: 'Policy Set Name' })).toBeVisible()
     expect(screen.getByTestId('AccessPolicyTable')).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Override Services Attributes' })).toBeVisible()
   })
 
   it('should show error message while policy set name is duplicated', async () => {

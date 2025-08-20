@@ -4,17 +4,20 @@ export const policySetList = {
     {
       id: 'e4fc0210-a491-460c-bd74-549a9334325a',
       name: 'ps12',
-      description: 'ps12'
+      description: 'ps12',
+      policyOverrideEnabled: false
     },
     {
       id: 'a76cac94-3180-4f5f-9c3b-50319cb24ef8',
       name: 'ps2',
-      description: 'ps2'
+      description: 'ps2',
+      policyOverrideEnabled: false
     },
     {
       id: '2f617cdd-a8b7-47e7-ba1e-fd41caf3dac8',
       name: 'ps4',
-      description: 'ps4'
+      description: 'ps4',
+      policyOverrideEnabled: false
     }
   ]
 }
@@ -83,7 +86,8 @@ export const groupList = {
 export const editPolicySet = {
   id: '63d48843-46f0-4bbe-87c5-2d598ed87095',
   name: 'aps1',
-  description: 'aps1'
+  description: 'aps1',
+  policyOverrideEnabled: false
 }
 
 export const adaptivePolicyList = {

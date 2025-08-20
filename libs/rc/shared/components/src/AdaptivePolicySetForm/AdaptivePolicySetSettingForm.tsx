@@ -1,8 +1,8 @@
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
+import { Form, Input, Switch } from 'antd'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { GridCol, GridRow }                  from '@acx-ui/components'
+import { GridCol, GridRow, Tooltip }         from '@acx-ui/components'
 import {
   useLazyAdaptivePolicySetListByQueryQuery
 } from '@acx-ui/rc/services'
@@ -58,6 +58,24 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
           children={<Input/>}
           validateTrigger={'onBlur'}
         />
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Form.Item name='policyOverrideEnabled'
+          label={
+            <>
+              { $t({ defaultMessage: 'Override Services Attributes' }) }
+              <Tooltip.Question
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'Enable this option to override services attributes with the values specified in the policy set' })}
+                placement='bottom'
+              />
+            </>
+          }
+          valuePropName='checked'
+          initialValue={false}
+        >
+          <Switch />
+        </Form.Item>
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <Form.Item initialValue={[] as AdaptivePolicy []}

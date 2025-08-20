@@ -239,6 +239,13 @@ export default function AdaptivePolicySetDetail () {
                     <Paragraph>{prioritizedPolicies?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </GridCol>
+                <GridCol col={{ span: 6 }}>
+                  <Form.Item label={$t({ defaultMessage: 'Override Services Attributes' })}>
+                    <Paragraph>{policySetData?.policyOverrideEnabled
+                      ? $t({ defaultMessage: 'Enabled' })
+                      : $t({ defaultMessage: 'Disabled' })}</Paragraph>
+                  </Form.Item>
+                </GridCol>
               </GridRow>
             </Form>
           </Loader>
