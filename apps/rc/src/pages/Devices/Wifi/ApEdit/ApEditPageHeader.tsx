@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr, PageHeader }                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { useApGroupsListQuery, useGetApGroupsTemplateListQuery, useGetApOperationalQuery } from '@acx-ui/rc/services'
-import { ApGroupViewModel, useConfigTemplateQueryFnSwitcher }                              from '@acx-ui/rc/utils'
+import { Button, cssStr, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   TenantLink,
   useNavigate,
@@ -14,7 +12,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-import { TableResult }    from '@acx-ui/utils'
 
 import ApEditTabs from './ApEditTabs'
 
@@ -22,48 +19,13 @@ import { ApDataContext } from '.'
 
 function ApEditPageHeader () {
   const { $t } = useIntl()
-  const { serialNumber, tenantId } = useParams()
-  const { apData, venueData } = useContext(ApDataContext)
-  const [apGroup, setApGroup] = useState('')
+  const { serialNumber } = useParams()
+  const { apData, venueData, apGroupData } = useContext(ApDataContext)
   // eslint-disable-next-line max-len
   const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
-
-  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
-    useQueryFn: useApGroupsListQuery,
-    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
-    payload: {
-      searchString: '',
-      fields: [ 'id', 'venueId', 'name'],
-      filters: { venueId: [venueData?.id] },
-      pageSize: 10000
-    },
-    skip: !venueData?.id && !isApGroupMoreParameterPhase1Enabled,
-    enableRbac: true
-  })
-
-  const {
-    data: apDetails
-  } = useGetApOperationalQuery({
-    params: {
-      tenantId,
-      serialNumber: serialNumber ? serialNumber : '',
-      venueId: venueData ? venueData.id : ''
-    },
-    enableRbac: true,
-    skip: !isApGroupMoreParameterPhase1Enabled
-  })
-
-  useEffect(() => {
-    if (apGroupInfo?.data && apDetails) {
-      const filteredApGroup = apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)
-      if (filteredApGroup.length > 0) {
-        setApGroup(filteredApGroup[0].name)
-      }
-    }
-  }, [apGroupInfo, apDetails])
 
   // eslint-disable-next-line max-len
   const titleWithVenueApGroup = isApGroupMoreParameterPhase1Enabled ?
@@ -75,8 +37,8 @@ function ApEditPageHeader () {
         </TenantLink></div>
         <Divider type='vertical'/>
         {/* eslint-disable-next-line max-len */}
-        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Ap Group: {apGroup ? <TenantLink
-          to={`/devices/apgroups/${apDetails?.apGroupId}/details/members`}>{apGroup}
+        <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Ap Group: {apData?.apGroupId ? <TenantLink
+          to={`/devices/apgroups/${apData?.apGroupId}/details/members`}>{apGroupData?.name}
         </TenantLink> : 'None'}</div>
       </Space>
     </div>

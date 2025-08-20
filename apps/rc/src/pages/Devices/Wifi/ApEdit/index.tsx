@@ -1,20 +1,23 @@
 import { createContext, useEffect, useState } from 'react'
 
 import { CustomButtonProps, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
+  useApGroupsListQuery,
   useApViewModelQuery,
-  useGetApQuery,
+  useGetApGroupsTemplateListQuery,
+  useGetApOperationalQuery,
   useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
-  ApDeep,
+  ApDeep, ApGroupViewModel,
   ApViewModel,
-  CapabilitiesApModel,
+  CapabilitiesApModel, useConfigTemplateQueryFnSwitcher,
   VenueExtended
 } from '@acx-ui/rc/utils'
-import { useParams }    from '@acx-ui/react-router-dom'
-import { goToNotFound } from '@acx-ui/user'
-import { getIntl }      from '@acx-ui/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { goToNotFound }         from '@acx-ui/user'
+import { getIntl, TableResult } from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -40,7 +43,8 @@ export type ApEditItemProps = {
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
   apCapabilities?: CapabilitiesApModel,
-  venueData?: VenueExtended
+  venueData?: VenueExtended,
+  apGroupData?: ApGroupViewModel
 })
 
 export interface ApEditContextType {
@@ -84,8 +88,10 @@ const apViewModelRbacPayloadFields = [
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus']
 
 export function ApEdit () {
-  const { serialNumber, activeTab } = useParams()
+  const { serialNumber, activeTab, tenantId } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const [previousPath, setPreviousPath] = useState('')
   const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
@@ -100,6 +106,7 @@ export function ApEdit () {
   const [apViewContextData, setApViewContextData] = useState({} as ApViewModel)
 
   const [apData, setApData] = useState<ApDeep>()
+  const [apGroupData, setApGroupData] = useState<ApGroupViewModel>()
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -112,11 +119,6 @@ export function ApEdit () {
     enableRbac: true
   })
 
-  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
-    params: { serialNumber, venueId: apViewmodel?.venueId },
-    enableRbac: true
-  }, { skip: !apViewmodel?.venueId })
-
   // venueId is not exist in RBAC version AP data
   const targetVenueId = apViewmodel?.venueId
 
@@ -125,31 +127,56 @@ export function ApEdit () {
     serialNumber
   }
 
-  const { data: capabilities, isLoading: isGetApCapsLoading } = useGetApCapabilities({
-    params,
-    modelName: getedApData?.model,
-    skip: isLoaded,
-    enableRbac: true
-  })
-
   // fetch venueName
   const { data: venueData } = useGetVenueQuery({
     params: {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )
 
+  const {
+    data: apDetails, isLoading: isGetApLoading
+  } = useGetApOperationalQuery({
+    params: {
+      tenantId,
+      serialNumber: serialNumber ? serialNumber : '',
+      venueId: venueData ? venueData.id : ''
+    },
+    enableRbac: true,
+    skip: !isApGroupMoreParameterPhase1Enabled
+  })
+
+  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+    useQueryFn: useApGroupsListQuery,
+    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
+    payload: {
+      searchString: '',
+      fields: [ 'id', 'venueId', 'name'],
+      filters: { venueId: [venueData?.id] },
+      pageSize: 10000
+    },
+    skip: !targetVenueId && !isApGroupMoreParameterPhase1Enabled,
+    enableRbac: true
+  })
+
+  const { data: capabilities, isLoading: isGetApCapsLoading } = useGetApCapabilities({
+    params,
+    modelName: apDetails?.model,
+    skip: isLoaded,
+    enableRbac: true
+  })
+
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
-      const modelName = getedApData?.model
+      const modelName = apDetails?.model
       if (modelName && capabilities) {
-        setApData(getedApData)
+        setApData(apDetails)
         setApCapabilities(capabilities)
 
         setIsLoaded(true)
       }
     }
   // eslint-disable-next-line max-len
-  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
+  }, [isGetApLoading, isGetApCapsLoading, capabilities, apDetails])
 
   useEffect(() => {
     if (apViewmodel) {
@@ -159,10 +186,19 @@ export function ApEdit () {
 
   }, [apViewmodel])
 
+  useEffect(() => {
+    if (apGroupInfo?.data && apDetails) {
+      const filteredApGroup = apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)
+      if (filteredApGroup.length > 0) {
+        setApGroupData(filteredApGroup[0])
+      }
+    }
+  }, [apGroupInfo, apDetails])
+
   // need to wait venueData ready, venueData.id is using inside all tabs.
   const isLoading = !venueData
 
-  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
+  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData, apGroupData }}>
     <ApEditContext.Provider value={{
       editContextData,
       setEditContextData,
