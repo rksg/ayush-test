@@ -18,6 +18,7 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert';
 
 interface SelectUsersProps {
   tenantId?: string
@@ -170,7 +171,9 @@ export const SelectUsers = (props: SelectUsersProps) => {
     <Table
       columns={columns}
       dataSource={usersData}
-      enableFilterHeader={mspManageMspDelegationsSearchToggle}
+      alwaysShowFilters={mspManageMspDelegationsSearchToggle}
+      tableAlertRender={mspManageMspDelegationsSearchToggle
+        ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
       rowKey='email'
       rowSelection={{
         type: 'checkbox',

@@ -16,6 +16,8 @@ import {
 import { noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert';
+import { MspAdministrator } from '@acx-ui/msp/utils';
 
 interface SelectPGsProps {
   tenantId?: string
@@ -69,7 +71,9 @@ export const SelectPGs = (props: SelectPGsProps) => {
         columns={columns}
         dataSource={data}
         // Made the changes for Old Component as well
-        enableFilterHeader={mspManageMspDelegationsSearchToggle}
+        alwaysShowFilters={mspManageMspDelegationsSearchToggle}
+        tableAlertRender={mspManageMspDelegationsSearchToggle
+          ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
         rowKey='id'
         rowSelection={{
           type: 'checkbox',

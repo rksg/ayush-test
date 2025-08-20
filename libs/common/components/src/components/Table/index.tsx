@@ -93,7 +93,6 @@ export interface TableProps <RecordType>
     filterPersistence?: boolean
     highLightValue?: string
     preventRenderHeader?: boolean
-    enableFilterHeader?: boolean
     optionLabelProp?: SelectProps['optionLabelProp']
     columnsToFilterChildrenRowBasedOnParentRow?: (keyof RecordType)[]
   }
@@ -176,7 +175,7 @@ function Table <RecordType extends Record<string, any>> ({
   searchPlaceholder = undefined,
   ...props
 }: TableProps<RecordType>) {
-  const { dataSource, filterableWidth, searchableWidth, style, enableFilterHeader } = props
+  const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
@@ -408,9 +407,7 @@ function Table <RecordType extends Record<string, any>> ({
     const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
-  if (enableFilterHeader) {
-    props.tableAlertRender = false
-  }
+
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasRowActionsOffset = !preventRenderHeader && [
     props.rowSelection?.type
@@ -422,8 +419,7 @@ function Table <RecordType extends Record<string, any>> ({
     iconButton
   ].some(Boolean)
   const shouldRenderHeader = !preventRenderHeader && (props.alwaysShowFilters
-    || enableFilterHeader ? enableFilterHeader : !hasRowSelected
-    || props.tableAlertRender === false)
+    || !hasRowSelected || props.tableAlertRender === false)
   const hasHeaderItems = !preventRenderHeader && (
     Boolean(filterables.length) || Boolean(searchables.length) ||
     Boolean(groupable.length) || Boolean(iconButton)

@@ -18,6 +18,8 @@ import {
 import { noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert';
+import { MspAdministrator } from '@acx-ui/msp/utils';
 
 interface SelectPGsProps {
   tenantId?: string
@@ -91,7 +93,9 @@ export const NewSelectPGs = (props: SelectPGsProps) => {
         <Table
           columns={columns}
           dataSource={tableQuery?.data?.data}
-          enableFilterHeader={mspManageMspDelegationsSearchToggle}
+          alwaysShowFilters={mspManageMspDelegationsSearchToggle}
+          tableAlertRender={mspManageMspDelegationsSearchToggle
+            ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
           rowKey='id'
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
