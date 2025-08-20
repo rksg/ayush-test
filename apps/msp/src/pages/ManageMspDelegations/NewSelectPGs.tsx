@@ -1,7 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert'
+import { Space }           from 'antd'
+import { useIntl }         from 'react-intl'
 
 import {
   Loader,
@@ -9,6 +10,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { MspAdministrator }                         from '@acx-ui/msp/utils'
 import { useGetMspEcPrivilegeGroupsPaginatedQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -18,8 +20,6 @@ import {
 import { noDataDisplay, useTableQuery } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert';
-import { MspAdministrator } from '@acx-ui/msp/utils';
 
 interface SelectPGsProps {
   tenantId?: string

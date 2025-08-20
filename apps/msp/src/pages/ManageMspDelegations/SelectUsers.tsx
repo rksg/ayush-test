@@ -1,7 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Select, Space } from 'antd'
-import { useIntl }       from 'react-intl'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert'
+import { Select, Space }   from 'antd'
+import { useIntl }         from 'react-intl'
 
 import {
   Table,
@@ -18,7 +19,6 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
-import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert';
 
 interface SelectUsersProps {
   tenantId?: string
