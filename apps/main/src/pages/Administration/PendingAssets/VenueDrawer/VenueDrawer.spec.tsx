@@ -13,6 +13,20 @@ import {
 
 import { VenueDrawer } from './VenueDrawer'
 
+// Mock useNavigate and useLocation to prevent errors
+const mockNavigate = jest.fn()
+const mockLocation = {
+  pathname: '/test',
+  search: '',
+  hash: '',
+  state: null
+}
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => mockLocation
+}))
+
 // Mock VenuesForm component
 const mockVenuesForm = jest.fn(
   ({ modalCallBack }: {
