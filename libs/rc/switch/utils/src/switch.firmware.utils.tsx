@@ -107,15 +107,6 @@ export const getStackUnitsMinLimitationV1002 = (
     }
     return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
   } else if (switchModel?.match(/ICX8100-.*-[xX]/)) {
-    if(currentFirmware.includes('10020')){
-      if (checkVersionAtLeast10020c(currentFirmware)) {
-        return 8
-      }
-    } else {
-      if (checkVersionAtLeast10010h(currentFirmware)) {
-        return 8
-      }
-    }
     return 4
   } else { // 7550, 7650, 7850
     if (checkVersionAtLeast10010c(currentFirmware)) {
