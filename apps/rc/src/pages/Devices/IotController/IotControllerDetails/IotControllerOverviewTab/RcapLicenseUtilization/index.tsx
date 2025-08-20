@@ -2,11 +2,16 @@ import { Badge, Space } from 'antd'
 import { useIntl }      from 'react-intl'
 import AutoSizer        from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader , Card, DonutChart, NoActiveData }        from '@acx-ui/components'
-import type { DonutChartData }                                    from '@acx-ui/components'
-import { useIotControllerLicenseStatusQuery }                     from '@acx-ui/rc/services'
-import { RcapLicenseUtilizationEnum, RcapLicenseUtilizationData } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
+import type { DonutChartData }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { useIotControllerLicenseStatusQuery }              from '@acx-ui/rc/services'
+import {
+  RcapLicenseUtilizationEnum,
+  RcapLicenseUtilizationData,
+  RcapLicenseUtilizationDataV2
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -57,12 +62,21 @@ export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicens
 
 export function RcapLicenseUtilization () {
   const { $t } = useIntl()
+  const isIotDashboardApi = useIsSplitOn(Features.IOT_DASHBOARD_API)
 
   const overviewQuery = useIotControllerLicenseStatusQuery({
     params: useParams()
   }, {
     selectFromResult: ({ data, ...rest }) => {
-      const result = getRcapLicenseUtilizationDonutChartData(data)
+      let processedData: RcapLicenseUtilizationData | undefined
+      if (isIotDashboardApi && (data as RcapLicenseUtilizationDataV2)?.ok) {
+        const v2Data = (data as RcapLicenseUtilizationDataV2).data
+        // Transform V2 data to the expected format if needed
+        processedData = v2Data as RcapLicenseUtilizationData
+      } else {
+        processedData = data as RcapLicenseUtilizationData
+      }
+      const result = getRcapLicenseUtilizationDonutChartData(processedData)
       return {
         data: result.data,
         value: result.value,
