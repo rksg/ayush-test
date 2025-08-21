@@ -27,7 +27,7 @@ export function WorkflowDrawer (props: WorkflowDrawerProps) {
     const workflowKeys = ['name', 'description',
       ...(restrictWorkflowUrlToggle ? ['restrictByNetwork']
         : [])
-    ] as const as (keyof Workflow)[]
+    ] as (keyof Workflow)[]
     const patchData = {}
 
     workflowKeys.forEach(key => {
