@@ -36,6 +36,10 @@ jest.mock('./Msp/EdgeSdLanDetail', () => ({
   EdgeSdLanDetail: () => <div data-testid='edge-sdlan-detail-msp'>EdgeSdLanDetail MSP</div>
 }))
 
+jest.mock('./Msp/EdgeSdLanTable', () => ({
+  EdgeSdLanTable: () => <div data-testid='edge-sdlan-table-msp'>EdgeSdLanTable MSP</div>
+}))
+
 jest.mock('./Msp/EditEdgeSdLan', () => ({
   EditEdgeSdLan: () => <div data-testid='edit-edge-sdlan-msp'>EditEdgeSdLan MSP</div>
 }))
@@ -156,7 +160,7 @@ describe('EdgeSdLan L2oGRE Components', () => {
   })
 
   describe('EdgeSdLanTable', () => {
-    it('should render regular version when user is MSP and edge delegation is ready', () => {
+    it('should render MSP version when user is MSP and edge delegation is ready', () => {
       mockUseUserProfileContext.mockReturnValue({ isMspUser: true })
       mockUseIsEdgeFeatureReady.mockReturnValue(true)
 
@@ -166,7 +170,7 @@ describe('EdgeSdLan L2oGRE Components', () => {
         </Provider>
       )
 
-      expect(screen.getByTestId('edge-sdlan-table-rec')).toBeInTheDocument()
+      expect(screen.getByTestId('edge-sdlan-table-msp')).toBeInTheDocument()
       expect(mockUseIsEdgeFeatureReady).toHaveBeenCalledWith(Features.EDGE_DELEGATION_TOGGLE)
     })
 

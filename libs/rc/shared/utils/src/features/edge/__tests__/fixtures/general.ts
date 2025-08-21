@@ -352,6 +352,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000004',
       venueName: 'venue_4',
       clusterStatus: ClusterStatusEnum.CLUSTER_IS_FORMING,
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
       edgeList: [
         {
           name: 'Smart Edge 6',
@@ -365,7 +366,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_GETTING_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          firmwareVersion: '2.4.0.1031'
         },
         {
           name: 'Smart Edge 7',
@@ -379,7 +381,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_GETTING_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          firmwareVersion: '2.4.0.1031'
         }
       ]
     },{

@@ -80,7 +80,7 @@ export const mockedApLldpNeighbors = {
       lldpPowerType: null,
       lldpPowerSource: null,
       lldpPowerPriority: null,
-      lldpPDReqPowerVal: null,
+      lldpPDReqPowerVal: 24000,
       lldpPSEAllocPowerVal: 26000,
       lldpUPOE: '0'
     },
