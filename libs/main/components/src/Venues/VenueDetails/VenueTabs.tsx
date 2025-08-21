@@ -12,6 +12,7 @@ import {
 import { useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                     from '@acx-ui/types'
 import { hasRaiPermission, hasRoles, isCoreTier, useUserProfileContext } from '@acx-ui/user'
+import { isRecSite }                                                     from '@acx-ui/utils'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -90,10 +91,11 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
           tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
           key='networks'
         />
+        {!isRecSite() &&
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Services' })}
           key='services'
-        />
+        />}
       </Tabs>
     )
   }

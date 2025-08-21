@@ -7,7 +7,7 @@ import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-u
 import { useEnforcedStatus, usePathBasedOnConfigTemplate }          from '@acx-ui/config-template/utils'
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { DeleteOutlined, ConfigurationOutlined }                    from '@acx-ui/icons-new'
-import { useConfigTemplateVisibilityMap }                           from '@acx-ui/rc/components'
+import { useIsConfigTemplateEnabledByType }                         from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -406,9 +406,8 @@ export function getProfileKeysByType (profiles: ConfigurationProfile[], type: st
 
 export function useSwitchProfileDisabled (): boolean {
   const { isTemplate } = useConfigTemplate()
-  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
   // eslint-disable-next-line max-len
-  const isRegularProfileTemplateEnabled = configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR]
+  const isRegularProfileTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SWITCH_REGULAR)
 
   return isTemplate && !isRegularProfileTemplateEnabled
 }

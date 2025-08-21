@@ -21,10 +21,10 @@ import {
   useGetVenueTemplateMeshQuery
 } from '@acx-ui/rc/services'
 import {
-  // eslint-disable-next-line max-len
-  DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, LocationExtended, Mesh, ServiceOperation,ServiceType, VenueSettings,
-  // eslint-disable-next-line max-len
-  useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
+  DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, LocationExtended, Mesh,
+  ServiceOperation, ServiceType, VenueSettings,
+  useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, convertToTemplateAllowedOperationIfNeeded
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
@@ -82,6 +82,7 @@ export default function BasicInfo () {
 
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
+  const isDhcpEnabled = useIsDhcpEnabled()
 
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
@@ -213,10 +214,7 @@ export default function BasicInfo () {
           ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
         }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
-      visible: hasPermission({
-        scopes: [WifiScopes.UPDATE],
-        rbacOpsIds: [getOpsApi(DHCPUrls.bindVenueDhcpProfile)]
-      })
+      visible: isDhcpEnabled
     }
   ]
 
@@ -267,4 +265,16 @@ export default function BasicInfo () {
       <VenueDHCPForm form={form} ref={dhcpForm} />
     </Modal>
   </>
+}
+
+export function useIsDhcpEnabled (): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const resolvedOpsApi = convertToTemplateAllowedOperationIfNeeded(
+    [getOpsApi(DHCPUrls.bindVenueDhcpProfile)],
+    isTemplate
+  )
+  return hasPermission({
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: resolvedOpsApi
+  })
 }

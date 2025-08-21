@@ -10,7 +10,6 @@ import { useIntl }                from 'react-intl'
 import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip, getDefaultEarliestStart } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                       from '@acx-ui/formatter'
-import { SwitchCliSession, SwitchStatus, useSwitchActions }                                                from '@acx-ui/rc/components'
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
@@ -33,6 +32,7 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }    from '@acx-ui/switch/components'
 import { SwitchScopes }                                        from '@acx-ui/types'
 import { filterByAccess, hasAllowedOperations, hasPermission } from '@acx-ui/user'
 import { getOpsApi, useDateFilter }                            from '@acx-ui/utils'

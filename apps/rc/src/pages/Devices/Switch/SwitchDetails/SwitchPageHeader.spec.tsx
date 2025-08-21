@@ -22,8 +22,8 @@ import SwitchPageHeader                       from './SwitchPageHeader'
 
 import { SwitchDetailsContext } from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('@acx-ui/switch/components', () => ({
+  ...jest.requireActual('@acx-ui/switch/components'),
   SwitchCliSession: ({ modalState }: { modalState: boolean }) =>
     modalState && <div data-testid='switch-cli-session'></div>
 }))

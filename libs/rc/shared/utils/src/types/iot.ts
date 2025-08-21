@@ -56,6 +56,23 @@ export interface IotControllerDashboard {
   }
 }
 
+export interface IotControllerDashboardV2 {
+  requestId?: string
+  errorMessage?: string
+  data : {
+    apStatus?: {
+      onlineAp: number
+      offlineAp: number
+      totalAp: number
+    },
+    pluginsByRadioStatus?: {
+      totalRadioCount: number
+      radioPlugins: ActivePluginsByRadio[]
+    }
+  }
+  ok?: boolean
+}
+
 export enum ApStatusEnum {
   ONLINE = 'onlineAp',
   OFFLINE = 'offlineAp'
@@ -78,6 +95,13 @@ export interface ActivePluginsData {
   requestId?: string
 }
 
+export interface ActivePluginsDataV2 {
+  requestId?: string
+  errorMessage?: string
+  data: ActivePluginsStatus[]
+  ok?: boolean
+}
+
 export enum IotApStatusEnum {
   ONLINE = 'online',
   OFFLINE = 'offline',
@@ -93,6 +117,16 @@ export interface RcapLicenseUtilizationData {
   [RcapLicenseUtilizationEnum.USED]: number
   [RcapLicenseUtilizationEnum.AVAILABLE]: number
   requestId?: string
+}
+
+export interface RcapLicenseUtilizationDataV2 {
+  requestId?: string
+  errorMessage?: string
+  data : {
+    [RcapLicenseUtilizationEnum.USED]: number
+    [RcapLicenseUtilizationEnum.AVAILABLE]: number
+  }
+  ok?: boolean
 }
 
 export enum IotControllerStatusEnum {

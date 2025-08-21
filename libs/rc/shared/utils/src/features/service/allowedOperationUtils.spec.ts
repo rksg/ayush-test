@@ -54,6 +54,31 @@ describe('allowedOperationUtils', () => {
       // eslint-disable-next-line max-len
       expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/rec/templates/path'])
     })
+
+    it('should not modify operation that already contains template prefix', () => {
+      const operation = ['http:/templates/path']
+      // eslint-disable-next-line max-len
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual(['http:/templates/path'])
+    })
+
+    it('should handle mixed operations with some already converted', () => {
+      // eslint-disable-next-line max-len
+      const operation = ['http:/path', 'http:/templates/alreadyConverted', 'http:/rec/templates/anotherConverted']
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual([
+        'http:/templates/path',
+        'http:/templates/alreadyConverted',
+        'http:/rec/templates/anotherConverted'
+      ])
+    })
+
+    it('should handle array operations with some already converted', () => {
+      // eslint-disable-next-line max-len
+      const operation = [['http:/path1', 'http:/path2'], ['http:/templates/convert1', 'http:/path3']]
+      expect(convertToTemplateAllowedOperationIfNeeded(operation, true)).toEqual([
+        ['http:/templates/path1', 'http:/templates/path2'],
+        ['http:/templates/convert1', 'http:/templates/path3']
+      ])
+    })
   })
 
   describe('getServiceAllowedOperation', () => {

@@ -197,7 +197,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const { policySetOptions } = useAdaptivePolicySetListQuery(
     { payload: { page: 1, pageSize: '2147483647' } },
     {
-      skip: !isPolicyManagementEnabled,
+      skip: !isPolicyManagementEnabled || isTemplate,
       selectFromResult ({ data }) {
         return {
           policySetOptions: data?.data.map(set => ({ value: set.id, label: set.name }))
