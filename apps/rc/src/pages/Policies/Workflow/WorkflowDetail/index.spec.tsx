@@ -195,7 +195,7 @@ describe('WorkflowDetails', () => {
     </Provider>, {
       route: { params }
     })
-    await screen.findByText('URL')
+    await screen.findByText('URL Actions')
     await screen.findByText('Status')
     await screen.findByText('Publish')
     const closeButton = await screen.findByText('Close')
@@ -212,7 +212,7 @@ describe('WorkflowDetails', () => {
     </Provider>, {
       route: { params }
     })
-    await screen.findByText('URL')
+    await screen.findByText('URL Actions')
     await screen.findByText('Status')
     const publishButton = await screen.findByText('Publish')
     await screen.findByText('Close')

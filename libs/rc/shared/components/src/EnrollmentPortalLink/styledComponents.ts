@@ -62,3 +62,13 @@ export const StyledQRCodeModal = styled(Modal)`
     stroke: black !important;
   }
 `
+
+export const LinkContainer = styled('div')`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      height: auto;
+    }
+`

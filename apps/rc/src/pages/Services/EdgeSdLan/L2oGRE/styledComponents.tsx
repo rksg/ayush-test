@@ -1,6 +1,7 @@
 import { Col, Descriptions, Form, Row, Space, Typography } from 'antd'
 import styled                                              from 'styled-components/macro'
 
+import { Tooltip }            from '@acx-ui/components'
 import { WarningCircleSolid } from '@acx-ui/icons'
 
 export const Wrapper = styled(Row)`
@@ -84,4 +85,10 @@ export const StyledSpace = styled(Space)`
   & > .ant-space-item:not(:last-child) {
     margin-bottom: -15px;
   }
+`
+export const StyledTooltip = styled(Tooltip.Question)`
+  display: flex;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
 `

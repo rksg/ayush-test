@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { ChatbotLink }                    from '@acx-ui/icons'
 import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
 
-import { StyledChatbotLink, StyledQRLink, StyledQRCodeModal } from './styledComponents'
+import { StyledChatbotLink, StyledQRLink, StyledQRCodeModal, LinkContainer } from './styledComponents'
 
 export function EnrollmentPortalLink (props: { url: string, name: string }) {
   const { Link } = Typography
@@ -103,7 +103,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
   }
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <LinkContainer>
         {!workFlowQrCodeGenerate && (
           <>
             <Link
@@ -122,7 +122,6 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
               <Button
                 ghost
                 icon={<CopyOutlined />}
-                style={{ top: '-9px' }}
                 onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
                 onClick={() => {
                   navigator.clipboard.writeText(url)
@@ -190,7 +189,7 @@ export function EnrollmentPortalLink (props: { url: string, name: string }) {
             </div>
           </div>
         )}
-      </div>
+      </LinkContainer>
       <StyledQRCodeModal
         title={truncatedWorkflowName}
         width={340}
