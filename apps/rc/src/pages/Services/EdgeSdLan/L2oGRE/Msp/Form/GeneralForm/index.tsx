@@ -2,6 +2,7 @@
 import { useMemo } from 'react'
 
 import { Checkbox, Col, Form, Input, Row, Space } from 'antd'
+import { isEqual, omit }                          from 'lodash'
 import { useIntl }                                from 'react-intl'
 
 import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
@@ -72,6 +73,30 @@ export const GeneralForm = () => {
     })
   }
 
+  const checkTunnelConfigConsistency = (tunnelProfileId?: string, tunnelTemplateId?: string) => {
+    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+    const targetTunnelTemplate = availableTunnelTemplates.find((tunnelTemplate) =>
+      tunnelTemplate.id === tunnelTemplateId)
+
+    if (!targetTunnelProfile || !targetTunnelTemplate) {
+      return Promise.resolve()
+    }
+
+    if(
+      isEqual(
+        omit(targetTunnelProfile, 'id', 'name', 'destinationEdgeClusterId'),
+        omit(targetTunnelTemplate, 'id', 'name', 'destinationEdgeClusterId')
+      )
+    ) {
+      return Promise.resolve()
+    }
+
+    return Promise.reject($t({
+      defaultMessage: 'Tunnel profile and template must have identical configuration parameters'
+    }))
+  }
+
   return (
     <Wrapper>
       <Col span={12}>
@@ -132,6 +157,10 @@ export const GeneralForm = () => {
                                   disabled={editMode}
                                   tunnelProfiles={filteredAvailableTunnelProfiles}
                                   associatedEdgeClusters={associatedEdgeClusters}
+                                  extraRules={[{
+                                    // eslint-disable-next-line max-len
+                                    validator: (_, value) => checkTunnelConfigConsistency(value, tunnelTemplateId)
+                                  }]}
                                 />
                               </Col>
                             </Row>
@@ -176,22 +205,26 @@ export const GeneralForm = () => {
                               <Col offset={1} span={23}>
                                 <TunnelProfileFormItem
                                   name={tunnelTemplateFieldName}
-                                  // eslint-disable-next-line max-len
-                                  label={<>
-                                    {
-                                      // eslint-disable-next-line max-len
-                                      $t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })
-                                    }
-                                    <Tooltip.Question
-                                      // eslint-disable-next-line max-len
-                                      title={$t({ defaultMessage: 'Only tunnel templates that use the same edge cluster and have identical configuration parameters are shown.' })}
-                                    />
-                                  </>
+                                  label={
+                                    <>
+                                      {
+                                        // eslint-disable-next-line max-len
+                                        $t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })
+                                      }
+                                      <Tooltip.Question
+                                        // eslint-disable-next-line max-len
+                                        title={$t({ defaultMessage: 'Only tunnel templates that use the same edge cluster are shown.' })}
+                                      />
+                                    </>
                                   }
                                   onChange={onTunnelTemplateChange}
                                   disabled={editMode}
                                   tunnelProfiles={filteredAvailableTunnelTemplates}
                                   associatedEdgeClusters={templateAssociatedEdgeClusters}
+                                  extraRules={[{
+                                    // eslint-disable-next-line max-len
+                                    validator: (_, value) => checkTunnelConfigConsistency(tunnelProfileId, value)
+                                  }]}
                                 />
                               </Col>
                             </Row>
