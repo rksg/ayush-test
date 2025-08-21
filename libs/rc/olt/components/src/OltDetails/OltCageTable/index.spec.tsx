@@ -12,21 +12,21 @@ jest.mock('../../OltStatus', () => ({
   OltStatus: () => <div data-testid='OltStatus' />
 }))
 
-jest.mock('../EditCageDrawer', () => ({
+jest.mock('./EditCageDrawer', () => ({
   EditCageDrawer: () => <div data-testid='EditCageDrawer' />
 }))
 
-jest.mock('../ManageOntsSnDrawer', () => ({
+jest.mock('./ManageOntsSnDrawer', () => ({
   ManageOntsSnDrawer: () => <div data-testid='ManageOntsSnDrawer' />
 }))
 
-jest.mock('../ManageCageGroupDrawer', () => ({
+jest.mock('./ManageCageGroupDrawer', () => ({
   ManageCageGroupDrawer: () => <div data-testid='ManageCageGroupDrawer' />
 }))
 
 describe('OltCageTable', () => {
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
-  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id' }
+  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details'
   const mockToggleCageReq = jest.fn()
 
   beforeEach(() => {
