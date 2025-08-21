@@ -293,3 +293,24 @@ export const ontData = [{
     }
   ]
 }]
+
+export const oltPortList = [
+  {
+    port: 'S1/1',
+    status: 'up',
+    speed: '1',
+    vlanId: '200'
+  },
+  {
+    port: 'S1/2',
+    status: 'up',
+    speed: '1',
+    vlanId: '200'
+  },
+  {
+    port: 'S1/3',
+    status: 'down',
+    speed: 'link down',
+    vlanId: '200'
+  }
+]
