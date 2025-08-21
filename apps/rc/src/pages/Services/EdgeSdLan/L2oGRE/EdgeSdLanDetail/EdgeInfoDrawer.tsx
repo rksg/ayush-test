@@ -17,8 +17,7 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { HaStatusBadge } from '../../../../Devices/Edge/HaStatusBadge'
-
-import * as UI from './styledComponents'
+import * as UI           from '../styledComponents'
 
 interface EdgeInfoDrawerProps {
   visible: boolean

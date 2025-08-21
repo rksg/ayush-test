@@ -84,8 +84,8 @@ describe('Edge Cluster Table', () => {
     expect(subRows.length).toBe(2)
 
     expect(screen.getAllByText('Active-Active').length).toBe(1)
-    expect(screen.getAllByText('Active-Standby').length).toBe(2)
-    expect(screen.getAllByText('N/A').length).toBe(2)
+    expect(screen.getAllByText('Active-Standby').length).toBe(3)
+    expect(screen.getAllByText('N/A').length).toBe(1)
     expect(screen.getAllByTestId('edge-cluster-status-label').length).toBe(5)
     expect(screen.getAllByTestId('edge-status-light').length).toBe(7)
   })
