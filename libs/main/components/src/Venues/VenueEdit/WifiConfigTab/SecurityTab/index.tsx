@@ -14,9 +14,9 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/config-template/utils'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { RogueApModal, useIsConfigTemplateEnabledByType }  from '@acx-ui/rc/components'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate }         from '@acx-ui/config-template/utils'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { RogueApModal, useServicePolicyEnabledWithConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -45,6 +45,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams }                           from '@acx-ui/react-router-dom'
 import { getUserProfile, hasAllowedOperations, isCoreTier } from '@acx-ui/user'
+import { isRecSite }                                        from '@acx-ui/utils'
 
 import { VenueEditContext }               from '../..'
 import {
@@ -96,13 +97,12 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
   // eslint-disable-next-line max-len
-  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
+  const isRogueApProfileEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ROGUE_AP_DETECTION)
+  const isRogueApFieldEnabled = useIsRogueApFieldsetEnabled()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
@@ -155,7 +155,7 @@ export function SecurityTab () {
     useQueryFn: useGetVenueRogueApQuery,
     useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
     enableRbac: enableServicePolicyRbac,
-    skip: isCore
+    skip: !isRogueApFieldEnabled
   })
 
   // eslint-disable-next-line max-len
@@ -165,7 +165,7 @@ export function SecurityTab () {
       useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
       payload: DEFAULT_PAYLOAD,
       enableRbac: enableServicePolicyRbac,
-      skip: isCore
+      skip: !isRogueApFieldEnabled
     })
 
     if (data?.totalCount === 0) {
@@ -448,14 +448,14 @@ export function SecurityTab () {
               }}
             />
           </FieldsetItem>
-          { !isCore && <FieldsetItem
+          { isRogueApFieldEnabled && <FieldsetItem
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             disabled={!isAllowEditRogueAp}
             initialValue={false}
             switchStyle={{}}
             triggerDirtyFunc={setTriggerRogueAPDetection}
-            hidden={isTemplate && !isConfigTemplateEnabledByType}
+            hidden={!isRogueApProfileEnabled}
           >
             <Form.Item
               label={<>
@@ -582,3 +582,13 @@ const FieldsetItem = ({
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
 
+function useIsRogueApFieldsetEnabled () {
+  const { isTemplate } = useConfigTemplate()
+
+  if (isTemplate && isRecSite()) return false
+
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
+  return !isCore
+}

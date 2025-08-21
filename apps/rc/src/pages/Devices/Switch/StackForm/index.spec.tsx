@@ -32,6 +32,7 @@ import {
   switchVenueV1002
 } from '../__tests__/fixtures'
 import {
+  switchPortlistResponse,
   vlansByVenueListResponse
 } from '../SwitchForm/__tests__/fixtures'
 
@@ -114,7 +115,9 @@ describe('Switch Stack Form - Add', () => {
       rest.get(SwitchUrlsInfo.getStaticRoutes.url,
         (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.post(SwitchUrlsInfo.convertToStack.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
+        (_, res, ctx) => res(ctx.json(switchPortlistResponse)))
     )
   })
   afterEach(() => {
@@ -245,6 +248,8 @@ describe('Switch Stack Form - Edit', () => {
         (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueV1002))),
+      rest.post(SwitchUrlsInfo.getSwitchPortlist.url,
+        (_, res, ctx) => res(ctx.json(switchPortlistResponse))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => {
           mockUpdateSwitch()
@@ -469,6 +474,8 @@ describe('Switch Stack Form - Edit', () => {
             }))
           }
         ),
+        rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
+          (_, res, ctx) => res(ctx.json(switchPortlistResponse))),
         rest.put(SwitchUrlsInfo.updateSwitchAuthentication.url,
           (_, res, ctx) => {
             mockedUpdateSwitchFlexAuth()

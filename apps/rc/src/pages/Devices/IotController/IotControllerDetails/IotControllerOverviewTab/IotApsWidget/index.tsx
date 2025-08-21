@@ -4,9 +4,14 @@ import AutoSizer        from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
 import type { DonutChartData }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useIotControllerDashboardQuery }                  from '@acx-ui/rc/services'
-import { ApStatusEnum, IotControllerDashboard }            from '@acx-ui/rc/utils'
-import { useParams }                                       from '@acx-ui/react-router-dom'
+import {
+  ApStatusEnum,
+  IotControllerDashboard,
+  IotControllerDashboardV2
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -38,12 +43,14 @@ export const getIotApsDonutChartData = (overviewData?: IotControllerDashboard): 
 
 export function IotApsWidget () {
   const { $t } = useIntl()
+  const isIotDashboardApi = useIsSplitOn(Features.IOT_DASHBOARD_API)
 
   const overviewQuery = useIotControllerDashboardQuery({
     params: useParams()
   }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getIotApsDonutChartData(data),
+      // eslint-disable-next-line max-len
+      data: getIotApsDonutChartData((isIotDashboardApi && (data as IotControllerDashboardV2)?.ok) ? (data as IotControllerDashboardV2).data : data),
       ...rest
     })
   })

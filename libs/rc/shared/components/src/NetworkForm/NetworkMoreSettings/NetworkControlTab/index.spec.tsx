@@ -129,7 +129,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: data, editMode: false, cloneMode: false, setData: () => {}
+          data: data, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <NetworkControlTab/>
@@ -190,7 +190,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
-          data: data, editMode: false, cloneMode: false, setData: () => {}
+          data: data, editMode: false, cloneMode: false, setData: () => {}, isRuckusAiMode: false
         }} >
           <Form>
             <NetworkControlTab/>

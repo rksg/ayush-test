@@ -6,7 +6,7 @@ import { rest }  from 'msw'
 import { Features, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 import { Provider }                                                                                        from '@acx-ui/store'
-import { MockSelect, MockSelectProps, mockServer, render, renderHook, screen }                             from '@acx-ui/test-utils'
+import { fireEvent, MockSelect, MockSelectProps, mockServer, render, renderHook, screen }                  from '@acx-ui/test-utils'
 
 import { TunnelProfileFormItems } from './TunnelProfileFormItems'
 
@@ -299,6 +299,9 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: 'VNI' }))
       expect(natTraversalSwitch).not.toBeChecked()
       expect(natTraversalSwitch).toBeDisabled()
+      await user.hover(natTraversalSwitch!)
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('Network segment type VNI is not supported for NAT-T')).toBeInTheDocument()
     })
 
     it('should show "NAT Traversal" compatibility component', async () => {
@@ -416,6 +419,9 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
       expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeChecked()
       expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
+      fireEvent.mouseOver(screen.getByRole('radio', { name: 'VNI' }))
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('The VNI is not supported for tunnel type L2GRE.')).toBeInTheDocument()
     })
 
     it('should lock disabled fields L2GRE ff enabled', async () => {

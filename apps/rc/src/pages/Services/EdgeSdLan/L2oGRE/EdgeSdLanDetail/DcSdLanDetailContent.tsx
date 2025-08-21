@@ -11,9 +11,10 @@ import {
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
+import * as UI from '../styledComponents'
+
 import { SdLanApTable }    from './SdLanApTable'
 import { SmartEdgesTable } from './SmartEdgesTable'
-import * as UI             from './styledComponents'
 import { VenueTable }      from './VenueTable'
 
 import { getVenueTableData, useSdlanApListTableQuery } from '.'

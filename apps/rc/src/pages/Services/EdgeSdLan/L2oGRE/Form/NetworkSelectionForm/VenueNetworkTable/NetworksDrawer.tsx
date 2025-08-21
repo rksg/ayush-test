@@ -10,9 +10,9 @@ import { showSdLanNetworksTunnelConflictModal }                 from '@acx-ui/ed
 import { NetworkSelectTable }                                   from '@acx-ui/rc/components'
 import { EdgeMvSdLanFormModel, EdgeSdLanTunneledWlan, Network } from '@acx-ui/rc/utils'
 
-import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
-import { messageMappings }     from '../../messageMappings'
-
+import { NetworkActivationType } from '../../../shared/type'
+import { useEdgeSdLanContext }   from '../../EdgeSdLanContextProvider'
+import { messageMappings }       from '../../messageMappings'
 
 const toggleItemFromSelected = (
   checked: boolean,
@@ -45,14 +45,6 @@ export interface NetworksDrawerProps {
   activatedNetworks?: NetworkActivationType,
   pinNetworkIds?: string[],
   softGreNetworkIds?: string[]
-}
-
-export interface NetworkActivationType {
-  [venueId: string]: {
-    networkId: string
-    networkName: string
-    tunnelProfileId?: string
-  }[]
 }
 
 export const NetworksDrawer = (props: NetworksDrawerProps) => {

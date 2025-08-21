@@ -64,6 +64,11 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetAdminListQuery: jest.fn().mockReturnValue({
     data: []
   }),
+  useGetAdminListPaginatedQuery: jest.fn().mockReturnValue({
+    data: { totalCount: 0, content: [] },
+    isLoading: false,
+    isFetching: false
+  }),
   useGetAdminGroupsQuery: jest.fn().mockReturnValue({
     data: []
   }),
@@ -206,5 +211,27 @@ describe('Administrators', () => {
     await userEvent.click(await screen.findByText('Admin Groups (0)'))
 
     expect(mockedUsedNavigate).toHaveBeenCalled()
+  })
+
+  it('should render correctly with pagination enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReset()
+    jest.mocked(useIsSplitOn).mockImplementation((ff: string) => {
+      return ff === Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE
+    })
+
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    const { container } = render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administrators />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(container).toBeInTheDocument()
   })
 })

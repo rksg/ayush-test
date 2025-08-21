@@ -23,7 +23,8 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   usePolicyListBreadcrumb,
-  useTemplateAwarePolicyAllowedOperation
+  useTemplateAwarePolicyAllowedOperation,
+  hasPolicyPermission
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -32,6 +33,7 @@ import { CertificateInfoItem }              from '../CertificateInfoItem'
 import { SamlIdpMetadataModal }             from '../SamlIdpMetadataModal'
 
 import { SamlIdpInstanceTable } from './SamlIdpInstanceTable'
+
 
 export const SamlIdpDetail = () => {
   const { $t } = useIntl()
@@ -65,6 +67,8 @@ export const SamlIdpDetail = () => {
 
   const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
 
+  // eslint-disable-next-line max-len
+  const shouldShowRefreshButton = hasPolicyPermission({ type: PolicyType.SAML_IDP, oper: PolicyOperation.EDIT })
   const handleSyncMetadata = async () => {
     setIsSyncingMetadata(true)
     await refreshSamlServiceProviderMetadata({
@@ -93,7 +97,8 @@ export const SamlIdpDetail = () => {
               >
                 {$t({ defaultMessage: 'View Metadata' })}
               </Button>
-              {(samlIdpData?.metadataUrl) && (
+              {shouldShowRefreshButton &&
+              (samlIdpData?.metadataUrl) && (
                 <Button
                   data-testid='sync-metadata-button'
                   style={{ borderStyle: 'none', width: '14px', height: '14px' }}

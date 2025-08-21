@@ -118,6 +118,7 @@ export enum Features {
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',
   PLM_FF = 'ACX-PLM-FF',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
+  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
@@ -186,6 +187,7 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
+  IOT_DASHBOARD_API = 'iot-dashboard-api',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
   WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
@@ -232,6 +234,7 @@ export enum Features {
   ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
   RUCKUS_AI_FEATURE_RELATED_EVENTS_SUPPRESSION_TOGGLE = 'ruckus-ai-feature-related-events-suppression-toggle',
+  ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE='entitlement-mulitpool-mspec-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE = 'entitlement-adaptive-policy-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE = 'entitlement-pms-integration-toggle',
@@ -293,7 +296,6 @@ export enum Features {
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle',
   MSP_DEVICE_INVENTORY_FIRMWARE_DISPLAY_TOGGLE = 'msp-device-inventory-firmware-display-toggle',
-  PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE = 'ptenant-users-privileges-filter-toggle',
   WIFI_VENUE_RADIUS_CUSTOM_TOGGLE = 'wifi-venue-radius-customization-toggle',
   ACX_UI_EDIT_MULTIPLE_SWITCH_PORT_NAMES = 'acx-ui-edit-multiple-switch-port-names',
   IDENTITY_ANALYTICS_TOGGLE = 'acx-ui-identity-analytics-toggle',
@@ -306,10 +308,12 @@ export enum Features {
   EDGE_DELEGATION_TOGGLE = 'edge-delegation-toggle',
   SWITCH_SUPPORT_ICX8100_PHASE2_TOGGLE = 'switch-support-icx8100-phase2-toggle',
   MSPSERVICE_NOTIFICATION_ACCOUNTS_SEARCH_TOGGLE = 'mspservice-notification-accounts-search-toggle',
+  MSPSERVICE_CUSTOMER_SEARCH_ENHANCEMENT_TOGGLE = 'mspservice-customer-search-enhancement-toggle',
   SWITCH_SUPPORT_ICX8100X_STACKING = 'switch-support-icx8100x-stacking',
   FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY = 'flag-underpowered-aps-and-warn-limited-functionality',
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
-  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle'
+  ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
+  SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

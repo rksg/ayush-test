@@ -11,7 +11,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationOutlined }    from '@acx-ui/icons'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   getNextScheduleTplV1002,
   toUserDate
@@ -41,6 +40,7 @@ import {
   FirmwareRbacUrlsInfo, FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                               from '@acx-ui/react-router-dom'
+import { useSwitchFirmwareUtils }                  from '@acx-ui/switch/components'
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess, getUserProfile, hasAllowedOperations,

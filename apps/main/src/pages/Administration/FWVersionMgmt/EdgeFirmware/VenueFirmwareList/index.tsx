@@ -10,10 +10,12 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import {
-  EdgeChangeScheduleDialog, EdgeUpdateNowDialog, compareVersions,
+  EdgeChangeScheduleDialog,
+  EdgeUpdateNowDialog,
+  compareVersions,
   getNextScheduleTpl,
   isSwitchNextScheduleTooltipDisabled,
-  toUserDate, useSwitchFirmwareUtils
+  toUserDate
 } from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
@@ -38,7 +40,8 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { EdgeScopes, RolesEnum } from '@acx-ui/types'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
+import { EdgeScopes, RolesEnum }  from '@acx-ui/types'
 import {
   filterByAccess, getUserProfile, hasAllowedOperations,
   hasPermission,

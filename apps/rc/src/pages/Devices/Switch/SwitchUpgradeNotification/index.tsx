@@ -4,11 +4,11 @@ import { useState } from 'react'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   FirmwareSwitchVenueVersionsV1002,
   SwitchModelGroupDisplayText
 } from '@acx-ui/rc/utils'
+import { useSwitchFirmwareUtils } from '@acx-ui/switch/components'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'

@@ -34,7 +34,7 @@ describe('useGetAvailableEdgeClusterData', () => {
         }
       ),
       rest.post(
-        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataList.url,
+        EdgeConfigTemplateUrlsInfo.getTunnelProfileTemplateViewDataListSkipRecRewrite.url,
         (req, res, ctx) => {
           mockTunnelProfileTemplateRequest()
           return res(ctx.json({ data: [

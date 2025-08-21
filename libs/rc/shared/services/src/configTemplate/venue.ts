@@ -90,6 +90,22 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    getVenuesTemplateListSkipRecRewrite: build.query<TableResult<Venue>, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getVenuesTemplateListSkipRecRewrite,
+        ConfigTemplateUrlsInfo.getVenuesTemplateListRbacSkipRecRewrite
+      ),
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshVenueTemplateList, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getVenueTemplateApCapabilities: build.query<{ version: string, apModels: CapabilitiesApModel[] }, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getVenueApCapabilities,
@@ -781,5 +797,6 @@ export const {
   useGetVenueTemplateApRebootTimeoutSettingsQuery,
   useUpdateVenueTemplateApRebootTimeoutSettingsMutation,
   useGetVenueTemplateApIotSettingsQuery,
-  useUpdateVenueTemplateApIotSettingsMutation
+  useUpdateVenueTemplateApIotSettingsMutation,
+  useGetVenuesTemplateListSkipRecRewriteQuery
 } = venueConfigTemplateApi

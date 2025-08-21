@@ -80,8 +80,6 @@ import {
   TunnelProfileViewData,
   VlanPool,
   WifiRbacUrlsInfo,
-  configTemplatePolicyTypeMap,
-  configTemplateServiceTypeMap,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
@@ -95,8 +93,8 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
-import { useIsConfigTemplateEnabledByType } from '../configTemplates'
-import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useServicePolicyEnabledWithConfigTemplate } from '../configTemplates'
+import { useLazyGetAAAPolicyInstance }               from '../policies/AAAForm/aaaPolicyQuerySwitcher'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -223,23 +221,6 @@ export const useNetworkVxLanTunnelProfileInfo =
     }
   }
 
-// eslint-disable-next-line max-len
-export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
-  const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
-  const { isTemplate } = useConfigTemplate()
-  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(configTemplateType)
-  const result = !isTemplate || isConfigTemplateEnabledByType
-
-  if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
-
-  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
-    return result
-  }
-
-  return false
-}
-
 export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
@@ -265,7 +246,7 @@ export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): Network
 type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
-  const isRecConfigTemplateP1Enabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED_P1)
+  const isRadiusServerEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.RADIUS)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
@@ -287,13 +268,13 @@ export function useRadiusServer () {
     useTemplateQueryFn: useGetAAAPolicyTemplateListQuery,
     payload: { filters: { networkIds: [networkId] } },
     enableRbac: resolvedRbacEnabled,
-    skip: !networkId || !resolvedRbacEnabled
+    skip: !networkId || !resolvedRbacEnabled || !isRadiusServerEnabled
   })
   const { data: radiusServerSettings } = useConfigTemplateQueryFnSwitcher<NetworkRadiusSettings>({
     useQueryFn: useGetRadiusServerSettingsQuery,
     useTemplateQueryFn: useGetRadiusServerTemplateSettingsQuery,
     enableRbac: resolvedRbacEnabled,
-    skip: !networkId || !resolvedRbacEnabled
+    skip: !networkId || !resolvedRbacEnabled || !isRadiusServerEnabled
   })
   const [ getAAAPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
@@ -368,8 +349,6 @@ export function useRadiusServer () {
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!shouldSaveRadiusServerSettings(saveData)) return Promise.resolve()
 
-    if (isRecConfigTemplateP1Enabled) return Promise.resolve()
-
     return await updateRadiusServerSettings({
       params: { networkId },
       payload: {
@@ -383,6 +362,8 @@ export function useRadiusServer () {
   // eslint-disable-next-line max-len
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+
+    if (!isRadiusServerEnabled) return Promise.resolve()
 
     await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
     await updateProfile(saveData, networkId, cloneMode)
