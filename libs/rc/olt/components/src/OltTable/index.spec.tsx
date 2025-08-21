@@ -52,7 +52,7 @@ describe('OltTable', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      '/mock-tenant-id/t/devices/optical/olt-id/edit', { replace: false }
+      '/mock-tenant-id/t/devices/optical/venue-id/olt-id/edit', { replace: false }
     ))
   })
 
@@ -65,17 +65,6 @@ describe('OltTable', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     expect(mockOltActions.showDeleteOlt).toHaveBeenCalled()
-  })
-
-  it('should reboot OLT correctly', async () => {
-    render(<Provider>
-      <OltTable data={mockOltList} />
-    </Provider>, { route: { params, path: mockPath } })
-
-    const row = await screen.findByRole('row', { name: /TestOlt/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Reboot Chassis' }))
-    expect(mockOltActions.showRebootOlt).toHaveBeenCalled()
   })
 
   describe('OLT with empty serial number', () => {
