@@ -2,8 +2,8 @@
 import '@testing-library/jest-dom'
 import React from 'react'
 
-import { getAckMsg, macAclRulesParser }                               from './switch.utils'
-import { SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE, MacAclRule } from './types'
+import { getAckMsg, isFirmwareVersionAbove10010hLower10020, macAclRulesParser } from './switch.utils'
+import { SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE, MacAclRule }           from './types'
 
 import {
   isOperationalSwitch,
@@ -300,6 +300,26 @@ describe('Test isFirmwareVersionAbove10020bCd2 function', () => {
 
     expect(isFirmwareVersionAbove10020bCd2('TNR10020b_cd2')).toBe(true)
     expect(isFirmwareVersionAbove10020bCd2('')).toBe(false)
+  })
+})
+
+describe('Test isFirmwareVersionAbove10010hLower10020 function', () => {
+  it('should render correctly', async () => {
+    // Below threshold
+    expect(isFirmwareVersionAbove10010hLower10020('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10010hLower10020('SPR10010g_cd1')).toBe(false)
+
+    // At threshold and above within 10010.x range
+    expect(isFirmwareVersionAbove10010hLower10020('SPR10010h')).toBe(true)
+    expect(isFirmwareVersionAbove10010hLower10020('10010h_b467')).toBe(true)
+    expect(isFirmwareVersionAbove10010hLower10020('SPR10010i_rc50')).toBe(true)
+
+    // 10020 and above should be false
+    expect(isFirmwareVersionAbove10010hLower10020('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010hLower10020('SPR10020a_rc35')).toBe(false)
+
+    // Edge
+    expect(isFirmwareVersionAbove10010hLower10020('')).toBe(false)
   })
 })
 
