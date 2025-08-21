@@ -145,7 +145,7 @@ export const EdgeSdLanTable = () => {
 
   const columns: TableProps<EdgeMvSdLanViewData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'ServiceName' }),
+      title: $t({ defaultMessage: 'Service Name' }),
       key: 'name',
       dataIndex: 'name',
       searchable: true,
@@ -174,7 +174,7 @@ export const EdgeSdLanTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Health' }),
+      title: $t({ defaultMessage: 'Service Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       width: 80,
