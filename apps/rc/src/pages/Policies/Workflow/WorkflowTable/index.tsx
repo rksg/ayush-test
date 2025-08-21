@@ -10,11 +10,11 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader, showActionModal
+  Loader, showActionModal,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { LockSolidIcon }                                                    from '@acx-ui/icons'
-import { QuestionMarkCircleOutlined }                                       from '@acx-ui/icons-new'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowsMutation,
@@ -42,8 +42,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { noDataDisplay, FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
-import PublishReadinessProgress from '../PublishReadinessProgress'
-import { RestrictedUrl }        from '../styledComponents'
+import PublishReadinessProgress                          from '../PublishReadinessProgress'
+import { QuestionMarkCircleOutlinedIcon, RestrictedUrl } from '../styledComponents'
 
 
 function useColumns (workflowMap: Map<string, Workflow>) {
@@ -141,7 +141,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
     }] : []),
     {
       key: 'url',
-      title: $t({ defaultMessage: 'URL' }),
+      title: $t({ defaultMessage: 'URL Actions' }),
       dataIndex: 'url',
       render: (_, row) => {
         return {
@@ -153,7 +153,11 @@ function useColumns (workflowMap: Map<string, Workflow>) {
             if (restrictWorkflowUrlToggle && row.restrictByNetwork && link) {
               return <RestrictedUrl><LockSolidIcon />
                 <span>{$t({ defaultMessage: 'Restricted URL' })}</span>
-                <QuestionMarkCircleOutlined />
+                <Tooltip
+                  title={$t({ defaultMessage:
+                    'The URL is only available through assigned captive portal networks' })}>
+                  <QuestionMarkCircleOutlinedIcon />
+                </Tooltip>
               </RestrictedUrl>
             } else {
               if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
