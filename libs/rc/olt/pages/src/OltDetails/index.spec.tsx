@@ -1,20 +1,21 @@
+import '@testing-library/jest-dom'
+
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
 import { OltDetails } from './index'
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 jest.mock('@acx-ui/olt/components', () => ({
-  ...jest.requireActual('@acx-ui/olt/components'),
   OltConfigurationTab: () => <div data-testid='OltConfigurationTab' />,
   OltDetailPageHeader: () => <div data-testid='OltDetailPageHeader' />,
   OltInfoWidget: () => <div data-testid='OltInfoWidget' />,
   OltOverviewTab: () => <div data-testid='OltOverviewTab' />,
-  OltOntTab: () => <div data-testid='OltOntTab' />
+  OltOntTab: () => <div data-testid='OltOntTab' />,
+  OltDetailsContext: {
+    Provider: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid='OltDetailsContext'>{children}</div>
+    )
+  }
 }))
 jest.mock('@acx-ui/user', () => ({
   setUserProfile: jest.fn(),

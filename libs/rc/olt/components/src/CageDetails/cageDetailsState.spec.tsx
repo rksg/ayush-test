@@ -25,14 +25,14 @@ describe('cageDetailsReducer', () => {
     expect(state.drawers).toBe(initState.drawers)
   })
 
-  it('should set current tab correctly', () => {
-    const state = cageDetailsReducer(initState, {
-      type: 'SET_CURRENT_TAB', payload: 'clients'
-    })
-    expect(state).not.toBe(initState)
-    expect(state.currentTab).toBe('clients')
-    expect(state.drawers).toBe(initState.drawers)
-  })
+  // it('should set current tab correctly', () => {
+  //   const state = cageDetailsReducer(initState, {
+  //     type: 'SET_CURRENT_TAB', payload: 'clients'
+  //   })
+  //   expect(state).not.toBe(initState)
+  //   expect(state.currentTab).toBe('clients')
+  //   expect(state.drawers).toBe(initState.drawers)
+  // })
 
   it('should open drawer correctly', () => {
     const state = cageDetailsReducer(initState, {

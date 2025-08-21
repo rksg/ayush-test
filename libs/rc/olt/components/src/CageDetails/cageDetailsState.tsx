@@ -1,9 +1,13 @@
 import { createContext, useReducer, useContext, useMemo } from 'react'
 import type { ReactNode, Dispatch }                       from 'react'
 
-import { CageDetailsTabType, OltCage, OltOnt } from '@acx-ui/olt/utils'
-
-export type DrawerKey = 'ontDetails' | 'editOnt' | 'manageOnts'
+import {
+  OntDetailsAction,
+  DrawerKey,
+  OntDetailsTabType,
+  OltCage,
+  OltOnt
+} from '@acx-ui/olt/utils'
 
 export interface CageDetailsState {
   cageDetails: OltCage
@@ -11,13 +15,6 @@ export interface CageDetailsState {
   currentTab?: string
   drawers: Record<DrawerKey, boolean>
 }
-
-export type CageDetailsAction =
-  | { type: 'SET_SELECTED_ONT'; payload: OltOnt | undefined }
-  | { type: 'SET_CURRENT_TAB'; payload: string }
-  | { type: 'OPEN_DRAWER'; payload: DrawerKey }
-  | { type: 'CLOSE_DRAWER'; payload: DrawerKey }
-  // | { type: 'CLOSE_ALL_DRAWERS' }
 
 export const initialCageDetailsState: CageDetailsState = {
   cageDetails: {} as OltCage,
@@ -32,13 +29,13 @@ export const initialCageDetailsState: CageDetailsState = {
 
 export function cageDetailsReducer (
   state: CageDetailsState,
-  action: CageDetailsAction
+  action: OntDetailsAction
 ): CageDetailsState {
   switch (action.type) {
     case 'SET_SELECTED_ONT':
       return { ...state, selectedOnt: action.payload }
-    case 'SET_CURRENT_TAB':
-      return { ...state, currentTab: action.payload }
+    // case 'SET_CURRENT_TAB':
+    //   return { ...state, currentTab: action.payload }
     case 'OPEN_DRAWER':
     case 'CLOSE_DRAWER':
       return {
@@ -63,7 +60,7 @@ export function cageDetailsReducer (
 
 interface CageDetailsContextType {
   state: CageDetailsState
-  dispatch: Dispatch<CageDetailsAction>
+  dispatch: Dispatch<OntDetailsAction>
 }
 
 const CageDetailsContext = createContext<CageDetailsContextType | undefined>(undefined)
@@ -86,7 +83,7 @@ export const CageDetailsProvider = ({
   const [state, dispatch] = useReducer(cageDetailsReducer, {
     ...initialCageDetailsState,
     cageDetails,
-    currentTab: initialTab ?? CageDetailsTabType.PANEL
+    currentTab: initialTab ?? OntDetailsTabType.PANEL
   })
 
   return (

@@ -515,6 +515,7 @@ const useOltRoutes = () => {
     <Route path='devices/optical/:venueId/:oltId/details/:activeTab' element={<OltDetails />} />
     <Route path='devices/optical/:venueId/:oltId/details/:activeTab/:activeSubTab' element={<OltDetails />} />
     <Route path='devices/optical/:venueId/:oltId/cages/:cageId' element={<CageDetails />} />
+    <Route path='devices/optical/:venueId/:oltId/cages/:cageId/:activeTab' element={<CageDetails />} />
   </> : null
 }
 

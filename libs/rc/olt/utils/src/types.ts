@@ -21,7 +21,7 @@ export enum OltDetailsTabType {
   CONFIGURATION = 'configuration'
 }
 
-export enum CageDetailsTabType {
+export enum OntDetailsTabType {
   PANEL = 'panel',
   PORTS = 'ports',
   CLIENTS = 'clients'
@@ -75,3 +75,11 @@ export interface OltOntClient {
   hostname: string
   port: string
 }
+
+export type DrawerKey = 'ontDetails' | 'editOnt' | 'manageOnts'
+export type OntDetailsAction =
+  | { type: 'SET_SELECTED_ONT'; payload: OltOnt | undefined }
+  // | { type: 'SET_CURRENT_TAB'; payload: string }
+  | { type: 'OPEN_DRAWER'; payload: DrawerKey }
+  | { type: 'CLOSE_DRAWER'; payload: DrawerKey }
+  // | { type: 'CLOSE_ALL_DRAWERS' }

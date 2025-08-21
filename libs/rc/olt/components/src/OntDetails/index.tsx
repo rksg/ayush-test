@@ -1,4 +1,3 @@
-export * from './OntClientTab'
+export * from './OntInfoHeader'
 export * from './OntInfoWidget'
-export * from './OntOverviewTab'
-export * from './OntPortTab'
+export * from './OntTabs'
