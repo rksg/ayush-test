@@ -1,7 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert'
+import { Space }           from 'antd'
+import { useIntl }         from 'react-intl'
 
 import {
   Loader,
@@ -82,6 +83,8 @@ export const NewSelectPGs = (props: SelectPGsProps) => {
       }
     }
   ]
+  const mspManageMspDelegationsSearchToggle =
+    useIsSplitOn(Features.MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE)
 
   return <Space direction='vertical'>
     <Loader states={[tableQuery]}>
@@ -89,6 +92,9 @@ export const NewSelectPGs = (props: SelectPGsProps) => {
         <Table
           columns={columns}
           dataSource={tableQuery?.data?.data}
+          alwaysShowFilters={mspManageMspDelegationsSearchToggle}
+          tableAlertRender={mspManageMspDelegationsSearchToggle
+            ? false : undefined as (AlertRenderType<PrivilegeGroup> | undefined)}
           rowKey='id'
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
