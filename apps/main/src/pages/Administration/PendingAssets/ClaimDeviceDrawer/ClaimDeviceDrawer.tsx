@@ -382,10 +382,6 @@ export const ClaimDeviceDrawer = (props: ClaimDeviceDrawerProps) => {
       setPrefix('')
       setSuffix('')
     } catch (error) {
-      // Handle validation errors - they will be automatically displayed by Ant Design Form
-      // The error object contains validation information that Ant Design will display
-      // eslint-disable-next-line no-console
-      console.log('Form validation error:', error)
     }
   }
 
