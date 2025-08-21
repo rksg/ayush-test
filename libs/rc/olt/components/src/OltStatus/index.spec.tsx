@@ -1,5 +1,5 @@
-import { OltStatusEnum, OltCageStateEnum } from '@acx-ui/olt/utils'
-import { screen, render }                  from '@acx-ui/test-utils'
+import { OltStatusEnum, OltCageStateEnum, OltPortStatusEnum } from '@acx-ui/olt/utils'
+import { screen, render }                                     from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
 
 import { OltStatus } from './'
@@ -17,6 +17,11 @@ describe('OltStatus', () => {
 
   it('should render cage up status with text correctly', () => {
     render(<OltStatus type='cage' status={OltCageStateEnum.UP} showText />)
+    expect(screen.getByText('Up')).toBeInTheDocument()
+  })
+
+  it('should render port up status with text correctly', () => {
+    render(<OltStatus type='port' status={OltPortStatusEnum.UP} showText />)
     expect(screen.getByText('Up')).toBeInTheDocument()
   })
 
