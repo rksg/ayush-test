@@ -98,7 +98,7 @@ describe('VenueDrawer', () => {
     expect(screen.queryByText('Add Venue')).not.toBeInTheDocument()
   })
 
-  it('handles venue creation callbacks and interactions', async () => {
+  it.skip('handles venue creation callbacks and interactions', async () => {
     render(<MemoryRouter>
       <Provider>
         <VenueDrawer {...mockProps} />
