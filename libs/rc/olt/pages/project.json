@@ -1,0 +1,21 @@
+{
+  "sourceRoot": "libs/rc/olt/pages/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rc/olt/pages/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/rc/olt/pages"],
+      "options": {
+        "jestConfig": "libs/rc/olt/pages/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

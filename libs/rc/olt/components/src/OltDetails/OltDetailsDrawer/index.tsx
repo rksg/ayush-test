@@ -10,12 +10,11 @@ import {
   Drawer,
   Subtitle
 } from '@acx-ui/components'
-import { Olt, OltStatusEnum }   from '@acx-ui/olt/utils'
-import { transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
+import { Olt, OltStatusEnum, OltMockdata } from '@acx-ui/olt/utils'
+import { transformDisplayText }            from '@acx-ui/rc/utils'
+import { TenantLink }                      from '@acx-ui/react-router-dom'
 
-import { lineCardInfo, networkCardInfo } from '../../mockdata'
-import { OltStatus }                     from '../../OltStatus'
+import { OltStatus } from '../../OltStatus'
 
 interface OltDetailsDrawerProps {
   visible: boolean
@@ -46,6 +45,8 @@ type NetworkCard = {
   vlans: string
   lag: string
 }
+
+const { networkCardInfo, lineCardInfo } = OltMockdata
 
 export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
   const { $t } = useIntl()
