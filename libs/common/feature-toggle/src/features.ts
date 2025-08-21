@@ -314,6 +314,7 @@ export enum Features {
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
   ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
   SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g',
+  WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE = 'workflow-acl-for-enrollment-url-toggle',
   SWITCH_SUPPORT_ICX8100_STATIC_ROUTE_MAX_VE_TOGGLE = 'switch-support-icx8100-static-route-max-ve-toggle'
 }
 
