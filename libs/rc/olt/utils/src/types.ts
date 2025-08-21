@@ -27,6 +27,11 @@ export enum OntDetailsTabType {
   CLIENTS = 'clients'
 }
 
+export enum OltPortStatusEnum {
+  UP = 'up',
+  DOWN = 'down',
+}
+
 export interface Olt {
   name: string
   status: OltStatusEnum
@@ -43,6 +48,13 @@ export interface Olt {
 export interface OltCage {
   cage: string
   state: OltCageStateEnum
+}
+
+export interface OltPort {
+  port: string
+  status: OltPortStatusEnum
+  speed?: string
+  vlanId?: string
 }
 
 export interface OltOnt {

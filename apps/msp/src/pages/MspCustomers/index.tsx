@@ -187,7 +187,9 @@ export function MspCustomers () {
       'streetAddress',
       'accountTier'
     ],
-    searchTargetFields: ['name']
+    searchTargetFields: isSearchEnhancementEnabled
+      ? ['name', 'streetAddress', 'id']
+      : ['name']
   }
 
   const integratorPayload = {
