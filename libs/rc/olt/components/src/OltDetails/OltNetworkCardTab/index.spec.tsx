@@ -1,3 +1,5 @@
+import userEvent from '@testing-library/user-event'
+
 import { OltFixtures }    from '@acx-ui/olt/utils'
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
@@ -23,6 +25,19 @@ describe('OltNetworkCardTab', () => { //TODO
       }
     )
 
-    expect(screen.getByText(/OltNetworkCardTab/)).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Uplink' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'OOB' })).toBeVisible()
+
+  })
+
+  it('should handle tab change correctly', async () => {
+    render(<Provider>
+      <OltNetworkCardTab />
+    </Provider>)
+
+    const tab = screen.getByRole('tab', { name: 'OOB' })
+    expect(tab).toBeInTheDocument()
+    await userEvent.click(tab)
+    expect(screen.queryByRole('row', { name: /S1\/2 Up 1 200/ })).toBeNull()
   })
 })
