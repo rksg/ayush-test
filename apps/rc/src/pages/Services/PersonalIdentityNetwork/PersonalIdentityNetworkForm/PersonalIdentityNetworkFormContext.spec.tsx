@@ -404,7 +404,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
     const mockAvailableTunnelProfiles = [
       {
         id: 'tunnelProfileVxLANGpeId1',
-        destinationEdgeClusterId: 'clusterId_2',
+        destinationEdgeClusterId: 'clusterId_4',
         name: 'tunnelProfile_VxLAN_GPE_1',
         tunnelType: TunnelTypeEnum.VXLAN_GPE
       }
@@ -449,7 +449,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
       })
 
       // eslint-disable-next-line max-len
-      await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[1]))
+      await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[3]))
     })
 
     it('should get cluster info by cluster id', async () => {

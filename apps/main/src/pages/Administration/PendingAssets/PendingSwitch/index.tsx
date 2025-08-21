@@ -158,7 +158,12 @@ export const PendingSwitch = () => {
         setSelectedDevices(selectedRows)
         setClaimDrawerVisible(true)
         clearSelectionRef.current = clearSelection
-      }
+      },
+      disabled: (selectedRows: DeviceProvision[]) => selectedRows.length > 256,
+      tooltip: (selectedRows: DeviceProvision[]) =>
+        selectedRows.length > 256
+          ? $t(MessageMapping.claim_devive_limitation_tooltip, { deviceCount: 256 })
+          : undefined
     },
     {
       label: $t({ defaultMessage: 'Hide Device' }),
