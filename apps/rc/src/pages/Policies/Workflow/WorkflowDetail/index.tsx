@@ -167,7 +167,7 @@ export default function WorkflowDetails () {
       visible: workflowValidationEnhancementFFToggle,
       content: <PublishReadinessProgress variant='text'
         reasons={data?.statusReasons as StatusReason[]} />,
-      colSpan: 3
+      colSpan: 4
     },
     {
       title: $t({ defaultMessage: 'Workflow URL Acccess' }),
@@ -198,7 +198,7 @@ export default function WorkflowDetails () {
           />
         ) : undefined
       },
-      colSpan: 5
+      colSpan: 4
     }
   ]
 
