@@ -184,7 +184,7 @@ export default function WorkflowDetails () {
             <QuestionMarkCircleOutlinedIcon/>
           </Tooltip></div>
         : $t({ defaultMessage: 'Public' }),
-      colSpan: 4
+      colSpan: 3
     },
     {
       title: $t({ defaultMessage: 'URL Actions' }),
@@ -198,7 +198,7 @@ export default function WorkflowDetails () {
           />
         ) : undefined
       },
-      colSpan: 4
+      colSpan: 5
     }
   ]
 
