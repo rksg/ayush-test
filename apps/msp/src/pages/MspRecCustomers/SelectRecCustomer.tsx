@@ -69,8 +69,8 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
         return account
       }).sort((a, b) => {
         const getPriority = (name: string) => {
-          if (name.startsWith('** ')) return 1
-          if (name.startsWith('* ')) return 2
+          if (name.startsWith('** ')) return 2
+          if (name.startsWith('* ')) return 1
           return 3
         }
 
@@ -205,16 +205,6 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
         'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
         { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
       { isRecToMspREcConversionEnabled && <div>
-        {isR1SalesOrderToggleEnabled && <div>
-          <label>{ <span style={{
-            color: 'var(--acx-accents-orange-50)',
-            margin: '0 4px'
-          }}>**</span> }
-          { $t({ defaultMessage:
-              'Property purchased RUCKUS One cloud subscription but hasnt been onboarded.' })}
-          </label>
-          <br />
-        </div>}
         <label>{ <span style={{
           color: 'var(--acx-accents-orange-50)',
           margin: '0 4px'
@@ -223,6 +213,15 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
             'Property has RUCKUS One cloud subscription but has not been onboarded.' })}
         </label>
       </div> }
+      { isR1SalesOrderToggleEnabled && <div>
+        <label>{ <span style={{
+          color: 'var(--acx-accents-orange-50)',
+          margin: '0 4px'
+        }}>**</span> }
+        { $t({ defaultMessage:
+            'Property purchased RUCKUS One cloud subscription but hasnt been onboarded.' })}
+        </label>
+      </div>}
     </div>
 
     <Button

@@ -2,6 +2,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { useUpdateWorkflowMutation } from '@acx-ui/rc/services'
 import { Workflow }                  from '@acx-ui/rc/utils'
 
@@ -18,11 +19,15 @@ export function WorkflowDrawer (props: WorkflowDrawerProps) {
   const { visible, onClose, data } = props
   const { $t } = useIntl()
   const [updateWorkflow] = useUpdateWorkflowMutation()
+  const restrictWorkflowUrlToggle = useIsSplitOn(Features.WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE)
   const [form] = Form.useForm()
   const handleUpdateWorkflow = async (originData:Workflow|undefined,
     submittedData: Partial<Workflow> ) => {
     if (originData === undefined) return
-    const workflowKeys = ['name', 'description'] as const
+    const workflowKeys = ['name', 'description',
+      ...(restrictWorkflowUrlToggle ? ['restrictByNetwork']
+        : [])
+    ] as (keyof Workflow)[]
     const patchData = {}
 
     workflowKeys.forEach(key => {
