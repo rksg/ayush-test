@@ -11,8 +11,8 @@ import {
 import { Features }         from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
-  useGetEdgePinViewDataListQuery,
   useGetEdgeMvSdLanViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -21,21 +21,20 @@ import {
   getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   getTunnelTypeString,
-  hasPolicyPermission,
   isDefaultTunnelProfile,
   MtuTypeEnum,
   NetworkSegmentTypeEnum,
   PolicyOperation,
   PolicyType,
   transformDisplayOnOff,
+  transformDisplayYesNo,
   TunnelProfileViewData,
   TunnelTypeEnum,
   useIsEdgeFeatureReady,
-  transformDisplayYesNo
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TableColumn }                             from '@acx-ui/types'
@@ -285,11 +284,8 @@ const TunnelProfileTable = () => {
     }
   ]
 
-  const isSelectionVisible = hasPolicyPermission({
-    type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT
-  }) && hasPolicyPermission({
-    type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.DELETE
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const isSelectionVisible = allowedRowActions.length > 0
 
   return (
     <>
@@ -317,7 +313,7 @@ const TunnelProfileTable = () => {
         <Table
           rowKey='id'
           columns={columns}
-          rowActions={filterByAccessForServicePolicyMutation(rowActions)}
+          rowActions={allowedRowActions}
           rowSelection={isSelectionVisible && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
