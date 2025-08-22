@@ -54,6 +54,8 @@ export default function AdaptivePolicySetDetail () {
 
   const [ queryCertificateTemplate ] = useLazyGetCertificateTemplatesQuery()
 
+  const isPolicyOverrideEnabled = useIsSplitOn(Features.POLICY_OVERRIDE_ENABLED)
+
   const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY_SET)
   const columns: TableProps<AssociatedService>['columns'] = [
     {
@@ -239,6 +241,15 @@ export default function AdaptivePolicySetDetail () {
                     <Paragraph>{prioritizedPolicies?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </GridCol>
+                { isPolicyOverrideEnabled &&
+                  <GridCol col={{ span: 6 }}>
+                    <Form.Item label={$t({ defaultMessage: 'Override Services Attributes' })}>
+                      <Paragraph>{policySetData?.policyOverrideEnabled
+                        ? $t({ defaultMessage: 'Enabled' })
+                        : $t({ defaultMessage: 'Disabled' })}</Paragraph>
+                    </Form.Item>
+                  </GridCol>
+                }
               </GridRow>
             </Form>
           </Loader>

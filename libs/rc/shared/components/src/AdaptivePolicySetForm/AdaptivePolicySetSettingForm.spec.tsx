@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                  from '@acx-ui/components'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -14,6 +15,8 @@ jest.mock('./AccessPolicyTable', () => ({
 }))
 
 describe('AdaptivePolicySetSettingForm', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -39,6 +42,7 @@ describe('AdaptivePolicySetSettingForm', () => {
 
     expect(screen.getByRole('textbox', { name: 'Policy Set Name' })).toBeVisible()
     expect(screen.getByTestId('AccessPolicyTable')).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Override Services Attributes' })).toBeVisible()
   })
 
   it('should show error message while policy set name is duplicated', async () => {
