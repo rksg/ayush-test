@@ -35,6 +35,7 @@
     "rc-config-template-utils": "libs/rc/configTemplate/utils",
     "rc-config-template-rec-components": "libs/rc/configTemplate/rec/components",
     "rc-config-template-msp-components": "libs/rc/configTemplate/msp/components",
+    "rc-olt": "libs/rc/olt/pages",
     "rc-olt-components": "libs/rc/olt/components",
     "rc-olt-services": "libs/rc/olt/services",
     "rc-olt-utils": "libs/rc/olt/utils",

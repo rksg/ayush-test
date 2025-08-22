@@ -100,6 +100,7 @@ export enum Features {
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_SORT_ON_TP_COUNT_TOGGLE = 'mspservice-sort-on-tp-count-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE = 'mspservice-manage-msp-delegations-search-toggle',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
@@ -187,6 +188,7 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK = 'switch-ap-port-hyperlink-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
+  IOT_DASHBOARD_API = 'iot-dashboard-api',
   WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
   WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
@@ -313,7 +315,9 @@ export enum Features {
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
   ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
   SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g',
-  POLICY_OVERRIDE_ENABLED = 'policy-override-feature-toggle'
+  POLICY_OVERRIDE_ENABLED = 'policy-override-feature-toggle',
+  WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE = 'workflow-acl-for-enrollment-url-toggle',
+  SWITCH_SUPPORT_ICX8100_STATIC_ROUTE_MAX_VE_TOGGLE = 'switch-support-icx8100-static-route-max-ve-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
