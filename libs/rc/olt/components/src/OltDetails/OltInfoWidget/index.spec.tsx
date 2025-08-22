@@ -21,8 +21,8 @@ jest.mock('./OltDetailsDrawer', () => ({
 }))
 
 describe('OltInfoWidget', () => { //TODO
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
-  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id' }
+  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details'
 
   it('should render correctly', async () => {
     render(<Provider>

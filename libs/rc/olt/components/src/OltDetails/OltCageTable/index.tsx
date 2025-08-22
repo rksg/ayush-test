@@ -10,10 +10,11 @@ import { TenantLink }                                         from '@acx-ui/reac
 import { filterByAccess }                                     from '@acx-ui/user'
 import { noDataDisplay }                                      from '@acx-ui/utils'
 
-import { OltStatus }             from '../../OltStatus'
-import { EditCageDrawer }        from '../EditCageDrawer'
-import { ManageCageGroupDrawer } from '../ManageCageGroupDrawer'
-import { ManageOntsSnDrawer }    from '../ManageOntsSnDrawer'
+import { OltStatus } from '../../OltStatus'
+
+import { EditCageDrawer }        from './EditCageDrawer'
+import { ManageCageGroupDrawer } from './ManageCageGroupDrawer'
+import { ManageOntsSnDrawer }    from './ManageOntsSnDrawer'
 
 interface OltCageTableProps {
   oltDetails: Olt,
@@ -48,7 +49,7 @@ export const OltCageTable = (props: OltCageTableProps) => {
       render: (_, row) =>
         row.state === OltCageStateEnum.UP
           // eslint-disable-next-line max-len
-          ? <TenantLink to={`/devices/optical/${oltDetails.serialNumber}/cages/${row.cage.replace('/', '-')}`}>
+          ? <TenantLink to={`/devices/optical/${oltDetails.venueId}/${oltDetails.serialNumber}/cages/${row.cage.replace('/', '-')}`}>
             {row.cage}
           </TenantLink>
           : row.cage

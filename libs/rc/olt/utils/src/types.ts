@@ -9,6 +9,24 @@ export enum OltCageStateEnum {
   DOWN = 'down',
 }
 
+export enum OltSlotType {
+  NT = 'NT',
+  LT = 'LT',
+  ONT = 'ONT'
+}
+
+export enum OltDetailsTabType {
+  OVERVIEW = 'overview',
+  ONTS = 'onts',
+  CONFIGURATION = 'configuration'
+}
+
+export enum OntDetailsTabType {
+  PANEL = 'panel',
+  PORTS = 'ports',
+  CLIENTS = 'clients'
+}
+
 export enum OltPortStatusEnum {
   UP = 'up',
   DOWN = 'down',
@@ -46,7 +64,7 @@ export interface OltOnt {
   ports: number
   usedPorts: number
   portDetails: OltOntPort[]
-
+  clientDetails?: OltOntClient[]
   model?: string //TODO
   profileName?: string
   version?: string
@@ -60,5 +78,20 @@ export interface OltOntPort {
   vlan: string[]
   poePower: number
   clientCount?: number
+  taggedVlan?: string[]
+  untaggedVlan?: string[]
 }
 
+export interface OltOntClient {
+  macAddress: string
+  hostname: string
+  port: string
+}
+
+export type DrawerKey = 'ontDetails' | 'editOnt' | 'manageOnts'
+export type OntDetailsAction =
+  | { type: 'SET_SELECTED_ONT'; payload: OltOnt | undefined }
+  // | { type: 'SET_CURRENT_TAB'; payload: string }
+  | { type: 'OPEN_DRAWER'; payload: DrawerKey }
+  | { type: 'CLOSE_DRAWER'; payload: DrawerKey }
+  // | { type: 'CLOSE_ALL_DRAWERS' }

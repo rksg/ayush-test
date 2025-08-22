@@ -16,8 +16,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('OltDetailsDrawer', () => { //TODO
-  const params = { tenantId: 'tenant-id', oltId: 'olt-id' }
-  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+  const params = { tenantId: 'tenant-id', oltId: 'olt-id', venueId: 'venue-id' }
+  const mockPath = '/:tenantId/devices/optical/:venueId/:oltId/details'
   const defaultProps = {
     visible: true,
     setVisible: setVisible,

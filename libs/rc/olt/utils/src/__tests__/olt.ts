@@ -1,4 +1,4 @@
-import { OltStatusEnum, OltCageStateEnum, OltPortStatusEnum } from '../types'
+import { OltStatusEnum, OltCageStateEnum, OltSlotType, OltPortStatusEnum } from '../types'
 
 export const mockOlt = {
   name: 'TestOlt',
@@ -8,7 +8,7 @@ export const mockOlt = {
   model: 'MF-2',
   firmware: '22.649',
   ip: '134.242.136.112',
-  venueId: 'mock_venue_1',
+  venueId: 'venue-id',
   venueName: 'Mock Venue 1'
 }
 
@@ -87,6 +87,13 @@ export const mockOntList = [{
       vlan: ['66'],
       poePower: 3
     }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_1_client',
+      port: '1'
+    }
   ]
 }, {
   id: 'ont-id-2',
@@ -100,6 +107,13 @@ export const mockOntList = [{
       status: OltCageStateEnum.DOWN,
       vlan: [],
       poePower: 0
+    }
+  ],
+  clientDetails: [
+    {
+      macAddress: '00:00:00:00:00:00',
+      hostname: 'ont_2_client',
+      port: '1'
     }
   ]
 }, {
@@ -275,3 +289,69 @@ export const mockVenuelist = {
     }
   ]
 }
+
+export const mockNetworkCardSlots = [
+  {
+    type: OltSlotType.NT,
+    slots: [{
+      label: 'TOD',
+      status: OltCageStateEnum.UP,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }, {
+      label: 'ALM',
+      status: OltCageStateEnum.UP,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }, {
+      label: 'OOB',
+      status: OltCageStateEnum.UP,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }, {
+      label: 'LEMI',
+      status: OltCageStateEnum.DOWN,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }, {
+      label: 'UPLINK',
+      type: 'uplink',
+      status: OltCageStateEnum.DOWN,
+      info: '%info%',
+      portSpeed: '1 Gb/sec',
+      taggedVlan: '2,3,4',
+      untaggedVlan: '1'
+    }, {
+      label: 'UPLINK',
+      type: 'uplink',
+      status: OltCageStateEnum.UP,
+      info: '%info%',
+      portSpeed: '1 Gb/sec',
+      taggedVlan: '2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17',
+      untaggedVlan: '1'
+    }]
+  }
+]
+
+export const mockLineCardSlots = [
+  {
+    type: OltSlotType.LT,
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      label: `S1/${index + 1}`,
+      type: index === 2 ? 'lag' : '',
+      status: index % 4 === 0 ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }))
+  },
+  {
+    type: OltSlotType.LT,
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      label: `S2/${index + 1}`,
+      type: index === 2 ? 'lag' : '',
+      status: index === 3 ? OltCageStateEnum.UP : OltCageStateEnum.DOWN,
+      info: '%info%',
+      portSpeed: '1 Gb/sec'
+    }))
+  }
+]
