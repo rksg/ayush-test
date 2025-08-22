@@ -159,8 +159,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       }
     }),
     updateEdgeMvSdLanPartial: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial, params, versionHeader)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial,
+          params,
+          customHeaders || versionHeader
+        )
         return {
           ...req,
           body: JSON.stringify(payload)
