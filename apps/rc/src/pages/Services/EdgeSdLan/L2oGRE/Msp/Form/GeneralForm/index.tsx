@@ -1,16 +1,19 @@
 
+import { useMemo } from 'react'
+
 import { Checkbox, Col, Form, Input, Row, Space } from 'antd'
+import { isEqual, omit }                          from 'lodash'
 import { useIntl }                                from 'react-intl'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
-import { SdLanTopologyVertical }         from '@acx-ui/edge/components'
-import { servicePolicyNameRegExp }       from '@acx-ui/rc/utils'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { SdLanTopologyVertical }                  from '@acx-ui/edge/components'
+import { servicePolicyNameRegExp }                from '@acx-ui/rc/utils'
 
 import { useEdgeSdLanContext }                                                    from '../../../Form/EdgeSdLanContextProvider'
 import { ClusterFirmwareInfo }                                                    from '../../../shared/ClusterFirmwareInfo'
 import { tunnelProfileFieldName, TunnelProfileFormItem, tunnelTemplateFieldName } from '../../../shared/TunnelProfileFormItem'
 import { ApplyTo }                                                                from '../../../shared/type'
-import { StyledAntdDescriptions, VerticalSplitLine, Wrapper }                     from '../../../styledComponents'
+import { StyledAntdDescriptions, StyledTooltip, VerticalSplitLine, Wrapper }      from '../../../styledComponents'
 import { useMspEdgeSdLanContext }                                                 from '../MspEdgeSdLanContextProvider'
 
 export const GeneralForm = () => {
@@ -24,6 +27,28 @@ export const GeneralForm = () => {
   const applyTo = Form.useWatch('applyTo', form)
   const tunnelProfileId = Form.useWatch('tunnelProfileId', form)
   const tunnelTemplateId = Form.useWatch('tunnelTemplateId', form)
+
+  const filteredAvailableTunnelProfiles = useMemo(() => {
+    const targetTunnelTemplate = availableTunnelTemplates.find(tunnelTemplate =>
+      tunnelTemplate.id === tunnelTemplateId)
+    return availableTunnelProfiles.filter(tunnelProfile =>
+      tunnelProfile.id === tunnelProfileId ||
+      (
+        !targetTunnelTemplate?.destinationEdgeClusterId ||
+        tunnelProfile.destinationEdgeClusterId === targetTunnelTemplate?.destinationEdgeClusterId
+      ))
+  }, [availableTunnelProfiles, tunnelProfileId, tunnelTemplateId, availableTunnelTemplates])
+
+  const filteredAvailableTunnelTemplates = useMemo(() => {
+    const targetTunnelProfile = availableTunnelProfiles.find(tunnelProfile =>
+      tunnelProfile.id === tunnelProfileId)
+    return availableTunnelTemplates.filter(tunnelTemplate =>
+      tunnelTemplate.id === tunnelTemplateId ||
+      (
+        !targetTunnelProfile?.destinationEdgeClusterId ||
+        tunnelTemplate.destinationEdgeClusterId === targetTunnelProfile?.destinationEdgeClusterId
+      ))
+  }, [availableTunnelTemplates, tunnelProfileId, tunnelTemplateId, availableTunnelProfiles])
 
   const currentTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
     tunnelProfile.id === tunnelProfileId)
@@ -46,6 +71,30 @@ export const GeneralForm = () => {
       edgeClusterName: targetTunnelTemplate?.destinationEdgeClusterName,
       tunnelTemplateName: targetTunnelTemplate?.name
     })
+  }
+
+  const checkTunnelConfigConsistency = (tunnelProfileId?: string, tunnelTemplateId?: string) => {
+    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+    const targetTunnelTemplate = availableTunnelTemplates.find((tunnelTemplate) =>
+      tunnelTemplate.id === tunnelTemplateId)
+
+    if (!targetTunnelProfile || !targetTunnelTemplate) {
+      return Promise.resolve()
+    }
+
+    if(
+      isEqual(
+        omit(targetTunnelProfile, 'id', 'name', 'destinationEdgeClusterId'),
+        omit(targetTunnelTemplate, 'id', 'name', 'destinationEdgeClusterId')
+      )
+    ) {
+      return Promise.resolve()
+    }
+
+    return Promise.reject($t({
+      defaultMessage: 'Tunnel profile and template must have identical configuration parameters'
+    }))
   }
 
   return (
@@ -89,7 +138,13 @@ export const GeneralForm = () => {
                     <Col span={24}>
                       <Space direction='vertical' style={{ width: '100%' }}>
                         <Checkbox value={ApplyTo.MY_ACCOUNT}>
-                          {$t({ defaultMessage: 'My Account' })}
+                          <Space>
+                            {$t({ defaultMessage: 'My Account' })}
+                            <StyledTooltip
+                              // eslint-disable-next-line max-len
+                              title={$t({ defaultMessage: 'Create a tunnel profile for your account to enable SD-LAN connectivity within your tenant environment.' })}
+                            />
+                          </Space>
                         </Checkbox>
                         {
                           applyTo?.includes(ApplyTo.MY_ACCOUNT) && <>
@@ -100,8 +155,12 @@ export const GeneralForm = () => {
                                   label={$t({ defaultMessage: 'Tunnel Profile (AP to Cluster)' })}
                                   onChange={onTunnelProfileChange}
                                   disabled={editMode}
-                                  tunnelProfiles={availableTunnelProfiles}
+                                  tunnelProfiles={filteredAvailableTunnelProfiles}
                                   associatedEdgeClusters={associatedEdgeClusters}
+                                  extraRules={[{
+                                    // eslint-disable-next-line max-len
+                                    validator: (_, value) => checkTunnelConfigConsistency(value, tunnelTemplateId)
+                                  }]}
                                 />
                               </Col>
                             </Row>
@@ -132,7 +191,13 @@ export const GeneralForm = () => {
                     <Col span={24}>
                       <Space direction='vertical' style={{ width: '100%' }}>
                         <Checkbox value={ApplyTo.MY_CUSTOMERS}>
-                          {$t({ defaultMessage: 'My Customers' })}
+                          <Space>
+                            {$t({ defaultMessage: 'My Customers' })}
+                            <StyledTooltip
+                              // eslint-disable-next-line max-len
+                              title={$t({ defaultMessage: 'Sets up an SD-LAN tunnel profile template to be applied and activated across managed customer deployments.' })}
+                            />
+                          </Space>
                         </Checkbox>
                         {
                           applyTo?.includes(ApplyTo.MY_CUSTOMERS) && <>
@@ -140,12 +205,26 @@ export const GeneralForm = () => {
                               <Col offset={1} span={23}>
                                 <TunnelProfileFormItem
                                   name={tunnelTemplateFieldName}
-                                  // eslint-disable-next-line max-len
-                                  label={$t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })}
+                                  label={
+                                    <>
+                                      {
+                                        // eslint-disable-next-line max-len
+                                        $t({ defaultMessage: 'Tunnel Profile Template (AP to Cluster)' })
+                                      }
+                                      <Tooltip.Question
+                                        // eslint-disable-next-line max-len
+                                        title={$t({ defaultMessage: 'Only tunnel templates that use the same edge cluster are shown.' })}
+                                      />
+                                    </>
+                                  }
                                   onChange={onTunnelTemplateChange}
                                   disabled={editMode}
-                                  tunnelProfiles={availableTunnelTemplates}
+                                  tunnelProfiles={filteredAvailableTunnelTemplates}
                                   associatedEdgeClusters={templateAssociatedEdgeClusters}
+                                  extraRules={[{
+                                    // eslint-disable-next-line max-len
+                                    validator: (_, value) => checkTunnelConfigConsistency(tunnelProfileId, value)
+                                  }]}
                                 />
                               </Col>
                             </Row>

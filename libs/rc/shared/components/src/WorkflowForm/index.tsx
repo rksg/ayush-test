@@ -1,10 +1,11 @@
 
 
-import { Form, Input, Space } from 'antd'
-import TextArea               from 'antd/lib/input/TextArea'
-import { useIntl }            from 'react-intl'
+import { Form, Input, Radio, Space } from 'antd'
+import TextArea                      from 'antd/lib/input/TextArea'
+import { useIntl }                   from 'react-intl'
 
 import { GridCol,GridRow }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useLazySearchInProgressWorkflowListQuery
 } from '@acx-ui/rc/services'
@@ -12,6 +13,8 @@ import {
   Workflow,
   checkObjectNotExists,
   trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+
+import { RadioDescription } from './styledComponents'
 
 
 export interface WorkflowFormField extends Workflow {
@@ -31,7 +34,7 @@ export function WorkflowForm (props: {
         payload: { filters: { name: name }, pageSize: '2000', page: '1' },
         params: { excludeContent: 'false' }
       }, true)
-        .unwrap()).data.filter(g => g.id !== policyId ?? '')
+        .unwrap()).data.filter(g => g.id !== policyId)
         .map(g => ({ name: g.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Workflow' }))
     } catch (e) {
@@ -39,6 +42,7 @@ export function WorkflowForm (props: {
     }
   }
 
+  const restrictWorkflowUrlToggle = useIsSplitOn(Features.WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE)
 
 
   return (
@@ -74,6 +78,30 @@ export function WorkflowForm (props: {
               { max: 255 }
             ]}
           />
+          { restrictWorkflowUrlToggle && <Form.Item
+            name='restrictByNetwork'
+            label={$t({ defaultMessage: 'Workflow URL Access' })}
+            initialValue={false}
+            children={<Radio.Group>
+              <Space direction='vertical' size='middle'>
+                <Radio
+                  value={false}>
+                  {$t({ defaultMessage: 'Public' })}
+                  <RadioDescription>{
+                    $t({ defaultMessage: 'Anyone with the URL can view the workflow' })
+                  }</RadioDescription>
+                </Radio>
+                <Radio
+                  value={true}>
+                  {$t({ defaultMessage: 'Restricted' })}
+                  <RadioDescription>{
+                    $t({
+                      defaultMessage: 'Only available through assigned captive portal networks' })
+                  }</RadioDescription>
+                </Radio>
+              </Space>
+            </Radio.Group>}
+          /> }
         </Space>
       </GridCol>
     </GridRow>

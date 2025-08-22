@@ -83,23 +83,23 @@ export default function ApLldpNeighbors () {
   </Loader>
 }
 
-const transPSEAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
-  if (!lldpPSEAllocPowerVal) return noDataDisplay
+const formatLldpPowerVal = (lldpPowerVal: string | null | undefined): string => {
+  if (!lldpPowerVal) return noDataDisplay
 
-  const numericAllocPower = Number(lldpPSEAllocPowerVal)
-  if(isNaN(numericAllocPower)) {
+  const numericPowerVal = Number(lldpPowerVal)
+  if(isNaN(numericPowerVal)) {
     return noDataDisplay
   }
 
-  if(numericAllocPower < 1000){
-    return `${numericAllocPower} mW`
+  if(numericPowerVal < 1000){
+    return `${numericPowerVal} mW`
   }
 
-  const allocatedPower = numericAllocPower / 1000
-  if(Number.isInteger(allocatedPower)) {
-    return `${allocatedPower} W`
+  const powerVal = numericPowerVal / 1000
+  if(Number.isInteger(powerVal)) {
+    return `${powerVal} W`
   }
-  return `${allocatedPower.toFixed(2)} W`
+  return `${powerVal.toFixed(2)} W`
 }
 
 function useColumns (
@@ -189,13 +189,14 @@ function useColumns (
     {
       key: 'lldpPDReqPowerVal',
       dataIndex: 'lldpPDReqPowerVal',
-      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPDReqPowerVal, highlightFn)
+      // eslint-disable-next-line max-len
+      render: (_, row, __, highlightFn) => apNeighborValueRender(formatLldpPowerVal(row.lldpPDReqPowerVal), highlightFn)
     },
     {
       key: 'lldpPSEAllocPowerVal',
       dataIndex: 'lldpPSEAllocPowerVal',
       // eslint-disable-next-line max-len
-      render: (_, row, __, highlightFn) => apNeighborValueRender(transPSEAllocPowerVal(row.lldpPSEAllocPowerVal), highlightFn)
+      render: (_, row, __, highlightFn) => apNeighborValueRender(formatLldpPowerVal(row.lldpPSEAllocPowerVal), highlightFn)
     }
   ]
 

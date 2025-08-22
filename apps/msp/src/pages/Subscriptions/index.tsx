@@ -32,9 +32,9 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { MspSubscriptionUtilizationWidget }                                                                                                 from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                            from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, HspContext, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo, MSPUtils } from '@acx-ui/msp/utils'
+import { MspSubscriptionUtilizationWidget }                                                                                                           from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                                      from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,
   dateSort,
@@ -51,7 +51,7 @@ import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from
 import { RolesEnum }                                                        from '@acx-ui/types'
 import type { Filter }                                                      from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
+import { AccountVertical, getJwtTokenPayload, getOpsApi, noDataDisplay }    from '@acx-ui/utils'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -77,7 +77,8 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 ]
 
 const defaultSelectedFilters: Filter = {
-  status: ['VALID', 'FUTURE']
+  status: ['VALID', 'FUTURE'],
+  skuTier: null
 }
 
 const entitlementRefreshPayload = {
@@ -85,11 +86,23 @@ const entitlementRefreshPayload = {
   usageType: 'ASSIGNED'
 }
 
+
+enum HspMduTierEnum {
+  Core = 'Silver',
+  Professional = 'Platinum'
+}
+enum DefaultMspTierEnum {
+  Essentials = 'Gold',
+  Professional = 'Platinum'
+}
+
 export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/mspLicenses', 'v')
   const { rbacOpsApiEnabled } = getUserProfile()
+  const { acx_account_vertical } = getJwtTokenPayload()
+  const mspUtils = MSPUtils()
   const hasPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([
       [getOpsApi(MspRbacUrlsInfo.addMspAssignment), getOpsApi(MspRbacUrlsInfo.updateMspAssignment),
@@ -113,6 +126,8 @@ export function Subscriptions () {
   const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   // eslint-disable-next-line max-len
   const isMultiLicensePoolToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_MULTI_LICENSE_POOL_TOGGLE)
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const entitlementListPayload = {
     fields: [
@@ -172,6 +187,17 @@ export function Subscriptions () {
       { purchased, courtesy })
   }
 
+  const typeFilterOptionsEnum = (isHospitality || isMDU) ?
+    HspMduTierEnum : DefaultMspTierEnum
+
+  const typeFilterOptions = [
+    { key: null, value: $t({ defaultMessage: 'All License Tiers' }) },
+    ...Object.entries(typeFilterOptionsEnum).map(([key, text]) => ({
+      key: text,
+      value: key
+    }))
+  ]
+
   const columns: TableProps<MspEntitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
@@ -204,9 +230,14 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'License Tier' }),
       dataIndex: 'skuTier',
       key: 'skuTier',
+      filterable: typeFilterOptions,
+      filterMultiple: false,
       sorter: { compare: sortProp('skuTier', defaultSort) },
       render: function (_: React.ReactNode, row: MspEntitlement) {
-        return row?.skuTier || noDataDisplay
+        if (row.skuTier) {
+          return $t(mspUtils.transformTier(row.skuTier))
+        }
+        return noDataDisplay
       }
     }]: []),
     {
@@ -263,7 +294,6 @@ export function Subscriptions () {
       dataIndex: 'status',
       key: 'status',
       filterMultiple: false,
-      filterValueNullable: true,
       filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },

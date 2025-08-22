@@ -168,15 +168,15 @@ describe('switch.firmware.utils', () => {
   })
 
   it('should handle ICX8100 models correctly', () => {
-    // ICX8100 with 10020 firmware - should return 8 if version >= 10020c, else 4
-    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10020c_cd1_rc11')).toBe(8)
-    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10020c')).toBe(8)
+    // ICX8100 - should return 4
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10020c_cd1_rc11')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10020c')).toBe(4)
     expect(getStackUnitsMinLimitationV1002('ICX8100-24-X', '10020b_cd2')).toBe(4)
     expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10020a_rc22')).toBe(4)
 
-    // ICX8100 without 10020 firmware - should return 8 if version >= 10010h, else 4
-    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(8)
-    expect(getStackUnitsMinLimitationV1002('ICX8100-24-x', '10010h_cd1')).toBe(8)
+    // ICX8100 - should return 4
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-24-x', '10010h_cd1')).toBe(4)
     expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010g_cd1')).toBe(4)
     expect(getStackUnitsMinLimitationV1002('ICX8100-24-x', '10010f_b467')).toBe(4)
   })
@@ -232,8 +232,8 @@ describe('switch.firmware.utils', () => {
     expect(getStackUnitsMinLimitationV1002('UNKNOWN-MODEL', '10010c_cd3')).toBe(12)
 
     // Case sensitivity for ICX8100 regex
-    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(8)
-    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10010h')).toBe(8)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-X', '10010h')).toBe(4)
+    expect(getStackUnitsMinLimitationV1002('ICX8100-48-x', '10010h')).toBe(4)
 
     // Invalid firmware format should default to lower limits
     expect(getStackUnitsMinLimitationV1002('ICX8200-24P', 'invalid')).toBe(4)

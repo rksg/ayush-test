@@ -8,7 +8,7 @@ import { CommonUrlsInfo }                                                       
 import { Provider, store }                                                            from '@acx-ui/store'
 import { render, renderHook, mockServer, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { OltForm } from '.'
+import { OltForm } from './'
 
 const { mockOlt } = OltFixtures
 

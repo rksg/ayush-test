@@ -400,7 +400,7 @@ export function RadioSettingsForm (props:{
             rules={[
               { required: true },
               { type: 'number', min: 1 },
-              { type: 'number', max: 65535 }
+              { type: 'number', max: 3600 }
             ]}
           >
             <InputNumber disabled={disabled}

@@ -10,6 +10,7 @@ import { MSPUtils }                from '@acx-ui/msp/utils'
 import {
   useGetAdminGroupsQuery,
   useGetAdminListQuery,
+  useGetAdminListPaginatedQuery,
   useGetCustomRolesQuery,
   useGetDelegationsQuery,
   useGetPrivilegeGroupsQuery,
@@ -43,6 +44,7 @@ const UserPrivileges = () => {
   const mspUtils = MSPUtils()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isPaginationEnabled = useIsSplitOn(Features.PTENANT_USERS_PRIVILEGES_FILTER_TOGGLE)
   const usePrivilegeGrouspPaginatedAPI
   = useIsSplitOn(Features.ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API)
 
@@ -50,8 +52,21 @@ const UserPrivileges = () => {
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const adminList = useGetAdminListQuery(
-    { params }, { skip: !isGroupBasedLoginEnabled })
+
+  const countPayload = {
+    page: 1,
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    searchTargetFields: ['name', 'username'],
+    searchString: '',
+    filters: {}
+  }
+
+  const adminList = useGetAdminListPaginatedQuery(
+    { params, payload: countPayload }, { skip: !isGroupBasedLoginEnabled || !isPaginationEnabled })
+  const adminListOriginal = useGetAdminListQuery(
+    { params }, { skip: !isGroupBasedLoginEnabled || isPaginationEnabled })
   const ssoGroupList = useGetAdminGroupsQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
   const thirdPartyAdminList = useGetDelegationsQuery(
@@ -62,7 +77,9 @@ const UserPrivileges = () => {
   const customRoleList = useGetCustomRolesQuery(
     { params }, { skip: !isGroupBasedLoginEnabled })
 
-  const adminCount = adminList?.data?.length! || 0
+  const adminCount = isPaginationEnabled
+    ? (adminList?.data?.totalCount || 0)
+    : (adminListOriginal?.data?.length || 0)
   const ssoGroupCount = ssoGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
   const privilegeGroupCount = privilegeGroupList.data?.length! || 0

@@ -88,6 +88,8 @@ export function MspCustomers () {
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isCustomFilterEnabled = useIsSplitOn(Features.VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const isSearchEnhancementEnabled =
+    useIsSplitOn(Features.MSPSERVICE_CUSTOMER_SEARCH_ENHANCEMENT_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -185,7 +187,9 @@ export function MspCustomers () {
       'streetAddress',
       'accountTier'
     ],
-    searchTargetFields: ['name']
+    searchTargetFields: isSearchEnhancementEnabled
+      ? ['name', 'streetAddress', 'id']
+      : ['name']
   }
 
   const integratorPayload = {
@@ -240,7 +244,7 @@ export function MspCustomers () {
   }
 
   function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean,
-    isFilterEnable?: boolean) {
+    isFilterEnable?: boolean, isSearchEnhancementEnable?: boolean) {
     const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
       (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
         : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
@@ -344,7 +348,8 @@ export function MspCustomers () {
         title: $t({ defaultMessage: 'Address' }),
         dataIndex: 'streetAddress',
         key: 'streetAddress',
-        sorter: true
+        sorter: true,
+        searchable: isSearchEnhancementEnable
       },
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
@@ -530,7 +535,8 @@ export function MspCustomers () {
         dataIndex: 'id',
         key: 'id',
         show: false,
-        sorter: true
+        sorter: true,
+        searchable: isSearchEnhancementEnable
       }
     ]
     return columns
@@ -570,7 +576,8 @@ export function MspCustomers () {
       }
     }, [tableQuery?.data?.data, alarmList?.data])
 
-    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled, isCustomFilterEnabled)
+    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled, isCustomFilterEnabled,
+      isSearchEnhancementEnabled)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {

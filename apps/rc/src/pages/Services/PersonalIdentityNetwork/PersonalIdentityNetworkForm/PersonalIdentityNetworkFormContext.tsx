@@ -318,11 +318,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     })
 
   const usedSdlanVenueIds = useMemo(() => {
-    const sdlanClusterVenueIds = clusterData?.filter(item =>
-      usedSdlanClusterIds.includes(item.value))
+    const sdlanClusterVenueIds = allClusterData?.filter(item =>
+      usedSdlanClusterIds.includes(item.clusterId))
       .map(item => item.venueId)
     return uniq(union(usedSdlanTunneledVenueIds, sdlanClusterVenueIds))
-  }, [usedSdlanTunneledVenueIds, usedSdlanClusterIds])
+  }, [usedSdlanTunneledVenueIds, usedSdlanClusterIds, allClusterData])
 
   const venueOptions = useMemo(() => {
     return venues?.filter(item =>
@@ -333,7 +333,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const clusterOptions = useMemo(() => {
     return clusterData?.filter(item =>
       !usedSdlanClusterIds.includes(item.value) && venueId === item.venueId) ?? []
-  }, [venueId, usedSdlanClusterIds])
+  }, [venueId, usedSdlanClusterIds, clusterData])
 
   useEffect(() => {
     if(props.venueId) setVenueId(props.venueId)
@@ -364,6 +364,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   })
 
   const { tunnelProfileOptions } = useMemo(() => {
+    const usedVenueAssociatedClusterIds = allClusterData?.filter(
+      item => usedSdlanVenueIds?.includes(item.venueId ?? '') ||
+        usedVenueIds?.includes(item.venueId ?? '')
+    ).map(item => item.clusterId)
     const availableTunnelProfileOptions = availableTunnelProfiles
       .filter(item => item.tunnelType === TunnelTypeEnum.VXLAN_GPE)
       .filter(item => {
@@ -371,6 +375,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         const targetClusterInfo = allClusterData?.find(cluster => cluster.clusterId === item.destinationEdgeClusterId)
         return targetClusterInfo && isPinSupportCluster(targetClusterInfo, requiredFw!)
       })
+      .filter(item => !usedVenueAssociatedClusterIds?.includes(item.destinationEdgeClusterId))
       ?.map(item => ({
         label: item.name,
         value: item.id

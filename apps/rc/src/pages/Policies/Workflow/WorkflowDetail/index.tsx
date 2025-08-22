@@ -5,7 +5,7 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader }                                                                                                                                                                       from '@acx-ui/components'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tooltip }                                                                                                                                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                                                                                                                                from '@acx-ui/formatter'
 import { WarningTriangleBold }                                                                                                                                                                                                      from '@acx-ui/icons'
@@ -16,7 +16,8 @@ import { TenantLink, useTenantLink }                                            
 import { hasPermission }                                                                                                                                                                                                            from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                                                                                                                                                                                                 from '@acx-ui/utils'
 
-import PublishReadinessProgress from '../PublishReadinessProgress'
+import PublishReadinessProgress           from '../PublishReadinessProgress'
+import { QuestionMarkCircleOutlinedIcon } from '../styledComponents'
 
 import * as UI from './styledComponents'
 
@@ -35,6 +36,7 @@ export default function WorkflowDetails () {
 
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+  const restrictWorkflowUrlToggle = useIsSplitOn(Features.WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE)
 
   const workflowQuery = useGetWorkflowByIdQuery({ params: { id: policyId } })
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
@@ -168,8 +170,26 @@ export default function WorkflowDetails () {
       colSpan: 4
     },
     {
-      title: $t({ defaultMessage: 'URL' }),
-      visible: published?.publishedDetails?.status === 'PUBLISHED',
+      title: $t({ defaultMessage: 'Workflow URL Acccess' }),
+      visible: restrictWorkflowUrlToggle,
+      content: data?.restrictByNetwork
+        ? <div
+          style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}><span style={{ margin: '4px' }}>{$t({ defaultMessage: 'Restricted' })}</span>
+          <Tooltip
+            title={$t({ defaultMessage:
+                'The URL is only available through assigned captive portal networks' })}>
+            <QuestionMarkCircleOutlinedIcon/>
+          </Tooltip></div>
+        : $t({ defaultMessage: 'Public' }),
+      colSpan: 4
+    },
+    {
+      title: $t({ defaultMessage: 'URL Actions' }),
+      visible: published?.publishedDetails?.status === 'PUBLISHED'
+      && restrictWorkflowUrlToggle && !data?.restrictByNetwork,
       content: () => {
         const link = published?.links?.find(v => v.rel === 'enrollmentPortal')
         return link ? (

@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
 import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
+import { useOltTable }                                    from '@acx-ui/olt/components'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
 import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
-import useOltTable          from '../Olt/OltTable'
 
 import useSwitchesTable from './SwitchesTable'
 

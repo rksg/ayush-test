@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { Features }                      from '@acx-ui/feature-toggle'
 import {
-  useGetEdgeClusterListQuery,
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery
@@ -69,9 +68,8 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
   })
 
   // Get used tunnel profiles and their associated clusters
-  const { usedTunnelProfiles, usedClusterIds } = useMemo(() => {
+  const usedTunnelProfileIds = useMemo(() => {
     const usedTunnelProfileIds = new Set<string>()
-    const usedClusterIds = new Set<string>()
 
     // Collect used profile IDs from SD-LANs
     allSdLans?.forEach(sdLan => {
@@ -90,45 +88,8 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       }
     })
 
-    // Get cluster IDs from used profiles
-    allTunnelProfiles?.forEach(profile => {
-      if (usedTunnelProfileIds.has(profile.id) && profile.destinationEdgeClusterId) {
-        usedClusterIds.add(profile.destinationEdgeClusterId)
-      }
-    })
-
-    return {
-      usedTunnelProfiles: Array.from(usedTunnelProfileIds),
-      usedClusterIds: Array.from(usedClusterIds)
-    }
-  }, [allSdLans, allPins, allTunnelProfiles])
-
-  // Get venue-associated cluster IDs
-  const { edgeClusterList } = useGetEdgeClusterListQuery({
-    payload: {
-      fields: ['clusterId', 'venueId'],
-      pageSize: 10000
-    }
-  }, {
-    skip: !usedClusterIds.length,
-    selectFromResult: ({ data }) => ({
-      edgeClusterList: data?.data
-    })
-  })
-
-  const venueAssociatedClusterIds = useMemo(() => {
-    if (!edgeClusterList?.length || !usedClusterIds.length) return []
-
-    const usedVenueIds = new Set(
-      edgeClusterList
-        .filter(cluster => usedClusterIds.includes(cluster.clusterId ?? ''))
-        .map(cluster => cluster.venueId)
-    )
-
-    return edgeClusterList
-      .filter(cluster => usedVenueIds.has(cluster.venueId))
-      .map(cluster => cluster.clusterId)
-  }, [edgeClusterList, usedClusterIds])
+    return Array.from(usedTunnelProfileIds)
+  }, [allSdLans, allPins])
 
   // Filter available tunnel profiles
   const availableTunnelProfiles = useMemo(() => {
@@ -136,14 +97,12 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       profile.tunnelType === TunnelTypeEnum.L2GRE || !!profile.destinationEdgeClusterId
 
     const isNotUsed = (profile: TunnelProfileViewData) =>
-      !usedTunnelProfiles.includes(profile.id) &&
-      !(profile.destinationEdgeClusterId &&
-        venueAssociatedClusterIds.includes(profile.destinationEdgeClusterId))
+      !usedTunnelProfileIds.includes(profile.id)
 
     return allTunnelProfiles?.filter(profile =>
       isL2GreOrHasCluster(profile) && isNotUsed(profile)
     ) ?? []
-  }, [allTunnelProfiles, usedTunnelProfiles, venueAssociatedClusterIds])
+  }, [allTunnelProfiles, usedTunnelProfileIds])
 
   return {
     isDataLoading: isSdLansLoading || isPinsLoading || isTunnelProfilesLoading,

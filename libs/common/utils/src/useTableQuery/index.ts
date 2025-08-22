@@ -376,4 +376,5 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
     page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
+
 }
