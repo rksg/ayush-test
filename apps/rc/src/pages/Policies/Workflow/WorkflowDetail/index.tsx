@@ -167,7 +167,7 @@ export default function WorkflowDetails () {
       visible: workflowValidationEnhancementFFToggle,
       content: <PublishReadinessProgress variant='text'
         reasons={data?.statusReasons as StatusReason[]} />,
-      colSpan: 4
+      colSpan: 3
     },
     {
       title: $t({ defaultMessage: 'Workflow URL Acccess' }),
@@ -184,7 +184,7 @@ export default function WorkflowDetails () {
             <QuestionMarkCircleOutlinedIcon/>
           </Tooltip></div>
         : $t({ defaultMessage: 'Public' }),
-      colSpan: 3
+      colSpan: 4
     },
     {
       title: $t({ defaultMessage: 'URL Actions' }),
