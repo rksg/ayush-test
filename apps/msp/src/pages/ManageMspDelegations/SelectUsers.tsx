@@ -1,12 +1,14 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Select, Space } from 'antd'
-import { useIntl }       from 'react-intl'
+import { AlertRenderType } from '@ant-design/pro-table/es/components/Alert'
+import { Select, Space }   from 'antd'
+import { useIntl }         from 'react-intl'
 
 import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MspAdministrator,
   MspEcDelegatedAdmins
@@ -34,7 +36,8 @@ export const SelectUsers = (props: SelectUsersProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
-
+  const mspManageMspDelegationsSearchToggle =
+    useIsSplitOn(Features.MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE)
   const isSkip = tenantId === undefined
 
   function getSelectedKeys (mspAdmins: MspAdministrator[], admins: string[]) {
@@ -168,6 +171,9 @@ export const SelectUsers = (props: SelectUsersProps) => {
     <Table
       columns={columns}
       dataSource={usersData}
+      alwaysShowFilters={mspManageMspDelegationsSearchToggle}
+      tableAlertRender={mspManageMspDelegationsSearchToggle
+        ? false : undefined as (AlertRenderType<MspAdministrator> | undefined)}
       rowKey='email'
       rowSelection={{
         type: 'checkbox',
