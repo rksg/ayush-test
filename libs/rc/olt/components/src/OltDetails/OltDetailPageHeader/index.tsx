@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Menu, MenuProps, Space } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import moment                     from 'moment-timezone'
@@ -11,11 +9,10 @@ import {
   CaretDownSolidIcon,
   PageHeader,
   RangePicker,
-  Tooltip,
   getDefaultEarliestStart
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Olt, OltStatusEnum }     from '@acx-ui/olt/utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { Olt, OltStatusEnum, OltDetailsTabType } from '@acx-ui/olt/utils'
 import {
   useLocation,
   useNavigate,
@@ -29,6 +26,7 @@ import { getOpsApi, useDateFilter } from '@acx-ui/utils'
 
 import { OltStatus }     from '../../OltStatus'
 import { useOltActions } from '../../useOltActions'
+import { OltTabs }       from '../OltTabs'
 
 enum MoreActions {
   SYNC_DATA = 'SYNC_DATA',
@@ -43,20 +41,14 @@ export function OltDetailPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { oltDetails } = props
-  const { oltId } = useParams()
+  const { activeTab, activeSubTab, oltId, venueId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/devices/optical/${oltId}/`)
-  // const linkToOlt = useTenantLink('/devices/optical/')
+  const basePath = useTenantLink(`/devices/optical/${venueId}/${oltId}/`)
 
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const oltActions = useOltActions()
-
-  const [isSyncing, setIsSyncing] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [syncDataEndTime, setSyncDataEndTime] = useState('')
-
   const isOnline = oltDetails?.status === OltStatusEnum.ONLINE
 
   const { startDate, endDate, setDateFilter, range } =
@@ -64,12 +56,6 @@ export function OltDetailPageHeader (props: {
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {
-      case MoreActions.SYNC_DATA:
-        setIsSyncing(true)
-        oltActions.doSyncData({ rows: [oltDetails], callBack: () => {
-          setIsSyncing(false)
-        } })
-        break
       case MoreActions.REBOOT_OLT:
         oltActions.showRebootOlt({ rows: [oltDetails] })
         break
@@ -82,6 +68,21 @@ export function OltDetailPageHeader (props: {
       case MoreActions.DELETE:
         oltActions.showDeleteOlt({ rows: [oltDetails] })
         break
+    }
+  }
+
+  const hideRangePicker = (activeTab?: string) => {
+    switch(activeTab){
+      case OltDetailsTabType.OVERVIEW:
+        if(typeof activeSubTab === 'undefined'){
+          return false
+        }
+        return activeSubTab !== 'panel'
+      case OltDetailsTabType.ONTS:
+      case OltDetailsTabType.CONFIGURATION:
+        return true
+      default:
+        return false
     }
   }
 
@@ -103,18 +104,6 @@ export function OltDetailPageHeader (props: {
     <Menu
       onClick={handleMenuClick}
       items={[
-        ...(hasUpdatePermission &&
-            // hasAllowedOperations([getOpsApi()]) ? [{
-            true ? [{
-            key: MoreActions.SYNC_DATA,
-            disabled: isSyncing || !isOnline,
-            label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
-              {$t({ defaultMessage: 'Sync Data' })}
-            </Tooltip>
-          }, {
-            type: 'divider'
-          }] : []),
-
         ...(isOnline && hasUpdatePermission &&
           // hasAllowedOperations([getOpsApi()]) ? [{
           true ? [{
@@ -134,9 +123,7 @@ export function OltDetailPageHeader (props: {
 
         ...(hasDeletPermission ? [{
           key: MoreActions.DELETE,
-          label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
-            { $t({ defaultMessage: 'Delete OLT' }) }
-          </Tooltip>
+          label: $t({ defaultMessage: 'Delete OLT' })
         }] : [])
       ] as ItemType[]
       }/>
@@ -157,7 +144,7 @@ export function OltDetailPageHeader (props: {
         { text: 'Optical List', link: '/devices/optical' }
       ]}
       extra={[
-        <RangePicker
+        !hideRangePicker(activeTab) && <RangePicker
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
@@ -195,6 +182,7 @@ export function OltDetailPageHeader (props: {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
+      footer={<OltTabs oltDetails={oltDetails} />}
     />
   )
 }

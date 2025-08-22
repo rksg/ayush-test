@@ -100,6 +100,7 @@ export enum Features {
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_SORT_ON_TP_COUNT_TOGGLE = 'mspservice-sort-on-tp-count-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  MSP_MANAGE_MSP_DELEGATIONS_SEARCH_TOGGLE = 'mspservice-manage-msp-delegations-search-toggle',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
@@ -314,6 +315,7 @@ export enum Features {
   MSP_R1_SALES_ORDER_TOGGLE = 'mspservice-r1-sales-order-toggle',
   ACX_UI_GLOBAL_ACCESS_PORT_VLAN_UNTAGGED_ID_TOGGLE = 'acx-ui-global-access-port-vlan-untagged-id-toggle',
   SWITCH_SUPPORT_ICX7550_MODULE3_FOURX25G = 'switch-support-icx7550-module3-fourx25g',
+  WORKFLOW_ACL_FOR_ENROLLMENT_URL_TOGGLE = 'workflow-acl-for-enrollment-url-toggle',
   SWITCH_SUPPORT_ICX8100_STATIC_ROUTE_MAX_VE_TOGGLE = 'switch-support-icx8100-static-route-max-ve-toggle'
 }
 

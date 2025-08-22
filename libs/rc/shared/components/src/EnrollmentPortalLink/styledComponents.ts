@@ -24,7 +24,7 @@ path {
 
 export const StyledQRCodeModal = styled(Modal)`
   .ant-modal-title {
-    font-size: 16px !important;
+    font-size: 15px !important;
   }
 
   .ant-modal-footer {
@@ -36,7 +36,7 @@ export const StyledQRCodeModal = styled(Modal)`
   }
 
   .ant-btn-primary {
-    width: 240px !important;
+    width: 290px !important;
     margin: 0 auto !important;
     display: flex !important;
     justify-content: center !important;
@@ -61,4 +61,14 @@ export const StyledQRCodeModal = styled(Modal)`
     color: black !important;
     stroke: black !important;
   }
+`
+
+export const LinkContainer = styled('div')`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      height: auto;
+    }
 `
