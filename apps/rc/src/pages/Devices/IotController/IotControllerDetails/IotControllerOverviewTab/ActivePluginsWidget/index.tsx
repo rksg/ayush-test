@@ -9,10 +9,14 @@ import {
   Loader,
   NoActiveData,
   Card
-}        from '@acx-ui/components'
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useIotControllerPluginsQuery } from '@acx-ui/rc/services'
-import { ActivePluginsData }            from '@acx-ui/rc/utils'
-import { useParams }                    from '@acx-ui/react-router-dom'
+import {
+  ActivePluginsData,
+  ActivePluginsDataV2
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 // eslint-disable-next-line max-len
 export const getActivePluginsData = (overviewData?: ActivePluginsData) => {
@@ -26,12 +30,14 @@ export const getActivePluginsData = (overviewData?: ActivePluginsData) => {
 
 export function ActivePluginsWidget () {
   const { $t } = useIntl()
+  const isIotDashboardApi = useIsSplitOn(Features.IOT_DASHBOARD_API)
 
   const overviewQuery = useIotControllerPluginsQuery({
     params: useParams()
   }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getActivePluginsData(data),
+      // eslint-disable-next-line max-len
+      data: getActivePluginsData((isIotDashboardApi && (data as ActivePluginsDataV2)?.ok) ? { pluginStatus: (data as ActivePluginsDataV2).data } : (data as ActivePluginsData)),
       ...rest
     })
   })

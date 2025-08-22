@@ -6,7 +6,8 @@ export interface AdaptivePolicySet {
   mappedPolicyCount: number,
   assignmentCount: number,
   policyNames: string [],
-  externalAssignments: ExternalAssignment []
+  externalAssignments: ExternalAssignment [],
+  policyOverrideEnabled: boolean
 }
 
 export interface ExternalAssignment {

@@ -445,5 +445,6 @@ export { ReactComponent as CrossCircleSolidIcon } from './icons/CrossCircleSolid
 export { ReactComponent as YouTube } from './icons/YouTube.svg'
 export { ReactComponent as Netflix } from './icons/Netflix.svg'
 export { ReactComponent as SamlAuthActionTypeIcon } from './icons/SamlAuthActionTypeIcon.svg'
+export { ReactComponent as LockSolidIcon } from './icons/LockSolidIcon.svg'
 
 export * from './styledComponents'

@@ -1,15 +1,15 @@
 import { Badge }                            from 'antd'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { OltCageStateEnum, OltStatusEnum } from '@acx-ui/olt/utils'
-import { getIntl }                         from '@acx-ui/utils'
+import { OltCageStateEnum, OltStatusEnum, OltPortStatusEnum } from '@acx-ui/olt/utils'
+import { getIntl }                                            from '@acx-ui/utils'
 
-type StatusType = 'olt' | 'cage'
-type StatusValue = OltStatusEnum | OltCageStateEnum
+type StatusType = 'olt' | 'cage' | 'port'
+type StatusValue = OltStatusEnum | OltCageStateEnum | OltPortStatusEnum
 
 interface OltStatusProps {
-  type?: 'olt' | 'cage'
-  status?: OltStatusEnum | OltCageStateEnum
+  type?: 'olt' | 'cage' | 'port'
+  status?: OltStatusEnum | OltCageStateEnum | OltPortStatusEnum
   showText?: boolean
   style?: React.CSSProperties
 }
@@ -27,6 +27,16 @@ const STATUS_CONFIG: Record<StatusType, Record<string, { color: string; text: Me
     }
   },
   cage: {
+    [OltCageStateEnum.UP]: {
+      color: 'var(--acx-semantics-green-50)',
+      text: defineMessage({ defaultMessage: 'Up' })
+    },
+    [OltCageStateEnum.DOWN]: {
+      color: 'var(--acx-neutrals-50)',
+      text: defineMessage({ defaultMessage: 'Down' })
+    }
+  },
+  port: {
     [OltCageStateEnum.UP]: {
       color: 'var(--acx-semantics-green-50)',
       text: defineMessage({ defaultMessage: 'Up' })

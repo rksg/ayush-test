@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
 export const PublishReadinessBox = styled('div')<{ ready: boolean }>`
 
   display: flex;
@@ -25,4 +27,22 @@ export const PublishReadinessBox = styled('div')<{ ready: boolean }>`
     }
     
   }
+`
+
+export const RestrictedUrl = styled('div')`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 160px;
+
+    span {
+       font-size: var(--acx-body-3-font-size);
+       color: var(--acx-neutrals-60);
+    }
+`
+
+export const QuestionMarkCircleOutlinedIcon = styled(QuestionMarkCircleOutlined)`
+  width: 20px;
+  cursor: pointer;
+  color: var(--acx-neutrals-60);
 `
