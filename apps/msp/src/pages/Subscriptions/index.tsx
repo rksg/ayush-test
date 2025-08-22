@@ -77,7 +77,8 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 ]
 
 const defaultSelectedFilters: Filter = {
-  status: ['VALID', 'FUTURE']
+  status: ['VALID', 'FUTURE'],
+  skuTier: null
 }
 
 const entitlementRefreshPayload = {
@@ -189,10 +190,13 @@ export function Subscriptions () {
   const typeFilterOptionsEnum = (isHospitality || isMDU) ?
     HspMduTierEnum : DefaultMspTierEnum
 
-  const typeFilterOptions = Object.entries(typeFilterOptionsEnum).map(([key, text]) => ({
-    key: text,
-    value: key
-  }))
+  const typeFilterOptions = [
+    { key: null, value: $t({ defaultMessage: 'All License Tiers' }) },
+    ...Object.entries(typeFilterOptionsEnum).map(([key, text]) => ({
+      key: text,
+      value: key
+    }))
+  ]
 
   const columns: TableProps<MspEntitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
@@ -290,7 +294,6 @@ export function Subscriptions () {
       dataIndex: 'status',
       key: 'status',
       filterMultiple: false,
-      filterValueNullable: true,
       filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
