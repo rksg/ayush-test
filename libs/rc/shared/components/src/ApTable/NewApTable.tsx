@@ -139,10 +139,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isMultiApRebootRelocateActionsEnabled = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_REBOOT_RELOCATE_ACTIONS_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isApCliSessionEnabled = useIsSplitOn(Features.WIFI_AP_CLI_SESSION_TOGGLE)
   const isFlagUnderPoweredEnabled =
     useIsSplitOn(Features.FLAG_UNDERPOWERED_APS_AND_WARN_LIMITED_FUNCTIONALITY)
+
+  // Limit for maximum number of APs per reboot action
+  const maxActionLimit = 100
 
   // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -763,6 +767,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
+    disabled: (rows) => rows.length > maxActionLimit,
+    tooltip: (rows) => rows.length > maxActionLimit
+      ? $t({ defaultMessage: 'Up to {maxActionLimit} items per delete' }, { maxActionLimit })
+      : '',
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -777,22 +785,23 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
     rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
-    visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
+    visible: (rows) => isActionVisible(rows, { selectOne: !isMultiApRebootRelocateActionsEnabled, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
+    disabled: (rows) => rows.length > maxActionLimit,
+    tooltip: (rows) => rows.length > maxActionLimit
+      ? $t({ defaultMessage: 'Up to {maxActionLimit} items per reboot' }, { maxActionLimit })
+      : '',
     onClick: (rows, clearSelection) => {
-      const showSendingToast = () => {
+      const items = rows.map(r => ({ serialNumber: r.serialNumber, venueId: r.venueId }))
+      const sendingToast = (serialNumber: string) => {
         showToast({
           type: 'success',
           content: $t(
             { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
-            { ap: rows[0]?.serialNumber }
+            { ap: serialNumber }
           )
         })
       }
-      const callback = () => {
-        clearSelection()
-        showSendingToast()
-      }
-      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, rows[0].venueId, callback)
+      apAction.showRebootAp(items, params.tenantId, { sendingToast, clearSelection })
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),

@@ -137,15 +137,14 @@ describe('Test useApActions', () => {
     })
 
     const { showRebootAp } = result.current
-    const callback = jest.fn()
 
-    showRebootAp(serialNumber, tenantId, venueId, callback)
+    showRebootAp([{ serialNumber, venueId }], tenantId)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Rebooting the AP will disconnect all connected clients')
+    expect(dialog).toHaveTextContent('Rebooting the AP(s) will disconnect all connected clients')
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
 
-    expect(callback).toBeCalled()
+    expect(await screen.findByTestId('toast-content')).toHaveTextContent('Sending command')
     await waitFor(async () => expect(dialog).not.toBeVisible())
   })
 

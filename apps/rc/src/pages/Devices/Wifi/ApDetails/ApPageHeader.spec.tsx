@@ -104,7 +104,7 @@ describe('ApPageHeader', () => {
     mockServer.use(
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps))
+        (_, res, ctx) => res(ctx.json(rbacDeviceAps))
       )
     )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
